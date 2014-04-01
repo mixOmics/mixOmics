@@ -1,0 +1,6 @@
+load("/Users/klecao/Dropbox/Multi-group ANSES/Scripts/Update for package 13-01-14/data.same.platform.3classes.Rdata")
+load("/Users/klecao/Dropbox/Multi-group ANSES/Scripts/Update for package 13-01-14/data.same.platform.3classes.Rdata")
+ls()
+dim(data.all)
+experiment.all
+type.all
