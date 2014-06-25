@@ -1,5 +1,13 @@
 
 
+Changes in 5.0-2
+================
+
+New features:
+-------------
+-the valid function has been superseded by the perf function. Although similar in essence, few bugs have been fixed to estimate the performance of the sPLS and sPLS-DA models with no selection bias. A variable stability frequency has been added to the output.
+
+
 
 Changes in 5.0-1
 ================
