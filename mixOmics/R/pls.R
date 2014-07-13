@@ -276,7 +276,7 @@ if(near.zero.var == TRUE){
 	              loadings = list(X = mat.a, Y = mat.b), 
 	              names = list(X = X.names, Y = Y.names, indiv = ind.names)
                 )
-    if (near.zero.var == T & length(nzv$Position > 0)) result$nzv = nzv  
+    if (near.zero.var == TRUE & length(nzv$Position > 0)) result$nzv = nzv  
 	
     class(result) = "pls"
     return(invisible(result))
