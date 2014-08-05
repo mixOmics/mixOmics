@@ -7,8 +7,6 @@
 \alias{unmap}
 \alias{pcasvd}
 
-\alias{spls.model}
-\alias{splsda.model}
 
 
 \alias{ica.def}
