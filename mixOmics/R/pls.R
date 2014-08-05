@@ -140,6 +140,7 @@ if(near.zero.var == TRUE){
                 U[is.na.X] = 0
                 u.norm = crossprod(U)				
                 a = a / diag(u.norm)
+                # a is scaled to 1
                 a = a / drop(sqrt(crossprod(a)))
                 t = X.aux %*% a
                 A = drop(a) %o% n.ones
@@ -149,8 +150,9 @@ if(near.zero.var == TRUE){
             }
             else {			
                 a = crossprod(X.temp, u) / drop(crossprod(u))
+                # a is scaled to 1
                 a = a / drop(sqrt(crossprod(a)))
-                t = X.temp %*% a / drop(crossprod(a))
+                t = X.temp %*% a 
             }
              
             #--compute loading vectors and variates associated to Y
@@ -158,8 +160,9 @@ if(near.zero.var == TRUE){
                 b = crossprod(Y.aux, t)
                 T = drop(t) %o% q.ones
                 T[is.na.Y] = 0
-                t.norm = crossprod(T)				
-                b = b / diag(t.norm)
+                t.norm = crossprod(T)		
+                # update 5.0-2: b is scaled to 1
+                b = b / drop(sqrt(crossprod(b)))
                 u = Y.aux %*% b
                 B = drop(b) %o% n.ones
                 B[t(is.na.Y)] = 0
@@ -168,7 +171,9 @@ if(near.zero.var == TRUE){
             }
             else {			
                 b = crossprod(Y.temp, t) / drop(crossprod(t))
-                u = Y.temp %*% b / drop(crossprod(b))
+                #update 5.0-2: b is scaled to 1
+                b = b / drop(sqrt(crossprod(b)))
+                u = Y.temp %*% b
             }
 				
             if (crossprod(a - a.old) < tol) break
@@ -184,7 +189,7 @@ if(near.zero.var == TRUE){
             iter = iter + 1
         }
          
-        #-- deflation des matrices --#
+        #-- matrix deflation --#
         if (na.X) {
             X.aux = X.temp
             X.aux[is.na.X] = 0
@@ -200,7 +205,7 @@ if(near.zero.var == TRUE){
 		
         X.temp = X.temp - t %*% t(c)   
          
-        #-- mode canonique --#
+        #-- canonical mode --#
         if (mode == "canonical") {
             if (na.Y) {
                 Y.aux = Y.temp

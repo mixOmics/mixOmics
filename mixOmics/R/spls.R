@@ -153,7 +153,7 @@ function(X,
             t = t / drop(sqrt(crossprod(t)))			
         }
         else {
-            t = X.temp %*% a.old ##/ drop(crossprod(a.old))
+            t = X.temp %*% a.old 
             t = t / drop(sqrt(crossprod(t)))
         }
          
@@ -166,7 +166,7 @@ function(X,
             u = u / drop(sqrt(crossprod(u)))			
         }
         else {
-            u = Y.temp %*% b.old ##/ drop(crossprod(b.old))
+            u = Y.temp %*% b.old 
             u = u / drop(sqrt(crossprod(u)))
         }
          
@@ -184,14 +184,15 @@ function(X,
                 a = ifelse(abs(a) > abs(a[order(abs(a))][nx]), 
                     (abs(a) - abs(a[order(abs(a))][nx])) * sign(a), 0)
             }
-            ##a = a / drop(crossprod(u))
+            # a is scaled to 1
             a = a / drop(sqrt(crossprod(a)))
 		     
             if (ny != 0) {
                 b = ifelse(abs(b) > abs(b[order(abs(b))][ny]),
                     (abs(b) - abs(b[order(abs(b))][ny])) * sign(b), 0)
             }
-            b = b / drop(crossprod(t))
+			      # update 5.0-2: b is scaled to 1
+			      b = b / drop(sqrt(crossprod(b)))
 			 
             if (na.X) {
                 t = X.aux %*% a
@@ -199,11 +200,13 @@ function(X,
                 A[t(is.na.X)] = 0
                 a.norm = crossprod(A)
                 t = t / diag(a.norm)
-                t = t / drop(sqrt(crossprod(t)))			
+                # update 5.0-2: for (s)PLS, t is NOT scaled to 1
+                #t = t / drop(sqrt(crossprod(t)))			
             }
             else {
-                t = X.temp %*% a ##/ drop(crossprod(a))
-                t = t / drop(sqrt(crossprod(t)))
+                t = X.temp %*% a 
+                # update 5.0-2: for (s)PLS, t is NOT scaled to 1
+                #t = t / drop(sqrt(crossprod(t)))
             }
              
             if (na.Y) {
@@ -212,10 +215,12 @@ function(X,
                 B[t(is.na.Y)] = 0
                 b.norm = crossprod(B)
                 u = u / diag(b.norm)
-                u = u / drop(sqrt(crossprod(u)))			
+                # update 5.0-2: for (s)PLS, u is NOT scaled to 1
+                #u = u / drop(sqrt(crossprod(u)))			
             }
             else {
-                u = Y.temp %*% b ##/ drop(crossprod(b))
+                u = Y.temp %*% b 
+                ## update 5.0-2: for (s)PLS, u is NOT scaled to 1
                 u = u / drop(sqrt(crossprod(u)))
             }
            
@@ -232,7 +237,7 @@ function(X,
             iter = iter + 1
         }
          
-        #-- deflation des matrices --#
+        #-- matrix deflation --#
         if (na.X) {
             X.aux = X.temp
             X.aux[is.na.X] = 0
@@ -248,7 +253,7 @@ function(X,
 		
         X.temp = X.temp - t %*% t(c)   
          
-        #-- mode canonique --#
+        #-- canonical mode --#
         if (mode == "canonical") {
             if (na.Y) {
                 Y.aux = Y.temp

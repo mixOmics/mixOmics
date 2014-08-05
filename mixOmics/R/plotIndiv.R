@@ -38,7 +38,7 @@ plotIndiv.pls <- plotIndiv.spls <- plotIndiv.plsda <- plotIndiv.splsda <-
            col = "black", 
            cex = 1, 
            pch = 1, 
-           abline.line = TRUE,
+           abline.line = FALSE,
            ...) 
   {
     
@@ -139,7 +139,7 @@ plotIndiv.rcc <-
             col = "black", 
             cex = 1, 
             pch = 1, 
-            abline.line = TRUE,
+            abline.line = FALSE,
             ...) 
   {
     
@@ -231,7 +231,7 @@ plotIndiv.pca <- plotIndiv.spca <-
             ind.names = TRUE,
             X.label = NULL, 
             Y.label = NULL,
-            abline.line = TRUE,
+            abline.line = FALSE,
             ...) 
   {
     
@@ -307,7 +307,7 @@ plotIndiv.ipca <- plotIndiv.sipca <-
             ind.names = TRUE,
             X.label = NULL, 
             Y.label = NULL,
-            abline.line = TRUE,
+            abline.line = FALSE,
             ...) 
   {
     
@@ -387,7 +387,7 @@ plotIndiv.sgcca <- plotIndiv.rgcca <-
     col = "black", 
     cex = 1, 
     pch = 1, 
-    abline.line = TRUE,
+    abline.line = FALSE,
     ...){
     
     # validation des arguments #
