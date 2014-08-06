@@ -221,7 +221,7 @@ function(X,
             else {
                 u = Y.temp %*% b 
                 ## update 5.0-2: for (s)PLS, u is NOT scaled to 1
-                u = u / drop(sqrt(crossprod(u)))
+                #u = u / drop(sqrt(crossprod(u)))
             }
            
             if (crossprod(a - a.old) < tol) break
