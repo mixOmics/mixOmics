@@ -150,11 +150,10 @@ function(X,
             A[t(is.na.X)] = 0
             a.norm = crossprod(A)
             t = t / diag(a.norm)
-            t = t / drop(sqrt(crossprod(t)))			
+            #t = t / drop(sqrt(crossprod(t)))
         }
         else {
-            t = X.temp %*% a.old 
-            t = t / drop(sqrt(crossprod(t)))
+            t = X.temp %*% a.old / drop(crossprod(a.old))
         }
          
         if (na.Y) {
@@ -163,11 +162,10 @@ function(X,
             B[t(is.na.Y)] = 0
             b.norm = crossprod(B)
             u = u / diag(b.norm)
-            u = u / drop(sqrt(crossprod(u)))			
+            #u = u / drop(sqrt(crossprod(u)))
         }
         else {
-            u = Y.temp %*% b.old 
-            u = u / drop(sqrt(crossprod(u)))
+            u = Y.temp %*% b.old / drop(crossprod(b.old))
         }
          
         iter = 1
@@ -175,24 +173,22 @@ function(X,
         #-- boucle jusqu'? convergence de a et de b --#
         repeat {
             if (na.X) a = t(X.aux) %*% u
-            else a = t(X.temp) %*% u
+            else a = t(X.temp) %*% u #/ drop(crossprod(u)), useless because a is scaled after soft_thresholding
 			
 			if (na.Y) b = t(Y.aux) %*% t
-            else b = t(Y.temp) %*% t
+            else b = t(Y.temp) %*% t #/ drop(crossprod(t)), useless because b is scaled after soft_thresholding
              
             if (nx != 0) { 
                 a = ifelse(abs(a) > abs(a[order(abs(a))][nx]), 
                     (abs(a) - abs(a[order(abs(a))][nx])) * sign(a), 0)
             }
-            # a is scaled to 1
             a = a / drop(sqrt(crossprod(a)))
 		     
             if (ny != 0) {
                 b = ifelse(abs(b) > abs(b[order(abs(b))][ny]),
                     (abs(b) - abs(b[order(abs(b))][ny])) * sign(b), 0)
             }
-			      # update 5.0-2: b is scaled to 1
-			      b = b / drop(sqrt(crossprod(b)))
+            b = b / drop(sqrt(crossprod(b)))
 			 
             if (na.X) {
                 t = X.aux %*% a
@@ -200,13 +196,10 @@ function(X,
                 A[t(is.na.X)] = 0
                 a.norm = crossprod(A)
                 t = t / diag(a.norm)
-                # update 5.0-2: for (s)PLS, t is NOT scaled to 1
-                #t = t / drop(sqrt(crossprod(t)))			
+                #t = t / drop(sqrt(crossprod(t)))
             }
             else {
-                t = X.temp %*% a 
-                # update 5.0-2: for (s)PLS, t is NOT scaled to 1
-                #t = t / drop(sqrt(crossprod(t)))
+                t = X.temp %*% a / drop(crossprod(a))
             }
              
             if (na.Y) {
@@ -215,13 +208,10 @@ function(X,
                 B[t(is.na.Y)] = 0
                 b.norm = crossprod(B)
                 u = u / diag(b.norm)
-                # update 5.0-2: for (s)PLS, u is NOT scaled to 1
-                #u = u / drop(sqrt(crossprod(u)))			
+                #u = u / drop(sqrt(crossprod(u)))
             }
             else {
-                u = Y.temp %*% b 
-                ## update 5.0-2: for (s)PLS, u is NOT scaled to 1
-                #u = u / drop(sqrt(crossprod(u)))
+                u = Y.temp %*% b / drop(crossprod(b))
             }
            
             if (crossprod(a - a.old) < tol) break
@@ -237,7 +227,7 @@ function(X,
             iter = iter + 1
         }
          
-        #-- matrix deflation --#
+        #-- deflation des matrices --#
         if (na.X) {
             X.aux = X.temp
             X.aux[is.na.X] = 0
@@ -253,7 +243,7 @@ function(X,
 		
         X.temp = X.temp - t %*% t(c)   
          
-        #-- canonical mode --#
+        #-- mode canonique --#
         if (mode == "canonical") {
             if (na.Y) {
                 Y.aux = Y.temp
@@ -324,7 +314,8 @@ function(X,
                   loadings = list(X = mat.a, Y = mat.b),
                   names = list(X = X.names, Y = Y.names, indiv = ind.names),
 		              tol = tol,
-		              max.iter = max.iter)
+		              max.iter = max.iter,iter=iter
+)
                   
     if (length(nzv$Position > 0)) result$nzv = nzv
 
