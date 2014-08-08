@@ -38,10 +38,14 @@ plotIndiv.pls <- plotIndiv.spls <- plotIndiv.plsda <- plotIndiv.splsda <-
            col = "black", 
            cex = 1, 
            pch = 1, 
-           abline.line = FALSE,
+           abline.line = TRUE,
            ...) 
   {
     
+    
+
+
+
     # validation des arguments #
     #--------------------------#
     if (length(comp) != 2)
@@ -70,18 +74,32 @@ plotIndiv.pls <- plotIndiv.spls <- plotIndiv.plsda <- plotIndiv.splsda <-
     rep.space = match.arg(rep.space, c("XY-variate", "X-variate", "Y-variate"))
     
     
-    # check that the user did not enter extra arguments #
-    # --------------------------------------------------#
-    # what the user has entered
-    match.user = names(match.call())
-    # what the function is expecting
-    match.function = c('object', 'comp', 'rep.space', 'X.label', 'Y.label', 'col', 'cex', 'pch')
-    #write.table(c(match.user, setdiff(match.user[-1], match.function), length(setdiff(match.user[-1], match.function)) ), 'setdiff.txt')
+    ## check that the user did not enter extra arguments #
+    ## --------------------------------------------------#
+    ## what the user has entered
+    #match.user = names(match.call())
+    ## what the function is expecting
+    #match.function = c('object', 'comp', 'rep.space', 'X.label', 'Y.label', 'col', 'cex', 'pch','ind.names','abline.line')
+    ##write.table(c(match.user, setdiff(match.user[-1], match.function), length(setdiff(match.user[-1], match.function)) ), 'setdiff.txt')
+    #print(match.user[-1])
+    #print(match.function)
+    #print(length(setdiff(match.user[-1], match.function)))
     
-    #if arguments are not matching, put a warning (put a [-1] for match.user as we have a first blank argument)
-    if(length(setdiff(match.user[-1], match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
+    ##if arguments are not matching, put a warning (put a [-1] for match.user as we have a first blank argument)
+    #if(length(setdiff(match.user[-1], match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
     
     
+    # added by Florian, to test
+    match.function=names(formals(sys.function()))
+    #print(match.function)
+    match.user = names(match.call())[-1]
+    #print(match.user)
+    #print(length(setdiff(match.user[-1], match.function)))
+    if(length(setdiff(match.user, match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
+
+
+
+
     
     # l'espace de représentation #
     #----------------------------#
@@ -139,7 +157,7 @@ plotIndiv.rcc <-
             col = "black", 
             cex = 1, 
             pch = 1, 
-            abline.line = FALSE,
+            abline.line = TRUE,
             ...) 
   {
     
@@ -231,7 +249,7 @@ plotIndiv.pca <- plotIndiv.spca <-
             ind.names = TRUE,
             X.label = NULL, 
             Y.label = NULL,
-            abline.line = FALSE,
+            abline.line = TRUE,
             ...) 
   {
     
@@ -265,12 +283,22 @@ plotIndiv.pca <- plotIndiv.spca <-
     # check that the user did not enter extra arguments #
     # --------------------------------------------------#
     # what the user has entered
-    match.user =names(match.call())
+    #match.user =names(match.call())
     # what the function is expecting
-    match.function = c('object', 'comp', 'ind.names', 'X.label', 'Y.label')
+    #match.function = c('object', 'comp', 'ind.names', 'X.label', 'Y.label')
     #if arguments are not matching, put a warning (put a [-1] for match.user as we have a first blank argument)
-    if(length(setdiff(match.user[-1], match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
+    #if(length(setdiff(match.user[-1], match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
     
+    
+    # added by Florian, to test
+    match.function=names(formals(sys.function()))
+    #print(match.function)
+    match.user = names(match.call())[-1]
+    #print(match.user)
+    #print(length(setdiff(match.user[-1], match.function)))
+    if(length(setdiff(match.user, match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
+
+
     # l'espace de représentation #
     #----------------------------#
     x = object$x[, comp[1]]
@@ -307,7 +335,7 @@ plotIndiv.ipca <- plotIndiv.sipca <-
             ind.names = TRUE,
             X.label = NULL, 
             Y.label = NULL,
-            abline.line = FALSE,
+            abline.line = TRUE,
             ...) 
   {
     
@@ -341,12 +369,21 @@ plotIndiv.ipca <- plotIndiv.sipca <-
     # check that the user did not enter extra arguments #
     # --------------------------------------------------#
     # what the user has entered
-    match.user =names(match.call())
+    #match.user =names(match.call())
     # what the function is expecting
-    match.function = c('object', 'comp', 'ind.names', 'X.label', 'Y.label')
+    #match.function = c('object', 'comp', 'ind.names', 'X.label', 'Y.label')
     #if arguments are not matching, put a warning (put a [-1] for match.user as we have a first blank argument)
-    if(length(setdiff(match.user[-1], match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
+    #if(length(setdiff(match.user[-1], match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
     
+    # added by Florian, to test
+    match.function=names(formals(sys.function()))
+    #print(match.function)
+    match.user = names(match.call())[-1]
+    #print(match.user)
+    #print(length(setdiff(match.user[-1], match.function)))
+    if(length(setdiff(match.user, match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
+
+
     # l'espace de représentation #
     #----------------------------#
     x = object$x[, comp[1]]
@@ -387,7 +424,7 @@ plotIndiv.sgcca <- plotIndiv.rgcca <-
     col = "black", 
     cex = 1, 
     pch = 1, 
-    abline.line = FALSE,
+    abline.line = TRUE,
     ...){
     
     # validation des arguments #
@@ -422,13 +459,21 @@ plotIndiv.sgcca <- plotIndiv.rgcca <-
     # check that the user did not enter extra arguments #
     # --------------------------------------------------#
     # what the user has entered
-    match.user =names(match.call())
+    #match.user =names(match.call())
     # what the function is expecting
-    match.function = c('object', 'comp', 'ind.names', 'rep.space', 'X.label', 'Y.label', 'col', 'cex', 'pch')
+    #match.function = c('object', 'comp', 'ind.names', 'rep.space', 'X.label', 'Y.label', 'col', 'cex', 'pch')
     #if arguments are not matching, put a warning (put a [-1] for match.user as we have a first blank argument)
-    if(length(setdiff(match.user[-1], match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
+    #if(length(setdiff(match.user[-1], match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
     
-    
+    # added by Florian, to test
+    match.function=names(formals(sys.function()))
+    #print(match.function)
+    match.user = names(match.call())[-1]
+    #print(match.user)
+    #print(length(setdiff(match.user[-1], match.function)))
+    if(length(setdiff(match.user, match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
+
+
     # l'espace de représentation #
     #----------------------------#
     #    if (rep.space == "X-variate"){
