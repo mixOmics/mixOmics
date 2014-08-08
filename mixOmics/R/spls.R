@@ -23,8 +23,8 @@ spls <-
 function(X, 
          Y, 
          ncomp = 2, 
-         mode = c("regression", "canonical"),
-         max.iter = 500, 
+mode = c("regression", "canonical", "invariant", "classic"), #to check that invariant and classic make sense in spls
+         max.iter = 500,
          tol = 1e-06,
          keepX = rep(ncol(X), ncomp), 
          keepY = rep(ncol(Y), ncomp),
@@ -33,77 +33,24 @@ function(X,
 {
 
     #-- validation des arguments --#
-    if (length(dim(X)) != 2) 
-        stop("'X' must be a numeric matrix.")
-     
-    X = as.matrix(X)
-    Y = as.matrix(Y)
-     
-    if (!is.numeric(X) || !is.numeric(Y)) 
-        stop("'X' and/or 'Y' must be a numeric matrix.")
-     
-    n = nrow(X)
-    q = ncol(Y)
-     
-    if ((n != nrow(Y))) 
-        stop("unequal number of rows in 'X' and 'Y'.")
-     
-    if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0)
-        stop("invalid number of variates, 'ncomp'.")
+    Check.entry.pls(X,Y,ncomp,keepX,keepY)
     
-     if(near.zero.var == TRUE){ 
-    nzv = nearZeroVar(X, ...)
-    if (length(nzv$Position > 0)) {
-        warning("Zero- or near-zero variance predictors. 
-  Reset predictors matrix to not near-zero variance predictors.
-  See $nzv for problematic predictors.")
-        X = X[, -nzv$Position]
-    }
-    }
-	p = ncol(X)
-	
-    ncomp = round(ncomp)
-    if(ncomp > p) {
-        warning("Reset maximum number of variates 'ncomp' to ncol(X) = ", p, ".")
-        ncomp = p
-    }
-	
-    if (length(keepX) != ncomp) 
-        stop("length of 'keepX' must be equal to ", ncomp, ".")
+    if(near.zero.var == TRUE)
+     {
+         nzv = nearZeroVar(X, ...)
+         if (length(nzv$Position > 0))
+         {
+             warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
+             X = X[, -nzv$Position]
+         }
+     }
      
-    if (length(keepY) != ncomp) 
-        stop("length of 'keepY' must be equal to ", ncomp, ".")
-     
-    if (any(keepX > p)) 
-        stop("each component of 'keepX' must be lower or equal than ", p, ".")
-     
-    if (any(keepY > q)) 
-        stop("each component of 'keepY' must be lower or equal than ", q, ".")
-     
+
+
+
     mode = match.arg(mode)
-     
-    #-- initialisation des matrices --#
-    X.names = dimnames(X)[[2]]
-    if (is.null(X.names)) X.names = paste("X", 1:p, sep = "")
-     
-    if (dim(Y)[2] == 1) Y.names = "Y"
-    else {
-        Y.names = dimnames(Y)[[2]]
-        if (is.null(Y.names)) Y.names = paste("Y", 1:q, sep = "")
-    }
-     
-    ind.names = dimnames(X)[[1]]
-    if (is.null(ind.names)) {
-        ind.names = dimnames(Y)[[1]]
-        rownames(X) = ind.names
-    }
-     	
-    if (is.null(ind.names)) {
-        ind.names = 1:n
-        rownames(X) = rownames(Y) = ind.names
-    }
-     
-    #-- centrer et r?duire les donn?es --#
+    
+    #-- center and scale data --#
     X = scale(X, center = TRUE, scale = TRUE)
     Y = scale(Y, center = TRUE, scale = TRUE) 
 
@@ -178,17 +125,13 @@ function(X,
 			if (na.Y) b = t(Y.aux) %*% t
             else b = t(Y.temp) %*% t #/ drop(crossprod(t)), useless because b is scaled after soft_thresholding
              
-            if (nx != 0) { 
-                a = ifelse(abs(a) > abs(a[order(abs(a))][nx]), 
-                    (abs(a) - abs(a[order(abs(a))][nx])) * sign(a), 0)
-            }
-            a = a / drop(sqrt(crossprod(a)))
+            #penalisation on a, associated to X
+            if (nx != 0){a=soft_thresholding(a,nx)}
+            a=l2.norm(as.vector(a))
 		     
-            if (ny != 0) {
-                b = ifelse(abs(b) > abs(b[order(abs(b))][ny]),
-                    (abs(b) - abs(b[order(abs(b))][ny])) * sign(b), 0)
-            }
-            b = b / drop(sqrt(crossprod(b)))
+            #penalisation on b, associated to Y
+            if (ny != 0){b=soft_thresholding(b,ny)}
+            b=l2.norm(as.vector(b))
 			 
             if (na.X) {
                 t = X.aux %*% a
@@ -285,9 +228,15 @@ function(X,
         mat.b[, h] = b
         mat.c[, h] = c
         if (mode == "regression") mat.d[, h] = d
-	if (mode == "canonical") mat.e[, h] = e
+        if (mode == "canonical") mat.e[, h] = e
 
-         
+        #-- mode classic --#
+        if(mode == "classic") Y.temp = Y.temp - t %*% t(b)
+
+        #-- mode invariant --#
+        if (mode == "invariant") Y.temp = Y
+
+
     } #-- fin boucle sur h --#
      
     #-- valeurs sortantes --#
@@ -314,10 +263,10 @@ function(X,
                   loadings = list(X = mat.a, Y = mat.b),
                   names = list(X = X.names, Y = Y.names, indiv = ind.names),
 		              tol = tol,
-		              max.iter = max.iter,iter=iter
+		              max.iter = max.iter
 )
-                  
-    if (length(nzv$Position > 0)) result$nzv = nzv
+
+    if (near.zero.var == TRUE & length(nzv$Position > 0)) result$nzv = nzv
 
     class(result) = c("spls", "pls") 
     return(invisible(result))
