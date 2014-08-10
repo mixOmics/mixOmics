@@ -12,6 +12,7 @@
 \alias{ica.def}
 \alias{ica.par}
 
+\alias{check.one.level}
 \alias{Split.variation.one.level}
 \alias{Split.variation.two.level}
 
