@@ -70,19 +70,8 @@ function(object, newdata,  ...)
     variates.X = object$variates$X
     betay = list()
     
-    #-- calcul de la prediction --#
+    #-- prediction --#
     for(h in 1:ncomp){
-	    #W = a[, 1:h] %*% solve(t(c[, 1:h]) %*% a[, 1:h])
-	    #B = W %*% drop(t(b[, 1:h]))
-	    #B = scale(B, center = FALSE, scale = 1 / sigma.Y)
-	    #B = as.matrix(scale(t(B), center = FALSE, scale = sigma.X))
-
-        #intercept = -scale(B, center = FALSE, scale = 1 / means.X)
-        #intercept = matrix(apply(intercept, 1, sum) + means.Y, nrow = 1)
-        #Y.hat[, , h] = newdata %*% t(B) + ones %*% intercept
-        #t.pred[, h] = scale(newdata, center = means.X, scale = sigma.X) %*% W[, h]
-        #B.hat[, , h] = B
-        
         
         dd= coefficients(lm(Y~variates.X[,1:h,drop=FALSE])) #regression of Y on variates.global.X => =loadings.global.Y at a scale factor
         if(q==1){betay[[h]]=(dd[-1])}
@@ -160,18 +149,8 @@ function(object, newdata,
     variates.X = object$variates$X
     betay = list()
     
-    #-- calcul de la prediction --#
+    #-- prediction --#
     for(h in 1:ncomp){
-	    #W = a[, 1:h] %*% solve(t(c[, 1:h]) %*% a[, 1:h])
-	    #B = W %*% drop(t(b[, 1:h]))
-	    #B = scale(B, center = FALSE, scale = 1 / sigma.Y)
-	    #B = as.matrix(scale(t(B), center = FALSE, scale = sigma.X))
-	    #intercept = -scale(B, center = FALSE, scale = 1 / means.X)
-	    #intercept = matrix(apply(intercept, 1, sum) + means.Y, nrow = 1)
-	    #Y.hat[, , h] = newdata %*% t(B) + ones %*% intercept
-	    #t.pred[, h] = scale(newdata, center = means.X, scale = sigma.X) %*% W[, h]
-        #B.hat[, , h] = B
-
         dd= coefficients(lm(Y~variates.X[,1:h,drop=FALSE])) #regression of Y on variates.global.X => =loadings.global.Y at a scale factor
         if(q==1){betay[[h]]=(dd[-1])}
         if(q>=2){betay[[h]]=(dd[-1,])}

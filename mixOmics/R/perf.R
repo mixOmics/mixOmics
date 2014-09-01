@@ -42,6 +42,7 @@ perf.pls <-
   {
     
     #-- validation des arguments --#
+    # these are the centered and scaled matrices output from pls 
     X = object$X
     Y = object$Y
     
@@ -52,10 +53,6 @@ perf.pls <-
       stop("'X' must be a numeric matrix for validation.")
     
     if(object$mode == 'canonical') stop('PLS mode should be set to regression, invariant or classic')
-    
-    # this will be used only for loocv computation (see below)
-    means.Y = attr(Y, "scaled:center")
-    sigma.Y = attr(Y, "scaled:scale")
     
     validation = match.arg(validation)
     
@@ -124,9 +121,9 @@ perf.pls <-
         # see below, we stop the user if there is only one sample drawn on the test set using MFold
         if(length(omit) == 1) stop.user = TRUE
         
-        # the training set is scaled
-        X.train = scale(X[-omit, ], center = TRUE, scale = TRUE)
-        Y.train = scale(Y[-omit, ], center = TRUE, scale = TRUE)
+        # the training set is NOT scaled
+        X.train = X[-omit, ]
+        Y.train = Y[-omit, ]
         # the test set is scaled either in the predict function directly (for X.test)
         # or below for Y.test
         X.test = matrix(X[omit, ], nrow = length(omit))
@@ -146,17 +143,9 @@ perf.pls <-
           
           # compute the press and the RSS
           # by definition (tenenhaus), RSS[h+1,] = (y_i - y.hat_(h-1)_i)^2
-          if(validation == 'Mfold'){
-            # for Mfold, Y.test is simply scaled (seemed to be ok when there are enough samples per fold)
-            press.mat[omit, , h] = (scale(Y.test) - Y.hat[, , h])^2
-            RSS.indiv[omit, ,h+1] = (scale(Y.test) - Y.hat[, , h])^2
-          } else{ 
-            # in the case of loo we need to scale w.r.t the parameters in Y.train
-            Y.test = sweep(Y.test, 2, means.Y, FUN = "+")
-            Y.test = sweep(Y.test, 2, sigma.Y, FUN = "*")
-            press.mat[omit, , h] = (Y.test - Y.hat[, , h])^2
-            RSS.indiv[omit, ,h+1] = (Y.test - Y.hat[, , h])^2
-          }
+          press.mat[omit, , h] = (Y.test - Y.hat[, , h])^2
+          RSS.indiv[omit, ,h+1] = (Y.test - Y.hat[, , h])^2
+          
         } # end h
       } #end i (cross validation)
       
@@ -166,7 +155,7 @@ perf.pls <-
       # these criteria are computed across all folds.
       for (h in 1:ncomp) { 
         MSEP[, h] = apply(as.matrix(press.mat[, , h]), 2, mean, na.rm = TRUE)
-        R2[, h] = (diag(cor(scale(Y), Ypred[, , h], use = "pairwise")))^2
+        R2[, h] = (diag(cor(Y, Ypred[, , h], use = "pairwise")))^2
         
         # on en profite pour calculer le PRESS par composante et le Q2
         if(q>1){
@@ -236,6 +225,7 @@ perf.spls <-
   {
     
     #-- validation des arguments --#
+    # these are the centered and scaled matrices output from spls 
     X = object$X
     Y = object$Y
     
@@ -252,10 +242,6 @@ perf.spls <-
     p = ncol(X)
     q = ncol(Y)
     res = list()
-    
-    # these attributes are saved for leave on out normalisation
-    means.Y = attr(Y, "scaled:center")
-    sigma.Y = attr(Y, "scaled:scale")
     
     validation = match.arg(validation)
     
@@ -330,11 +316,9 @@ perf.spls <-
         # see below, we stop the user if there is only one sample drawn on the test set using MFold
         if(length(omit) == 1) stop.user = TRUE
         
-        # the training set is scaled
-        X.train = scale(X[-omit, ], center = TRUE, scale = TRUE)
-        Y.train = scale(Y[-omit, ], center = TRUE, scale = TRUE)
-        # the test set is scaled either in the predict function directly (for X.test)
-        # or below for Y.test
+        # the training set is NOT scaled
+        X.train = X[-omit, ]
+        Y.train = Y[-omit, ]
         X.test = matrix(X[omit, ], nrow = length(omit))
         Y.test = matrix(Y[omit, ], nrow = length(omit))
         
@@ -359,17 +343,8 @@ perf.spls <-
           # KA: this bunch was added:
           # compute the press and the RSS
           # by definition (tenenhaus), RSS[h+1,] = (y_i - y.hat_(h-1)_i)^2
-          if(validation == 'Mfold'){
-            # for Mfold, Y.test is simply scaled (seemed to be ok when there are enough samples per fold)
-            press.mat[omit, , h] = (scale(Y.test) - Y.hat[, , h])^2
-            RSS.indiv[omit, ,h+1] = (scale(Y.test) - Y.hat[, , h])^2
-          }else{ 
-            # in the case of loo we need to scale w.r.t the parameters in Y.train
-            Y.test = sweep(Y.test, 2, means.Y, FUN = "-")
-            Y.test = sweep(Y.test, 2, sigma.Y, FUN = "/")
-            press.mat[omit, , h] = (Y.test - Y.hat[, , h])^2
-            RSS.indiv[omit, ,h+1] = (Y.test - Y.hat[, , h])^2
-          }
+          press.mat[omit, , h] = (Y.test - Y.hat[, , h])^2
+          RSS.indiv[omit, ,h+1] = (Y.test - Y.hat[, , h])^2
         } # end h
       } #end i (cross validation)
       
@@ -474,11 +449,12 @@ perf.plsda <-
   {
     
     #-- validation des arguments --#
+    # these data are the centered and scaled X output or the unmapped(Y) scaled and centered
     X = object$X
     level.Y = object$names$Y  # to make sure the levels are ordered
     Y = object$ind.mat
     Y = map(Y)
-    Y = factor(Y,labels = level.Y)#as.factor(level.Y[Y])
+    Y = factor(Y,labels = level.Y)
     ncomp = object$ncomp
     n = nrow(X)
     
@@ -487,11 +463,11 @@ perf.plsda <-
     
     method.predict = match.arg(method.predict, several.ok = TRUE)
     if (any(method.predict == "all")) {
-        nmthdd = 3
+      nmthdd = 3
     }else{
-        nmthdd = length(method.predict)
+      nmthdd = length(method.predict)
     }
-
+    
     
     error.fun = function(x, y) {
       error.vec = sweep(x, 1, y, FUN = "-")
@@ -539,10 +515,8 @@ perf.plsda <-
       # see below, we stop the user if there is only one sample drawn on the test set using MFold
       if(length(omit) == 1) stop.user = TRUE
       
-      # the training set is scaled
-      X.train = scale(X[-omit, ], center = TRUE, scale = TRUE)
-      ##Y.train = scale(Y[-omit], center = TRUE, scale = TRUE)
-      
+      # the training set is NOT scaled
+      X.train = X[-omit, ]
       Y.train = Y[-omit]      
       X.test = matrix(X[omit, ], nrow = length(omit))
       
@@ -585,11 +559,12 @@ perf.splsda <- function(object,
 {
   
   #-- initialising arguments --#
+  # these data are the centered and scaled X output or the unmapped(Y) scaled and centered
   X = object$X
   level.Y = object$names$Y  #to make sure the levels are ordered
   Y = object$ind.mat
   Y = map(Y)
-  Y = as.factor(level.Y[Y])
+  Y = factor(Y,labels = level.Y)
   ncomp = object$ncomp
   n = nrow(X)
   keepX = object$keepX  
@@ -655,8 +630,8 @@ perf.splsda <- function(object,
     # see below, we stop the user if there is only one sample drawn on the test set using MFold
     if(length(omit) == 1) stop.user = TRUE
     
-    # the training set is scaled
-    X.train = scale(X[-omit, ], center = TRUE, scale = TRUE)
+    # the training set is NOT scaled
+    X.train = X[-omit, ]
     Y.train = Y[-omit]
     X.test = matrix(X[omit, ], nrow = length(omit))
     
