@@ -1,11 +1,22 @@
 
 
+Changes in 5.0-3
+================
+
+Bug fixes:
+----------
+-the perf and predict functions have been updated. The prediction values are calculated based on the regression coefficients of Y onto the latent variables associated to X.
+
+-one warning on the plotIndiv.rcc has been fixed.
+
+-transition from valid() to perf() announced.
+
 Changes in 5.0-2
 ================
 
 New features:
 -------------
-The valid function has been superseded by the perf function. Although similar in essence, few bugs have been fixed to estimate the performance of the sPLS and sPLS-DA models with no selection bias. A variable stability frequency has been added to the output. Functions spls.model and pls.model have been removed.
+- The valid function has been superseded by the perf function. Although similar in essence, few bugs have been fixed to estimate the performance of the sPLS and sPLS-DA models with no selection bias. A variable stability frequency has been added to the output. Functions spls.model and pls.model have been removed.
 
 Bug fixes:
 ----------
@@ -13,6 +24,7 @@ Bug fixes:
 
 -the argument abline.line has been set to FALSE by default in all plotIndiv functions.
 
+- tune.multilevel for one factor has been fixed.
 
 Changes in 5.0-1
 ================
