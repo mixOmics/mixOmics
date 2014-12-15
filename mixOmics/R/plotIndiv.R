@@ -73,17 +73,8 @@ plotIndiv.pls <- plotIndiv.spls <- plotIndiv.plsda <- plotIndiv.splsda <-
     comp2 = round(comp[2])
     rep.space = match.arg(rep.space, c("XY-variate", "X-variate", "Y-variate"))
     
-    
-    ## check that the user did not enter extra arguments #
-    ## --------------------------------------------------#
 
-    # added by Florian
-    ## what the function is expecting
-    match.function=names(formals(sys.function()))
-    ## what the user has entered
-    match.user = names(match.call())[-1]
-    if(length(setdiff(match.user, match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
-    
+
     # l'espace de représentation #
     #----------------------------#
     if (rep.space == "X-variate"){
@@ -174,16 +165,6 @@ plotIndiv.rcc <-
     rep.space = match.arg(rep.space, c("XY-variate", "X-variate", "Y-variate"))
     
     
-    # check that the user did not enter extra arguments #
-    # --------------------------------------------------#
-    # added by Florian
-    ## what the function is expecting
-    match.function=names(formals(sys.function()))
-    ## what the user has entered
-    match.user = names(match.call())[-1]
-    if(length(setdiff(match.user, match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
-
-    
     # l'espace de représentation #
     #----------------------------#
     if (rep.space == "X-variate") {
@@ -262,15 +243,6 @@ plotIndiv.pca <- plotIndiv.spca <-
       if (length(ind.names) != nrow(object$x))
         stop("'ind.names' must be a character vector of length ", nrow(object$x), " or a boolean atomic vector.")
     }
-    
-    # check that the user did not enter extra arguments #
-    # --------------------------------------------------#
-    # added by Florian
-    ## what the function is expecting
-    match.function=names(formals(sys.function()))
-    ## what the user has entered
-    match.user = names(match.call())[-1]
-    if(length(setdiff(match.user, match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
     
 
     # l'espace de représentation #
