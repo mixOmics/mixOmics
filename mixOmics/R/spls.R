@@ -81,6 +81,9 @@ function(X,
     if (any(keepY > q)) 
         stop("each component of 'keepY' must be lower or equal than ", q, ".")
      
+    if(any(keepX<=0) | any(keepY<=0))
+        stop("keepX and keepY must be positive")
+
     mode = match.arg(mode)
      
     #-- initialisation des matrices --#

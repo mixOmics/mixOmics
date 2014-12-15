@@ -69,7 +69,8 @@ function(X,
             stop("length of 'keepX' must be equal to ", ncomp, ".")
     if (any(keepX > p)) 
             stop("each component of 'keepX' must be lower or equal than ", p, ".")
-
+    if(any(keepX<=0))
+            stop("keepX must be positive")
 
     vect.varX=vector(length=ncomp)
     names(vect.varX) = c(1:ncomp)

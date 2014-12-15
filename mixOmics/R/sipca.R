@@ -49,6 +49,15 @@ function (X, ncomp  = 3, mode = c("deflation","parallel"),
     ind.names = dimnames(X)[[1]]
     if (is.null(ind.names)) ind.names = 1:nrow(X)
     
+    if (length(keepX) != ncomp)
+    stop("length of 'keepX' must be equal to ", ncomp, ".")
+    
+    if (any(keepX > ncol(X)))
+    stop("each component of 'keepX' must be lower or equal than ", ncol(X), ".")
+    
+    if(any(keepX<=0))
+    stop("keepX must be positive")
+    
     X <- scale(X, scale = FALSE)
     if (scale) {X=scale(X, scale=scale)}
     svd_mat <- svd(X)
