@@ -7,6 +7,8 @@ Bug fixes:
 ----------
 -the perf and predict functions have been updated. The prediction values are calculated based on the regression coefficients of Y onto the latent variables associated to X.
 
+-scaling issues in perf/old-valid have been fixed
+
 -one warning on the plotIndiv.rcc has been fixed.
 
 -transition from valid() to perf() announced.
