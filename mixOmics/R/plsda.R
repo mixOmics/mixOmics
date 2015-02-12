@@ -21,52 +21,146 @@
 
 
 plsda <-
-function(X, 
-         Y, 
-         ncomp = 2,
-         max.iter = 500,		 
-         tol = 1e-06,
-         near.zero.var = TRUE,
-         ...)
+  function(X,
+           Y, 
+           ncomp = 2,
+           max.iter = 500,  	 
+           tol = 1e-06,
+           near.zero.var = TRUE,
+           ...)
 {
+    
+    #-- checking general input parameters --------------------------------------#
+    #---------------------------------------------------------------------------#
+    
+    #-- check that the user did not enter extra arguments
+    arg.call = match.call()
+    user.arg = names(arg.call)[-1]
+    
+    err = tryCatch(mget(names(formals()), sys.frame(sys.nframe())), 
+                   error = function(e) e)
+    
+    if ("simpleError" %in% class(err))
+      stop(err[[1]], ".", call. = FALSE)
+    
+    default.arg = c("freqCut", "uniqueCut")
+    function.arg = c(names(mget(names(formals()), sys.frame(sys.nframe()))),
+                     default.arg)
+    not.arg = !(user.arg %in% function.arg)
+    
+    if (any(not.arg)) {
+      unused.arg = user.arg[not.arg]
+      not.arg = which(not.arg) + 1
+      output = rep("", length(not.arg))
+      
+      for (i in 1:length(not.arg)) {
+        output[i] = paste0(unused.arg[i], " = ", arg.call[[not.arg[i]]])
+      }
+      
+      output = paste0("(", paste(output, collapse = ", "), ").")
+      msg = "unused argument "
+      if (length(not.arg) > 1) msg = "unused arguments "  
+      stop(msg, output, call. = FALSE)
+    }
+    
+    #-- data set names --#
+    data.names = c(deparse(substitute(X)), deparse(substitute(Y)))
+    
+    #-- X matrix
+    if (is.data.frame(X)) X = as.matrix(X)
+    
+    if (!is.matrix(X)) {
+      if (!is.vector(X) || is.list(X))
+        stop("'X' must be a numeric matrix.", call. = FALSE)
+    }
+    
     X = as.matrix(X)
-	
-    #-- validation des arguments --#
-    if (length(dim(X)) != 2 || !is.numeric(X)) 
-        stop("'X' must be a numeric matrix.")
-     
-    if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0)
-        stop("invalid number of variates, 'ncomp'.")
-		
-    # / Testing the input Y
+    
+    if (is.character(X))
+      stop("'X' must be a numeric matrix.", call. = FALSE)
+    
+    if (any(apply(X, 1, is.infinite))) 
+      stop("infinite values in 'X'.", call. = FALSE)
+    
+    #-- Y factor
     if (is.null(dim(Y))) {
-        Y = as.factor(Y)	
-        ind.mat = unmap(as.numeric(Y))					
+      Y = as.factor(Y)  
+      ind.mat = unmap(as.numeric(Y))					
     }
     else {
-        stop("'Y' should be a factor or a class vector.")						
+      stop("'Y' should be a factor or a class vector.", 
+           call. = FALSE)						
     }		
-    # \ Testing input Y
-	
-    n = nrow(X)
-     
-    if ((n != nrow(ind.mat))) 
-        stop("unequal number of rows in 'X' and 'Y'.")
+    
+    #-- equal number of rows in X and Y
+    if ((n = nrow(X)) != nrow(ind.mat)) 
+      stop("unequal number of samples in 'X' and 'Y'.", call. = FALSE)
+    
+    #-- near.zero.var
+    if (!is.logical(near.zero.var))
+      stop("'near.zero.var' must be a logical constant (TRUE or FALSE).",
+           call. = FALSE)
+    
+    #-- ncomp
+    if (is.null(ncomp) || !is.finite(ncomp) || ncomp <= 0)
+      stop("invalid number of components, 'ncomp'.", call. = FALSE)
+    
+    if (near.zero.var == TRUE) { 
+      nzv = nearZeroVar(X, ...)
+      
+      if (length(nzv$Position > 0)) {
+        warning("zero- or near-zero variance predictors. \nReset predictors matrix to not near-zero variance predictors. \nSee $nzv for problematic predictors.", 
+                call. = FALSE)
+        
+        X = X[, -nzv$Position]
+      }
+    }
+    
+    p = ncol(X)
+    ncomp = round(ncomp)
+    
+    if (ncomp > p) {
+      warning("reset maximum number of variates 'ncomp' to ncol(X) = ", p, ".", 
+              call. = FALSE)
+      
+      ncomp = p
+    }
+    
+    #-- max.iter
+    if (is.null(max.iter) || max.iter < 1 || !is.finite(max.iter))
+      stop("invalid value for 'max.iter'.", call. = FALSE)
+    
+    max.iter = round(max.iter)  
+    
+    #-- tol
+    if (is.null(tol) || tol < 0 || !is.finite(tol))
+      stop("invalid value for 'tol'.", call. = FALSE)
+    
+    #-- end checking --#
+    #------------------#
+
+    
+    #-- call pls approach ------------------------------------------------------#
+    #---------------------------------------------------------------------------#
 
     result = pls(X, ind.mat, ncomp = ncomp, mode = "regression", 
-                 max.iter = max.iter, tol = tol, ...)
-     
+                 max.iter = max.iter, tol = tol, near.zero.var = FALSE, 
+                 ...)
+    
+    
+    #-- output -----------------------------------------------------------------#
+    #---------------------------------------------------------------------------#
     cl = match.call()
     cl[[1]] = as.name('plsda')
     result$call = cl
-    	
+    
     result$ind.mat = ind.mat
     result$names$Y = levels(Y)
-    result$near.zero.var = near.zero.var
-    
     result$tol = tol
     result$max.iter = max.iter
     
+    if (near.zero.var == TRUE && length(nzv$Position > 0)) result$nzv = nzv
+    
     class(result) = "plsda"
-    return(invisible(result))	
+    return(invisible(result))
 }
