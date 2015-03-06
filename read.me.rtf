@@ -28,13 +28,20 @@ Par exemple\
 Ceci copie mixOmics sur votre compte bitbucket personnel.\
 \
 
+\b\fs28 step2bis: ajouter le repertoire officiel dans votre liste de remote\
+
+\i\fs24 git remote add upstream git@bitbucket.org:klecao/mixomics.git\
+
+\i0\b0 \
+\
+
 \b\fs28 step3: clone\
 
-\b0\fs24 Aller dans le repo mixOmics que vous venez de Forker, cliquer sur clone (menu a gauche), copier l'addresse qui doit etre de la forme:\
-git clone git@bitbucket.org:klecao/mixomics.git\
+\b0\fs24 Sur https://bitbucket.org/, aller dans le repo mixOmics que vous venez de Forker, cliquer sur clone (menu a gauche), copier l'addresse qui doit etre de la forme:\
+git clone git@bitbucket.org:votre_pseudo/mixomics.git\
 \
-Aller dans le repertoire local que vous avez creer (ici gitFlo), et coller dans votre terminal 
-\i\b git clone git@bitbucket.org:klecao/mixomics.git
+Sur votre machine local, aller dans le repertoire local que vous avez creer (ici gitFlo/), et coller dans votre terminal 
+\i\b git clone git@bitbucket.org:votre_pseudo/mixomics.git
 \i0\b0 \
 Ceci va copier le repertoire mixOmics qui est sur votre bitbucket vers votre machine local, avec les memes branches, tout pareil.\
 Donc vous allez avoir une branche "master" et une branche "devel" (pour l'instant)\
@@ -86,16 +93,17 @@ Vous pouvez modifier les fichiers (code/help files/etc) comme d'habitude avec vo
 
 \i\b git push -u origin le_nom_de_la_branche_sur_laquelle_vous_envoyez_les_modifications
 \i0\b0 \
-par exemple git push -u origin develFlo\
+par exemple, j'etais sur la branche develFlo, j'ai modifie un fichier et a apres git add, git commit, je fais git push -u origin develFlo\
 \
 \
 
 \b\fs28 step8: je suis content de moi, je veux en faire partager tout le monde\
 
 \b0\fs24 je cree une pull request.\
-Sur le site bitbucket, le menu a gauche "
+Sur le site bitbucket, dans votre repo mixOmics, le menu a gauche "
 \i\b create pull request
 \i0\b0 ", remplissez quelle branche vous voulez merger avec quelle branche.\
+Ce sera genre votre_pseudo/mixomics  -> klecao/mixomics \
 La plupart du temps ce sera ma_nouvelle_branche_ou_tout_marche vers devel, ou vers une autre branche (surtout pas master)\
 \
 \
@@ -110,7 +118,12 @@ La plupart du temps ce sera ma_nouvelle_branche_ou_tout_marche vers devel, ou ve
 \b0\fs24 \
 il y a eu des modifications pendant mes vacances sur bitbucket, je veux me mettre a jour\
 
-\i\b git pull\
+\i\b git fetch upstream\
+git checkout master\
+git merge upstream/master
+\i0\b0 \
 
-\i0\b0 a confirmer que ca marche sans fork.\
+\i\b \
+
+\i0\b0 Il peut y avoir des conflits a resoudre au moment du merge\
 }
