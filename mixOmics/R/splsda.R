@@ -24,38 +24,23 @@ splsda <-
 function(X, 
          Y,		
          ncomp = 2, 
-	 keepX = rep(ncol(X), ncomp),
+         keepX = rep(ncol(X), ncomp),
          max.iter = 500,		 
          tol = 1e-06,
-         near.zero.var = TRUE,
-         ...)
+         near.zero.var = TRUE)
 {
-    X = as.matrix(X)
-	
-    #-- validation des arguments --#
-    if (length(dim(X)) != 2 || !is.numeric(X)) 
-        stop("'X' must be a numeric matrix.")
-     
-    if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0)
-        stop("invalid number of variates, 'ncomp'.")
-		
-    # / Testing the input Y
-    if (is.null(dim(Y))) {
+  		
+    # Testing the input Y
+    if (is.null(dim(Y)))
+    {
         Y = as.factor(Y)	
         ind.mat = unmap(as.numeric(Y))					
-    }
-    else {
+    }else {
         stop("'Y' should be a factor or a class vector.")						
     }		
-    # \ Testing input Y
-	
-    n = nrow(X)
-     
-    if ((n != nrow(ind.mat))) 
-        stop("unequal number of rows in 'X' and 'Y'.")
 
     result = spls(X, ind.mat, ncomp = ncomp, mode = "regression", keepX = keepX, 
-                  max.iter = max.iter, tol = tol, ...)
+                  max.iter = max.iter, tol = tol)
        
     cl = match.call()
     cl[[1]] = as.name('splsda')
@@ -63,10 +48,6 @@ function(X,
 	 
     result$ind.mat = ind.mat
     result$names$Y = levels(Y)
-    result$near.zero.var = near.zero.var
-    
-    result$tol = tol
-    result$max.iter = max.iter
     
     class(result) = "splsda"
     return(invisible(result))	
