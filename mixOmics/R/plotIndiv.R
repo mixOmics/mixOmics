@@ -162,7 +162,7 @@ plotIndiv.rcc <-
     
     if (is.logical(ind.names)) {
       if (isTRUE(ind.names)) ind.names = object$names$indiv
-    }
+    } 
     
     if (length(ind.names) > 1) {
       if (length(ind.names) != nrow(object$X))
