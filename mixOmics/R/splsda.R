@@ -40,7 +40,7 @@ function(X,
     }		
 
     result = spls(X, ind.mat, ncomp = ncomp, mode = "regression", keepX = keepX, 
-                  max.iter = max.iter, tol = tol)
+                  max.iter = max.iter, tol = tol,near.zero.var=near.zero.var)
        
     cl = match.call()
     cl[[1]] = as.name('splsda')

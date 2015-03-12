@@ -39,7 +39,7 @@ function(X,
     }		
  
     result = pls(X, ind.mat, ncomp = ncomp, mode = "regression",
-                 max.iter = max.iter, tol = tol)
+                 max.iter = max.iter, tol = tol,near.zero.var=near.zero.var)
      
     cl = match.call()
     cl[[1]] = as.name('plsda')
