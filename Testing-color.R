@@ -112,7 +112,7 @@ my.pch2 = list.pch2[as.numeric(as.factor(liver.toxicity$treatment$Dose.Group))]
 plot3dIndiv(toxicity.spls, ind.names = FALSE, pch = my.pch2,
             col = my.colors, cex = 15)
 library(rgl)
-rgl.postscript('example-3dplot.pdf', format = 'pdf')
+rgl.postscript('example-plotIndiv3dplot.pdf', fmt = 'pdf')
 
 
 # -------------
@@ -143,6 +143,17 @@ Y <- liver.toxicity$clinic
 toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(20, 20, 20), 
                       keepY = c(10, 10, 10))
 
-
+pdf('example-plotVar.pdf')
 plotVar(toxicity.spls, keep.var = TRUE, Y.label = TRUE, cex = c(1,0.6), col = mixo.colors(c(1,2)))  
+dev.off()
+
+
+plot3dVar(toxicity.spls, var.label = FALSE, Y.label = TRUE, keep.var = TRUE, 
+          rad.in = 0.5, cex = c(1,0.6),
+          col = mixo.colors(c(1,2)))
+library(rgl)
+rgl.postscript('example-plotVar3dplot.pdf', fmt = 'pdf')
+
+
+
 
