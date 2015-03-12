@@ -24,48 +24,48 @@
 #--------------------------------------------------------------------#
 
 plotIndiv <-
-  function(object, ...) UseMethod("plotIndiv")
+function(object, ...) UseMethod("plotIndiv")
 
 
 #--------------------- PLS and sPLS ---------------------#
-plotIndiv.pls <- plotIndiv.spls <- plotIndiv.plsda <- plotIndiv.splsda <- 
-  function(object, 
-           comp = 1:2, 
-           ind.names = TRUE,
-           rep.space = "X-variate",
-           X.label = NULL, 
-           Y.label = NULL,  
-           col = "black", 
-           cex = 1, 
-           pch = 1, 
-           abline.line = FALSE,
-           ...) 
-  {
+plotIndiv.pls <- plotIndiv.spls <- plotIndiv.plsda <- plotIndiv.splsda <-
+function(object,
+comp = 1:2,
+ind.names = TRUE,
+rep.space = "X-variate",
+X.label = NULL,
+Y.label = NULL,
+col = "black",
+cex = 1,
+pch = 1,
+abline.line = FALSE,
+...)
+{
     
     
-
-
-
+    
+    
+    
     # validation des arguments #
     #--------------------------#
     if (length(comp) != 2)
-      stop("'comp' must be a numeric vector of length 2.")
+    stop("'comp' must be a numeric vector of length 2.")
     
     if (!is.numeric(comp))
-      stop("invalid vector for 'comp'.")
+    stop("invalid vector for 'comp'.")
     
     if (length(comp) == 1)
-      stop("Need at least 2 components to plot the graph")
+    stop("Need at least 2 components to plot the graph")
     
-    if (any(comp > object$ncomp)) 
-      stop("the elements of 'comp' must be smaller or equal than ", object$ncomp, ".")
+    if (any(comp > object$ncomp))
+    stop("the elements of 'comp' must be smaller or equal than ", object$ncomp, ".")
     
     if (is.logical(ind.names)) {
-      if (isTRUE(ind.names)) ind.names = object$names$indiv
+        if (isTRUE(ind.names)) ind.names = object$names$indiv
     }
     
     if (length(ind.names) > 1) {
-      if (length(ind.names) != nrow(object$X))
+        if (length(ind.names) != nrow(object$X))
         stop("'ind.names' must be a character vector of length ", nrow(object$X), " or a boolean atomic vector.")
     }
     
@@ -74,98 +74,89 @@ plotIndiv.pls <- plotIndiv.spls <- plotIndiv.plsda <- plotIndiv.splsda <-
     rep.space = match.arg(rep.space, c("XY-variate", "X-variate", "Y-variate"))
     
     
-    ## check that the user did not enter extra arguments #
-    ## --------------------------------------------------#
-
-    # added by Florian
-    ## what the function is expecting
-    match.function=names(formals(sys.function()))
-    ## what the user has entered
-    match.user = names(match.call())[-1]
-    if(length(setdiff(match.user, match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
     
     # l'espace de représentation #
     #----------------------------#
     if (rep.space == "X-variate"){
-      x = object$variates$X[, comp1]
-      y = object$variates$X[, comp2]
-      if (is.null(X.label)) X.label = paste("X-variate", comp1)
-      if (is.null(Y.label)) Y.label = paste("X-variate", comp2)
+        x = object$variates$X[, comp1]
+        y = object$variates$X[, comp2]
+        if (is.null(X.label)) X.label = paste("X-variate", comp1)
+        if (is.null(Y.label)) Y.label = paste("X-variate", comp2)
     }
     
     if (rep.space == "Y-variate"){
-      x = object$variates$Y[, comp1]
-      y = object$variates$Y[, comp2]
-      if (is.null(X.label)) X.label = paste("Y-variate", comp1)
-      if (is.null(Y.label)) Y.label = paste("Y-variate", comp2)
+        x = object$variates$Y[, comp1]
+        y = object$variates$Y[, comp2]
+        if (is.null(X.label)) X.label = paste("Y-variate", comp1)
+        if (is.null(Y.label)) Y.label = paste("Y-variate", comp2)
     }
     
     if (rep.space == "XY-variate"){
-      x = (object$variates$X[, comp1] + object$variates$Y[, comp1]) / 2
-      y = (object$variates$X[, comp2] + object$variates$Y[, comp2]) / 2
-      if (is.null(X.label)) X.label = paste("X-variate", comp1)
-      if (is.null(Y.label)) Y.label = paste("Y-variate", comp2)
+        x = (object$variates$X[, comp1] + object$variates$Y[, comp1]) / 2
+        y = (object$variates$X[, comp2] + object$variates$Y[, comp2]) / 2
+        if (is.null(X.label)) X.label = paste("X-variate", comp1)
+        if (is.null(Y.label)) Y.label = paste("Y-variate", comp2)
     }
     
     # le plot des individus #
     #-----------------------#
     if (length(ind.names) > 1) {
-      plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
-      text(x, y, ind.names, col = col, cex = cex, ...)
-      if(abline.line) abline(v = 0, h = 0, lty = 2)
-    }
-    else {
-      if (isTRUE(ind.names)) {
         plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
         text(x, y, ind.names, col = col, cex = cex, ...)
         if(abline.line) abline(v = 0, h = 0, lty = 2)
-      }
-      else {
-        plot(x, y, xlab = X.label, ylab = Y.label, 
-             col = col, cex = cex, pch = pch)
-        if(abline.line) abline(v = 0, h = 0, lty = 2)
-      }
     }
-  }
+    else {
+        if (isTRUE(ind.names)) {
+            plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
+            text(x, y, ind.names, col = col, cex = cex, ...)
+            if(abline.line) abline(v = 0, h = 0, lty = 2)
+        }
+        else {
+            plot(x, y, xlab = X.label, ylab = Y.label,
+            col = col, cex = cex, pch = pch)
+            if(abline.line) abline(v = 0, h = 0, lty = 2)
+        }
+    }
+}
 
 
 #-------------------------- rCC -------------------------#
 plotIndiv.rcc <-
-  function (object, 
-            comp = 1:2, 
-            ind.names = TRUE,
-            rep.space = "XY-variate",
-            X.label = NULL, 
-            Y.label = NULL,
-            col = "black", 
-            cex = 1, 
-            pch = 1, 
-            abline.line = FALSE,
-            ...) 
-  {
+function (object,
+comp = 1:2,
+ind.names = TRUE,
+rep.space = "XY-variate",
+X.label = NULL,
+Y.label = NULL,
+col = "black",
+cex = 1,
+pch = 1,
+abline.line = FALSE,
+...)
+{
     
     # validation des arguments #
     #--------------------------#
     if (length(comp) != 2)
-      stop("'comp' must be a numeric vector of length 2.")
+    stop("'comp' must be a numeric vector of length 2.")
     
     if (!is.numeric(comp))
-      stop("invalid vector for 'comp'.")
+    stop("invalid vector for 'comp'.")
     
     if (length(comp) == 1)
-      stop("Need at least 2 components to plot the graph")
+    stop("Need at least 2 components to plot the graph")
     
     
-    dim = min(ncol(object$X), ncol(object$Y))		
-    if (any(comp > dim)) 
-      stop("the elements of 'comp' must be smaller or equal than ", dim, ".")
+    dim = min(ncol(object$X), ncol(object$Y))
+    if (any(comp > dim))
+    stop("the elements of 'comp' must be smaller or equal than ", dim, ".")
     
     if (is.logical(ind.names)) {
-      if (isTRUE(ind.names)) ind.names = object$names$indiv
-    } 
+        if (isTRUE(ind.names)) ind.names = object$names$indiv
+    }
     
     if (length(ind.names) > 1) {
-      if (length(ind.names) != nrow(object$X))
+        if (length(ind.names) != nrow(object$X))
         stop("'ind.names' must be a character vector of length ", nrow(object$X), " or a boolean atomic vector.")
     }
     
@@ -174,31 +165,22 @@ plotIndiv.rcc <-
     rep.space = match.arg(rep.space, c("XY-variate", "X-variate", "Y-variate"))
     
     
-    # check that the user did not enter extra arguments #
-    # --------------------------------------------------#
-    # added by Florian
-    ## what the function is expecting
-    match.function=names(formals(sys.function()))
-    ## what the user has entered
-    match.user = names(match.call())[-1]
-    if(length(setdiff(match.user, match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
-
     
     # l'espace de représentation #
     #----------------------------#
     if (rep.space == "X-variate") {
-      x = object$variates$X[, comp1]
-      y = object$variates$X[, comp2]
+        x = object$variates$X[, comp1]
+        y = object$variates$X[, comp2]
     }
     
     if (rep.space == "Y-variate") {
-      x = object$variates$Y[, comp1]
-      y = object$variates$Y[, comp2]
+        x = object$variates$Y[, comp1]
+        y = object$variates$Y[, comp2]
     }
     
     if (rep.space == "XY-variate"){
-      x = (object$variates$X[, comp1] + object$variates$Y[, comp1]) / 2
-      y = (object$variates$X[, comp2] + object$variates$Y[, comp2]) / 2
+        x = (object$variates$X[, comp1] + object$variates$Y[, comp1]) / 2
+        y = (object$variates$X[, comp2] + object$variates$Y[, comp2]) / 2
     }
     
     if (is.null(X.label)) X.label = paste("Dimension ", comp1)
@@ -207,72 +189,63 @@ plotIndiv.rcc <-
     # le plot des individus #
     #-----------------------#
     if (length(ind.names) > 1) {
-      plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
-      text(x, y, ind.names, col = col, cex = cex, ...)
-      if(abline.line) abline(v = 0, h = 0, lty = 2)
-    }
-    else {
-      if (isTRUE(ind.names)) {
         plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
         text(x, y, ind.names, col = col, cex = cex, ...)
         if(abline.line) abline(v = 0, h = 0, lty = 2)
-      }
-      else {
-        plot(x, y, xlab = X.label, ylab = Y.label, 
-             col = col, cex = cex, pch = pch)
-        if(abline.line) abline(v = 0, h = 0, lty = 2)
-      }
     }
-  }
+    else {
+        if (isTRUE(ind.names)) {
+            plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
+            text(x, y, ind.names, col = col, cex = cex, ...)
+            if(abline.line) abline(v = 0, h = 0, lty = 2)
+        }
+        else {
+            plot(x, y, xlab = X.label, ylab = Y.label,
+            col = col, cex = cex, pch = pch)
+            if(abline.line) abline(v = 0, h = 0, lty = 2)
+        }
+    }
+}
 
 #-------------------------- PCA -------------------------#
 plotIndiv.pca <- plotIndiv.spca <-
-  function (object, 
-            comp = 1:2, 
-            ind.names = TRUE,
-            X.label = NULL, 
-            Y.label = NULL,
-            abline.line = FALSE,
-            ...) 
-  {
+function (object,
+comp = 1:2,
+ind.names = TRUE,
+X.label = NULL,
+Y.label = NULL,
+abline.line = FALSE,
+...)
+{
     
     # validation des arguments #
     #--------------------------#
     if (length(comp) != 2)
-      stop("'comp' must be a numeric vector of length 2.")
+    stop("'comp' must be a numeric vector of length 2.")
     
     if (!is.numeric(comp))
-      stop("invalid vector for 'comp'.")
+    stop("invalid vector for 'comp'.")
     
     if (length(comp) == 1)
-      stop("Need at least 2 components to plot the graph")
+    stop("Need at least 2 components to plot the graph")
     
     
-    if (any(comp > object$ncomp)) 
-      stop("the elements of 'comp' must be smaller or equal than ", object$ncomp, ".")
+    if (any(comp > object$ncomp))
+    stop("the elements of 'comp' must be smaller or equal than ", object$ncomp, ".")
     
     comp1 = round(comp[1])
     comp2 = round(comp[2])
     
     if (is.logical(ind.names)) {
-      if (isTRUE(ind.names)) ind.names = rownames(object$x)
+        if (isTRUE(ind.names)) ind.names = rownames(object$x)
     }
     
     if (length(ind.names) > 1) {
-      if (length(ind.names) != nrow(object$x))
+        if (length(ind.names) != nrow(object$x))
         stop("'ind.names' must be a character vector of length ", nrow(object$x), " or a boolean atomic vector.")
     }
     
-    # check that the user did not enter extra arguments #
-    # --------------------------------------------------#
-    # added by Florian
-    ## what the function is expecting
-    match.function=names(formals(sys.function()))
-    ## what the user has entered
-    match.user = names(match.call())[-1]
-    if(length(setdiff(match.user, match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
     
-
     # l'espace de représentation #
     #----------------------------#
     x = object$x[, comp[1]]
@@ -284,73 +257,63 @@ plotIndiv.pca <- plotIndiv.spca <-
     # le plot des individus #
     #-----------------------#
     if (length(ind.names) > 1) {
-      plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
-      text(x, y, ind.names, ...)
-      if(abline.line) abline(v = 0, h = 0, lty = 2)
-    }
-    else {
-      if (isTRUE(ind.names)) {
         plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
         text(x, y, ind.names, ...)
         if(abline.line) abline(v = 0, h = 0, lty = 2)
-      }
-      else {
-        plot(x, y, xlab = X.label, ylab = Y.label, ...)
-        if(abline.line) abline(v = 0, h = 0, lty = 2)
-      }
     }
-  }
+    else {
+        if (isTRUE(ind.names)) {
+            plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
+            text(x, y, ind.names, ...)
+            if(abline.line) abline(v = 0, h = 0, lty = 2)
+        }
+        else {
+            plot(x, y, xlab = X.label, ylab = Y.label, ...)
+            if(abline.line) abline(v = 0, h = 0, lty = 2)
+        }
+    }
+}
 
 
 #-------------------------- IPCA -------------------------#
 plotIndiv.ipca <- plotIndiv.sipca <-
-  function (object, 
-            comp = 1:2, 
-            ind.names = TRUE,
-            X.label = NULL, 
-            Y.label = NULL,
-            abline.line = FALSE,
-            ...) 
-  {
+function (object,
+comp = 1:2,
+ind.names = TRUE,
+X.label = NULL,
+Y.label = NULL,
+abline.line = FALSE,
+...)
+{
     
     # validation des arguments #
     #--------------------------#
     if (length(comp) != 2)
-      stop("'comp' must be a numeric vector of length 2.")
+    stop("'comp' must be a numeric vector of length 2.")
     
     if (!is.numeric(comp))
-      stop("invalid vector for 'comp'.")
+    stop("invalid vector for 'comp'.")
     
     if (length(comp) == 1)
-      stop("Need at least 2 components to plot the graph")
+    stop("Need at least 2 components to plot the graph")
     
     
-    if (any(comp > object$ncomp)) 
-      stop("the elements of 'comp' must be smaller than or equal to ", object$ncomp, ".")
+    if (any(comp > object$ncomp))
+    stop("the elements of 'comp' must be smaller than or equal to ", object$ncomp, ".")
     
     comp1 = round(comp[1])
     comp2 = round(comp[2])
     
     if (is.logical(ind.names)) {
-      if (isTRUE(ind.names)) ind.names = rownames(object$x)
+        if (isTRUE(ind.names)) ind.names = rownames(object$x)
     }
     
     if (length(ind.names) > 1) {
-      if (length(ind.names) != nrow(object$x))
+        if (length(ind.names) != nrow(object$x))
         stop("'ind.names' must be a character vector of length ", nrow(object$x), " or a boolean atomic vector.")
     }
     
-    # check that the user did not enter extra arguments #
-    # --------------------------------------------------#
-    # added by Florian
-    ## what the function is expecting
-    match.function=names(formals(sys.function()))
-    ## what the user has entered
-    match.user = names(match.call())[-1]
-    if(length(setdiff(match.user, match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
     
-    
-
     # l'espace de représentation #
     #----------------------------#
     x = object$x[, comp[1]]
@@ -362,60 +325,60 @@ plotIndiv.ipca <- plotIndiv.sipca <-
     # le plot des individus #
     #-----------------------#
     if (length(ind.names) > 1) {
-      plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
-      text(x, y, ind.names, ...)
-      if(abline.line) abline(v = 0, h = 0, lty = 2)
-    }
-    else {
-      if (isTRUE(ind.names)) {
         plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
         text(x, y, ind.names, ...)
         if(abline.line) abline(v = 0, h = 0, lty = 2)
-      }
-      else {
-        plot(x, y, xlab = X.label, ylab = Y.label, ...)
-        if(abline.line) abline(v = 0, h = 0, lty = 2)
-      }
     }
-  }
+    else {
+        if (isTRUE(ind.names)) {
+            plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
+            text(x, y, ind.names, ...)
+            if(abline.line) abline(v = 0, h = 0, lty = 2)
+        }
+        else {
+            plot(x, y, xlab = X.label, ylab = Y.label, ...)
+            if(abline.line) abline(v = 0, h = 0, lty = 2)
+        }
+    }
+}
 
 # ------------------ RGCCA / SGCCA --------------------------
 plotIndiv.sgcca <- plotIndiv.rgcca <-
-  function(
-    object, 
-    comp = 1:2, 
-    ind.names = TRUE,
-    rep.space = 1,
-    X.label = NULL, 
-    Y.label = NULL,  
-    col = "black", 
-    cex = 1, 
-    pch = 1, 
-    abline.line = FALSE,
-    ...){
+function(
+object,
+comp = 1:2,
+ind.names = TRUE,
+rep.space = 1,
+X.label = NULL,
+Y.label = NULL,
+col = "black",
+cex = 1,
+pch = 1,
+abline.line = FALSE,
+...){
     
     # validation des arguments #
     #--------------------------#
     if (length(comp) != 2)
-      stop("'comp' must be a numeric vector of length 2.")
+    stop("'comp' must be a numeric vector of length 2.")
     
     if (!is.numeric(comp))
-      stop("invalid vector for 'comp'.")
+    stop("invalid vector for 'comp'.")
     
     if (length(comp) == 1)
-      stop("Need at least 2 components to plot the graph")
+    stop("Need at least 2 components to plot the graph")
     
     
-    if (any(comp > object$ncomp[rep.space])) 
-      stop("the elements of 'comp' must be smaller or equal than ", object$ncomp[rep.space], ".")
+    if (any(comp > object$ncomp[rep.space]))
+    stop("the elements of 'comp' must be smaller or equal than ", object$ncomp[rep.space], ".")
     
     
     if (is.logical(ind.names)) {
-      if (isTRUE(ind.names)) ind.names = object$names$indiv
+        if (isTRUE(ind.names)) ind.names = object$names$indiv
     }
     
     if (length(ind.names) > 1) {
-      if (length(ind.names) !=  nrow(object$variates[[rep.space]]))
+        if (length(ind.names) !=  nrow(object$variates[[rep.space]]))
         stop("'ind.names' must be a character vector of length ", nrow(object$data[[comp[1]]]), " or a boolean atomic vector.")
     }
     
@@ -423,17 +386,7 @@ plotIndiv.sgcca <- plotIndiv.rgcca <-
     comp2 = round(comp[2])
     ##rep.space = match.arg(rep.space, c("XY-variate", "X-variate", "Y-variate"))
     
-    # check that the user did not enter extra arguments #
-    # --------------------------------------------------#
-    # added by Florian
-    ## what the function is expecting
-    match.function=names(formals(sys.function()))
-    ## what the user has entered
-    match.user = names(match.call())[-1]
-    if(length(setdiff(match.user, match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
     
-    
-
     # l'espace de représentation #
     #----------------------------#
     #    if (rep.space == "X-variate"){
@@ -446,24 +399,24 @@ plotIndiv.sgcca <- plotIndiv.rgcca <-
     # le plot des individus #
     #-----------------------#
     if (length(ind.names) > 1) {
-      plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
-      text(x, y, ind.names, col = col, cex = cex, ...)
-      if(abline.line) abline(v = 0, h = 0, lty = 2)
-    }
-    else {
-      if (isTRUE(ind.names)) {
         plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
         text(x, y, ind.names, col = col, cex = cex, ...)
         if(abline.line) abline(v = 0, h = 0, lty = 2)
-      }
-      else {
-        plot(x, y, xlab = X.label, ylab = Y.label, 
-             col = col, cex = cex, pch = pch)
-        if(abline.line) abline(v = 0, h = 0, lty = 2)
-      }
+    }
+    else {
+        if (isTRUE(ind.names)) {
+            plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
+            text(x, y, ind.names, col = col, cex = cex, ...)
+            if(abline.line) abline(v = 0, h = 0, lty = 2)
+        }
+        else {
+            plot(x, y, xlab = X.label, ylab = Y.label,
+            col = col, cex = cex, pch = pch)
+            if(abline.line) abline(v = 0, h = 0, lty = 2)
+        }
     }
     
-  }  # end function
+}  # end function
 
 
 
