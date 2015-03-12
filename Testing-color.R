@@ -49,9 +49,14 @@ for (n in c(11, 33, 125)) {
 # testing the function mixo.colors
 # -------------------
 source('color.palettes.R')
-help(pca)
-data(multidrug)
 
+library(mixOmics)
+help(pca)
+
+# -----------
+# multidrug data
+# ----------
+data(multidrug)
 pca.res <- pca(multidrug$ABC.trans, ncomp = 4, scale = TRUE)
 
 my.colors = mixo.colors(as.numeric(factor(multidrug$cell.line$Class)))
@@ -59,4 +64,85 @@ my.colors = mixo.colors(as.numeric(factor(multidrug$cell.line$Class)))
 plotIndiv(pca.res, ind.names = multidrug$cell.line$Class, cex = 0.5, 
           col = my.colors)
 
+# outputs the 3rd color
 mixo.colors(3)
+
+# -------------
+# nutrimouse data
+# -----------------
+data(nutrimouse)
+X <- nutrimouse$lipid
+Y <- nutrimouse$gene
+nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
+
+my.colors = mixo.colors(as.numeric(nutrimouse$diet))
+my.pch = ifelse(nutrimouse$genotype == 'wt', 16, 17)
+plotIndiv(nutri.res, ind.names = FALSE, col = my.colors, pch = my.pch, cex = 1.5)
+
+# legend('topleft', c("WT", "PPAR"), pch = c(16, 17), 
+#        col = unique(my.colors), text.col = c("blue", "red"),
+#        cex = 1, pt.cex = c(1.2, 1.2))
+
+
+# -------------
+# liver.toxicity
+# ------------
+data(liver.toxicity)
+X <- liver.toxicity$gene
+Y <- liver.toxicity$clinic
+toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50), 
+                      keepY = c(10, 10, 10))
+
+
+my.colors = mixo.colors(as.numeric(as.factor(liver.toxicity$treatment$Time.Group)))
+list.pch = c(15, 16, 17, 19)
+my.pch = list.pch[as.numeric(as.factor(liver.toxicity$treatment$Dose.Group))]
+
+plotIndiv(toxicity.spls, comp = 1:2, ind.names = FALSE,
+          rep.space = "X-variate", col = my.colors, pch = my.pch, cex = 1.5,
+          X.label = 'Component 1', Y.label = 'Component 2'
+          )
+
+
+# 3D plot
+# -------
+list.pch2 = c('s', 't', 'c', 'o')
+my.pch2 = list.pch2[as.numeric(as.factor(liver.toxicity$treatment$Dose.Group))]
+
+plot3dIndiv(toxicity.spls, ind.names = FALSE, pch = my.pch2,
+            col = my.colors, cex = 15)
+library(rgl)
+rgl.postscript('example-3dplot.pdf', format = 'pdf')
+
+
+# -------------
+# networks
+# ------------
+data(liver.toxicity)
+X <- liver.toxicity$gene
+Y <- liver.toxicity$clinic
+toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50), 
+                      keepY = c(10, 10, 10))
+
+pdf('example-network.pdf')
+network(toxicity.spls, comp = 1:3, threshold = 0.6, 
+        X.names = NULL, Y.names = NULL, keep.var = TRUE,
+        color.node = mixo.colors(c(1, 2)),
+        shape.node = c("rectangle", "circle"),
+        color.edge =jet.colors(100),
+        lty.edge = c("solid", "solid"), lwd.edge = c(1, 1), 
+        show.edge.labels = FALSE, interactive = FALSE)
+dev.off()
+
+# -------------
+# plotVar
+# ------------
+data(liver.toxicity)
+X <- liver.toxicity$gene
+Y <- liver.toxicity$clinic
+toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(20, 20, 20), 
+                      keepY = c(10, 10, 10))
+
+
+plotVar(toxicity.spls, keep.var = TRUE, Y.label = TRUE, cex = c(1,0.6), col = mixo.colors(c(1,2)))  
+
