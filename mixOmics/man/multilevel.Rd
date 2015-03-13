@@ -9,7 +9,7 @@
 \description{
 The analysis of repeated measurements is performed by combining a multilevel 
 approach with multivariate methods: sPLS-DA (Discriminant Analysis) or sPLS 
-(Integrative analysis). Both approaches embbed variable selection.
+(Integrative analysis). Both approaches enable variable selection.
 }
 
 \usage{
@@ -86,7 +86,7 @@ following components:
   
   \item{Yw}{the within-subject \eqn{Y}-deviation matrix if \code{method = "spls"}.}
   
-  \item{desing}{the desing matrix.}
+  \item{design}{the design matrix.}
   
   \item{ind.mat}{the indicator matrix associated to \eqn{Y} if \code{method = "splsda"}.}
   

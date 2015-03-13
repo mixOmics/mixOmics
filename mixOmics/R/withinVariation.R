@@ -20,16 +20,14 @@
 # ---------------------------------------------
 # withinVariation function 
 # ---------------------------------------------
-# withinVariation <- function(X, factors = NULL, rep.measures){ # *BG* remove "factors" and "rep.measures" and add "design" argument
-withinVariation <- function(X = NULL, design = NULL){ # *BG* remove "factors" and "rep.measures" and add "design" argument
+withinVariation <- function(X, design){ 
 	
     # need a matrix for matrix calculations
     X = as.matrix(X)
-    rep.measures = design[, 1]; factors = design[, -1, drop = FALSE] # *BG* set up "factors" and "rep.measures" 
+    rep.measures = design[, 1]; factors = design[, -1, drop = FALSE] 
     
     # calculate the variation
     # ---------------------------
-    # if (is.null(factors)) {  # for a one level split # *BG* change condition
     if (ncol(factors) == 1) {
       message("Splitting the variation for 1 level factor.")
       
@@ -38,9 +36,8 @@ withinVariation <- function(X = NULL, design = NULL){ # *BG* remove "factors" an
       rownames(X) = as.character(rep.measures)
       
       # compute the mean for each unique individual
-#       # X.mean.indiv = apply(X, 2, tapply, rep.measures, mean, na.rm = TRUE) 
-      # *BG* to deal with specific case with only one subject (leave one out case during prediction)
-      X.mean.indiv = matrix(apply(X, 2, tapply, rep.measures, mean, na.rm = TRUE), # *BG* to deal with only one subject
+      # dealing with specific case with only one subject (leave one out case during prediction)
+      X.mean.indiv = matrix(apply(X, 2, tapply, rep.measures, mean, na.rm = TRUE), # to deal with only one subject
                            nrow = length(unique(rep.measures)), ncol = dim(X)[2], dimnames = list(levels(as.factor(rep.measures)), colnames(X)))
 
       # fill the between matrix with those means 

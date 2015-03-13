@@ -158,8 +158,45 @@ legend('bottomright', legend = levels(as.factor(design$stimu)),
        col = unique(col.stimu), pch = 20, cex = 0.8, 
        title = "Dose")
 
+# -------------------------------------------------
+# end testing multilevel.Rd examples
+# -------------------------------------------------
 
-# =========== end testing multilevel.Rd examples =======================
+# ------------------------------------------
+# testing examples for help file withinVariation.Rd
+# ------------------------------------------
+
+## Example: one-factor analysis matrix decomposition
+#--------------------------------------------------------------
+data(vac18)
+X <- vac18$genes
+# sample indicates the repeated measurements
+design <- data.frame(sample = vac18$sample, 
+                     stimul = vac18$stimulation)
+Xw <- withinVariation(X = X, design = design)
+# multilevel PCA
+res.pca.1level <- pca(Xw, ncomp = 3)
+
+# compare a normal PCA with a multilevel PCA for repeated measurements.
+# note: PCA makes the assumptions that all samples are independent, so this analysis is flawed!
+res.pca <- pca(X, ncomp = 3)
+
+# set up colors for plotIndiv
+col.stim <- c("darkblue", "purple", "green4","red3")
+col.stim <- col.stim[as.numeric(Y)]
+
+# plotIndiv comparing both PCA and PCA multilevel
+plotIndiv(res.pca, ind.names = vac18$stimulation, col = col.stim)
+title(main = 'PCA ')
+plotIndiv(res.pca.1level, ind.names = vac18$stimulation, col = col.stim)
+title(main = 'PCA multilevel')
+
+# -------------------------------------------------
+# end testing multilevel.Rd examples
+# -------------------------------------------------
+
+
+
 
 
 
