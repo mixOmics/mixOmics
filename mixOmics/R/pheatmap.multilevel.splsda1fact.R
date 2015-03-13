@@ -1,4 +1,5 @@
 # Copyright (C) 2015 
+# Benoit Liquet, Universite de Bordeaux, France
 # Kim-Anh Le Cao, University of Queensland, Brisbane, Australia
 # Benoit Gautier, University of Queensland, Brisbane, Australia
 # This program is free software; you can redistribute it and/or
@@ -15,7 +16,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-pheatmap.multilevel.splsda1fact <- function (result, cluster = NULL, color = colorRampPalette(rev(c("#D73027", "#FC8D59", "#FEE090", "#FFFFBF", "#E0F3F8", "#91BFDB", "#4575B4")))(100), 
+pheatmap.multilevel.splsda1fact <- function(result, cluster = NULL, color = colorRampPalette(rev(c("#D73027", "#FC8D59", "#FEE090", "#FFFFBF", "#E0F3F8", "#91BFDB", "#4575B4")))(100), 
                                             col_sample = NULL, col_stimulation = NULL, label_annotation = NULL, 
                                             breaks = NA, border_color = "grey60", cellwidth = NA, cellheight = NA, 
                                             scale = "none", cluster_rows = TRUE, cluster_cols = TRUE, 
@@ -24,7 +25,7 @@ pheatmap.multilevel.splsda1fact <- function (result, cluster = NULL, color = col
                                             legend = TRUE, annotation = NA, annotation_colors = NA, annotation_legend = TRUE, 
                                             show_rownames = TRUE, show_colnames = TRUE, fontsize = 10, 
                                             fontsize_row = fontsize, fontsize_col = fontsize, filename = NA, 
-                                            width = NA, height = NA, order_sample = NULL, tab.prob.gene = NULL, ...) { # *BG* add tab.prob.gene argument
+                                            width = NA, height = NA, order_sample = NULL, tab.prob.gene = NULL, ...) { 
   
   if (result$ncomp == 1) {
     name.probe <- names(result$loadings$X[unique(which(result$loadings$X[, 1] != 0)), 1:result$ncomp])
@@ -36,53 +37,36 @@ pheatmap.multilevel.splsda1fact <- function (result, cluster = NULL, color = col
     order_sample <- 1:dim(result$Xw)[1]
   mat <- result$Xw[order_sample, setdiff(name.probe, cluster)]
   rownames(mat) <- order_sample
-  # probeX <- colnames(mat) # *BG* role of variable "probeX"?
-  # geneX <- probeX
   geneX <- colnames(mat)
   
   if (!(is.null(result$tab.prob.gene))) 
-    geneX <- result$tab.prob.gene[match(geneX, result$tab.prob.gene[, 1]), 2] # *BG* replace probeX by geneX 
-    # geneX <- result$tab.prob.gene[match(probeX, result$tab.prob.gene[, 1]), 2]
+    geneX <- result$tab.prob.gene[match(geneX, result$tab.prob.gene[, 1]), 2] 
   
   matt <- t(mat)
   rownames(matt) <- geneX
   
-  # *BG* Start: information contain in design matrix
-  # name.sample <- unique(result$sample) 
-  # sample.fac <- factor(result$sample)
-  # levels(sample.fac) <- 1:length(unique(result$sample))
-  sample = result$design[, 1]; cond = factor(result$design[, 2])
-  sample <- as.character(sample)
-  
+  # extract information contained in the design matrix
+  sample = as.character(result$design[, 1])
+  cond = factor(result$design[, 2])
+
   name.sample <- unique(sample)
   nsujet <- length(name.sample)
   
-  # sample.fac <- factor(sample)
-  # levels(sample.fac) <- 1:length(name.sample)
-
-
-  # annotation <- data.frame(Sample = sample, Stimulation = result$name.condition)
   annotation <- data.frame(Sample = sample, Stimulation = cond)
   rownames(annotation) <- 1:(dim(annotation)[1])
-  # nsujet <- length(unique(result$sample))
   
   if (is.null(col_sample)) 
     col_sample <- colors()[sample(1:400, nsujet)]
   
-  # Sample <- col_sample
-  # Sample <- Sample[1:nsujet]
   Sample <- col_sample[1:nsujet]
   names(Sample) <- c("1", 2:nsujet)
   
   if (is.null(col_stimulation)) 
     color_stimulation <- colors()[sample(1:400, nlevels(cond))]
-    # color_stimulation <- colors()[sample(1:400, nlevels(result$name.condition))]
   
   Stimulation <- col_stimulation
-  # names(Stimulation) <- levels(result$name.condition)
   names(Stimulation) <- levels(cond)
   annotation_colors <- list(Sample = Sample, Stimulation = Stimulation)
-  # *BG* End: information contain in design matrix
   
   if (!(is.null(label_annotation))) 
     names(annotation_colors) <- names(annotation) <- label_annotation

@@ -291,6 +291,46 @@ attributes(vac18.simulated)
 # end testing examples for help file tune.multilevel.Rd
 # ------------------------------------------
 
+# ------------------------------------------
+# testing examples for help file pheatmap.multileve.Rd
+# ------------------------------------------
+load('mixomics/data/vac18.rda')
+
+source('mixOmics/R/multilevel.R'); source('mixOmics/R/withinVariation.R')
+source('mixOmics/R/pheatmap.multilevel.R')
+source('mixOmics/R/pheatmap.multilevel.splsda1fact.R')
+source('mixOmics/R/pheatmap.multilevel.splsda2fact.R')
+require(pheatmap)
+
+load('mixomics/data/vac18.simulated.rda')
+attributes(vac18.simulated)
+
+
+## First example: one-factor analysis with sPLS-DA
+X <- vac18$genes
+Y <- vac18$stimulation
+
+design <- data.frame(sample = vac18$sample, 
+                     stimul = vac18$stimulation)
+vac18.splsda.multilevel <- multilevel(X, ncomp = 3, design = design,
+                                         method = "splsda", keepX = c(30, 137, 123))
+
+# set up colors for pheatmap
+col.samp <- c("lightgreen", "red", "lightblue", "darkorange",
+              "purple", "maroon", "blue", "chocolate", "turquoise",
+              "tomato1", "pink2", "aquamarine")
+col.stimu = unique(col.stimu)
+
+pheatmap.multilevel(vac18.splsda.multilevel, clustering_method = "ward",
+                                col_sample = col.samp, col_stimulation = col.stimu,
+                                label_annotation = c("Subject", "Stimulus"),
+                                fontsize = 8, border = FALSE, fontsize_row = 3,
+                                show_colnames = FALSE,
+                                show_rownames = TRUE, 
+                                fontsize_col = 2, width = 10)
+
+## Second example: two-factor analysis with sPLS-DA
+
 
 
 # ======== that's it for now, KA 13/03/2015 ======================

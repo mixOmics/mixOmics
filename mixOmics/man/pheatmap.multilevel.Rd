@@ -7,86 +7,45 @@
 \title{Clustered heatmap}
 
 \description{
-A function to draw clustered heatmaps from the pheatmap package.
+A function to draw clustered heatmaps from the pheatmap package for the sPLS-DA multilevel functions, for one and two factors.
 }
 
 \usage{
-\method{pheatmap.multilevel}{splsda1fact}(result, cluster = NULL,
-                    color=colorRampPalette(rev(c("#D73027", 
-                    "#FC8D59", "#FEE090", "#FFFFBF",
-                    "#E0F3F8", "#91BFDB", "#4575B4")))(100),
-                    col_sample=NULL, 
-                    col_stimulation=NULL,
-                    label_annotation=NULL, 
-                    breaks = NA, 
-                    border_color = "grey60", 
-                    cellwidth = NA, 
-                    cellheight = NA, 
-                    scale = "none", 
-                    cluster_rows = TRUE, 
-                    cluster_cols = TRUE, 
-                    clustering_distance_rows = "euclidean", 
-                    clustering_distance_cols = "euclidean", 
-                    clustering_method = "complete", 
-                    treeheight_row = ifelse(cluster_rows, 50, 0), 
-                    treeheight_col = ifelse(cluster_cols, 50, 0), 
-                    legend = TRUE, annotation = NA, 
-                    annotation_colors = NA, 
-                    annotation_legend = TRUE, 
-                    show_rownames = TRUE, 
-                    show_colnames = TRUE, 
-                    fontsize = 10, 
-                    fontsize_row = fontsize, 
-                    fontsize_col = fontsize, 
-                    filename = NA, 
-                    width = NA, 
-                    height = NA,
-                    order_sample=NULL, 
-                    ...) 
-\method{pheatmap.multilevel}{splsda2fact}(result,  cluster = NULL,
-                    color=colorRampPalette(rev(c("#D73027", 
-                    "#FC8D59", "#FEE090", "#FFFFBF",
-                    "#E0F3F8", "#91BFDB", "#4575B4")))(100),
-                    col_sample=NULL, 
-                    col_stimulation=NULL, 
-                    col_time=NULL,   
-                    label_color_stimulation=NULL,
-                    label_color_time=NULL, 
-                    label_annotation=NULL, 
-                    breaks = NA, 
-                    border_color = "grey60", 
-                    cellwidth = NA, 
-                    cellheight = NA, 
-                    scale = "none", 
-                    cluster_rows = TRUE, 
-                    cluster_cols = TRUE, 
-                    clustering_distance_rows = "euclidean", 
-                    clustering_distance_cols = "euclidean", 
-                    clustering_method = "complete", 
-                    treeheight_row = ifelse(cluster_rows, 50, 0), 
-                    treeheight_col = ifelse(cluster_cols, 50, 0), 
-                    legend = TRUE, 
-                    annotation = NA, 
-                    annotation_colors = NA, 
-                    annotation_legend = TRUE, 
-                    show_rownames = TRUE, 
-                    show_colnames = TRUE, 
-                    fontsize = 10, 
-                    fontsize_row = fontsize, 
-                    fontsize_col = fontsize, 
-                    filename = NA, 
-                    width = NA, 
-                    height = NA,
-                    order_sample=NULL, 
-                    ...)
+\method{pheatmap.multilevel}{splsda1fact}(
+                                          result, 
+                                          cluster = NULL, 
+                                          color = colorRampPalette(rev(c("#D73027", "#FC8D59", "#FEE090", "#FFFFBF", "#E0F3F8", "#91BFDB", "#4575B4")))(100), 
+                                          col_sample = NULL, col_stimulation = NULL, label_annotation = NULL, 
+                                          breaks = NA, border_color = "grey60", cellwidth = NA, cellheight = NA, 
+                                          scale = "none", cluster_rows = TRUE, cluster_cols = TRUE, 
+                                          clustering_distance_rows = "euclidean", clustering_distance_cols = "euclidean", 
+                                          clustering_method = "complete", treeheight_row = ifelse(cluster_rows, 50, 0), treeheight_col = ifelse(cluster_cols, 50, 0), 
+                                          legend = TRUE, annotation = NA, annotation_colors = NA, annotation_legend = TRUE, 
+                                          show_rownames = TRUE, show_colnames = TRUE, fontsize = 10, 
+                                          fontsize_row = fontsize, fontsize_col = fontsize, filename = NA, 
+                                          width = NA, height = NA, order_sample = NULL, tab.prob.gene = NULL, ...)
+
+
+\method{pheatmap.multilevel}{splsda2fact}((result, cluster = NULL, color = colorRampPalette(rev(c("#D73027", "#FC8D59", "#FEE090", "#FFFFBF", "#E0F3F8", "#91BFDB", "#4575B4")))(100), 
+          col_sample = NULL, col_stimulation = NULL, col_time = NULL, 
+          label_color_stimulation = NULL, label_color_time = NULL, 
+          label_annotation = NULL, breaks = NA, border_color = "grey60", 
+          cellwidth = NA, cellheight = NA, scale = "none", cluster_rows = TRUE, 
+          cluster_cols = TRUE, clustering_distance_rows = "euclidean", 
+          clustering_distance_cols = "euclidean", clustering_method = "complete", 
+          treeheight_row = ifelse(cluster_rows, 50, 0), treeheight_col = ifelse(cluster_cols, 50, 0),
+          legend = TRUE, annotation = NA, annotation_colors = NA, 
+          annotation_legend = TRUE, show_rownames = TRUE, show_colnames = TRUE, 
+          fontsize = 10, fontsize_row = fontsize, fontsize_col = fontsize, 
+          filename = NA, width = NA, height = NA, order_sample = NULL, tab.prob.gene = NULL, ...)
 }	
 
 \arguments{
   \item{result}{a mode result from function \code{multilevel}}
   \item{cluster}{by default set to \code{NULL}}
-  \item{col_sample}{vector of colors indicating the color of each individual}
-  \item{col_stimulation}{vector of colors indicating the color of each condition}
-  \item{col_time}{if two-factor analysis, vector of colors indicating the color of the factors of the second condition}
+  \item{col_sample}{vector of colors indicating the color of each individual (the length of that vector should be equal to the number of unique individuals)}
+  \item{col_stimulation}{vector of colors indicating the color of each condition (the length of that vector should be equal to the number of conditions)}
+  \item{col_time}{if two-factor analysis, vector of colors indicating the color of the factors of the second condition (the length of that vector should be equal to the number of conditions)}
   \item{label_color_stimulation}{character vector indicating the label of the first factor, see details}
   \item{label_color_time}{character vector indicating the label of the second factor, see details}
   \item{label_annotation}{set to \code{NULL} by default.}
@@ -142,9 +101,9 @@ integration of repeated measures experiments from two platforms. \emph{BMC Bioin
 Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010). Multivariate paired data analysis: multilevel PLSDA versus OPLSDA. \emph{Metabolomics}, \bold{6}(1), 119-128.
 }
 
-\author{Raivo Kolde <rkolde@gmail.com> (pheatmap), Benoit Liquet, Kim-Anh Lê Cao.}
+\author{Raivo Kolde <rkolde@gmail.com> (pheatmap), Benoit Liquet, Kim-Anh Lê Cao, Benoit Gautier (for mixOmics).}
 
-\seealso{\code{\link{multilevel}}, \code{\link{pheatmap}} and http://www.math.univ-toulouse.fr/~biostat/mixOmics/ for more details..}
+\seealso{\code{\link{multilevel}}, \code{\link{pheatmap}} and http:www.mixOmics.org for more details..}
 
 \examples{
 ## First example: one-factor analysis with sPLS-DA

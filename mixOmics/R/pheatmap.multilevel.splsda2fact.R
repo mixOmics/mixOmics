@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
-pheatmap.multilevel.splsda2fact <- function (result, cluster = NULL, color = colorRampPalette(rev(c("#D73027", "#FC8D59", "#FEE090", "#FFFFBF", "#E0F3F8", "#91BFDB", "#4575B4")))(100), 
+pheatmap.multilevel.splsda2fact <- function(result, cluster = NULL, color = colorRampPalette(rev(c("#D73027", "#FC8D59", "#FEE090", "#FFFFBF", "#E0F3F8", "#91BFDB", "#4575B4")))(100), 
           col_sample = NULL, col_stimulation = NULL, col_time = NULL, 
           label_color_stimulation = NULL, label_color_time = NULL, 
           label_annotation = NULL, breaks = NA, border_color = "grey60", 
@@ -27,7 +27,7 @@ pheatmap.multilevel.splsda2fact <- function (result, cluster = NULL, color = col
           legend = TRUE, annotation = NA, annotation_colors = NA, 
           annotation_legend = TRUE, show_rownames = TRUE, show_colnames = TRUE, 
           fontsize = 10, fontsize_row = fontsize, fontsize_col = fontsize, 
-          filename = NA, width = NA, height = NA, order_sample = NULL, tab.prob.gene = NULL, ...) { # *BG* add tab.prob.gene argument
+          filename = NA, width = NA, height = NA, order_sample = NULL, tab.prob.gene = NULL, ...) { 
   
   if (result$ncomp == 1) {
     name.probe <- names(result$loadings$X[unique(which(result$loadings$X != 0)), 1:result$ncomp])
@@ -39,22 +39,17 @@ pheatmap.multilevel.splsda2fact <- function (result, cluster = NULL, color = col
     order_sample <- 1:dim(result$Xw)[1]
   mat <- result$Xw[order_sample, setdiff(name.probe, cluster)]
   rownames(mat) <- order_sample
-  # probeX <- colnames(mat) # *BG* role of variable "probeX"?
-  # geneX <- probeX
   geneX <- colnames(mat)
   if (!(is.null(result$tab.prob.gene))) 
     geneX <- result$tab.prob.gene[match(geneX, result$tab.prob.gene[, 1]), 2] # *BG* replace probeX by geneX 
-    # geneX <- result$tab.prob.gene[match(probeX, result$tab.prob.gene[, 1]), 2]
   
   matt <- t(mat)
   rownames(matt) <- geneX
   
-  # *BG* Start: information contain in design matrix
-  sample = result$design[, 1]; name.condition = factor(result$design[, 2]); name.time = factor(result$design[, 3])
-  sample <- as.character(sample)
-  
-  # sample.fac <- factor(sample)
-  # levels(sample.fac) <- 1:length(unique(sample))
+  # extract information contained in design matrix
+  sample = as.character(result$design[, 1])
+  name.condition = factor(result$design[, 2])
+  name.time = factor(result$design[, 3])
 
   name.sample <- unique(sample)  
   nsujet <- length(unique(sample))
@@ -66,8 +61,6 @@ pheatmap.multilevel.splsda2fact <- function (result, cluster = NULL, color = col
   if (is.null(col_sample)) 
     col_sample <- colors()[sample(1:400, nsujet)]
   
-  # Sample <- col_sample
-  # Sample <- Sample[1:nsujet]
   Sample <- col_sample[1:nsujet]
   names(Sample) <- c("1", 2:nsujet)
   
@@ -77,9 +70,7 @@ pheatmap.multilevel.splsda2fact <- function (result, cluster = NULL, color = col
   
   if (is.null(col_time)) 
     color_time <- colors()[sample(1:400, nlevels(name.time))] 
-    # color_time <- colors()[sample(1:400, nlevels(name.condition))] 
   Time <- col_time
-  # *BG* End: information contain in design matrix
   
   if (is.null(label_color_stimulation)) 
     names(Stimulation) <- levels(name.condition)
