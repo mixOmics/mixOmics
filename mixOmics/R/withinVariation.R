@@ -1,6 +1,7 @@
 # Copyright (C) 2015 
 # Benoit Liquet, Université de Bordeaux, France
 # Kim-Anh Le Cao, University of Queensland, Brisbane, Australia
+# Benoit Gautier, University of Queensland, Brisbane, Australia
 # Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

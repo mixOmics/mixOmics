@@ -1,3 +1,22 @@
+# Copyright (C) 2015 
+# Kim-Anh Le Cao, University of Queensland, Brisbane, Australia
+# Benoit Gautier, University of Queensland, Brisbane, Australia
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+
+
 tune.splsdalevel1 <- function (X, ncomp = 1, test.keepX, dist = NULL, # *BG* remove sample, cond,
                                design = NULL, # *BG* add design argument
                               already.tested.X = NULL, validation, folds) {
@@ -57,6 +76,8 @@ tune.splsdalevel1 <- function (X, ncomp = 1, test.keepX, dist = NULL, # *BG* rem
   vect.error = vector(length = length(test.keepX))
   names(vect.error) = paste("var", test.keepX, sep = "")
   error.sw = matrix(nrow = M, ncol = length(test.keepX), data = 0)
+  # KA added: for the last keepX (i) tested, prediction combined for all M folds so as to extract the error rate per class
+  prediction.all = vector(length = length(sample))
   
   # calculate first the within variation matrix, which is ok because Xw is not dependent on each subject (so there is not bias here)
   Xw = suppressMessages(withinVariation(X = X, design = design)) # *BG* Estimation of the design matrix. Outside the loop because Xw is "subject specific"
@@ -99,11 +120,18 @@ tune.splsdalevel1 <- function (X, ncomp = 1, test.keepX, dist = NULL, # *BG* rem
       # Prediction.sw <- levels(cond)[test.predict.sw$class[[dist]][, ncomp]] *BG* Replace cond by change
       Prediction.sw <- levels(design[, 2])[test.predict.sw$class[[dist]][, ncomp]] 
       error.sw[j, i] <- sum(as.character(cond.test) != Prediction.sw)
-    }
-  }
+    } # end i
+    
+    # KA added: for the last keepX (i) tested, prediction combined for all M folds:
+    prediction.all[omit] = Prediction.sw
+    
+  } # end J (M folds)
   # result <- apply(error.sw, 2, sum)/length(cond) # *BG* Replace cond by design
   result <- apply(error.sw, 2, sum)/length(design[, 2]) # *BG* Replace cond by design
 
   names(result) = paste("var", test.keepX, sep = "")
-  return(list(error = result))
+return(list(
+  error = result,
+  # KA added error per class
+  prediction.all = prediction.all))
 }
