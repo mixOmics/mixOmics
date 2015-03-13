@@ -321,8 +321,8 @@ function(X,
         #-- mode regression --#
         if(mode == "regression")
         {
-            if (TRUE)                       #WTF!?!?
-            {#na.Y
+            if (na.Y)
+            {
                 Y.aux = Y.temp
                 Y.aux[is.na.Y] = 0
                 d = crossprod(Y.aux, t)
