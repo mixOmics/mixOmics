@@ -52,6 +52,7 @@ tune.rcc,
 unmap,
 valid,
 vip,
+withinVariation
 wrapper.rgcca,
 wrapper.sgcca)
 
