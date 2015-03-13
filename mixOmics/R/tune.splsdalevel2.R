@@ -15,7 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-tune.splsdalevel2 <- function (X, #cond, sample,  # *BG* add design argument
+tune.splsdalevel2 <- function (X, 
                                design,
                                ncomp = 1, test.keepX = c(5, 10, 15), already.tested.X = NULL) {
   
@@ -51,20 +51,17 @@ tune.splsdalevel2 <- function (X, #cond, sample,  # *BG* add design argument
   if (ncol(design[, -1]) == 2){
     if (!is.factor(design[, 2])) {
       design[, 2] = as.factor(design[, 2])
-      warning("First cond response was set as a factor", call. = FALSE)
+      warning("First factor response was set as a factor", call. = FALSE)
     }
     if (!is.factor(design[, 3])) {
       design[, 3] = as.factor(design[, 3])
-      warning("Second cond response was set as a factor", call. = FALSE)
+      warning("Second factor response was set as a factor", call. = FALSE)
     }
   }    
-  # *BG* End: check condition design matrix instead of cond
   
-  # cond.fact = as.factor(paste(cond1, cond2, sep = ".")) # *BG* use design matrix
-  cond.fact = as.factor(paste(design[, 2], design[, 3], sep = ".")) # *BG* use design matrix
+  cond.fact = as.factor(paste(design[, 2], design[, 3], sep = ".")) 
 
-  # Xw <- Split.variation.two.level(X, cond1, cond2, sample)$Xw # *BG* use withinVariation instead
-  Xw <- suppressMessages(withinVariation(X = X, design = design)) # *BG* use withinVariation instead
+  Xw <- suppressMessages(withinVariation(X = X, design = design)) 
   cor.value = vector(length = length(test.keepX))
   names(cor.value) = paste("var", test.keepX, sep = "")
   
@@ -77,20 +74,8 @@ tune.splsdalevel2 <- function (X, #cond, sample,  # *BG* add design argument
     
     # Note: this is performed on the full data set
     # (could be done with resampling (bootstrap) (option 1) and/or prediction (option 2))
-    
-    # *BG* Start: Carry out the computation of the correlation on the centered/scaled data
-#     for (h in 1:ncomp) {
-#       if (h == 1) {
-#         X.deflated = Xw
-#         cond.deflated = unmap(as.numeric(cond.fact))
-#       } else {
-#         X.deflated = X.deflated - spls.train$variates$X[, h - 1] %*% t(spls.train$mat.c[, h - 1])
-#         cond.deflated = cond.deflated - spls.train$variates$Y[, h - 1] %*% t(spls.train$mat.d[, h - 1])
-#       }
-#       cor.value[i] = cor(as.matrix(X.deflated) %*% spls.train$loadings$X[, h], as.matrix(cond.deflated) %*% spls.train$loadings$Y[, h])
-#     }
     cor.value[i] = cor(spls.train$variates$X[, ncomp], spls.train$variates$Y[, ncomp])
-    # *BG* End: Carry out the computation of the correlation on the centered/scaled data
+    # 
   }
   return(list(cor.value = cor.value))
 }

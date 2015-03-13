@@ -196,6 +196,111 @@ title(main = 'PCA multilevel')
 # -------------------------------------------------
 
 
+# ------------------------------------------
+# testing examples for help file tune.multilevel.Rd
+# ------------------------------------------
+load('mixomics/data/vac18.rda')
+
+source('mixOmics/R/multilevel.R'); source('mixOmics/R/withinVariation.R')
+source('mixOmics/R/tune.multilevel.R'); source('mixOmics/R/tune.splsdalevel1.R'); source('mixOmics/R/tune.splsdalevel2.R')
+source('mixOmics/R/tune.splslevel.R')
+
+# this is after update with spls/pls with ... removed
+source('mixOmics/R/pls.R'); source('mixOmics/R/plsda.R')
+source('mixOmics/R/spls.R'); source('mixOmics/R/splsda.R')
+load('mixomics/data/vac18.simulated.rda')
+attributes(vac18.simulated)
+
+## First example: one-factor analysis with sPLS-DA
+\dontrun{
+  data(vac18.simulated) # simulated data
+  design <- data.frame(sample = vac18.simulated$sample,
+                       stimu = vac18.simulated$stimulation)
+  
+    result.ex1 = tune.multilevel(vac18.simulated$genes,
+                               design = design,
+                               ncomp=2,
+                               test.keepX=c(5, 10, 15), 
+                               already.tested.X = c(50),
+                               method = 'splsda',
+                               dist = 'mahalanobis.dist',
+                               validation = 'loo') 
+  
+  # error rate for the tested parameters est.keepX=c(5, 10, 15)
+  result.ex1$error
+  # prediction for ncomp = 2 and keepX = c(50, 15) (15 is the last tested parameter)
+  result.ex1$prediction.all
+  table(vac18.simulated$stimulation, result.ex1$prediction.all)
+}
+
+
+
+## Second example: two-factor analysis with sPLS-DA
+\dontrun{
+  data(liver.toxicity)
+  dose <- as.factor(liver.toxicity$treatment$Dose.Group)
+  time <- as.factor(liver.toxicity$treatment$Time.Group)
+  # note: we made up those data, pretending they are repeated measurements
+  repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
+                    6, 5, 6, 7, 7, 8, 6, 7, 8, 7, 8, 8, 9, 10, 9, 10, 11, 9, 9,
+                    10, 11, 12, 12, 10, 11, 12, 11, 12, 13, 14, 13, 14, 13, 14,
+                    13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
+  summary(as.factor(repeat.indiv)) # 16 rats, 4 measurements each
+  
+  design <- data.frame(sample = repeat.indiv,
+                       dose = dose,
+                       time = time)
+  
+  result.ex2 = tune.multilevel(liver.toxicity$gene,
+                                design = design, 
+                                ncomp=2,
+                                test.keepX=c(5, 10, 15), 
+                                already.tested.X = c(50),
+                                method = 'splsda',
+                                dist = 'mahalanobis.dist') 
+  result.ex2
+}
+
+## Third example: one-factor integrative analysis with sPLS
+\dontrun{
+  data(liver.toxicity)
+  dose <- as.factor(liver.toxicity$treatment$Dose.Group)
+  # note: we made up those data, pretending they are repeated measurements
+  repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
+                    6, 5, 6, 7, 7, 8, 6, 7, 8, 7, 8, 8, 9, 10, 9, 10, 11, 9, 9,
+                    10, 11, 12, 12, 10, 11, 12, 11, 12, 13, 14, 13, 14, 13, 14,
+                    13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
+  summary(as.factor(repeat.indiv)) # 16 rats, 4 measurements each
+  
+  design <- data.frame(sample = repeat.indiv,
+                       dose = dose)
+  
+  result.ex3 = tune.multilevel(X = liver.toxicity$gene, Y = liver.toxicity$clinic, 
+                                design = design,
+                                mode = 'canonical',
+                                ncomp=2,
+                                test.keepX=c(5, 10, 15), 
+                                test.keepY=c(2,3), 
+                                already.tested.X = c(50), already.tested.Y = c(5),
+                                method = 'spls') 
+  
+  result.ex3
+}
+
+# ------------------------------------------
+# end testing examples for help file tune.multilevel.Rd
+# ------------------------------------------
+
+
+
+# ======== that's it for now, KA 13/03/2015 ======================
+
+
+
+
+
+
+
 
 
 

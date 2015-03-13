@@ -17,8 +17,8 @@
 
 
 
-tune.splsdalevel1 <- function (X, ncomp = 1, test.keepX, dist = NULL, # *BG* remove sample, cond,
-                               design = NULL, # *BG* add design argument
+tune.splsdalevel1 <- function (X, ncomp = 1, test.keepX, dist = NULL, 
+                               design = NULL, 
                               already.tested.X = NULL, validation, folds) {
   
   if (validation == "Mfold") {
@@ -26,12 +26,7 @@ tune.splsdalevel1 <- function (X, ncomp = 1, test.keepX, dist = NULL, # *BG* rem
   } else {
     cat(paste("For a one-factor analysis, the tuning criterion is based on leave-one-out cross validation"), "\n")
   }
-  
-  # *BG* Replace cond by design
-#   if (!is.factor(cond)) {
-#     cond = as.factor(cond)
-#     warning("cond was set as a factor", call. = FALSE)
-#   }
+
   if (!is.factor(design[, 2])) {
     design[, 2] = as.factor(design[, 2])
     warning("design[, 2] was set as a factor", call. = FALSE)
@@ -76,33 +71,21 @@ tune.splsdalevel1 <- function (X, ncomp = 1, test.keepX, dist = NULL, # *BG* rem
   vect.error = vector(length = length(test.keepX))
   names(vect.error) = paste("var", test.keepX, sep = "")
   error.sw = matrix(nrow = M, ncol = length(test.keepX), data = 0)
-  # KA added: for the last keepX (i) tested, prediction combined for all M folds so as to extract the error rate per class
+  # for the last keepX (i) tested, prediction combined for all M folds so as to extract the error rate per class
   prediction.all = vector(length = length(sample))
   
   # calculate first the within variation matrix, which is ok because Xw is not dependent on each subject (so there is not bias here)
-  Xw = suppressMessages(withinVariation(X = X, design = design)) # *BG* Estimation of the design matrix. Outside the loop because Xw is "subject specific"
+  Xw = suppressMessages(withinVariation(X = X, design = design)) # Estimation of the design matrix. Outside the loop because Xw is "subject specific"
 
   for (j in 1:M) {
     omit = which(sample %in% folds[[j]] == TRUE)
-    # *BG* Start: use Xw matrix
-    # X.train = X[-c(omit), ]
-    # X.test = matrix(X[omit, ], nrow = length(omit))
     trainxw = Xw[-c(omit), ]
     xwtest = Xw[omit, , drop = FALSE]
-    # *BG* End: use Xw matrix
+
     
-    cond.train = design[-c(omit), 2] # *BG* define Y.train variable
-    cond.test = design[c(omit), 2] # *BG* defin Y.test variable
-    
-    # *BG* Start: remove unnecessary part 
-    # cond.train = cond[-c(omit)]
-    # cond.test = cond[omit]
-    # xwtest <- X.test - matrix(colMeans(X.test), ncol = ncol(X.test), nrow = length(omit), byrow = TRUE)
-    # samplew <- sample[-omit]
-    # X.train.decomp <- Split.variation.one.level(X.train, cond.train, sample = samplew)
-    # trainxw <- X.train.decomp$Xw
-    # *BG* End: remove part unnecessary
-    
+    cond.train = design[-c(omit), 2] 
+    cond.test = design[c(omit), 2] 
+
     remove.zero = nearZeroVar(trainxw)$Position
     if (length(remove.zero) != 0) {
       trainxw = trainxw[, -c(remove.zero)]
@@ -117,21 +100,19 @@ tune.splsdalevel1 <- function (X, ncomp = 1, test.keepX, dist = NULL, # *BG* rem
         result.sw <- splsda(trainxw, cond.train, keepX = c(already.tested.X, test.keepX[i]), ncomp = ncomp)
       }
       test.predict.sw <- predict(result.sw, xwtest, dist = dist)
-      # Prediction.sw <- levels(cond)[test.predict.sw$class[[dist]][, ncomp]] *BG* Replace cond by change
       Prediction.sw <- levels(design[, 2])[test.predict.sw$class[[dist]][, ncomp]] 
       error.sw[j, i] <- sum(as.character(cond.test) != Prediction.sw)
     } # end i
     
-    # KA added: for the last keepX (i) tested, prediction combined for all M folds:
+    # for the last keepX (i) tested, prediction combined for all M folds:
     prediction.all[omit] = Prediction.sw
     
   } # end J (M folds)
-  # result <- apply(error.sw, 2, sum)/length(cond) # *BG* Replace cond by design
-  result <- apply(error.sw, 2, sum)/length(design[, 2]) # *BG* Replace cond by design
+  result <- apply(error.sw, 2, sum)/length(design[, 2]) 
 
   names(result) = paste("var", test.keepX, sep = "")
 return(list(
   error = result,
-  # KA added error per class
+  # error per class for last keepX tested
   prediction.all = prediction.all))
 }

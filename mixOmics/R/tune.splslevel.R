@@ -1,5 +1,24 @@
-tune.splslevel <- function (X, Y, # cond = NULL, sample = NULL, # *BG* set up design matrix instead cond and sample
-                            design, # *BG* set up design matrix instead cond and sample
+# Copyright (C) 2015 
+# Kim-Anh Le Cao, University of Queensland, Brisbane, Australia
+# Benoit Gautier, University of Queensland, Brisbane, Australia
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+
+tune.splslevel <- function (X, Y,
+                            design, 
+                            mode = 'canonical',
                             ncomp = NULL, 
                             test.keepX = rep(ncol(X), ncomp), test.keepY = rep(ncol(Y), ncomp), 
                             already.tested.X = NULL, already.tested.Y = NULL) {
@@ -34,17 +53,14 @@ tune.splslevel <- function (X, Y, # cond = NULL, sample = NULL, # *BG* set up de
   if ((!is.null(already.tested.Y)) && (!is.numeric(already.tested.Y))) 
     stop("Expecting a numerical value in already.tested.X", call. = FALSE)
   
-  # *BG* Start: replace Split.variation.one.level by withinVariation
-  # Xw <- Split.variation.one.level(X, Y = cond, sample)$Xw 
-  # Yw <- Split.variation.one.level(X = Y, Y = cond, sample)$Xw
   Xw <- suppressMessages(withinVariation(X = X, design = design))
   Yw <- suppressMessages(withinVariation(X = Y, design = design))
-  # *BG* Start: replace Split.variation.one.level by withinVariation
   
   cor.value = matrix(nrow = length(test.keepX), ncol = length(test.keepY))
   rownames(cor.value) = paste("varX", test.keepX, sep = "")
   colnames(cor.value) = paste("varY", test.keepY, sep = "")
-  mode = "canonical" # *BG* !!! Hard coding !!! should be an argument?
+  
+  if(mode != 'canonical') stop('Can only compute spls with a canonical mode')
   
   for (i in 1:length(test.keepX)) {
     for (j in 1:length(test.keepY)) {
@@ -60,19 +76,8 @@ tune.splslevel <- function (X, Y, # cond = NULL, sample = NULL, # *BG* set up de
                           mode = mode)
       }
       
-      # *BG* Start: Carry out the computation of the correlation on the centered/scaled data
-#       for (h in 1:ncomp) {
-#         if (h == 1) {
-#           X.deflated = scale(Xw)
-#           Y.deflated = scale(Yw)
-#         } else {
-#           X.deflated = X.deflated - spls.train$variates$X[, h - 1] %*% t(spls.train$mat.c[, h - 1])
-#           Y.deflated = Y.deflated - spls.train$variates$Y[, h - 1] %*% t(spls.train$mat.e[, h - 1])
-#         }
-#         cor.value[i, j] = cor(as.matrix(X.deflated) %*% spls.train$loadings$X[, h], as.matrix(Y.deflated) %*% spls.train$loadings$Y[, h])
-#       }
       cor.value[i, j] = cor(spls.train$variates$X[, ncomp], spls.train$variates$Y[, ncomp])
-      # *BG* End: Carry out the computation of the correlation on the centered/scaled data
+      # 
     }
   }
   return(list(cor.value = cor.value))
