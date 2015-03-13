@@ -69,14 +69,12 @@ attributes(vac18.simulated)
 # $names
 # [1] "genes"       "stimulation" "sample"      "time"       
 
-
-library(mixOmics)
-data(vac18)
-attributes(vac18)
-# $names
-# [1] "genes"         "stimulation"   "sample"        "tab.prob.gene"
+load('mixomics/data/vac18.rda')
 
 source('mixOmics/R/multilevel.R'); source('mixOmics/R/withinVariation.R')
+# this is after update with spls/pls with ... removed
+source('mixOmics/R/pls.R'); source('mixOmics/R/plsda.R')
+source('mixOmics/R/spls.R'); source('mixOmics/R/splsda.R')
 
 
 # ------------------------------------------
@@ -161,7 +159,7 @@ legend('bottomright', legend = levels(as.factor(design$stimu)),
        title = "Dose")
 
 
-
+# =========== end testing multilevel.Rd examples =======================
 
 
 

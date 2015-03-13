@@ -22,7 +22,8 @@ multilevel(X,
            method = c("spls", "splsda"),  
            mode = c("regression", "canonical"), 
            max.iter = 500, 
-           tol = 1e-06, ...)
+           tol = 1e-06,
+           near.zero.var = TRUE)
 }	
 
 \arguments{
@@ -51,7 +52,7 @@ multilevel(X,
   \item{mode}{character string. What type of algorithm to use, matching 
     \code{"regression"} or \code{"canonical"}. See detals in \code{?pls}.}
     
-  \item{...}{arguments to be passed to \code{\link{spls}} or \code{\link{splsda}}.}
+    \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations.}
 }
 
 \details{

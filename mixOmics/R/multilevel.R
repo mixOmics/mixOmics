@@ -32,7 +32,7 @@ multilevel <-
            mode = c("regression", "canonical"), 
            max.iter = 500, 
            tol = 1e-06, 
-           ...)
+           near.zero.var = TRUE)
   {
     #-- checking general input arguments ---------------------------------------#
     #---------------------------------------------------------------------------#
@@ -175,7 +175,7 @@ multilevel <-
       }
       Y = as.factor(Y) 
       
-      res = splsda(Xw, Y, ncomp = ncomp, keepX = keepX, max.iter = max.iter, tol = tol,...) 
+      res = splsda(Xw, Y, ncomp = ncomp, keepX = keepX, max.iter = max.iter, tol = tol, near.zero.var = near.zero.var) 
       
       result = c(res, list(Xw = Xw, design = design))
       
@@ -195,7 +195,7 @@ multilevel <-
       
       #-- apply sPLS on the within deviation matrices --#
       res = spls(Xw, Yw, ncomp = ncomp, mode = mode, 
-                 keepY = keepY, keepX = keepX, max.iter = max.iter, tol = tol, ...) 
+                 keepY = keepY, keepX = keepX, max.iter = max.iter, tol = tol, near.zero.var = near.zero.var) 
       
       result = c(res, list(Xw = Xw, Yw = Yw, design = design))
       class(result) = c("mlspls", "spls", "pls")
