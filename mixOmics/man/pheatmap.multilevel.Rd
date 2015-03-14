@@ -7,7 +7,7 @@
 \title{Clustered heatmap}
 
 \description{
-A function to draw clustered heatmaps from the pheatmap package for the sPLS-DA multilevel functions, for one and two factors.
+A function to draw clustered heatmaps from the pheatmap package for the sPLS-DA multilevel functions for one and two factors only.
 }
 
 \usage{
@@ -41,11 +41,11 @@ A function to draw clustered heatmaps from the pheatmap package for the sPLS-DA 
 }	
 
 \arguments{
-  \item{result}{a mode result from function \code{multilevel}}
-  \item{cluster}{by default set to \code{NULL}}
+  \item{result}{a result from function \code{multilevel} with \code{method = 'splsda'} (can only apply to a splsda analysis type).}
+  \item{cluster}{a vector that would indicate a specific ordering (clustering) on the variables. By default should be set to \code{NULL}}
   \item{col_sample}{vector of colors indicating the color of each individual (the length of that vector should be equal to the number of unique individuals)}
-  \item{col_stimulation}{vector of colors indicating the color of each condition (the length of that vector should be equal to the number of conditions)}
-  \item{col_time}{if two-factor analysis, vector of colors indicating the color of the factors of the second condition (the length of that vector should be equal to the number of conditions)}
+  \item{col_stimulation}{vector of colors indicating the color of each condition (the length of that vector should be equal to the number of conditions), i.e. the condition indicated in the 2nd colum of the \code{design} matrix in the multilevel function.}
+  \item{col_time}{for a two-factor analysis, vector of colors indicating the color of the factors of the second level (the length of that vector should be equal to the number of conditions), i.e. the condition indicated in the 3rd colum of the \code{design} matrix in the multilevel function.}
   \item{label_color_stimulation}{character vector indicating the label of the first factor, see details}
   \item{label_color_time}{character vector indicating the label of the second factor, see details}
   \item{label_annotation}{set to \code{NULL} by default.}
@@ -107,53 +107,76 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
 
 \examples{
 ## First example: one-factor analysis with sPLS-DA
-data(data.simu) # simulated data
-res.1level <- multilevel(data.simu$X, cond = data.simu$stimu, sample=data.simu$sample, ncomp=3,
-                         keepX=c(200,200,200),tab.prob.gene=NULL, method = 'splsda')
+# -------------------
+data(vac18.simulated)
+X <- vac18$genes
+Y <- vac18$stimulation
 
-#color for heatmap
-col.stimu = as.numeric(data.simu$stimu)
-col.stimu <- c("darkblue","purple","green4","red3")
-col.sample <- c("lightgreen", "red","lightblue","darkorange",
-  "purple","maroon","blue","chocolate","turquoise","tomato1",
-  "pink2","aquamarine")
+design <- data.frame(sample = vac18$sample, 
+                     stimul = vac18$stimulation)
+vac18.splsda.multilevel <- multilevel(X, ncomp = 3, design = design,
+                                         method = "splsda", keepX = c(30, 137, 123))
 
-pheatmap.multilevel(res.1level, col_sample=col.sample, col_stimulation=col.stimu, 
-              label_annotation=NULL,border=FALSE,clustering_method="ward",
-              show_colnames = FALSE,show_rownames = TRUE,fontsize_row=2)
-
+# set up colors for pheatmap
+col.samp <- c("lightgreen", "red", "lightblue", "darkorange",
+              "purple", "maroon", "blue", "chocolate", "turquoise",
+              "tomato1", "pink2", "aquamarine")
+col.stimu = unique(col.stimu)
+pheatmap.multilevel(vac18.splsda.multilevel, 
+                    # colors:
+                    col_sample = col.samp, 
+                    col_stimulation = col.stimu,
+                    #labels:
+                    label_annotation = c("Subject", "Stimulus"),
+                    # scaling:
+                    scale = 'row',
+                    # distances and clutering
+                    clustering_distance_rows = "euclidean", 
+                    clustering_distance_cols = "euclidean", 
+                    clustering_method = "complete",
+                    #  show col/row names and font
+                    show_colnames = FALSE,
+                    show_rownames = FALSE, 
+                    fontsize = 8, 
+                    fontsize_row = 3,
+                    fontsize_col = 2,
+                    border = FALSE, 
+                    width = 10)
 
 ## Second example: two-factor analysis with sPLS-DA
-\dontrun{
-data(data.simu) # simulated data
+# --------------------
+data(vac18.simulated) 
 
-time = factor(rep(c(rep('t1', 6), rep('t2', 6)), 4))
-stimu.time = data.frame(cbind(as.character(data.simu$stimu), as.character(time)))
-repeat.simu2 = rep(c(1:6), 8)
+X <- vac18.simulated$genes
+design <- data.frame(sample = vac18.simulated$sample,
+                     stimul = vac18.simulated$stimulation,
+                     time = vac18.simulated$time)
 
-res.2level = multilevel(data.simu$X, cond = stimu.time,sample=repeat.simu2, 
-                        ncomp=2,keepX=c(200, 200),tab.prob.gene=NULL, method = 'splsda')
+vac18.splsda2.multilevel <- multilevel(X, ncomp = 2, design = design,
+                            keepX = c(200, 200), method = 'splsda')
 
-# color for plotIndiv
-col.stimu = as.numeric(data.simu$stimu)
-col.sample = c("lightgreen", "red","lightblue","darkorange","purple","maroon") # 6 samples
-col.time= c("pink","lightblue1") # two time points
-col.stimu = c('green', 'black', 'red', 'blue') # 4 stimulations
-label.stimu = unique(data.simu$stimu)
-label.time = unique(time)
+# set up colors for each level of pheatmap 
+col.sample <- c("lightgreen", "red","lightblue","darkorange","purple","maroon") # 6 samples
+col.time <- c("pink","lightblue1") # two time points
+col.stimu <- c('green', 'black', 'red', 'blue') # 4 stimulations
+# set up labels for the 2 levels in design matrix
+label.stimu <- unique(design[, 2])
+label.time <- unique(design$time)
 
-pheatmap.multilevel(res.2level, 
-              col_sample=col.sample, 
-              col_stimulation=col.stimu, 
-              col_time=col.time,
-              label_color_stimulation=label.stimu,
-              label_color_time=label.time, 
-              label_annotation=NULL,border=FALSE,
-              clustering_method="ward",
-              show_colnames = FALSE,
-              show_rownames = TRUE,
-              fontsize_row=2)
-}
+pheatmap.multilevel(vac18.splsda2.multilevel,
+                                # colors:
+                                col_sample=col.sample, 
+                                col_stimulation=col.stimu, 
+                                col_time=col.time,
+                                #labels for each level
+                                label_color_stimulation=label.stimu,
+                                label_color_time=label.time, 
+                                #clustering method
+                                clustering_method="ward",
+                                #show col/row names and font size
+                                show_colnames = FALSE,
+                                show_rownames = TRUE,
+                                fontsize_row=2)
 }
 
 \keyword{regression}

@@ -1,4 +1,4 @@
-# Copyright (C) 2012 
+# Copyright (C) 2015
 # Benoit Liquet, Universite de Bordeaux, France
 # Kim-Anh Lê Cao, Queensland Facility for Advanced Bioinformatics, University of Queensland, Brisbane, Australia
 # This program is free software; you can redistribute it and/or
@@ -15,6 +15,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-
+# this is the S3 function (see pheatmap.multilevel.splsda1fact and pheatmap.multilevel.splsda2fact)
 pheatmap.multilevel <- function(result, ...) UseMethod("pheatmap.multilevel")
 

@@ -307,6 +307,8 @@ attributes(vac18.simulated)
 
 
 ## First example: one-factor analysis with sPLS-DA
+# -------------------
+data(vac18.simulated)
 X <- vac18$genes
 Y <- vac18$stimulation
 
@@ -320,20 +322,68 @@ col.samp <- c("lightgreen", "red", "lightblue", "darkorange",
               "purple", "maroon", "blue", "chocolate", "turquoise",
               "tomato1", "pink2", "aquamarine")
 col.stimu = unique(col.stimu)
-
-pheatmap.multilevel(vac18.splsda.multilevel, clustering_method = "ward",
-                                col_sample = col.samp, col_stimulation = col.stimu,
-                                label_annotation = c("Subject", "Stimulus"),
-                                fontsize = 8, border = FALSE, fontsize_row = 3,
-                                show_colnames = FALSE,
-                                show_rownames = TRUE, 
-                                fontsize_col = 2, width = 10)
+pheatmap.multilevel(vac18.splsda.multilevel, 
+                    # colors:
+                    col_sample = col.samp, 
+                    col_stimulation = col.stimu,
+                    #labels:
+                    label_annotation = c("Subject", "Stimulus"),
+                    # scaling:
+                    scale = 'row',
+                    # distances and clutering
+                    clustering_distance_rows = "euclidean", 
+                    clustering_distance_cols = "euclidean", 
+                    clustering_method = "complete",
+                    #  show col/row names and font
+                    show_colnames = FALSE,
+                    show_rownames = FALSE, 
+                    fontsize = 8, 
+                    fontsize_row = 3,
+                    fontsize_col = 2,
+                    border = FALSE, 
+                    width = 10)
 
 ## Second example: two-factor analysis with sPLS-DA
+# --------------------
+data(vac18.simulated) 
+
+X <- vac18.simulated$genes
+design <- data.frame(sample = vac18.simulated$sample,
+                     stimul = vac18.simulated$stimulation,
+                     time = vac18.simulated$time)
+
+vac18.splsda2.multilevel <- multilevel(X, ncomp = 2, design = design,
+                            keepX = c(200, 200), method = 'splsda')
+
+# set up colors for each level of pheatmap 
+col.sample <- c("lightgreen", "red","lightblue","darkorange","purple","maroon") # 6 samples
+col.time <- c("pink","lightblue1") # two time points
+col.stimu <- c('green', 'black', 'red', 'blue') # 4 stimulations
+# set up labels for the 2 levels in design matrix
+label.stimu <- unique(design[, 2])
+label.time <- unique(design$time)
+
+pheatmap.multilevel(vac18.splsda2.multilevel,
+                                # colors:
+                                col_sample=col.sample, 
+                                col_stimulation=col.stimu, 
+                                col_time=col.time,
+                                #labels for each level
+                                label_color_stimulation=label.stimu,
+                                label_color_time=label.time, 
+                                #clustering method
+                                clustering_method="ward",
+                                #show col/row names and font size
+                                show_colnames = FALSE,
+                                show_rownames = TRUE,
+                                fontsize_row=2)
 
 
 
-# ======== that's it for now, KA 13/03/2015 ======================
+
+
+
+# ======== that's it for now, KA 14/03/2015 ======================
 
 
 

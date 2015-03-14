@@ -35,6 +35,8 @@ pheatmap.multilevel.splsda2fact <- function(result, cluster = NULL, color = colo
     name.probe <- rownames(result$loadings$X[unique(which(result$loadings$X != 0, arr.ind = TRUE)[, 1]), 1:result$ncomp])
   }
   
+  ## note: not sure what the cluster argument is for since it is set to NULL
+  
   if (is.null(order_sample)) 
     order_sample <- 1:dim(result$Xw)[1]
   mat <- result$Xw[order_sample, setdiff(name.probe, cluster)]
@@ -84,6 +86,10 @@ pheatmap.multilevel.splsda2fact <- function(result, cluster = NULL, color = colo
   if (!(is.null(label_annotation))) 
     names(annotation_colors) <- names(annotation) <- label_annotation
   
+  # note: message supressed for Ward method 
+  #'The "ward" method has been renamed to "ward.D"; note new "ward.D2"'
+  #'# as maintainers from the phetmap package have not done the update
+  suppressMessages(
   pheatmap(matt, color = color, breaks = breaks, border_color = border_color, 
            cellwidth = cellwidth, cellheight = cellheight, scale = scale, 
            cluster_rows = cluster_rows, cluster_cols = cluster_cols, 
@@ -96,4 +102,5 @@ pheatmap.multilevel.splsda2fact <- function(result, cluster = NULL, color = colo
            fontsize = fontsize, fontsize_row = fontsize_row, fontsize_col = fontsize_col, 
            filename = filename, width = width, height = height, 
            ...)
+  )
 }
