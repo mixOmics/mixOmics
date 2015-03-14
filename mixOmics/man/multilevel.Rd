@@ -52,6 +52,12 @@ multilevel(X,
   \item{mode}{character string. What type of algorithm to use, matching 
     \code{"regression"} or \code{"canonical"}. See detals in \code{?pls}.}
     
+  \item{max.iter}{integer, the maximum number of iterations.}
+  
+  \item{tol}{a not negative real, the tolerance used in the iterative algorithm.}
+
+    
+    
     \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations.}
 }
 
@@ -167,6 +173,7 @@ plotIndiv(res.1level, ind.names = Y, col = col.stim)
 ## Second example: two-factor analysis with sPLS-DA, selecting a subset of variables
 # as in the paper Liquet et al.
 #--------------------------------------------------------------
+\dontrun{
 data(vac18.simulated) # simulated data
 
 X <- vac18.simulated$genes
@@ -188,10 +195,11 @@ legend('bottomright', legend = levels(design$stimu),
        title = "Stimulation")
 legend('topright', col = 'black', legend = levels(design$time),  
        pch = unique(pch.time), cex = 0.8, title = "Time")
-       
+}       
 
 ## Third example: one-factor analysis with sPLS, selecting a subset of variables
 #--------------------------------------------------------------
+\dontrun{
 data(liver.toxicity)
 # note: we made up those data, pretending they are repeated measurements
 repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
@@ -218,9 +226,10 @@ title(main = 'Gene expression space')
 plotIndiv(res.spls.1level, rep.space = 'Y-variate', ind.names = FALSE,
           col = col.stimu, pch = 20)
 title(main = 'Clnical measurements space')
-legend('bottomright', legend = levels(design$stimu),
+legend('bottomright', legend = levels(as.factor(design$stimu)),
        col = unique(col.stimu), pch = 20, cex = 0.8, 
        title = "Dose")
+}
 }
 
 \keyword{regression}

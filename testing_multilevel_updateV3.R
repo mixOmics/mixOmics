@@ -7,11 +7,30 @@
 
 
 # ------ notes for me to compile the package (if need be)
-# need to be root
 R CMD build --resave-data mixOmics
 R CMD INSTALL -l MyR/ mixOmics_5.0-4.tar.gz 
 R CMD check mixOmics --as-cran --timings
 # --------------------------------
+
+# list of authors in DESCRIPTION file
+Author: Sebastien Dejean, Ignacio Gonzalez, Kim-Anh Le Cao with
+contributions from Pierre Monget, Jeff Coquery, FangZou Yao,
+Benoit Liquet, Florian Rohart, Benoit Gautier
+
+# woud need to put as a Author@R but did not work
+# see http://r-pkgs.had.co.nz/description.html help!)
+Authors@R: c(
+  person("Kim-Anh", "Le Cao", email = "k.lecao@uq.edu.au", role = "cre"),
+  person("Ignacio", "Gonzalez", email = "igonzalez@toulouse.inra.fr", role = "aut"),
+  person("Sébastien", "Déjean", email = "sebastien.dejean@math.univ-toulouse.fr", role = "aut"),
+  person("Florian", "Rohart", email = "k.lecao@uq.edu.au", role = "aut"),
+  person("Benoit", "Gautier", email = "k.lecao@uq.edu.au", role = "aut"),
+  person("Benoit", "Liquet", email = "b.liquet@uq.edu.au", role = "ctb", comment = 'contribution to the multilevel module'),
+  person("FangZou", "Yao", role = "ctb", comment = 'contribution to the IPCA module')
+  person("Pierre", "Monget", role = "ctb", comment = 'contribution to the sPLS-DA module')
+  person("Jeff", "Coquery", role = "ctb", comment = 'contribution to the IPCA module')
+)
+
 
 sessionInfo()
 # R version 3.1.0 (2014-04-10)
@@ -103,6 +122,8 @@ plotIndiv(res.1level, ind.names = Y, col = col.stimu)
 ## Second example: two-factor analysis with sPLS-DA, selecting a subset of variables
 # as in the paper Liquet et al.
 #--------------------------------------------------------------
+# set to dontrun{} for elapse time
+\dontrun{
 data(vac18.simulated) # simulated data
 
 X <- vac18.simulated$genes
@@ -119,15 +140,17 @@ pch.time <- c(20, 4)[as.numeric(design$time)]
 
 plotIndiv(res.2level, col = col.stimu, ind.names = FALSE,
           pch = pch.time)
-legend('bottomright', legend = levels(design$stimu),
+legend('bottomright', legend = levels(as.factor(design$stimu)),
        col = unique(col.stimu), pch = 20, cex = 0.8, 
        title = "Stimulation")
 legend('topright', col = 'black', legend = levels(design$time),  
        pch = unique(pch.time), cex = 0.8, title = "Time")
-
+}
 
 ## Third example: one-factor analysis with sPLS, selecting a subset of variables
 #--------------------------------------------------------------
+# set to dontrun{} for elapse time
+\dontrun{
 data(liver.toxicity)
 # note: we made up those data, pretending they are repeated measurements
 repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
@@ -157,6 +180,7 @@ title(main = 'Clinical measurements variates')
 legend('bottomright', legend = levels(as.factor(design$stimu)),
        col = unique(col.stimu), pch = 20, cex = 0.8, 
        title = "Dose")
+}
 
 # -------------------------------------------------
 # end testing multilevel.Rd examples
@@ -178,12 +202,12 @@ Xw <- withinVariation(X = X, design = design)
 res.pca.1level <- pca(Xw, ncomp = 3)
 
 # compare a normal PCA with a multilevel PCA for repeated measurements.
-# note: PCA makes the assumptions that all samples are independent, so this analysis is flawed!
+# note: PCA makes the assumptions that all samples are independent, so this analysis is flawed and you should use a multilevel PCA instead
 res.pca <- pca(X, ncomp = 3)
 
 # set up colors for plotIndiv
 col.stim <- c("darkblue", "purple", "green4","red3")
-col.stim <- col.stim[as.numeric(Y)]
+col.stim <- col.stim[as.numeric(vac18$stimulation)]
 
 # plotIndiv comparing both PCA and PCA multilevel
 plotIndiv(res.pca, ind.names = vac18$stimulation, col = col.stim)
@@ -308,7 +332,7 @@ attributes(vac18.simulated)
 
 ## First example: one-factor analysis with sPLS-DA
 # -------------------
-data(vac18.simulated)
+data(vac18)
 X <- vac18$genes
 Y <- vac18$stimulation
 
@@ -321,6 +345,8 @@ vac18.splsda.multilevel <- multilevel(X, ncomp = 3, design = design,
 col.samp <- c("lightgreen", "red", "lightblue", "darkorange",
               "purple", "maroon", "blue", "chocolate", "turquoise",
               "tomato1", "pink2", "aquamarine")
+col.stimu <- c("darkblue", "purple", "green4","red3")
+col.stimu <- col.stimu[as.numeric(Y)]
 col.stimu = unique(col.stimu)
 pheatmap.multilevel(vac18.splsda.multilevel, 
                     # colors:
@@ -345,6 +371,7 @@ pheatmap.multilevel(vac18.splsda.multilevel,
 
 ## Second example: two-factor analysis with sPLS-DA
 # --------------------
+\dontrun{
 data(vac18.simulated) 
 
 X <- vac18.simulated$genes
@@ -377,11 +404,7 @@ pheatmap.multilevel(vac18.splsda2.multilevel,
                                 show_colnames = FALSE,
                                 show_rownames = TRUE,
                                 fontsize_row=2)
-
-
-
-
-
+}
 
 # ======== that's it for now, KA 14/03/2015 ======================
 

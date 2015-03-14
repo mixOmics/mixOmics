@@ -15,6 +15,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+
+## note: this should probably be set up as an S3 function.
 tune.splsdalevel2 <- function (X, 
                                design,
                                ncomp = 1, test.keepX = c(5, 10, 15), already.tested.X = NULL) {

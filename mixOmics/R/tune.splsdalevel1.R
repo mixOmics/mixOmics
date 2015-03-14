@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
-
+## note: this should probably be set up as an S3 function.
 tune.splsdalevel1 <- function (X, ncomp = 1, test.keepX, dist = NULL, 
                                design = NULL, 
                               already.tested.X = NULL, validation, folds) {

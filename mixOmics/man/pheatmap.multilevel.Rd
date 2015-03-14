@@ -12,32 +12,42 @@ A function to draw clustered heatmaps from the pheatmap package for the sPLS-DA 
 
 \usage{
 \method{pheatmap.multilevel}{splsda1fact}(
-                                          result, 
-                                          cluster = NULL, 
-                                          color = colorRampPalette(rev(c("#D73027", "#FC8D59", "#FEE090", "#FFFFBF", "#E0F3F8", "#91BFDB", "#4575B4")))(100), 
-                                          col_sample = NULL, col_stimulation = NULL, label_annotation = NULL, 
-                                          breaks = NA, border_color = "grey60", cellwidth = NA, cellheight = NA, 
-                                          scale = "none", cluster_rows = TRUE, cluster_cols = TRUE, 
-                                          clustering_distance_rows = "euclidean", clustering_distance_cols = "euclidean", 
-                                          clustering_method = "complete", treeheight_row = ifelse(cluster_rows, 50, 0), treeheight_col = ifelse(cluster_cols, 50, 0), 
-                                          legend = TRUE, annotation = NA, annotation_colors = NA, annotation_legend = TRUE, 
-                                          show_rownames = TRUE, show_colnames = TRUE, fontsize = 10, 
-                                          fontsize_row = fontsize, fontsize_col = fontsize, filename = NA, 
-                                          width = NA, height = NA, order_sample = NULL, tab.prob.gene = NULL, ...)
+result, 
+cluster = NULL, 
+color = colorRampPalette(rev(c("#D73027", "#FC8D59", "#FEE090", 
+"#FFFFBF", "#E0F3F8", "#91BFDB", "#4575B4")))(100), 
+col_sample = NULL, col_stimulation = NULL, 
+label_annotation = NULL, 
+breaks = NA, border_color = "grey60", 
+cellwidth = NA, 
+cellheight = NA, 
+scale = "none", cluster_rows = TRUE, cluster_cols = TRUE, 
+clustering_distance_rows = "euclidean", 
+clustering_distance_cols = "euclidean", 
+clustering_method = "complete", treeheight_row = ifelse(cluster_rows, 50, 0), 
+treeheight_col = ifelse(cluster_cols, 50, 0), 
+legend = TRUE, annotation = NA, annotation_colors = NA, annotation_legend = TRUE, 
+show_rownames = TRUE, show_colnames = TRUE, fontsize = 10, 
+fontsize_row = fontsize, fontsize_col = fontsize, filename = NA, 
+width = NA, height = NA, order_sample = NULL, tab.prob.gene = NULL, ...)
 
-
-\method{pheatmap.multilevel}{splsda2fact}((result, cluster = NULL, color = colorRampPalette(rev(c("#D73027", "#FC8D59", "#FEE090", "#FFFFBF", "#E0F3F8", "#91BFDB", "#4575B4")))(100), 
-          col_sample = NULL, col_stimulation = NULL, col_time = NULL, 
-          label_color_stimulation = NULL, label_color_time = NULL, 
-          label_annotation = NULL, breaks = NA, border_color = "grey60", 
-          cellwidth = NA, cellheight = NA, scale = "none", cluster_rows = TRUE, 
-          cluster_cols = TRUE, clustering_distance_rows = "euclidean", 
-          clustering_distance_cols = "euclidean", clustering_method = "complete", 
-          treeheight_row = ifelse(cluster_rows, 50, 0), treeheight_col = ifelse(cluster_cols, 50, 0),
-          legend = TRUE, annotation = NA, annotation_colors = NA, 
-          annotation_legend = TRUE, show_rownames = TRUE, show_colnames = TRUE, 
-          fontsize = 10, fontsize_row = fontsize, fontsize_col = fontsize, 
-          filename = NA, width = NA, height = NA, order_sample = NULL, tab.prob.gene = NULL, ...)
+\method{pheatmap.multilevel}{splsda2fact}(
+result, cluster = NULL, 
+color = colorRampPalette(rev(c("#D73027", "#FC8D59", "#FEE090", 
+"#FFFFBF", "#E0F3F8", "#91BFDB", "#4575B4")))(100), 
+col_sample = NULL, col_stimulation = NULL, col_time = NULL, 
+label_color_stimulation = NULL, label_color_time = NULL, 
+label_annotation = NULL, breaks = NA, border_color = "grey60", 
+cellwidth = NA, cellheight = NA, scale = "none", cluster_rows = TRUE, 
+cluster_cols = TRUE, clustering_distance_rows = "euclidean", 
+clustering_distance_cols = "euclidean", clustering_method = "complete", 
+treeheight_row = ifelse(cluster_rows, 50, 0), 
+treeheight_col = ifelse(cluster_cols, 50, 0),
+legend = TRUE, annotation = NA, annotation_colors = NA, 
+annotation_legend = TRUE, show_rownames = TRUE, show_colnames = TRUE, 
+fontsize = 10, fontsize_row = fontsize, fontsize_col = fontsize, 
+filename = NA, width = NA, height = NA, order_sample = NULL, 
+tab.prob.gene = NULL, ...)
 }	
 
 \arguments{
@@ -82,6 +92,7 @@ bmp, jpeg. Even if the plot does not fit into the plotting window, the file size
 calculated so that the plot would fit there, unless specified otherwise.}
 \item{width}{manual option for determining the output file width in}
 \item{height}{manual option for determining the output file height in inches.}
+\item{tab.prob.gene}{A character vector indicating the name of all genes.}
 \item{\dots}{graphical parameters for the text used in plot. Parameters passed to \code{\link{grid.text}}, see \code{\link{gpar}}.}
 }
 
@@ -108,7 +119,7 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
 \examples{
 ## First example: one-factor analysis with sPLS-DA
 # -------------------
-data(vac18.simulated)
+data(vac18)
 X <- vac18$genes
 Y <- vac18$stimulation
 
@@ -117,11 +128,15 @@ design <- data.frame(sample = vac18$sample,
 vac18.splsda.multilevel <- multilevel(X, ncomp = 3, design = design,
                                          method = "splsda", keepX = c(30, 137, 123))
 
+
 # set up colors for pheatmap
 col.samp <- c("lightgreen", "red", "lightblue", "darkorange",
               "purple", "maroon", "blue", "chocolate", "turquoise",
               "tomato1", "pink2", "aquamarine")
+col.stimu <- c("darkblue", "purple", "green4","red3")
+col.stimu <- col.stimu[as.numeric(Y)]
 col.stimu = unique(col.stimu)
+
 pheatmap.multilevel(vac18.splsda.multilevel, 
                     # colors:
                     col_sample = col.samp, 
@@ -145,7 +160,8 @@ pheatmap.multilevel(vac18.splsda.multilevel,
 
 ## Second example: two-factor analysis with sPLS-DA
 # --------------------
-data(vac18.simulated) 
+\dontrun{
+data(vac18.simulated) # on the simulated data this time
 
 X <- vac18.simulated$genes
 design <- data.frame(sample = vac18.simulated$sample,
@@ -178,6 +194,6 @@ pheatmap.multilevel(vac18.splsda2.multilevel,
                                 show_rownames = TRUE,
                                 fontsize_row=2)
 }
-
+}
 \keyword{regression}
 \keyword{multivariate}

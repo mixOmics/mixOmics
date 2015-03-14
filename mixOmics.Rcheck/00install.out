@@ -1,0 +1,12 @@
+* installing *source* package ‘mixOmics’ ...
+files ‘DESCRIPTION’, ‘NAMESPACE’, ‘R/multilevel.R’, ‘R/pheatmap.multilevel.R’, ‘R/pls.R’, ‘R/plsda.R’, ‘R/spls.R’, ‘R/splsda.R’, ‘R/tune.multilevel.R’, ‘man/multilevel.Rd’, ‘man/pheatmap.multilevel.Rd’, ‘man/tune.multilevel.Rd’ have the wrong MD5 checksums
+** R
+** data
+** preparing package for lazy loading
+Warning: package ‘MASS’ was built under R version 3.1.1
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded
+Warning: package ‘MASS’ was built under R version 3.1.1
+* DONE (mixOmics)

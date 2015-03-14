@@ -28,8 +28,10 @@ Description: The package provide statistical integrative techniques and
         multilevel analysis using variance decomposition of the data and integration of multiple data sets with RGCCA and variants. More details on our website.
 License: GPL (>= 2)
 URL: http://www.mixOmics.org
-BugReports: mixomics@math.univ-toulouse.fr or https://bitbucket.org/klecao/package-mixomics/issues
+BugReports: mixomics@math.univ-toulouse.fr or
+        https://bitbucket.org/klecao/package-mixomics/issues
 Repository: CRAN
 Date/Publication: 2014-09-01 15:47:59
-Packaged: 2014-09-01 11:59:23 UTC; klecao
+Packaged: 2015-03-14 06:35:31 UTC; klecao
 NeedsCompilation: no
+Built: R 3.1.0; ; 2015-03-14 06:35:42 UTC; unix

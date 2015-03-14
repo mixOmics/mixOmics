@@ -1,6 +1,6 @@
 \name{withinVariation}
 \encoding{latin1}
-
+\alias{withinVariation}
 
 \title{Within matrix decomposition for repeated measurements (cross-over design)}
 
@@ -9,7 +9,7 @@ This function is called by the multilevel function for cross-over design data, b
 }
 
 \usage{
-withinVariation <- function(X, design)
+withinVariation(X, design)
 }	
 
 \arguments{
@@ -65,12 +65,13 @@ Xw <- withinVariation(X = X, design = design)
 res.pca.1level <- pca(Xw, ncomp = 3)
 
 # compare a normal PCA with a multilevel PCA for repeated measurements.
-# note: PCA makes the assumptions that all samples are independent, so this analysis is flawed!
+# note: PCA makes the assumptions that all samples are independent, 
+# so this analysis is flawed and you should use a multilevel PCA instead
 res.pca <- pca(X, ncomp = 3)
 
 # set up colors for plotIndiv
 col.stim <- c("darkblue", "purple", "green4","red3")
-col.stim <- col.stim[as.numeric(Y)]
+col.stim <- col.stim[as.numeric(vac18$stimulation)]
 
 # plotIndiv comparing both PCA and PCA multilevel
 plotIndiv(res.pca, ind.names = vac18$stimulation, col = col.stim)
