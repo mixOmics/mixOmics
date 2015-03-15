@@ -36,9 +36,11 @@ tune.multilevel <- function (X, Y = NULL,
   if ((nrow(design) != nrow(X))) 
     stop("unequal number of rows in 'X' and 'design'.", call. = FALSE)
   
-  if (ncol(design) < 2) 
-    stop("'design' must be a matrix or data frame with at least 2 columns.", call. = FALSE)
-
+  # added condition for the spls case (no need to have the 2n and 3rd column in design)
+  if ((ncol(design) < 2) & (method == 'splsda'))
+    stop("'design' must be a matrix or data frame with at least 2 columns for method = splsda.",
+         call. = FALSE)
+  
   design = as.data.frame(design)
 
   if (length(design[, 1]) != nrow(X)) 

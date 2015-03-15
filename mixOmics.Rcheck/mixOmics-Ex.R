@@ -303,8 +303,9 @@ plotIndiv(res.1level, ind.names = Y, col = col.stim)
 ##D                  13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
 ##D summary(as.factor(repeat.indiv)) # 16 rats, 4 measurements each
 ##D 
-##D design <- data.frame(sample = repeat.indiv, 
-##D                      stimu = liver.toxicity$treatment$Dose.Group)
+##D # this is a spls (unsupervised analysis) so no need to mention any factor in design
+##D # we only perform a one level variation split
+##D design <- data.frame(sample = repeat.indiv) 
 ##D res.spls.1level <- multilevel(X = liver.toxicity$gene,
 ##D                                        Y=liver.toxicity$clinic,
 ##D                                        design = design,
@@ -594,7 +595,7 @@ col.samp <- c("lightgreen", "red", "lightblue", "darkorange",
               "tomato1", "pink2", "aquamarine")
 col.stimu <- c("darkblue", "purple", "green4","red3")
 col.stimu <- col.stimu[as.numeric(Y)]
-col.stimu = unique(col.stimu)
+col.stimu <- unique(col.stimu)
 
 pheatmap.multilevel(vac18.splsda.multilevel, 
                     # colors:
@@ -1583,7 +1584,6 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ## Third example: one-factor integrative analysis with sPLS
 ## Not run: 
 ##D   data(liver.toxicity)
-##D   dose <- as.factor(liver.toxicity$treatment$Dose.Group)
 ##D   # note: we made up those data, pretending they are repeated measurements
 ##D   repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
 ##D                     6, 5, 6, 7, 7, 8, 6, 7, 8, 7, 8, 8, 9, 10, 9, 10, 11, 9, 9,
@@ -1591,8 +1591,8 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ##D                     13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
 ##D   summary(as.factor(repeat.indiv)) # 16 rats, 4 measurements each
 ##D   
-##D   design <- data.frame(sample = repeat.indiv,
-##D                        dose = dose)
+##D   # here we are only interested in a one level variation split since spls is an unsupervised method
+##D   design <- data.frame(sample = repeat.indiv)
 ##D   
 ##D   result.ex3 = tune.multilevel(X = liver.toxicity$gene, Y = liver.toxicity$clinic, 
 ##D                                 design = design,
@@ -1604,6 +1604,7 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 ##D                                 method = 'spls') 
 ##D   
 ##D   result.ex3
+##D 
 ## End(Not run)
 
 
@@ -1708,9 +1709,9 @@ base::assign(".ptime", proc.time(), pos = "CheckExEnv")
 #--------------------------------------------------------------
 data(vac18)
 X <- vac18$genes
-# sample indicates the repeated measurements
-design <- data.frame(sample = vac18$sample, 
-                     stimul = vac18$stimulation)
+# in design we only need to mention the repeated measurements to split the one level variation
+design <- data.frame(sample = vac18$sample)
+
 Xw <- withinVariation(X = X, design = design)
 # multilevel PCA
 res.pca.1level <- pca(Xw, ncomp = 3)

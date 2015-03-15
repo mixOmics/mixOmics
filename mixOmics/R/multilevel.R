@@ -93,9 +93,12 @@ multilevel <-
     if ((nrow(design) != nrow(X))) 
       stop("unequal number of rows in 'X' and 'design'.", call. = FALSE)
     
-    if (ncol(design) < 2) 
-      stop("'design' must be a matrix or data frame with at least 2 columns.",
+    # added: when spls, no need for two columns
+    if ((ncol(design) < 2) & (method == 'splsda'))
+      stop("'design' must be a matrix or data frame with at least 2 columns for method = splsda.",
            call. = FALSE)
+    
+    design = as.data.frame(design)
     
     #-- ncomp
     if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0)

@@ -15,9 +15,9 @@ withinVariation(X, design)
 \arguments{
   \item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
     
-  \item{design}{a numeric matrix or data frame of 2 columns for a one-factor discrete
-    outcome, or of 3 columns for two-factor discrete outcome. The first column 
-    indicates the repeated measures on each individual, i.e. the individuals ID. See Details.}
+  \item{design}{a numeric matrix or data frame. The first column 
+    indicates the repeated measures on each individual, i.e. the individuals ID. If \code{  method = 'splsda'}, the 2nd and 3rd columns are factors. If \code{method = 'spls'} then you can choose to only input the repeated measures (column 1) or the 2nd AND 3rd columns to split the variation for a 2 level factor. See Details.}
+    
 }
 
 \details{
@@ -57,9 +57,9 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
 #--------------------------------------------------------------
 data(vac18)
 X <- vac18$genes
-# sample indicates the repeated measurements
-design <- data.frame(sample = vac18$sample, 
-                     stimul = vac18$stimulation)
+# in design we only need to mention the repeated measurements to split the one level variation
+design <- data.frame(sample = vac18$sample)
+
 Xw <- withinVariation(X = X, design = design)
 # multilevel PCA
 res.pca.1level <- pca(Xw, ncomp = 3)

@@ -32,9 +32,8 @@ multilevel(X,
   \item{Y}{if \code{method = "spls"}, numeric vector or matrix of continuous responses
     (for multi-response models). \code{NA}s are allowed.}
     
-  \item{design}{a numeric matrix or data frame of 2 columns for a one-factor discrete
-    outcome, or of 3 columns for two-factor discrete outcome. The first column 
-    indicates the repeated measures on each individual, i.e. the individuals ID. See Details.}
+  \item{design}{a numeric matrix or data frame. The first column 
+    indicates the repeated measures on each individual, i.e. the individuals ID. If \code{  method = 'splsda'}, the 2nd and 3rd columns are factors. If \code{method = 'spls'} then you can choose to only input the repeated measures (column 1) or the 2nd AND 3rd columns to split the variation for a 2 level factor. See Details.}
     
   \item{ncomp}{the number of components to include in the model (see Details).}
   
@@ -208,8 +207,9 @@ repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
                  13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
 summary(as.factor(repeat.indiv)) # 16 rats, 4 measurements each
 
-design <- data.frame(sample = repeat.indiv, 
-                     stimu = liver.toxicity$treatment$Dose.Group)
+# this is a spls (unsupervised analysis) so no need to mention any factor in design
+# we only perform a one level variation split
+design <- data.frame(sample = repeat.indiv) 
 res.spls.1level <- multilevel(X = liver.toxicity$gene,
                                        Y=liver.toxicity$clinic,
                                        design = design,

@@ -135,7 +135,7 @@ col.samp <- c("lightgreen", "red", "lightblue", "darkorange",
               "tomato1", "pink2", "aquamarine")
 col.stimu <- c("darkblue", "purple", "green4","red3")
 col.stimu <- col.stimu[as.numeric(Y)]
-col.stimu = unique(col.stimu)
+col.stimu <- unique(col.stimu)
 
 pheatmap.multilevel(vac18.splsda.multilevel, 
                     # colors:

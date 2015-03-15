@@ -142,7 +142,6 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
 ## Third example: one-factor integrative analysis with sPLS
 \dontrun{
   data(liver.toxicity)
-  dose <- as.factor(liver.toxicity$treatment$Dose.Group)
   # note: we made up those data, pretending they are repeated measurements
   repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
                     6, 5, 6, 7, 7, 8, 6, 7, 8, 7, 8, 8, 9, 10, 9, 10, 11, 9, 9,
@@ -150,8 +149,8 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
                     13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
   summary(as.factor(repeat.indiv)) # 16 rats, 4 measurements each
   
-  design <- data.frame(sample = repeat.indiv,
-                       dose = dose)
+  # here we are only interested in a one level variation split since spls is an unsupervised method
+  design <- data.frame(sample = repeat.indiv)
   
   result.ex3 = tune.multilevel(X = liver.toxicity$gene, Y = liver.toxicity$clinic, 
                                 design = design,
@@ -163,6 +162,7 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
                                 method = 'spls') 
   
   result.ex3
+
 }
 
 }
