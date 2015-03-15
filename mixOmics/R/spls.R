@@ -217,13 +217,13 @@ function(X,
             {
                 a = t(X.aux) %*% u
             }else{
-                a = t(X.temp) %*% u #/ drop(crossprod(u)), useless because a is scaled after soft_thresholding
+                a = t(X.temp) %*% u / drop(crossprod(u))
             }
 			if (na.Y)
             {
                 b = t(Y.aux) %*% t
             }else{
-                b = t(Y.temp) %*% t #/ drop(crossprod(t)), useless because b is scaled after soft_thresholding
+                b = t(Y.temp) %*% t / drop(crossprod(t))
             }
 
             if(nx!=0)
@@ -268,10 +268,7 @@ function(X,
                 u = Y.temp %*% b / drop(crossprod(b))
             }
            
-            if (crossprod(a - a.old) < tol)
-            {
-                break
-            }
+            if (crossprod(a - a.old) < tol) {break}
             if (iterh == max.iter)
             {
                 warning(paste("Maximum number of iterations reached for the component", h),call. = FALSE)
@@ -342,15 +339,9 @@ function(X,
         mat.a[, h] = a
         mat.b[, h] = b
         mat.c[, h] = c
-        if (mode == "regression")
-        {
-            mat.d[, h] = d
-        }
+        if (mode == "regression") {mat.d[, h] = d}
         
-        if (mode == "canonical")
-        {
-            mat.e[, h] = e
-        }
+        if (mode == "canonical") {mat.e[, h] = e}
         
         iter=c(iter,iterh) #save the number of iteration per component
     } #-- fin boucle sur h --#

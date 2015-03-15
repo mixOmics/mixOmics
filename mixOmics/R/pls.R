@@ -179,7 +179,7 @@ function(X,
                 a.norm = crossprod(A)
                 t = t / diag(a.norm)				
             }else{
-                a = crossprod(X.temp, u) #/ drop(crossprod(u)), not useful as a is scaled below
+                a = crossprod(X.temp, u)/ drop(crossprod(u))
                 a = a / drop(sqrt(crossprod(a)))
                 t = X.temp %*% a / drop(crossprod(a))
             }
@@ -197,15 +197,12 @@ function(X,
                 b.norm = crossprod(B)
                 u = u / diag(b.norm)					
             }else{
-                b = crossprod(Y.temp, t) #/ drop(crossprod(t)), not useful as b is scaled below
+                b = crossprod(Y.temp, t)/ drop(crossprod(t))
                 b=b / drop(sqrt(crossprod(b)))
                 u = Y.temp %*% b / drop(crossprod(b))
             }
 				
-            if (crossprod(a - a.old) < tol)
-            {
-                break
-            }
+            if (crossprod(a - a.old) < tol) {break}
              
             if (iterh == max.iter)
             {
@@ -278,25 +275,16 @@ function(X,
         }
 		
         #-- mode invariant --#
-        if (mode == "invariant")
-        {
-            Y.temp = Y
-        }
+        if (mode == "invariant") {Y.temp = Y}
         
         mat.t[, h] = t
         mat.u[, h] = u
         mat.a[, h] = a
         mat.b[, h] = b
         mat.c[, h] = c
-        if (mode == "regression")
-        {
-            mat.d[, h] = d
-        }
+        if (mode == "regression") {mat.d[, h] = d}
 	
-        if (mode == "canonical")
-        {
-            mat.e[, h] = e
-        }
+        if (mode == "canonical") {mat.e[, h] = e}
         
         iter=c(iter,iterh) #save the number of iteration per component
     } #-- fin boucle sur h --#
