@@ -244,7 +244,7 @@ function(X,
 			 
             if (na.X)
             {
-                t = X.aux %*% a
+                t = X.aux %*% a/ drop(crossprod(a))
                 A = drop(a) %o% n.ones
                 A[t(is.na.X)] = 0
                 a.norm = crossprod(A)
@@ -257,7 +257,7 @@ function(X,
              
             if (na.Y)
             {
-                u = Y.aux %*% b
+                u = Y.aux %*% b/ drop(crossprod(b))
                 B = drop(b) %o% n.ones
                 B[t(is.na.Y)] = 0
                 b.norm = crossprod(B)
