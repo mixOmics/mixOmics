@@ -229,16 +229,16 @@ function(X,
             if(nx!=0)
             {
                 absa=abs(a)
-                a=ifelse(absa>absa[which(rank(absa)==max(rank(absa)[which(rank(absa)<=(nx))]))],
-                (absa-absa[which(rank(absa)==max(rank(absa)[which(rank(absa)<=(nx))]))])*sign(a),0)
+                a=ifelse(absa>absa[which(rank(absa)==max(rank(absa)[which(rank(absa)<=(nx))]))[1]],
+                (absa-absa[which(rank(absa)==max(rank(absa)[which(rank(absa)<=(nx))]))[1]])*sign(a),0)
             }
             a = a / drop(sqrt(crossprod(a)))
 		     
             if(ny!=0)
             {
                 absb=abs(b)
-                b=ifelse(absb>absb[which(rank(absb)==max(rank(absb)[which(rank(absb)<=(ny))]))],
-                (absb-absb[which(rank(absb)==max(rank(absb)[which(rank(absb)<=(ny))]))])*sign(b),0)
+                b=ifelse(absb>absb[which(rank(absb)==max(rank(absb)[which(rank(absb)<=(ny))]))[1]],
+                (absb-absb[which(rank(absb)==max(rank(absb)[which(rank(absb)<=(ny))]))[1]])*sign(b),0)
             }
             b = b / drop(sqrt(crossprod(b)))
 			 
