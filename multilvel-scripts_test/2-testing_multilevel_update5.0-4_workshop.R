@@ -112,8 +112,8 @@ vac18.splsda.multilevel <- multilevel(X, design = design, ncomp = 3,
 ###################################################
 ### code chunk number 150: multilevel-plotIndiv3d (eval = FALSE)
 ###################################################
-## plot3dIndiv(vac18.spls.multilevel , ind.names = Y, col = col.stimu, 
-##             axes.box = "both")
+plot3dIndiv(vac18.splsda.multilevel , ind.names = trt, col = col.stimu, 
+            axes.box = "both")
 
 
 ###################################################
@@ -183,13 +183,13 @@ vac18.spls.multilevel <- multilevel(X = liver.toxicity$gene,
 plotVar(vac18.spls.multilevel, comp = 1:2, X.label = TRUE, Y.label = TRUE, 
         cex = c(0.5, 0.9)) 
 
-jpeg('CIM_spls_multilevel.jpeg')
+jpeg('graphics/CIM_spls_multilevel.jpeg')
 CIM <- cim(vac18.spls.multilevel, comp = 1:2, xlab = "genes", 
            ylab = "clinic var", 
            margins = c(5, 6), zoom = FALSE)
 dev.off()
 
-jpeg('network_spls_multilevel.jpeg')
+jpeg('graphics/network_spls_multilevel.jpeg')
 network(vac18.spls.multilevel, comp = 1:2, threshold = 0.8, 
         Y.names = NULL, keep.var = TRUE,
         color.node = c( "lightcyan","mistyrose"),
