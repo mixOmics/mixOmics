@@ -21,7 +21,7 @@
 
 #-- mixOmics colors --#
 #---------------------#
-mixo.colors <- function(num.vector){
+color.mixo <- function(num.vector){
   
   if(is.factor(num.vector)) num.vector=as.numeric(num.vector)
   
