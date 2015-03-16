@@ -11,7 +11,7 @@
 \usage{
 pls(X, Y, ncomp = 2, 
     mode = c("regression", "canonical", "invariant", "classic"), 
-    max.iter = 500, tol = 1e-06, near.zero.var = TRUE, ...)
+    max.iter = 500, tol = 1e-06, near.zero.var = TRUE)
 }	
 
 \arguments{
@@ -25,7 +25,6 @@ pls(X, Y, ncomp = 2,
   \item{max.iter}{integer, the maximum number of iterations.}
   \item{tol}{a not negative real, the tolerance used in the iterative algorithm.}
   \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations.}
-  \item{...}{arguments to pass to \code{\link{nearZeroVar}}.}
 }
 
 \details{
@@ -51,7 +50,7 @@ that contains the following components:
   \item{X}{the centered and standardized original predictor matrix.}
   \item{Y}{the centered and standardized original response vector or matrix.}
   \item{ncomp}{the number of components included in the model.}
-  \item{mode}{the algoritthm used to fit the model.}
+  \item{mode}{the algorithm used to fit the model.}
   \item{mat.c}{matrix of coefficients to be used internally by \code{predict}.}
   \item{variates}{list containing the \eqn{X} and \eqn{Y} variates.}
   \item{loadings}{list containing the estimated loadings for the variates.}
@@ -59,6 +58,7 @@ that contains the following components:
   \item{nzv}{list containing the zero- or near-zero predictors information.}
    \item{tol}{the tolerance used in the iterative algorithm, used for subsequent S3 methods}
   \item{max.iter}{the maximum number of iterations, used for subsequent S3 methods}
+    \item{iter}{Number of iterations of the algorthm for each component}
 
 }
 

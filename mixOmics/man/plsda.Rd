@@ -9,7 +9,7 @@ to classify samples.
 }
 
 \usage{
-plsda(X, Y, ncomp = 2, max.iter = 500, tol = 1e-06, near.zero.var = TRUE, ...)
+plsda(X, Y, ncomp = 2, max.iter = 500, tol = 1e-06, near.zero.var = TRUE)
 }	
 
 \arguments{
@@ -19,8 +19,6 @@ plsda(X, Y, ncomp = 2, max.iter = 500, tol = 1e-06, near.zero.var = TRUE, ...)
   \item{max.iter}{integer, the maximum number of iterations.}  
   \item{tol}{a not negative real, the tolerance used in the iterative algorithm.}
     \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations.}
-
-  \item{...}{arguments to pass to \code{\link{nearZeroVar}}.}
 }
 
 \details{
@@ -44,6 +42,7 @@ that contains the following components:
   \item{nzv}{list containing the zero- or near-zero predictors information.}
    \item{tol}{the tolerance used in the iterative algorithm, used for subsequent S3 methods}
   \item{max.iter}{the maximum number of iterations, used for subsequent S3 methods}
+\item{iter}{Number of iterations of the algorthm for each component}
 
 }
 
