@@ -268,10 +268,7 @@ function(X,
                 u = Y.temp %*% b / drop(crossprod(b))
             }
            
-            if (crossprod(a - a.old) < tol)
-            {
-                break
-            }
+            if (crossprod(a - a.old) < tol) {break}
             if (iterh == max.iter)
             {
                 warning(paste("Maximum number of iterations reached for the component", h),call. = FALSE)
@@ -321,8 +318,8 @@ function(X,
         #-- mode regression --#
         if(mode == "regression")
         {
-            if (TRUE)                       #WTF!?!?
-            {#na.Y
+            if (na.Y)
+            {
                 Y.aux = Y.temp
                 Y.aux[is.na.Y] = 0
                 d = crossprod(Y.aux, t)
@@ -342,15 +339,9 @@ function(X,
         mat.a[, h] = a
         mat.b[, h] = b
         mat.c[, h] = c
-        if (mode == "regression")
-        {
-            mat.d[, h] = d
-        }
+        if (mode == "regression") {mat.d[, h] = d}
         
-        if (mode == "canonical")
-        {
-            mat.e[, h] = e
-        }
+        if (mode == "canonical") {mat.e[, h] = e}
         
         iter=c(iter,iterh) #save the number of iteration per component
     } #-- fin boucle sur h --#
