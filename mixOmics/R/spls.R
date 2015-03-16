@@ -217,13 +217,13 @@ function(X,
             {
                 a = t(X.aux) %*% u
             }else{
-                a = t(X.temp) %*% u / drop(crossprod(u))
+                a = t(X.temp) %*% u #/ drop(crossprod(u)), useless because a is scaled after soft_thresholding
             }
 			if (na.Y)
             {
                 b = t(Y.aux) %*% t
             }else{
-                b = t(Y.temp) %*% t / drop(crossprod(t))
+                b = t(Y.temp) %*% t #/ drop(crossprod(t)), useless because b is scaled after soft_thresholding
             }
 
             if(nx!=0)
@@ -244,7 +244,7 @@ function(X,
 			 
             if (na.X)
             {
-                t = X.aux %*% a/ drop(crossprod(a))
+                t = X.aux %*% a
                 A = drop(a) %o% n.ones
                 A[t(is.na.X)] = 0
                 a.norm = crossprod(A)
@@ -257,7 +257,7 @@ function(X,
              
             if (na.Y)
             {
-                u = Y.aux %*% b/ drop(crossprod(b))
+                u = Y.aux %*% b
                 B = drop(b) %o% n.ones
                 B[t(is.na.Y)] = 0
                 b.norm = crossprod(B)

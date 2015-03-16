@@ -167,7 +167,7 @@ function(X,
             #--compute loading vectors and variates associated to X
             if (na.X)
             {
-                a = crossprod(X.aux, u)	/ drop(crossprod(u))
+                a = crossprod(X.aux, u)
                 U = drop(u) %o% p.ones
                 U[is.na.X] = 0
                 u.norm = crossprod(U)				
@@ -179,14 +179,14 @@ function(X,
                 a.norm = crossprod(A)
                 t = t / diag(a.norm)				
             }else{
-                a = crossprod(X.temp, u)/ drop(crossprod(u))
+                a = crossprod(X.temp, u)#/ drop(crossprod(u)), not useful as a is scaled below
                 a = a / drop(sqrt(crossprod(a)))
                 t = X.temp %*% a / drop(crossprod(a))
             }
              
             #--compute loading vectors and variates associated to Y
             if (na.Y){
-                b = crossprod(Y.aux, t)/ drop(crossprod(t))
+                b = crossprod(Y.aux, t)
                 T = drop(t) %o% q.ones
                 T[is.na.Y] = 0
                 t.norm = crossprod(T)				
@@ -197,7 +197,7 @@ function(X,
                 b.norm = crossprod(B)
                 u = u / diag(b.norm)					
             }else{
-                b = crossprod(Y.temp, t)/ drop(crossprod(t))
+                b = crossprod(Y.temp, t) #/ drop(crossprod(t)), not useful as b is scaled below
                 b=b / drop(sqrt(crossprod(b)))
                 u = Y.temp %*% b / drop(crossprod(b))
             }
