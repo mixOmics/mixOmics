@@ -30,7 +30,7 @@ cim <-
 cim.default <-function(
   mat, 
   breaks, 
-  col = jet.colors, 
+  col = color.jet, 
   distfun = dist, 
   hclustfun = hclust,
   dendrogram = c("both", "row", "column", "none"),
@@ -125,7 +125,7 @@ cim.default <-function(
   
   if (length(breaks) == 1) {
     breaks = seq(min.mat, max.mat, length = breaks)
-    if (missing(col)) col = jet.colors
+    if (missing(col)) col = color.jet
   }
   
   nbr = length(breaks)

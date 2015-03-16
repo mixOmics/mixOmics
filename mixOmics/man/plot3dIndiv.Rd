@@ -104,7 +104,7 @@ The pointing device of your graphics user-interface can also be used to set the 
 
 \seealso{\code{\link{plotIndiv}}, \code{\link{plot3dVar}}, \code{\link[rgl]{text3d}}, 
 \code{\link[rgl]{title3d}} and \code{\link[rgl]{rgl.postscript}} to save the screen shot 
-to a file in PostScript or other vector graphics format.}
+to a file in PostScript or other vector graphics format (provided you load the \code{\link[rgl]{rgl}} library.}
 
 \examples{
 require(rgl)

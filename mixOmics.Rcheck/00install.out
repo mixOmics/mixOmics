@@ -1,0 +1,13 @@
+* installing *source* package ‘mixOmics’ ...
+files ‘R/jet.colors.R’, ‘man/jet.colors.Rd’ are missing
+files ‘DESCRIPTION’, ‘NAMESPACE’, ‘R/cim.R’, ‘R/imgCor.R’, ‘man/cim.Rd’, ‘man/imgCor.Rd’, ‘man/plot3dIndiv.Rd’ have the wrong MD5 checksums
+** R
+** data
+** preparing package for lazy loading
+Warning: package ‘MASS’ was built under R version 3.1.1
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded
+Warning: package ‘MASS’ was built under R version 3.1.1
+* DONE (mixOmics)
