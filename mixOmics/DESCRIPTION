@@ -1,13 +1,13 @@
 Package: mixOmics
 Type: Package
 Title: Omics Data Integration Project
-Version: 5.0-3
+Version: 5.0-4
 Date: 2012-12-11
 Depends: R (>= 2.10), MASS, lattice
 Imports: RGCCA, igraph, rgl, pheatmap
 Author: Sebastien Dejean, Ignacio Gonzalez, Kim-Anh Le Cao with
         contributions from Pierre Monget, Jeff Coquery, FangZou Yao,
-        Benoit Liquet, Florian Rohart
+        Benoit Liquet, Florian Rohart, Benoit Gautier
 Maintainer: Kim-Anh Le Cao <k.lecao@uq.edu.au>
 Description: The package provide statistical integrative techniques and
         variants to analyse highly dimensional data sets: regularized
@@ -24,9 +24,11 @@ Description: The package provide statistical integrative techniques and
         regression and canonical analysis. Numerous graphical outputs
         are provided to help interpreting the results. Recent
         methodological developments include: sparse PLS-Discriminant
-        Analysis, Independent Principal Component Analysis and
-        multilevel analysis using variance decomposition of the data.
+        Analysis, Independent Principal Component Analysis,
+        multilevel analysis using variance decomposition of the data and integration of multiple data sets with RGCCA and variants. More details on our website.
 License: GPL (>= 2)
+URL: http://www.mixOmics.org
+BugReports: mixomics@math.univ-toulouse.fr or https://bitbucket.org/klecao/package-mixomics/issues
 Repository: CRAN
 Date/Publication: 2014-09-01 15:47:59
 Packaged: 2014-09-01 11:59:23 UTC; klecao
