@@ -229,16 +229,21 @@ function(X,
             if(nx!=0)
             {
                 absa=abs(a)
-                a=ifelse(absa>absa[which(rank(absa)==max(rank(absa)[which(rank(absa)<=(nx))]))],
-                (absa-absa[which(rank(absa)==max(rank(absa)[which(rank(absa)<=(nx))]))])*sign(a),0)
+                if(sum(rank(absa)<=nx)>0)# if nx is not high enough, we don't put any coefficients to zero                {
+                    a=ifelse(absa>absa[which(rank(absa)==max(rank(absa)[which(rank(absa)<=(nx))]))[1]],
+                    (absa-absa[which(rank(absa)==max(rank(absa)[which(rank(absa)<=(nx))]))[1]])*sign(a),0)
+                }
             }
             a = a / drop(sqrt(crossprod(a)))
 		     
             if(ny!=0)
             {
                 absb=abs(b)
-                b=ifelse(absb>absb[which(rank(absb)==max(rank(absb)[which(rank(absb)<=(ny))]))],
-                (absb-absb[which(rank(absb)==max(rank(absb)[which(rank(absb)<=(ny))]))])*sign(b),0)
+                if(sum(rank(absb)<=ny)>0)# if ny is not high enough, we don't put any coefficients to zero
+                {
+                    b=ifelse(absb>absb[which(rank(absb)==max(rank(absb)[which(rank(absb)<=(ny))]))[1]],
+                    (absb-absb[which(rank(absb)==max(rank(absb)[which(rank(absb)<=(ny))]))[1]])*sign(b),0)
+                }
             }
             b = b / drop(sqrt(crossprod(b)))
 			 
