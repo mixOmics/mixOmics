@@ -229,7 +229,8 @@ function(X,
             if(nx!=0)
             {
                 absa=abs(a)
-                if(sum(rank(absa)<=nx)>0)# if nx is not high enough, we don't put any coefficients to zero                {
+                if(sum(rank(absa)<=nx)>0)# if nx is not high enough, we don't put any coefficients to zero            
+                {
                     a=ifelse(absa>absa[which(rank(absa)==max(rank(absa)[which(rank(absa)<=(nx))]))[1]],
                     (absa-absa[which(rank(absa)==max(rank(absa)[which(rank(absa)<=(nx))]))[1]])*sign(a),0)
                 }
