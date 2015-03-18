@@ -54,7 +54,7 @@ On sPLS-DA:
 L? Cao, K.-A., Boitard, S. and Besse, P. (2011). Sparse PLS Discriminant Analysis: biologically relevant feature selection and graphical displays for multiclass problems. \emph{BMC Bioinformatics} \bold{12}:253.
 }
 
-\author{Ignacio Gonz?lez, Kim-Anh L? Cao and Pierre Monget.}
+\author{Ignacio Gonzalez, Kim-Anh Le Cao and Pierre Monget.}
 
 \seealso{\code{\link{spls}}, \code{\link{summary}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, 
