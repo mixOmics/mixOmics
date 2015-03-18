@@ -2,10 +2,9 @@
 \encoding{latin1}
 \alias{splsda}
 
-\title{Sparse Partial Least Squares Discriminate Analysis (sPLS-DA)}
+\title{Sparse Partial Least Squares Discriminant Analysis (sPLS-DA)}
 
-\description{Function to perform sparse Partial Least Squares to classify samples. The sPLS-DA approach
-embeds variable selection for this purpose.
+\description{Function to perform sparse Partial Least Squares to classify samples (supervised analysis). sPLS-DA approach enables variable selection.
 }
 
 \usage{
@@ -52,10 +51,10 @@ that contains the following components:
 
 \references{
 On sPLS-DA:
-Lê Cao, K.-A., Boitard, S. and Besse, P. (2011). Sparse PLS Discriminant Analysis: biologically relevant feature selection and graphical displays for multiclass problems. \emph{BMC Bioinformatics} \bold{12}:253.
+L? Cao, K.-A., Boitard, S. and Besse, P. (2011). Sparse PLS Discriminant Analysis: biologically relevant feature selection and graphical displays for multiclass problems. \emph{BMC Bioinformatics} \bold{12}:253.
 }
 
-\author{Ignacio González, Kim-Anh Lê Cao and Pierre Monget.}
+\author{Ignacio Gonz?lez, Kim-Anh L? Cao and Pierre Monget.}
 
 \seealso{\code{\link{spls}}, \code{\link{summary}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, 
@@ -66,25 +65,33 @@ Lê Cao, K.-A., Boitard, S. and Besse, P. (2011). Sparse PLS Discriminant Analysi
 ## First example
 data(breast.tumors)
 X <- breast.tumors$gene.exp
-Y <- breast.tumors$sample$treatment
+# Y will be transformed as a factor in the function,
+# but we set it as a factor to set up the colors.
+Y <- as.factor(breast.tumors$sample$treatment)
 
 res <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
-palette(c("red", "blue"))
-col.breast <- as.numeric(as.factor(Y))
-plotIndiv(res, ind.names = TRUE, col = col.breast)
-legend('bottomleft', c("After", "Before"), pch = c(16, 16), 
-       col = unique(col.breast), cex = 1, pt.cex = c(1.2, 1.2), 
+
+col.breast <- color.mixo(as.numeric(Y))
+
+# individual names appear
+plotIndiv(res, ind.names = Y, col = col.breast)
+legend('topright', c('Before', 'After'), pch = c(16, 16), 
+       col = unique(col.breast), 
        title = "Treatment")
-palette("default")
 
 ## Second example
 \dontrun{
+## Second example
 data(liver.toxicity)
 X <- as.matrix(liver.toxicity$gene)
-Y <- liver.toxicity$treatment[, 4]
+# Y will be transformed as a factor in the function,
+# but we set it as a factor to set up the colors.
+Y <- as.factor(liver.toxicity$treatment[, 4])
 
-splsda.liver = splsda(X, Y, ncomp = 2, keepX = c(20, 20))
-col.rat <- as.numeric(as.factor(Y))
+splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
+
+col.rat <- color.mixo(Y)
+# individual name is set to the treatment
 plotIndiv(splsda.liver, col = col.rat, ind.names = Y)
 }
 }

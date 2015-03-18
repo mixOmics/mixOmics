@@ -20,7 +20,9 @@ library(mixOmics, lib.loc = 'MyR/')
 # check that version 5.0-4 is loaded
 sessionInfo() # ok mixOmics 5.0-4
 
-
+# ============================================================
+# 1 - small fix: network
+# =============================================================
 # 1- network
 # network function: v <-
 #   network default: red and green
@@ -76,3 +78,42 @@ network(toxicity.spls, comp = 1:3, threshold = 0.8,
         show.edge.labels = FALSE, interactive = FALSE)
 dev.off()
 ## End(Not run)
+
+# ============================================================
+# 1 - small fix: splsda.Rd: email from Carlos
+# =============================================================
+## First example
+data(breast.tumors)
+X <- breast.tumors$gene.exp
+# Y will be transformed as a factor in the function,
+# but we set it as a factor to set up the colors.
+Y <- as.factor(breast.tumors$sample$treatment)
+
+res <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
+
+col.breast <- color.mixo(as.numeric(Y))
+
+# individual names appear
+plotIndiv(res, ind.names = Y, col = col.breast)
+legend('topright', c('Before', 'After'), pch = c(16, 16), 
+       col = unique(col.breast), 
+       title = "Treatment")
+
+# check:color match
+data.frame(col.breast, Y)
+
+
+## Second example
+data(liver.toxicity)
+X <- as.matrix(liver.toxicity$gene)
+# Y will be transformed as a factor in the function,
+# but we set it as a factor to set up the colors.
+Y <- as.factor(liver.toxicity$treatment[, 4])
+
+splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
+
+col.rat <- color.mixo(Y)
+# individual name is set to the treatment
+plotIndiv(splsda.liver, col = col.rat, ind.names = Y)
+
+
