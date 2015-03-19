@@ -1,7 +1,7 @@
 # ----------------------------------------
 # testing few bits for the Auckland workshop
 # date: 17/02/2015
-# latest update: 
+# latest update: fixing s.match
 # ----------------------------------------
 
 setwd("~/Documents/k.lecao/Packages/mixOmics/GIT/package-mixomics")

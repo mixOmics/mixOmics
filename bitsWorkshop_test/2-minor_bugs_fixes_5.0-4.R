@@ -132,7 +132,7 @@ plotIndiv(splsda.liver, col = col.rat, ind.names = Y)
 
 
 # ============================================================
-# 3 - small fix: sgcca, email from Wenbo (?)
+# 3 - small fix: sgcca, email from Bernard Wone, 15/02/2015
 # I think there is a bug in the plotVar function because it is plotting variables not selected for block 2. The code I used to plot selected variables in block 2 is 
 # 
 # plotVar(wrap.result.sgcca, comp = c(1,2), block = 2, ncomp.select = 1, labels = TRUE, cex=0.5, col = 'blue').
@@ -176,7 +176,7 @@ help(plotVar)
 ## variable representation for objects of class 'sgcca' (or 'rgcca')
 # ----------------------------------------------------
 
-# send to wenbo with updated code:
+# send to Brnard Wone with updated code:
 source('mixOmics/R/select.var.R')
 source('mixOmics/R/plotVar.R')
 # also updated the color.mixo in plotVar, so would need source('mixOmics/R/color.mixo.R')
@@ -197,7 +197,7 @@ plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), labels = TRUE)
 title(main = c('Variables selected on components 1 and 2'))
 
 
-# end send to Wenbo
+# end send to Bernard Wone
 
 ## variable representation for objects of class 'rgcca'
 # ----------------------------------------------------

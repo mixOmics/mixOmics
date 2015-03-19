@@ -1,3 +1,21 @@
+Changes in 5.0-4
+================
+
+New features:
+-------------
+1- new set of palettes have been added to coor.jet, namely: color.spectral, color.GreenRed and color.mixo
+
+
+Bug fixes:
+----------
+1- select.var.sgcca has been fixed (the outputs were messy)
+
+
+Enhancements:
+----------
+1- network default color set to color.GreenRed
+
+
 
 
 Changes in 5.0-3
