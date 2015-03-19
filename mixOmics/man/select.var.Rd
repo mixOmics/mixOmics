@@ -97,13 +97,18 @@ design = matrix(c(0,1,1,
                   1,0,1,
                   1,1,0), ncol = 3, nrow = 3, byrow = T)
 #note: the penalty parameters need to be tuned
-wrap.result.sgcca = wrapper.sgcca(data = data, design = design, penalty = c(.3,.5, 1), 
+wrap.result.sgcca = wrapper.sgcca(data = data, design = design, penalty = c(.3,.3, 1), 
                                   ncomp = c(2, 2, 1),
                                   scheme = "centroid", verbose = FALSE)
 
-select = select.var(wrap.result.sgcca, comp = 1)
+#variables selected on component 1 for the two blocs
+select.var(wrap.result.sgcca, comp = 1, block = c(1,2))$name.var
+
+#variables selected on component 2 for each block 
+select.var(wrap.result.sgcca, comp = 2, block = c(1,2))$name.var
+
 # loading value of the variables selected on the first block
-select$value.var[[1]]
+select.var(wrap.result.sgcca, comp = 1, block = 1)$value.var
 }
 
 }

@@ -174,7 +174,7 @@ select.var.sgcca = function(object, block = NULL, comp = 1, ...){
     }   
     #store name and value of the selected variables
     for(k in 1:length(object$data)){
-      name.var[[k]] = object$names$var[keep[[k]]]
+      name.var[[k]] = names(which(keep[[k]] == TRUE))   #object$names$var[keep[[k]]]
       value.var[[k]] = object$loadings[[k]][keep[[k]], comp]
     }
   }else{ #end is.null(block)
@@ -186,12 +186,10 @@ select.var.sgcca = function(object, block = NULL, comp = 1, ...){
     }   
     l=1
     for(k in block){
-      name.var[[l]] = object$names$var[keep[[l]]]
+      name.var[[l]] = names(which(keep[[l]] == TRUE))  
       value.var[[l]] = object$loadings[[k]][keep[[l]], comp]
       l = l+1
     }
-    
-    
   } # end is.null (block)
   
   return(
