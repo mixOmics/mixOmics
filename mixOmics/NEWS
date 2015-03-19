@@ -9,7 +9,7 @@ New features:
 Bug fixes:
 ----------
 1- select.var.sgcca has been fixed (the outputs were messy)
-
+2- minor bug in plotVar.sgcca and plotVar.rgcca fixed
 
 Enhancements:
 ----------
