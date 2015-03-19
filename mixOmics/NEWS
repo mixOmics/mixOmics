@@ -3,7 +3,7 @@ Changes in 5.0-4
 
 New features:
 -------------
-1- new set of palettes have been added to coor.jet, namely: color.spectral, color.GreenRed and color.mixo
+1- new set of palettes have been added to color.jet, namely: color.spectral, color.GreenRed and color.mixo
 
 
 Bug fixes:
