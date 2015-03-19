@@ -80,7 +80,20 @@ dev.off()
 ## End(Not run)
 
 # ============================================================
-# 1 - small fix: splsda.Rd: email from Carlos
+# 2 - small fix: splsda.Rd: email from Carlos
+# 
+# Carlos email
+# . I was using the example with the breast.tumors dataset available at http://127.0.0.1:30821/library/mixOmics/html/plsda.html
+# 
+# and I think there's an error in the legend plotting, since the points that belong to the before treatment appear as after treatment and viceversa.
+# 
+# I guess it's because when the color palette is specified with
+# palette(c("red", "blue"))
+# 
+# the "After" points are assigned red and the "Before" points are colored with blue. And in the legend the color blue shows first so it is labeled as "After".
+# 
+# For example the point 23 is colored blue and labeled as After treatment in the legend, but in the raw data it's assigned as before treatment.
+
 # =============================================================
 ## First example
 data(breast.tumors)
@@ -115,5 +128,100 @@ splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
 col.rat <- color.mixo(Y)
 # individual name is set to the treatment
 plotIndiv(splsda.liver, col = col.rat, ind.names = Y)
+
+
+
+# ============================================================
+# 3 - small fix: sgcca, email from Wenbo (?)
+# I think there is a bug in the plotVar function because it is plotting variables not selected for block 2. The code I used to plot selected variables in block 2 is 
+# 
+# plotVar(wrap.result.sgcca, comp = c(1,2), block = 2, ncomp.select = 1, labels = TRUE, cex=0.5, col = 'blue').
+# 
+# If I look at the loadings for that block and comp, some of those variables plotted have zero loading values.
+# =============================================================
+
+help(wrapper.sgcca)
+
+data(nutrimouse)
+# need to unmap the Y factor diet
+Y = unmap(nutrimouse$diet)
+# set up the data as list
+data = list(nutrimouse$gene, nutrimouse$lipid,Y)
+
+# set up the design matrix:
+# with this design, gene expression and lipids are connected to the diet factor
+# design = matrix(c(0,0,1,
+#                   0,0,1,
+#                   1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+
+# with this design, gene expression and lipids are connected to the diet factor
+# and gene expression and lipids are also connected
+design = matrix(c(0,1,1,
+                  1,0,1,
+                  1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+
+
+
+#note: the penalty parameters will need to be tuned
+wrap.result.sgcca = wrapper.sgcca(data = data, design = design, penalty = c(.3,.3, 1), 
+                                  ncomp = c(2, 2, 1),
+                                  scheme = "centroid", verbose = FALSE)
+wrap.result.sgcca
+#did the algo converge?
+wrap.result.sgcca$crit  # yes
+
+
+
+help(plotVar)
+## variable representation for objects of class 'sgcca' (or 'rgcca')
+# ----------------------------------------------------
+
+# send to wenbo with updated code:
+source('mixOmics/R/select.var.R')
+source('mixOmics/R/plotVar.R')
+# also updated the color.mixo in plotVar, so would need source('mixOmics/R/color.mixo.R')
+
+#variables selected on component 1 for the two blocs
+select.var(wrap.result.sgcca, comp = 1, block = c(1,2))$name.var
+
+#variables selected on component 2 for each block 
+select.var(wrap.result.sgcca, comp = 2, block = c(1,2))$name.var
+
+
+plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), ncomp.select = c(1,1), labels = TRUE)
+title(main = c('Variables selected on component 1 only'))
+plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), ncomp.select = c(2,2), labels = TRUE)
+title(main = c('Variables selected on component 2 only'))
+# -> this one shows the variables selected on both components
+plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), labels = TRUE)
+title(main = c('Variables selected on components 1 and 2'))
+
+
+# end send to Wenbo
+
+## variable representation for objects of class 'rgcca'
+# ----------------------------------------------------
+data(nutrimouse)
+# need to unmap the Y factor diet
+Y = unmap(nutrimouse$diet)
+# set up the data as list
+data = list(nutrimouse$gene, nutrimouse$lipid,Y)
+# with this design, gene expression and lipids are connected to the diet factor
+# design = matrix(c(0,0,1,
+#                   0,0,1,
+#                   1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+
+# with this design, gene expression and lipids are connected to the diet factor
+# and gene expression and lipids are also connected
+design = matrix(c(0,1,1,
+                  1,0,1,
+                  1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+#note: the tau parameter is the regularization parameter
+wrap.result.rgcca = wrapper.rgcca(data = data, design = design, tau = c(1, 1, 0), 
+                                  ncomp = c(2, 2, 1),
+                                  scheme = "centroid", verbose = FALSE)
+#wrap.result.rgcca
+plotVar(wrap.result.rgcca, comp = c(1,2), block = c(1,2))
+plotVar(wrap.result.rgcca, comp = c(1,2), block = c(1,2), labels = TRUE)
 
 
