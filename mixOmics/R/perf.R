@@ -38,6 +38,7 @@ perf.pls <-
            validation = c("Mfold", "loo"),
            folds = 10,
            progressBar = TRUE,
+           near.zero.var = FALSE,
            ...)
   {
     
@@ -68,6 +69,22 @@ perf.pls <-
     
     if (any(is.na(X)) || any(is.na(Y))) 
       stop("Missing data in 'X' and/or 'Y'. Use 'nipals' for dealing with NAs.")
+    
+    # -------------------------------------
+    # added: first check for near zero var on the whole data set
+    nzv = nearZeroVar(X)
+    if (length(nzv$Position > 0))
+    {
+      warning("Zero- or near-zero variance predictors.\nReset predictors matrix to not near-zero variance predictors.\nSee $nzv for problematic predictors.")
+      X = X[, -nzv$Position, drop=TRUE]
+      
+      if(ncol(X)==0)
+      {
+        stop("No more predictors after Near Zero Var has been applied!")
+      }
+      
+    }
+    # and then we start from the X data set with the nzv removed
     
     
     #-- define  M fold or loo cross validation --------------------#
@@ -132,9 +149,10 @@ perf.pls <-
         
         #-- pls --#
         pls.res = pls(X = X.train, Y = Y.train, ncomp = ncomp, 
-                      mode = mode, max.iter = max.iter, tol = tol)
+                      mode = mode, max.iter = max.iter, tol = tol, near.zero.var = near.zero.var)
         
         if (!is.null( pls.res$nzv$Position)) X.test = X.test[, - pls.res$nzv$Position]
+        
         # in the predict function, X.test is already normalised w.r.t to training set X.train, so no need to do it here
         Y.hat = predict( pls.res, X.test)$predict
         
@@ -204,6 +222,8 @@ perf.pls <-
     res$RSS.indiv=RSS.indiv
     res$PRESS.inside=PRESS.inside
     res$RSS=RSS
+     # added
+     res$nzvX = nzv$Position
     
     method = "pls.mthd"
     class(res) = c("perf", method)
@@ -221,6 +241,7 @@ perf.spls <-
            validation = c("Mfold", "loo"),
            folds = 10,
            progressBar = TRUE,
+           near.zero.var = FALSE,
            ...)
   {
     
@@ -262,6 +283,24 @@ perf.spls <-
     
     if (any(is.na(X)) || any(is.na(Y))) 
       stop("Missing data in 'X' and/or 'Y'. Use 'nipals' for dealing with NAs.")
+    
+    
+    # -------------------------------------
+    # added: first check for near zero var on the whole data set
+    nzv = nearZeroVar(X)
+    if (length(nzv$Position > 0))
+    {
+      warning("Zero- or near-zero variance predictors.\nReset predictors matrix to not near-zero variance predictors.\nSee $nzv for problematic predictors.")
+      X = X[, -nzv$Position, drop=TRUE]
+      
+      if(ncol(X)==0)
+      {
+        stop("No more predictors after Near Zero Var has been applied!")
+      }
+      
+    }
+    # and then we start from the X data set with the nzv removed
+    
     
     
     #-- M fold or loo cross validation --#
@@ -430,6 +469,9 @@ perf.spls <-
     res$RSS.indiv=RSS.indiv
     res$PRESS.inside=PRESS.inside
     res$RSS=RSS
+    
+    # added
+    res$nzvX = nzv$Position
     
     method = "pls.mthd"
     class(res) = c("perf", method)
