@@ -364,7 +364,7 @@ perf.spls <-
         
         #-- spls --#
         # added the near.zero.var option
-        spls.res = spls(X.train, Y.train, ncomp, mode, max.iter, tol, keepX=keepX, keepY=keepY, near.zero.var = nearZeroVar)     
+        spls.res = spls(X.train, Y.train, ncomp, mode, max.iter, tol, keepX=keepX, keepY=keepY, near.zero.var = near.zero.var)     
         
         # added: record selected features in each set
         for(k in 1:ncomp){
