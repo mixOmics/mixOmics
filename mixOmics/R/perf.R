@@ -488,7 +488,8 @@ perf.plsda <-
            method.predict = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
            validation = c("Mfold", "loo"),
            folds = 10,
-           progressBar = TRUE, ...) 
+           progressBar = TRUE, 
+           near.zero.var = FALSE,...) 
   {
     
     #-- validation des arguments --#
@@ -510,6 +511,24 @@ perf.plsda <-
     }else{
       nmthdd = length(method.predict)
     }
+    
+    
+    # -------------------------------------
+    # added: first check for near zero var on the whole data set
+    nzv = nearZeroVar(X)
+    if (length(nzv$Position > 0))
+    {
+      warning("Zero- or near-zero variance predictors.\nReset predictors matrix to not near-zero variance predictors.\nSee $nzv for problematic predictors.")
+      X = X[, -nzv$Position, drop=TRUE]
+      
+      if(ncol(X)==0)
+      {
+        stop("No more predictors after Near Zero Var has been applied!")
+      }
+      
+    }
+    # and then we start from the X data set with the nzv removed
+    
     
     
     error.fun = function(x, y) {
@@ -565,7 +584,7 @@ perf.plsda <-
       
       
       plsda.res = plsda(X = X.train, Y = Y.train, ncomp = ncomp, 
-                        max.iter = max.iter, tol = tol)
+                        max.iter = max.iter, tol = tol, near.zero.var = near.zero.var)
       
       if (!is.null(plsda.res$nzv$Position)) X.test = X.test[, -plsda.res$nzv$Position]
       Y.predict = predict(plsda.res, X.test, method = method.predict)$class
@@ -584,6 +603,9 @@ perf.plsda <-
     
     result = list()
     result$error.rate = error.rate
+    # added
+    result$nzvX = nzv$Position
+    
     
     method = "plsda.mthd"
     class(result) = c("perf", method)
@@ -598,7 +620,8 @@ perf.splsda <- function(object,
                         method.predict = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),     
                         validation = c("Mfold", "loo"),                                          
                         folds = 10,                                                              
-                        progressBar = TRUE, ...)                                                        
+                        progressBar = TRUE, 
+                        near.zero.var = FALSE,...)                                                        
 {
   
   #-- initialising arguments --#
@@ -624,6 +647,25 @@ perf.splsda <- function(object,
   method.predict = match.arg(method.predict, choices = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), several.ok = TRUE)
   if (any(method.predict == "all")) nmthdd = 3 
   else nmthdd = length(method.predict)  
+  
+  
+  # -------------------------------------
+  # added: first check for near zero var on the whole data set
+  nzv = nearZeroVar(X)
+  if (length(nzv$Position > 0))
+  {
+    warning("Zero- or near-zero variance predictors.\nReset predictors matrix to not near-zero variance predictors.\nSee $nzv for problematic predictors.")
+    X = X[, -nzv$Position, drop=TRUE]
+    
+    if(ncol(X)==0)
+    {
+      stop("No more predictors after Near Zero Var has been applied!")
+    }
+    
+  }
+  # and then we start from the X data set with the nzv removed
+  
+  
   
   error.fun = function(x, y) {
     error.vec = sweep(x, 1, y, FUN = "-")
@@ -678,7 +720,7 @@ perf.splsda <- function(object,
     Y.train = Y[-omit]
     X.test = matrix(X[omit, ], nrow = length(omit))
     
-    spls.res = splsda(X.train, Y.train, ncomp, max.iter, tol, keepX=keepX)     ## change
+    spls.res = splsda(X.train, Y.train, ncomp, max.iter, tol, keepX=keepX, near.zero.var = near.zero.var)  
     # added: record selected features
     for(k in 1:ncomp){
       features[[k]] = c(unlist(features[[k]]), select.var(spls.res, comp = k)$name)
@@ -723,6 +765,9 @@ perf.splsda <- function(object,
   result$error.rate = res
   result$features$stable = list.features
   result$features$final = features.final
+  
+  # added
+  result$nzvX = nzv$Position
   
   
   method = "plsda.mthd"
