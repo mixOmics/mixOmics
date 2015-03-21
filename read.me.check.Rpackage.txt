@@ -1,0 +1,28 @@
+Comment verifier que, après mes changements, le package mixOmics compile, ne donne pas d’erreurs (grave ou non) et s’installe correctement.
+
+On se place sur le nouveau module a tester, qui contient tous les codes mixOmics de devel (se mettre a jour, voir #step 10 du read.me) plus les nouveaux codes (nouveaux scripts ou juste changements de scripts existants)
+# git checkout new_module
+
+on construit le .tar.gz
+R CMD build mixOmics
+
+On verifie que le package compile sans erreur, l’option --as-cran n’est pas obligatoire mais avant de faire une pull requests il faut la mettre (il y a plus de verifications)
+R CMD check mixOmics_5.0-4.tar.gz  --as-cran
+
+
+Si des erreurs sont presentes, le build ou le check le dira.
+
+
+Quand on update un scripts, rajoute un module, il faut penser a:
+•	update NAMESPACE
+Ceci passe par ne pas oublier d'exporter les nouvelles fonctions
+export(ma_nouvelle_fonction)
+Si une nouvelle dependence a un package est necessaire:
+import(nouveau_package)
+•	update DESCRIPTION
+Si une nouvelle dependence a un package est necessaire:
+imports: nouveau_package
+•	update fichier d'aide
+mixOmics/man/nouvelle_fonction.Rd
+
+
