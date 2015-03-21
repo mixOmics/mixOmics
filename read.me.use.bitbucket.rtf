@@ -1,8 +1,7 @@
-{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf210
+{\rtf1\ansi\ansicpg1252\cocoartf1344\cocoasubrtf720
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;\red102\green177\blue50;\red85\green142\blue40;\red63\green105\blue30;
-}
-\paperw11900\paperh16840\margl1440\margr1440\vieww20100\viewh14600\viewkind0
+{\colortbl;\red255\green255\blue255;\red102\green177\blue50;\red63\green105\blue30;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww21100\viewh16900\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
 \f0\fs24 \cf0 collaborateurs:\
@@ -107,7 +106,7 @@ De la meme mani\'e8re, tous les c
 \b mixOmics/man
 \b0 \
 (idem pour les rda si vous rajoutez des donnees .rda dans data/ et fichiers help associes).\
-Pourquoi? comme ca les admin peuvent retester la compilation CRAN du package.\
+Pourquoi? comme ca vous et les admin peuvent retester la compilation CRAN du package.\
 Les 
 \b fichiers .Rd sont importants
 \b0  pour \'e9viter une charge de travail (deja assez lourde) lors de la phase de verification et compil des admin. \
@@ -115,10 +114,10 @@ Les
 
 \b \cf2 Mais ou mettre mes fichiers tests pour montrer ce que j\'92ai deja teste?
 \b0 \
-Vous cr\'e9erez un repertoire ma_branche_testing ou vous pourrez mettre vos scripts R.\
+Vous cr\'e9erez un repertoire test_scripts/ma_branche_testing ou vous pourrez mettre vos scripts R.\
 
 \b Pourquoi lorsque je copie ma branche de devel (au depart) je recois aussi un certain nb de repertoires appeles 
-\b0 branches_testing?\
+\b0 test_scripts/branches_testing?\
 Ceci est pour montrer au autres contributeurs ce qui a deja ete fait et teste.\cf0 \
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
@@ -129,8 +128,12 @@ Ceci est pour montrer au autres contributeurs ce qui a deja ete fait et teste.\c
 \b0\fs24 \cf2 Le fichier .gitignore vous permettra de lister les repertoire qui ne doivent pas etre pris en compte lors du check status.\
 Utilisez\
 vi .gitignore \
-puis ajoutez votre liste de repertoire a ne pas prendre en compte (pour ceux qui ne sont pas familie avec l\'92editeur vi, google est votre meilleur ami, en gros les commandes principales sont: i (pour insert), bouton echap (une fois l insertion faite) et \'91:wq\'92 pour sauver et quitter.\cf0 \
-\
+puis ajoutez votre liste de repertoire a ne pas prendre en compte (pour ceux qui ne sont pas familie avec l\'92editeur vi, google est votre meilleur ami, en gros les commandes principales sont: i (pour insert), bouton echap (une fois l insertion faite) et \'91:wq\'92 pour sauver et quitter.\
+Il est toutefois plus pratique de ne mettre dans votre dossier git que des fichiers que vous voulez envoyer sur bitbucket. Plusieurs raisons:\
+- vos fichiers vont etre embettants lors de changements de branche (git checkout blabla)\
+- merger avec des modifications du .gitignore entraine un conflit qu'il faut resoudre manuellement\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
 \b\fs28 \cf0 step5: je suis perdue, ou suis-je?\
@@ -163,14 +166,11 @@ Vous pouvez modifier les fichiers (code/help files/etc) comme d'habitude avec vo
 \i\b git commit -m "j'ai fait telles modifications sur tel fichier"
 \i0\b0 \
 
-\i\b git push -u origin le_nom_de_la_branche_sur_laquelle_vous_envoyez_les_modifications 
-\b0 \cf3 le_meme_nom_de_branche
-\i0 \cf0 \
-par exemple, j'etais sur la branche new_module, j'ai modifie un fichier et a apres git add, git commit, je fais git push -u origin new_module \cf2 new_module\cf4 \
+\i\b git push -u origin le_nom_de_la_branche_sur_laquelle_vous_envoyez_les_modifications
+\i0\b0 \
+par exemple, j'etais sur la branche new_module, j'ai modifie un fichier et a apres git add, git commit, je fais git push -u origin new_module\cf3 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-\cf2 Ceci va permettre de faire une copie de votre branche sur votre bibucket local sur le bibucket admin. Une nouvelle branche new_module apparaitra dans le bitbucket admin, ce qui permettra aux admin de tester la branche avant de la merger sur devel\
-Florian: dans ce cas on skip step 8?)\cf0 \
-\
+\cf0 \
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
@@ -182,7 +182,9 @@ Sur le site bitbucket, dans votre repo mixOmics, le menu a gauche "
 \i\b create pull request
 \i0\b0 ", remplissez quelle branche vous voulez merger avec quelle branche.\
 Ce sera genre votre_pseudo/mixomics  -> klecao/mixomics \
-La plupart du temps ce sera ma_nouvelle_branche_ou_tout_marche vers devel, ou vers une autre branche (surtout pas master)\
+La plupart du temps ce sera \cf2 new_module\cf0  vers \cf2 new_module\cf0  (surtout pas master)\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf2 Ceci va permettre de faire une copie de votre branche de votre bibucket local sur le bibucket admin. Une nouvelle branche new_module apparaitra dans le bitbucket admin, ce qui permettra aux admin de tester la branche avant de la merger sur devel\cf0 \
 \
 entre la liste des gens du groupe dans "reviewers"\
 \
