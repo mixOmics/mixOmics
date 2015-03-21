@@ -18,12 +18,12 @@ PLS-DA and sparse PLS-DA models using various criteria.
 \method{perf}{pls}(object, 
             criterion = c("all", "MSEP", "R2", "Q2"),  
             validation = c("Mfold", "loo"),
-           folds = 10, progressBar = TRUE, \ldots)	
+           folds = 10, progressBar = TRUE, near.zero.var = FALSE, \ldots)	
 
 \method{perf}{spls}(object, 
           criterion = c("all", "MSEP", "R2", "Q2"), 
           validation = c("Mfold", "loo"), 
-          folds = 10, progressBar = TRUE, \ldots)
+          folds = 10, progressBar = TRUE, near.zero.var = FALSE, \ldots)
 
 \method{perf}{plsda}(object, 
           method.predict = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
@@ -45,7 +45,8 @@ PLS-DA and sparse PLS-DA models using various criteria.
     \code{"loo"} (see below). Default is \code{"Mfold"}.}
   \item{folds}{the folds in the Mfold cross-validation. See Details.}
   \item{progressBar}{by default set to \code{TRUE} to output the progress bar of the computation.}
-  \item{...}{arguments to pass to \code{\link{nearZeroVar}}.}
+  \item{near.zero.var}{by default (set to \code{FALSE)}), the nearZeroVar function is applied by default on the whole data set. If set to \code{TRUE}, nearZeroVar is also applied on each fold.}
+  \item{...}{other arguments to pass to the s/PLS/DA functions.}
 }
 
 \details{

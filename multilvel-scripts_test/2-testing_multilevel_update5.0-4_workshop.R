@@ -7,6 +7,9 @@
 # ================================================================
 # Testing for workshop material (starting from version 07/10/2014)
 # ================================================================
+
+
+# load the package
 detach("package:mixOmics", unload=TRUE)
 
 library(mixOmics, lib.loc = 'MyR/')

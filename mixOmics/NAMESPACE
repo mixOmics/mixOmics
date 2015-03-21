@@ -3,13 +3,16 @@ import(MASS, lattice, RGCCA, igraph, rgl, pheatmap)
 
 export(
 bin.color, 
+color.jet,
+color.GreenRed,
+color.spectral,
+color.mixo,
 cim,  
 ica.par,
 ica.def,
 image.tune.rcc, 
 imgCor,
 ipca,
-jet.colors,
 loo,
 mat.rank, 
 map,

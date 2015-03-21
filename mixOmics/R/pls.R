@@ -63,10 +63,10 @@ function(X,
         {
             warning("Zero- or near-zero variance predictors.\nReset predictors matrix to not near-zero variance predictors.\nSee $nzv for problematic predictors.")
             X = X[, -nzv$Position,drop=FALSE]
-            
+
             if(ncol(X)==0)
             {
-                stop("No more predictors")
+                stop("No more predictors after Near Zero Var has been applied!")
             }
             
         }

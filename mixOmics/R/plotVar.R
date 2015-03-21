@@ -1446,7 +1446,7 @@ plotVar.sgcca <-
            labels = FALSE,
            pch = c(16,17), 
            cex =  c(0.5, 0.5), 
-           col = c('green', 'blue'),
+           col =  color.mixo(2),   #c('green', 'blue'),
            font = c(2,3),
            rad.in = 0.5, 
            ...) 
@@ -1468,10 +1468,12 @@ plotVar.sgcca <-
     if(all(ncomp.select != comp))
       stop("All argument from 'ncomp.select' differ from 'comp'")
     
-    if(any(ncomp.select > comp))
-      stop("At least one argument from 'ncomp.select' is greater than 'comp'")
+    #KA changed condition
+    #if(any(ncomp.select > comp))
+    if(any(ncomp.select > object$ncomp[comp]))
+      stop("At least one argument from 'ncomp.select' is greater than the actual number of components in the sgcca model")
     
-    cat('PlotVar only display variables selected on components', ncomp.select, '\n')
+    cat('PlotVar will only display variables selected on components', ncomp.select[1], 'and', ncomp.select[2], '\n')
     
     # check that the user did not enter extra arguments #
     # --------------------------------------------------#
@@ -1637,7 +1639,7 @@ plotVar.rgcca <-
            labels = FALSE,
            pch = c(16,17), 
            cex =  c(0.5, 0.5), 
-           col = c('green', 'blue'),
+           col =  color.mixo(2),       #c('green', 'blue'),
            font = c(2,3),
            rad.in = 0.5, 
            ...) 
