@@ -28,12 +28,12 @@ PLS-DA and sparse PLS-DA models using various criteria.
 \method{perf}{plsda}(object, 
           method.predict = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
           validation = c("Mfold", "loo"), 
-          folds = 10, progressBar = TRUE, \ldots)	
+          folds = 10, progressBar = TRUE, near.zero.var = FALSE, \ldots)	
 
 \method{perf}{splsda}(object, 
           method.predict = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
           validation = c("Mfold", "loo"),  
-          folds = 10, progressBar = TRUE, \ldots)		  
+          folds = 10, progressBar = TRUE, near.zero.var = FALSE, \ldots)		  
 }
 
 \arguments{
