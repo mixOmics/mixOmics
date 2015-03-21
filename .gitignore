@@ -1,9 +1,6 @@
 .DS_Store
-<<<<<<< HEAD
 .Rproj.user
-graphics/
-=======
->>>>>>> bitsWorkshop
 mixOmics.Rcheck/
 MyR/
-
+.tar.gz
+.Rhistory

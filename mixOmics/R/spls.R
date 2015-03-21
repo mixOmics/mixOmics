@@ -1,7 +1,7 @@
 # Copyright (C) 2009 
-# Seébastien Deéjean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+# Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
 # Ignacio Gonzàlez, Genopole Toulouse Midi-Pyrenees, France
-# Kim-Anh Lê Cao, French National Institute for Agricultural Research, Toulouse France and 
+# Kim-Anh Le Cao, French National Institute for Agricultural Research, Toulouse France and 
 # The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 # Florian Rohart,  Australian Institute for Bioengineering and Nanotechnology, The University of Queensland, Brisbane, QLD 
 #
@@ -33,30 +33,19 @@ function(X,
 {
 
     #-- validation des arguments --#
-    if (length(dim(X)) != 2)
-    {
-        stop("'X' must be a numeric matrix.")
-    }
+    if (length(dim(X)) != 2) {stop("'X' must be a numeric matrix.")}
     
     X = as.matrix(X)
     Y = as.matrix(Y)
     
-    if (!is.numeric(X) || !is.numeric(Y))
-    {
-        stop("'X' and/or 'Y' must be a numeric matrix.")
-    }
+    if (!is.numeric(X) || !is.numeric(Y)) {stop("'X' and/or 'Y' must be a numeric matrix.")}
     
     n = nrow(X)
     q = ncol(Y)
     
-    if ((n != nrow(Y)))
-    {
-        stop("unequal number of rows in 'X' and 'Y'.")
-    }
-    if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0)
-    {
-        stop("invalid number of variates, 'ncomp'.")
-    }
+    if ((n != nrow(Y))) {stop("unequal number of rows in 'X' and 'Y'.")}
+    
+    if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0) {stop("invalid number of variates, 'ncomp'.")}
     
     if(near.zero.var == TRUE)
     {
@@ -66,10 +55,7 @@ function(X,
             warning("Zero- or near-zero variance predictors.\nReset predictors matrix to not near-zero variance predictors.\nSee $nzv for problematic predictors.")
             X = X[, -nzv$Position,drop=FALSE]
             
-            if(ncol(X)==0)
-            {
-                stop("No more predictors")
-            }
+            if(ncol(X)==0) {stop("No more predictors")}
             
         }
     }
@@ -84,22 +70,11 @@ function(X,
     }
     
 	
-    if (length(keepX) != ncomp)
-    {
-        stop("length of 'keepX' must be equal to ", ncomp, ".")
-    }
-    if (length(keepY) != ncomp)
-    {
-        stop("length of 'keepY' must be equal to ", ncomp, ".")
-    }
-    if (any(keepX > p))
-    {
-        stop("each component of 'keepX' must be lower or equal than ", p, ".")
-    }
-    if (any(keepY > q))
-    {
-        stop("each component of 'keepY' must be lower or equal than ", q, ".")
-    }
+    if (length(keepX) != ncomp) {stop("length of 'keepX' must be equal to ", ncomp, ".")}
+    
+    if (length(keepY) != ncomp) {stop("length of 'keepY' must be equal to ", ncomp, ".")}
+    if (any(keepX > p)) {stop("each component of 'keepX' must be lower or equal than ", p, ".")}
+    if (any(keepY > q)) {stop("each component of 'keepY' must be lower or equal than ", q, ".")}
     mode = match.arg(mode)
     
     #-- initialisation des matrices --#
@@ -167,15 +142,9 @@ function(X,
          
         #-- svd de M = t(X)*Y --#
         X.aux = X.temp		
-        if (na.X)
-        {
-            X.aux[is.na.X] = 0
-        }
+        if (na.X) { X.aux[is.na.X] = 0}
         Y.aux = Y.temp
-        if (na.Y)
-        {
-            Y.aux[is.na.Y] = 0
-        }
+        if (na.Y) {Y.aux[is.na.Y] = 0}
         
         M = crossprod(X.aux, Y.aux)
         svd.M = svd(M, nu = 1, nv = 1)
@@ -226,12 +195,16 @@ function(X,
                 b = t(Y.temp) %*% t #/ drop(crossprod(t)), useless because b is scaled after soft_thresholding
             }
 
+
+            # note on the variable selection below. Before 5.0-4, the selection was done so that the keepX/keepY highest coefficients were the only one not put to 0.
+            # However, a bug occured with ties. It is now changed so that all ties follow the same treatment.
+            # If keepX=1 and two ties, then two variables are kept at this iteration
             if(nx!=0)
             {
                 absa=abs(a)
-                if(sum(rank(absa)<=nx)>0)# if nx is not high enough, we don't put any coefficients to zero            
+                if(sum(rank(absa)<=nx)>0)# if nx is not high enough, we don't put any coefficients to zero
                 {
-                    a=ifelse(absa>absa[which(rank(absa)==max(rank(absa)[which(rank(absa)<=(nx))]))[1]],
+                   a=ifelse(absa>absa[which(rank(absa)==max(rank(absa)[which(rank(absa)<=(nx))]))[1]],
                     (absa-absa[which(rank(absa)==max(rank(absa)[which(rank(absa)<=(nx))]))[1]])*sign(a),0)
                 }
             }
