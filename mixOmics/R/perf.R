@@ -219,10 +219,9 @@ perf.pls <-
     Q2.total = matrix(1 - rowSums(PRESS.inside) / rowSums(RSS[-(ncomp+1), , drop = FALSE]), nrow = 1, ncol = ncomp,
                 dimnames = list("Q2.total", paste0(1:ncomp, " comp")))
     
-    colnames(MSEP) = colnames(R2) = rownames(Q2.inside) = paste('ncomp', c(1:ncomp), sep = " ")
     # set up dimnames
-    rownames(MSEP) = rownames(R2) = rownames(Q2) = paste('ncomp', c(1:ncomp), sep = " ")
-    colnames(MSEP) = colnames(R2) = colnames(Q2) = object$names$Y
+    colnames(MSEP) = colnames(R2) = rownames(Q2.inside) = paste('ncomp', c(1:ncomp), sep = " ")
+    rownames(MSEP) = rownames(R2) = colnames(Q2.inside) = object$names$Y
     
     if (progressBar == TRUE) cat('\n')
 
@@ -231,14 +230,14 @@ perf.pls <-
     res$MSEP = MSEP
     res$R2 = R2
     res$Q2 = t(Q2.inside)
-   	res$Q2.total =  Q2.total
+   	res$Q2.total =  t(Q2.total)
     res$RSS = RSS
     res$PRESS.inside = PRESS.inside
     res$press.mat = press.mat
     res$RSS.indiv = RSS.indiv
     res$nzvX = nzv$Position
 
-    class(res) = c("perf", "pls.perf")
+    class(res) = c("perf", "pls.mthd")
     return(invisible(res))
   }
 
@@ -400,7 +399,7 @@ perf.spls <-
           featuresY[[k]] = c(unlist(featuresY[[k]]), select.var(spls.res, comp = k)$name.Y)
         }
         
-        if (!is.null( pls.res$nzv$Position)) X.test = X.test[, - spls.res$nzv$Position,drop=FALSE]
+        if (!is.null( spls.res$nzv$Position)) X.test = X.test[, - spls.res$nzv$Position,drop=FALSE]
         
         # in the predict function, X.test is already normalised w.r.t to training set X.train, so no need to do it here
         Y.hat = predict( spls.res, X.test)$predict #used for Ypred and MSEP.mat
@@ -448,10 +447,9 @@ perf.spls <-
     Q2.total = matrix(1 - rowSums(PRESS.inside) / rowSums(RSS[-(ncomp+1), , drop = FALSE]), nrow = 1, ncol = ncomp,
     dimnames = list("Q2.total", paste0(1:ncomp, " comp")))
     
-    colnames(MSEP) = colnames(R2) = rownames(Q2.inside) = paste('ncomp', c(1:ncomp), sep = " ")
     # set up dimnames
-    rownames(MSEP) = rownames(R2) = rownames(Q2) = paste('ncomp', c(1:ncomp), sep = " ")
-    colnames(MSEP) = colnames(R2) = colnames(Q2) = object$names$Y
+    colnames(MSEP) = colnames(R2) = rownames(Q2.inside) = paste('ncomp', c(1:ncomp), sep = " ")
+    rownames(MSEP) = rownames(R2) = colnames(Q2.inside) = object$names$Y
     
     if (progressBar == TRUE) cat('\n')
 
@@ -478,10 +476,10 @@ perf.spls <-
 
     
     res = list()
-    res$MSEP = t(MSEP)
-    res$R2 = t(R2)
-    res$Q2 = t(Q2)
-   	res$Q2.total =  Q2.total
+    res$MSEP = MSEP
+    res$R2 = R2
+    res$Q2 = t(Q2.inside)
+   	res$Q2.total =  t(Q2.total)
     res$RSS = RSS
     res$PRESS.inside = PRESS.inside
     res$press.mat = press.mat
@@ -494,7 +492,7 @@ perf.spls <-
     res$features$final.Y = features.final.Y
     res$nzvX = nzv$Position
     
-    class(res) = c("perf", "spls.perf")
+    class(res) = c("perf", "spls.mthd")
     return(invisible(res))
 }
 
@@ -788,8 +786,8 @@ perf.splsda <- function(object,
   result$nzvX = nzv$Position
   
   
-  method = "plsda.mthd"
-  result$meth = "splsda.mthd"
+  method = "splsda.mthd"
+  #result$meth = "splsda.mthd"
   class(result) = c("perf", method)
   #updated outputs
   return(invisible(result))

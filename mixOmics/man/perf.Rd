@@ -15,17 +15,13 @@ PLS-DA and sparse PLS-DA models using various criteria.
 
 \usage{
            
-\method{perf}{pls}(object, 
-            criterion = c("all", "MSEP", "R2", "Q2"),  
-            validation = c("Mfold", "loo"),
+\method{perf}{pls}(object,validation = c("Mfold", "loo"),
            folds = 10, progressBar = TRUE, near.zero.var = FALSE, \ldots)	
 
-\method{perf}{spls}(object, 
-          criterion = c("all", "MSEP", "R2", "Q2"), 
-          validation = c("Mfold", "loo"), 
+\method{perf}{spls}(object,validation = c("Mfold", "loo"),
           folds = 10, progressBar = TRUE, near.zero.var = FALSE, \ldots)
 
-\method{perf}{plsda}(object, 
+\method{perf}{plsda}(object,
           method.predict = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
           validation = c("Mfold", "loo"), 
           folds = 10, progressBar = TRUE, near.zero.var = FALSE, \ldots)	
@@ -39,7 +35,6 @@ PLS-DA and sparse PLS-DA models using various criteria.
 \arguments{
   \item{object}{object of class inheriting from \code{"pls"}, \code{"plsda"}, 
     \code{"spls"} or \code{"splsda"}. The function will retrieve some key parameters stored in that object.}
-    \item{criterion}{only applies to object inheriting from \code{"pls"}, and \code{"spls"}, the criteria measures to be calculated (see details). Can be set to either \code{"all"}, \code{"MSEP"}, \code{"R2"}, \code{"Q2"}. By default set to \code{"all"}}
   \item{method.predict}{only applies to an object inheriting from \code{"plsda"} or \code{"splsda"} to evaluate the classification performance of the model. Should be a subset of \code{"max.dist"}, \code{"centroids.dist"}, \code{"mahalanobis.dist"}. Default is \code{"all"}. See \code{\link{predict}}.}
   \item{validation}{character.  What kind of (internal) validation to use, matching one of \code{"Mfold"} or 
     \code{"loo"} (see below). Default is \code{"Mfold"}.}
@@ -119,8 +114,8 @@ liver.val <- perf(liver.pls, validation = "Mfold", folds = 5)
 # Q2 total should decrease until it reaches a threshold
 liver.val$Q2.total
 
-# ncomp = 3 is enough
-plot(liver.val$Q2.total, type = 'l', col = 'red', ylim = c(-0.1, 0.5), 
+# ncomp = 2 is enough
+plot(liver.val$Q2.total, type = 'l', col = 'red', ylim = c(-0.5, 0.5),
 	xlab = 'PLS components', ylab = 'Q2 total')
 abline(h = 0.0975, col = 'darkgreen')
 legend('topright', col = c('red', 'darkgreen'), legend = c('Q2 total', 'threshold 0.0975')
@@ -145,7 +140,7 @@ title('Liver toxicity PLS 5-fold, MSEP values')
 ncomp = 7
 # first, learn the model on the whole data set
 model.spls = spls(X, Y, ncomp = ncomp, mode = 'regression',
-	 keepX = c(rep(5, ncomp)), keepY = c(rep(2,ncomp)))
+	 keepX = c(rep(10, ncomp)), keepY = c(rep(4,ncomp)))
 
 
 # with leave-one-out cross validation
@@ -158,6 +153,7 @@ model.spls.loo.val$Q2.total
 # R2:we can see how the performance degrades when ncomp increases
 # results are similar to 5-fold
 model.spls.loo.val$R2
+plot(model.spls.loo.val, criterion="R2")
 
 
 ## validation for objects of class 'splsda' (classification)
