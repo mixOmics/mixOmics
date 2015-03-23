@@ -33,7 +33,7 @@ title('Liver toxicity PLS 5-fold, MSEP values')
 ncomp = 7
 # first, learn the model on the whole data set
 model.spls = spls(X, Y, ncomp = ncomp, mode = 'regression',
-keepX = c(rep(10, ncomp)), keepY = c(rep(4,ncomp)))
+keepX = c(rep(100, ncomp)), keepY = c(rep(4,ncomp)))
 # with leave-one-out cross validation
 set.seed(45)
 model.spls.loo.val <- perf(model.spls, validation = "loo")
