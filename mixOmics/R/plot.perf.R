@@ -34,7 +34,8 @@ function (x,
 {
 
     #-- plot for pls and spls ----------------------------------------#
-    if (any(class(x) == "pls.mthd") | any(class(x) == "spls.mthd")) {
+    if (any(class(x) == "pls.mthd") | any(class(x) == "spls.mthd"))
+    {
          
         if (!any(criterion %in% c("MSEP", "RMSEP", "R2", "Q2")) || missing(criterion)) 
             stop("Choose a validation criterion: MSEP, RMSEP, R2 or Q2.")
@@ -42,7 +43,7 @@ function (x,
 		 
         Q2.total = NULL
         if ((criterion == "Q2") & is.list(y)) {
-            Q2.total = y$total
+            Q2.total = y$Q2.total
             y = y$variables
         }
         	
@@ -89,11 +90,12 @@ function (x,
     } # end plot for pls and spls	
 	
     #-- plot for plsda and splsda ----------------------------------------#
-    if (any(class(x) == "plsda.mthd") | any(class(x) == "splsda.mthd")) {
+    if (any(class(x) == "plsda.mthd") | any(class(x) == "splsda.mthd"))
+    {
      
-        if (any(pred.method == "all")) pred.method = colnames(x) 
+        if (any(pred.method == "all")) pred.method = colnames(x$error.rate)
 		 
-        if (!any(pred.method %in% colnames(x))) 
+        if (!any(pred.method %in% colnames(x$error.rate)))
             stop("Choose the prediction methods.")
 			
         # KA changed
@@ -140,7 +142,8 @@ function (x,
         criterion = ""		
     } # end plot for plsda and splsda	
 	
-    if (criterion == "Q2") {
+    if (criterion == "Q2")
+    {
         plt = xyplot(val ~ comps | varName, data = df, xlab = xlab, ylab = ylab,	
             scales = list(y = yList, x = list(at = cTicks)), 
             as.table = TRUE, layout = layout, 
