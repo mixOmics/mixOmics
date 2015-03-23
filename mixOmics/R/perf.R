@@ -460,8 +460,8 @@ perf.spls <-function(object,
         list.features.Y[[k]] = sort(summary(as.factor(featuresY[[k]][-remove.naY]))/M, decreasing = TRUE)
         
         #-- extract features selected from the full model
-        features.final.X[[k]] = row.names(object$loadings$X)[object$loadings$X[, 1, drop = FALSE] != 0]
-        features.final.Y[[k]] = row.names(object$loadings$Y)[object$loadings$Y[, 1, drop = FALSE] != 0]
+        features.final.X[[k]] = row.names(object$loadings$X)[which(object$loadings$X[, k, drop = FALSE] != 0)]
+        features.final.Y[[k]] = row.names(object$loadings$Y)[which(object$loadings$Y[, k, drop = FALSE] != 0)]
     }
     names(features.final.X) = names(list.features.X) = names(features.final.Y) = names(list.features.Y) = paste('comp', 1:ncomp)
     
