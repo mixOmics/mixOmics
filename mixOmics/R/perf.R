@@ -360,8 +360,10 @@ perf.spls <-function(object,
       RSS[h + 1, ] = colSums((Y - tt %*% t(d))^2)
       
       #-- loop on i (cross validation) --#
-      for (i in 1:M) {
-        if (progressBar == TRUE) {
+      for (i in 1:M)
+      {
+        if (progressBar == TRUE)
+        {
           setTxtProgressBar(pb, nBar/(ncomp * M))
           nBar = nBar + 1
         }
@@ -377,7 +379,7 @@ perf.spls <-function(object,
         a.old.cv = 0
         iter.cv = 1
         
-        repeat {
+        repeat{
           a.cv = crossprod(X.train, u.cv)
           if (nx != 0) { 
             a.cv = ifelse(abs(a.cv) > abs(a.cv[order(abs(a.cv))][nx]),
@@ -406,23 +408,23 @@ perf.spls <-function(object,
         press.mat[[h]][omit, ] = Y.test - Y.hat.cv
         
         #-- for MSEP and R2 criteria
-        if (h == 1) {
+        if (h == 1)
+        {
           nzv = (apply(X.train, 2, var) > .Machine$double.eps)
           spls.res = spls(X.train[, nzv],Y.train, ncomp = ncomp, mode = mode, max.iter = max.iter, tol = tol, keepX = keepX, keepY = keepY, near.zero.var = FALSE)
                     
           X.test = X.test[, nzv, drop = FALSE]
           Y.hat = predict(spls.res, X.test)$predict
           
-          for (k in 1:ncomp) {
+          for (k in 1:ncomp)
+          {
             Ypred[omit, , k] = Y.hat[, , k]
             MSEP.mat[omit, , k] = (Y.test - Y.hat[, , k])^2
             
             # added: record selected features in each set
-            for(k in 1:ncomp)
-            {
-                featuresX[[k]] = c(unlist(featuresX[[k]]), select.var(spls.res, comp = k)$name.X)
-                featuresY[[k]] = c(unlist(featuresY[[k]]), select.var(spls.res, comp = k)$name.Y)
-            }
+            featuresX[[k]] = c(unlist(featuresX[[k]]), select.var(spls.res, comp = k)$name.X)
+            featuresY[[k]] = c(unlist(featuresY[[k]]), select.var(spls.res, comp = k)$name.Y)
+
           } # end loop on k
         }        
       } # end i (cross validation)
