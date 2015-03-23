@@ -338,7 +338,11 @@ perf.spls <-function(object,
     RSS.indiv[[1]] = X
     
     #-- record feature stability --#
-    features.X = features.Y = vector("list", ncomp)
+    # initialize new objects:= to record feature stability
+    featuresX  = featuresY =  list()
+    for(k in 1:ncomp){
+        featuresX[[k]] = featuresY[[k]] = NA
+    }
     
     #-- loop on h = ncomp --#
     for (h in 1:ncomp) {
@@ -413,9 +417,12 @@ perf.spls <-function(object,
             Ypred[omit, , k] = Y.hat[, , k]
             MSEP.mat[omit, , k] = (Y.test - Y.hat[, , k])^2
             
-            # record selected features in each set
-            features.X[[k]] = c(unlist(features.X[[k]]), row.names(spls.res$loadings$X)[ spls.res$loadings$X[, k, drop = FALSE] != 0])    
-            features.Y[[k]] = c(unlist(features.Y[[k]]), row.names(spls.res$loadings$Y)[ spls.res$loadings$Y[, k, drop = FALSE] != 0])
+            # added: record selected features in each set
+            for(k in 1:ncomp)
+            {
+                featuresX[[k]] = c(unlist(featuresX[[k]]), select.var(spls.res, comp = k)$name.X)
+                featuresY[[k]] = c(unlist(featuresY[[k]]), select.var(spls.res, comp = k)$name.Y)
+            }
           } # end loop on k
         }        
       } # end i (cross validation)
@@ -442,15 +449,18 @@ perf.spls <-function(object,
     list.features.X = features.final.X = list()
     list.features.Y = features.final.Y = list()
     
-    for(k in 1:ncomp){            
-      list.features.X[[k]] = sort(summary(as.factor(features.X[[k]])) / M, decreasing = TRUE)
-      list.features.Y[[k]] = sort(summary(as.factor(features.Y[[k]])) / M, decreasing = TRUE)
-      
-      #-- extract features selected from the full model
-      features.final.X[[k]] = row.names(object$loadings$X)[object$loadings$X[, 1, drop = FALSE] != 0]
-      features.final.Y[[k]] = row.names(object$loadings$Y)[object$loadings$Y[, 1, drop = FALSE] != 0]
+    for(k in 1:ncomp){
+        #remove the NA value that was added for initialisation
+        remove.naX = which(is.na(featuresX[[k]]))
+        remove.naY = which(is.na(featuresY[[k]]))
+        # then summarise as a factor and output the percentage of appearance
+        list.features.X[[k]] = sort(summary(as.factor(featuresX[[k]][-remove.naX]))/M, decreasing = TRUE)
+        list.features.Y[[k]] = sort(summary(as.factor(featuresY[[k]][-remove.naY]))/M, decreasing = TRUE)
+        
+        #-- extract features selected from the full model
+        features.final.X[[k]] = row.names(object$loadings$X)[object$loadings$X[, 1, drop = FALSE] != 0]
+        features.final.Y[[k]] = row.names(object$loadings$Y)[object$loadings$Y[, 1, drop = FALSE] != 0]
     }
-    
     names(features.final.X) = names(list.features.X) = names(features.final.Y) = names(list.features.Y) = paste('comp', 1:ncomp)
     
     #-- output -----------------------------------------------------------------#
