@@ -16,10 +16,10 @@ PLS-DA and sparse PLS-DA models using various criteria.
 \usage{
            
 \method{perf}{pls}(object,validation = c("Mfold", "loo"),
-           folds = 10, progressBar = TRUE, near.zero.var = FALSE, \ldots)	
+           folds = 10, progressBar = TRUE, \ldots)	
 
 \method{perf}{spls}(object,validation = c("Mfold", "loo"),
-          folds = 10, progressBar = TRUE, near.zero.var = FALSE, \ldots)
+          folds = 10, progressBar = TRUE, \ldots)
 
 \method{perf}{plsda}(object,
           method.predict = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
@@ -40,7 +40,7 @@ PLS-DA and sparse PLS-DA models using various criteria.
     \code{"loo"} (see below). Default is \code{"Mfold"}.}
   \item{folds}{the folds in the Mfold cross-validation. See Details.}
   \item{progressBar}{by default set to \code{TRUE} to output the progress bar of the computation.}
-  \item{near.zero.var}{by default (set to \code{FALSE)}), the nearZeroVar function is applied by default on the whole data set. If set to \code{TRUE}, nearZeroVar is also applied on each fold.}
+  \item{near.zero.var}{by default (set to \code{FALSE)}) in perf.plsda and perf.splsda, the nearZeroVar function is applied by default on the whole data set. If set to \code{TRUE}, nearZeroVar is also applied on each fold.}
   \item{...}{other arguments to pass to the s/PLS/DA functions.}
 }
 
@@ -86,93 +86,95 @@ Biology} \bold{7}, article 35.
 
 Mevik, B.-H., Cederkvist, H. R. (2004). Mean Squared Error of Prediction (MSEP) Estimates for Principal Component 
 Regression (PCR) and Partial Least Squares Regression (PLSR). \emph{Journal of Chemometrics} \bold{18}(9), 422-429.
+
+Chavent, Marie and Patouille, Brigitte (2003). Calcul des coefficients de r{\'e}gression et du PRESS en r{\'e}gression PLS1. \emph{Modulad n}, \bold{30} 1-11.
 }
 
-\author{S\'ebastien D\'ejean, Ignacio Gonz`alez, Amrit Singh, Kim-Anh L\^e Cao.}
+\author{Ignacio Gonz`alez, Amrit Singh, Kim-Anh L\^e Cao, Beno\^it Gautier, Florian Rohart.}
 
 \seealso{\code{\link{predict}}, \code{\link{nipals}}, \code{\link{plot.perf}} and \url{http://perso.math.univ-toulouse.fr/mixomics/} for more details.}
 
 \examples{
+\dontrun{
 ## validation for objects of class 'pls' (regression)
 # ----------------------------------------
-\dontrun{
-data(liver.toxicity)
-X <- liver.toxicity$gene
-Y <- liver.toxicity$clinic
-
-
-# try tune the number of component to choose
-# ---------------------
-# first learn the full model
-liver.pls <- pls(X, Y, ncomp = 10)
-
-# with 5-fold cross validation: we use the same parameters as in model above
-# but we perform cross validation to compute the MSEP, Q2 and R2 criteria
-# ---------------------------
-liver.val <- perf(liver.pls, validation = "Mfold", folds = 5)
-
-# Q2 total should decrease until it reaches a threshold
-liver.val$Q2.total
-
-# ncomp = 2 is enough
-plot(liver.val$Q2.total, type = 'l', col = 'red', ylim = c(-0.5, 0.5),
-	xlab = 'PLS components', ylab = 'Q2 total')
-abline(h = 0.0975, col = 'darkgreen')
-legend('topright', col = c('red', 'darkgreen'), legend = c('Q2 total', 'threshold 0.0975')
-	, lty = 1)
-title('Liver toxicity PLS 5-fold, Q2 values')
-
-#have a look at the other criteria
-# ----------------------
-# R2
-liver.val$R2
-matplot(t(liver.val$R2), type = 'l', xlab = 'PLS components', ylab = 'R2 for each variable')
-title('Liver toxicity PLS 5-fold, R2 values')
-
-# MSEP
-liver.val$MSEP
-matplot(t(liver.val$MSEP), type = 'l', xlab = 'PLS components', ylab = 'MSEP for each variable')
-title('Liver toxicity PLS 5-fold, MSEP values')
-
-
-## validation for objects of class 'spls' (regression)
-# ----------------------------------------
-ncomp = 7
-# first, learn the model on the whole data set
-model.spls = spls(X, Y, ncomp = ncomp, mode = 'regression',
-	 keepX = c(rep(10, ncomp)), keepY = c(rep(4,ncomp)))
-
-
-# with leave-one-out cross validation
-set.seed(45)
-model.spls.loo.val <- perf(model.spls, validation = "loo")
-
-#Q2 total
-model.spls.loo.val$Q2.total
-
-# R2:we can see how the performance degrades when ncomp increases
-# results are similar to 5-fold
-model.spls.loo.val$R2
-plot(model.spls.loo.val, criterion="R2")
-
-
-## validation for objects of class 'splsda' (classification)
-# ----------------------------------------
-data(srbct)
-X <- srbct$gene
-Y <- srbct$class  
-
-ncomp = 5
-
-srbct.splsda <- splsda(X, Y, ncomp = ncomp, keepX = rep(10, ncomp))  
-
-# with Mfold
-# ---------
-set.seed(45)
-error <- perf(srbct.splsda, validation = "Mfold", folds = 8, 
-               method.predict = "all")
-
-plot(error, type = "l")
+  data(liver.toxicity)
+  X <- liver.toxicity$gene
+  Y <- liver.toxicity$clinic
+  
+  
+  # try tune the number of component to choose
+  # ---------------------
+  # first learn the full model
+  liver.pls <- pls(X, Y, ncomp = 10)
+  
+  # with 5-fold cross validation: we use the same parameters as in model above
+  # but we perform cross validation to compute the MSEP, Q2 and R2 criteria
+  # ---------------------------
+  liver.val <- perf(liver.pls, validation = "Mfold", folds = 5)
+  
+  # Q2 total should decrease until it reaches a threshold
+  liver.val$Q2.total
+  
+  # ncomp = 2 is enough
+  plot(liver.val$Q2.total, type = 'l', col = 'red', ylim = c(-0.5, 0.5),
+       xlab = 'PLS components', ylab = 'Q2 total')
+  abline(h = 0.0975, col = 'darkgreen')
+  legend('topright', col = c('red', 'darkgreen'), 
+  legend = c('Q2 total', 'threshold 0.0975'), lty = 1)
+  title('Liver toxicity PLS 5-fold, Q2 total values')
+  
+  #have a look at the other criteria
+  # ----------------------
+  # R2
+  liver.val$R2
+  matplot(t(liver.val$R2), type = 'l', xlab = 'PLS components', ylab = 'R2 for each variable')
+  title('Liver toxicity PLS 5-fold, R2 values')
+  
+  # MSEP
+  liver.val$MSEP
+  matplot(t(liver.val$MSEP), type = 'l', xlab = 'PLS components', ylab = 'MSEP for each variable')
+  title('Liver toxicity PLS 5-fold, MSEP values')
+  
+  
+  ## validation for objects of class 'spls' (regression)
+  # ----------------------------------------
+  ncomp = 7
+  # first, learn the model on the whole data set
+  model.spls = spls(X, Y, ncomp = ncomp, mode = 'regression',
+                    keepX = c(rep(10, ncomp)), keepY = c(rep(4,ncomp)))
+  
+  
+  # with leave-one-out cross validation
+  ##set.seed(45)
+  model.spls.val <- perf(model.spls, validation = "Mfold", folds = 5 )#validation = "loo")
+  
+  #Q2 total
+  model.spls.val$Q2.total
+  
+  # R2:we can see how the performance degrades when ncomp increases
+  model.spls.val$R2
+  plot(model.spls.val, criterion="R2", type = 'l')
+  plot(model.spls.val, criterion="Q2", type = 'l')
+  
+  
+  ## validation for objects of class 'splsda' (classification)
+  # ----------------------------------------
+  data(srbct)
+  X <- srbct$gene
+  Y <- srbct$class  
+  
+  ncomp = 5
+  
+  srbct.splsda <- splsda(X, Y, ncomp = ncomp, keepX = rep(10, ncomp))  
+  
+  # with Mfold
+  # ---------
+  set.seed(45)
+  error <- perf(srbct.splsda, validation = "Mfold", folds = 8, 
+                method.predict = "all")
+  
+  plot(error, type = "l")
 }
 
 }
