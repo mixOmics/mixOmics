@@ -36,7 +36,7 @@ model.spls = spls(X, Y, ncomp = ncomp, mode = 'regression',
 keepX = c(rep(100, ncomp)), keepY = c(rep(4,ncomp)))
 # with leave-one-out cross validation
 set.seed(45)
-model.spls.loo.val <- perf(model.spls, validation = "loo")
+model.spls.loo.val <- perf(model.spls, validation = "Mfold",folds=5)
 #Q2 total
 model.spls.loo.val$Q2.total
 

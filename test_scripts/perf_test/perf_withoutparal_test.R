@@ -26,8 +26,8 @@ pred$variates     # pag. 148
 pred$predict[, , 2] # pag. 149
 
 ## Q2 criterion
-res_pls <- perf.pls(linn.pls, validation = "loo")
-res_spls <- perf.spls(linn.spls, validation = "loo")
+res_pls <- perf(linn.pls, validation = "loo")
+res_spls <- perf(linn.spls, validation = "loo")
 
 all.equal(res_pls, res_spls)
 res_pls$Q2 # pag. 142
