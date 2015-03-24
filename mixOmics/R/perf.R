@@ -762,18 +762,13 @@ perf.splsda <- function(object,
     list.features[[k]] = sort(summary(as.factor(features[[k]][-remove.na]))/M, decreasing = TRUE)
   }
   
-  # extract features selected from the full model ---------
-  features.final = list()
-  for(k in 1:ncomp){
-    features.final[[k]] = select.var(object, comp = k)$value
-  }
+
   
-  names(features.final)  = names(list.features) = paste('comp', 1:ncomp)
+  names(list.features) = paste('comp', 1:ncomp)
   
   result = list()
   result$error.rate = res
   result$features$stable = list.features
-  result$features$final = features.final
   
   # added
   result$nzvX = nzv$Position
