@@ -448,8 +448,8 @@ perf.spls <-function(object,
     if (progressBar == TRUE) cat('\n')
     
     #---- extract stability of features -----#
-    list.features.X = features.final.X = list()
-    list.features.Y = features.final.Y = list()
+    list.features.X = list()
+    list.features.Y = list()
     
     for(k in 1:ncomp){
         #remove the NA value that was added for initialisation
@@ -459,11 +459,8 @@ perf.spls <-function(object,
         list.features.X[[k]] = sort(summary(as.factor(featuresX[[k]][-remove.naX]))/M, decreasing = TRUE)
         list.features.Y[[k]] = sort(summary(as.factor(featuresY[[k]][-remove.naY]))/M, decreasing = TRUE)
         
-        #-- extract features selected from the full model
-        features.final.X[[k]] = row.names(object$loadings$X)[which(object$loadings$X[, k, drop = FALSE] != 0)]
-        features.final.Y[[k]] = row.names(object$loadings$Y)[which(object$loadings$Y[, k, drop = FALSE] != 0)]
     }
-    names(features.final.X) = names(list.features.X) = names(features.final.Y) = names(list.features.Y) = paste('comp', 1:ncomp)
+    names(list.features.X)  = names(list.features.Y) = paste('comp', 1:ncomp)
     
     #-- output -----------------------------------------------------------------#
     #---------------------------------------------------------------------------#
@@ -487,8 +484,6 @@ perf.spls <-function(object,
     # features
     res$features$stable.X = list.features.X
     res$features$stable.Y = list.features.Y
-    res$features$final.X = features.final.X
-    res$features$final.Y = features.final.Y
     
     class(res) = c("perf", "spls.mthd")
     return(invisible(res))
@@ -767,18 +762,13 @@ perf.splsda <- function(object,
     list.features[[k]] = sort(summary(as.factor(features[[k]][-remove.na]))/M, decreasing = TRUE)
   }
   
-  # extract features selected from the full model ---------
-  features.final = list()
-  for(k in 1:ncomp){
-    features.final[[k]] = select.var(object, comp = k)$value
-  }
+
   
-  names(features.final)  = names(list.features) = paste('comp', 1:ncomp)
+  names(list.features) = paste('comp', 1:ncomp)
   
   result = list()
   result$error.rate = res
   result$features$stable = list.features
-  result$features$final = features.final
   
   # added
   result$nzvX = nzv$Position
