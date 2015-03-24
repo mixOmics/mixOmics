@@ -8,8 +8,8 @@ setwd("~/Documents/k.lecao/Packages/mixOmics/GIT/package-mixomics")
 
 # ------ notes for me to compile the package (if need be) on a terminal
 R CMD build --resave-data mixOmics
+R CMD check mixOmics_5.0-4.tar.gz --as-cran --timings
 R CMD INSTALL -l MyR/ mixOmics_5.0-4.tar.gz
-R CMD check mixOmics --as-cran --timings
 # ---------------------------------
 
 
