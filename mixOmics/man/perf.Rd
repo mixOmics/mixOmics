@@ -40,7 +40,7 @@ PLS-DA and sparse PLS-DA models using various criteria.
     \code{"loo"} (see below). Default is \code{"Mfold"}.}
   \item{folds}{the folds in the Mfold cross-validation. See Details.}
   \item{progressBar}{by default set to \code{TRUE} to output the progress bar of the computation.}
-  \item{near.zero.var}{by default (set to \code{FALSE)}) in perf.plsda and perf.splsda, the nearZeroVar function is applied by default on the whole data set. If set to \code{TRUE}, nearZeroVar is also applied on each fold.}
+  \item{near.zero.var}{default is set to \code{FALSE)} in perf.plsda and perf.splsda, however, the nearZeroVar function is still applied by default on the whole data set. If set to \code{TRUE}, nearZeroVar is also applied on each cross-validation fold.}
   \item{...}{other arguments to pass to the s/PLS/DA functions.}
 }
 
@@ -74,11 +74,14 @@ For PLS and sPLS models, \code{perf} produces a list with the following componen
     \item{features}{a list of features selected across the folds (\code{$stable.X} and \code{$stable.Y}) for the \code{keepX} and \code{keepY} parameters from the input object.}
     \item{error.rate}{
 For PLS-DA and sPLS-DA models, \code{perf} produces a matrix of classification error rate estimation. 
-The dimensions correspond to the components in the model and to the prediction method used, respectively. Note that error rates reported in any component include the performance of the model in earlier components for the specified \code{keepX} parameters (e.g. error rate reported for component 3 for \code{keepX = 20} already includes the fitted model on components 1 and 2 for  \code{keepX = 20}). For more advanced usage of the \code{perf} function, see \url{http://perso.math.univ-toulouse.fr/mixomics/methods/spls-da/} and consider using the \code{predict} function.}
+The dimensions correspond to the components in the model and to the prediction method used, respectively. Note that error rates reported in any component include the performance of the model in earlier components for the specified \code{keepX} parameters (e.g. error rate reported for component 3 for \code{keepX = 20} already includes the fitted model on components 1 and 2 for  \code{keepX = 20}). For more advanced usage of the \code{perf} function, see \url{www.mixomics.org/methods/spls-da/} and consider using the \code{predict} function.}
 }
 
 \references{
-Tenenhaus, M. (1998). \emph{La r\'egression PLS: th\'eorie et pratique}. Paris: Editions Technic.  
+Tenenhaus, M. (1998). \emph{La r\'egression PLS: th\'eorie et pratique}. Paris: Editions Technic. (warning: there is a typo in the Q2 definition, we therefore decided not to use that definition anymore).  
+
+Chavent, Marie and Patouille, Brigitte (2003). Calcul des coefficients de r{\'e}gression et du PRESS en r{\'e}gression PLS1. \emph{Modulad n}, \bold{30} 1-11. (this is the formula we use to calculate the Q2 in perf.pls and perf.spls)
+
 
 L\^e Cao, K. A., Rossouw D., Robert-Grani\'e, C. and Besse, P. (2008). A sparse PLS for variable 
 selection when integrating Omics data. \emph{Statistical Applications in Genetics and Molecular 
@@ -87,12 +90,11 @@ Biology} \bold{7}, article 35.
 Mevik, B.-H., Cederkvist, H. R. (2004). Mean Squared Error of Prediction (MSEP) Estimates for Principal Component 
 Regression (PCR) and Partial Least Squares Regression (PLSR). \emph{Journal of Chemometrics} \bold{18}(9), 422-429.
 
-Chavent, Marie and Patouille, Brigitte (2003). Calcul des coefficients de r{\'e}gression et du PRESS en r{\'e}gression PLS1. \emph{Modulad n}, \bold{30} 1-11.
 }
 
 \author{Ignacio Gonz`alez, Amrit Singh, Kim-Anh L\^e Cao, Beno\^it Gautier, Florian Rohart.}
 
-\seealso{\code{\link{predict}}, \code{\link{nipals}}, \code{\link{plot.perf}} and \url{http://perso.math.univ-toulouse.fr/mixomics/} for more details.}
+\seealso{\code{\link{predict}}, \code{\link{nipals}}, \code{\link{plot.perf}} and \url{www.mixOmics.org} for more details.}
 
 \examples{
 \dontrun{

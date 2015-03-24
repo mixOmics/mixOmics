@@ -1,7 +1,8 @@
-# Copyright (C) 2014 
+# Copyright (C) 2015
 # Ignacio González, Genopole Toulouse Midi-Pyrenees, France
 # Kim-Anh Lê Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 # Amrit Singh, University of British Columbia, Vancouver.
+# Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 # Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
 #
 # This program is free software; you can redistribute it and/or
@@ -228,7 +229,7 @@ perf.pls <-function(object,
     res$Q2 = t(Q2)
    	res$Q2.total =  t(Q2.total)
     res$RSS = RSS
-    res$PRESS.inside = PRESS.inside
+    res$PRESS = PRESS.inside
     res$press.mat = press.mat
     res$RSS.indiv = RSS.indiv
     
@@ -477,7 +478,7 @@ perf.spls <-function(object,
     res$Q2 = t(Q2)
    	res$Q2.total =  t(Q2.total)
     res$RSS = RSS
-    res$PRESS.inside = PRESS.inside
+    res$PRESS = PRESS.inside
     res$press.mat = press.mat
     res$RSS.indiv = RSS.indiv
     

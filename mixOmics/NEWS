@@ -10,11 +10,13 @@ Bug fixes:
 ----------
 1- select.var.sgcca has been fixed (the outputs were messy)
 2- minor bug in plotVar.sgcca and plotVar.rgcca fixed
+3- the algorithm in perf.pls and perf.spls has been almost entirely changed. We are now using another formula, as presented in the help Rd file (the previous formula we were using had a typo). The RSS is now ocmputed on the whole data set and we usea different algorithm to estimate Q2. Contact us for more details. plot.perf has been updated
+
 
 Enhancements:
 ----------
 1- network default color set to color.GreenRed
-
+2- output feature.final in perf S3 function has been removed. Better to use select.var to obtain the list of selected variables
 
 
 
