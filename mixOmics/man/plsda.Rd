@@ -58,11 +58,11 @@ least squares using microarray gene expression data. \emph{Bioinformatics}
 Tenenhaus, M. (1998). \emph{La régression PLS: théorie et pratique}. Paris: Editions Technic.
 }
 
-\author{Ignacio González, Kim-Anh Lê Cao and Pierre Monget.}
+\author{Ignacio Gonz\`alez, Kim-Anh L\^e Cao and Pierre Monget.}
 
 \seealso{\code{\link{splsda}}, \code{\link{summary}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, 
-\code{\link{plot3dIndiv}}, \code{\link{plot3dVar}}, \code{\link{predict}}, \code{\link{perf}} and http://www.math.univ-toulouse.fr/~biostat/mixOmics/ for more details.}
+\code{\link{plot3dIndiv}}, \code{\link{plot3dVar}}, \code{\link{predict}}, \code{\link{perf}} and http://mixOmics.org for more details.}
 
 \examples{
 ## First example

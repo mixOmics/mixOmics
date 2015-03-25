@@ -32,7 +32,7 @@ Regression (PCR) and Partial Least Squares Regression (PLSR). \emph{Journal of C
 
 \author{Sebastien Dejean, Ignacio Gonzalez and Kim-Anh Le Cao.}
 
-\seealso{\code{\link{perf}}, \code{\link{predict}} and http://www.math.univ-toulouse.fr/~biostat/mixOmics/ for more details.}
+\seealso{\code{\link{perf}}, \code{\link{predict}} and http:/mixOmics.org for more details.}
 
 \keyword{regression}
 \keyword{multivariate}

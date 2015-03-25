@@ -28,7 +28,7 @@ score obtained by the \code{estim.regul} function.
 Also a color scales strip is plotted.
 }
 
-\author{Sébastien Déjean and Ignacio González.}
+\author{S\'ebastien D\'ejean and Ignacio Gonz\`alez.}
 
 \seealso{\code{\link{tune.rcc}}, \code{\link{image}}.}
 

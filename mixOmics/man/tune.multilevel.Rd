@@ -77,14 +77,14 @@ Depending on the type of analysis performed, a list that contains:
 
 \references{
 On multilevel analysis:
-Liquet, B., Lê Cao, K.-A., Hocini, H. and Thiebaut, R. A novel approach for biomarker selection and the
+Liquet, B., L\^e Cao, K.-A., Hocini, H. and Thiebaut, R. A novel approach for biomarker selection and the
 integration of repeated measures experiments from two platforms. \emph{Submitted}.
 
 Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010). Multivariate paired data analysis: multilevel PLSDA versus OPLSDA. \emph{Metabolomics}, \bold{6}(1), 119-128.
 
 }
 
-\author{Benoit Liquet, Kim-Anh Lê Cao.}
+\author{Benoit Liquet, Kim-Anh L\^e Cao, Benoit Gautier.}
 
 \seealso{\code{\link{multilevel}} and http://www.mixOmics.org for more details.}
 

@@ -92,9 +92,9 @@ In the last case, multiple arguments values can be specified so that each point 
 can be given its own graphic attributes (see \code{\link{par}}). Default values exist for this arguments. 
 }
 
-\author{S?bastien D?jean and Ignacio Gonz?lez.}
+\author{S\'ebastien D\'ejean and Ignacio Gonz\`alez.}
 
-\seealso{\code{\link{plot3dIndiv}}, \code{\link{text}}, \code{\link{points}} and http://www.math.univ-toulouse.fr/~biostat/mixOmics/ for more details.}
+\seealso{\code{\link{plot3dIndiv}}, \code{\link{text}}, \code{\link{points}} and http://mixOmics.org for more details.}
 
 
 \examples{

@@ -136,6 +136,8 @@ network can take some seconds.
 }
 
 \references{
+Gonz\'alez I., L\^e Cao K-A., Davis, M.J. and D\'ejean, S. (2012). Visualising associations between paired ?omics? data sets. J. Data Mining 5:19. \url{http://www.biodatamining.org/content/5/1/19/abstract}
+
 Butte, A. J., Tamayo, P., Slonim, D., Golub, T. R. and Kohane, I. S. (2000). 
 Discovering functional relationships between RNA expression and chemotherapeutic 
 susceptibility using relevance networks. \emph{Proceedings of the National Academy 

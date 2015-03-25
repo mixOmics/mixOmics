@@ -72,7 +72,7 @@ J L Marchini, C Heaton and B D Ripley (2010). fastICA: FastICA Algorithms to per
 \seealso{\code{\link{sipca}}, \code{\link{pca}},
 \code{\link{plotIndiv}}, \code{\link{plotVar}},
 \code{\link{plot3dIndiv}}, \code{\link{plot3dVar}}
-and http://www.math.univ-toulouse.fr/~biostat/mixOmics/ for more details..}
+and http://www.mmixOmics.org for more details.}
 
 \examples{
 data(liver.toxicity)

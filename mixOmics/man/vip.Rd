@@ -35,10 +35,10 @@ Predictors with large VIP, larger than 1, are the most relevant for explaining \
 }
 
 \references{
-Tenenhaus, M. (1998). \emph{La régression PLS: théorie et pratique}. Paris: Editions Technic.
+Tenenhaus, M. (1998). \emph{La r?gression PLS: th?orie et pratique}. Paris: Editions Technic.
 }
 
-\author{Sébastien Déjean and Ignacio González.}
+\author{S\'ebastien D\'ejean and Ignacio Gonz\`alez.}
 
 \seealso{\code{\link{pls}}, \code{\link{spls}}, \code{\link{summary}}.}
 

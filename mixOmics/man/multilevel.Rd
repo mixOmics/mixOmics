@@ -141,7 +141,7 @@ variable selection when integrating Omics data. \emph{Statistical Applications i
 Genetics and Molecular Biology} \bold{7}, article 35.
 }
 
-\author{Benoit Liquet, Kim-Anh L\^e Cao, Benoit Gautier, Ignacio Gonz\`alez.}
+\author{Beno\^it Liquet, Kim-Anh L\^e Cao, Beno\^it Gautier, Ignacio Gonz\`alez.}
 
 \seealso{\code{\link{spls}}, \code{\link{splsda}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, 
