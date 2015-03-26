@@ -40,6 +40,7 @@ Si une nouvelle dependence a un package est necessaire:
 imports: nouveau_package
 •	update fichier d'aide
 mixOmics/man/nouvelle_fonction.Rd
+!!!! attention pas d'accent s'il vous plait dans les Rd files (ni en latex, ni en ACSII, RI-EN)
 
 
 5- SUMMARY

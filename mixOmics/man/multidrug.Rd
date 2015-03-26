@@ -30,7 +30,7 @@ A list containing the following components:
 }
 
 \details{
-The data come from a pharmacogenomic study (Szak\`acs \emph{et al.}, 2004) in which two 
+The data come from a pharmacogenomic study (Szakacs \emph{et al.}, 2004) in which two 
 kinds of measurements acquired on the NCI-60 cancer cell lines are considered:
   \itemize{
     \item the expression of the 48 human ABC transporters measured by real-time quantitative 
@@ -70,7 +70,7 @@ Eisen, M. B., Sausville, E. A., Pommier, Y., Botstein, D., Brown, P. O.
 and Weinstein, J. N. (2000). A Gene Expression Database for the Molecular 
 Pharmacology of Cancer. \emph{Nature Genetics}, \bold{24}, 236-244.
 
-Szak\`acs, G., Annereau, J.-P., Lababidi, S., Shankavaram, U., Arciello, A., 
+Szakacs, G., Annereau, J.-P., Lababidi, S., Shankavaram, U., Arciello, A., 
 Bussey, K. J., Reinhold, W., Guo, Y., Kruh, G. D., Reimers, M., Weinstein, J. N. 
 and Gottesman, M. M. (2004). Predicting drug sensivity and resistance: 
 Profiling ABC transporter genes in cancer cells. \emph{Cancer Cell} \bold{4}, 147-166.

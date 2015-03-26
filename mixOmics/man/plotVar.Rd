@@ -120,7 +120,7 @@ A list containing the following components:
 \references{Gonzalez I., Le Cao K-A., Davis, M.J. and Dejean, S. (2012). Visualising associations between paired 'omics data sets. J. Data Mining 5:19. \url{http://www.biodatamining.org/content/5/1/19/abstract}}
 
 
-\seealso{\code{\link{plot3dVar}}, \code{\link{cim}}, \code{\link{network}}, \code{\link{par}} and http://www.math.univ-toulouse.fr/~biostat/mixOmics/ for more details.}
+\seealso{\code{\link{plot3dVar}}, \code{\link{cim}}, \code{\link{network}}, \code{\link{par}} and http://www.mixOmics.org for more details.}
 
 \examples{
 ## variable representation for objects of class 'rcc'
