@@ -36,7 +36,7 @@ The simulation study was based on a mixed effects model (see reference for detai
 
 
 \references{
-Liquet, B., L\^e Cao, K.-A., Hocini, H. and Thiebaut, R. (2012). A novel approach for biomarker selection and the
+Liquet, B., Le Cao, K.-A., Hocini, H. and Thiebaut, R. (2012). A novel approach for biomarker selection and the
 integration of repeated measures experiments from two platforms. \emph{BMC Bioinformatics} \bold{13}:325.
 }
 

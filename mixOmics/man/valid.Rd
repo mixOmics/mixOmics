@@ -6,7 +6,7 @@
 
 \description{
 The valid function has been supersided by the perf function to evaluate the performance of the PLS, sPLS, PLS-DA and sPLS-DA methods. 
-     See ?perf for more details}
+     See \code{help(perf)} for more details}
 
 \usage{
 valid(object, \ldots)	

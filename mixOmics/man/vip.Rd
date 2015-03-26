@@ -35,7 +35,7 @@ Predictors with large VIP, larger than 1, are the most relevant for explaining \
 }
 
 \references{
-Tenenhaus, M. (1998). \emph{La r?gression PLS: th?orie et pratique}. Paris: Editions Technic.
+Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.
 }
 
 \author{Sebastien Dejean and Ignacio Gonz\`alez.}

@@ -71,22 +71,22 @@ that contains the following components:
 
 \references{
 
-L\^e Cao, K.-A., Martin, P.G.P., Robert-Grani?, C. and Besse, P. (2009). Sparse canonical methods for biological data integration: application to a cross-platform study. \emph{BMC Bioinformatics} \bold{10}:34.
+Le Cao, K.-A., Martin, P.G.P., Robert-Granie, C. and Besse, P. (2009). Sparse canonical methods for biological data integration: application to a cross-platform study. \emph{BMC Bioinformatics} \bold{10}:34.
 
-L\^e Cao, K.-A., Rossouw, D., Robert-Grani?, C. and Besse, P. (2008). A sparse PLS for variable 
+Le Cao, K.-A., Rossouw, D., Robert-Grani?, C. and Besse, P. (2008). A sparse PLS for variable 
 selection when integrating Omics data. \emph{Statistical Applications in Genetics and Molecular 
 Biology} \bold{7}, article 35.
 
 Shen, H. and Huang, J. Z. (2008). Sparse principal component analysis via regularized 
 low rank matrix approximation. \emph{Journal of Multivariate Analysis} \bold{99}, 1015-1034.    
 
-Tenenhaus, M. (1998). \emph{La r?gression PLS: th?orie et pratique}. Paris: Editions Technic.
+Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.
 
 Wold H. (1966). Estimation of principal components and related models by iterative least squares. 
 In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N.Y., 391-420.
 }
 
-\author{Sebastien Dejean, Ignacio Gonz\`alez and Kim-Anh L\^e Cao.}
+\author{Sebastien Dejean, Ignacio Gonzalez and Kim-Anh Le Cao.}
 
 \seealso{\code{\link{pls}}, \code{\link{summary}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, 

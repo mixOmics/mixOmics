@@ -36,7 +36,7 @@ One or two-factor analyses are available.
 \references{
 On multilevel analysis:
 
-Liquet, B., L\^e Cao, K.-A., Hocini, H. and Thiebaut, R. (2012) A novel approach for
+Liquet, B., Le Cao, K.-A., Hocini, H. and Thiebaut, R. (2012) A novel approach for
 biomarker selection and the integration of repeated measures experiments from two
 platforms. \emph{BMC Bioinformatics} \bold{13}:325.
 
@@ -45,7 +45,7 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
 
 }
 
-\author{Benoit Liquet, Kim-Anh L\^e Cao, Benoit Gautier, Ignacio Gonz\`alez.}
+\author{Benoit Liquet, Kim-Anh Le Cao, Benoit Gautier, Ignacio Gonzalez.}
 
 \seealso{\code{\link{multilevel}}, \code{\link{spls}}, \code{\link{splsda}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, 

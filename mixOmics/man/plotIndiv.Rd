@@ -92,7 +92,7 @@ In the last case, multiple arguments values can be specified so that each point 
 can be given its own graphic attributes (see \code{\link{par}}). Default values exist for this arguments. 
 }
 
-\author{Sebastien Dejean and Ignacio Gonz\`alez.}
+\author{Sebastien Dejean and Ignacio Gonzalez.}
 
 \seealso{\code{\link{plot3dIndiv}}, \code{\link{text}}, \code{\link{points}} and http://mixOmics.org for more details.}
 

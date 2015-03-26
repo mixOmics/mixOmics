@@ -2,7 +2,7 @@
 \encoding{latin1}
 \alias{plsda}
 
-\title{Partial Least Squares Discriminate Analysis (PLS-DA).}
+\title{Partial Least Squares Discriminant Analysis (PLS-DA).}
 
 \description{Function to perform standard Partial Least Squares regression
 to classify samples.
@@ -58,7 +58,7 @@ least squares using microarray gene expression data. \emph{Bioinformatics}
 Tenenhaus, M. (1998). \emph{La régression PLS: théorie et pratique}. Paris: Editions Technic.
 }
 
-\author{Ignacio Gonz\`alez, Kim-Anh L\^e Cao and Pierre Monget.}
+\author{Ignacio Gonzalez, Kim-Anh Le Cao and Pierre Monget.}
 
 \seealso{\code{\link{splsda}}, \code{\link{summary}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, 

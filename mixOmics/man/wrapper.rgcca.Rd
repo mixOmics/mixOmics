@@ -78,7 +78,7 @@ that contains the following components:
   Genet. Mol. Biol. 4:32.
 }
 
-\author{Arthur Tenenhaus, Vincent Guillemot and Kim-Anh L\^e Cao.}
+\author{Arthur Tenenhaus, Vincent Guillemot and Kim-Anh Le Cao.}
 
 \seealso{\code{\link{rgcca}}, \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{wrapper.sgcca}}. \code{\link{sgcca}} and \url{http://www.mixOmics.org} for more details.}
 

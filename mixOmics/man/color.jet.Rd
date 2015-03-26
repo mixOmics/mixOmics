@@ -32,7 +32,7 @@ with \code{n} giving the number of colors desired.
 }
 
 \value{
-For \code{color.jet(n)}, \code{color.spectral(n)}, \code{color.GReenRed(n)} a character vector, \code{cv}, of color names. This can be used either to create a user-defined color palette for subsequent graphics by \code{palette(cv)}, a \code{col=} specification in graphics functions or in \code{par}.
+For \code{color.jet(n)}, \code{color.spectral(n)}, \code{color.GreenRed(n)} a character vector, \code{cv}, of color names. This can be used either to create a user-defined color palette for subsequent graphics by \code{palette(cv)}, a \code{col=} specification in graphics functions or in \code{par}.
 
 For \code{color.mixo}, a vector of colors matching the mixOmics logo (10 colors max.)
 }

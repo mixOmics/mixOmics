@@ -69,10 +69,10 @@ Wold H. (1966). Estimation of principal components and related models by iterati
 In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N.Y., 391-420.
 }
 
-\author{Sebastien Dejean and Ignacio Gonz\`alez and Kim-Anh L\^e Cao.}
+\author{Sebastien Dejean and Ignacio Gonzalez and Kim-Anh Le Cao.}
 
 \seealso{\code{\link{spls}}, \code{\link{summary}}, 
-\code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}} and http://www.math.univ-toulouse.fr/~biostat/mixOmics/ for more details.}
+\code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org for more details.}
 
 \examples{
 data(linnerud)

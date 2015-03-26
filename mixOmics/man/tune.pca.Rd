@@ -55,7 +55,7 @@ actually  done with the singular values of the data matrix).}
 	proportion of explained variance}
 }
 
-\author{Ignacio Gonz\`alez and Leigh Coonan}
+\author{Ignacio Gonzalez and Leigh Coonan}
 
 \seealso{\code{\link{nipals}}, \code{\link{biplot}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}},

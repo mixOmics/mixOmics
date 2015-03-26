@@ -117,7 +117,7 @@ following components:
 \references{
 On multilevel analysis:
 
-Liquet, B., L\^e Cao, K.-A., Hocini, H. and Thiebaut, R. (2012) A novel approach for
+Liquet, B., Le Cao, K.-A., Hocini, H. and Thiebaut, R. (2012) A novel approach for
 biomarker selection and the integration of repeated measures experiments from two
 platforms. \emph{BMC Bioinformatics} \bold{13}:325.
 
@@ -126,22 +126,22 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
 
 On sPLS-DA:
 
-L\^e Cao, K.-A., Boitard, S. and Besse, P. (2011). Sparse PLS Discriminant Analysis:
+Le Cao, K.-A., Boitard, S. and Besse, P. (2011). Sparse PLS Discriminant Analysis:
 biologically relevant feature selection and graphical displays for multiclass problems.
 \emph{BMC Bioinformatics} \bold{12}:253.
 
 On sPLS:
 
-L\^e Cao, K.-A., Martin, P.G.P., Robert-Granie, C. and Besse, P. (2009). Sparse canonical 
+Le Cao, K.-A., Martin, P.G.P., Robert-Granie, C. and Besse, P. (2009). Sparse canonical 
 methods for biological data integration: application to a cross-platform study. 
 \emph{BMC Bioinformatics} \bold{10}:34.
 
-L\^e Cao, K.-A., Rossouw, D., Robert-Granie, C. and Besse, P. (2008). A sparse PLS for
+Le Cao, K.-A., Rossouw, D., Robert-Granie, C. and Besse, P. (2008). A sparse PLS for
 variable selection when integrating Omics data. \emph{Statistical Applications in
 Genetics and Molecular Biology} \bold{7}, article 35.
 }
 
-\author{Beno\^it Liquet, Kim-Anh L\^e Cao, Beno\^it Gautier, Ignacio Gonz\`alez.}
+\author{Benoit Liquet, Kim-Anh Le Cao, Benoit Gautier, Ignacio Gonzalez.}
 
 \seealso{\code{\link{spls}}, \code{\link{splsda}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, 
@@ -225,7 +225,7 @@ plotIndiv(res.spls.1level, rep.space = 'X-variate', ind.names = FALSE,
 title(main = 'Gene expression space')
 plotIndiv(res.spls.1level, rep.space = 'Y-variate', ind.names = FALSE,
           col = col.stimu, pch = 20)
-title(main = 'Clnical measurements space')
+title(main = 'Clinical measurements space')
 legend('bottomright', legend = levels(as.factor(design$stimu)),
        col = unique(col.stimu), pch = 20, cex = 0.8, 
        title = "Dose")

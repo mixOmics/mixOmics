@@ -84,7 +84,7 @@ Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Edit
 
 Chavent, Marie and Patouille, Brigitte (2003). Calcul des coefficients de r{e}gression et du PRESS en r{e}gression PLS1. \emph{Modulad n}, \bold{30} 1-11. (this is the formula we use to calculate the Q2 in perf.pls and perf.spls)
 
-L\^e Cao, K. A., Rossouw D., Robert-Granie, C. and Besse, P. (2008). A sparse PLS for variable 
+Le Cao, K. A., Rossouw D., Robert-Granie, C. and Besse, P. (2008). A sparse PLS for variable 
 selection when integrating Omics data. \emph{Statistical Applications in Genetics and Molecular 
 Biology} \bold{7}, article 35.
 
@@ -93,7 +93,7 @@ Regression (PCR) and Partial Least Squares Regression (PLSR). \emph{Journal of C
 
 }
 
-\author{Ignacio Gonz\`alez, Amrit Singh, Kim-Anh L\^e Cao, Beno\^it Gautier, Florian Rohart.}
+\author{Ignacio Gonzalez, Amrit Singh, Kim-Anh Le Cao, Benoit Gautier, Florian Rohart.}
 
 \seealso{\code{\link{predict}}, \code{\link{nipals}}, \code{\link{plot.perf}} and \url{www.mixOmics.org} for more details.}
 

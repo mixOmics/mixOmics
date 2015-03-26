@@ -51,7 +51,7 @@ that contains the following components:
 
 \references{
 On sPLS-DA:
-L? Cao, K.-A., Boitard, S. and Besse, P. (2011). Sparse PLS Discriminant Analysis: biologically relevant feature selection and graphical displays for multiclass problems. \emph{BMC Bioinformatics} \bold{12}:253.
+Le Cao, K.-A., Boitard, S. and Besse, P. (2011). Sparse PLS Discriminant Analysis: biologically relevant feature selection and graphical displays for multiclass problems. \emph{BMC Bioinformatics} \bold{12}:253.
 }
 
 \author{Ignacio Gonzalez, Kim-Anh Le Cao and Pierre Monget.}
@@ -59,7 +59,7 @@ L? Cao, K.-A., Boitard, S. and Besse, P. (2011). Sparse PLS Discriminant Analysi
 \seealso{\code{\link{spls}}, \code{\link{summary}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, 
 \code{\link{plot3dIndiv}}, \code{\link{plot3dVar}},
-\code{\link{cim}}, \code{\link{network}}, \code{\link{predict}}, \code{\link{perf}} and http://www.math.univ-toulouse.fr/~biostat/mixOmics/ for more details.}
+\code{\link{cim}}, \code{\link{network}}, \code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org for more details.}
 
 \examples{
 ## First example

@@ -45,7 +45,7 @@ These functions are only implemented for the sparse versions.
 
 
 
-\author{Kim-Anh L\^e Cao.}
+\author{Kim-Anh Le Cao.}
 
 \examples{
 data(liver.toxicity)

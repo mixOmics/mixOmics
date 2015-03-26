@@ -130,7 +130,7 @@ A list containing the following components:
   \item{coord.Y}{matrix of \eqn{Y}-variables coordinates.}
 }
 
-\author{Ignacio Gonz\`alez.}
+\author{Ignacio Gonzalez.}
 
 \seealso{\code{\link{plotVar}}, \code{\link{plot3dIndiv}}, \code{\link[rgl]{text3d}}, 
 \code{\link[rgl]{title3d}} and \code{\link[rgl]{rgl.postscript}} to save the screen shot to a file in PostScript 
