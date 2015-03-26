@@ -74,7 +74,7 @@ that contains the following components:
 
 \author{Arthur Tenenhaus, Vincent Guillemot and Kim-Anh L\^e Cao.}
 
-\seealso{\code{\link{sgcca}}, \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{wrapper.rgcca}}, \code{\link{rgcca}} and \url{http://www.math.univ-toulouse.fr/~biostat/mixOmics/} for more details.}
+\seealso{\code{\link{sgcca}}, \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{wrapper.rgcca}}, \code{\link{rgcca}} and \url{http://www.mixOmics.org} for more details.}
 
 \examples{
 data(nutrimouse)
