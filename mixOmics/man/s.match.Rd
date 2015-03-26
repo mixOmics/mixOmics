@@ -62,7 +62,7 @@ The matched call.
 \author{Daniel Chessel from \pkg{ade4 R} package, modified by Kim-Anh L\^e Cao.}
 
 \references{
-L\^e Cao, K.-A., Martin, P.G.P., Robert-Grani\'e, C. and Besse, P. (2009). Sparse canonical methods 
+L\^e Cao, K.-A., Martin, P.G.P., Robert-Granie, C. and Besse, P. (2009). Sparse canonical methods 
 for biological data integration: application to a cross-platform study. \emph{BMC Bioinformatics} \bold{10}:34.
 }
 

@@ -43,7 +43,7 @@ Cancer Consortium Portal
 }
 
 \references{
-P\'erez-Enciso, M. and Tenenhaus, M. (2003). Prediction of clinical outcome with microarray data: 
+Perez-Enciso, M. and Tenenhaus, M. (2003). Prediction of clinical outcome with microarray data: 
 a partial least squares discriminant analysis (PLS-DA) approach. \emph{Human Genetics} 
 \bold{112}, 581-592.
 

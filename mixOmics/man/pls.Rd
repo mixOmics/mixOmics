@@ -63,13 +63,13 @@ that contains the following components:
 }
 
 \references{
-Tenenhaus, M. (1998). \emph{La r\'egression PLS: th\'eorie et pratique}. Paris: Editions Technic.
+Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.
 
 Wold H. (1966). Estimation of principal components and related models by iterative least squares. 
 In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N.Y., 391-420.
 }
 
-\author{S\'ebastien D\'ejean and Ignacio Gonz\`alez and Kim-Anh L\^e Cao.}
+\author{Sebastien Dejean and Ignacio Gonz\`alez and Kim-Anh L\^e Cao.}
 
 \seealso{\code{\link{spls}}, \code{\link{summary}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}} and http://www.math.univ-toulouse.fr/~biostat/mixOmics/ for more details.}

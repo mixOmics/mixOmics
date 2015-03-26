@@ -63,7 +63,7 @@ The returned value is a list with components:
   \item{mat}{matrix containing the cross-validation score computed on the grid.}
 }
 
-\author{S\'ebastien D\'ejean and Ignacio Gonz\`alez.}
+\author{Sebastien Dejean and Ignacio Gonz\`alez.}
 
 \seealso{\code{\link{loo}}, \code{\link{Mfold}}, \code{\link{image.tune.rcc}} and http://www.mixOmics.org for more details.}
 

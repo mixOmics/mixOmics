@@ -80,11 +80,11 @@ The dimensions correspond to the components in the model and to the prediction m
 }
 
 \references{
-Tenenhaus, M. (1998). \emph{La r\'egression PLS: th\'eorie et pratique}. Paris: Editions Technic. (warning: do not not to use that definition anymore).  
+Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic. (warning: do not not to use that definition anymore).  
 
-Chavent, Marie and Patouille, Brigitte (2003). Calcul des coefficients de r{\'e}gression et du PRESS en r{\'e}gression PLS1. \emph{Modulad n}, \bold{30} 1-11. (this is the formula we use to calculate the Q2 in perf.pls and perf.spls)
+Chavent, Marie and Patouille, Brigitte (2003). Calcul des coefficients de r{e}gression et du PRESS en r{e}gression PLS1. \emph{Modulad n}, \bold{30} 1-11. (this is the formula we use to calculate the Q2 in perf.pls and perf.spls)
 
-L\^e Cao, K. A., Rossouw D., Robert-Grani\'e, C. and Besse, P. (2008). A sparse PLS for variable 
+L\^e Cao, K. A., Rossouw D., Robert-Granie, C. and Besse, P. (2008). A sparse PLS for variable 
 selection when integrating Omics data. \emph{Statistical Applications in Genetics and Molecular 
 Biology} \bold{7}, article 35.
 

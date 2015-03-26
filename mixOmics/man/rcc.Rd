@@ -74,7 +74,7 @@ Vinod, H. D. (1976). Canonical ridge and econometrics of joint production.
 \emph{Journal of Econometrics} \bold{6}, 129-137.
 }
 
-\author{S\'ebastien D\'ejean and Ignacio Gonz\`alez.}
+\author{Sebastien Dejean and Ignacio Gonz\`alez.}
 
 \seealso{\code{\link{summary}}, \code{\link{tune.rcc}}, 
 \code{\link{plot.rcc}}, \code{\link{plotIndiv}}, \code{\link{plot3dIndiv}},

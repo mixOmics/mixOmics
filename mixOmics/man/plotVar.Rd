@@ -115,9 +115,9 @@ A list containing the following components:
   \item{coord.Y}{matrix of \eqn{Y}-variables coordinates.}
 }
 
-\author{S\'ebastien D\'ejean, Ignacio Gonz\'alez, Kim-Anh L\^e Cao.}
+\author{Sebastien Dejean, Ignacio Gonz\'alez, Kim-Anh L\^e Cao.}
 
-\references{Gonz\'alez I., L\^e Cao K-A., Davis, M.J. and D\'ejean, S. (2012). Visualising associations between paired ?omics? data sets. J. Data Mining 5:19. \url{http://www.biodatamining.org/content/5/1/19/abstract}}
+\references{Gonz\'alez I., L\^e Cao K-A., Davis, M.J. and Dejean, S. (2012). Visualising associations between paired ?omics? data sets. J. Data Mining 5:19. \url{http://www.biodatamining.org/content/5/1/19/abstract}}
 
 
 \seealso{\code{\link{plot3dVar}}, \code{\link{cim}}, \code{\link{network}}, \code{\link{par}} and http://www.math.univ-toulouse.fr/~biostat/mixOmics/ for more details.}

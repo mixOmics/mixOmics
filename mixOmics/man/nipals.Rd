@@ -53,7 +53,7 @@ In: Blalock H. M. et al. (editors). \emph{Quantitative Sociology: International 
 on mathematical and statistical model building}. Academic Press, N.Y., 307-357.
 }
 
-\author{S\'ebastien D\'ejean and Ignacio Gonz\`alez.}
+\author{Sebastien Dejean and Ignacio Gonz\`alez.}
 
 \seealso{\code{\link{svd}}, \code{\link{princomp}}, \code{\link{prcomp}}, \code{\link{eigen}} and http://www.mixOmics.org for more details.}
 

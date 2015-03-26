@@ -86,7 +86,7 @@ Wold H. (1966). Estimation of principal components and related models by iterati
 In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N.Y., 391-420.
 }
 
-\author{S\'ebastien D\'ejean, Ignacio Gonz\`alez and Kim-Anh L\^e Cao.}
+\author{Sebastien Dejean, Ignacio Gonz\`alez and Kim-Anh L\^e Cao.}
 
 \seealso{\code{\link{pls}}, \code{\link{summary}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, 
