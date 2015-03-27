@@ -20,7 +20,7 @@ This function provides scree plot of the canonical correlations.
 	see \code{\link{points}}, for \code{"barplot"} type see \code{\link{barplot}}.}
 }
 
-\author{S?bastien Dejean and Ignacio Gonz\`alez.}
+\author{Sebastien Dejean and Ignacio Gonzalez.}
 
 \seealso{\code{\link{points}}, \code{\link{barplot}}, \code{\link{par}}.}
 

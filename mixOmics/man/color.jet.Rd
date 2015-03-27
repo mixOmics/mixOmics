@@ -37,10 +37,11 @@ For \code{color.jet(n)}, \code{color.spectral(n)}, \code{color.GreenRed(n)} a ch
 For \code{color.mixo}, a vector of colors matching the mixOmics logo (10 colors max.)
 }
 
-\seealso{\code{\link{colorRamp}}, \code{\link{palette}}, \code{\link{colors}} 
+\seealso{
+\code{\link{colorRamp}}, \code{\link{palette}}, \code{\link{colors}} 
 for the vector of built-in "named" colors; 
 \code{\link{hsv}}, \code{\link{gray}}, \code{\link{rainbow}}, 
-\code{\link{terrain.colors}}, \eqn{\ldots} to construct colors; and \code{\link{heat.colors}}, 
+\code{\link{terrain.colors}}, ... to construct colors; and \code{\link{heat.colors}}, 
 \code{\link{topo.colors}} for images. 
 }
 
@@ -95,6 +96,10 @@ nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 my.colors = color.mixo(as.numeric(nutrimouse$diet))
 my.pch = ifelse(nutrimouse$genotype == 'wt', 16, 17)
 plotIndiv(nutri.res, ind.names = FALSE, col = my.colors, pch = my.pch, cex = 1.5)
+
 }
 
+
 \keyword{color}
+
+

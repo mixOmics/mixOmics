@@ -36,7 +36,7 @@ kinds of measurements acquired on the NCI-60 cancer cell lines are considered:
     \item the expression of the 48 human ABC transporters measured by real-time quantitative 
 	  RT-PCR for each cell line;
     \item the activity of 1429 drugs expressed as \eqn{GI_{50}} which corresponds to the concentration 
-	  at which the drug induces \eqn{50\%} inhibition of cellular growth for the cell line tested.
+	  at which the drug induces \eqn{50%} inhibition of cellular growth for the cell line tested.
   }
 
 The NCI-60 panel includes cell lines derived from cancers of colorectal (7 cell lines), renal(8), 
@@ -55,7 +55,7 @@ that included 1429 compounds.
 
 \source{
 The NCI dataset was downloaded from The Genomics and Bioinformatics Group 
-Supplemental Table S1 to the paper of Szak?cs \emph{et al.} (2004),
+Supplemental Table S1 to the paper of Szakacs \emph{et al.} (2004),
 \url{http://discover.nci.nih.gov/abc/2004_cancercell_abstract.jsp#supplement}
 
 The two drug data sets are a companion resource for the paper of 

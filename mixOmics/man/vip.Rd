@@ -58,3 +58,4 @@ barplot(linn.vip,
 
 \keyword{regression}
 \keyword{multivariate}
+

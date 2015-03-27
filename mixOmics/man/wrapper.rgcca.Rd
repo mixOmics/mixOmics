@@ -106,3 +106,4 @@ wrap.result.rgcca = wrapper.rgcca(data = data, design = design, tau = c(1, 1, 0)
 
 
 \keyword{multivariate}
+

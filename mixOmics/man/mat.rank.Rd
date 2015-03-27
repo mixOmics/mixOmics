@@ -52,4 +52,7 @@ mat.rank(m)
 mat.rank(m.na)
 }
 
+
 \keyword{algebra}
+
+

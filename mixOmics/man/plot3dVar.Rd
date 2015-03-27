@@ -82,7 +82,7 @@ This function provides variables representation in three dimensions for
     of \code{c("axes", "box", "bbox", "all")}.}
   \item{label.axes.box}{character string indicating whether to label the axes and/or boxes.
     Should be a of \code{c("axes", "box", "both")}}	
-  \item{xlab, ylab, zlab}{\eqn{x}-, \eqn{y}- and \eqn{z}-axis titles.}	
+  \item{xlab, ylab, zlab}{x, y and  z axis titles.}	
   \item{\ldots}{further title parameters are passed to \code{\link[rgl]{title3d}}.}
 }
 

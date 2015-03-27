@@ -72,7 +72,7 @@ that contains the following components:
   Tenenhaus A., Phillipe C., Guillemot, V., Le Cao K-A., Grill J., Frouin, V. Variable Selection For Generalized Canonical Correlation Analysis. 2013. (in revision)
 }
 
-\author{Arthur Tenenhaus, Vincent Guillemot and Kim-Anh L\^e Cao.}
+\author{Arthur Tenenhaus, Vincent Guillemot and Kim-Anh Le Cao.}
 
 \seealso{\code{\link{sgcca}}, \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{wrapper.rgcca}}, \code{\link{rgcca}} and \url{http://www.mixOmics.org} for more details.}
 

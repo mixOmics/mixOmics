@@ -85,7 +85,7 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
 
 }
 
-\author{Benoit Liquet, Kim-Anh L\^e Cao, Benoit Gautier.}
+\author{Benoit Liquet, Kim-Anh Le Cao, Benoit Gautier.}
 
 \seealso{\code{\link{multilevel}} and http://www.mixOmics.org for more details.}
 

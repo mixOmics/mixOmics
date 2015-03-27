@@ -47,7 +47,7 @@ that contains the following components:
 }
 
 \references{
-Pérez-Enciso, M. and Tenenhaus, M. (2003). Prediction of clinical outcome with microarray data: 
+Perez-Enciso, M. and Tenenhaus, M. (2003). Prediction of clinical outcome with microarray data: 
 a partial least squares discriminant analysis (PLS-DA) approach. \emph{Human Genetics} 
 \bold{112}, 581-592.
 
@@ -55,7 +55,7 @@ Nguyen, D. V. and Rocke, D. M. (2002). Tumor classification by partial
 least squares using microarray gene expression data. \emph{Bioinformatics}
 \bold{18}, 39-50.
 
-Tenenhaus, M. (1998). \emph{La régression PLS: théorie et pratique}. Paris: Editions Technic.
+Tenenhaus, M. (1998). \emph{La régression PLS: theorie et pratique}. Paris: Editions Technic.
 }
 
 \author{Ignacio Gonzalez, Kim-Anh Le Cao and Pierre Monget.}
