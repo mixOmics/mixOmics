@@ -63,7 +63,7 @@ function(X,
     Cyy = var(Y, na.rm = TRUE, use = "pairwise") + diag(lambda2, ncol(Y))
     Cxy = cov(X, Y, use = "pairwise")
      
-    # calcul des corr?lations canoniques, des variables #
+    # calcul des correlations canoniques, des variables #
     # canoniques et des vecteurs bisecteurs             #
     #---------------------------------------------------#
     Cxx.fac = chol(Cxx)

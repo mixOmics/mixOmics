@@ -166,7 +166,7 @@ function(x, ...)
 			cat("\n Number of Y-variables selected on each of the sPLS components:", x$keepY, "\n")
         }			
 
-        #---------- affichage communaut? ----------#
+        #---------- affichage communaute ----------#
         if (any(what == "all") || any(what == "communalities")) { 
             cat("\n\n Communalities Analysis:\n",
                 "----------------------")
@@ -206,7 +206,7 @@ function(x, ...)
             print(round(x$can.cor, digits = digits), print.gap = print.gap)
         }
 
-        #-- affichage communaut? --#
+        #-- affichage communaute --#
         if (any(what == "all") || any(what == "communalities")) { 
             cat("\n\n Canonical Communalities Analysis:\n",
                 "--------------------------------")
