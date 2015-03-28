@@ -1,6 +1,6 @@
 # Copyright (C) 2009 
 # Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-# Ignacio Gonzàlez, Genopole Toulouse Midi-Pyrenees, France
+# Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 # Kim-Anh Le Cao, French National Institute for Agricultural Research, Toulouse France and 
 # The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 # Florian Rohart,  Australian Institute for Bioengineering and Nanotechnology, The University of Queensland, Brisbane, QLD 

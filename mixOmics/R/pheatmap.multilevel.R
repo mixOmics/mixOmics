@@ -1,6 +1,6 @@
 # Copyright (C) 2015
 # Benoit Liquet, Universite de Bordeaux, France
-# Kim-Anh Lê Cao, Queensland Facility for Advanced Bioinformatics, University of Queensland, Brisbane, Australia
+# Kim-Anh Le Cao, Queensland Facility for Advanced Bioinformatics, University of Queensland, Brisbane, Australia
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2

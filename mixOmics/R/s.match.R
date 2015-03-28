@@ -1,6 +1,6 @@
 # Copyright (C) 2015 
 # ADE4 package
-# with modification from Kim-Anh Lê Cao, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+# with modification from Kim-Anh Le Cao, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
