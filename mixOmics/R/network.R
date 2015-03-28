@@ -224,7 +224,7 @@ function(mat,
 	if (isTRUE(interactive)) {
         dev.off()
 		
-		# Barre de contrôle #
+		# Barre de controle #
 		#-------------------#
 		min.cut = threshold
 		max.cut = max(mat)

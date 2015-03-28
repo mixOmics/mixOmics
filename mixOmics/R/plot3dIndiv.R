@@ -59,7 +59,7 @@ function(object,
             stop("'ind.names' must be a character vector of length ", nrow(object$X), " or a boolean atomic vector.")
     }
 
-    # l'espace de représentation #
+    # l'espace de representation #
     #----------------------------#
     rep.space = match.arg(rep.space, c("XY-variate", "X-variate", "Y-variate"))
 		
@@ -193,7 +193,7 @@ function (object,
             stop("'ind.names' must be a character vector of length ", nrow(object$X), " or a boolean atomic vector.")
     }		
 
-    # l'espace de représentation #
+    # l'espace de representation #
     #----------------------------#
     rep.space = match.arg(rep.space, c("XY-variate", "X-variate", "Y-variate"))
 		
@@ -326,7 +326,7 @@ function (object,
             stop("'ind.names' must be a character vector of length ", nrow(object$x), " or a boolean atomic vector.")
     }
 
-    # l'espace de représentation #
+    # l'espace de representation #
     #----------------------------#
     x = object$x[, comp[1]]
     y = object$x[, comp[2]]
