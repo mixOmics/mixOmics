@@ -75,7 +75,7 @@ function(X,
     if (!is.null(Y.names)) colnames(Y) = Y.names
     type = match.arg(type)
      
-    # repr?sentation de la matrice de corr?lation de #
+    # representation de la matrice de correlation de #
     # la concatenationdes variables X et Y, [X Y]    #
     #------------------------------------------------#
 
@@ -98,7 +98,7 @@ function(X,
             breaks = breaks)
     }
      
-    # repr?sentation des matrices de corr?lation de #
+    # representation des matrices de correlation de #
     # X, Y et entre X et Y                          #
     #-----------------------------------------------#
     if (type == "separate") {

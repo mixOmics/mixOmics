@@ -1,5 +1,5 @@
 # Copyright (C) 2009 
-# Sébastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+# Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
 # Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 # Kim-Anh Le Cao, French National Institute for Agricultural Research and 
 # ARC Centre of Excellence ins Bioinformatics, Institute for Molecular Bioscience, University of Queensland, Australia

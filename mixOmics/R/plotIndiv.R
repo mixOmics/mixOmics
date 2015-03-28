@@ -1,5 +1,5 @@
 # Copyright (C) 2014
-# Sébastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+# Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
 # Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 # Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 # Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
@@ -75,7 +75,7 @@ abline.line = FALSE,
     
     
     
-    # l'espace de représentation #
+    # l'espace de representation #
     #----------------------------#
     if (rep.space == "X-variate"){
         x = object$variates$X[, comp1]
@@ -166,7 +166,7 @@ abline.line = FALSE,
     
     
     
-    # l'espace de représentation #
+    # l'espace de representation #
     #----------------------------#
     if (rep.space == "X-variate") {
         x = object$variates$X[, comp1]
@@ -246,7 +246,7 @@ abline.line = FALSE,
     }
     
     
-    # l'espace de représentation #
+    # l'espace de representation #
     #----------------------------#
     x = object$x[, comp[1]]
     y = object$x[, comp[2]]
@@ -314,7 +314,7 @@ abline.line = FALSE,
     }
     
     
-    # l'espace de représentation #
+    # l'espace de representation #
     #----------------------------#
     x = object$x[, comp[1]]
     y = object$x[, comp[2]]
@@ -387,7 +387,7 @@ abline.line = FALSE,
     ##rep.space = match.arg(rep.space, c("XY-variate", "X-variate", "Y-variate"))
     
     
-    # l'espace de représentation #
+    # l'espace de representation #
     #----------------------------#
     #    if (rep.space == "X-variate"){
     x = object$variates[[rep.space]][, comp1]
