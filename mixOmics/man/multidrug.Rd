@@ -36,10 +36,10 @@ kinds of measurements acquired on the NCI-60 cancer cell lines are considered:
     \item the expression of the 48 human ABC transporters measured by real-time quantitative 
 	  RT-PCR for each cell line;
     \item the activity of 1429 drugs expressed as \eqn{GI_{50}} which corresponds to the concentration 
-	  at which the drug induces \eqn{50%} inhibition of cellular growth for the cell line tested.
+	  at which the drug induces \eqn{50\%} inhibition of cellular growth for the cell line tested.
   }
 
-The NCI-60 panel includes cell lines derived from cancers of colorectal (7 cell lines), renal(8), 
+The NCI- 60 panel includes cell lines derived from cancers of colorectal (7 cell lines), renal(8), 
 ovarian(6), breast(8), prostate(2), lung(9) and central nervous system origin(6), as well as leukemias(6) 
 and melanomas(8). It was set up by the Developmental Therapeutics Program of the National Cancer Institute 
 (NCI, one of the U.S. National Institutes of Health) to screen the toxicity of chemical compound repositories.
