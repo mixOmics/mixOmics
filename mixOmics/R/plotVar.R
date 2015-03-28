@@ -70,7 +70,7 @@ function(object,
 #     if(length(setdiff(match.user[-1], match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
 #     
 
-    # calcul des coordonnées #
+    # calcul des coordonnees #
     #------------------------#
       if (object$mode == "canonical") {
           cord.X = cor(object$X, object$variates$X[, c(comp1, comp2)], use = "pairwise")
@@ -236,7 +236,7 @@ function(object,
     comp1 = round(comp[1])
     comp2 = round(comp[2])
 
-    # calcul des coordonnées #
+    # calcul des coordonnees #
     #------------------------#
     cord.X = cor(object$X, object$variates$X[, c(comp1, comp2)], use = "pairwise")
 
@@ -403,7 +403,7 @@ function(object,
 #     if(length(setdiff(match.user[-1], match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
 #     
 
-    # calcul des coordonnées #
+    # calcul des coordonnees #
     #------------------------#
         keep.X = apply(abs(object$loadings$X), 1, sum) > 0
         keep.Y = apply(abs(object$loadings$Y), 1, sum) > 0
@@ -601,7 +601,7 @@ function(object,
 #     if(length(setdiff(match.user[-1], match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
 #     
 
-    # calcul des coordonnées #
+    # calcul des coordonnees #
     #------------------------#
     keep.X = apply(abs(object$loadings$X), 1, sum) > 0
     cord.X = cor(object$X[, keep.X], object$variates$X[, c(comp1, comp2)], 
@@ -776,13 +776,13 @@ function(object,
 #     if(length(setdiff(match.user[-1], match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
 #     
 
-    # coordonnées des variables #
+    # coordonnees des variables #
 	#---------------------------#
     bisect = object$variates$X[, c(comp1, comp2)] + object$variates$Y[, c(comp1, comp2)]
     cord.X = cor(object$X, bisect, use = "pairwise")
     cord.Y = cor(object$Y, bisect, use = "pairwise")
 
-    # choix des variables avec au moins une coordonnée supérieur au cutoff #
+    # choix des variables avec au moins une coordonnee superieur au cutoff #
     #----------------------------------------------------------------------#
     if (!is.null(cutoff)) {
         gp.X = vector(mode = "numeric")
@@ -994,7 +994,7 @@ function(object,
 #     
 
 
-    # calcul des coordonnées #
+    # calcul des coordonnees #
     #------------------------#
     keep.X = apply(abs(object$rotation), 1, sum) > 0
     cord.X = cor(object$X[, keep.X], object$x[, c(comp1, comp2)], 
@@ -1165,7 +1165,7 @@ function(object,
 # 	if(length(setdiff(match.user[-1], match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
 # 	
 	
-    # calcul des coordonnées #
+    # calcul des coordonnees #
     #------------------------#
     cord.X = cor(object$X, object$x[, c(comp1, comp2)], use = "pairwise")
 
@@ -1239,7 +1239,7 @@ function(object,
 # 	if(length(setdiff(match.user[-1], match.function)) > 0) warning('Some of the input arguments do not match the function arguments, see ?plotIndiv')
 # 	
 	
-    # calcul des coordonnées #
+    # calcul des coordonnees #
     #------------------------#
     cord.X = cor(object$X, object$x[, c(comp1, comp2)], use = "pairwise")
 
@@ -1308,7 +1308,7 @@ function(object,
 #     
 
 
-    # calcul des coordonnées #
+    # calcul des coordonnees #
     #------------------------#
     keep.X = apply(abs(object$loadings), 1, sum) > 0
     cord.X = cor(object$X[, keep.X], object$x[, c(comp1, comp2)], 
