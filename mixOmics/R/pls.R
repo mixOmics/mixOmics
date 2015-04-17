@@ -168,16 +168,16 @@ function(X,
             if (na.X)
             {
                 a = crossprod(X.aux, u)
-                U = drop(u) %o% p.ones
-                U[is.na.X] = 0
-                u.norm = crossprod(U)				
-                a = a / diag(u.norm)
+                # U = drop(u) %o% p.ones
+                # U[is.na.X] = 0
+                # u.norm = crossprod(U)				
+                # a = a / diag(u.norm)
                 a = a / drop(sqrt(crossprod(a)))
                 t = X.aux %*% a
-                A = drop(a) %o% n.ones
-                A[t(is.na.X)] = 0
-                a.norm = crossprod(A)
-                t = t / diag(a.norm)				
+                # A = drop(a) %o% n.ones
+                # A[t(is.na.X)] = 0
+                # a.norm = crossprod(A)
+                # t = t / diag(a.norm)				
             }else{
                 a = crossprod(X.temp, u)#/ drop(crossprod(u)), not useful as a is scaled below
                 a = a / drop(sqrt(crossprod(a)))
@@ -187,18 +187,19 @@ function(X,
             #--compute loading vectors and variates associated to Y
             if (na.Y){
                 b = crossprod(Y.aux, t)
-                T = drop(t) %o% q.ones
-                T[is.na.Y] = 0
-                t.norm = crossprod(T)				
-                b = b / diag(t.norm)
+                # T = drop(t) %o% q.ones
+                # T[is.na.Y] = 0
+                # t.norm = crossprod(T)				
+                # b = b / diag(t.norm)
+                b = b / drop(sqrt(crossprod(b)))
                 u = Y.aux %*% b
-                B = drop(b) %o% n.ones
-                B[t(is.na.Y)] = 0
-                b.norm = crossprod(B)
-                u = u / diag(b.norm)					
+                # B = drop(b) %o% n.ones
+                # B[t(is.na.Y)] = 0
+                # b.norm = crossprod(B)
+                # u = u / diag(b.norm)					
             }else{
                 b = crossprod(Y.temp, t) #/ drop(crossprod(t)), not useful as b is scaled below
-                b=b / drop(sqrt(crossprod(b)))
+                b = b / drop(sqrt(crossprod(b)))
                 u = Y.temp %*% b / drop(crossprod(b))
             }
 				
@@ -220,11 +221,11 @@ function(X,
         {
             X.aux = X.temp
             X.aux[is.na.X] = 0
-            c = crossprod(X.aux, t)				
-            T = drop(t) %o% p.ones
-            T[is.na.X] = 0
-            t.norm = crossprod(T)				
-            c = c / diag(t.norm)
+            c = crossprod(X.aux, t)	/ drop(crossprod(t))			
+            # T = drop(t) %o% p.ones
+            # T[is.na.X] = 0
+            # t.norm = crossprod(T)				
+            # c = c / diag(t.norm)
         }else{
             c = crossprod(X.temp, t) / drop(crossprod(t))
         }	
@@ -238,11 +239,11 @@ function(X,
             {
                 Y.aux = Y.temp
                 Y.aux[is.na.Y] = 0
-                e = crossprod(Y.aux, u)
-                U = drop(u) %o% q.ones
-                U[is.na.Y] = 0
-                u.norm = crossprod(U)				
-                e = e / diag(u.norm)					
+                e = crossprod(Y.aux, u) / drop(crossprod(u))
+                # U = drop(u) %o% q.ones
+                # U[is.na.Y] = 0
+                # u.norm = crossprod(U)				
+                # e = e / diag(u.norm)					
             }else{
                 e = crossprod(Y.temp, u) / drop(crossprod(u))
             }
@@ -262,11 +263,11 @@ function(X,
             {
                 Y.aux = Y.temp
                 Y.aux[is.na.Y] = 0
-                d = crossprod(Y.aux, t)
-                T = drop(t) %o% q.ones
-                T[is.na.Y] = 0
-                t.norm = crossprod(T)				
-                d = d / diag(t.norm)
+                d = crossprod(Y.aux, t) / drop(crossprod(t))
+                # T = drop(t) %o% q.ones
+                # T[is.na.Y] = 0
+                # t.norm = crossprod(T)				
+                # d = d / diag(t.norm)
             }else{
                 d = crossprod(Y.temp, t) / drop(crossprod(t))
             }
