@@ -1,55 +1,47 @@
-# Copyright (C) 2009 
-# Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-# Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-# Kim-Anh Le Cao, French National Institute for Agricultural Research and 
-# Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia
-# Pierre Monget, Ecole d'Ingenieur du CESI, Angouleme, France
+# Author : F.Rohart
+# created 22-04-2015
+# last modified 22-04-2015
 #
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+# perform the meta.pls on a subset of variables on one only dimension, deflate the intial matrices X and Y (already center by study)
+
+# mean centering with attach and without modify.na, need to look at how to remove some of means/sigma when nearZerVar is used
+# we can have a list of studies for Discriminant Analyses, not for pls/spls as they would be overlapping batch effects
 
 
-splsda <-
-function(X, 
-         Y,		
-         ncomp = 2, 
-         keepX = rep(ncol(X), ncomp),
-         max.iter = 500,		 
-         tol = 1e-06,
-         near.zero.var = TRUE)
+wrapper.splsda <- function(X, Y, ncomp = 2, mode = c("regression", "canonical", "invariant", "classic"), study,
+keepX = rep(ncol(X), ncomp),keepX.constraint=list(), max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = TRUE)
 {
-  		
-    # Testing the input Y
+    
+    
+    #-- validation des arguments --#
+    # most of the checks are done in the wrapper.meta.spls.hybrid function
+    X = as.matrix(X)
+    
     if (is.null(dim(Y)))
     {
-        Y = as.factor(Y)	
-        ind.mat = unmap(as.numeric(Y))					
-    }else {
-        stop("'Y' should be a factor or a class vector.")						
-    }		
-
-    result = spls(X, ind.mat, ncomp = ncomp, mode = "regression", keepX = keepX, 
-                  max.iter = max.iter, tol = tol,near.zero.var=near.zero.var)
-       
-    cl = match.call()
-    cl[[1]] = as.name('splsda')
-    result$call = cl
-	 
-    result$ind.mat = ind.mat
-    result$names$Y = levels(Y)
+        Y = as.factor(Y)
+    }  else {
+        stop("'Y' should be a factor or a class vector.")
+    }
     
-    class(result) = "splsda"
-    return(invisible(result))	
-}
+    Y.mat=unmap(Y)
 
+    result <- wrapper.meta.spls.hybrid(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,study=study,
+    keepX=keepX,keepX.constraint=keepX.constraint,max.iter=max.iter,tol=tol)
+    
+    
+    cl = match.call()
+    cl[[1]] = as.name("splsda")
+    result$call = cl
+    result$Y=Y
+    result$ind.mat = Y.mat; result$names$Y = levels(Y)
+    row.names(result$variates$Y) = row.names(X); row.names(result$loadings$Y) = paste0("Y", c(1 : nlevels(Y)))
+
+    class(result) = "splsda"
+    return(invisible(result))
+    
+    
+    
+    
+    
+}

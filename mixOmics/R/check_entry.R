@@ -1,0 +1,342 @@
+# Author : F.Rohart,  Australian Institute for Bioengineering and Nanotechnology, The University of Queensland, Brisbane, QLD
+# created: 22-04-2015
+# last modification: 22-04-2015
+# Copyright (C) 2014
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+
+
+# --------------------------------------
+# Check.entry.single
+# --------------------------------------
+Check.entry.single = function(X,  ncomp, keepX, keepX.constraint,q)
+{
+    
+    
+    #  if(length(levels(study)) == 1)  # Aida
+    #  stop("\nstudys must have more than one level")      #WHY?
+    
+    #-- validation des arguments --#
+    if (length(dim(X)) != 2)
+    stop(paste0("'A[[",q,"]]' must be a numeric matrix."))
+    
+    X = as.matrix(X)
+    
+    if (!is.numeric(X) )
+    stop(paste0("'A[[",q,"]]'  must be a numeric matrix."))
+    
+    N = nrow(X)
+    P = ncol(X)
+    
+    
+    if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0)
+    stop(paste0("invalid number of variates 'ncomp' for matrix 'A[[",q,"]]'."))
+    
+    ncomp = round(ncomp)
+    
+    if (any(keepX > ncol(X)))
+    stop(paste0("each component of 'keepA[[",q,"]]' must be lower or equal to ", P, "."))
+    #check keepX and keepX.constraint
+    if((length(keepX.constraint)+length(keepX))!=ncomp) stop(paste0("length (keepA.constraint[[",q,"]]) + length(keepA[[",q,"]]) should be ncomp"))
+
+
+    #-- add colnames/rownames if missing --#
+    X.names = dimnames(X)[[2]]
+    if (is.null(X.names))
+    {
+        X.names = paste("X", 1:P, sep = "")
+        dimnames(X)[[2]]=X.names
+    }
+    
+    ind.names = dimnames(X)[[1]]
+    if (is.null(ind.names))
+    {
+        ind.names = 1:N
+        rownames(X)  = ind.names
+    }
+    
+    if(length(unique(rownames(X)))!=nrow(X)) stop("samples should have a unique identifier/rowname")
+    
+    if(length(unique(X.names))!=P) stop("Unique indentifier is needed for the columns of X")
+    
+
+    return(list(X=X,ncomp=ncomp,X.names=X.names,ind.names=ind.names))
+}
+
+
+
+# --------------------------------------
+# Check.entry.meta.block.spls
+# --------------------------------------
+
+Check.entry.meta.block.spls = function(A, indY, design , lambda,ncomp , scheme , scale ,  bias,
+    init , tol , verbose,mode, sparse , max.iter,study , keepA, keepA.constraint)
+{
+    
+    if (length(A) < 1)
+    stop("A is a list with at least 2 blocks.")
+    
+    if (is.null(indY)) {
+        if (mode != "canonical")
+        stop("Only canonical deflation can be done with indY empty")
+    } else if (!abs(indY - round(indY) < 1e-25)) {
+        stop ("indY must be an integer")
+    } else if (indY > length(A)) {
+        stop ("indY must point to a block of A")
+    } else if (!(mode %in% c("canonical", "invariant", "classic", "regression"))) {
+        stop("Choose one of the four following modes: canonical, invariant, classic or regression")
+    }
+    
+    x=unlist(lapply(A,nrow))
+    if(!isTRUE(all.equal( max(x) ,min(x))))
+    stop("The samplesize mmust be the same for all blocks")
+
+
+    #set the default study factor
+    if(missing(study))
+    {
+        study=factor(rep(1,nrow(A[[1]])))
+    }else{
+        study=as.factor(study)
+    }
+    if(length(study)!=nrow(A[[1]])) stop(paste0("'study' must be a factor of length ",x[1],"."))
+    
+    #check dimnames, ncomp, keepA and keepA.constraint per block of A
+    for(q in 1:length(A))
+    {
+        check=Check.entry.single(A[[q]], ncomp[q], keepA[[q]], keepA.constraint[[q]],q)
+        A[[q]]=check$X
+        ncomp[q]=check$ncomp
+    }
+    
+    
+    if(!is.null(lambda))
+    {
+        if(!is.null(keepA)|!is.null(keepA.constraint))
+        {
+            warnings("lambda is not used when keepA or keepA.constraint are provided")
+        }
+        
+        if(length(lambda)!=length(A))
+        stop("lambda must be a vector of same length as A")
+        if (any((lambda < 0) | (lambda > 1)))
+        stop("L1 constraints must be between 0 and 1.")
+    }
+    
+    if (!(scheme %in% c("horst", "factorial","centroid"))) {
+        stop("Choose one of the three following schemes: horst, centroid or factorial")
+    } else {
+        if (verbose)
+        cat("Computation of the SGCCA block components based on the", scheme, "scheme \n")
+    }
+    
+    if(!init%in%c("svd","random"))
+    stop("init should be one of 'svd' or 'random'")
+    
+    study=as.factor(study)
+    
+    if(tol<=0)
+    stop("tol must be non negative")
+    
+    if(!is.logical(verbose))
+    stop("verbose must be either TRUE or FALSE")
+    if(!is.logical(scale))
+    stop("scale must be either TRUE or FALSE")
+    if(!is.logical(bias))
+    stop("bias must be either TRUE or FALSE")
+    if(!is.logical(sparse))
+    stop("sparse must be either TRUE or FALSE")
+
+    
+    return(list(A=A,ncomp=ncomp,study=study))
+
+}
+
+
+
+# --------------------------------------
+# Check.entry.pls
+# --------------------------------------
+
+Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.constraint)
+{
+    
+    
+    #  if(length(levels(study)) == 1)  # Aida
+    #  stop("\nstudys must have more than one level")      #WHY?
+    
+    #-- validation des arguments --#
+    if (length(dim(X)) != 2)
+    stop("'X' must be a numeric matrix.")
+    
+    X = as.matrix(X)
+    
+    Y = as.matrix(Y)
+    
+    if (!is.numeric(X) || !is.numeric(Y))
+    stop("'X' and/or 'Y' must be a numeric matrix.")
+    
+    N = nrow(X)
+    Q = ncol(Y)
+    P= ncol(X)
+    
+    if ((N != nrow(Y)))
+    stop("unequal number of rows in 'X' and 'Y'.")
+    
+    if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0)
+    stop("invalid number of variates, 'ncomp'.")
+    
+    
+    ncomp = round(ncomp)
+    if(ncomp > P)
+    {
+        warning("Reset maximum number of variates 'ncomp' to ncol(X) = ", P, ".")
+        ncomp = P
+    }
+    
+    
+    if(missing(keepX)) # so the function can be used for pls as well
+    {keepX=rep(P,ncomp)}
+    if(missing(keepY)) # so the function can be used for pls as well
+    {keepY=rep(Q,ncomp)}
+    
+    if(missing(keepX.constraint))
+    keepX.constraint=list()
+    if(missing(keepY.constraint))
+    keepY.constraint=list()
+    
+    if((length(keepX.constraint)+length(keepX))!=ncomp) stop(paste0("length (keepX.constraint) + length(keepX) should be ncomp"))
+    if((length(keepY.constraint)+length(keepY))!=ncomp) stop(paste0("length (keepY.constraint) + length(keepY) should be ncomp"))
+
+
+    if (any(keepX > ncol(X)))
+    stop("each component of 'keepX' must be lower or equal than ", P, ".")
+    
+    if (length(keepY) != ncomp)
+    stop("length of 'keepX' must be equal to ", ncomp, ".")
+    if (any(keepY > ncol(Y)))
+    stop("each component of 'keepX' must be lower or equal than ", P, ".")
+    
+
+
+
+    #-- initialisation des matrices --#
+    X.names = dimnames(X)[[2]]
+    if (is.null(X.names))
+    {
+        X.names = paste("X", 1:P, sep = "")
+        dimnames(X)[[2]]=X.names
+    }
+    
+    if (dim(Y)[2] == 1) Y.names = "Y"
+    if (dim(Y)[2] > 1)
+    {
+        Y.names = dimnames(Y)[[2]]
+        if (is.null(Y.names))
+        {
+            Y.names = paste("Y", 1:Q, sep = "")
+            dimnames(Y)[[2]]=Y.names
+        }
+    }
+    
+    ind.names = dimnames(X)[[1]]
+    if (is.null(ind.names))
+    {
+        ind.names = dimnames(Y)[[1]]
+        rownames(X) = ind.names
+    }
+    
+    if (is.null(ind.names))
+    {
+        ind.names = 1:N
+        rownames(X) = rownames(Y) = ind.names
+    }
+    
+    if(length(unique(X.names))!=P) stop("Unique indentifier is needed for the columns of X")
+    if(length(unique(Y.names))!=Q) stop("Unique indentifier is needed for the columns of Y")
+    
+    return(list(X=X,Y=Y,ncomp=ncomp,X.names=X.names,Y.names=Y.names,ind.names=ind.names))
+}
+
+# --------------------------------------
+# Check.entry.pls.single
+# --------------------------------------
+
+Check.entry.pls.single = function(X, ncomp, keepX,keepX.constraint)
+{
+
+    #  if(length(levels(study)) == 1)  # Aida
+    #  stop("\nstudys must have more than one level")      #WHY?
+    
+    #-- validation des arguments --#
+    if (length(dim(X)) != 2)
+    stop("'X' must be a numeric matrix.")
+    
+    X = as.matrix(X)
+    
+    
+    if (!is.numeric(X) )
+    stop("'X' must be a numeric matrix.")
+    
+    N = nrow(X)
+    P= ncol(X)
+
+    if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0)
+    stop("invalid number of variates, 'ncomp'.")
+    
+    ncomp = round(ncomp)
+    if(ncomp > P)
+    {
+        warning("Reset maximum number of variates 'ncomp' to ncol(X) = ", P, ".")
+        ncomp = P
+    }
+    
+    
+    if(missing(keepX)) # so the function can be used for pls as well
+    {keepX=rep(P,ncomp)}
+    
+    if(missing(keepX.constraint))
+    keepX.constraint=list()
+    
+    if((length(keepX.constraint)+length(keepX))!=ncomp) stop(paste0("length (keepX.constraint) + length(keepX) should be ncomp"))
+
+
+    if (any(keepX > ncol(X)))
+    stop("each component of 'keepX' must be lower or equal than ", P, ".")
+    
+    
+
+    #-- add colnames/rownames if missing --#
+    X.names = dimnames(X)[[2]]
+    if (is.null(X.names))
+    {
+        X.names = paste("X", 1:P, sep = "")
+        dimnames(X)[[2]]=X.names
+    }
+    
+    ind.names = dimnames(X)[[1]]
+    if (is.null(ind.names))
+    {
+        ind.names = 1:N
+        rownames(X)  = ind.names
+    }
+    
+    
+    if(length(unique(X.names))!=P) stop("Unique indentifier is needed for the columns of X")
+    
+    return(list(X=X,ncomp=ncomp,X.names=X.names,ind.names=ind.names))
+}
+
