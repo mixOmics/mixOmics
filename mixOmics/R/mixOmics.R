@@ -18,7 +18,7 @@ mixOmics=function(  X,
                     study, #meta
                     design, #block
                     lambda=NULL, #sgcca for soft_threshold (superseeded by keepX
-                    tau,# rgcca
+                    tau=NULL,# rgcca
                     scheme= "centroid", #block
                     scale=FALSE,
                     bias=FALSE,
@@ -29,16 +29,11 @@ mixOmics=function(  X,
                     verbose=FALSE)
 
 {
-    
-    if(missing(Y) & missing(indY))
-    {stop("'Y' or 'indY' are needed; if you just have one dataset, please use the pca() function")}
-    
     if(is.list(X))# either rgcca, sgcca, meta.block
     {
-        message("A block analysis is being performed")
-  
+        
         result=meta.block.spls(A=list(X,Y),indY=indY,design=design,lambda=lambda,ncomp=ncomp,scheme = scheme, scale =scale,  bias = bias,
-        init = "svd", tol = tol, verbose = verbose,
+        init = "svd", tol = tol, verbose = verbose, tau = tau,
         mode = mode, sparse = sparse, max.iter = max.iter,study = study, keepA = keepX,
         keepA.constraint = keepX.constraint, near.zero.var = near.zero.var)
         
@@ -49,40 +44,35 @@ mixOmics=function(  X,
         if(!is.numeric(Y)) Y=as.factor(Y)
         
         
-        
-        
         if(is.factor(Y))#either plsda, splsda
         {
-            Check.entry.pls.single(X, ncomp, keepX,keepX.constraint) # to have the warnings relative to X and Y, instead of blocks
-            if(length(Y)!=nrow(X)) {stop("unequal number of rows in 'X' and 'Y'.")}
+            
             if(missing(keepX)) #plsda, meta.plsda
             {
-                message("a Partial Least Squares - Discriminant Analysis is being performed (PLS-DA)")
+                print("plsda")
                 res=wrapper.plsda(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,
                     max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
                 
             }else{#splsda, meta.splsda
-                message("a sparse Partial Least Squares - Discriminant Analysis is being performed (sPLS-DA)")
-                res=wrapper.splsda(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,keepX=keepX,keepX.constraint=keepX.constraint,
+                print("splsda")
+                res=wrapper.splsda(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,keepX=keepX,
                     max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
             }
             
             
         }else{
-            Check.entry.pls(X, Y, ncomp, keepX, keepY,keepX.constraint,keepY.constraint) # to have the warnings relative to X and Y, instead of blocks
-
+            
             if(missing(keepX)) #pls, meta.pls
             {
-                message("a Partial Least Squares is being performed (PLS)")
+                print("pls")
                 res=wrapper.pls(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,
                 max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
                 
             }else{#spls, meta.spls
                 
-                message("a sparse Partial Least Squares is being performed (sPLS)")
-                res=wrapper.spls(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,keepX=keepX,keepY=keepY,
-                keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,max.iter = max.iter, tol = tol,
-                near.zero.var = near.zero.var,scale = scale)
+                print("spls")
+                res=wrapper.spls(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,keepX=keepX,
+                keepY=keepY,max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
 
 
                 
