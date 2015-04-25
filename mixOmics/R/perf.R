@@ -423,8 +423,8 @@ perf.spls <-function(object,
             MSEP.mat[omit, , k] = (Y.test - Y.hat[, , k])^2
             
             # added: record selected features in each set
-            featuresX[[k]] = c(unlist(featuresX[[k]]), select.var(spls.res, comp = k)$name.X)
-            featuresY[[k]] = c(unlist(featuresY[[k]]), select.var(spls.res, comp = k)$name.Y)
+            featuresX[[k]] = c(unlist(featuresX[[k]]), selectVar(spls.res, comp = k)$name.X)
+            featuresY[[k]] = c(unlist(featuresY[[k]]), selectVar(spls.res, comp = k)$name.Y)
 
           } # end loop on k
         }        
@@ -733,7 +733,7 @@ perf.splsda <- function(object,
     spls.res = splsda(X.train, Y.train, ncomp, max.iter, tol, keepX=keepX, near.zero.var = near.zero.var)  
     # added: record selected features
     for(k in 1:ncomp){
-      features[[k]] = c(unlist(features[[k]]), select.var(spls.res, comp = k)$name)
+      features[[k]] = c(unlist(features[[k]]), selectVar(spls.res, comp = k)$name)
     }
     
     if (!is.null(spls.res$nzv$Position)) X.test = X.test[, -spls.res$nzv$Position]

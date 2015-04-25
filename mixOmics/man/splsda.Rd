@@ -25,7 +25,7 @@ splsda(X, Y, ncomp = 2, keepX = rep(ncol(X), ncomp),
 
 \details{
 \code{splsda} function fit sPLS models with \eqn{1, \ldots ,}\code{ncomp} components
-to the factor or class vector \code{Y}. The appropriate indicator 
+to the factor or class vector \code{Y}. The appropriate indicator (dummy)
 matrix is created.
 }
 

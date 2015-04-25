@@ -188,10 +188,10 @@ wrap.result.sgcca = wrapper.sgcca(data = data, design = design, penalty = c(.3,.
 wrap.result.sgcca
 
 #variables selected on component 1 for the two blocks:
-select.var(wrap.result.sgcca, comp = 1, block = c(1,2))$name.var
+selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$name.var
 
 #variables selected on component 2 for each block: 
-select.var(wrap.result.sgcca, comp = 2, block = c(1,2))$name.var
+selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$name.var
 
 
 plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), ncomp.select = c(1,1), labels = TRUE)

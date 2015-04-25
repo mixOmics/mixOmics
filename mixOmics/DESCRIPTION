@@ -5,9 +5,9 @@ Version: 5.0-4
 Date: 2015-03-27
 Depends: R (>= 2.10), MASS, lattice
 Imports: RGCCA, igraph, rgl, pheatmap
-Author: Sebastien Dejean, Ignacio Gonzalez, Kim-Anh Le Cao with
+Author: Kim-Anh Le Cao,  Ignacio Gonzalez, Sebastien Dejean with key contributors Florian Rohart, Benoit Gautier
         contributions from Pierre Monget, Jeff Coquery, FangZou Yao,
-        Benoit Liquet, Florian Rohart, Benoit Gautier
+        Benoit Liquet, 
 Maintainer: Kim-Anh Le Cao <k.lecao@uq.edu.au>
 Description: We provide statistical integrative techniques and
         variants to analyse highly dimensional data sets: regularized
