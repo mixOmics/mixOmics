@@ -34,19 +34,19 @@ verbose=FALSE)
         
         if(is.null(tau)) #RGCCA/meta
         {
-            message("A block analysis is being performed")
+            message("A block analysis is being performed-tada")
             
-            result=meta.block.spls(A=list(X,Y),indY=indY,design=design,ncomp=ncomp,scheme = scheme,
+            res=meta.block.spls(A=X,indY=indY,design=design,ncomp=ncomp,scheme = scheme,
             scale =scale,  bias = bias,init = init, tol = tol, verbose = verbose, tau = tau,
-            mode = mode, sparse = sparse, max.iter = max.iter,study = study, keepA = keepX,
+            mode = mode, max.iter = max.iter,study = study, keepA = keepX,
             keepA.constraint = keepX.constraint, near.zero.var = near.zero.var)
         }else{        #if(no tau) SGCCA/meta
             
             message("A block analysis is being performed")
             
-            result=meta.block.spls(A=list(X,Y),indY=indY,design=design,ncomp=ncomp,scheme = scheme,
+            res=meta.block.spls(A=X,indY=indY,design=design,ncomp=ncomp,scheme = scheme,
             scale =scale,  bias = bias,init = init, tol = tol, verbose = verbose, tau = tau,
-            mode = mode, sparse = sparse, max.iter = max.iter,study = study, keepA = keepX,
+            mode = mode,  max.iter = max.iter,study = study, keepA = keepX,
             keepA.constraint = keepX.constraint, near.zero.var = near.zero.var)
             
         }

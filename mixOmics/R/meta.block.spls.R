@@ -62,6 +62,7 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NU
   
   # add check so that this function can run on its own (which shouldn't happen now, but don't know the future)
   
+  
   if(is.null(indY) & is.null(tau))
   stop("Either 'indY' or 'tau' is needed")
   
@@ -102,11 +103,13 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NU
   
   for(q in 1:length(A))
     keepA[[q]]=c(unlist(lapply(keepA.constraint[[q]],length)),keepA[[q]]) #of length ncomp, can contains 0
-    
+
+
   # center the data per study, per matrix of A, scale if scale=TRUE, option bias
   mean_centered = lapply(A, function(x){mean_centering_per_study(x, study, scale, bias)})
   A = lapply(mean_centered, function(x){x$concat.data})
   ni=lapply(mean_centered[[1]]$data.list.study.scale,nrow) #number of samples per study
+
 
     ### Start: Initialization parameters
   pjs <- sapply(A, NCOL); nb_ind <- NROW(A[[1]]);
@@ -134,7 +137,8 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NU
     tau = matrix(rep(tau, N), nrow = N, ncol = length(tau), byrow = TRUE)
   }
   ### End: Initialization parameters
-  
+
+
   iter=NULL
   for (n in 1:N)
   {
@@ -291,8 +295,8 @@ meta.block.spls_iteration <- function (A, design, study = NULL, keepA.constraint
   
   ### Check design matrix
   #stop("L1 constraints must be between 0 and 1.")
-  
-  
+
+
   ### Start: Initialization parameters
   J <- length(A); J2 <- J-1; pjs = sapply(A, NCOL)
   AVE_X <- rep(0, J);
@@ -304,12 +308,12 @@ meta.block.spls_iteration <- function (A, design, study = NULL, keepA.constraint
   misdata = any(sapply(A, function(x){any(is.na(x))})) # Detection of missing data
   g <- function(x) switch(scheme, horst = x, factorial = x^2, centroid = abs(x))
   
-  
+
   # study split
   A_split=lapply(A, study_split, study)
   nlevels_study=nlevels(study)
   ### End: Initialization parameters
-  
+
   ### Start: Initialisation "loadings.A" vector
   if (init == "svd") {
     ### Start: Change initialization of loadings.A
@@ -334,7 +338,7 @@ meta.block.spls_iteration <- function (A, design, study = NULL, keepA.constraint
   }
   ### End: Initialisation "a" vector
   
-  
+
   variates.partial.A.comp = NULL
   loadings.partial.A.comp = list()
   
@@ -346,13 +350,14 @@ meta.block.spls_iteration <- function (A, design, study = NULL, keepA.constraint
   }
   loadings.A_old <- loadings.A
   
-  
+
   ### Start Algorithm 1 Sparse generalized canonical analysis (See Variable selection for generalized canonical correlation analysis (Tenenhaus))
   repeat {
     #variates.Aold can be used for the convergence of the algorithm, not used at the moment, so please disregard variates.Aold
     variates.Aold <- variates.A
     for (q in 1:J)
     {
+
       ### Start : !!! Impact of the diag of the design matrix !!! ###
       if (scheme == "horst") CbyCovq <- design[q, ]
       if (scheme == "factorial") CbyCovq <- design[q, ] * cov2(variates.A, variates.A[, q], bias = bias)
@@ -364,7 +369,7 @@ meta.block.spls_iteration <- function (A, design, study = NULL, keepA.constraint
       Z_split=study_split(Z[,q,drop=FALSE],study)  # split Z by the study factor
       ### Step A end: Compute the inner components
       
-      
+
       ### Step B start: Computer the outer weight ###
       # possibility of removing NA (replacing by 0) and use crossprod, further development
       temp=0
@@ -375,6 +380,7 @@ meta.block.spls_iteration <- function (A, design, study = NULL, keepA.constraint
       }
       loadings.A[[q]]=temp
       
+
       # check the following
       #loadings.partial.A.comp = lapply(1 : J, function(x){lapply(1 : nlevels_study, function(y){ A_split[[x]][[y]] %*% Z_split[[x]]})})
       
