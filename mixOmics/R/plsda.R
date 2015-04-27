@@ -31,8 +31,9 @@ max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = TRUE)
     cl = match.call()
     cl[[1]] = as.name("plsda")
     result$call = cl
+    result$ind.mat=result$Y
     result$Y=Y
-    result$ind.mat = Y.mat; result$names$Y = levels(Y)
+    result$names$Y = levels(Y)
     row.names(result$variates$Y) = row.names(X); row.names(result$loadings$Y) = paste0("Y", c(1 : nlevels(Y)))
 
     class(result) = "plsda"

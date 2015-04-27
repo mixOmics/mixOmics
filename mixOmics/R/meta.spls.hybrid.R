@@ -101,7 +101,6 @@ tol = 1e-06)
     # A: list of matrices
     # indY: integer, pointer to one of the matrices of A
     # design: design matrix, links between matrices. Diagonal must be 0
-    # lambda: Matrix of shrinkage penalties. Each row is for a component, each column for a matrix of A. Can be a vector, in that case same penalty to each component. Only used if keepA is missing
     # ncomp: vector of ncomp, per matrix
     # scheme: a function "g", refer to the article (thanks Benoit)
     # scale: do you want to scale ? mean is done by default and cannot be changed (so far)
@@ -120,8 +119,7 @@ tol = 1e-06)
     
     result <- meta.block.spls(A = list(X = X, Y = Y), indY = 2, mode = "regression", ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
     design = design, keepA = list(keepX,keepY),keepA.constraint = list(keepX.constraint,keepY.constraint), sparse = TRUE,
-    lambda = NULL, scale = scale,
-    scheme = "centroid", study = study,near.zero.var=near.zero.var)
+    scale = scale, scheme = "centroid",init="svd", study = study,near.zero.var=near.zero.var)
     
     result$ncomp = ncomp
 

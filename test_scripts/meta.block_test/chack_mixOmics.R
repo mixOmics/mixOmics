@@ -4,21 +4,66 @@
 #### Difference because of not the same starting point between the 2 algo "pls" and "spls" in mixOmics package when tol = 1e-06
 rm(list=ls())
 setwd("/Users/florian/Work/git/package-mixOmics/")
-load("test_scripts/multigroup_test/Fibro-ESC-iPSC.6exp.167samples.light.Rdata") #load data, type.id, exp among others
-
-
 library(mixOmics)
 
+source("mixOmics/R/check_entry.R")
+source("mixOmics/R/helpers.R")
+source("mixOmics/R/meta.block.spls.R")
+source("mixOmics/R/meta.spls.hybrid.R")
+source("mixOmics/R/mixOmics.R")
+source("mixOmics/R/pls.R")
+source("mixOmics/R/plsda.R")
+source("mixOmics/R/spls.R")
+source("mixOmics/R/splsda.R")
 
-source("meta.block.spls/check_entry.R")
-source("meta.block.spls/helpers.R")
-source("meta.block.spls/meta.block.spls.R")
-source("meta.block.spls/meta.spls.hybrid.R")
-source("meta.block.spls/mixOmics.R")
-source("meta.block.spls/pls.R")
-source("meta.block.spls/plsda.R")
-source("meta.block.spls/spls.R")
-source("meta.block.spls/splsda.R")
+data(nutrimouse)
+X <- scale(nutrimouse$lipid)
+Y <- scale(nutrimouse$gene)
+nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
+nutri.res$loadings$X
+
+A = list(X = X, Y = Y)
+temp = meta.block.spls(A = A, indY = NULL,  design = 1 - diag(length(A)), tau=c(0.064, 0.008),
+ncomp = rep(2, length(A)), scheme = "centroid", scale = FALSE,  bias = FALSE,
+init = "svd.single", tol = 1e-25, verbose = FALSE, mode = "canonical",
+sparse = FALSE, max.iter = 1000, study = rep(1, 40), keepA = list(c(21, 21), c(120, 120)),
+keepA.constraint = NULL, near.zero.var = FALSE)
+temp$loadings$X
+apply(temp$loadings$X, 2, function(x){x/norm(x, type = "2")})
+
+
+temp = meta.block.spls(A = A, indY = NULL,  design = 1 - diag(length(A)), tau=c(0.064, 0.008),
+ncomp = rep(2, length(A)), mode = "canonical",keepA = list(c(21, 21), c(120, 120)),study = rep(1, 40))
+
+temp2 = meta.block.spls(A = A, indY = NULL,  design = 1 - diag(length(A)), tau=c(0.064, 0.008),
+ncomp = rep(2, length(A)), scheme = "centroid", scale = FALSE,  bias = FALSE,
+init = "svd.single", mode = "canonical",tol = 1e-25,max.iter = 10000,
+study = rep(1, 40), keepA = list(c(21, 21), c(120, 120)))
+
+
+A = list(X = X, Y = Y)
+temp = meta.block.spls(A = A, indY = NULL,  design = 1 - diag(length(A)),  tau="optimal",
+ncomp = rep(2, length(A)), scheme = "centroid", scale = FALSE,  bias = FALSE,
+init = "svd.single", tol = 1e-25, verbose = FALSE, mode = "canonical",
+sparse = FALSE, max.iter = 1000, study = rep(1, 40), keepA = list(c(21, 21), c(120, 120)),
+keepA.constraint = NULL, near.zero.var = FALSE)
+temp$loadings$X
+temp$tau
+
+
+
+load("test_scripts/meta.block_test/Fibro-ESC-iPSC.6exp.167samples.light.Rdata") #load data, type.id, exp among others
+
+
+source("mixOmics/R/check_entry.R")
+source("mixOmics/R/helpers.R")
+source("mixOmics/R/meta.block.spls.R")
+source("mixOmics/R/meta.spls.hybrid.R")
+source("mixOmics/R/mixOmics.R")
+source("mixOmics/R/pls.R")
+source("mixOmics/R/plsda.R")
+source("mixOmics/R/spls.R")
+source("mixOmics/R/splsda.R")
 
 
 
@@ -80,7 +125,7 @@ res.spls.hybrid=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG0
 
 
 #with gene names in keepX.constraint
-res.spls.hybrid=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(100,50),ncomp=3)
+#res.spls.hybrid=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(100,50),ncomp=3)
 res.spls.hybrid=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(100,50),ncomp=3)
 which(res.spls.hybrid$loadings$X[,1]!=0)
 which(res.spls.hybrid$loadings$X[,2]!=0)
@@ -94,7 +139,7 @@ which(res.spls.hybrid$loadings$X[,2]!=0)
 
 
 system.time(wrapper.meta.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX=c(10,5,10),ncomp=3,near.zero.var=TRUE,tol=1e-25))
-system.time(mixOmics(X=data,Y=Y.mat,study=exp,keepX=c(10,5,10),ncomp=3,near.zero.var=TRUE,tol=1e-25))
+system.time(mixOmics(X=data,Y=Y.mat,study=exp,keepX=c(10,5,10),ncomp=3,near.zero.var=TRUE))
 
 
 head(res$loadings.global$Y)
@@ -294,8 +339,8 @@ near.zero.var=FALSE
 
 
 
-check=Check.entry.sgcca(A, indY, design , lambda,ncomp , scheme , scale ,  bias,
-init , tol , verbose,mode, sparse , max.iter,study , keepA, keepA.constraint,near.zero.var)
+check=Check.entry.meta.block.spls(A, indY, design ,ncomp , scheme , scale ,  bias,
+init , tol , verbose,mode, sparse , max.iter,study , keepA, keepA.constraint)
 A=check$A
 ncomp=check$ncomp
 study=check$study

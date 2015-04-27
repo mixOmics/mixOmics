@@ -17,8 +17,8 @@ mixOmics=function(  X,
                     keepY.constraint, #hybrid
                     study, #meta
                     design, #block
-                    lambda=NULL, #sgcca for soft_threshold (superseeded by keepX
-                    tau=NULL,# rgcca
+                    tau=NULL,# rgcca, number between 0,1 or "optimal"
+                    init,
                     scheme= "centroid", #block
                     scale=FALSE,
                     bias=FALSE,
@@ -32,11 +32,24 @@ mixOmics=function(  X,
     if(is.list(X))# either rgcca, sgcca, meta.block
     {
         
-        result=meta.block.spls(A=list(X,Y),indY=indY,design=design,lambda=lambda,ncomp=ncomp,scheme = scheme, scale =scale,  bias = bias,
-        init = "svd", tol = tol, verbose = verbose, tau = tau,
-        mode = mode, sparse = sparse, max.iter = max.iter,study = study, keepA = keepX,
-        keepA.constraint = keepX.constraint, near.zero.var = near.zero.var)
-        
+        if(is.null(tau)) #RGCCA/meta
+        {
+            message("A block analysis is being performed")
+            
+            result=meta.block.spls(A=list(X,Y),indY=indY,design=design,ncomp=ncomp,scheme = scheme,
+                scale =scale,  bias = bias,init = init, tol = tol, verbose = verbose, tau = tau,
+                mode = mode, sparse = sparse, max.iter = max.iter,study = study, keepA = keepX,
+                keepA.constraint = keepX.constraint, near.zero.var = near.zero.var)
+        }else{        #if(no tau) SGCCA/meta
+            
+            message("A block analysis is being performed")
+            
+            result=meta.block.spls(A=list(X,Y),indY=indY,design=design,ncomp=ncomp,scheme = scheme,
+                scale =scale,  bias = bias,init = init, tol = tol, verbose = verbose, tau = tau,
+                mode = mode, sparse = sparse, max.iter = max.iter,study = study, keepA = keepX,
+                keepA.constraint = keepX.constraint, near.zero.var = near.zero.var)
+            
+        }
         
     }else{#either pls,spls, plsda, splsda
         if(missing(Y))
@@ -44,37 +57,41 @@ mixOmics=function(  X,
         if(!is.numeric(Y)) Y=as.factor(Y)
         
         
+        
         if(is.factor(Y))#either plsda, splsda
         {
-            
+            Check.entry.pls.single(X, ncomp, keepX,keepX.constraint) # to have the warnings relative to X and Y, instead of blocks
+            if(length(Y)!=nrow(X)) {stop("unequal number of rows in 'X' and 'Y'.")}
             if(missing(keepX)) #plsda, meta.plsda
             {
-                print("plsda")
+                message("a Partial Least Squares - Discriminant Analysis is being performed (PLS-DA)")
                 res=wrapper.plsda(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,
                     max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
                 
             }else{#splsda, meta.splsda
-                print("splsda")
-                res=wrapper.splsda(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,keepX=keepX,
+                message("a sparse Partial Least Squares - Discriminant Analysis is being performed (sPLS-DA)")
+                res=wrapper.splsda(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,keepX=keepX,keepX.constraint=keepX.constraint,
                     max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
             }
             
             
         }else{
+            Check.entry.pls(X, Y, ncomp, keepX, keepY,keepX.constraint,keepY.constraint) # to have the warnings relative to X and Y, instead of blocks
             
             if(missing(keepX)) #pls, meta.pls
             {
-                print("pls")
+                message("a Partial Least Squares is being performed (PLS)")
                 res=wrapper.pls(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,
-                max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
+                    max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
                 
             }else{#spls, meta.spls
                 
-                print("spls")
-                res=wrapper.spls(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,keepX=keepX,
-                keepY=keepY,max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
-
-
+                message("a sparse Partial Least Squares is being performed (sPLS)")
+                res=wrapper.spls(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,keepX=keepX,keepY=keepY,
+                    keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,max.iter = max.iter, tol = tol,
+                    near.zero.var = near.zero.var,scale = scale)
+                
+                
                 
             }
             
@@ -85,6 +102,6 @@ mixOmics=function(  X,
     
     class(res)=c("mixOmics",class(res))
     return(invisible(res))
-        
-        
-    }
+    
+    
+}

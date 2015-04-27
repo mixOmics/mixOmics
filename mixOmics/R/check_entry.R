@@ -82,7 +82,7 @@ Check.entry.single = function(X,  ncomp, keepX, keepX.constraint,q)
 # Check.entry.meta.block.spls
 # --------------------------------------
 
-Check.entry.meta.block.spls = function(A, indY, design , lambda,ncomp , scheme , scale ,  bias,
+Check.entry.meta.block.spls = function(A, indY, design ,ncomp , scheme , scale ,  bias,
     init , tol , verbose,mode, sparse , max.iter,study , keepA, keepA.constraint)
 {
     
@@ -123,19 +123,6 @@ Check.entry.meta.block.spls = function(A, indY, design , lambda,ncomp , scheme ,
     }
     
     
-    if(!is.null(lambda))
-    {
-        if(!is.null(keepA)|!is.null(keepA.constraint))
-        {
-            warnings("lambda is not used when keepA or keepA.constraint are provided")
-        }
-        
-        if(length(lambda)!=length(A))
-        stop("lambda must be a vector of same length as A")
-        if (any((lambda < 0) | (lambda > 1)))
-        stop("L1 constraints must be between 0 and 1.")
-    }
-    
     if (!(scheme %in% c("horst", "factorial","centroid"))) {
         stop("Choose one of the three following schemes: horst, centroid or factorial")
     } else {
@@ -143,8 +130,8 @@ Check.entry.meta.block.spls = function(A, indY, design , lambda,ncomp , scheme ,
         cat("Computation of the SGCCA block components based on the", scheme, "scheme \n")
     }
     
-    if(!init%in%c("svd","random"))
-    stop("init should be one of 'svd' or 'random'")
+    if(!init%in%c("svd","svd.single"))
+    stop("init should be one of 'svd' or 'svd.single'")
     
     study=as.factor(study)
     

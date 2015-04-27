@@ -32,20 +32,18 @@
 # sgcca - Runs sgcca() modified from RGCCA
 #   inputs: A - list of datasets each with the same number of rows (samples)
 #           design - design matrix
-#           lambda - vector of shirnkage penalties
 #           ncomp - vector specifying number of components to keep per datasets
 #   outputs:
 # ----------------------------------------------------------------------------------------------------------
-meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)), lambda = NULL,tau=NULL,#rep(1, length(A)),
+meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NULL,#rep(1, length(A)),
                             ncomp = rep(1, length(A)), scheme = "centroid", scale = TRUE,  bias = FALSE,
-                            init = "svd", tol = 1e-06, verbose = FALSE,
+                            init = "svd.single", tol = 1e-06, verbose = FALSE,
                             mode = "canonical", sparse = FALSE, max.iter = 500,study = NULL, keepA = NULL,
                             keepA.constraint = NULL, near.zero.var = FALSE) { # meta.hybrid.spls
   
   # A: list of matrices
   # indY: integer, pointer to one of the matrices of A
   # design: design matrix, links between matrices. Diagonal must be 0
-  # lambda: Matrix of shrinkage penalties. Each row is for a component, each column for a matrix of A. Can be a vector, in that case same penalty to each component. Only used if keepA is missing
   # ncomp: vector of ncomp, per matrix
   # scheme: a function "g", refer to the article (thanks Benoit)
   # scale: do you want to scale ? mean is done by default and cannot be changed (so far)
@@ -65,7 +63,7 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)), lambd
   # add check so that this function can run on its own (which shouldn't happen now, but don't know the future)
   
   
-  check=Check.entry.meta.block.spls(A, indY, design , lambda,ncomp , scheme , scale ,  bias,
+  check=Check.entry.meta.block.spls(A, indY, design ,ncomp , scheme , scale ,  bias,
                                     init , tol , verbose,mode, sparse , max.iter,study , keepA, keepA.constraint)
   A=check$A
   ncomp=check$ncomp
@@ -102,9 +100,7 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)), lambd
   
   for(q in 1:length(A))
     keepA[[q]]=c(unlist(lapply(keepA.constraint[[q]],length)),keepA[[q]]) #of length ncomp, can contains 0
-  
-  # if(sparse==FALSE) tau=lambda
-  
+    
   # center the data per study, per matrix of A, scale if scale=TRUE, option bias
   mean_centered = lapply(A, function(x){mean_centering_per_study(x, study, scale, bias)})
   A = lapply(mean_centered, function(x){x$concat.data})
@@ -121,12 +117,8 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)), lambd
   
   defl.matrix[[1]] <- A; ndefl <- ncomp - 1;  J2 <- J-1;
   
-  if(is.vector(lambda)){
-    lambda=t(matrix(rep(lambda,N),ncol=N))
-  }
-  
   if (is.vector(tau)){
-    tau = matrix(rep(tau, max(ncomp)), nrow = max(ncomp), ncol = length(tau), byrow = TRUE)    
+    tau = matrix(rep(tau, N), nrow = N, ncol = length(tau), byrow = TRUE)
   }
   ### End: Initialization parameters
   
@@ -140,7 +132,7 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)), lambd
     ### Start: Estimation ai
     if (is.null(tau))
     {
-      meta.block.result <- meta.block.spls_iteration(R, design, lambda[n, ],study = study,  keepA.constraint=if (!is.null(keepA.constraint)) {lapply(keepA.constraint, function(x){unlist(x[n])})} else {NULL} ,
+      meta.block.result <- meta.block.spls_iteration(R, design,study = study,  keepA.constraint=if (!is.null(keepA.constraint)) {lapply(keepA.constraint, function(x){unlist(x[n])})} else {NULL} ,
                                                      keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL},indY = indY,
                                                      scheme = scheme, init = init, max.iter = max.iter, tol = tol,   verbose = verbose)
     } else {
@@ -191,7 +183,7 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)), lambd
   shave.veclist <- function(vec_list, nb_elts) mapply(function(m, nbcomp) m[1:nbcomp], vec_list, nb_elts, SIMPLIFY = FALSE)
   
   for (k in 1:J) {
-    rownames(loadings.A[[k]]) = rownames(loadings.Astar[[k]]) = colnames(A[[k]])
+    rownames(loadings.A[[k]]) = rownames(loadings.Astar[[k]]) =colnames(A[[k]])
     rownames(variates.A[[k]]) = rownames(A[[k]])
     colnames(variates.A[[k]]) = paste0("comp ", 1:max(ncomp))
     AVE_X[[k]] = apply(cor(A[[k]], variates.A[[k]])^2, 2, mean)
@@ -204,7 +196,7 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)), lambd
   AVE <- list(AVE_X = AVE_X, AVE_outer = AVE_outer, AVE_inner = AVE_inner)
   
   ### Start: output
-  names(loadings.A) = names(A); names(variates.A) = names(A)
+  names(loadings.A)= names(loadings.partial.A) = names(A); names(variates.A) = names(A)
   
   names = lapply(1:J, function(x) {colnames(A[[x]])})
   names(names) = names(A)
@@ -225,7 +217,7 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)), lambd
               variates = variates.A, loadings = shave.matlist(loadings.A, ncomp),
               variates.partial=variates.partial.A,loadings.partial=loadings.partial.A,
               loadings.star = shave.matlist(loadings.Astar, ncomp), design = design, 
-              penalty = if (sparse == FALSE) {NULL} else {lambda}, max.iter = max.iter, 
+              max.iter = max.iter,
               scheme = scheme, ncomp = ncomp, crit = crit, AVE = AVE, defl.matrix = defl.matrix,
               tol = tol, keepA = keepA, keepA.constraint = keepA.constraint, init = init, bias = bias, 
               scale = scale, tau = tau.rgcca, near.zero.var = if(near.zero.var) nzv.A,iter=iter)
@@ -238,13 +230,11 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)), lambd
 # sgccak - Runs sgccak() modified from RGCCA
 #   inputs: A - list of datasets each with the same number of rows (samples)
 #           design - design matrix
-#           lambda - vector of shirnkage penalties
 #           ncomp - vector specifying number of components to keep per datasets
 #   outputs:
 # ----------------------------------------------------------------------------------------------------------
 
-meta.block.spls_iteration <- function (A, design, lambda = NULL,#rep(1, length(A)),
-                                       study = NULL, keepA.constraint = NULL, keepA = NULL,  indY = NULL,
+meta.block.spls_iteration <- function (A, design, study = NULL, keepA.constraint = NULL, keepA = NULL,  indY = NULL,
                                        scheme = "centroid", init = "svd", max.iter = 500, tol = 1e-06, verbose = TRUE, bias = FALSE)
 {
   
@@ -254,23 +244,15 @@ meta.block.spls_iteration <- function (A, design, lambda = NULL,#rep(1, length(A
   
   
   # == == == == no check needed as this function is only used in sgcca, in which the checks are conducted
-  # needs checks
-  #if(!is.null(lambda) | !is.null(keepA) | !is.null(keepA))    {sparse=TRUE}
-  #check are different whether sparse==TRUE
-  
+
   
   ### Check design matrix
-  #if (!is.null(lambda) & (any(lambda < 0 | lambda > 1)))
   #stop("L1 constraints must be between 0 and 1.")
   
   
   ### Start: Initialization parameters
   J <- length(A); J2 <- J-1; pjs = sapply(A, NCOL)
   AVE_X <- rep(0, J);
-  if(!is.null(lambda))
-  {
-    lambda <- lambda * sqrt(pjs)
-  }
   
   
   iter <- 1
@@ -288,24 +270,24 @@ meta.block.spls_iteration <- function (A, design, lambda = NULL,#rep(1, length(A
   ### Start: Initialisation "loadings.A" vector
   if (init == "svd") {
     ### Start: Change initialization of loadings.A
-#     if (misdata) {
-#       M = lapply(c(1:(J-1)), function(x){crossprod(replace(A[[x]], is.na(A[[x]]), 0), replace(A[[J]], is.na(A[[J]]), 0))})
-#     } else {
-#       M = lapply(c(1:(J-1)), function(x){crossprod(A[[x]], A[[J]])})
-#     }
-#     
-#     svd.M = lapply(M, function(x){svd(x, nu = 1, nv = 1)})
-#     loadings.A = lapply(c(1:(J-1)), function(x){svd.M[[x]]$u})
-#     loadings.A[[J]] = svd.M[[1]]$v
-    
-    loadings.A[[j]] <- initsvd(lapply(j, function(x) {replace(A[[x]], is.na(A[[x]]), 0)})[[1]])
+     if (misdata) {
+       M = lapply(c(1:(J-1)), function(x){crossprod(replace(A[[x]], is.na(A[[x]]), 0), replace(A[[J]], is.na(A[[J]]), 0))})
+     } else {
+       M = lapply(c(1:(J-1)), function(x){crossprod(A[[x]], A[[J]])})
+     }
+     
+     svd.M = lapply(M, function(x){svd(x, nu = 1, nv = 1)})
+     loadings.A = lapply(c(1:(J-1)), function(x){svd.M[[x]]$u})
+     loadings.A[[J]] = svd.M[[1]]$v
+  } else if (init=="svd.single")
+  {
+      loadings.A <-  lapply(1 : J, function(y){initsvd(lapply(y, function(x) {replace(A[[x]], is.na(A[[x]]), 0)})[[1]])})
+      
     ### End: Change initialization of a
     
     ### a <- lapply(lapply(c(1:J), function(x) {replace(A[[x]], is.na(A[[x]]), 0)}), function(x) return(svd(x, nu = 0, nv = 1)$v))
-  } else if (init == "random") {
-    loadings.A <- lapply(pjs, rnorm)
   } else {
-    stop("init should be either random or svd.")
+    stop("init should be either 'svd' or 'svd.single'.")
   }
   ### End: Initialisation "a" vector
   
@@ -353,7 +335,7 @@ meta.block.spls_iteration <- function (A, design, lambda = NULL,#rep(1, length(A
       #loadings.partial.A.comp = lapply(1 : J, function(x){lapply(1 : nlevels_study, function(y){ A_split[[x]][[y]] %*% Z_split[[x]]})})
       
       
-      loadings.A[[q]]=sparsity(loadings.A[[q]],keepA[[q]],keepA.constraint[[q]],lambda)
+      loadings.A[[q]]=sparsity(loadings.A[[q]],keepA[[q]],keepA.constraint[[q]])
       loadings.A[[q]]=l2.norm(as.vector(loadings.A[[q]]))
       
       ### Step B end: Computer the outer weight ###
@@ -395,13 +377,12 @@ meta.block.spls_iteration <- function (A, design, lambda = NULL,#rep(1, length(A
 # rgccak - Runs sgccak() modified from RGCCA
 #   inputs: A - list of datasets each with the same number of rows (samples)
 #           design - design matrix
-#           lambda - vector of shirnkage penalties
 #           ncomp - vector specifying number of components to keep per datasets
 #   outputs:
 # ----------------------------------------------------------------------------------------------------------
 
 rgccak <- function (A, design, tau = "optimal", scheme = "centroid", scale = FALSE, max.iter = 500,
-                    verbose = FALSE, init = "svd", bias = FALSE, tol = .Machine$double.eps, keepA = NULL) {
+                    verbose = FALSE, init = "svd.single", bias = FALSE, tol = .Machine$double.eps, keepA = NULL) {
   ### Start: Initialisation parameters
   A <- lapply(A, as.matrix)
   J <- length(A)
@@ -417,7 +398,7 @@ rgccak <- function (A, design, tau = "optimal", scheme = "centroid", scale = FAL
   which.primal <- which((n >= pjs) == 1)
   which.dual <- which((n < pjs) == 1)
   
-  if (init == "svd") {
+  if (init == "svd.single") {
     for (j in which.primal) {           
       loadings.A[[j]] <- initsvd(lapply(j, function(x) {replace(A[[x]], is.na(A[[x]]), 0)})[[1]])
     }
@@ -425,16 +406,16 @@ rgccak <- function (A, design, tau = "optimal", scheme = "centroid", scale = FAL
       alpha[[j]] <- initsvd(lapply(j, function(x) {replace(A[[x]], is.na(A[[x]]), 0)})[[1]])
       K[[j]] <- A[[j]] %*% t(A[[j]])
     }
-  } else if (init == "random") {
-    for (j in which.primal) {
-      loadings.A[[j]] <- rnorm(pjs[j])
-    }
-    for (j in which.dual) {
-      alpha[[j]] <- rnorm(n)
-      K[[j]] <- A[[j]] %*% t(A[[j]])
-    }
+  #} else if (init == "random") {
+  # for (j in which.primal) {
+  #    loadings.A[[j]] <- rnorm(pjs[j])
+  #  }
+  #  for (j in which.dual) {
+  #    alpha[[j]] <- rnorm(n)
+  #    K[[j]] <- A[[j]] %*% t(A[[j]])
+  #  }
   } else {
-    stop("init should be either random or by SVD.")
+      stop("init should be 'svd.single'.")#either random or by SVD.")
   }
   
   N = ifelse(bias, n, n - 1)
@@ -474,7 +455,7 @@ rgccak <- function (A, design, tau = "optimal", scheme = "centroid", scale = FAL
       loadings.A[[j]] = drop(1/sqrt(t(Z[, j]) %*% A[[j]] %*% M[[j]] %*% t(A[[j]]) %*% Z[, j])) * (M[[j]] %*% t(A[[j]]) %*% Z[, j])
       
       # sparse using keepA
-      loadings.A[[j]]=sparsity(loadings.A[[j]], keepA[[j]], keepA.constraint = NULL, lambda = NULL)
+      loadings.A[[j]]=sparsity(loadings.A[[j]], keepA[[j]], keepA.constraint = NULL)
       
       # Update variate
       variates.A[, j] = A[[j]] %*% loadings.A[[j]]
@@ -493,7 +474,7 @@ rgccak <- function (A, design, tau = "optimal", scheme = "centroid", scale = FAL
       loadings.A[[j]] = t(A[[j]]) %*% alpha[[j]]
       
       # sparse using keepA
-      loadings.A[[j]]=sparsity(loadings.A[[j]], keepA[[j]], keepA.constraint = NULL, lambda = NULL)
+      loadings.A[[j]]=sparsity(loadings.A[[j]], keepA[[j]], keepA.constraint = NULL)
       
       # Update variate
       variates.A[, j] = A[[j]] %*% loadings.A[[j]]
@@ -519,6 +500,6 @@ rgccak <- function (A, design, tau = "optimal", scheme = "centroid", scale = FAL
   AVE_inner <- sum(design * cor(variates.A)^2/2)/(sum(design)/2)
   
   result <- list(variates.A = variates.A, loadings.A = loadings.A, crit = crit[which(crit != 0)], 
-                 AVE_inner = AVE_inner, design = design, tau = tau, scheme = scheme)
+                 AVE_inner = AVE_inner, design = design, tau = tau, scheme = scheme,iter=iter )
   return(result)
 }

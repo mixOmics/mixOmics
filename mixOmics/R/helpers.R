@@ -162,7 +162,7 @@ norm2 = function(vec){
 # --------------------------------------
 # sparsity function
 # --------------------------------------
-sparsity=function(loadings.A,keepA,keepA.constraint,lambda)
+sparsity=function(loadings.A,keepA,keepA.constraint)
 {
     
     if(!is.null(keepA.constraint))
@@ -172,11 +172,8 @@ sparsity=function(loadings.A,keepA,keepA.constraint,lambda)
     {
         nx=length(loadings.A) - keepA
         loadings.A=soft_thresholding_L1(loadings.A,nx)
-    }else if(!is.null(lambda))
-    {
-        loadings.A <- soft.threshold(loadings.A, lambda)
     }
-return(loadings.A)
+    return(loadings.A)
 }
 
 
