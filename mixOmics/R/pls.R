@@ -29,7 +29,7 @@ wrapper.pls <- function(X, Y, ncomp = 2, mode = c("regression", "canonical", "in
     cl[[1]] = as.name("pls")
     
     out=list(call=cl,X=result$X[[1]],Y=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,variates=result$variates,loadings=result$loadings,
-        names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv)
+        names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
      
     class(out) = "pls"
     return(invisible(out))

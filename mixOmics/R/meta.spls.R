@@ -36,7 +36,7 @@ keepX , keepY ,keepX.constraint,keepY.constraint, max.iter = 500, tol = 1e-06, n
     
     out=list(call=cl,X=result$X[[1]],Y=result$Y[[1]],ncomp=result$ncomp,study=study,mode=result$mode,keepX=result$keepA[[1]],keepY=result$keepA[[2]],
     variates=result$variates,loadings=result$loadings,variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,
-    names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv)
+    names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
     
     class(out) = "meta.spls"
     return(invisible(out))

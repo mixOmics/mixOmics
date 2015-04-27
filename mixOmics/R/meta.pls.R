@@ -31,7 +31,7 @@ wrapper.meta.pls <- function(X, Y, ncomp = 2, mode = c("regression", "canonical"
 
     out=list(call=cl,X=result$X[[1]],Y=result$Y[[1]],ncomp=result$ncomp,study=study,mode=result$mode,variates=result$variates,loadings=result$loadings,
     variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,names=result$names,
-        tol=result$tol,iter=result$iter,nzv=result$nzv)
+        tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
     
     class(out) = c("meta.pls","pls")
     return(invisible(out))

@@ -32,7 +32,7 @@ max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = TRUE)
     cl[[1]] = as.name("plsda")
 
     out=list(call=cl,X=result$X[[1]],Y=Y,ind.mat=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,variates=result$variates,loadings=result$loadings,
-        names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv)
+        names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
         out$names$Y = levels(Y)
         row.names(out$variates$Y) = row.names(out$variates$X)
         row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(Y)))
