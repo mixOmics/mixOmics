@@ -14,28 +14,43 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-wrapper.rgcca = function(
+rgcca.block = function(
   data,
   design = 1 - diag(length(data)),
   tau = rep(1, length(data)),
-  ncomp = rep(1, length(data)), 
+  ncomp = rep(1, length(data)),
+    keepA,
+max.iter=500,
   scheme = "centroid",
   scale = TRUE, 
-  init = "svd", 
+  init = "svd.single",
   bias = TRUE,
-  tol = .Machine$double.eps,
-max.iter=1000,
+  tol = 1e-6,
   verbose = FALSE  
 ){
   
   # call function
   #rgcca <- function(A, C = 1-diag(length(A)), tau = rep(1, length(A)), ncomp = rep(1, length(A)), scheme = "centroid", scale = TRUE , init="svd", bias = TRUE, tol = .Machine$double.eps, verbose=TRUE)
-    
-  result.rgcca = rgcca(A = data, C = design, tau = tau, 
+  
+  if(missing(keepA))
+  {
+      keepA=list()
+      for(i in 1:length(data))
+      keepA[[i]]=rep(ncol(data[[i]]),max(ncomp))
+      
+  }
+  
+  result.rgcca = meta.block.spls(A = data, design = design, tau = tau,
                        ncomp = ncomp,
                        scheme = scheme, scale = scale,
-                       init = init, bias = bias, tol = tol, verbose = verbose)
-  
+                       init = init, bias = bias, tol = tol, verbose = verbose,
+                       keepA.constraint=NULL,
+                       keepA=keepA,
+                       max.iter=max.iter,
+                       study=factor(rep(1,nrow(A[[1]]))),
+                       mode="canonical"
+                       )
+
   # outputs
 #   out <- list(Y = shave.matlist(Y, ncomp),
 #               a = shave.matlist(a, ncomp), 
@@ -51,16 +66,16 @@ max.iter=1000,
 #   )
 #   class(out) <- "rgcca"
 #   return(out)
-  
+
   cl = match.call()
   cl[[1]] = as.name('rgcca')
   
   output = list(
     class = cl,
     data = data,
-    variates = result.rgcca$Y,
-    loadings = result.rgcca$a,
-    loadings.star = result.rgcca$astar,
+    variates = result.rgcca$variates,
+    loadings = result.rgcca$loadings,
+    loadings.star = result.rgcca$loadings.star,
     design = design,
     tau = result.rgcca$tau,
     scheme = scheme,

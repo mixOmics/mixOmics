@@ -62,6 +62,8 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NU
   
   # add check so that this function can run on its own (which shouldn't happen now, but don't know the future)
   
+  if(is.null(indY) & is.null(tau))
+  stop("Either 'indY' or 'tau' is needed")
   
   check=Check.entry.meta.block.spls(A, indY, design ,ncomp , scheme , scale ,  bias,
                                     init , tol , verbose,mode, sparse , max.iter,study , keepA, keepA.constraint)
@@ -104,8 +106,9 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NU
   # center the data per study, per matrix of A, scale if scale=TRUE, option bias
   mean_centered = lapply(A, function(x){mean_centering_per_study(x, study, scale, bias)})
   A = lapply(mean_centered, function(x){x$concat.data})
-  
-  ### Start: Initialization parameters
+  ni=lapply(mean_centered[[1]]$data.list.study.scale,nrow) #number of samples per study
+
+    ### Start: Initialization parameters
   pjs <- sapply(A, NCOL); nb_ind <- NROW(A[[1]]);
   J <- length(A); R <- A; N <- max(ncomp) # R: residuals matrices, will be a list of length ncomp
   
@@ -114,6 +117,16 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NU
   P <- loadings.A <- loadings.Astar <- c <- t <- b <- variates.A <- NULL
   for (k in 1:J) t[[k]] <- variates.A[[k]] <- matrix(NA, nb_ind, N)
   for (k in 1:J) P[[k]] <- loadings.A[[k]] <- loadings.Astar[[k]] <- b[[k]] <- c[[k]] <- matrix(NA, pjs[[k]], N)
+  for (k in 1:J)
+  {
+      loadings.partial.A[[k]]=variates.partial.A[[k]]=vector("list",length=nlevels(study))
+      for(m in 1:nlevels(study))
+      {
+          loadings.partial.A[[k]][[m]]=matrix(nrow=NCOL(A[[k]]),ncol=N)
+          variates.partial.A[[k]][[m]]=matrix(nrow=ni[[m]],ncol=N)
+      }
+      #variates.partial.A[[k]]=matrix(nrow=nb_ind,ncol=N)
+  }
   
   defl.matrix[[1]] <- A; ndefl <- ncomp - 1;  J2 <- J-1;
   
@@ -132,18 +145,32 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NU
     ### Start: Estimation ai
     if (is.null(tau))
     {
-      meta.block.result <- meta.block.spls_iteration(R, design,study = study,  keepA.constraint=if (!is.null(keepA.constraint)) {lapply(keepA.constraint, function(x){unlist(x[n])})} else {NULL} ,
-                                                     keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL},indY = indY,
-                                                     scheme = scheme, init = init, max.iter = max.iter, tol = tol,   verbose = verbose)
+      meta.block.result <- meta.block.spls_iteration(R, design,study = study,
+                        keepA.constraint=if (!is.null(keepA.constraint)) {lapply(keepA.constraint, function(x){unlist(x[n])})} else {NULL} ,
+                        keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL},indY = indY,
+                        scheme = scheme, init = init, max.iter = max.iter, tol = tol,   verbose = verbose)
     } else {
-      meta.block.result <- rgccak(R, design, tau = if (is.matrix(tau)){tau[n, ]} else {"optimal"}, scheme = scheme, init = init, tol = tol, verbose = verbose, max.iter = max.iter,
-                                  keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL})
+      meta.block.result <- rgccak(R, design, tau = if (is.matrix(tau)){tau[n, ]} else {"optimal"}, scheme = scheme, init = init, tol = tol,
+                        verbose = verbose, max.iter = max.iter,
+                        keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL})
     }
     
     ### End: Estimation ai
     
-    loadings.partial.A[[n]]=meta.block.result$loadings.partial.A.comp
-    variates.partial.A[[n]]=meta.block.result$variates.partial.A.comp
+    if(is.null(tau))
+    {
+        #recording loadings.partials, $Ai$study[,ncomp]
+        # recording variates.partials, $Ai[,ncomp]
+        for(k in 1:J)
+        {
+            for(m in 1:nlevels(study))
+            {
+                loadings.partial.A[[k]][[m]][,n]=matrix(meta.block.result$loadings.partial.A.comp[[k]][[m]],ncol=1)
+                variates.partial.A[[k]][[m]][,n]=matrix(meta.block.result$variates.partial.A.comp[[k]][[m]],ncol=1)
+            }
+            #variates.partial.A[[k]][,n]=matrix(unlist(meta.block.result$variates.partial.A.comp[[k]]),ncol=1)
+        }
+    }
     
     AVE_inner[n] <- meta.block.result$AVE_inner
     crit[[n]] <- meta.block.result$crit
@@ -183,10 +210,21 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NU
   shave.veclist <- function(vec_list, nb_elts) mapply(function(m, nbcomp) m[1:nbcomp], vec_list, nb_elts, SIMPLIFY = FALSE)
   
   for (k in 1:J) {
-    rownames(loadings.A[[k]]) = rownames(loadings.Astar[[k]]) =colnames(A[[k]])
-    rownames(variates.A[[k]]) = rownames(A[[k]])
+    rownames(loadings.A[[k]]) = rownames(loadings.Astar[[k]])=colnames(A[[k]])
+    rownames(variates.A[[k]]) = rownames(A[[k]]) #= rownames(variates.partial.A[[k]])
     colnames(variates.A[[k]]) = paste0("comp ", 1:max(ncomp))
     AVE_X[[k]] = apply(cor(A[[k]], variates.A[[k]])^2, 2, mean)
+    if(is.null(tau))
+    {
+        names(loadings.partial.A[[k]])= names(variates.partial.A[[k]]) = levels(study)
+        for(m in 1:nlevels(study))
+        {
+            rownames(loadings.partial.A[[k]][[m]])=colnames(A[[k]])
+            colnames(loadings.partial.A[[k]][[m]])=paste0("comp ", 1:max(ncomp))
+            rownames(variates.partial.A[[k]][[m]])=rownames(mean_centered[[1]]$data.list.study.scale[[m]])
+            colnames(variates.partial.A[[k]][[m]])=paste0("comp ", 1:max(ncomp))
+        }
+    }
   }
   
   outer = matrix(unlist(AVE_X), nrow = max(ncomp))
@@ -196,7 +234,10 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NU
   AVE <- list(AVE_X = AVE_X, AVE_outer = AVE_outer, AVE_inner = AVE_inner)
   
   ### Start: output
-  names(loadings.A)= names(loadings.partial.A) = names(A); names(variates.A) = names(A)
+  names(loadings.A)= names(variates.A) = names(A)
+  
+  if(is.null(tau))
+  names(loadings.partial.A) = names(variates.partial.A) = names(A)
   
   names = lapply(1:J, function(x) {colnames(A[[x]])})
   names(names) = names(A)
@@ -213,14 +254,16 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NU
   ### End: Output
   
   ### Start: Update names list with mixOmics package
-  out <- list(X = if (is.null(indY)){A} else {A[-indY]}, Y = if (is.null(indY)){NULL} else {A[indY]}, mode = mode, names = names,
+  out <- list(X = if (is.null(indY)){A} else {A[-indY]}, Y = if (is.null(indY)){NULL} else {A[indY]}, ncomp = ncomp, mode = mode,
+              keepA = keepA, keepA.constraint = keepA.constraint,
               variates = variates.A, loadings = shave.matlist(loadings.A, ncomp),
-              variates.partial=variates.partial.A,loadings.partial=loadings.partial.A,
-              loadings.star = shave.matlist(loadings.Astar, ncomp), design = design, 
-              max.iter = max.iter,
-              scheme = scheme, ncomp = ncomp, crit = crit, AVE = AVE, defl.matrix = defl.matrix,
-              tol = tol, keepA = keepA, keepA.constraint = keepA.constraint, init = init, bias = bias, 
-              scale = scale, tau = tau.rgcca, near.zero.var = if(near.zero.var) nzv.A,iter=iter)
+              variates.partial= if(is.null(tau)) {variates.partial.A} ,loadings.partial= if(is.null(tau)) {loadings.partial.A},
+              loadings.star = shave.matlist(loadings.Astar, ncomp),
+              names = names,tol = tol, iter=iter, nzv = if(near.zero.var) nzv.A,
+              design = design,
+              scheme = scheme,  crit = crit, AVE = AVE, defl.matrix = defl.matrix,
+              init = init, bias = bias,
+              scale = scale, tau = tau.rgcca)
   ### End: Update names list with mixOmics package
   
   return(out)
@@ -299,6 +342,7 @@ meta.block.spls_iteration <- function (A, design, study = NULL, keepA.constraint
   {
     variates.A[, q] <- A[[q]]%*%loadings.A[[q]]#apply(A[[q]], 1, crossprod, loadings.A[[q]])
     loadings.A[[q]] <- l2.norm(as.vector(loadings.A[[q]]))
+    loadings.partial.A.comp[[q]] = list()
   }
   loadings.A_old <- loadings.A
   
@@ -326,8 +370,8 @@ meta.block.spls_iteration <- function (A, design, study = NULL, keepA.constraint
       temp=0
       for (m in 1:nlevels_study)
       {
-        loadings.partial.A.comp[[m]] <-t(A_split[[q]][[m]])%*%Z_split[[m]] #apply(t(A_split[[q]][[m]]), 1, crossprod, Z_split[[m]])
-        temp=temp+loadings.partial.A.comp[[m]]
+        loadings.partial.A.comp[[q]][[m]] <-t(A_split[[q]][[m]])%*%Z_split[[m]] #apply(t(A_split[[q]][[m]]), 1, crossprod, Z_split[[m]])
+        temp=temp+loadings.partial.A.comp[[q]][[m]]
       }
       loadings.A[[q]]=temp
       
@@ -503,3 +547,4 @@ rgccak <- function (A, design, tau = "optimal", scheme = "centroid", scale = FAL
                  AVE_inner = AVE_inner, design = design, tau = tau, scheme = scheme,iter=iter )
   return(result)
 }
+

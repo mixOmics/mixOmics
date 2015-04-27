@@ -8,8 +8,8 @@
 # we can have a list of studies for Discriminant Analyses, not for pls/spls as they would be overlapping batch effects
 
 
-wrapper.plsda <- function(X, Y, ncomp = 2, mode = c("regression", "canonical", "invariant", "classic"),
-max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = TRUE)
+wrapper.meta.plsda <- function(X, Y, ncomp = 2, mode = c("regression", "canonical", "invariant", "classic"), study,
+max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = FALSE)
 {
     
     
@@ -25,19 +25,24 @@ max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = TRUE)
     
     Y.mat=unmap(Y)
     
-    result <- wrapper.meta.spls.hybrid(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,
+    result <- wrapper.meta.spls.hybrid(X=X,Y=Y.mat,study=study,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,
     max.iter=max.iter,tol=tol)
         
     cl = match.call()
-    cl[[1]] = as.name("plsda")
+    cl[[1]] = as.name("meta.plsda")
+    
+    
 
-    out=list(call=cl,X=result$X[[1]],Y=Y,ind.mat=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,variates=result$variates,loadings=result$loadings,
+    out=list(call=cl,X=result$X[[1]],Y=Y,ind.mat=result$Y[[1]],ncomp=result$ncomp,study=study,mode=result$mode,variates=result$variates,loadings=result$loadings,
+        variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,
         names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv)
-        out$names$Y = levels(Y)
-        row.names(out$variates$Y) = row.names(out$variates$X)
-        row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(Y)))
-   
-    class(out) = "plsda"
+    out$names$Y = levels(Y)
+    row.names(out$variates$Y) = row.names(out$variates$X)
+    row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(Y)))
+
+    
+    
+    class(out) = "meta.plsda"
     return(invisible(out))
     
 

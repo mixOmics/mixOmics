@@ -8,8 +8,8 @@
 # we can have a list of studies for Discriminant Analyses, not for pls/spls as they would be overlapping batch effects
 
 
-wrapper.pls <- function(X, Y, ncomp = 2, mode = c("regression", "canonical", "invariant", "classic"),
-            max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = TRUE)
+wrapper.meta.pls <- function(X, Y, ncomp = 2, mode = c("regression", "canonical", "invariant", "classic"), study,
+            max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = FALSE)
 {
     
     
@@ -21,17 +21,19 @@ wrapper.pls <- function(X, Y, ncomp = 2, mode = c("regression", "canonical", "in
     if (!is.numeric(X) || !is.numeric(Y))
     stop("'X' and/or 'Y' must be a numeric matrix.")
 
-    result <- wrapper.meta.spls.hybrid(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,
+    result <- wrapper.meta.spls.hybrid(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,study=study,
     max.iter=max.iter,tol=tol)
     
 
     cl = match.call()
-    cl[[1]] = as.name("pls")
+    cl[[1]] = as.name("meta.pls")
     
-    out=list(call=cl,X=result$X[[1]],Y=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,variates=result$variates,loadings=result$loadings,
-        names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv)
-     
-    class(out) = "pls"
+
+    out=list(call=cl,X=result$X[[1]],Y=result$Y[[1]],ncomp=result$ncomp,study=study,mode=result$mode,variates=result$variates,loadings=result$loadings,
+    variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,names=result$names,
+        tol=result$tol,iter=result$iter,nzv=result$nzv)
+    
+    class(out) = c("meta.pls","pls")
     return(invisible(out))
 
 
