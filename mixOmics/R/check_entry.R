@@ -414,7 +414,7 @@ verbose)
         }
         
         for(q in 1:length(X)) {keepA.constraint[[q]]=list()} #keepX.constraint
-        print(keepA)
+        #print(keepA)
 
     }else{
         if(length(keepX.constraint)>length(X))
@@ -461,10 +461,10 @@ verbose)
         keepA.constraint=keepX.constraint
     
     }
-    print("constraint")
-   print(keepA.constraint)
-   print("keepA")
-   print(keepA)
+    # print("constraint")
+    #print(keepA.constraint)
+    #print("keepA")
+    #print(keepA)
 
     #check that keepX is ok
     for(q in 1:length(X))
