@@ -63,14 +63,14 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NU
   # add check so that this function can run on its own (which shouldn't happen now, but don't know the future)
   
   
-  if(is.null(indY) & is.null(tau))
-  stop("Either 'indY' or 'tau' is needed")
+  #if(is.null(indY) & is.null(tau))
+  #stop("Either 'indY' or 'tau' is needed")
   
-  check=Check.entry.meta.block.spls(A, indY, design ,ncomp , scheme , scale ,  bias,
-                                    init , tol , verbose,mode, sparse , max.iter,study , keepA, keepA.constraint)
-  A=check$A
-  ncomp=check$ncomp
-  study=check$study
+  #check=Check.entry.meta.block.spls(A, indY, design ,ncomp , scheme , scale ,  bias,
+  #                                  init , tol , verbose,mode, sparse , max.iter,study , keepA, keepA.constraint)
+  #A=check$A
+  #ncomp=check$ncomp
+  #study=check$study
   
   
   # at this stage keepA.constraint need to be character, to remove easily variables with near zero variance
@@ -104,6 +104,7 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NU
   for(q in 1:length(A))
     keepA[[q]]=c(unlist(lapply(keepA.constraint[[q]],length)),keepA[[q]]) #of length ncomp, can contains 0
 
+#print(keepA)
 
   # center the data per study, per matrix of A, scale if scale=TRUE, option bias
   mean_centered = lapply(A, function(x){mean_centering_per_study(x, study, scale, bias)})
@@ -156,6 +157,7 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NU
     } else {
       meta.block.result <- rgccak(R, design, tau = if (is.matrix(tau)){tau[n, ]} else {"optimal"}, scheme = scheme, init = init, tol = tol,
                         verbose = verbose, max.iter = max.iter,
+                        keepA.constraint=if (!is.null(keepA.constraint)) {lapply(keepA.constraint, function(x){unlist(x[n])})} else {NULL} ,
                         keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL})
     }
     
@@ -181,8 +183,8 @@ meta.block.spls = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NU
     tau.rgcca[[n]] <- meta.block.result$tau
     
     for (k in 1:J) variates.A[[k]][, n] <- meta.block.result$variates.A[, k]
-    for (q in which(n < ndefl)) if (sum(meta.block.result$loadings.A[[q]] != 0) <= 1)
-      warning(sprintf("Deflation failed because only one variable was selected for block #", q, "! \n"))
+    #for (q in which(n < ndefl)) if (sum(meta.block.result$loadings.A[[q]] != 0) <= 1)
+    # warning(sprintf("Deflation failed because only one variable was selected for block #", q, "! \n"))
     
     
     # deflation if there are more than 1 component and if we haven't reach the max number of component(N)
@@ -432,7 +434,7 @@ meta.block.spls_iteration <- function (A, design, study = NULL, keepA.constraint
 # ----------------------------------------------------------------------------------------------------------
 
 rgccak <- function (A, design, tau = "optimal", scheme = "centroid", scale = FALSE, max.iter = 500,
-                    verbose = FALSE, init = "svd.single", bias = FALSE, tol = .Machine$double.eps, keepA = NULL) {
+                    verbose = FALSE, init = "svd.single", bias = FALSE, tol = .Machine$double.eps, keepA = NULL,keepA.constraint = NULL) {
   ### Start: Initialisation parameters
   A <- lapply(A, as.matrix)
   J <- length(A)
@@ -505,7 +507,7 @@ rgccak <- function (A, design, tau = "optimal", scheme = "centroid", scale = FAL
       loadings.A[[j]] = drop(1/sqrt(t(Z[, j]) %*% A[[j]] %*% M[[j]] %*% t(A[[j]]) %*% Z[, j])) * (M[[j]] %*% t(A[[j]]) %*% Z[, j])
       
       # sparse using keepA
-      loadings.A[[j]]=sparsity(loadings.A[[j]], keepA[[j]], keepA.constraint = NULL)
+      loadings.A[[j]]=sparsity(loadings.A[[j]], keepA[[j]], keepA.constraint = keepA.constraint[[j]])
       
       # Update variate
       variates.A[, j] = A[[j]] %*% loadings.A[[j]]
@@ -524,7 +526,7 @@ rgccak <- function (A, design, tau = "optimal", scheme = "centroid", scale = FAL
       loadings.A[[j]] = t(A[[j]]) %*% alpha[[j]]
       
       # sparse using keepA
-      loadings.A[[j]]=sparsity(loadings.A[[j]], keepA[[j]], keepA.constraint = NULL)
+      loadings.A[[j]]=sparsity(loadings.A[[j]], keepA[[j]], keepA.constraint = keepA.constraint[[j]])
       
       # Update variate
       variates.A[, j] = A[[j]] %*% loadings.A[[j]]
@@ -550,7 +552,8 @@ rgccak <- function (A, design, tau = "optimal", scheme = "centroid", scale = FAL
   AVE_inner <- sum(design * cor(variates.A)^2/2)/(sum(design)/2)
   
   result <- list(variates.A = variates.A, loadings.A = loadings.A, crit = crit[which(crit != 0)], 
-                 AVE_inner = AVE_inner, design = design, tau = tau, scheme = scheme,iter=iter )
+                 AVE_inner = AVE_inner, design = design, tau = tau, scheme = scheme,iter=iter,
+                 keepA=keepA,keepA.constraint=keepA.constraint )
   return(result)
 }
 

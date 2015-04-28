@@ -47,7 +47,7 @@ max.iter=500,
                        keepA.constraint=NULL,
                        keepA=keepA,
                        max.iter=max.iter,
-                       study=factor(rep(1,nrow(A[[1]]))),
+                       study=factor(rep(1,nrow(A[[1]]))),#meta.rgcca not coded yet
                        mode="canonical"
                        )
 

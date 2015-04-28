@@ -9,7 +9,7 @@
 
 
 wrapper.meta.splsda <- function(X, Y, ncomp = 2, mode = c("regression", "canonical", "invariant", "classic"), study,
-keepX = rep(ncol(X), ncomp),keepX.constraint=list(), max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = FALSE)
+keepX = rep(ncol(X), ncomp),keepX.constraint=NULL, max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = FALSE)
 {
     
     
@@ -25,8 +25,9 @@ keepX = rep(ncol(X), ncomp),keepX.constraint=list(), max.iter = 500, tol = 1e-06
     }
     
     Y.mat=unmap(Y)
+    #rownames(Y.mat)=rownames(X)
 
-    result <- wrapper.meta.spls.hybrid(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,study=study,
+    result <- wrapper.meta.spls.hybrid(X=X,Y=Y.mat,ncomp=ncomp,near.zero.var=near.zero.var,study=study,
     keepX=keepX,keepX.constraint=keepX.constraint,max.iter=max.iter,tol=tol,scale=scale)
     
     
@@ -37,6 +38,7 @@ keepX = rep(ncol(X), ncomp),keepX.constraint=list(), max.iter = 500, tol = 1e-06
     
     out=list(call=cl,X=result$X[[1]],Y=Y,ind.mat=result$Y[[1]],ncomp=result$ncomp,study=study,
         mode=result$mode,keepX=result$keepA[[1]],keepY=result$keepA[[2]],
+        keepX.constraint=result$keepA.constraint[[1]],keepY.constraint=result$keepA.constraint[[2]],
         variates=result$variates,loadings=result$loadings,
         names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
     out$names$Y = levels(Y)

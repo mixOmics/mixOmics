@@ -8,53 +8,92 @@
 # we can have a list of studies for Discriminant Analyses, not for pls/spls as they would be overlapping batch effects
 
 mixOmics=function(  X,
-Y,
-indY, #only use if Y not provided
-ncomp,
-keepX, #sparse
-keepX.constraint, #hybrid
-keepY, #sparse
-keepY.constraint, #hybrid
-study, #meta
-design, #block
-tau=NULL,# rgcca, number between 0,1 or "optimal"
-init,
-scheme= "centroid", #block
-scale=FALSE,
-bias=FALSE,
-near.zero.var=FALSE,
-mode="regression",
-tol= 1e-06,
-max.iter=500,
-verbose=FALSE)
+                    Y,
+                    indY, #only use if Y not provided
+                    ncomp,
+                    keepX, #sparse
+                    keepX.constraint, #hybrid
+                    keepY, #sparse
+                    keepY.constraint, #hybrid
+                    study, #meta
+                    design, #block
+                    tau=NULL,# rgcca, number between 0,1 or "optimal"
+                    init,
+                    scheme, #block
+                    scale=FALSE,
+                    bias,
+                    near.zero.var=FALSE,
+                    mode,
+                    tol= 1e-06,
+                    max.iter=500,
+                    verbose)
 
 {
     if(is.list(X))# either rgcca, sgcca, meta.block
     {
+        if(missing(scheme)) scheme= "centroid"
+        if(missing(bias)) bias= FALSE
+        if(missing(verbose)) verbose= FALSE
+        if(missing(mode)) mode="canonical"
+        #print("bla")
         
-        if(is.null(tau)) #RGCCA/meta
+        check=Check.entry.mixOmics.list(X=X,Y=Y,indY=indY,ncomp=ncomp,keepX=keepX,
+        keepX.constraint=keepX.constraint,keepY=keepY,keepY.constraint=keepY.constraint,
+        study=study,design=design,tau=tau,init=init,scheme=scheme,
+        scale=scale,bias=bias,near.zero.var=near.zero.var,mode=mode,tol=tol,
+        max.iter=max.iter,verbose=verbose)
+        #   print("bla2")
+        
+        A=check$A
+        indY=check$indY
+        study=check$study
+        design=check$design
+        ncomp=check$ncomp
+        keepA=check$keepA
+        keepA.constraint=check$keepA.constraint
+        init=check$init
+        
+        if(is.null(tau)) # SGCCA/meta
         {
-            message("A block analysis is being performed-tada")
-            
-            res=meta.block.spls(A=X,indY=indY,design=design,ncomp=ncomp,scheme = scheme,
-            scale =scale,  bias = bias,init = init, tol = tol, verbose = verbose, tau = tau,
-            mode = mode, max.iter = max.iter,study = study, keepA = keepX,
-            keepA.constraint = keepX.constraint, near.zero.var = near.zero.var)
-        }else{        #if(no tau) SGCCA/meta
-            
             message("A block analysis is being performed")
             
-            res=meta.block.spls(A=X,indY=indY,design=design,ncomp=ncomp,scheme = scheme,
+            res=meta.block.spls(A=A,indY=indY,design=design,ncomp=ncomp,scheme = scheme,
             scale =scale,  bias = bias,init = init, tol = tol, verbose = verbose, tau = tau,
-            mode = mode,  max.iter = max.iter,study = study, keepA = keepX,
-            keepA.constraint = keepX.constraint, near.zero.var = near.zero.var)
+            mode = mode, max.iter = max.iter,study = study, keepA = keepA,
+            keepA.constraint = keepA.constraint, near.zero.var = near.zero.var)
+        }else{ # RGCCA
+            
+            message("A RGCCA analysis is being performed")
+            
+            res=meta.block.spls(A=A,indY=indY,design=design,ncomp=ncomp,scheme = scheme,
+            scale =scale,  bias = bias,init = init, tol = tol, verbose = verbose, tau = tau,
+            mode = mode,  max.iter = max.iter,study = study, keepA = keepA,
+            keepA.constraint = keepA.constraint, near.zero.var = near.zero.var)
             
         }
+
         
-    }else{#either pls,spls, plsda, splsda
+        
+        
+    }else{#either pls,spls, plsda, splsda or meta. pls/spls/plsda/splsda
         if(missing(Y))
         stop("Y is missing")
+        if(is.list(Y)) stop("Y must be a matrix or a factor")
         if(!is.numeric(Y)) Y=as.factor(Y)
+        
+        if(missing(mode)) mode="regression"
+        #check for unused inputs (scheme, etc etc)
+        if(!is.null(tau) | !missing(design) | !missing(init) | !missing(scheme) | !missing(bias) | !missing(verbose))
+        {
+            if(!is.null(tau)) {message("'tau' is not used")}
+            if(!missing(design)) {message("'design' is not used")}
+            if(!missing(init)) {message("'init' is not used")}
+            if(!missing(scheme)) {message("'scheme' is not used")}
+            if(!missing(bias)) {message("'bias' is not used")}
+            if(!missing(verbose)) {message("'verbose' is not used")}
+            stop("unused input parameters")
+        }
+        
         
         if(is.factor(Y))#either plsda, splsda
         {

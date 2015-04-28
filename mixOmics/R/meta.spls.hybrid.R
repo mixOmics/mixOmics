@@ -57,9 +57,15 @@ tol = 1e-06)
         }
     }
 
-    if(missing(study)) study=factor(rep(1,nrow(X)))
+    #set the default study factor
+    if(missing(study))
+    {
+        study=factor(rep(1,nrow(X)))
+    }else{
+        study=as.factor(study)
+    }
+    if(length(study)!=nrow(X)) stop(paste0("'study' must be a factor of length ",nrow(X),"."))
     
-    if(length(study)!=nrow(X)) stop("unequal number of observations in 'X' and 'study'")
     
     design = matrix(c(0,1,1,0), ncol = 2, nrow = 2, byrow = TRUE)
     

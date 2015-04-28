@@ -9,7 +9,7 @@
 
 
 wrapper.splsda <- function(X, Y, ncomp = 2, mode = c("regression", "canonical", "invariant", "classic"),
-keepX = rep(ncol(X), ncomp),keepX.constraint=list(), max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = TRUE)
+keepX = rep(ncol(X), ncomp),keepX.constraint=NULL, max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = TRUE)
 {
     
     

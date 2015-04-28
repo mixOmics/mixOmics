@@ -76,6 +76,9 @@ abline.line = FALSE,
     if(any(class(object)%in%c("plsda","splsda")) & missing(col))
     {
         col=as.numeric(object$Y)
+    }else if(missing(col))
+    {
+        col=1
     }
     
     

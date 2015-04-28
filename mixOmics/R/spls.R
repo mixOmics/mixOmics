@@ -9,7 +9,8 @@
 
 
 wrapper.spls <- function(X, Y, ncomp = 2, mode = c("regression", "canonical", "invariant", "classic"),
-keepX , keepY ,keepX.constraint,keepY.constraint, max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = TRUE)
+keepX=rep(ncol(X), ncomp), keepY=rep(ncol(Y), ncomp), keepX.constraint=NULL,keepY.constraint=NULL, max.iter = 500, tol = 1e-06,
+near.zero.var = FALSE, scale = TRUE)
 {
     
     
@@ -20,12 +21,6 @@ keepX , keepY ,keepX.constraint,keepY.constraint, max.iter = 500, tol = 1e-06, n
 
     if (!is.numeric(X) || !is.numeric(Y))
     stop("'X' and/or 'Y' must be a numeric matrix.")
-
-    if(missing(keepX))
-    keepX=rep(ncol(X), ncomp)
-
-    if(missing(keepY))
-    keepY=rep(ncol(Y), ncomp)
 
     result <- wrapper.meta.spls.hybrid(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,
     keepX=keepX,keepY=keepY,keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,max.iter=max.iter,tol=tol)
