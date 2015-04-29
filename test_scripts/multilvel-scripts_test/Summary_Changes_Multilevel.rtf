@@ -1,0 +1,95 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1265\cocoasubrtf210
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\froman\fcharset0 Times-Roman;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww23360\viewh23980\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f0\fs24 \cf0 \
+\
+Multilevel.R\
+1 - l60:\
+#-- mode\
+    if (method == "spls") \{\
+      choices = c("regression", "canonic")\
+      mode = choices[pmatch(mode, choices)]\
+      \
+      if (is.na(mode)) \
+        stop("'mode' should be one of 'regression' or 'canonic'.", call. = FALSE)\
+    \}\
+\
+=> we simply CANNOT change the mode names like that.\
+It has been called \'91canonical\'92 since 2009, we have to stick to it.\
+So I changed it back the \'91canonical\'92\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720
+\cf0 1.1 - New line 61\'a0: corrected
+\f1 \
+
+\f0 method = choices[pmatch(method[1], choices)]
+\f1 \
+\
+
+\f0 1.2 - New line 69\'a0: corrected
+\f1 \
+
+\f0 mode = choices[pmatch(mode[1], choices)]\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \
+2 - I have extended the arguments in the function to extract all choices (necessary for the help file)\
+I also added the arguments max.iter and tol that were removed. And made sure they were call in the\
+res object (calling the function splsda and spls\
+multilevel <- \
+  function(X, \
+           Y = NULL,\
+           design,  # design = NULL #*KA* added a stop missing below, because if missing, the whole multilevel module has no point\
+           ncomp = 2,\
+           keepX = NULL,\
+           keepY = NULL,  \
+           method = c("spls", "splsda"),  # *KA*\
+           mode = c("regression", "canonical"), # *KA*\
+           max.iter = 500, # *KA*\
+           tol = 1e-06, # *KA*\
+           ...)\
+\
+3 - I have created a withinVariation.R extra file for that function\
+\
+4 - commented out l 215\
+       #-- apply sPLS on the within deviation matrices --#\
+      # if keepY is missing, we assume it is a non sparse model\
+      # line below is probably not needed since it is in the check function?\
+      ##if (is.null(keepY)) keepY = rep(ncol(Y), ncomp)\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardeftab720
+\cf0 4.2 - Error in new line 153
+\f1 \
+
+\f0 keepX = rep(q, ncomp) => keepY = rep(q, ncomp)\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+\cf0 \
+5 - I dont see the logical link between renaming vac18 as \'91vac18.study\'92, since liver toxicity study is called liver.toxicity - so we will stay with \'91vac18\'92\
+\
+6 - Note that in mixOmics we have always tended to use the \'91.\'92 to separate words rather than \'91_\'92. So I will change the multilevel.rda file accordingly (col_stimu will be col.stimu)\
+\
+7 - the pheatmap adds a nice way of visualising the levels in the multilevel. Not sure the CIM would do that (will need to check). So I readed an extra class(res) called splsda1fact and spslda2fact to be able to still use the function in the tutorial. But now I get a new bug which needs to be resolved. IBG - 24/02/2015\
+The functions \'93pheatmap.multilevel.splsda1fact\'94 and \'93pheat.multilevel.splsda2fact\'94 have been updated. \
+FYI CIM does not work on splsda object, only on pls, roc or spls object (cf methods(cim)).\
+\
+8 - the withinVariation should have the same simple arguments as multilevel, i.e. design, instead of (factors and rep.measures). BG  - 24/02/2015\
+Done. Replace arguments \'93rep.measures\'94 and \'93factors\'94 by the \'93design\'94 matrix\
+Modify \'93X.mean.indiv\'94 feature to deal with only one subject (cf loo in tune.multilevel.R)\
+\
+9 - multilevel.R updates\
+BG - 24/02/2015\
+Added Ignacio\'92s amendments 1.1, 1.2, 4.2 (See email 19/02/2015) on multilevel.R function\
+\
+10 - tune\'85\
+BG - 24/02/2015\
+Update the following scripts (tune.multilevel, tune.splsdalevel1, tune.splsdalevel2.R and tune.splslevel.R) using the withinVariation function \
+KA - 13/03/2015 added an extra output for tune.splsdalevel1 to extract the classification error rate per class for the last tested keepX.\
+\
+Change script tune.splsdalevel1.R because the Xw was not correct in Mfold validation. \
+Change script tune.splsdalevel2.R and tune.splslevel.R because the correlation was estimated on no scaled/centered matrix\
+\
+11 - CIM (KA 13/03/2015)\
+CIM function not added yet as it would require a new branch a many updates for that function. ON HOLD for this update}

@@ -1,0 +1,59 @@
+Comment verifier que, après mes changements, le package mixOmics compile, ne donne pas d’erreurs (grave ou non) et s’installe correctement.
+
+On se place sur le nouveau module a tester, qui contient tous les codes mixOmics de devel (se mettre a jour, voir #step 10 du read.me) plus les nouveaux codes (nouveaux scripts ou juste changements de scripts existants)
+# git checkout new_module
+
+1 - BUILD
+on construit le .tar.gz
+R CMD build mixOmics
+
+L autre option (aussi conseillee par le CRAN je crois est pour sauver les donnees)
+R CMD build --resave-data mixOmics
+
+2- CHECK
+On verifie que le package compile sans erreur, l’option --as-cran n’est pas obligatoire mais avant de faire une pull requests il faut la mettre (il y a plus de verifications). --timings est aussi demande par le cran pour verifier que ca ne prend pas 20 ans pour compiler (d’ou les dontrun{} dans les help file .Rd pour les fonctions critiques…)
+
+R CMD check mixOmics_5.0-4.tar.gz  --as-cran --timings
+
+Si des erreurs sont presentes, le build ou le check le dira.
+Vous aurez aussi le log complet dans mixOmics.Rcheck/00check.log ainsi que le manuel pdf genere.
+
+3- INSTALL
+Vous pouvez ensuite installer, soit dans un repertoire local que vous appelez par exemple MyR (dans ce cas, lorsque vous chargez la librairie dans R il faut mettre: library(mixOmics, lib.loc = ‘’MyR/‘):
+
+R CMD INSTALL -l MyR/ mixOmics_5.0-4.tar.gz
+
+Soit direct:
+R CMD INSTALL mixOmics_5.0-4.tar.gz
+
+Soit via RStudio en demandant d’installer le .tar.gaz
+
+4 - NE PAS OUBLIER
+Quand on update un scripts, rajoute un module, il faut penser a:
+•	update NAMESPACE
+Ceci passe par ne pas oublier d'exporter les nouvelles fonctions
+export(ma_nouvelle_fonction)
+Si une nouvelle dependence a un package est necessaire:
+import(nouveau_package)
+•	update DESCRIPTION
+Si une nouvelle dependence a un package est necessaire:
+imports: nouveau_package
+•	update fichier d'aide
+mixOmics/man/nouvelle_fonction.Rd
+!!!! attention pas d'accent s'il vous plait dans les Rd files (ni en latex, ni en ACSII, RI-EN)
+Vous pouvez aussi utiliser RStudio -> preview pour visualiser les help file.
+je pense qu on passera bientot en Roxygen:
+https://support.rstudio.com/hc/en-us/articles/200532317-Writing-Package-Documentation
+
+5- SUMMARY
+En resume pour la compilation et installation en local:
+R CMD build --resave-data mixOmics
+R CMD check mixOmics_5.0-4.tar.gz --as-cran --timings
+R CMD INSTALL -l MyR/ mixOmics_5.0-4.tar.gz
+
+En resume pour la compilation et installation non local:
+R CMD build --resave-data mixOmics
+R CMD check mixOmics_5.0-4.tar.gz --as-cran --timings
+R CMD INSTALL mixOmics_5.0-4.tar.gz
+
+
