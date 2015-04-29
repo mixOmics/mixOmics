@@ -8,10 +8,9 @@
 # we can have a list of studies for Discriminant Analyses, not for pls/spls as they would be overlapping batch effects
 
 
-wrapper.meta.block.spls <- function(X,
+wrapper.block.spls <- function(X,
 Y,
 indY,
-study,
 ncomp=rep(2,length(X)),
 keepX.constraint,
 keepY.constraint,
@@ -30,14 +29,13 @@ near.zero.var = FALSE)
 {
     
     
-    result <- wrapper.sparse.meta.block(X=X,Y=Y,indY=indY,study=study,ncomp=ncomp,keepX.constraint=keepX.constraint,
+    result <- wrapper.sparse.meta.block(X=X,Y=Y,indY=indY,ncomp=ncomp,keepX.constraint=keepX.constraint,
     keepY.constraint=keepY.constraint,keepX=keepX,keepY=keepY,design=design,scheme=scheme,mode=mode,scale=scale,
     bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=near.zero.var)
     
     
-    
     cl = match.call()
-    cl[[1]] = as.name("meta.block.spls")
+    cl[[1]] = as.name("block.spls")
     
     if(missing(indY))
     {
@@ -52,15 +50,16 @@ near.zero.var = FALSE)
         keepY.constraint=result$keepA.constraint[indY][[1]]
     }
     
-    out=list(call=cl,X=result$X,Y=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,study=result$study,
-    keepX=keepX,keepY=keepY,keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,
+    
+    out=list(call=cl,X=result$X,Y=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,keepX=keepX,keepY=keepY,
+    keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,
     variates=result$variates,loadings=result$loadings,names=result$names,
     tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
-  
+
     if(!missing(ncomp))   out$ncomp=ncomp
 
 
-    class(out) = "meta.block.spls"
+    class(out) = "block.spls"
     return(invisible(out))
     
 }

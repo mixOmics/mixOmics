@@ -37,9 +37,12 @@ tol = 1e-06)
         }
         keepX.constraint=list()
     }else{
+        if(length(keepX.constraint)>ncomp)
+        stop(paste0("you should have length(keepX.constraint) lower or equal to ",ncomp,"."))
+
         if(missing(keepX))
         {
-            keepX=NULL
+            keepX=rep(ncol(X),ncomp-length(keepX.constraint))
         }
     }
     
@@ -51,9 +54,12 @@ tol = 1e-06)
         }
         keepY.constraint=list()
     }else{
+        if(length(keepY.constraint)>ncomp)
+        stop(paste0("you should have length(keepY.constraint) lower or equal to ",ncomp,"."))
+
        if(missing(keepY))
         {
-            keepY=NULL
+            keepY=rep(ncol(Y),ncomp-length(keepY.constraint))
         }
     }
 
@@ -115,7 +121,6 @@ tol = 1e-06)
     # tol: nobody cares about this
     # verbose: show the progress of the algorithm
     # mode: canonical, classic, invariant, regression
-    # sparse: use sgcca instead of rgcca when you use sparse function
     # max.iter: nobody cares about this
     # study: factor for each matrix of A, must be a vector
     # keepA: keepX of spls for each matrix of A. must be a list. Each entry must be of the same length (max ncomp)
@@ -127,8 +132,8 @@ tol = 1e-06)
     Y=check$Y
     ncomp=check$ncomp
 
-    result <- meta.block.spls(A = list(X = X, Y = Y), indY = 2, mode = "regression", ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
-    design = design, keepA = list(keepX,keepY),keepA.constraint = list(keepX.constraint,keepY.constraint), sparse = TRUE,
+    result <- sparse.meta.block(A = list(X = X, Y = Y), indY = 2, mode = "regression", ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
+    design = design, keepA = list(keepX,keepY),keepA.constraint = list(keepX.constraint,keepY.constraint),
     scale = scale, scheme = "centroid",init="svd", study = study,near.zero.var=near.zero.var)
     
     result$ncomp = ncomp

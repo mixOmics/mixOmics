@@ -14,9 +14,9 @@ load("test_scripts/meta.block_test/Fibro-ESC-iPSC.6exp.167samples.light.Rdata") 
 
 source("mixOmics/R/check_entry.R")
 source("mixOmics/R/helpers.R")
-source("mixOmics/R/meta.block.spls.R")
+source("mixOmics/R/sparse.meta.block.R")
+
 source("mixOmics/R/meta.spls.hybrid.R")
-source("mixOmics/R/mixOmics.R")
 source("mixOmics/R/pls.R")
 source("mixOmics/R/plsda.R")
 source("mixOmics/R/spls.R")
@@ -25,6 +25,23 @@ source("mixOmics/R/meta.pls.R")
 source("mixOmics/R/meta.plsda.R")
 source("mixOmics/R/meta.spls.R")
 source("mixOmics/R/meta.splsda.R")
+
+source("mixOmics/R/wrapper.sparse.meta.block.R")
+source("mixOmics/R/block.pls.R")
+source("mixOmics/R/block.spls.R")
+source("mixOmics/R/block.plsda.R")
+source("mixOmics/R/block.splsda.R")
+source("mixOmics/R/meta.block.pls.R")
+source("mixOmics/R/meta.block.spls.R")
+source("mixOmics/R/meta.block.plsda.R")
+source("mixOmics/R/meta.block.splsda.R")
+
+
+source("mixOmics/R/mixOmics.R")
+
+
+
+
 
 Y.mat=unmap(type.id)
 rownames(Y.mat)=rownames(data)
@@ -87,19 +104,21 @@ which(res.spls.hybrid$loadings$X[,1]!=0)
 which(res.spls.hybrid$loadings$X[,2]!=0)
 
 
+res.spls.hybrid=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c(120,179)),ncomp=3)#meta.spls missing keepX is completed by pls-like
+
 
 
 system.time(wrapper.meta.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX=c(10,5,10),ncomp=3,near.zero.var=TRUE,tol=1e-25))
-system.time(mixOmics(X=data,Y=Y.mat,study=exp,keepX=c(10,5,10),ncomp=3,near.zero.var=TRUE))
+system.time(mixOmics(X=data,Y=Y.mat,study=exp,keepX=c(10,5,10),ncomp=3,near.zero.var=TRUE,tol=1e-25))
 
 
 system.time(splsda(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=TRUE))
 system.time(mixOmics(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=TRUE))
 
 system.time(splsda(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE))
-system.time(wrapper.splsda(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE))
+system.time(wrapper.splsda(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE,scale=TRUE))
 system.time(mixOmics(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE,scale=TRUE))
-#note: difference of time due to different number of iterations (due to the convergence that we have now):
+#note: difference of time due to different number of iterations (due to the convergence that we have now) and maybe other things:
 sp1=splsda(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE)
 sp2=mixOmics(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE,scale=TRUE)
 sp1$iter;sp2$iter
@@ -128,9 +147,9 @@ res=mixOmics(data.light,Y.mat.light,ncomp=3,keepX=c(10,5,15),scheme="centroid") 
 
 source("mixOmics/R/check_entry.R")
 source("mixOmics/R/helpers.R")
-source("mixOmics/R/meta.block.spls.R")
+source("mixOmics/R/sparse.meta.block.R")
+
 source("mixOmics/R/meta.spls.hybrid.R")
-source("mixOmics/R/mixOmics.R")
 source("mixOmics/R/pls.R")
 source("mixOmics/R/plsda.R")
 source("mixOmics/R/spls.R")
@@ -139,6 +158,28 @@ source("mixOmics/R/meta.pls.R")
 source("mixOmics/R/meta.plsda.R")
 source("mixOmics/R/meta.spls.R")
 source("mixOmics/R/meta.splsda.R")
+
+source("mixOmics/R/wrapper.sparse.meta.block.R")
+source("mixOmics/R/block.pls.R")
+source("mixOmics/R/block.spls.R")
+source("mixOmics/R/block.plsda.R")
+source("mixOmics/R/block.splsda.R")
+source("mixOmics/R/meta.block.pls.R")
+source("mixOmics/R/meta.block.spls.R")
+source("mixOmics/R/meta.block.plsda.R")
+source("mixOmics/R/meta.block.splsda.R")
+
+source("mixOmics/R/wrapper.rgcca.R")
+source("mixOmics/R/wrapper.sparse.rgcca.R")
+
+source("mixOmics/R/mixOmics.R")
+
+
+
+
+
+
+
 
 A=list(X=data,Y=Y.mat)
 
@@ -210,5 +251,75 @@ res=mixOmics(X=list(X=data,Y=type.id),tau=1) #A[[2]] must be numeric matrix
 res=mixOmics(X=A,Y=type.id) #Y must be numeric matrix
 res=mixOmics(X=list(data),Y=type.id) #Y must be numeric matrix
 res=mixOmics(X=list(data),Y=unmap(type.id)) #OK
+
+
+
+
+
+
+source("mixOmics/R/check_entry.R")
+source("mixOmics/R/helpers.R")
+source("mixOmics/R/sparse.meta.block.R")
+source("mixOmics/R/meta.spls.hybrid.R")
+source("mixOmics/R/mixOmics.R")
+source("mixOmics/R/pls.R")
+source("mixOmics/R/plsda.R")
+source("mixOmics/R/spls.R")
+source("mixOmics/R/splsda.R")
+source("mixOmics/R/meta.pls.R")
+source("mixOmics/R/meta.plsda.R")
+source("mixOmics/R/meta.spls.R")
+source("mixOmics/R/meta.splsda.R")
+source("mixOmics/R/wrapper.sparse.meta.block.R")
+
+
+
+res=wrapper.sparse.meta.block(X=A,indY=2)
+
+source("mixOmics/R/block.pls.R")
+res=wrapper.block.pls(list(data),Y=Y.mat,ncomp=2)
+res=wrapper.block.pls(X=A,indY=2,ncomp=c(2,2))
+
+source("mixOmics/R/block.spls.R")
+res=wrapper.block.spls(list(data),Y=Y.mat,ncomp=2)
+res=wrapper.block.spls(X=A,indY=2,ncomp=c(2,2))
+
+
+
+source("mixOmics/R/block.plsda.R")
+res=wrapper.block.plsda(list(data),Y=type.id,ncomp=2)
+res=wrapper.block.plsda(X=A,indY=2,ncomp=c(2,2)) #error not a factor
+res=wrapper.block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
+
+
+source("mixOmics/R/block.splsda.R")
+res=wrapper.block.splsda(list(data),Y=type.id,ncomp=2)
+res=wrapper.block.splsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
+
+
+
+# block
+
+source("mixOmics/R/meta.block.pls.R")
+res=wrapper.meta.block.pls(list(data),Y=Y.mat,ncomp=2)
+res=wrapper.meta.block.pls(X=list(X=data,Y=Y.mat),indY=2,ncomp=c(2,2))
+res=wrapper.meta.block.pls(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))# error factor
+
+
+source("mixOmics/R/meta.block.spls.R")
+res=wrapper.meta.block.spls(list(data),Y=Y.mat,ncomp=2)
+res=wrapper.meta.block.spls(X=list(X=data,Y=Y.mat),indY=2,ncomp=c(2,2))
+res=wrapper.meta.block.spls(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))# error factor
+
+source("mixOmics/R/meta.block.plsda.R")
+res=wrapper.meta.block.plsda(list(data),Y=type.id,ncomp=2)
+res$Y
+res=wrapper.meta.block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
+
+source("mixOmics/R/meta.block.splsda.R")
+res=wrapper.meta.block.splsda(list(data),Y=type.id,ncomp=2)
+res$Y
+res=wrapper.meta.block.splsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
+
 
 

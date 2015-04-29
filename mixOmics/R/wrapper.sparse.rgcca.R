@@ -14,11 +14,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-wrapper.rgcca = function(
+wrapper.sparse.rgcca = function(
 X,
 design = 1 - diag(length(X)),
 tau = rep(1, length(X)),
 ncomp = rep(1, length(X)),
+keepX,
+keepX.constraint,
+max.iter=500,
 scheme = "centroid",
 mode="canonical",
 scale = TRUE,
@@ -26,14 +29,22 @@ init = "svd.single",
 bias = FALSE,
 tol = 1e-6,
 verbose = FALSE,
-max.iter=500,
 near.zero.var)
 {
-    
     # call function
     #rgcca <- function(A, C = 1-diag(length(A)), tau = rep(1, length(A)), ncomp = rep(1, length(A)), scheme = "centroid", scale = TRUE , init="svd", bias = TRUE, tol = .Machine$double.eps, verbose=TRUE)
     
+    #print("you")
+    #check keepA and keepA constraint
+    check=check.keepA.and.keepA.constraint(X=X,keepX=keepX,keepX.constraint=keepX.constraint,ncomp=ncomp)
+    keepA=check$keepA
+    keepA.constraint=check$keepA.constraint
     
+    #print(keepA)
+    #print(keepA.constraint)
+    #print(length(X))
+    
+    #print("bla")
     
     # check needed
     check=Check.entry.rgcca(X = X, design = design, tau = tau, ncomp = ncomp, scheme = scheme, scale = scale,
@@ -48,16 +59,17 @@ near.zero.var)
     near.zero.var=check$near.zero.var
 
     
-
-
     result.rgcca = sparse.meta.block(A = X, design = design, tau = tau,
     ncomp = ncomp,
     scheme = scheme, scale = scale,
     init = init, bias = bias, tol = tol, verbose = verbose,
+    keepA.constraint=keepA.constraint,keepA=keepA,
     max.iter=max.iter,
     study=factor(rep(1,nrow(A[[1]]))),#meta.rgcca not coded yet
     mode="canonical"
     )
+    
+    #print("bla")
     
     # outputs
     #   out <- list(Y = shave.matlist(Y, ncomp),
@@ -76,7 +88,7 @@ near.zero.var)
     #   return(out)
     
     cl = match.call()
-    cl[[1]] = as.name('rgcca')
+    cl[[1]] = as.name('sparse.rgcca')
     
     output = list(
     class = cl,
@@ -84,6 +96,7 @@ near.zero.var)
     variates = result.rgcca$variates,
     loadings = result.rgcca$loadings,
     loadings.star = result.rgcca$loadings.star,
+    keepX=keepA,keepX.constraint=keepA.constraint,
     design = design,
     tau = result.rgcca$tau,
     scheme = scheme,
@@ -94,7 +107,7 @@ near.zero.var)
     
     )
     
-    class(output) = 'rgcca'
+    class(output) = 'sparse.rgcca'
     return(invisible(output))
     
 }

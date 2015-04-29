@@ -1,3 +1,4 @@
+
 # --------------------------------------
 # match.keepX.constraint after removing variables with near.zer.var for instance
 # --------------------------------------
@@ -188,7 +189,7 @@ mean_centering_per_study=function(data,study,scale,bias=FALSE) {
     
     # center and scale data per group, and concatene the data
     concat.data = NULL
-    data.list.study.scale= list()    
+    data.list.study.scale= list()
     for (m in 1:M) {
         data.list.study.scale[[m]] = scale(data.list.study[[m]], center = TRUE, scale = scale)
         if(bias)
@@ -205,14 +206,14 @@ mean_centering_per_study=function(data,study,scale,bias=FALSE) {
     
     if (M > 1 )
     {
-      for(m in 1:M)
-      {
-          attr(concat.data,paste0("means:", levels(study)[m]))=attr(data.list.study.scale[[m]],"scaled:center")
-          attr(concat.data,paste0("sigma:", levels(study)[m]))=attr(data.list.study.scale[[m]],"scaled:scale")
-      } 
+        for(m in 1:M)
+        {
+            attr(concat.data,paste0("means:", levels(study)[m]))=attr(data.list.study.scale[[m]],"scaled:center")
+            attr(concat.data,paste0("sigma:", levels(study)[m]))=attr(data.list.study.scale[[m]],"scaled:scale")
+        }
     } else {
-      attr(concat.data,"scaled:center")=attr(data.list.study.scale[[m]],"scaled:center")
-      attr(concat.data,"scaled:scale")=attr(data.list.study.scale[[m]],"scaled:scale")      
+        attr(concat.data,"scaled:center")=attr(data.list.study.scale[[m]],"scaled:center")
+        attr(concat.data,"scaled:scale")=attr(data.list.study.scale[[m]],"scaled:scale")
     }
     return(list(concat.data=concat.data,data.list.study.scale=data.list.study.scale))
 }
@@ -449,21 +450,21 @@ map <- function (Y, ...) {
 }
 
 ### Estimation of tau accoring to Strimmer formula
-tau.estimate <- function (x) 
+tau.estimate <- function (x)
 {
-  if (is.matrix(x) == TRUE && is.numeric(x) == FALSE) 
+    if (is.matrix(x) == TRUE && is.numeric(x) == FALSE)
     stop("The data matrix must be numeric!")
-  p <- NCOL(x)
-  n <- NROW(x)
-  covm <- cov(x)
-  corm <- cor(x)
-  xs <- scale(x, center = TRUE, scale = TRUE)
-  v <- (n/((n - 1)^3)) * (crossprod(xs^2) - 1/n * (crossprod(xs))^2)
-  diag(v) <- 0
-  m <- matrix(rep(apply(xs^2, 2, mean), p), p, p)
-  I <- diag(NCOL(x))
-  d <- (corm - I)^2
-  tau <- (sum(v))/sum(d)
-  tau <- max(min(tau, 1), 0)
-  return(tau)
+    p <- NCOL(x)
+    n <- NROW(x)
+    covm <- cov(x)
+    corm <- cor(x)
+    xs <- scale(x, center = TRUE, scale = TRUE)
+    v <- (n/((n - 1)^3)) * (crossprod(xs^2) - 1/n * (crossprod(xs))^2)
+    diag(v) <- 0
+    m <- matrix(rep(apply(xs^2, 2, mean), p), p, p)
+    I <- diag(NCOL(x))
+    d <- (corm - I)^2
+    tau <- (sum(v))/sum(d)
+    tau <- max(min(tau, 1), 0)
+    return(tau)
 }
