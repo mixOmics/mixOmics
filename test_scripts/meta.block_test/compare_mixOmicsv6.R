@@ -6,11 +6,12 @@ rm(list=ls())
 setwd("/Users/florian/Work/git/package-mixOmics/")
 library(mixOmics)
 
+
 source("mixOmics/R/check_entry.R")
 source("mixOmics/R/helpers.R")
-source("mixOmics/R/meta.block.spls.R")
+source("mixOmics/R/sparse.meta.block.R")
+
 source("mixOmics/R/meta.spls.hybrid.R")
-source("mixOmics/R/mixOmics.R")
 source("mixOmics/R/pls.R")
 source("mixOmics/R/plsda.R")
 source("mixOmics/R/spls.R")
@@ -19,6 +20,23 @@ source("mixOmics/R/meta.pls.R")
 source("mixOmics/R/meta.plsda.R")
 source("mixOmics/R/meta.spls.R")
 source("mixOmics/R/meta.splsda.R")
+
+source("mixOmics/R/wrapper.sparse.meta.block.R")
+source("mixOmics/R/block.pls.R")
+source("mixOmics/R/block.spls.R")
+source("mixOmics/R/block.plsda.R")
+source("mixOmics/R/block.splsda.R")
+source("mixOmics/R/meta.block.pls.R")
+source("mixOmics/R/meta.block.spls.R")
+source("mixOmics/R/meta.block.plsda.R")
+source("mixOmics/R/meta.block.splsda.R")
+
+
+source("mixOmics/R/wrapper.rgcca.R")
+source("mixOmics/R/wrapper.sparse.rgcca.R")
+
+source("mixOmics/R/mixOmics.R")
+
 
 
 #
