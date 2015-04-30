@@ -280,10 +280,10 @@ nutri.res$loadings$X
 A = list(X = X, Y = Y)
 
 
-rgccav5=wrapper.rgcca(data=A,tau=c(0.064, 0.008),ncomp=rep(2, length(A)))
+rgccav5=wrapper.rgcca(X=A,tau=c(0.064, 0.008),ncomp=rep(2, length(A)),tol=1e-26)
 
-source("mixOmics/R/rgcca.R")
-rgccav6=rgcca.block(data=A,tau=c(0.064, 0.008),max.iter=1000,ncomp=rep(2, length(A)),tol=1e-26)
+source("mixOmics/R/wrapper.rgcca.old.R")
+rgccav6=wrapper.rgcca.old(data=A,tau=c(0.064, 0.008),max.iter=1000,ncomp=rep(2, length(A)),tol=1e-26)
 #rgccav6=rgcca.block(data=A,tau="optimal",max.iter=1000,ncomp=rep(2, length(A)))
 
 plot(rgccav5$variates[[1]][,1],rgccav6$variates[[1]][,1])
@@ -294,7 +294,7 @@ all.equal(rgccav5,rgccav6)
 
 
 
-v6=rgcca.block(data=A,max.iter=1000,ncomp=rep(2, length(A)),tol=1e-26) #tau=1, is it supposed to be equal to something else?
+v6=wrapper.rgcca(X=A,max.iter=1000,ncomp=rep(2, length(A)),tol=1e-26) #tau=1, is it supposed to be equal to something else?
 
 
 
