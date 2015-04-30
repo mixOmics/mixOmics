@@ -456,12 +456,13 @@ tau.estimate <- function (x)
     stop("The data matrix must be numeric!")
     p <- NCOL(x)
     n <- NROW(x)
-    covm <- cov(x)
+    #covm <- cov(x)
     corm <- cor(x)
     xs <- scale(x, center = TRUE, scale = TRUE)
-    v <- (n/((n - 1)^3)) * (crossprod(xs^2) - 1/n * (crossprod(xs))^2)
+    xs2=xs^2
+    v <- (n/((n - 1)^3)) * (crossprod(xs2) - 1/n * (crossprod(xs))^2)
     diag(v) <- 0
-    m <- matrix(rep(apply(xs^2, 2, mean), p), p, p)
+    m <- matrix(rep(apply(xs2, 2, mean), p), p, p)
     I <- diag(NCOL(x))
     d <- (corm - I)^2
     tau <- (sum(v))/sum(d)

@@ -96,7 +96,7 @@ near.zero.var)
     variates = result.rgcca$variates,
     loadings = result.rgcca$loadings,
     loadings.star = result.rgcca$loadings.star,
-    keepX=keepA,keepX.constraint=keepA.constraint,
+    keepX=result.rgcca$keepA,keepX.constraint=result.rgcca$keepA.constraint,
     design = design,
     tau = result.rgcca$tau,
     scheme = scheme,

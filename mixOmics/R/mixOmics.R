@@ -96,8 +96,9 @@ verbose=FALSE)
                         
                     }else{# meta.block.splsda
                         message("a meta block sparse Partial Least Squares - Discriminant Analysis is being performed (meta.block.sPLS-DA)")
-                        res=wrapper.meta.block.splsda(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,keepX=keepX,keepX.constraint=keepX.constraint,
-                        max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
+                        res=wrapper.meta.block.splsda(X=X, Y=Y, indY=indY, ncomp = ncomp,study=study,keepX=keepX,keepX.constraint=keepX.constraint,
+                        design=design,scheme=scheme,mode= mode,scale=scale,bias=bias,init=init,tol=tol,verbose=verbose,
+                        max.iter=max.iter,near.zero.var=near.zero.var)
                     }
                     
                 }
@@ -131,8 +132,10 @@ verbose=FALSE)
                         
                     }else{# meta.block.spls
                         message("a meta block sparse Partial Least Squares is being performed (meta.block.sPLS)")
-                        res=wrapper.meta.block.spls(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,keepX=keepX,keepX.constraint=keepX.constraint,
-                        max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
+                        res=wrapper.meta.block.spls(X=X, Y=Y, indY=indY, ncomp = ncomp,study=study,keepX=keepX,keepX.constraint=keepX.constraint,
+                        design=design,scheme=scheme,mode= mode,scale=scale,bias=bias,init=init,tol=tol,verbose=verbose,
+                        max.iter=max.iter,near.zero.var=near.zero.var)
+                        
                     }
                     
                 }

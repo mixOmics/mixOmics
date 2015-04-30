@@ -47,9 +47,8 @@ near.zero.var)
     bias=check$bias
     near.zero.var=check$near.zero.var
 
+
     
-
-
     result.rgcca = sparse.meta.block(A = X, design = design, tau = tau,
     ncomp = ncomp,
     scheme = scheme, scale = scale,

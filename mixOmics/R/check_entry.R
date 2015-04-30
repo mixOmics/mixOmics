@@ -80,8 +80,10 @@ Check.entry.single = function(X,  ncomp, keepX, keepX.constraint,q)
 # Check.entry.meta.block.spls
 # --------------------------------------
 
+if(FALSE)
+{
 Check.entry.meta.block.spls = function(A, indY, design ,ncomp , scheme , scale ,  bias,
-init , tol , verbose,mode, sparse , max.iter,study , keepA, keepA.constraint)
+init , tol , verbose,mode , max.iter,study , keepA, keepA.constraint)
 {
     
     if (length(A) < 1)
@@ -142,14 +144,12 @@ init , tol , verbose,mode, sparse , max.iter,study , keepA, keepA.constraint)
     stop("scale must be either TRUE or FALSE")
     if(!is.logical(bias))
     stop("bias must be either TRUE or FALSE")
-    if(!is.logical(sparse))
-    stop("sparse must be either TRUE or FALSE")
     
     
     return(list(A=A,ncomp=ncomp,study=study))
     
 }
-
+}
 
 
 # --------------------------------------
@@ -262,6 +262,8 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.con
 # Check.entry.pls.single
 # --------------------------------------
 
+if(FALSE)
+{
 Check.entry.pls.single = function(X, ncomp, keepX,keepX.constraint)
 {
     
@@ -326,7 +328,7 @@ Check.entry.pls.single = function(X, ncomp, keepX,keepX.constraint)
     
     return(list(X=X,ncomp=ncomp,X.names=X.names,ind.names=ind.names))
 }
-
+}
 
 
 
@@ -334,7 +336,8 @@ Check.entry.pls.single = function(X, ncomp, keepX,keepX.constraint)
 # Check.entry.mixOmics.list.save
 # --------------------------------------
 
-
+if(FALSE)
+{
 Check.entry.mixOmics.list.save = function(X,
 Y,
 indY, #only use if Y not provided
@@ -660,80 +663,7 @@ verbose)
     
 }
 
-
-
-# --------------------------------------
-# check keepA and keepA.constraint
-# --------------------------------------
-
-check.keepA.and.keepA.constraint=function(X,keepA,keepA.constraint,ncomp)
-{
-    # X:data
-    # keepA
-    # keepA.constraint
-    
-    if(missing(keepA.constraint))
-    {
-        if(missing(keepA))
-        {
-            keepA=list()
-            for(q in 1:length(X)) {keepA[[q]]=rep(ncol(X[[q]]),max(ncomp))}
-            names(keepA)=names(X)
-        }else{
-            for(q in 1:length(X))
-            {
-                if(q>length(keepA))
-                {keepA[[q]]=rep(ncol(X[[q]]),max(ncomp))}
-            }
-            
-        }
-        for(q in 1:length(X)) {keepA.constraint[[q]]=list()} #keepA.constraint
-    }else{
-        # check that max(ncomp)>=length(keepA.constraint)
-        if(length(keepA.constraint)>max(ncomp))
-        stop(paste0("you should have length(keepA.constraint) lower or equal to ",max(ncomp),"."))
-        
-        if(length(keepA.constraint)>length(X))
-        stop("length(keepA.constraint) is higher than the number of blocks in 'X'")
-        
-        if(length(keepA.constraint)<length(X))
-        for(q in (length(keepA.constraint)+1):length(X))
-        keepA.constraint[[q]]=list() #artificially creating an entry tht we won't use, so we can access all entries from 1 to length(X)
-        
-        #check names of keepA.constraint, gives the name of the blocks
-        if(length(unique(names(keepA.constraint)))!=length(keepA.constraint) | sum(is.na(match(names(keepA.constraint),names(X)))))
-        {names(keepA.constraint)=names(X)[1:length(keepA.constraint)]}
-        
-        
-        # check that ncomp>=length(keepA.constraint)
-        for(q in 1:length(X))
-        {
-            if(length(keepA.constraint[[q]])>ncomp[q])
-            stop(paste0("you should have length(keepA.constraint[[",q,"]]) lower or equal to ncomp[",q,"]."))
-        }
-        
-        if(missing(keepA))
-        {
-            #if not missing keepA.constraint but missing keepA, we complete keepA pls-like to have length(keepA.constraint)+length(keepA)=ncomp
-            for(q in 1:length(X))
-            {
-                keepA[[q]]=rep(ncol(X[[q]]),max(ncomp)-length(keepA.constraint[[q]]))
-                
-            }
-            names(keepA)=names(X)
-        }else{ #complete keepA so that length(keepA.constraint[[q]])+length(keepA[[q]])=max(ncomp)
-            
-            for(q in 1:length(X))
-            {
-                if(q>length(keepA))
-                {keepA[[q]]=rep(ncol(X[[q]]),max(ncomp)-length(keepA.constraint[[q]]))}
-            }
-            
-        }
-    }
-    return(list(keepA=keepA,keepA.constraint=keepA.constraint))
 }
-
 
 
 
@@ -764,6 +694,9 @@ verbose)
 {
     #need to give the default values of meta.block.spls to mixOmics
     
+    if(!is.list(X))
+    {stop("X must be a list")}
+
     if((missing(indY)& missing(Y)) )
     stop("Either 'Y' or 'indY' is needed")
     
@@ -799,94 +732,10 @@ verbose)
     
     
     # construction of keepA and keepA.constraint
-    keepA=list()
-    keepA.constraint=list()
-    if(missing(keepX.constraint))
-    {
-        if(missing(keepX))
-        {
-            #if both keepX.constraint and keepX are missing, pls-like: keepX=ncol(X)
-            for(q in 1:length(X)) {keepA[[q]]=rep(ncol(X[[q]]),max(ncomp))} #keepX
-            names(keepA)=names(X)
-        }else{
-            
-            for(q in 1:length(X))
-            {
-                if(q<=length(keepX))
-                {keepA[[q]]=keepX[[q]]
-                    if(length(keepA[[q]])<max(ncomp)) {keepA[[q]]=c(keepA[[q]],rep(ncol(X[[q]]),max(ncomp)-length(keepA[[q]])))} #complete the keepX already provided
-                }else{
-                    keepA[[q]]=rep(ncol(X[[q]]),max(ncomp))##
-                }
-            }
-            
-        }
-        
-        for(q in 1:length(X)) {keepA.constraint[[q]]=list()} #keepX.constraint
-        #print(keepA)
-        
-    }else{
-        if(length(keepX.constraint)>length(X))
-        stop("length(keepX.constraint) is higher than the number of blocks in X")
-        
-        if(length(keepX.constraint)<length(X))
-        for(q in (length(keepX.constraint)+1):length(X))
-        keepX.constraint[[q]]=list() #artificially creating an entry tht we won't use, so we can access all entries from 1 to length(X)
-        
-        #check names of keepX.constraint, gives the name of the blocks
-        if(length(unique(names(keepX.constraint)))!=length(keepX.constraint) | sum(is.na(match(names(keepX.constraint),names(X)))))
-        {names(keepX.constraint)=names(X)[1:length(keepX.constraint)]}
-        
-        
-        # check that ncomp>=length(keepX.constraint)
-        for(q in 1:length(X))
-        {
-            if(length(keepX.constraint[[q]])>ncomp[q])
-            stop(paste0("you should have length(keepX.constraint[[",q,"]]) lower or equal to ncomp[",q,"]."))
-        }
-        
-        if(missing(keepX))
-        {
-            #if not missing keepX.constraint but missing keepX, we complete keepX pls-like to have length(keepX.constraint)+length(keepX)=ncomp
-            for(q in 1:length(X))
-            {
-                keepA[[q]]=rep(ncol(X[[q]]),max(ncomp)-length(keepX.constraint[[q]]))
-                
-            }
-            names(keepA)=names(X)
-        }else{ #complete keepA so that length(keepX.constraint[[q]])+length(keepX[[q]])=max(ncomp)
-            
-            for(q in 1:length(X))
-            {
-                if(q<=length(keepX))
-                {keepA[[q]]=keepX[[q]]
-                    if(length(keepA[[q]])<max(ncomp)) {keepA[[q]]=c(keepA[[q]],rep(ncol(X[[q]]),max(ncomp)-length(keepA[[q]])))} #complete the keepX already provided
-                }else{
-                    keepA[[q]]=rep(ncol(X[[q]]),max(ncomp)-length(keepX.constraint[[q]]))
-                }
-            }
-            
-        }
-        
-        keepA.constraint=keepX.constraint
-        
-    }
-    # print("constraint")
-    #print(keepA.constraint)
-    #print("keepA")
-    #print(keepA)
     
-    #check that keepX is ok
-    for(q in 1:length(X))
-    {
-        if(is.list(keepA[[q]]))
-        stop(paste0("keepX[[",q,"]]' must be a vector"))
-        if (any(keepA[[q]] > ncol(X[[q]])))
-        stop(paste0("each component of 'keepX[[",q,"]]' must be lower or equal to ", ncol(X[[q]]), "."))
-        if(length(keepA[[q]])>max(ncomp))
-        stop(paste0("length of 'keepX[[",q,"]]' must be lower or equal to ", ncomp[q], "."))
-    }
-    
+    check=check.keepA.and.keepA.constraint(X=X,keepX=keepX,keepX.constraint=keepX.constraint,ncomp=ncomp)
+    keepA=check$keepA
+    keepA.constraint=check$keepA.constraint
     
     
     # =====================================================
@@ -979,14 +828,7 @@ verbose)
     # with or without tau (RGGCA or meta.block.spls algo)
     # =====================================================
     
-    #check that length(keepA.constraint)+length(keepA)=ncomp for all blocks
-    for(q in 1:length(A))
-    {
-        if (any(keepA[[q]] > ncol(A[[q]])))
-        stop(paste0("each component of 'keepA[[",q,"]]' must be lower or equal to ", ncol(A[[q]]), "."))
-        #check keepX and keepX.constraint
-        if((length(keepA.constraint[[q]])+length(keepA[[q]]))!=max(ncomp)) stop(paste0("length (keepA.constraint[[",q,"]]) + length(keepA[[",q,"]]) should be max(ncomp)."))
-    }
+
     
     
     x=unlist(lapply(A,nrow))
@@ -1056,6 +898,12 @@ near.zero.var)
 {
     #need to give the default values of meta.block.spls to mixOmics
     
+    if(!is.list(X))
+    {stop("X must be a list of at list two matrices")}
+    
+    if(length(X)<2)
+    {stop("X must be a list of at list two matrices")}
+
     if(is.null(tau))
     stop("'tau' is needed")
     
@@ -1089,17 +937,16 @@ near.zero.var)
     
     A=X#input
         
-    if(is.vector(tau))
-    {
-        if(length(tau)!=length(A)) stop(paste0("'tau' must be of length ",length(A),"."))
-        tau = matrix(rep(tau, max(ncomp)), nrow = max(ncomp), ncol = length(tau), byrow = TRUE)
-    }
-    
+
     
     if(is.numeric(tau))
     {
         if(any(tau<0) | any(tau>1)) stop("'tau' contains either values between 0 and 1, or 'optimal'.")
-        
+        if(is.vector(tau))
+        {
+            if(length(tau)!=length(A)) stop(paste0("'tau' must be of length ",length(A),"."))
+            tau = matrix(rep(tau, max(ncomp)), nrow = max(ncomp), ncol = length(tau), byrow = TRUE)
+        }
     }else{
         if(tau!="optimal") stop("'tau' contains either values between 0 and 1, or 'optimal'.")
     }
@@ -1107,6 +954,7 @@ near.zero.var)
     if(missing(init)) init="svd.single"
     
     if (init != "svd.single") stop("init should be 'svd.single'.")
+    if(missing(mode)) mode="canonical"
     if (mode != "canonical") stop("Only canonical deflation can be done when 'tau' is provided. Try again with mode='canonical'")
     
     
@@ -1178,9 +1026,9 @@ check.keepA.and.keepA.constraint=function(X,keepX,keepX.constraint,ncomp)
 
 keepA=list()
 keepA.constraint=list()
-if(missing(keepX.constraint))
+if(missing(keepX.constraint) || length(keepX.constraint)==0)
 {
-    if(missing(keepX))
+    if(missing(keepX) || length(keepX)==0)
     {
         #if both keepX.constraint and keepX are missing, pls-like: keepX=ncol(X)
         for(q in 1:length(X)) {keepA[[q]]=rep(ncol(X[[q]]),max(ncomp))} #keepX
@@ -1189,8 +1037,18 @@ if(missing(keepX.constraint))
         
         for(q in 1:length(X))
         {
+
             if(q<=length(keepX))
-            {keepA[[q]]=keepX[[q]]
+            {
+                #checking entries of keepX
+                if(is.list(keepX[[q]]))
+                stop(paste0("keepX[[",q,"]]' must be a vector"))
+                if (any(keepX[[q]] > ncol(X[[q]])))
+                stop(paste0("each component of 'keepX[[",q,"]]' must be lower or equal to ncol(X[[",q,"]])=",ncol(X[[q]]),"."))
+                if(length(keepX[[q]])>ncomp[q])
+                stop(paste0("length of 'keepX[[",q,"]]' must be lower or equal to ncomp[",q,"]=",ncomp[q], "."))
+                
+                keepA[[q]]=keepX[[q]]
                 if(length(keepA[[q]])<max(ncomp)) {keepA[[q]]=c(keepA[[q]],rep(ncol(X[[q]]),max(ncomp)-length(keepA[[q]])))} #complete the keepX already provided
             }else{
                 keepA[[q]]=rep(ncol(X[[q]]),max(ncomp))##
@@ -1205,7 +1063,7 @@ if(missing(keepX.constraint))
 }else{
     
 
-
+    #check entries keepX.constraint
     if(length(keepX.constraint)>length(X))
     stop("length(keepX.constraint) is higher than the number of blocks in X")
     
@@ -1222,10 +1080,12 @@ if(missing(keepX.constraint))
     for(q in 1:length(X))
     {
         if(length(keepX.constraint[[q]])>ncomp[q])
-        stop(paste0("you should have length(keepX.constraint[[",q,"]]) lower or equal to ncomp[",q,"]."))
+        stop(paste0("you should have length(keepX.constraint[[",q,"]]) lower or equal to ncomp[",q,"]=",ncomp[q],"."))
+        #if(!is.list(keepX.constraint[[q]]))
+        #stop(paste0("'keepX.constraint[[",q,"]]' must be a list of length ",ncomp[q]," of variables to keep on each of the ncomp[",q,"]=",ncomp[q]," components for block ",q,"."))
     }
     
-    if(missing(keepX))
+    if(missing(keepX) || length(keepX)==0)
     {
         #if not missing keepX.constraint but missing keepX, we complete keepX pls-like to have length(keepX.constraint)+length(keepX)=ncomp
         for(q in 1:length(X))
@@ -1238,9 +1098,22 @@ if(missing(keepX.constraint))
         
         for(q in 1:length(X))
         {
+            
+            #check the entries provided before completed by pls-like
+            if(q<=length(keepX)& q<=length(keepX.constraint))
+            if((length(keepX.constraint[[q]])+length(keepX[[q]]))>ncomp[q]) stop(paste0("length (keepX.constraint[[",q,"]]) + length(keepX[[",q,"]]) = ",(length(keepX.constraint[[q]])+length(keepX[[q]])),"; it should be lower or equal to ncomp[",q,"]=",ncomp[q], "."))
             if(q<=length(keepX))
-            {keepA[[q]]=keepX[[q]]
-                if(length(keepA[[q]])<max(ncomp)) {keepA[[q]]=c(keepA[[q]],rep(ncol(X[[q]]),max(ncomp)-length(keepA[[q]])))} #complete the keepX already provided
+            {
+                #checking entries of keepX
+                if(is.list(keepX[[q]]))
+                stop(paste0("keepX[[",q,"]]' must be a vector"))
+                if (any(keepX[[q]] > ncol(X[[q]])))
+                stop(paste0("each component of 'keepX[[",q,"]]' must be lower or equal to ncol(X[[",q,"]])=",ncol(X[[q]]),"."))
+                if(length(keepX[[q]])>ncomp[q])
+                stop(paste0("length of 'keepX[[",q,"]]' must be lower or equal to ncomp[",q,"]=",ncomp[q], "."))
+
+                keepA[[q]]=keepX[[q]]
+                if(length(keepA[[q]])<max(ncomp)) {keepA[[q]]=c(keepA[[q]],rep(ncol(X[[q]]),max(ncomp)-length(keepA[[q]])-length(keepX.constraint[[q]])))} #complete the keepX already provided
 
             }else{
                 keepA[[q]]=rep(ncol(X[[q]]),max(ncomp)-length(keepX.constraint[[q]]))
@@ -1252,16 +1125,21 @@ if(missing(keepX.constraint))
     keepA.constraint=keepX.constraint
     
 }
-
+#print("constraint")
+#print(keepA.constraint)
+#print("keepA")
+#print(keepA)
+if(FALSE)
+{
     #check that keepX is ok
     for(q in 1:length(X))
     {
         if(is.list(keepA[[q]]))
         stop(paste0("keepX[[",q,"]]' must be a vector"))
         if (any(keepA[[q]] > ncol(X[[q]])))
-        stop(paste0("each component of 'keepX[[",q,"]]' must be lower or equal to ", ncol(X[[q]]), "."))
+        stop(paste0("each component of 'keepX[[",q,"]]' must be lower or equal to ncol(X[[",q,"]])=",ncol(X[[q]]),"."))
         if(length(keepA[[q]])>max(ncomp))
-        stop(paste0("length of 'keepX[[",q,"]]' must be lower or equal to ", ncomp[q], "."))
+        stop(paste0("length of 'keepX[[",q,"]]' must be lower or equal to ncomp[",q,"]=",ncomp[q], "."))
     }
     
 
@@ -1271,9 +1149,9 @@ if(missing(keepX.constraint))
         if (any(keepA[[q]] > ncol(X[[q]])))
         stop(paste0("each component of 'keepA[[",q,"]]' must be lower or equal to ", ncol(X[[q]]), "."))
         #check keepX and keepX.constraint
-        if((length(keepA.constraint[[q]])+length(keepA[[q]]))!=max(ncomp)) stop(paste0("length (keepX.constraint[[",q,"]]) + length(keepX[[",q,"]]) should be max(ncomp)."))
+        if((length(keepA.constraint[[q]])+length(keepA[[q]]))!=max(ncomp)) stop(paste0("length (keepX.constraint[[",q,"]]) + length(keepX[[",q,"]])=",(length(keepA.constraint[[q]])+length(keepA[[q]])),"; it should be max(ncomp)."))
     }
-    
+}
     #print(keepA)
     #print("constr")
     #print(keepA.constraint)
@@ -1281,8 +1159,5 @@ if(missing(keepX.constraint))
     
     return(list(keepA=keepA,keepA.constraint=keepA.constraint))
 }
-
-
-
 
 

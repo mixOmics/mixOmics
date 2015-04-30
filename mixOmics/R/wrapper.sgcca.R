@@ -26,7 +26,8 @@ scale = TRUE,
 init = "svd",
 bias = TRUE,
 tol = .Machine$double.eps,
-verbose = FALSE
+verbose = FALSE,
+max.iter
 ){
   
   # call function
@@ -37,7 +38,8 @@ verbose = FALSE
      keepA.constraint=check$keepA.constraint
      
   
-  check=Check.entry.sgcca()
+  check=Check.entry.meta.block.spls(A=X, indY=NULL, design=design ,ncomp=ncomp , scheme=scheme , scale=scale ,  bia=bias,
+  init=init , tol=tol , verbose=verbose,mode=mode, max.iter=max.iter,keepA=keepA, keepA.constraint=keepA.constraint)
   
   
   result.sgcca = sparse.meta.block(A = X, design = design, tau = NULL,
@@ -68,7 +70,7 @@ verbose = FALSE
 #   return(out)
 
   cl = match.call()
-  cl[[1]] = as.name('rgcca')
+  cl[[1]] = as.name('sgcca')
   
   output = list(
     class = cl,

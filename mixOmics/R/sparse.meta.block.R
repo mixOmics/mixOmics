@@ -443,9 +443,9 @@ sparse.rgcca_iteration <- function (A, design, tau = "optimal", scheme = "centro
   variates.A <- matrix(0, n, J)
   ### End: Initialisation parameters
   
-  if (!is.numeric(tau)) 
+  if (!is.numeric(tau))
     tau = sapply(A, tau.estimate)
-  
+    
   loadings.A <- alpha <- M <- Minv <- K <- list()
   which.primal <- which((n >= pjs) == 1)
   which.dual <- which((n < pjs) == 1)
