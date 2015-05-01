@@ -61,7 +61,7 @@ function(X,
             if(any(keepX>ncol(X)))
             {
                 ind=which(keepX>ncol(X))
-                keepX[ind]=ncol(X))
+                keepX[ind]=ncol(X)
             }
         
         }
