@@ -84,7 +84,7 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
       {
         names.remove.X=colnames(A[[q]])[nzv.A[[q]]$Position]
         A[[q]] = A[[q]][, -nzv.A[[q]]$Position,drop=FALSE]
-        warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv$X for problematic predictors.")
+        warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
         if(ncol(A[[q]]) == 0) {stop("No more variables in X")}
         
         # at this stage, keepA.constraint need to be numbers
@@ -95,6 +95,12 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
           # replace character by numbers
           keepA.constraint[[q]]= lapply(keepA.constraint[[q]],function(x){match(x,colnames(A[[q]]))})
         }
+      }
+      #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
+      if(any(keepA[[q]]>ncol(A[[q]])))
+      {
+          ind=which(keepA[[q]]>ncol(A[[q]]))
+          keepA[[q]][ind]=ncol(A[[q]])
       }
     }
   }

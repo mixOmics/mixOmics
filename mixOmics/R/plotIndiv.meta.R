@@ -93,7 +93,7 @@ layout = NULL,
         if(any(class(object)%in%c("meta.plsda","meta.splsda")) & missing(col))
         {
             col=as.numeric(object$Y)
-        }else if missing(col)
+        }else if (missing(col))
         {
             col=1#rep(col,ceiling(object$N/length(col)))[1:object$N] # complete col to have a vector of length N, so we can choose col per study
         }
@@ -168,7 +168,7 @@ layout = NULL,
         if(any(class(object)%in%c("meta.plsda","meta.splsda")) & missing(col))
         {
             col=as.numeric(object$Y)
-        }else if missing(col)
+        }else if (missing(col))
         {
             col=1#rep(col,ceiling(object$N/length(col)))[1:object$N] # complete col to have a vector of length N, so we can choose col per study
         }
