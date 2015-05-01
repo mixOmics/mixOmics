@@ -37,9 +37,12 @@ tol = 1e-06)
         }
         keepX.constraint=list()
     }else{
+        if(length(keepX.constraint)>ncomp)
+        stop(paste0("you should have length(keepX.constraint) lower or equal to ",ncomp,"."))
+
         if(missing(keepX))
         {
-            keepX=NULL
+            keepX=rep(ncol(X),ncomp-length(keepX.constraint))
         }
     }
     
@@ -51,15 +54,24 @@ tol = 1e-06)
         }
         keepY.constraint=list()
     }else{
+        if(length(keepY.constraint)>ncomp)
+        stop(paste0("you should have length(keepY.constraint) lower or equal to ",ncomp,"."))
+
        if(missing(keepY))
         {
-            keepY=NULL
+            keepY=rep(ncol(Y),ncomp-length(keepY.constraint))
         }
     }
 
-    if(missing(study)) study=factor(rep(1,nrow(X)))
+    #set the default study factor
+    if(missing(study))
+    {
+        study=factor(rep(1,nrow(X)))
+    }else{
+        study=as.factor(study)
+    }
+    if(length(study)!=nrow(X)) stop(paste0("'study' must be a factor of length ",nrow(X),"."))
     
-    if(length(study)!=nrow(X)) stop("unequal number of observations in 'X' and 'study'")
     
     design = matrix(c(0,1,1,0), ncol = 2, nrow = 2, byrow = TRUE)
     
@@ -101,7 +113,6 @@ tol = 1e-06)
     # A: list of matrices
     # indY: integer, pointer to one of the matrices of A
     # design: design matrix, links between matrices. Diagonal must be 0
-    # lambda: Matrix of shrinkage penalties. Each row is for a component, each column for a matrix of A. Can be a vector, in that case same penalty to each component. Only used if keepA is missing
     # ncomp: vector of ncomp, per matrix
     # scheme: a function "g", refer to the article (thanks Benoit)
     # scale: do you want to scale ? mean is done by default and cannot be changed (so far)
@@ -110,18 +121,20 @@ tol = 1e-06)
     # tol: nobody cares about this
     # verbose: show the progress of the algorithm
     # mode: canonical, classic, invariant, regression
-    # sparse: use sgcca instead of rgcca when you use sparse function
     # max.iter: nobody cares about this
     # study: factor for each matrix of A, must be a vector
     # keepA: keepX of spls for each matrix of A. must be a list. Each entry must be of the same length (max ncomp)
     # keepA.constraint: keepX.constraint, which variables are kept on the first num.comp-1 components. It is a list of characters
     # near.zero.var: do you want to remove variables with very small variance
     
-    
-    result <- meta.block.spls(A = list(X = X, Y = Y), indY = 2, mode = "regression", ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
-    design = design, keepA = list(keepX,keepY),keepA.constraint = list(keepX.constraint,keepY.constraint), sparse = TRUE,
-    lambda = NULL, scale = scale,
-    scheme = "centroid", study = study,near.zero.var=near.zero.var)
+    check=Check.entry.pls(X, Y, ncomp, keepX, keepY,keepX.constraint,keepY.constraint) # to have the warnings relative to X and Y, instead of blocks
+    X=check$X
+    Y=check$Y
+    ncomp=check$ncomp
+
+    result <- sparse.meta.block(A = list(X = X, Y = Y), indY = 2, mode = "regression", ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
+    design = design, keepA = list(keepX,keepY),keepA.constraint = list(keepX.constraint,keepY.constraint),
+    scale = scale, scheme = "centroid",init="svd", study = study,near.zero.var=near.zero.var)
     
     result$ncomp = ncomp
 

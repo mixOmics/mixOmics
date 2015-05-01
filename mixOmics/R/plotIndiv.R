@@ -35,7 +35,7 @@ ind.names = TRUE,
 rep.space = "X-variate",
 X.label = NULL,
 Y.label = NULL,
-col = "black",
+col,
 cex = 1,
 pch = 1,
 abline.line = FALSE,
@@ -73,6 +73,13 @@ abline.line = FALSE,
     comp2 = round(comp[2])
     rep.space = match.arg(rep.space, c("XY-variate", "X-variate", "Y-variate"))
     
+    if(any(class(object)%in%c("plsda","splsda")) & missing(col))
+    {
+        col=as.numeric(object$Y)
+    }else if(missing(col))
+    {
+        col=1
+    }
     
     
     # l'espace de representation #

@@ -1,4 +1,4 @@
-# Copyright (C) 2013 
+# Copyright (C) 2013
 # Kim-Anh Le Cao, University of Queensland, Brisbane, Australia
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -15,62 +15,85 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 wrapper.rgcca = function(
-  data,
-  design = 1 - diag(length(data)),
-  tau = rep(1, length(data)),
-  ncomp = rep(1, length(data)), 
-  scheme = "centroid",
-  scale = TRUE, 
-  init = "svd", 
-  bias = TRUE,
-  tol = .Machine$double.eps, 
-  verbose = FALSE  
-){
-  
-  # call function
-  #rgcca <- function(A, C = 1-diag(length(A)), tau = rep(1, length(A)), ncomp = rep(1, length(A)), scheme = "centroid", scale = TRUE , init="svd", bias = TRUE, tol = .Machine$double.eps, verbose=TRUE)
+X,
+design = 1 - diag(length(X)),
+tau = rep(1, length(X)),
+ncomp = rep(1, length(X)),
+scheme = "centroid",
+mode="canonical",
+scale = TRUE,
+init = "svd.single",
+bias = FALSE,
+tol = 1e-6,
+verbose = FALSE,
+max.iter=500,
+near.zero.var)
+{
     
-  result.rgcca = rgcca(A = data, C = design, tau = tau, 
-                       ncomp = ncomp,
-                       scheme = scheme, scale = scale,
-                       init = init, bias = bias, tol = tol, verbose = verbose)
-  
-  # outputs
-#   out <- list(Y = shave.matlist(Y, ncomp),
-#               a = shave.matlist(a, ncomp), 
-#               astar = shave.matlist(astar, ncomp),
-#               C = C, tau = tau_mat, scheme = scheme,
-#               ncomp=ncomp, crit = crit,
-#               mode = mode,
-#               AVE=list(AVE_X=AVE_X,
-#                        AVE_outer=AVE_outer,
-#                        AVE_inner=AVE_inner),
-#               #KA added names of rows and cols for plotIndiv and plotVar
-#               names = list(indiv = rownames(A[[1]]))
-#   )
-#   class(out) <- "rgcca"
-#   return(out)
-  
-  cl = match.call()
-  cl[[1]] = as.name('rgcca')
-  
-  output = list(
+    # call function
+    #rgcca <- function(A, C = 1-diag(length(A)), tau = rep(1, length(A)), ncomp = rep(1, length(A)), scheme = "centroid", scale = TRUE , init="svd", bias = TRUE, tol = .Machine$double.eps, verbose=TRUE)
+    
+    
+    
+    # check needed
+    check=Check.entry.rgcca(X = X, design = design, tau = tau, ncomp = ncomp, scheme = scheme, scale = scale,
+    init = init, bias = bias, tol = tol, verbose = verbose, max.iter=max.iter, mode=mode,near.zero.var=near.zero.var)
+    X=check$A
+    ncomp=check$ncomp
+    design=check$design
+    init=check$init
+    scheme=check$scheme
+    verbose=check$verbose
+    bias=check$bias
+    near.zero.var=check$near.zero.var
+
+
+    
+    result.rgcca = sparse.meta.block(A = X, design = design, tau = tau,
+    ncomp = ncomp,
+    scheme = scheme, scale = scale,
+    init = init, bias = bias, tol = tol, verbose = verbose,
+    max.iter=max.iter,
+    study=factor(rep(1,nrow(A[[1]]))),#meta.rgcca not coded yet
+    mode="canonical"
+    )
+    
+    # outputs
+    #   out <- list(Y = shave.matlist(Y, ncomp),
+    #               a = shave.matlist(a, ncomp),
+    #               astar = shave.matlist(astar, ncomp),
+    #               C = C, tau = tau_mat, scheme = scheme,
+    #               ncomp=ncomp, crit = crit,
+    #               mode = mode,
+    #               AVE=list(AVE_X=AVE_X,
+    #                        AVE_outer=AVE_outer,
+    #                        AVE_inner=AVE_inner),
+    #               #KA added names of rows and cols for plotIndiv and plotVar
+    #               names = list(indiv = rownames(A[[1]]))
+    #   )
+    #   class(out) <- "rgcca"
+    #   return(out)
+    
+    cl = match.call()
+    cl[[1]] = as.name('rgcca')
+    
+    output = list(
     class = cl,
-    data = data,
-    variates = result.rgcca$Y,
-    loadings = result.rgcca$a,
-    loadings.star = result.rgcca$astar,
+    X = X,
+    variates = result.rgcca$variates,
+    loadings = result.rgcca$loadings,
+    loadings.star = result.rgcca$loadings.star,
     design = design,
     tau = result.rgcca$tau,
     scheme = scheme,
-    ncomp = ncomp, 
+    ncomp = ncomp,
     crit = result.rgcca$crit,
-    AVE = list(AVE.data = result.rgcca$AVE$AVE_X, result.rgcca$AVE$AVE_outer, result.rgcca$AVE$AVE_inner), #rename?
-    names = list(indiv = rownames(data[[1]]), var = sapply(data, colnames))
+    AVE = list(AVE.X = result.rgcca$AVE$AVE_X, result.rgcca$AVE$AVE_outer, result.rgcca$AVE$AVE_inner), #rename?
+    names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames))
     
-  )
-
-  class(output) = 'rgcca'
-  return(invisible(output))
-  
+    )
+    
+    class(output) = 'rgcca'
+    return(invisible(output))
+    
 }
