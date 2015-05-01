@@ -95,13 +95,14 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
           # replace character by numbers
           keepA.constraint[[q]]= lapply(keepA.constraint[[q]],function(x){match(x,colnames(A[[q]]))})
         }
+        #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
+        if(any(keepA[[q]]>ncol(A[[q]])))
+        {
+            ind=which(keepA[[q]]>ncol(A[[q]]))
+            keepA[[q]][ind]=ncol(A[[q]])
+        }
       }
-      #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
-      if(any(keepA[[q]]>ncol(A[[q]])))
-      {
-          ind=which(keepA[[q]]>ncol(A[[q]]))
-          keepA[[q]][ind]=ncol(A[[q]])
-      }
+
     }
   }
   
