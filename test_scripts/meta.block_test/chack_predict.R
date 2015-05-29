@@ -145,7 +145,7 @@ res=wrapper.meta.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("E
 
 
 #wraper.pls
-res=wrapper.pls(X=data.light,Y=Y.mat.light,ncomp=3)
+res=wrapper.pls(X=data.light,Y=Y.mat.light,ncomp=5)
 pred=predict(res,newdata=data.light)
 
 #wraper.spls
@@ -363,7 +363,8 @@ res=mixOmics(X=A,indY=2,keepX.constraint=list(X=list(1:10)),ncomp=c(3,1)) # OK
 pred=predict(res,newdata=res$X)
 
 # block.plsda
-res=mixOmics(X=A,Y=type.id,study=exp)
+res=wrapper.meta.block.plsda(X=A,Y=type.id,study=exp,ncomp=c(2,2))
+res=mixOmics(X=A,Y=type.id,study=exp,ncomp=c(2,2))
 pred=predict(res,newdata=res$X,study.test=exp)
 
 #block.plsda
@@ -383,49 +384,6 @@ pred=predict(res,newdata=res$X,study=exp)
 #RGCCA
 res=mixOmics(X=A,tau=c(1,1))
 pred=predict(res,newdata=res$X,study=exp)
-
-res=mixOmics(X=A,tau="optimal")
-res=mixOmics(X=A,indY=2,tau=c(1,1),ncomp=c(3,1)) #OK
-
-#sparse RGCCA
-# keep variable 5 and 10 on the 2first comp of block1, keep variable 2 on comp1 for block 2. completed by keeping all variable on comp2 for block2
-res=mixOmics(X=A,tau=c(1,1),mode="canonical",keepX.constraint=list(c(5,10),2),ncomp=c(2,2))
-res1=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(list(5,10),list(2)),ncomp=c(2,2))#same
-
-# keep variable 5 on comp1 and 10 on comp2 of block1; keep variable 2 on comp1 for block 2. completed by keeping all variable on comp3 for block1 and comp2/3 for block2
-res2=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(c(5,10),2),ncomp=c(3,3))
-
-# keep variable 5 and 10 on the first comp of block1, variable 3 on the second comp of block1; keep variable 2 on comp1 for block 2. completed by keeping all variable on comp3 for block1 and comp2/3 for block2
-res3=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(list(c(5,10),3),list(2)),ncomp=c(3,3))
-
-
-all.equal(res,res3)
-
-which(res$loadings$X[,1]!=0)
-which(res$loadings$X[,2]!=0)
-
-which(res1$loadings$X[,1]!=0)
-which(res1$loadings$X[,2]!=0)
-
-which(res2$loadings$X[,1]!=0)
-which(res2$loadings$X[,2]!=0)
-sum(res2$loadings$X[,3]!=0)
-
-which(res3$loadings$X[,1]!=0)
-which(res3$loadings$X[,2]!=0)
-sum(res3$loadings$X[,3]!=0)
-
-#OK keep variable 5 and 10 on the first comp of block1, variable 3 on the second comp of block1. completed by keeping all variable on comp3 for block1 and comp1/2/3 for block2
-res=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(list(c(5,10),3)),ncomp=c(2,2)) #OK
-
-#OK keep variable 5 and 10 on the first comp of block1, variable 3 on the second comp of block1. keep the 10 most important variables on comp3 of block1. completed by keeping all variable on comp3 for block1 and comp1/2/3 for block2
-res=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(list(c(5,10),3)),keepX=list(10),ncomp=c(3,3)) #OK
-
-
-res=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(),keepX=list(c(10,10)),ncomp=c(2,2))#OK
-res=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(),keepX=list(c(10,10)),ncomp=c(2,1))#OK
-res=mixOmics(X=A,tau=c(1,1),keepX=list(c(10,10)),ncomp=c(3,3))#OK
-res=mixOmics(X=A,tau=c(1,1),keepX=list(5,2),keepX.constraint=list(list(c(5,10))),ncomp=c(2,2)) #OK
 
 
 
@@ -477,30 +435,6 @@ res=mixOmics(X=A,indY=2,keepX.constraint=list(X=list(1:10,1:5),list(1:4)))#bad k
 #block.splsda
 
 
-
-#RGCCA
-
-#check RGCCA
-res=mixOmics(X=A,tau=1) #error length tau
-res=mixOmics(X=A,tau=1,mode="regression") # error length tau (and mode)
-res=mixOmics(X=A,tau=c(1,1),mode="regression") # error mode
-res=mixOmics(X=A,tau=c(1,1),init="svd") #error svd
-res=mixOmics(X=A,tau=c(1,1),scheme="bla") #error scheme
-res=mixOmics(X=A,tau=c(1,1),study=rep(1,nrow(data))) #warnings study
-res=mixOmics(X=A,tau=c(1,1),study=factor(rep(1,nrow(data)))) #warnings study
-res=mixOmics(X=list(X=data,Y=type.id),tau=1) #A[[2]] must be numeric matrix
-
-
-
-
-#sparse.RGCCA
-res=mixOmics(X=A,tau=c(1,1),mode="canonical",keepX=list(list(1:5),list(1:10)),ncomp=c(1,1)) #error keepX
-res=mixOmics(X=A,tau=c(1,1),mode="canonical",keepX=list(c(5,10)),ncomp=c(1,1)) #error keepX (keepX=c(5,10) for block1, but ncomp=1
-res=mixOmics(X=A,tau=c(1,1),mode="canonical",keepX=list(5,10),ncomp=c(1,1)) #error keepX, keepY=10 for Y, should be less than 3
-res=mixOmics(X=A,tau=c(1,1),mode="canonical",keepX.constraint=list(list(c(5,10),3)),ncomp=c(1,1)) #error keepX.constraint. Keep variables 5,10 on comp1 and 3 on comp2, but ncomp=1
-res=mixOmics(X=A,tau=c(1,1),mode="canonical",keepX.constraint=list(list(c(5,10),3)),keepX=list(10),ncomp=c(2,2)) #should give an  error
-res=mixOmics(X=A,tau=c(1,1),mode="canonical",keepX=list(5,2),keepX.constraint=list(c(5,10)),ncomp=c(2,2)) #error keepX+keepX.constraint !=ncomp
-res=mixOmics(X=A,tau=c(1,1),mode="canonical",keepX=list(5,2),keepX.constraint=list(list(c(5,10))),ncomp=c(1,2)) #error keepX+keepX.constraint !=ncomp
 
 
 

@@ -36,7 +36,8 @@ near.zero.var = FALSE)
         
         Y.input=Y
         Y=unmap(Y)
-        
+        colnames(Y) = paste0("Y", 1:ncol(Y))
+
     }else if(!missing(indY))
     {
         temp=X[[indY]] #not called Y to not be an input of the wrapper.sparse.meta.block

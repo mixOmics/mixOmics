@@ -25,6 +25,7 @@ keepX = rep(ncol(X), ncomp),keepX.constraint=NULL, max.iter = 500, tol = 1e-06, 
     }
     
     Y.mat=unmap(Y)
+    colnames(Y.mat) = paste0("Y", 1:ncol(Y.mat))
 
     result <- wrapper.meta.spls.hybrid(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,
     keepX=keepX,keepX.constraint=keepX.constraint,max.iter=max.iter,tol=tol)
