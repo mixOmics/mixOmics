@@ -62,7 +62,8 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     {
         p=ncol(object$X)
         if(is.list(object$X))
-        stop("Something is wrong, object$X should be a matrix and it appears to be a list")
+        stop("Something is wrong, object$X should be a matrix and it appears to be a list") #this should never happen/intern check
+        
         if(is.list(newdata))
         stop("'newdata' must be a numeric matrix")
         
