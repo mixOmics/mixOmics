@@ -48,11 +48,12 @@ source("mixOmics/R/mixOmics.R")
 
 
 
+source("mixOmics/R/predict.meta.block.pls.R")
 
 
-    
-    
-    
+
+
+
 
 Y.mat=unmap(type.id)
 rownames(Y.mat)=rownames(data)
@@ -65,6 +66,60 @@ rownames(Y.mat.light)=rownames(data.light)
 
 A=list(X=data,Y=Y.mat)
 A.light=list(X=data.light,Y=Y.mat.light)
+
+
+
+
+res=wrapper.meta.block.pls(X=list(X=data,Y=Y.mat),indY=2,ncomp=c(2,2))
+res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=exp,scale=TRUE)
+
+object=res
+newdata=data
+study.test=exp
+
+
+
+## ======================================================================
+# from sgcca
+## ======================================================================
+source("mixOmics/R/predict.meta.block.pls.R")
+object=wrapper.pls(X=data.light,Y=Y.mat.light,ncomp=3)
+object=wrapper.meta.pls(X=data.light,Y=Y.mat.light,ncomp=3,study=c(rep("Flo",20),rep("haha",31)),scale=TRUE)
+
+source("mixOmics/R/predict.meta.block.pls.R")
+object2=wrapper.meta.pls(X=data.light[c(1:13),],Y=Y.mat.light[c(1:13),],ncomp=3,study=c(rep("Flo",13)),scale=TRUE)
+pred2=predict.meta.block.pls(object2,newdata=data.light[c(1:13),],study.test=factor(object2$study))
+
+object=wrapper.meta.pls(X=rbind(data.light[c(1:13),],data.light[c(1:13),]),Y=rbind(Y.mat.light[c(1:13),],Y.mat.light[c(1:13),]),ncomp=3,study=c(rep("Flo",13),rep("haha",13)),scale=TRUE)
+
+newdata=rbind(data.light[c(1:13),],data.light[c(1:13),])
+rownames(newdata)=NULL
+pred=predict.meta.block.pls(object,newdata=newdata,study.test=factor(object$study))
+
+newdata=rbind(data.light[c(1:13),],data.light[c(1:13),])
+study.test=factor(object$study)
+
+
+
+
+object3=wrapper.meta.plsda(X=data.light[c(1:13),],Y=type.id.light[c(1:13)],ncomp=3,study=c(rep("Flo",13)),scale=TRUE)
+pred3=predict.meta.block.pls(object3,newdata=data.light[c(1:13),],study.test=factor(object3$study))
+
+
+source("mixOmics/R/predict.R")
+object4=plsda(X=data.light[c(1:13),],Y=type.id.light[c(1:13)],ncomp=3,near.zero.var=FALSE)
+pred4=predict(object4,newdata=data.light[c(1:13),])
+
+
+#pred3$Y.hat[[1]][,,1] and pred4$predict[,,1] should be the same
+all.equal(pred3$Y.hat[[1]][,,1],pred4$predict[,,1])
+#it's not// pretty close though. all good because pls is not converging anyway!
+
+
+object=wrapper.meta.pls(X=data.light[c(1:13),],Y=Y.mat.light[c(1:13),],ncomp=3,study=c(rep("Flo",13)),scale=TRUE)
+newdata=list(data.light[c(1:13),])
+
+
 
 
 ## =========================================================================================================
@@ -91,39 +146,51 @@ res=wrapper.meta.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("E
 
 #wraper.pls
 res=wrapper.pls(X=data.light,Y=Y.mat.light,ncomp=3)
+pred=predict(res,newdata=data.light)
 
 #wraper.spls
 res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(10,5,15))
+pred=predict(res,newdata=data.light)
 
 #wraper.plsda
 res=wrapper.plsda(X=data.light,Y=type.id.light,ncomp=3)
+pred=predict(res,newdata=data.light)
 
 #wraper.splsda
 res=wrapper.splsda(X=data.light,Y=type.id.light,ncomp=3,keepX=c(10,5,15))
+pred=predict(res,newdata=data.light)
 
 
 
 #wraper.block.pls
 res=wrapper.block.pls(X=A.light,indY=2)
+pred=predict(res,newdata=A.light)
 res=wrapper.block.pls(list(data),Y=Y.mat,ncomp=2)
+pred=predict(res,newdata=list(data))
 
 #wraper.block.spls
 res=wrapper.block.spls(X=A.light,indY=2,keepX=list(block1=c(10,5,15),block2=c(3,2)),ncomp=c(3,3))
+pred=predict(res,newdata=A.light)
 res=wrapper.block.spls(list(data),Y=Y.mat,keepX=list(block1=c(10,5,15),block2=c(3,2)),ncomp=3)
+pred=predict(res,newdata=list(data))
 
 #wraper.block.plsda
 res=wrapper.block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
+pred=predict(res,newdata=list(X=data))
 res=wrapper.block.plsda(list(data),Y=type.id,ncomp=2)
+pred=predict(res,newdata=list(data))
 
 #wraper.block.splsda
 res=wrapper.block.splsda(X=list(X=data,Y=type.id),keepX=list(block1=c(10,5)),indY=2,ncomp=c(3,2))
+pred=predict(res,newdata=list(X=data))
 res=wrapper.block.splsda(X=list(X=data,Y=type.id),keepX=list(block1=c(10,5)),indY=2,ncomp=c(2,2))
+pred=predict(res,newdata=list(X=data))
 
 
 # same results for sgccda and block.splsda. outputs are different though
 res=wrapper.sgccda(X=data,Y=type.id,keepA=c(10,5,10),ncomp=3)
 res2=wrapper.block.splsda(X=list(X=data),Y=type.id,keepX=c(10,5,10),ncomp=3,mode="canonical")
-
+#no predict function?
 
 
 ## ======================================================================
@@ -132,33 +199,45 @@ res2=wrapper.block.splsda(X=list(X=data),Y=type.id,keepX=c(10,5,10),ncomp=3,mode
 
 #wraper.meta.pls
 res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=exp)
+pred=predict(res,newdata=data,study.test=exp)
 
 #wraper.meta.plsda
 res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=exp)
+pred=predict(res,newdata=data,study.test=exp)
 
 #wraper.meta.spls
 res=wrapper.meta.spls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
+pred=predict(res,newdata=data,study.test=exp)
 
 #wraper.meta.splsda
 res=wrapper.meta.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
+pred=predict(res,newdata=data,study.test=exp)
 
 
 
 #wraper.meta.block.pls
 res=wrapper.meta.block.pls(X=list(X=data,Y=Y.mat),indY=2,ncomp=c(2,2))
+pred=predict(res,newdata=list(X=data))
 res=wrapper.meta.block.pls(list(data),Y=Y.mat,ncomp=2)
+pred=predict(res,newdata=list(X=data))
 
 #wraper.meta.block.spls
 res=wrapper.meta.block.spls(X=list(X=data,Y=Y.mat),indY=2,keepX=list(block1=c(10,5)),ncomp=c(2,2))
+pred=predict(res,newdata=list(X=data))
 res=wrapper.meta.block.spls(list(data),Y=Y.mat,ncomp=2)
+pred=predict(res,newdata=list(X=data))
 
 #wraper.meta.block.plsda
 res=wrapper.meta.block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
+pred=predict(res,newdata=list(X=data))
 res=wrapper.meta.block.plsda(list(data),Y=type.id,ncomp=2)
+pred=predict(res,newdata=list(X=data))
 
 #wraper.meta.block.splsda
 res=wrapper.meta.block.splsda(X=list(X=data,Y=type.id),indY=2,keepX=list(block1=c(10,5)),ncomp=c(2,2))
+pred=predict(res,newdata=list(X=data))
 res=wrapper.meta.block.splsda(list(data),Y=type.id,ncomp=2)
+pred=predict(res,newdata=list(X=data))
 
 
 
@@ -176,31 +255,52 @@ res=wrapper.meta.block.splsda(list(data),Y=type.id,ncomp=2)
 ## ==      data for one study
 ## ======================================================================
 
-res=mixOmics(data.light,Y.mat.light,ncomp=3) #pls
+res=wrapper.pls(data.light,Y.mat.light,ncomp=3) #pls
+pred=predict(res,newdata=data.light)
+res2=mixOmics(data.light,Y.mat.light,ncomp=3) #pls
+pred2=predict(res2,newdata=data.light)
+
+all.equal(res,res2)
+
 res=mixOmics(data.light,Y.mat.light,ncomp=3,keepX=c(10,5,15)) #spls
+pred=predict(res,newdata=data.light)
 res=mixOmics(data.light,type.id.light,ncomp=3) #plsda
+pred=predict(res,newdata=data.light)
 res=mixOmics(data.light,type.id.light,ncomp=3,keepX=c(10,5,15))#splsda
+pred=predict(res,newdata=data.light)
 
 
 #block.pls
 res=mixOmics(X=list(data),Y=unmap(type.id))
+pred=predict(res,newdata=list(data))
 res=mixOmics(X=A,indY=2,ncomp=c(2,2))
+pred=predict(res,newdata=A) #error too many blocks
+pred=predict(res,newdata=list(A[[1]]))
 res=mixOmics(X=A,indY=2)
+pred=predict(res,newdata=list(A[[1]]))
 
 
 #block.spls
 res=mixOmics(X=list(data),Y=unmap(type.id),keepX=c(10,5,15))
+pred=predict(res,newdata=list(data))
 res=mixOmics(X=list(data=data,Y=Y.mat),indY=2,keepX=list(c(10,5,15)),ncomp=c(3,3))
+pred=predict(res,newdata=list(data))
 res=mixOmics(X=A,indY=2,keepX.constraint=list(X=list(1:10)),ncomp=c(2,2))
+pred=predict(res,newdata=list(A[[1]]))
 
 # block.plsda
 res=mixOmics(X=A,Y=type.id)
+pred=predict(res,newdata=A,method=c("max.dist", "centroids.dist"))
 res=mixOmics(X=list(data=data,Y=type.id),indY=2,ncomp=c(3,3))
+pred=predict(res,newdata=list(data))
 res=mixOmics(X=A,Y=type.id)
+pred=predict(res,newdata=A,method=c("max.dist", "centroids.dist"))
 res=mixOmics(X=list(data),Y=type.id)
+pred=predict(res,newdata=list(data))
 
 # block.splsda
 res=mixOmics(X=list(data=data,Y=type.id),indY=2,keepX=list(c(10,5,15)),ncomp=c(3,3))
+pred=predict(res,newdata=list(data))
 
 
 system.time(splsda(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=TRUE))
@@ -222,40 +322,57 @@ sp1$iter;sp2$iter
 
 #meta.pls
 res=mixOmics(data,Y=Y.mat,ncomp=3,study=exp)
+pred=predict(res,newdata=data,study=exp)
 
 #meta.spls
 res=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(100,50),ncomp=3)
 res1=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(100,50),ncomp=3)#with gene names in keepX.constraint
 res2=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c(120,179)),keepX=c(100,50),ncomp=3)#with numbers in keepX.constraint
-    all.equal(res1,res2)
+all.equal(res1,res2)
+
+pred=predict(res,newdata=data,study=exp)
+pred=predict(res1,newdata=data,study=exp)
+pred=predict(res2,newdata=data,study=exp)
+
 res=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c(120,179)),ncomp=3)#meta.spls missing keepX is completed by pls-like
 res$keepX
+pred=predict(res,newdata=data,study=exp)
 
 #meta.plsda
 res=mixOmics(data,type.id,ncomp=3,study=exp)
+pred=predict(res,newdata=data,study=exp)
 
 #meta.splsda
 res=mixOmics(X=data,Y=type.id,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(10,15),ncomp=3)
+pred=predict(res,newdata=data,study=exp)
 
 
 
+source("mixOmics/R/predict.meta.block.pls.R")
 
 #block.pls
 res=mixOmics(X=list(data),Y=unmap(type.id),study=exp)
+pred=predict(res,newdata=list(data),study=exp)
 
 #block.spls
 res=mixOmics(X=list(data),Y=unmap(type.id),keepX=c(10,5,15),study=exp)
+pred=predict(res,newdata=list(data),study=exp)
 res=mixOmics(X=list(data=data,Y=Y.mat),indY=2,keepX=list(c(10,5,15)),ncomp=c(3,3),study=exp)
+pred=predict(res,newdata=list(data),study=exp)
 res=mixOmics(X=A,indY=2,keepX.constraint=list(X=list(1:10)),ncomp=c(3,1)) # OK
+pred=predict(res,newdata=res$X)
 
 # block.plsda
 res=mixOmics(X=A,Y=type.id,study=exp)
+pred=predict(res,newdata=res$X,study.test=exp)
 
 #block.plsda
 res=mixOmics(X=list(data=data,Y=type.id),indY=2,ncomp=c(3,3),study=exp)
+pred=predict(res,newdata=res$X,study=exp)
 
 #block.splsda
 res=mixOmics(X=list(data=data,Y=type.id),indY=2,keepX=list(c(10,5,15)),ncomp=c(3,3),study=exp)
+pred=predict(res,newdata=res$X,study=exp)
 
 
 
@@ -265,6 +382,8 @@ res=mixOmics(X=list(data=data,Y=type.id),indY=2,keepX=list(c(10,5,15)),ncomp=c(3
 
 #RGCCA
 res=mixOmics(X=A,tau=c(1,1))
+pred=predict(res,newdata=res$X,study=exp)
+
 res=mixOmics(X=A,tau="optimal")
 res=mixOmics(X=A,indY=2,tau=c(1,1),ncomp=c(3,1)) #OK
 
