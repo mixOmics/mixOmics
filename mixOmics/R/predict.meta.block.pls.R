@@ -55,12 +55,27 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         Y=object$Y
     }
     q=ncol(Y)
+    
+
+    
 
 
     ### if the object is or is not a block, the input newdata is different, we check newdata, make sure it's a list and check newdata/X
     if(length(grep("block",class(object)))==0) # not a block (pls/spls/plsda/splsda/meta...)
     {
         p=ncol(object$X)
+        if(is.list(X))
+        stop("Something is wrong, object$X should be a matrix and it appears to be a list")
+        if(is.list(newdata))
+        stop("'newdata' must be a numeric matrix")
+        
+        # deal with near.zero.var in object, to remove the same variable in newdata as in object$X (already removed in object$X)
+        if(!is.null(object$nzv))
+        {
+            newdata = newdata[, -object$nzv$Position,drop=FALSE]
+        }
+        
+        
         #not a block, the input newdata should be a matrix
         if (length(dim(newdata)) == 2) {
             if (ncol(newdata) != p)
@@ -83,16 +98,23 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         if(max(table(rownames(newdata)))>1) stop('samples should have a unique identifier/rowname')
         
         # we transform everything in lists
-        X=object$X
-        if(!is.list(X))
         X=list(X=object$X)
-        if(!is.list(newdata))
         newdata=list(newdata=newdata)
         
     }else{
+
         # a block, newdata should be a list, each blocks should have the same number of samples
         if(!is.list(newdata))
         stop("'newdata' should be a list")
+        
+        X = object$X
+        p = lapply(X, ncol)
+
+        # deal with near.zero.var in object, to remove the same variable in newdata as in object$X (already removed in object$X)
+        if(!is.null(object$nzv))
+        {
+            newdata = lapply(1:(length(object$nzv)-1),function(x){if(length(object$nzv[[x]]$Position>0)) {newdata[[x]][, -object$nzv[[x]]$Position,drop=FALSE]}else{newdata[[x]]}})
+        }
         
         if (any(lapply(newdata, function(x){length(dim(x))}) != 2)) {
             if (any(unlist(lapply(newdata, ncol)) != unlist(p)))
@@ -117,7 +139,6 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
             newdata[[q]]=check$X
         }
         
-        X = object$X
     }
     
     
@@ -260,17 +281,39 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         
         B.hat[[i]] = sapply(1 : ncomp[i], function(x){Wmat[, 1:x] %*% solve(t(Pmat[, 1:x]) %*% Wmat[, 1:x]) %*% t(Cmat)[1:x, ]}, simplify = "array")
         ### End estimation using formula Y = XW(P'W)C (+ Yr, residuals on Y) See page 136 La regression PLS Theorie et pratique Tenenhaus
+        
+        rownames(t.pred[[i]]) = rownames(newdata[[i]])
+        colnames(t.pred[[i]]) = paste("dim", c(1:ncomp[i]), sep = " ")
+        rownames(Y.hat[[i]]) = rownames(newdata[[i]])
+        colnames(Y.hat[[i]]) = colnames(Y)
+        dimnames(Y.hat[[i]])[[3]]=paste("dim", c(1:ncomp[i]), sep = " ")
+        rownames(B.hat[[i]]) = colnames(newdata[[i]])
+        colnames(B.hat[[i]]) = colnames(Y)
+        dimnames(B.hat[[i]])[[3]]=paste("dim", c(1:ncomp[i]), sep = " ")
+
     }
     
+
+    #-- valeurs sortantes --#
+    names(Y.hat)=names(t.pred)=names(B.hat)=names(object$X)
+   
+    newdata = lapply(newdata, function(x) {as.matrix(x, rownames.force = ifelse(is.null(row.names(x)), FALSE, TRUE))})
+
+
+    
     # basic prediction results
-    out=list(Y.hat=Y.hat,t.pred=t.pred,B.hat=B.hat)
-    
-    
-    if(length(grep("block",class(object)))==0) # not a block (pls/spls/plsda/splsda/meta...)
+    if(J>1)
     {
-        out$newdata=concat.newdata[[1]]
+        out=list(predict=Y.hat,variates=t.pred,B.hat=B.hat)
     }else{
+        out=list(predict=Y.hat[[1]],variates=t.pred[[1]],B.hat=B.hat[[1]])
+    }
+    
+    if(J>1) # not a block (pls/spls/plsda/splsda/meta...)
+    {
         out$newdata=concat.newdata
+    }else{
+        out$newdata=concat.newdata[[1]]
     }
     
     ### if the object is a DA analysis, we gives the class of each sample depending on 'method'
@@ -285,7 +328,10 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
             G[[i]] = t(t(G[[i]]))
             else
             G[[i]] = t(G[[i]])
+            colnames(G[[i]]) = paste("dim", c(1:ncomp[i]), sep = " ")
+
         }
+        names(G)=names(object$X)
         
         ### Start: Maximum distance
         if (any(method == "all") || any(method == "max.dist"))
@@ -295,7 +341,9 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
                     function(z){which(z == max(z))}) ### matrix level
                 }), nrow = nrow(newdata[[x]]), ncol = ncomp[x])
             })
-            cls$max.dist = lapply(1:J, function(x){colnames(cls$max.dist[[x]]) = paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " "); return(cls$max.dist[[x]])})
+            cls$max.dist = lapply(1:J, function(x){colnames(cls$max.dist[[x]]) = paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
+                rownames(cls$max.dist[[x]]) = rownames(newdata[[x]]); return(cls$max.dist[[x]])})
+            names(cls$max.dist)=names(object$X)
         }
         
         
@@ -327,7 +375,9 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
                 }
             }
             
-            cls$centroids.dist = lapply(1:J, function(x){colnames(cl[[x]]) = paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " "); return(cl[[x]])})
+            cls$centroids.dist = lapply(1:J, function(x){colnames(cl[[x]]) = paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
+                rownames(cl[[x]]) = rownames(newdata[[x]]); return(cl[[x]])})
+            names(cls$centroids.dist)=names(object$X)
         }### End: Centroids distance
         
         
@@ -361,10 +411,22 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
                 }
             }
             
-            cls$mahalanobis.dist = lapply(1:J, function(x){colnames(cl[[x]]) = paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " "); return(cl[[x]])})
+            cls$mahalanobis.dist = lapply(1:J, function(x){colnames(cl[[x]]) = paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
+                rownames(cl[[x]]) = rownames(newdata[[x]]);return(cl[[x]])})
+            names(cls$mahalanobis.dist)=names(object$X)
         } ### End: Mahalanobis distance
         
-        out$cls=cls
+        out$class=cls
+        
+        if(J>1) # not a block (pls/spls/plsda/splsda/meta...)
+        {
+            out$centroids = G
+        }else{
+            out$centroids = G[[1]]
+            out$class=lapply(out$class,function(x){x[[1]]})
+        }
+        if (any(method == "all")) method = "all"
+        out$method = method
     }### End if discriminant analysis is performed
     
     
