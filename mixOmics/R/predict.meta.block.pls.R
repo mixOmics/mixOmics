@@ -61,7 +61,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     if(length(grep("block",class(object)))==0) # not a block (pls/spls/plsda/splsda/meta...)
     {
         p=ncol(object$X)
-        if(is.list(X))
+        if(is.list(object$X))
         stop("Something is wrong, object$X should be a matrix and it appears to be a list")
         if(is.list(newdata))
         stop("'newdata' must be a numeric matrix")
@@ -70,7 +70,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         if(!is.null(object$nzv))
         newdata = newdata[, -object$nzv$Position,drop=FALSE]
         
-        if(!all.equal(colnames(newdata),colnames(X)))
+        if(all.equal(colnames(newdata),colnames(object$X))!=TRUE)
         stop("'newdata' must include all the variables of 'object$X'")
         
         #not a block, the input newdata should be a matrix

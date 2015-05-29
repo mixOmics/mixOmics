@@ -199,7 +199,14 @@ res2=wrapper.block.splsda(X=list(X=data),Y=type.id,keepX=c(10,5,10),ncomp=3,mode
 
 #wraper.meta.pls
 res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=exp)
+sample=sample(1:nrow(data))
 pred=predict(res,newdata=data,study.test=exp)
+pred2=predict(res,newdata=data[sample,],study.test=exp[sample])
+
+all.equal(pred$predict[sample,,],pred2$predict)
+all.equal(pred$variates[sample,],pred2$variates)
+all.equal(pred$newdata[sample,],pred2$newdata)
+## all GOOD
 
 #wraper.meta.plsda
 res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=exp)
