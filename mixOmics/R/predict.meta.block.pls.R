@@ -19,6 +19,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+# created: 27/05/15
+# modified: 29/05/15
+# author: Florian Rohart
 
 # This function makes a prediction of a 'newdata' by using the results of 'object'.
 # Depending on the class of the object (meta).(block).(s)pls(da) (16 classes so far), the input data is different
@@ -115,10 +118,9 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         }
         names(newdata)=names(X)
 
-        #check that newdata and X have the same variables
-        if(all.equal(lapply(newdata,colnames),lapply(X,colnames))!=TRUE)
-        stop("Each 'newdata[[i]]' must include all the variables of 'object$X[[i]]'")
-        
+        if(length(newdata)!=length(object$X)) stop("'newdata' must have as many blocks as 'object$X'")
+
+
         
         if (any(lapply(newdata, function(x){length(dim(x))}) != 2)) {
             if (any(unlist(lapply(newdata, ncol)) != unlist(p)))
@@ -134,7 +136,6 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         if (any(sapply(newdata, function(x){any(is.na(x))})))
         stop("Some missing data are present in the matrix")
         
-        if(length(newdata)!=length(object$X)) stop("'newdata' must have as many blocks as 'object$X'")
         
         #check dimnames and ncomp per block of A
         for(q in 1:length(newdata))
@@ -142,7 +143,11 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
             check=Check.entry.single(newdata[[q]], ncomp[q],q=q)
             newdata[[q]]=check$X
         }
-
+        names(newdata)=names(X)
+        #check that newdata and X have the same variables
+        if(all.equal(lapply(newdata,colnames),lapply(X,colnames))!=TRUE)
+        stop("Each 'newdata[[i]]' must include all the variables of 'object$X[[i]]'")
+        
     }
     
     
@@ -154,7 +159,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     scale=object$scale # X and Y are both mean centered by groups and if scale=TRUE they are scaled by groups
 
     ### if the object is not a meta analysis, the input study.test is missing and we can go faster to scale the data
-    if(length(grep("meta",class(object)))==0 | nlevels(factor(object$study))<=1)
+    if(length(grep("meta",class(object)))==0 )#| nlevels(factor(object$study))<=1) #not a meta object or just one level in the study
     {   # not a meta (pls/spls/plsda/splsda/block...)
 
         # scale newdata if just one study
@@ -174,7 +179,9 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         #check study.test
         if(missing(study.test))
         {
-            stop("'study.test' is missing")
+            if(nlevels(object$study)==1)
+            {study.test=factor(rep(1,nrow(newdata[[1]])))}else{
+                stop("'study.test' is missing")}
         }else{
             study.test=as.factor(study.test)
         }
@@ -204,10 +211,26 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
                 {
                     
                     if(scale==TRUE)
-                    newdata.list.study.scale[[j]][[m]]=scale(newdata.list.study[[j]][[m]], center = attr(X[[j]],paste0("means:", levels(study.test)[m])), scale = attr(X[[j]],paste0("sigma:", levels(study.test)[m])))
+                    {
+                        if(nlevels(object$study)>1)
+                        {
+                            newdata.list.study.scale[[j]][[m]]=scale(newdata.list.study[[j]][[m]], center = attr(X[[j]],paste0("means:", levels(study.test)[m])), scale = attr(X[[j]],paste0("sigma:", levels(study.test)[m])))
+                        }else{#if just one level in object$study, the normalisation attributes are not named the same
+                            newdata.list.study.scale[[j]][[m]]=scale(newdata.list.study[[j]][[m]], center = attr(X[[j]],"scaled:center"), scale = attr(X[[j]],"scaled:scale"))
+                        }
+                    }
                     
                     if(scale==FALSE)
-                    newdata.list.study.scale[[j]][[m]]=scale(newdata.list.study[[j]][[m]], center = attr(X[[j]],paste0("means:", levels(study.test)[m])),scale=FALSE)
+                    {
+                        if(nlevels(object$study)>1)
+                        {
+                            newdata.list.study.scale[[j]][[m]]=scale(newdata.list.study[[j]][[m]], center = attr(X[[j]],paste0("means:", levels(study.test)[m])),scale=FALSE)
+                        }else{#if just one level in object$study, the normalisation attributes are not named the same
+                            newdata.list.study.scale[[j]][[m]]=scale(newdata.list.study[[j]][[m]], center = attr(X[[j]],"scaled:center"),scale=FALSE)
+                        }
+                        
+                        
+                    }
                     
                 }else{
                 # case 2: sample test is a new study # a new study which was not in the learning set
@@ -236,13 +259,24 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         {
             if(m%in%match.study.indice) #if some study of study.test were already in the learning set
             {
+                if(nlevels(object$study)>1)
+                {
+                    means.Y[which(study.test%in%levels(study.learn)[match.study[m]]),]=matrix(attr(Y,paste0("means:", levels(study.test)[m])),nrow=length(which(study.test%in%levels(study.learn)[match.study[m]])),ncol=q,byrow=TRUE)
+                }else{#if just one level in object$study, the normalisation attributes are not named the same
+                    means.Y[which(study.test%in%levels(study.learn)[match.study[m]]),]=matrix(attr(Y,"scaled:center"),nrow=length(which(study.test%in%levels(study.learn)[match.study[m]])),ncol=q,byrow=TRUE)
+                }
                 
-                means.Y[which(study.test%in%levels(study.learn)[match.study[m]]),]=matrix(attr(Y,paste0("means:", levels(study.test)[m])),nrow=length(which(study.test%in%levels(study.learn)[match.study[m]])),ncol=q,byrow=TRUE)
                 
                 if(scale==TRUE)
                 {
                     # I want to build a vector with sigma.Y for each group
-                    sigma.Y[which(study.test%in%levels(study.learn)[match.study[m]]),]=matrix(attr(Y,paste0("sigma:", levels(study.test)[m])),nrow=length(which(study.test%in%levels(study.learn)[match.study[m]])),ncol=q,byrow=TRUE)
+                    if(nlevels(object$study)>1)
+                    {
+                        sigma.Y[which(study.test%in%levels(study.learn)[match.study[m]]),]=matrix(attr(Y,paste0("sigma:", levels(study.test)[m])),nrow=length(which(study.test%in%levels(study.learn)[match.study[m]])),ncol=q,byrow=TRUE)
+                    }else{#if just one level in object$study, the normalisation attributes are not named the same
+                        means.Y[which(study.test%in%levels(study.learn)[match.study[m]]),]=matrix(attr(Y,"scaled:scale"),nrow=length(which(study.test%in%levels(study.learn)[match.study[m]])),ncol=q,byrow=TRUE)
+                    }
+                    
                     
                 }
             }
@@ -301,17 +335,14 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
 
     #-- valeurs sortantes --#
     names(Y.hat)=names(t.pred)=names(B.hat)=names(object$X)
-   
-    newdata = lapply(newdata, function(x) {as.matrix(x, rownames.force = ifelse(is.null(row.names(x)), FALSE, TRUE))})
-
 
     
     # basic prediction results
-    if(J>1)
+    if(length(grep("block",class(object)))!=0 )
     {
         out=list(predict=Y.hat,variates=t.pred,B.hat=B.hat)
         out$newdata=concat.newdata
-        }else{# not a block (pls/spls/plsda/splsda/meta...)
+    }else{# not a block (pls/spls/plsda/splsda/meta...)
         out=list(predict=Y.hat[[1]],variates=t.pred[[1]],B.hat=B.hat[[1]])
         out$newdata=concat.newdata[[1]]
 
@@ -419,10 +450,10 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         
         out$class=cls
         
-        if(J>1) # not a block (pls/spls/plsda/splsda/meta...)
+        if(length(grep("block",class(object)))!=0 ) # a block
         {
             out$centroids = G
-        }else{
+        }else{ #not a block
             out$centroids = G[[1]]
             out$class=lapply(out$class,function(x){x[[1]]})
         }
