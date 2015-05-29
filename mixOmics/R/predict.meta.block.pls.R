@@ -51,30 +51,28 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         Y.factor=object$Y
         Y=object$ind.mat
     }else{
-        #id not DA, Y is in object$Y
+        #if not DA, Y is in object$Y
         Y=object$Y
     }
     q=ncol(Y)
     
 
-    
-
-
-    ### if the object is or is not a block, the input newdata is different, we check newdata, make sure it's a list and check newdata/X
+    ### if the object is a block, the input newdata is different, we check newdata, make sure it's a list and check newdata/X
     if(length(grep("block",class(object)))==0) # not a block (pls/spls/plsda/splsda/meta...)
     {
         p=ncol(object$X)
-        if(is.list(X))
-        stop("Something is wrong, object$X should be a matrix and it appears to be a list")
+        if(is.list(object$X))
+        stop("Something is wrong, object$X should be a matrix and it appears to be a list") #this should never happen/intern check
+        
         if(is.list(newdata))
         stop("'newdata' must be a numeric matrix")
         
         # deal with near.zero.var in object, to remove the same variable in newdata as in object$X (already removed in object$X)
         if(!is.null(object$nzv))
-        {
-            newdata = newdata[, -object$nzv$Position,drop=FALSE]
-        }
+        newdata = newdata[, -object$nzv$Position,drop=FALSE]
         
+        if(all.equal(colnames(newdata),colnames(object$X))!=TRUE)
+        stop("'newdata' must include all the variables of 'object$X'")
         
         #not a block, the input newdata should be a matrix
         if (length(dim(newdata)) == 2) {
@@ -115,6 +113,12 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         {
             newdata = lapply(1:(length(object$nzv)-1),function(x){if(length(object$nzv[[x]]$Position>0)) {newdata[[x]][, -object$nzv[[x]]$Position,drop=FALSE]}else{newdata[[x]]}})
         }
+        names(newdata)=names(X)
+
+        #check that newdata and X have the same variables
+        if(all.equal(lapply(newdata,colnames),lapply(X,colnames))!=TRUE)
+        stop("Each 'newdata[[i]]' must include all the variables of 'object$X[[i]]'")
+        
         
         if (any(lapply(newdata, function(x){length(dim(x))}) != 2)) {
             if (any(unlist(lapply(newdata, ncol)) != unlist(p)))
@@ -138,7 +142,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
             check=Check.entry.single(newdata[[q]], ncomp[q],q=q)
             newdata[[q]]=check$X
         }
-        
+
     }
     
     
@@ -223,7 +227,8 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
             concat.newdata[[j]][which(is.na(concat.newdata[[j]]))]=0 # taking care of the NA due to normalisation: put to 0 so they don't influence the product below (in Y.hat), reviens au meme que de supprimer les colonnes sans variances au depart.
             
         }
-        
+        names(concat.newdata)=names(X)
+
         means.Y=matrix(0,nrow=nrow(Y),ncol=q)
         sigma.Y=matrix(1,nrow=nrow(Y),ncol=q)
         
@@ -305,15 +310,11 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     if(J>1)
     {
         out=list(predict=Y.hat,variates=t.pred,B.hat=B.hat)
-    }else{
-        out=list(predict=Y.hat[[1]],variates=t.pred[[1]],B.hat=B.hat[[1]])
-    }
-    
-    if(J>1) # not a block (pls/spls/plsda/splsda/meta...)
-    {
         out$newdata=concat.newdata
-    }else{
+        }else{# not a block (pls/spls/plsda/splsda/meta...)
+        out=list(predict=Y.hat[[1]],variates=t.pred[[1]],B.hat=B.hat[[1]])
         out$newdata=concat.newdata[[1]]
+
     }
     
     ### if the object is a DA analysis, we gives the class of each sample depending on 'method'
