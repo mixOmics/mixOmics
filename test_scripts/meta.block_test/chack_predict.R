@@ -69,59 +69,6 @@ A.light=list(X=data.light,Y=Y.mat.light)
 
 
 
-
-res=wrapper.meta.block.pls(X=list(X=data,Y=Y.mat),indY=2,ncomp=c(2,2))
-res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=exp,scale=TRUE)
-
-object=res
-newdata=data
-study.test=exp
-
-
-
-## ======================================================================
-# from sgcca
-## ======================================================================
-source("mixOmics/R/predict.meta.block.pls.R")
-object=wrapper.pls(X=data.light,Y=Y.mat.light,ncomp=3)
-object=wrapper.meta.pls(X=data.light,Y=Y.mat.light,ncomp=3,study=c(rep("Flo",20),rep("haha",31)),scale=TRUE)
-
-source("mixOmics/R/predict.meta.block.pls.R")
-object2=wrapper.meta.pls(X=data.light[c(1:13),],Y=Y.mat.light[c(1:13),],ncomp=3,study=c(rep("Flo",13)),scale=TRUE)
-pred2=predict.meta.block.pls(object2,newdata=data.light[c(1:13),],study.test=factor(object2$study))
-
-object=wrapper.meta.pls(X=rbind(data.light[c(1:13),],data.light[c(1:13),]),Y=rbind(Y.mat.light[c(1:13),],Y.mat.light[c(1:13),]),ncomp=3,study=c(rep("Flo",13),rep("haha",13)),scale=TRUE)
-
-newdata=rbind(data.light[c(1:13),],data.light[c(1:13),])
-rownames(newdata)=NULL
-pred=predict.meta.block.pls(object,newdata=newdata,study.test=factor(object$study))
-
-newdata=rbind(data.light[c(1:13),],data.light[c(1:13),])
-study.test=factor(object$study)
-
-
-
-
-object3=wrapper.meta.plsda(X=data.light[c(1:13),],Y=type.id.light[c(1:13)],ncomp=3,study=c(rep("Flo",13)),scale=TRUE)
-pred3=predict.meta.block.pls(object3,newdata=data.light[c(1:13),],study.test=factor(object3$study))
-
-
-source("mixOmics/R/predict.R")
-object4=plsda(X=data.light[c(1:13),],Y=type.id.light[c(1:13)],ncomp=3,near.zero.var=FALSE)
-pred4=predict(object4,newdata=data.light[c(1:13),])
-
-
-#pred3$Y.hat[[1]][,,1] and pred4$predict[,,1] should be the same
-all.equal(pred3$Y.hat[[1]][,,1],pred4$predict[,,1])
-#it's not// pretty close though. all good because pls is not converging anyway!
-
-
-object=wrapper.meta.pls(X=data.light[c(1:13),],Y=Y.mat.light[c(1:13),],ncomp=3,study=c(rep("Flo",13)),scale=TRUE)
-newdata=list(data.light[c(1:13),])
-
-
-
-
 ## =========================================================================================================
 ## =========================================================================================================
 ## ===========================                  test_wrappers               ==============================##
@@ -129,13 +76,9 @@ newdata=list(data.light[c(1:13),])
 ## =========================================================================================================
 
 
-#wraper.meta.spls.hybrid, function not available to user, so not a proper check to conduct
+#wraper.meta.spls.hybrid, function not available to user, so not a proper check to conduct, no need to do a predict function either
 res=wrapper.meta.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE,tol=1e-25)
 res=wrapper.meta.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(10,5),ncomp=3,near.zero.var=FALSE,tol=1e-25)
-
-
-
-
 
 
 ## ======================================================================
@@ -164,13 +107,13 @@ pred=predict(res,newdata=data.light)
 
 #wraper.block.pls
 res=wrapper.block.pls(X=A.light,indY=2)
-pred=predict(res,newdata=A.light)
+pred=predict(res,newdata=list(A.light[[1]]))
 res=wrapper.block.pls(list(data),Y=Y.mat,ncomp=2)
 pred=predict(res,newdata=list(data))
 
 #wraper.block.spls
 res=wrapper.block.spls(X=A.light,indY=2,keepX=list(block1=c(10,5,15),block2=c(3,2)),ncomp=c(3,3))
-pred=predict(res,newdata=A.light)
+pred=predict(res,newdata=list(A.light[[1]]))
 res=wrapper.block.spls(list(data),Y=Y.mat,keepX=list(block1=c(10,5,15),block2=c(3,2)),ncomp=3)
 pred=predict(res,newdata=list(data))
 
