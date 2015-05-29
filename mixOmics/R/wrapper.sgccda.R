@@ -50,7 +50,9 @@ verbose = FALSE
         Y = as.factor(Y)
     } else {
         stop("'Y' should be a factor or a class vector.")
+        
     }
+    
     
     if (unique(sapply(X, nrow)) != length(Y))
     stop("unequal number of rows in 'X' and 'Y'.")
@@ -88,10 +90,6 @@ verbose = FALSE
         ncomp = sapply(X, ncol)
     }
     
-    if (mode == "canonical")
-    ncomp = c(ncomp, min(ncomp, nlevels(Y) - 1))
-    if (mode == "regression")
-    ncomp = c(ncomp, max(ncomp))
     ### End check ncomp parameter
     
     #add names to the blocks if no names or not unique name for each block
@@ -100,41 +98,38 @@ verbose = FALSE
     
     
     
-    check=check.keepA.and.keepA.constraint(X=X,keepA=keepA,keepA.constraint=keepA.constraint,ncomp=ncomp)
+    check=check.keepA.and.keepA.constraint(X=X,keepX=keepA,keepX.constraint=keepA.constraint,ncomp=ncomp)
     keepA=check$keepA
     keepA.constraint=check$keepA.constraint
     
-    A = X; A$Y = unmap(Y)
-    keepA$Y = rep(nlevels(Y), max(ncomp))
+
+    #A = X; A$Y = unmap(Y)
+    #keepA$Y = rep(nlevels(Y), max(ncomp))
+    
     ### End Check keepX and penalty parameter
     
+    Y.input=Y
+    Y=unmap(Y)
     
     
+    result <- wrapper.sparse.meta.block(X=X,Y=Y,ncomp=ncomp,keepX.constraint=keepA.constraint,
+    keepX=keepA,scheme=scheme,mode=mode,scale=scale,
+    bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=FALSE)
     
-    result.sgccda = sparse.meta.block(A = A, design = design, tau = NULL,
-    ncomp = ncomp,
-    scheme = scheme, scale = scale,
-    init = init, bias = bias, tol = tol, verbose = verbose,
-    keepA.constraint=keepA.constraint,
-    keepA=keepA,
-    max.iter=max.iter,
-    study=factor(rep(1,nrow(A[[1]]))),
-    mode=mode
-    )
     
     
     
     
     cl = match.call()
     cl[[1]] = as.name("sgccda")
+    result$ind.mat=result$Y[[1]]
+    result$Y=Y.input    
     result$call = cl
     result$ncomp = ncomp
     result$names$Y = attr(result$Y[[1]], "levels")
     row.names(result$variates$Y) = row.names(X); row.names(result$loadings$Y) = paste0("Y", c(1 : nlevels(Y)))
-    names(result)[names(result) == "keepA"] = "keepX"; result$keepX = keepX
+    names(result)[names(result) == "keepA"] = "keepX"; result$keepX = keepA
     class(result) = "sgccda"
-    result$ind.mat = result$Y
-    result$Y=Y
     return(invisible(result))
     
     

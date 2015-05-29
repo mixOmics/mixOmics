@@ -36,7 +36,7 @@ keepX = rep(ncol(X), ncomp),keepX.constraint=NULL, max.iter = 500, tol = 1e-06, 
     
     
     
-    out=list(call=cl,X=result$X[[1]],Y=Y,ind.mat=result$Y[[1]],ncomp=result$ncomp,study=study,
+    out=list(call=cl,X=result$X[[1]],Y=Y,ind.mat=result$Y[[1]],ncomp=result$ncomp,study=result$study,
         mode=result$mode,keepX=result$keepA[[1]],keepY=result$keepA[[2]],
         keepX.constraint=result$keepA.constraint[[1]],keepY.constraint=result$keepA.constraint[[2]],
         variates=result$variates,loadings=result$loadings,

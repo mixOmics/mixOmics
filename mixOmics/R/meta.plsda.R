@@ -33,7 +33,7 @@ max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = FALSE)
     
     
 
-    out=list(call=cl,X=result$X[[1]],Y=Y,ind.mat=result$Y[[1]],ncomp=result$ncomp,study=study,mode=result$mode,variates=result$variates,loadings=result$loadings,
+    out=list(call=cl,X=result$X[[1]],Y=Y,ind.mat=result$Y[[1]],ncomp=result$ncomp,study=result$study,mode=result$mode,variates=result$variates,loadings=result$loadings,
         variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,
         names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
     out$names$Y = levels(Y)

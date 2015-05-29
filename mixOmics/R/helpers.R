@@ -195,6 +195,9 @@ mean_centering_per_study=function(data,study,scale,bias=FALSE) {
         if(bias)
         data.list.study.scale[[m]]=data.list.study.scale[[m]]*(sqrt((nrow(data.list.study.scale[[m]])-1)/nrow(data.list.study.scale[[m]])))
         
+        if(sum(is.na(data.list.study.scale[[m]]))>0)
+        data.list.study.scale[[m]][is.na(data.list.study.scale[[m]])]=0
+        
         concat.data = rbind(concat.data, unlist(data.list.study.scale[[m]]))
     }
     #rename rows and cols of concatenated centered (and/or scaled) data
@@ -215,6 +218,7 @@ mean_centering_per_study=function(data,study,scale,bias=FALSE) {
         attr(concat.data,"scaled:center")=attr(data.list.study.scale[[m]],"scaled:center")
         attr(concat.data,"scaled:scale")=attr(data.list.study.scale[[m]],"scaled:scale")
     }
+    
     return(list(concat.data=concat.data,data.list.study.scale=data.list.study.scale))
 }
 

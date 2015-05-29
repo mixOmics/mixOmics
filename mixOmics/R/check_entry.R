@@ -705,7 +705,6 @@ verbose)
     #check length(ncomp)=length(A)
     if(length(ncomp)!=length(X)) stop("'ncomp' must be a vector of length the number of blocks in X")
     
-    
     #check dimnames and ncomp per block of A
     for(q in 1:length(X))
     {
@@ -787,7 +786,12 @@ verbose)
         A[[length(A)+1]]=Y
         names(A)[length(A)]="Y"
         indY=length(A)
-        ncomp=c(ncomp,max(ncomp)) #adjust ncomp for Y
+        
+        if (mode == "canonical")
+        ncomp = c(ncomp, min(ncomp, nlevels(Y) - 1))
+        if (mode == "regression")
+        ncomp = c(ncomp, max(ncomp))
+        #adjust ncomp for Y
         
         
     }else{        #missing(Y) but indY not missing
