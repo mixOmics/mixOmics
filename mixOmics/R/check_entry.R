@@ -181,7 +181,7 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.con
     if ((N != nrow(Y)))
     stop("unequal number of rows in 'X' and 'Y'.")
     
-    if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0)
+    if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0 || length(ncomp)>1)
     stop("invalid number of variates, 'ncomp'.")
     
     
