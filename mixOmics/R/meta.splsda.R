@@ -40,7 +40,7 @@ keepX = rep(ncol(X), ncomp),keepX.constraint=NULL, max.iter = 500, tol = 1e-06, 
         mode=result$mode,keepX=result$keepA[[1]],keepY=result$keepA[[2]],
         keepX.constraint=result$keepA.constraint[[1]],keepY.constraint=result$keepA.constraint[[2]],
         variates=result$variates,loadings=result$loadings,
-        names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
+        names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=result$scale)
     out$names$Y = levels(Y)
     row.names(out$variates$Y) = row.names(out$variates$X)
     row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(Y)))

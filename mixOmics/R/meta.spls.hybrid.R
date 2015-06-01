@@ -22,7 +22,10 @@ max.iter = 500,
 tol = 1e-06)
 {
     
- 
+    if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0 || length(ncomp)>1)
+    stop("invalid number of variates, 'ncomp'.")
+    
+    
     
     #-- validation des arguments --#
     # most of the checks are done in the meta.block.spls function
