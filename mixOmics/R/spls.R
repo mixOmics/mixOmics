@@ -206,25 +206,19 @@ function(X,
             # note on the variable selection below. Before 5.0-4, the selection was done so that the keepX/keepY highest coefficients were the only one not put to 0.
             # However, a bug occured with ties. It is now changed so that all ties follow the same treatment.
             # If keepX=1 and two ties, then two variables are kept at this iteration
-            if(nx!=0)
-            {
-                absa=abs(a)
-                if(sum(rank(absa)<=nx)>0)# if nx is not high enough, we don't put any coefficients to zero
-                {
-                   a=ifelse(absa>absa[which(rank(absa)==max(rank(absa)[which(rank(absa)<=(nx))]))[1]],
-                    (absa-absa[which(rank(absa)==max(rank(absa)[which(rank(absa)<=(nx))]))[1]])*sign(a),0)
-                }
+            if (nx != 0) {
+        		absa = abs(a)
+        		if(any(rank(absa, ties.method = "max") <= nx)) {
+          			a = ifelse(rank(absa, ties.method = "max") <= nx, 0, sign(a) * (absa - max(absa[rank(absa, ties.method = "max") <= nx])))     
+        		}
             }
             a = a / drop(sqrt(crossprod(a)))
 		     
-            if(ny!=0)
-            {
+            if(ny != 0) {
                 absb=abs(b)
-                if(sum(rank(absb)<=ny)>0)# if ny is not high enough, we don't put any coefficients to zero
-                {
-                    b=ifelse(absb>absb[which(rank(absb)==max(rank(absb)[which(rank(absb)<=(ny))]))[1]],
-                    (absb-absb[which(rank(absb)==max(rank(absb)[which(rank(absb)<=(ny))]))[1]])*sign(b),0)
-                }
+		        if(any(rank(absb, ties.method = "max") <= ny)) {
+          			b = ifelse(rank(absb, ties.method = "max") <= ny, 0, sign(b) * (absb - max(absb[rank(absb, ties.method = "max") <= ny])))         
+        		}
             }
             b = b / drop(sqrt(crossprod(b)))
 			 

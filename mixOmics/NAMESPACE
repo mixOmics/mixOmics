@@ -35,12 +35,13 @@ rcc,
 scatterutil.base, 
 scatterutil.eti, 
 scatterutil.grid, 
-select.var,
+selectVar,
 sipca,
 s.match,
 spca,
 spls,
 splsda,
+tau.estim,
 tune.multilevel,
 tune.splsdalevel1,
 tune.splsdalevel2,
@@ -136,11 +137,11 @@ S3method(plot3dVar, spca)
 S3method(plot3dVar, ipca)
 S3method(plot3dVar, sipca)
 
-S3method(select.var, spls)
-S3method(select.var, splsda)
-S3method(select.var, spca)
-S3method(select.var, sipca)
-S3method(select.var, sgcca)
+S3method(selectVar, spls)
+S3method(selectVar, splsda)
+S3method(selectVar, spca)
+S3method(selectVar, sipca)
+S3method(selectVar, sgcca)
 
 S3method(network, default)
 S3method(network, rcc)
