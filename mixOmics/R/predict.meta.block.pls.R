@@ -252,8 +252,8 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         }
         names(concat.newdata)=names(X)
 
-        means.Y=matrix(0,nrow=nrow(Y),ncol=q)
-        sigma.Y=matrix(1,nrow=nrow(Y),ncol=q)
+        means.Y=matrix(0,nrow=nrow(concat.newdata[[1]]),ncol=q)
+        sigma.Y=matrix(1,nrow=nrow(concat.newdata[[1]]),ncol=q)
         
         for(m in 1:M) #loop on the blocks to define means.Y and sigma.Y for meta analysis
         {

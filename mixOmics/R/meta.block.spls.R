@@ -54,8 +54,8 @@ near.zero.var = FALSE)
     
     out=list(call=cl,X=result$X,Y=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,study=result$study,
     keepX=keepX,keepY=keepY,keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,
-    variates=result$variates,loadings=result$loadings,names=result$names,
-    tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
+    variates=result$variates,loadings=result$loadings,variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,
+    names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
   
     if(!missing(ncomp))   out$ncomp=ncomp
 
