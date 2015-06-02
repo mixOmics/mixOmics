@@ -9,7 +9,7 @@
 
 
 wrapper.splsda <- function(X, Y, ncomp = 2, mode = c("regression", "canonical", "invariant", "classic"),
-keepX = rep(ncol(X), ncomp),keepX.constraint=NULL, max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = TRUE)
+keepX,keepX.constraint=NULL, max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = TRUE)
 {
     
     
@@ -27,7 +27,7 @@ keepX = rep(ncol(X), ncomp),keepX.constraint=NULL, max.iter = 500, tol = 1e-06, 
     Y.mat=unmap(Y)
     colnames(Y.mat) = paste0("Y", 1:ncol(Y.mat))
 
-    result <- wrapper.meta.spls.hybrid(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,
+    result <- wrapper.meta.spls.hybrid(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
     keepX=keepX,keepX.constraint=keepX.constraint,max.iter=max.iter,tol=tol)
     
     

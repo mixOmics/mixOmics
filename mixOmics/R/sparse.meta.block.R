@@ -10,18 +10,14 @@
 #                   sgccda.model(),  calcPenalty(),
 #                   sens.spec(), plotVar.sgccda()
 #
-# Parallel functions
-#   parallel.valid.sgccda(),
 #
 # Functions modified from RGCCA R-library
 #   sgcca(), sgccak()
 #
 # Functions acquired from RGCCA R-library
-#   cov2(), scale2(), initsvd(), crossprod(), soft.threshold(), BinarySearch(),
-#   soft(), norm2(), defl.select(), deflation(),
+#   cov2(), initsvd(), crossprod(),
+#   defl.select(),
 #
-# Functions acquired from gdata library
-#   cbindX()
 #
 #############################################################################################################
 
@@ -88,7 +84,7 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
         if(ncol(A[[q]]) == 0) {stop("No more variables in X")}
         
         # at this stage, keepA.constraint need to be numbers
-        if(!is.null(keepA.constraint[[q]]))
+        if(length(keepA.constraint[[q]])>0)
         {
           #remove the variables from keepA.constraint if removed by near.zero.var
           keepA.constraint[[q]]=match.keepX.constraint(names.remove.X,keepA.constraint[[q]])

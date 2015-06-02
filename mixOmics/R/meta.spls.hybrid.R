@@ -16,6 +16,7 @@ keepX.constraint,
 keepY.constraint,
 keepX,
 keepY,
+mode,
 scale=FALSE,
 near.zero.var=FALSE,
 max.iter = 500,
@@ -28,44 +29,7 @@ tol = 1e-06)
     
     
     #-- validation des arguments --#
-    # most of the checks are done in the meta.block.spls function
-    X = as.matrix(X)
-    Y = as.matrix(Y)
-    
-    if(missing(keepX.constraint))
-    {
-        if(missing(keepX))
-        {
-            keepX=rep(ncol(X),ncomp)
-        }
-        keepX.constraint=list()
-    }else{
-        if(length(keepX.constraint)>ncomp)
-        stop(paste0("you should have length(keepX.constraint) lower or equal to ",ncomp,"."))
-
-        if(missing(keepX))
-        {
-            keepX=rep(ncol(X),ncomp-length(keepX.constraint))
-        }
-    }
-    
-    if(missing(keepY.constraint))
-    {
-        if(missing(keepY))
-        {
-            keepY=rep(ncol(Y),ncomp)
-        }
-        keepY.constraint=list()
-    }else{
-        if(length(keepY.constraint)>ncomp)
-        stop(paste0("you should have length(keepY.constraint) lower or equal to ",ncomp,"."))
-
-       if(missing(keepY))
-        {
-            keepY=rep(ncol(Y),ncomp-length(keepY.constraint))
-        }
-    }
-
+   
     #set the default study factor
     if(missing(study))
     {
@@ -78,36 +42,10 @@ tol = 1e-06)
     
     design = matrix(c(0,1,1,0), ncol = 2, nrow = 2, byrow = TRUE)
     
-    # match keepX.constraint and the colnames of X in order for keepX.constraint to be a list of character
-    # safety if keepX.constraint contains a mixed of character/numeric. It should one or the other, not a mix
-    if(length(keepX.constraint)>0)
-    {
-        if(!is.numeric(unlist(keepX.constraint)))
-        {
-            ind=match(unlist(keepX.constraint),colnames(X))
-            if(sum(is.na(ind))>0) stop("'keepX.constraint' must contains a subset of colnames(X) or the position of the X-variables you wish to keep.")
-        }
-        X.indice=X[,unlist(keepX.constraint),drop=FALSE]
-        keepX.constraint=relist(colnames(X.indice),skeleton=keepX.constraint)
-    }
-    
-    # same for keepY.constraint
-    if(length(keepY.constraint)>0)
-    {
-        if(!is.numeric(unlist(keepY.constraint)))
-        {
-            ind=match(unlist(keepY.constraint),colnames(Y))
-            if(sum(is.na(ind))>0) stop("'keepY.constraint' must contains a subset of colnames(Y) or the position of the Y-variables you wish to keep.")
-        }
-        Y.indice=Y[,unlist(keepY.constraint),drop=FALSE]
-        keepY.constraint=relist(colnames(Y.indice),skeleton=keepY.constraint)
-    }
     
     
-    # we need numbers in keepX.constraint from now on
-    keepX.constraint= lapply(keepX.constraint,function(x){match(x,colnames(X))})
-    keepY.constraint= lapply(keepY.constraint,function(x){match(x,colnames(Y))})
-    
+
+
     # we need a vector of length ncomp for keepA
     # update keepX and keepY
     #keepX=c(unlist(lapply(keepX.constraint,length)),keepX) #of length ncomp, can contains 0
@@ -130,12 +68,17 @@ tol = 1e-06)
     # keepA.constraint: keepX.constraint, which variables are kept on the first num.comp-1 components. It is a list of characters
     # near.zero.var: do you want to remove variables with very small variance
     
-    check=Check.entry.pls(X, Y, ncomp, keepX, keepY,keepX.constraint,keepY.constraint) # to have the warnings relative to X and Y, instead of blocks
+    check=Check.entry.pls(X, Y, ncomp, keepX, keepY,keepX.constraint,keepY.constraint,mode) # to have the warnings relative to X and Y, instead of blocks
     X=check$X
     Y=check$Y
     ncomp=check$ncomp
+    mode=check$mode
+    keepX.constraint=check$keepX.constraint
+    keepY.constraint=check$keepY.constraint
+    keepX=check$keepX
+    keepY=check$keepY
 
-    result <- sparse.meta.block(A = list(X = X, Y = Y), indY = 2, mode = "regression", ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
+    result <- sparse.meta.block(A = list(X = X, Y = Y), indY = 2, mode = mode, ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
     design = design, keepA = list(keepX,keepY),keepA.constraint = list(keepX.constraint,keepY.constraint),
     scale = scale, scheme = "centroid",init="svd", study = study,near.zero.var=near.zero.var)
     
