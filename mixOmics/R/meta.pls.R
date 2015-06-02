@@ -21,7 +21,7 @@ wrapper.meta.pls <- function(X, Y, ncomp = 2, mode = c("regression", "canonical"
     if (!is.numeric(X) || !is.numeric(Y))
     stop("'X' and/or 'Y' must be a numeric matrix.")
 
-    result <- wrapper.meta.spls.hybrid(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,study=study,
+    result <- wrapper.meta.spls.hybrid(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,study=study,mode=mode,
     max.iter=max.iter,tol=tol)
     
 

@@ -67,6 +67,14 @@ A=list(X=data,Y=Y.mat)
 A.light=list(X=data.light,Y=Y.mat.light)
 
 
+#add useless column for near.zero.var=TRUE tests
+
+data.near.zero=cbind(data,matrix(0,nrow=nrow(data),ncol=10))
+colnames(data.near.zero)=c(colnames(data),paste0("nearzero",1:10))
+
+
+
+
 ## =========================================================================================================
 ## =========================================================================================================
 ## ===========================                  test_wrappers               ==============================##
@@ -89,23 +97,88 @@ res=wrapper.meta.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("E
 
 
 
-#wraper.pls
+#######  wraper.pls
+res=wrapper.pls(X=data.light,Y=Y.mat.light)
 res=wrapper.pls(X=data.light,Y=Y.mat.light,ncomp=3)
+res=wrapper.pls(X=data.near.zero,Y=Y.mat,ncomp=3)
+res=wrapper.pls(X=data.near.zero,Y=Y.mat,near.zero.var=TRUE)
+### errors
+res=wrapper.pls(X=data.light,Y=Y.mat.light,ncomp=0)
+res=wrapper.pls(X=data.light,Y=Y.mat.light,ncomp=c(3,3))
+res=wrapper.pls(X=list(data.light),Y=Y.mat.light)
+res=wrapper.pls(X=data.light,Y=Y.mat)
+res=wrapper.pls(X=data.light,Y=type.id.light)
+res=wrapper.pls(X=data.light)
+res=wrapper.pls(X=data.light,Y=Y.mat.light,mode="bla")
+res=wrapper.pls(X=data.light,Y=Y.mat.light,max.iter=-10)
+res=wrapper.pls(X=data.light,Y=Y.mat.light,tol=-1)
+res=wrapper.pls(X=data.light,Y=Y.mat.light,scale=2)
+res=wrapper.pls(X=data.light,Y=Y.mat.light,near.zero.var=3)
 
-#wraper.spls
+
+
+
+#######  wraper.spls
+res=wrapper.spls(X=data.light,Y=Y.mat.light)
 res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(10,5,15))
+res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(10,5)) #complete keepX
+res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(10),keepX.constraint=list(comp1=c(100,1,3),comp2=c(10)))
+res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(1),keepX.constraint=list(comp1=c(100),comp2=c(10)))
+res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX.constraint=list(comp1=c(100),comp2=c(10)))
+res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepY=c(3),keepY.constraint=list(comp1=c(1),comp2=c(2)))
+### errors, only difference with pls is keepX/Y and keepX.constraint/keepY.constraint
+res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(10,5,15,3))
+res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(10,5,-15))
+res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=2,keepX=c(50),keepX.constraint=list(comp1=c(100),comp2=c(10)))
+res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepY=c(10,5,15,3))
+res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepY=c(10,5,-15))
+res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=2,keepY=c(2,1,1))
+res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=2,keepY=c(2,1,1))
+res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=2,keepY=c(3),keepY.constraint=list(comp1=c(100),comp2=c(10)))
 
-#wraper.plsda
+
+#######  wraper.plsda
 res=wrapper.plsda(X=data.light,Y=type.id.light,ncomp=3)
+### errors, only difference with pls is Y factor
+res=wrapper.plsda(X=data.light,Y=Y.mat)
+res=wrapper.plsda(X=data.light,Y=NULL)
 
-#wraper.splsda
+
+#######  wraper.splsda
+res=wrapper.splsda(X=data.light,Y=type.id.light)
 res=wrapper.splsda(X=data.light,Y=type.id.light,ncomp=3,keepX=c(10,5,15))
+res=wrapper.splsda(X=data.light,Y=type.id.light,ncomp=3,keepX=c(10,5)) #complete keepX
+res=wrapper.splsda(X=data.light,Y=type.id.light,ncomp=3,keepX=c(10),keepX.constraint=list(comp1=c(100,1,3),comp2=c(10)))
+res=wrapper.splsda(X=data.light,Y=type.id.light,ncomp=3,keepX=c(1),keepX.constraint=list(comp1=c(100),comp2=c(10)))
+res=wrapper.splsda(X=data.light,Y=type.id.light,ncomp=3,keepX.constraint=list(comp1=c(100),comp2=c(10)))
+### errors, only difference with spls is Y factor and keepY
+res=wrapper.splsda(X=data.light,Y=Y.mat,ncomp=3,keepX=c(10,5,15))
+res=wrapper.splsda(X=data.light,Y=NULL,ncomp=3,keepX=c(10,5,15))
+res=wrapper.splsda(X=data.light,Y=type.id.light,ncomp=3,keepY=c(3),keepY.constraint=list(comp1=c(1),comp2=c(2)))
+res=wrapper.splsda(X=data.light,Y=type.id.light,ncomp=3,keepY=c(3))
 
 
 
-#wraper.block.pls
+#######  wraper.block.pls
 res=wrapper.block.pls(X=A.light,indY=2)
 res=wrapper.block.pls(list(data),Y=Y.mat,ncomp=2)
+res2=wrapper.block.pls(list(data),Y=Y.mat,ncomp=2,bias=TRUE)
+res3=wrapper.block.pls(list(data),Y=Y.mat,ncomp=2,scale=FALSE)
+all.equal(res,res2)
+all.equal(res,res3)
+res=wrapper.block.pls(list(data.light),Y=Y.mat.light,ncomp=2,verbose=TRUE,tol=1e-30)
+res=wrapper.block.pls(list(data.near.zero),Y=Y.mat,ncomp=2,near.zero.var=TRUE)
+### errors
+res=wrapper.block.pls(X=data.light,Y=type.id.light)
+res=wrapper.block.pls(X=list(data.light),Y=type.id.light)
+res=wrapper.block.pls(X=list(data.light),Y=Y.mat)
+res=wrapper.block.pls(X=A.light)
+res=wrapper.block.pls(list(data),Y=Y.mat,scheme="bla")
+res=wrapper.block.pls(list(data),Y=Y.mat,design="bla")
+
+
+
+
 
 #wraper.block.spls
 res=wrapper.block.spls(X=A.light,indY=2,keepX=list(block1=c(10,5,15),block2=c(3,2)),ncomp=c(3,3))

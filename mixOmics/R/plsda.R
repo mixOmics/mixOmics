@@ -26,7 +26,7 @@ max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = TRUE)
     Y.mat=unmap(Y)
     colnames(Y.mat) = paste0("Y", 1:ncol(Y.mat))
 
-    result <- wrapper.meta.spls.hybrid(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,
+    result <- wrapper.meta.spls.hybrid(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
     max.iter=max.iter,tol=tol)
         
     cl = match.call()
