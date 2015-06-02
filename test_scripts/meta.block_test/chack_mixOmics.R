@@ -109,6 +109,7 @@ res=wrapper.pls(X=list(data.light),Y=Y.mat.light)
 res=wrapper.pls(X=data.light,Y=Y.mat)
 res=wrapper.pls(X=data.light,Y=type.id.light)
 res=wrapper.pls(X=data.light)
+res=wrapper.pls(X=data.light,Y=NULL)
 res=wrapper.pls(X=data.light,Y=Y.mat.light,mode="bla")
 res=wrapper.pls(X=data.light,Y=Y.mat.light,max.iter=-10)
 res=wrapper.pls(X=data.light,Y=Y.mat.light,tol=-1)
@@ -180,22 +181,52 @@ res=wrapper.block.pls(list(data),Y=Y.mat,design="bla")
 
 
 
-#wraper.block.spls
+#######  wraper.block.spls
 res=wrapper.block.spls(X=A.light,indY=2,keepX=list(block1=c(10,5,15),block2=c(3,2)),ncomp=c(3,3))
 res=wrapper.block.spls(list(data),Y=Y.mat,keepX=list(block1=c(10,5,15),block2=c(3,2)),ncomp=3)
+### errors, only difference with block.pls is keepX/Y and keepX.constraint/keepY.constraint
+res=wrapper.block.spls(X=list(data),Y=Y.mat,ncomp=3,keepX=c(10,5,15,3))
+res=wrapper.block.spls(X=list(data),Y=Y.mat,ncomp=3,keepX=list(c(10,5,-15)))
+res=wrapper.block.spls(X=list(data),Y=Y.mat,ncomp=2,keepX=c(50),keepX.constraint=list(comp1=c(100),comp2=c(10)))
+res=wrapper.block.spls(X=list(data),Y=Y.mat,ncomp=2,keepX=list(c(50)),keepX.constraint=list(list(comp1=c(100),comp2=c(10))))
+res=wrapper.block.spls(X=list(data),Y=Y.mat,ncomp=3,keepY=c(10,5,15,3))
+res=wrapper.block.spls(X=list(data),Y=Y.mat,ncomp=3,keepY=c(2,2,3,1))
+res=wrapper.block.spls(X=list(data),Y=Y.mat,ncomp=3,keepY=c(10,5,-15))
+res=wrapper.block.spls(X=list(data),Y=Y.mat,ncomp=2,keepY=c(3),keepY.constraint=list(comp1=c(100),comp2=c(10)))
 
-#wraper.block.plsda
+
+
+
+
+#######  wraper.block.plsda
 res=wrapper.block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
 res=wrapper.block.plsda(list(data),Y=type.id,ncomp=2)
+### errors, only difference with pls is Y factor
+res=wrapper.block.plsda(X=list(data),Y=Y.mat)
+res=wrapper.block.plsda(X=list(data),Y=NULL)
 
-#wraper.block.splsda
+
+
+#######  wraper.block.splsda
 res=wrapper.block.splsda(X=list(X=data,Y=type.id),keepX=list(block1=c(10,5)),indY=2,ncomp=c(3,2))
 res=wrapper.block.splsda(X=list(X=data,Y=type.id),keepX=list(block1=c(10,5)),indY=2,ncomp=c(2,2))
+res=wrapper.block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(c(100)),
+            keepX.constraint=list(list(comp1=c("ENSG00000001084","ENSG00000001461"),comp2=c("ENSG00000000938"))))
+### errors, only difference with spls is Y factor and keepY
+res=wrapper.block.splsda(X=list(data),Y=Y.mat,ncomp=3,keepX=c(10,5,15))
+res=wrapper.block.splsda(X=list(data),Y=NULL,ncomp=3,keepX=c(10,5,15))
+res=wrapper.block.splsda(X=list(data),Y=type.id,ncomp=3,keepX=c(10,5,15))
+res=wrapper.block.splsda(X=list(data),Y=type.id.light,ncomp=3,keepX=c(3),keepX.constraint=list(comp1=c(1),comp2=c(2)))
+res=wrapper.block.splsda(X=list(data),Y=type.id.light,ncomp=3,keepX=c(3),keepX.constraint=list(list(comp1=c(1),comp2=c(2))))
+res=wrapper.block.splsda(X=list(data),Y=type.id.light,ncomp=3,keepX=list(c(3)),keepX.constraint=list(list(comp1=c(1),comp2=c(2))))
+
+
+
 
 
 # same results for sgccda and block.splsda. outputs are different though
-res=wrapper.sgccda(X=data,Y=type.id,keepA=c(10,5,10),ncomp=3)
-res2=wrapper.block.splsda(X=list(X=data),Y=type.id,keepX=c(10,5,10),ncomp=3,mode="canonical")
+res=wrapper.sgccda(X=data,Y=type.id,keepA=list(c(10,5,10)),ncomp=3)
+res2=wrapper.block.splsda(X=list(X=data),Y=type.id,keepX=list(c(10,5,10)),ncomp=3,mode="canonical")
 
 
 
@@ -203,33 +234,50 @@ res2=wrapper.block.splsda(X=list(X=data),Y=type.id,keepX=c(10,5,10),ncomp=3,mode
 ## ==      data for several study
 ## ======================================================================
 
-#wraper.meta.pls
+
+#######  wraper.meta.pls
 res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=exp)
+res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=as.character(exp))
+res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE)
+### errors, only difference with not meta is study
+res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=c(1,50))
+res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=1:167)
+res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=c(1,rep(2,166)))
+res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=c(1,1,rep(2,165)))
+res=wrapper.meta.pls(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE)
 
-#wraper.meta.plsda
+
+
+#######  wraper.meta.plsda
 res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=exp)
+### errors, only difference with not meta is study
+res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=c(1,50))
+res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=1:167)
+res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=c(1,rep(2,166)))
+res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=c(1,1,rep(2,165)))
 
-#wraper.meta.spls
+
+#######  wraper.meta.spls
 res=wrapper.meta.spls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
-#wraper.meta.splsda
+#######  wraper.meta.splsda
 res=wrapper.meta.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
 
 
-#wraper.meta.block.pls
+#######  wraper.meta.block.pls
 res=wrapper.meta.block.pls(X=list(X=data,Y=Y.mat),indY=2,ncomp=c(2,2))
 res=wrapper.meta.block.pls(list(data),Y=Y.mat,ncomp=2)
 
-#wraper.meta.block.spls
+#######  wraper.meta.block.spls
 res=wrapper.meta.block.spls(X=list(X=data,Y=Y.mat),indY=2,keepX=list(block1=c(10,5)),ncomp=c(2,2))
 res=wrapper.meta.block.spls(list(data),Y=Y.mat,ncomp=2)
 
-#wraper.meta.block.plsda
+#######  wraper.meta.block.plsda
 res=wrapper.meta.block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
 res=wrapper.meta.block.plsda(list(data),Y=type.id,ncomp=2)
 
-#wraper.meta.block.splsda
+#######  wraper.meta.block.splsda
 res=wrapper.meta.block.splsda(X=list(X=data,Y=type.id),indY=2,keepX=list(block1=c(10,5)),ncomp=c(2,2))
 res=wrapper.meta.block.splsda(list(data),Y=type.id,ncomp=2)
 

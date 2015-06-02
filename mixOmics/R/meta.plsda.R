@@ -15,9 +15,12 @@ max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = FALSE)
     
     #-- validation des arguments --#
     # most of the checks are done in the wrapper.meta.spls.hybrid function
-    X = as.matrix(X)
     
-    if (is.null(dim(Y))) {
+    if (is.null(Y))
+    stop("'Y' has to be something else than NULL.")
+    
+    if (is.null(dim(Y)))
+    {
         Y = as.factor(Y)
     }  else {
         stop("'Y' should be a factor or a class vector.")
@@ -25,6 +28,8 @@ max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = FALSE)
     
     Y.mat=unmap(Y)
     colnames(Y.mat) = paste0("Y", 1:ncol(Y.mat))
+
+    X = as.matrix(X)
 
     result <- wrapper.meta.spls.hybrid(X=X,Y=Y.mat,study=study,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
     max.iter=max.iter,tol=tol)

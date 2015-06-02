@@ -19,9 +19,6 @@ tol = 1e-06, near.zero.var = FALSE,scale = FALSE)
     X = as.matrix(X)
     Y = as.matrix(Y)
 
-    if (!is.numeric(X) || !is.numeric(Y))
-    stop("'X' and/or 'Y' must be a numeric matrix.")
-
     result <- wrapper.meta.spls.hybrid(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,study=study,mode=mode,
     keepX=keepX,keepY=keepY,keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,max.iter=max.iter,tol=tol)
     

@@ -290,6 +290,11 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.con
 
 
 
+if (any(keepX<0))
+stop("each component of 'keepX' must be non negative ")
+if (any(keepY<0))
+stop("each component of 'keepY' must be non negative ")
+
 if (any(keepX > ncol(X)))
 stop("each component of 'keepX' must be lower or equal than ", P, ".")
 if (any(keepY > ncol(Y)))
@@ -853,6 +858,9 @@ verbose)
             
             keepA.constraint[[length(X)+1]]=list() #keepY.constraint
         }else{
+            if ( is.numeric(unlist(keepY.constraint)) && any(unlist(keepY.constraint) > ncol(Y)))
+            stop("each entry of 'keepY.constraint' must be lower or equal to ", ncol(Y), ".")
+
             # check that max(ncomp)>=length(keepY.constraint)
             if(length(keepY.constraint)>max(ncomp))
             stop(paste0("you should have length(keepY.constraint) lower or equal to ",max(ncomp),"."))
@@ -863,10 +871,12 @@ verbose)
         }
         
         #check that keepY is ok
+        if(is.list(keepY))
+        stop("'keepY' must be a numeric vector")
         if (any(keepY > ncol(Y)))
         stop(paste0("each component of 'keepY' must be lower or equal to ", ncol(Y), "."))
         if(length(keepY)>max(ncomp))
-        stop("length of 'keepX' must be lower or equal to ", max(ncomp), ".")
+        stop("length of 'keepY' must be lower or equal to ", max(ncomp), ".")
         
         keepA[[length(X)+1]]=keepY
         
@@ -904,6 +914,8 @@ verbose)
     }
     if(length(study)!=nrow(A[[1]])) stop(paste0("'study' must be a factor of length ",nrow(A[[1]]),"."))
     
+    if(any(table(study)<=1)) stop("At least one study has only one sample, please consider removing before calling the function again")
+    if(any(table(study)<5)) warning("At least one study has less than 5 samples, mean centering might not do as expected")
     
     if(missing(init)) init="svd"
     
@@ -1128,6 +1140,9 @@ if(missing(keepX.constraint) || length(keepX.constraint)==0)
         names(keepA)=names(X)
     }else{
         
+        if( !is.list(keepX))
+        stop("'keepX' must be a list")
+        
         for(q in 1:length(X))
         {
 
@@ -1138,6 +1153,8 @@ if(missing(keepX.constraint) || length(keepX.constraint)==0)
                 stop(paste0("keepX[[",q,"]]' must be a vector"))
                 if (any(keepX[[q]] > ncol(X[[q]])))
                 stop(paste0("each component of 'keepX[[",q,"]]' must be lower or equal to ncol(X[[",q,"]])=",ncol(X[[q]]),"."))
+                if (any(keepX[[q]]<0))
+                stop(paste0("each component of 'keepX[[",q,"]]' must be non negative."))
                 if(length(keepX[[q]])>ncomp[q])
                 stop(paste0("length of 'keepX[[",q,"]]' must be lower or equal to ncomp[",q,"]=",ncomp[q], "."))
                 
@@ -1189,6 +1206,9 @@ if(missing(keepX.constraint) || length(keepX.constraint)==0)
         names(keepA)=names(X)
     }else{ #complete keepA so that length(keepX.constraint[[q]])+length(keepX[[q]])=max(ncomp)
         
+        if( !is.list(keepX))
+        stop("'keepX' must be a list")
+        
         for(q in 1:length(X))
         {
             
@@ -1202,6 +1222,8 @@ if(missing(keepX.constraint) || length(keepX.constraint)==0)
                 stop(paste0("keepX[[",q,"]]' must be a vector"))
                 if (any(keepX[[q]] > ncol(X[[q]])))
                 stop(paste0("each component of 'keepX[[",q,"]]' must be lower or equal to ncol(X[[",q,"]])=",ncol(X[[q]]),"."))
+                if (any(keepX[[q]]<0))
+                stop(paste0("each component of 'keepX[[",q,"]]' must be non negative."))
                 if(length(keepX[[q]])>ncomp[q])
                 stop(paste0("length of 'keepX[[",q,"]]' must be lower or equal to ncomp[",q,"]=",ncomp[q], "."))
 
@@ -1213,6 +1235,29 @@ if(missing(keepX.constraint) || length(keepX.constraint)==0)
             }
         }
         
+    }
+    
+    
+    # match keepX.constraint and the colnames of X in order for keepX.constraint to be a list of character
+    # safety if keepX.constraint contains a mixed of character/numeric. It should one or the other, not a mix
+    for(q in 1:length(X))
+    {
+        if(length(keepX.constraint[[q]])>0)
+        {
+            if (is.numeric(unlist(keepX.constraint[[q]])) && any(unlist(keepX.constraint[[q]]) > ncol(X[[q]])))
+            stop(paste0("each entry of 'keepX.constraint",q,"' must be lower or equal than ", ncol(X[[q]]), "."))
+            
+            if(!is.numeric(unlist(keepX.constraint[[q]])))
+            {
+                ind=match(unlist(keepX.constraint[[q]]),colnames(X[[q]]))
+                if(sum(is.na(ind))>0) stop("'keepX.constraint' must contains a subset of colnames(X) or the position of the X-variables you wish to keep.")
+            }
+            X.indice=X[[q]][,unlist(keepX.constraint[[q]]),drop=FALSE]
+            keepX.constraint[[q]]=relist(colnames(X.indice),skeleton=keepX.constraint[[q]])
+        }
+        
+        # we need numbers in keepX.constraint from now on
+        keepX.constraint[[q]]= lapply(keepX.constraint[[q]],function(x){match(x,colnames(X[[q]]))})
     }
     
     keepA.constraint=keepX.constraint
@@ -1249,6 +1294,10 @@ if(FALSE)
     #print("constr")
     #print(keepA.constraint)
     
+    
+
+
+    names(keepA)=names(X)
     
     return(list(keepA=keepA,keepA.constraint=keepA.constraint))
 }
