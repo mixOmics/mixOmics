@@ -15,12 +15,14 @@ wrapper.pls <- function(X, Y, ncomp = 2, mode = c("regression", "canonical", "in
     
     #-- validation des arguments --#
     # most of the checks are done in the wrapper.meta.spls.hybrid function
+    
+    #if (!is.numeric(X) || !is.numeric(Y))
+    #stop("'X' and/or 'Y' must be a numeric matrix.")
+
     X = as.matrix(X)
     Y = as.matrix(Y)
-    
-    if (!is.numeric(X) || !is.numeric(Y))
-    stop("'X' and/or 'Y' must be a numeric matrix.")
-    
+
+
     if(missing(ncomp)) ncomp=2
 
     result <- wrapper.meta.spls.hybrid(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,

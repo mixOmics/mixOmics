@@ -15,7 +15,9 @@ keepX,keepX.constraint=NULL, max.iter = 500, tol = 1e-06, near.zero.var = FALSE,
     
     #-- validation des arguments --#
     # most of the checks are done in the wrapper.meta.spls.hybrid function
-    X = as.matrix(X)
+    
+    if (is.null(Y))
+    stop("'Y' has to be something else than NULL.")
     
     if (is.null(dim(Y)))
     {
@@ -26,6 +28,8 @@ keepX,keepX.constraint=NULL, max.iter = 500, tol = 1e-06, near.zero.var = FALSE,
     
     Y.mat=unmap(Y)
     colnames(Y.mat) = paste0("Y", 1:ncol(Y.mat))
+
+    X = as.matrix(X)
 
     result <- wrapper.meta.spls.hybrid(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
     keepX=keepX,keepX.constraint=keepX.constraint,max.iter=max.iter,tol=tol)

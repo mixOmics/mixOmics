@@ -39,6 +39,9 @@ tol = 1e-06)
     }
     if(length(study)!=nrow(X)) stop(paste0("'study' must be a factor of length ",nrow(X),"."))
     
+    if(any(table(study)<=1)) stop("At least one study has only one sample, please consider removing before calling the function again")
+    if(any(table(study)<5)) warning("At least one study has less than 5 samples, mean centering might not do as expected")
+    
     
     design = matrix(c(0,1,1,0), ncol = 2, nrow = 2, byrow = TRUE)
     
