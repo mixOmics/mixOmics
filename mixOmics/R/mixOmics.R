@@ -29,7 +29,7 @@ max.iter=500,
 verbose=FALSE)
 
 {
-    if(is.list(X))# either rgcca, sgcca,sgcca-DA, meta.block, meta.block-DA
+    if(is.list(X) & !is.data.frame(X))# either rgcca, sgcca,sgcca-DA, meta.block, meta.block-DA
     {
         
         #need to check if Y or indY is a factor, unmap it and then do the checks (no other factors etc)
