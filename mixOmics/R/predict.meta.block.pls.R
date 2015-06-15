@@ -67,11 +67,11 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         if(is.list(object$X))
         stop("Something is wrong, object$X should be a matrix and it appears to be a list") #this should never happen/intern check
         
-        if(is.list(newdata))
+        if(is.list(newdata) & !is.data.frame(newdata))
         stop("'newdata' must be a numeric matrix")
         
         # deal with near.zero.var in object, to remove the same variable in newdata as in object$X (already removed in object$X)
-        if(!is.null(object$nzv))
+        if(length(object$nzv$Position) > 0)
         newdata = newdata[, -object$nzv$Position,drop=FALSE]
         
         if(all.equal(colnames(newdata),colnames(object$X))!=TRUE)
