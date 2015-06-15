@@ -80,6 +80,7 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
       {
         names.remove.X=colnames(A[[q]])[nzv.A[[q]]$Position]
         A[[q]] = A[[q]][, -nzv.A[[q]]$Position,drop=FALSE]
+        if (verbose)
         warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
         if(ncol(A[[q]]) == 0) {stop("No more variables in X")}
         
@@ -111,7 +112,7 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
 
   # center the data per study, per matrix of A, scale if scale=TRUE, option bias
   mean_centered = lapply(A, function(x){mean_centering_per_study(x, study, scale, bias)})
-  A = lapply(mean_centered, function(x){x$concat.data})
+  A = lapply(mean_centered, function(x){as.matrix(x$concat.data)})
   ni=lapply(mean_centered[[1]]$data.list.study.scale,nrow) #number of samples per study
 
 
@@ -121,9 +122,9 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
   
   AVE_inner <- AVE_outer <- rep(NA, max(ncomp))
   defl.matrix <- AVE_X <- crit <- loadings.partial.A <- variates.partial.A <- tau.rgcca <- list()
-  P <- loadings.A <- loadings.Astar <- c <- t <- b <- variates.A <- NULL
-  for (k in 1:J) t[[k]] <- variates.A[[k]] <- matrix(NA, nb_ind, N)
-  for (k in 1:J) P[[k]] <- loadings.A[[k]] <- loadings.Astar[[k]] <- b[[k]] <- c[[k]] <- matrix(NA, pjs[[k]], N)
+  P <- loadings.A <- loadings.Astar <-  variates.A <- NULL
+  for (k in 1:J) variates.A[[k]] <- matrix(NA, nb_ind, N)
+  for (k in 1:J) P[[k]] <- loadings.A[[k]] <- loadings.Astar[[k]]<- matrix(NA, pjs[[k]], N) #this line fucks it up when one variable in X
   for (k in 1:J)
   {
       loadings.partial.A[[k]]=variates.partial.A[[k]]=vector("list",length=nlevels(study))
