@@ -122,9 +122,9 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
   
   AVE_inner <- AVE_outer <- rep(NA, max(ncomp))
   defl.matrix <- AVE_X <- crit <- loadings.partial.A <- variates.partial.A <- tau.rgcca <- list()
-  P <- loadings.A <- loadings.Astar <-  variates.A <- NULL
-  for (k in 1:J) variates.A[[k]] <- matrix(NA, nb_ind, N)
-  for (k in 1:J) P[[k]] <- loadings.A[[k]] <- loadings.Astar[[k]]<- matrix(NA, pjs[[k]], N) #this line fucks it up when one variable in X
+  P <- loadings.A <- loadings.Astar <- c <- t <- b <- variates.A <- vector("list",J)
+  for (k in 1:J) t[[k]] <- variates.A[[k]] <- matrix(NA, nb_ind, N)
+  for (k in 1:J) P[[k]] <- loadings.A[[k]] <- loadings.Astar[[k]]<- matrix(NA, pjs[[k]], N)
   for (k in 1:J)
   {
       loadings.partial.A[[k]]=variates.partial.A[[k]]=vector("list",length=nlevels(study))
@@ -222,7 +222,7 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
   for (k in 1:J) {
     rownames(loadings.A[[k]]) = rownames(loadings.Astar[[k]])=colnames(A[[k]])
     rownames(variates.A[[k]]) = rownames(A[[k]]) #= rownames(variates.partial.A[[k]])
-    colnames(variates.A[[k]]) = paste0("comp ", 1:max(ncomp))
+    colnames(variates.A[[k]]) = colnames(loadings.A[[k]]) = paste0("comp ", 1:max(ncomp))
     AVE_X[[k]] = apply(cor(A[[k]], variates.A[[k]])^2, 2, mean)
     if(is.null(tau))
     {
@@ -254,13 +254,17 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
   names[[length(names) + 1]] = row.names(A[[1]])
   names(names)[length(names)] = "indiv"
   
-  for (j in 1 : J) {
-    ifelse(is.null(names(A)[j]), names(c)[j] <- paste("X", j, sep = ""), names(c)[j] <- names(A)[j])
-    ifelse(is.null(names(A)[j]), names(b)[j] <- paste("X", j, sep = ""), names(b)[j] <- names(A)[j])
+  #for (j in 1 : J) {
+      #ifelse(is.null(names(A)[j]), names(c)[j] <- paste("X", j, sep = ""), names(c)[j] <- names(A)[j])# not happening as the check put names(A) by default
+      #ifelse(is.null(names(A)[j]), names(b)[j] <- paste("X", j, sep = ""), names(b)[j] <- names(A)[j])# not happening as the check put names(A) by default
     
-    colnames(c[[j]]) = paste("comp", c(1:max(ncomp))); colnames(loadings.A[[j]]) = paste("comp", c(1:max(ncomp))); colnames(b[[j]]) = paste("comp", c(1:max(ncomp)))
-    row.names(c[[j]]) = colnames(A[[j]]); row.names(loadings.A[[j]]) = colnames(A[[j]]); row.names(b[[j]]) = colnames(A[[j]])
-  }
+    #colnames(c[[j]]) = paste("comp", c(1:max(ncomp)));
+    # colnames(loadings.A[[j]]) = paste("comp", c(1:max(ncomp))); #colnames(b[[j]]) = paste("comp", c(1:max(ncomp)))
+    #colnames(variates.A[[j]]) = paste("comp", c(1:max(ncomp)));
+    #row.names(c[[j]]) = colnames(A[[j]]);
+    #row.names(loadings.A[[j]]) = colnames(A[[j]]); #row.names(b[[j]]) = colnames(A[[j]])
+    #row.names(variates.A[[j]]) = rownames(A[[j]]);
+    #}
   ### End: Output
   
   ### Start: Update names list with mixOmics package
