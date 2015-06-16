@@ -308,7 +308,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         
         # Prediction Y.hat, B.hat and t.pred
         Ypred = lapply(1 : ncomp[i], function(x){concat.newdata[[i]] %*% Wmat[, 1:x] %*% solve(t(Pmat[, 1:x]) %*% Wmat[, 1:x]) %*% t(Cmat)[1:x, ]})
-        Ypred = sapply(Ypred, function(x){t(t(t(t(x)*sigma.Y)) + means.Y)}, simplify = "array")
+        Ypred = sapply(Ypred, function(x){t(t(x)*sigma.Y + means.Y)}, simplify = "array")
         
         Y.hat[[i]] = Ypred
         
