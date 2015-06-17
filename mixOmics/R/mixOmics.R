@@ -276,6 +276,8 @@ verbose=FALSE)
             
         }
     }
+    cl = match.call()
+    res$call=cl
     class(res)=c("mixOmics",class(res))
     return(invisible(res))
     

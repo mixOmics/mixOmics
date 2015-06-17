@@ -55,7 +55,8 @@ near.zero.var = FALSE)
     keepA=check$keepA
     keepA.constraint=check$keepA.constraint
     init=check$init
-    
+    nzv.A=check$nzv.A
+
     #print(missing(ncomp))
 
     #  print(ncomp)
@@ -83,12 +84,14 @@ near.zero.var = FALSE)
     result=sparse.meta.block(A=A,indY=indY,design=design,ncomp=ncomp,scheme = scheme,
     scale =scale,  bias = bias,init = init, tol = tol, verbose = verbose,tau=NULL,
     mode = mode, max.iter = max.iter,study = study, keepA = keepA,
-    keepA.constraint = keepA.constraint, near.zero.var = near.zero.var)
+    keepA.constraint = keepA.constraint)#, near.zero.var = near.zero.var)
     
     
     
     result$ncomp = ncomp
-    
+    if(near.zero.var)
+    result$nzv=nzv.A
+
     class(result) = c("sparse.meta.block")
     return(invisible(result))
     

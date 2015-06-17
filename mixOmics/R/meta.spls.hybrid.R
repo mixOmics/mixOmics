@@ -71,7 +71,7 @@ tol = 1e-06)
     # keepA.constraint: keepX.constraint, which variables are kept on the first num.comp-1 components. It is a list of characters
     # near.zero.var: do you want to remove variables with very small variance
     
-    check=Check.entry.pls(X, Y, ncomp, keepX, keepY,keepX.constraint,keepY.constraint,mode) # to have the warnings relative to X and Y, instead of blocks
+    check=Check.entry.pls(X, Y, ncomp, keepX, keepY,keepX.constraint,keepY.constraint,mode,near.zero.var=near.zero.var) # to have the warnings relative to X and Y, instead of blocks
     X=check$X
     Y=check$Y
     ncomp=check$ncomp
@@ -80,12 +80,16 @@ tol = 1e-06)
     keepY.constraint=check$keepY.constraint
     keepX=check$keepX
     keepY=check$keepY
+    nzv.A=check$nzv.A
+
 
     result <- sparse.meta.block(A = list(X = X, Y = Y), indY = 2, mode = mode, ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
     design = design, keepA = list(keepX,keepY),keepA.constraint = list(keepX.constraint,keepY.constraint),
-    scale = scale, scheme = "centroid",init="svd", study = study,near.zero.var=near.zero.var)
+    scale = scale, scheme = "centroid",init="svd", study = study)#,near.zero.var=near.zero.var)
     
     result$ncomp = ncomp
+    if(near.zero.var)
+    result$nzv=nzv.A
 
     class(result) = c("meta.spls.hybrid")
     return(invisible(result))
