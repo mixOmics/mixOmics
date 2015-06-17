@@ -17,8 +17,8 @@ near.zero.var = FALSE, scale = TRUE)
     #-- validation des arguments --#
     # most of the checks are done in the wrapper.meta.spls.hybrid function
 
-    X = as.matrix(X)
-    Y = as.matrix(Y)
+#X = as.matrix(X)
+#Y = as.matrix(Y)
 
     result <- wrapper.meta.spls.hybrid(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
     keepX=keepX,keepY=keepY,keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,max.iter=max.iter,tol=tol)

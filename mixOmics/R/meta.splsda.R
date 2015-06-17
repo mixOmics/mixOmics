@@ -29,7 +29,7 @@ keepX = rep(ncol(X), ncomp),keepX.constraint=NULL, max.iter = 500, tol = 1e-06, 
     Y.mat=unmap(Y)
     colnames(Y.mat) = paste0("Y", 1:ncol(Y.mat))
 
-    X = as.matrix(X)
+#X = as.matrix(X)
 
     result <- wrapper.meta.spls.hybrid(X=X,Y=Y.mat,ncomp=ncomp,near.zero.var=near.zero.var,study=study,mode=mode,
     keepX=keepX,keepX.constraint=keepX.constraint,max.iter=max.iter,tol=tol,scale=scale)
