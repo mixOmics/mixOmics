@@ -310,9 +310,11 @@ res=mixOmics(X=A,indY=2)
 
 
 #block.spls
-res=mixOmics(X=list(data),Y=unmap(type.id),keepX=c(10,5,15))
+res=mixOmics(X=list(data),Y=unmap(type.id),keepX=list(c(10,5,15)),ncomp=3)
 res=mixOmics(X=list(data=data,Y=Y.mat),indY=2,keepX=list(c(10,5,15)),ncomp=c(3,3))
 res=mixOmics(X=A,indY=2,keepX.constraint=list(X=list(1:10)),ncomp=c(2,2))
+#errors
+res=mixOmics(X=list(data),Y=unmap(type.id),keepX=c(10,5,15))
 
 # block.plsda
 res=mixOmics(X=A,Y=type.id)
