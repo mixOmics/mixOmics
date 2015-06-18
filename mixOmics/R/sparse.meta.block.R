@@ -35,7 +35,7 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
                             ncomp = rep(1, length(A)), scheme = "centroid", scale = TRUE,  bias = FALSE,
                             init = "svd.single", tol = 1e-06, verbose = FALSE,
                             mode = "canonical", max.iter = 500,study = NULL, keepA = NULL,
-                            keepA.constraint = NULL, near.zero.var = FALSE) { # meta.hybrid.spls
+                            keepA.constraint = NULL){#, near.zero.var = FALSE) { # meta.hybrid.spls
   
 
   # A: list of matrices
@@ -71,6 +71,9 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
   
   # at this stage keepA.constraint need to be character, to remove easily variables with near zero variance
   ### near.zero.var, remove the variables with very small variances
+  
+  if(FALSE)
+  {
   if(near.zero.var == TRUE)
   {
     nzv.A = lapply(A,nearZeroVar)
@@ -102,8 +105,9 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
 
     }
   }
+  }
   
-  # keepA is updated to be of length now, the first entries correspond to the keepA.constraint if it was provided
+  # keepA is updated to be of length length(A) now, the first entries correspond to the keepA.constraint if it was provided
   
   for(q in 1:length(A))
     keepA[[q]]=c(unlist(lapply(keepA.constraint[[q]],length)),keepA[[q]]) #of length ncomp, can contains 0
@@ -273,7 +277,7 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
               variates = variates.A, loadings = shave.matlist(loadings.A, ncomp),
               variates.partial= if(is.null(tau)) {variates.partial.A} ,loadings.partial= if(is.null(tau)) {loadings.partial.A},
               loadings.star = shave.matlist(loadings.Astar, ncomp),
-              names = names,tol = tol, iter=iter, nzv = if(near.zero.var) nzv.A,
+              names = names,tol = tol, iter=iter, #nzv = if(near.zero.var) nzv.A,
               design = design,
               scheme = scheme,  crit = crit, AVE = AVE, defl.matrix = defl.matrix,
               init = init, bias = bias,

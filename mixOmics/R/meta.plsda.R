@@ -29,7 +29,7 @@ max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = FALSE)
     Y.mat=unmap(Y)
     colnames(Y.mat) = paste0("Y", 1:ncol(Y.mat))
 
-    X = as.matrix(X)
+#X = as.matrix(X)
 
     result <- wrapper.meta.spls.hybrid(X=X,Y=Y.mat,study=study,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
     max.iter=max.iter,tol=tol)

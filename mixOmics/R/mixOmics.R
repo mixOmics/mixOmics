@@ -44,7 +44,7 @@ verbose=FALSE)
 
             if(!missing(Y))
             {
-                if(is.list(Y)) stop("Y must be a matrix or a factor")
+                if(is.list(Y) & !is.data.frame(X)) stop("Y must be a matrix or a factor")
             
                 if (is.null(dim(Y))) {
                     Y = as.factor(Y)
@@ -178,7 +178,7 @@ verbose=FALSE)
     }else{#either pls,spls, plsda, splsda or meta. pls/spls/plsda/splsda
         if(missing(Y))
         stop("Y is missing")
-        if(is.list(Y)) stop("Y must be a matrix or a factor")
+        if(is.list(Y) & !is.data.frame(X)) stop("Y must be a matrix or a factor")
         if(!is.numeric(Y)) Y=as.factor(Y)
         
         if(missing(mode)) mode="regression"
@@ -276,6 +276,8 @@ verbose=FALSE)
             
         }
     }
+    cl = match.call()
+    res$call=cl
     class(res)=c("mixOmics",class(res))
     return(invisible(res))
     

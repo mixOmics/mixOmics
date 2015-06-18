@@ -156,7 +156,7 @@ init , tol , verbose,mode , max.iter,study , keepA, keepA.constraint)
 # Check.entry.pls
 # --------------------------------------
 
-Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.constraint,mode)
+Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.constraint,mode,verbose, near.zero.var)
 {
     
     
@@ -345,11 +345,47 @@ stop("each entry of 'keepY.constraint' must be lower or equal than ", Q, ".")
 
 #if((length(keepX.constraint)+length(keepX))!=ncomp) stop(paste0("length (keepX.constraint) + length(keepX) should be ncomp"))
 #if((length(keepY.constraint)+length(keepY))!=ncomp) stop(paste0("length (keepY.constraint) + length(keepY) should be ncomp"))
+
+
+
+    # at this stage keepA.constraint need to be character, to remove easily variables with near zero variance
+    ### near.zero.var, remove the variables with very small variances
+    if(near.zero.var == TRUE)
+    {
+        nzv.A = nearZeroVar(X)
         
+        if (length(nzv.A$Position) > 0)
+        {
+            names.remove.X=colnames(X)[nzv.A$Position]
+            X = X[, -nzv.A$Position,drop=FALSE]
+            #if (verbose)
+            warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
+            if(ncol(X) == 0) {stop("No more variables in X")}
+            
+            # at this stage, keepA.constraint need to be numbers
+            if(length(keepX.constraint)>0)
+            {
+                #remove the variables from keepA.constraint if removed by near.zero.var
+                keepX.constraint=match.keepX.constraint(names.remove.X,keepX.constraint)
+                # replace character by numbers
+                keepX.constraint= lapply(keepX.constraint,function(x){match(x,colnames(X))})
+            }
+            #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
+            if(any(keepX>ncol(X)))
+            {
+                ind=which(keepX>ncol(X))
+                keepX[ind]=ncol(X)
+            }
+        }
+        
+    }else{nzv.A=NULL}
+
+
+
 
 
     return(list(X=X,Y=Y,ncomp=ncomp,X.names=X.names,Y.names=Y.names,ind.names=ind.names,mode=mode,keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,
-    keepX=keepX,keepY=keepY))
+    keepX=keepX,keepY=keepY,nzv.A=nzv.A))
 }
 
 # --------------------------------------
@@ -975,8 +1011,52 @@ verbose)
     if(!is.logical(near.zero.var))
     stop("near.zero.var must be either TRUE or FALSE")
     
+    
+    
+    
+    
+    
+    
+    
+    
+    # at this stage keepA.constraint need to be character, to remove easily variables with near zero variance
+    ### near.zero.var, remove the variables with very small variances
+    if(near.zero.var == TRUE)
+    {
+        nzv.A = lapply(A,nearZeroVar)
+        for(q in 1:length(A))
+        {
+            if (length(nzv.A[[q]]$Position) > 0)
+            {
+                names.remove.X=colnames(A[[q]])[nzv.A[[q]]$Position]
+                A[[q]] = A[[q]][, -nzv.A[[q]]$Position,drop=FALSE]
+                if (verbose)
+                warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
+                if(ncol(A[[q]]) == 0) {stop(paste0("No more variables in",A[[q]]))}
+                
+                # at this stage, keepA.constraint need to be numbers
+                if(length(keepA.constraint[[q]])>0)
+                {
+                    #remove the variables from keepA.constraint if removed by near.zero.var
+                    keepA.constraint[[q]]=match.keepX.constraint(names.remove.X,keepA.constraint[[q]])
+                    # replace character by numbers
+                    keepA.constraint[[q]]= lapply(keepA.constraint[[q]],function(x){match(x,colnames(A[[q]]))})
+                }
+                #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
+                if(any(keepA[[q]]>ncol(A[[q]])))
+                {
+                    ind=which(keepA[[q]]>ncol(A[[q]]))
+                    keepA[[q]][ind]=ncol(A[[q]])
+                }
+            }
+            
+        }
+    }else{nzv.A=NULL}
+    
+    
+    
     return(list(A=A,ncomp=ncomp,study=study,keepA=keepA,keepA.constraint=keepA.constraint,
-    indY=indY,design=design,init=init))
+    indY=indY,design=design,init=init,nzv.A=nzv.A))
     
 }
 

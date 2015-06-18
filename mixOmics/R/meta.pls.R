@@ -15,8 +15,8 @@ wrapper.meta.pls <- function(X, Y, ncomp = 2, mode = c("regression", "canonical"
     
     #-- validation des arguments --#
     # most of the checks are done in the wrapper.meta.spls.hybrid function
-    X = as.matrix(X)
-    Y = as.matrix(Y)
+    #X = as.matrix(X)
+    #Y = as.matrix(Y)
 
     result <- wrapper.meta.spls.hybrid(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,study=study,mode=mode,
     max.iter=max.iter,tol=tol)

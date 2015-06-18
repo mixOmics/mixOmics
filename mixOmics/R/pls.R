@@ -19,8 +19,8 @@ wrapper.pls <- function(X, Y, ncomp = 2, mode = c("regression", "canonical", "in
     #if (!is.numeric(X) || !is.numeric(Y))
     #stop("'X' and/or 'Y' must be a numeric matrix.")
 
-    X = as.matrix(X)
-    Y = as.matrix(Y)
+#X = as.matrix(X)
+#Y = as.matrix(Y)
 
 
     if(missing(ncomp)) ncomp=2
