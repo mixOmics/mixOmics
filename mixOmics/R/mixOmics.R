@@ -46,16 +46,16 @@ verbose=FALSE)
             {
                 if(is.list(Y) & !is.data.frame(X)) stop("Y must be a matrix or a factor")
             
-                if (is.null(dim(Y))) {
-                    Y = as.factor(Y)
+                if (is.factor(Y)) {
+                    #Y = as.factor(Y)
                     isfactorY=TRUE
                 }
                 
             }else if(!missing(indY))
             {
                 temp=X[[indY]] #not called Y to not be an input of the wrappers
-                if (is.null(dim(temp))) {
-                    temp = as.factor(temp)
+                if (is.factor(temp)) {
+                    #temp = as.factor(temp)
                     isfactorY=TRUE
                 }
             }else if(missing(indY))
@@ -179,7 +179,7 @@ verbose=FALSE)
         if(missing(Y))
         stop("Y is missing")
         if(is.list(Y) & !is.data.frame(X)) stop("Y must be a matrix or a factor")
-        if(!is.numeric(Y)) Y=as.factor(Y)
+        #if(!is.numeric(Y) & ncol(Y)==1) Y=as.factor(Y)
         
         if(missing(mode)) mode="regression"
         #check for unused inputs (scheme, etc etc)
