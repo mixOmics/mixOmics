@@ -154,11 +154,11 @@ function(X,
         #-- latent variables --#
         if (na.X)
         {
-            t = X.aux %*% a.old
-            A = drop(a.old) %o% n.ones
-            A[t(is.na.X)] = 0
-            a.norm = crossprod(A)
-            t = t / diag(a.norm)
+            t = X.aux %*% a.old / drop(crossprod(a.old))
+            # A = drop(a.old) %o% n.ones
+            # A[t(is.na.X)] = 0
+            # a.norm = crossprod(A)
+            # t = t / diag(a.norm)
             # update 5.0-2: t is not normed
             #t = t / drop(sqrt(crossprod(t)))
         }else{
@@ -167,11 +167,11 @@ function(X,
          
         if (na.Y)
         {
-            u = Y.aux %*% b.old
-            B = drop(b.old) %o% n.ones
-            B[t(is.na.Y)] = 0
-            b.norm = crossprod(B)
-            u = u / diag(b.norm)
+            u = Y.aux %*% b.old / drop(crossprod(b.old))
+            # B = drop(b.old) %o% n.ones
+            # B[t(is.na.Y)] = 0
+            # b.norm = crossprod(B)
+            # u = u / diag(b.norm)
             # update 5.0-2: u is not normed
             #u = u / drop(sqrt(crossprod(u)))
         }else{
@@ -188,24 +188,38 @@ function(X,
             }else{
                 a = t(X.temp) %*% u #/ drop(crossprod(u)), useless because a is scaled after soft_thresholding
             }
-			if (na.Y)
-            {
-                b = t(Y.aux) %*% t
-            }else{
-                b = t(Y.temp) %*% t #/ drop(crossprod(t)), useless because b is scaled after soft_thresholding
-            }
-
-
+            
             # note on the variable selection below. Before 5.0-4, the selection was done so that the keepX/keepY highest coefficients were the only one not put to 0.
             # However, a bug occured with ties. It is now changed so that all ties follow the same treatment.
             # If keepX=1 and two ties, then two variables are kept at this iteration
             if (nx != 0) {
-        		absa = abs(a)
-        		if(any(rank(absa, ties.method = "max") <= nx)) {
-          			a = ifelse(rank(absa, ties.method = "max") <= nx, 0, sign(a) * (absa - max(absa[rank(absa, ties.method = "max") <= nx])))     
-        		}
+              absa = abs(a)
+              if(any(rank(absa, ties.method = "max") <= nx)) {
+                a = ifelse(rank(absa, ties.method = "max") <= nx, 0, sign(a) * (absa - max(absa[rank(absa, ties.method = "max") <= nx])))     
+              }
             }
             a = a / drop(sqrt(crossprod(a)))
+            
+            if (na.X)
+            {
+              t = X.aux %*% a / drop(crossprod(a))
+              # t = X.aux %*% a
+              # A = drop(a) %o% n.ones
+              # A[t(is.na.X)] = 0
+              # a.norm = crossprod(A)
+              # t = t / diag(a.norm)
+              # update 5.0-2: t is not normed
+              #t = t / drop(sqrt(crossprod(t)))
+            }else{
+              t = X.temp %*% a / drop(crossprod(a))
+            }
+            
+      			if (na.Y)
+                  {
+                      b = t(Y.aux) %*% t
+                  }else{
+                      b = t(Y.temp) %*% t #/ drop(crossprod(t)), useless because b is scaled after soft_thresholding
+                  }
 		     
             if(ny != 0) {
                 absb=abs(b)
@@ -214,27 +228,14 @@ function(X,
         		}
             }
             b = b / drop(sqrt(crossprod(b)))
-			 
-            if (na.X)
-            {
-                t = X.aux %*% a
-                A = drop(a) %o% n.ones
-                A[t(is.na.X)] = 0
-                a.norm = crossprod(A)
-                t = t / diag(a.norm)
-                # update 5.0-2: t is not normed
-                #t = t / drop(sqrt(crossprod(t)))
-            }else{
-                t = X.temp %*% a / drop(crossprod(a))
-            }
-             
+			            
             if (na.Y)
             {
-                u = Y.aux %*% b
-                B = drop(b) %o% n.ones
-                B[t(is.na.Y)] = 0
-                b.norm = crossprod(B)
-                u = u / diag(b.norm)
+                u = Y.aux %*% b / drop(crossprod(b))
+                # B = drop(b) %o% n.ones
+                # B[t(is.na.Y)] = 0
+                # b.norm = crossprod(B)
+                # u = u / diag(b.norm)
                 # update 5.0-2: u is not normed
                 #u = u / drop(sqrt(crossprod(u)))
             }else{
@@ -258,11 +259,11 @@ function(X,
         {
             X.aux = X.temp
             X.aux[is.na.X] = 0
-            c = crossprod(X.aux, t)				
-            T = drop(t) %o% p.ones
-            T[is.na.X] = 0
-            t.norm = crossprod(T)				
-            c = c / diag(t.norm)
+            c = crossprod(X.aux, t)	/ drop(crossprod(t))			
+            # T = drop(t) %o% p.ones
+            # T[is.na.X] = 0
+            # t.norm = crossprod(T)				
+            # c = c / diag(t.norm)
         }else{
             c = crossprod(X.temp, t) / drop(crossprod(t))
         }	
@@ -276,11 +277,11 @@ function(X,
             {
                 Y.aux = Y.temp
                 Y.aux[is.na.Y] = 0
-                e = crossprod(Y.aux, u)
-                U = drop(u) %o% q.ones
-                U[is.na.Y] = 0
-                u.norm = crossprod(U)				
-                e = e / diag(u.norm)					
+                e = crossprod(Y.aux, u) / drop(crossprod(u))
+                # U = drop(u) %o% q.ones
+                # U[is.na.Y] = 0
+                # u.norm = crossprod(U)				
+                # e = e / diag(u.norm)					
             }else{
                 e = crossprod(Y.temp, u) / drop(crossprod(u))
             }
@@ -295,11 +296,11 @@ function(X,
             {
                 Y.aux = Y.temp
                 Y.aux[is.na.Y] = 0
-                d = crossprod(Y.aux, t)
-                T = drop(t) %o% q.ones
-                T[is.na.Y] = 0
-                t.norm = crossprod(T)				
-                d = d / diag(t.norm)
+                d = crossprod(Y.aux, t) / drop(crossprod(t))
+                # T = drop(t) %o% q.ones
+                # T[is.na.Y] = 0
+                # t.norm = crossprod(T)				
+                # d = d / diag(t.norm)
             }else{
                 d = crossprod(Y.temp, t) / drop(crossprod(t))
             }
