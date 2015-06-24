@@ -165,11 +165,11 @@ function(X,
       #-- latent variables --#
       if (na.X)
       {
-        t = X.aux %*% a.old / drop(crossprod(a.old))
-        # A = drop(a.old) %o% n.ones
-        # A[t(is.na.X)] = 0
-        # a.norm = crossprod(A)
-        # t = t / diag(a.norm)
+        t = X.aux %*% a.old
+        A = drop(a.old) %o% n.ones
+        A[t(is.na.X)] = 0
+        a.norm = crossprod(A)
+        t = t / diag(a.norm)
         # update 5.0-2: t is not normed
         #t = t / drop(sqrt(crossprod(t)))
       }else{
@@ -178,11 +178,11 @@ function(X,
       
       if (na.Y)
       {
-        u = Y.aux %*% b.old / drop(crossprod(b.old))
-        # B = drop(b.old) %o% n.ones
-        # B[t(is.na.Y)] = 0
-        # b.norm = crossprod(B)
-        # u = u / diag(b.norm)
+        u = Y.aux %*% b.old
+        B = drop(b.old) %o% n.ones
+        B[t(is.na.Y)] = 0
+        b.norm = crossprod(B)
+        u = u / diag(b.norm)
         # update 5.0-2: u is not normed
         #u = u / drop(sqrt(crossprod(u)))
       }else{
@@ -202,12 +202,11 @@ function(X,
         
         if (na.X)
         {
-          t = X.aux %*% a / drop(crossprod(a))
-          # t = X.aux %*% a
-          # A = drop(a) %o% n.ones
-          # A[t(is.na.X)] = 0
-          # a.norm = crossprod(A)
-          # t = t / diag(a.norm)
+          t = X.aux %*% a
+          A = drop(a) %o% n.ones
+          A[t(is.na.X)] = 0
+          a.norm = crossprod(A)
+          t = t / diag(a.norm)
           # update 5.0-2: t is not normed
           #t = t / drop(sqrt(crossprod(t)))
         }else{
@@ -224,11 +223,11 @@ function(X,
         
         if (na.Y)
         {
-          u = Y.aux %*% b / drop(crossprod(b))
-          # B = drop(b) %o% n.ones
-          # B[t(is.na.Y)] = 0
-          # b.norm = crossprod(B)
-          # u = u / diag(b.norm)
+          u = Y.aux %*% b
+          B = drop(b) %o% n.ones
+          B[t(is.na.Y)] = 0
+          b.norm = crossprod(B)
+          u = u / diag(b.norm)
           # update 5.0-2: u is not normed
           #u = u / drop(sqrt(crossprod(u)))
         }else{
@@ -252,11 +251,11 @@ function(X,
         {
             X.aux = X.temp
             X.aux[is.na.X] = 0
-            c = crossprod(X.aux, t)	/ drop(crossprod(t))			
-            # T = drop(t) %o% p.ones
-            # T[is.na.X] = 0
-            # t.norm = crossprod(T)				
-            # c = c / diag(t.norm)
+            c = crossprod(X.aux, t)		
+            T = drop(t) %o% p.ones
+            T[is.na.X] = 0
+            t.norm = crossprod(T)				
+            c = c / diag(t.norm)
         }else{
             c = crossprod(X.temp, t) / drop(crossprod(t))
         }	
@@ -270,11 +269,11 @@ function(X,
             {
                 Y.aux = Y.temp
                 Y.aux[is.na.Y] = 0
-                e = crossprod(Y.aux, u) / drop(crossprod(u))
-                # U = drop(u) %o% q.ones
-                # U[is.na.Y] = 0
-                # u.norm = crossprod(U)				
-                # e = e / diag(u.norm)					
+                e = crossprod(Y.aux, u)
+                U = drop(u) %o% q.ones
+                U[is.na.Y] = 0
+                u.norm = crossprod(U)				
+                e = e / diag(u.norm)					
             }else{
                 e = crossprod(Y.temp, u) / drop(crossprod(u))
             }
@@ -294,11 +293,11 @@ function(X,
             {
                 Y.aux = Y.temp
                 Y.aux[is.na.Y] = 0
-                d = crossprod(Y.aux, t) / drop(crossprod(t))
-                # T = drop(t) %o% q.ones
-                # T[is.na.Y] = 0
-                # t.norm = crossprod(T)				
-                # d = d / diag(t.norm)
+                d = crossprod(Y.aux, t)
+                T = drop(t) %o% q.ones
+                T[is.na.Y] = 0
+                t.norm = crossprod(T)				
+                d = d / diag(t.norm)
             }else{
                 d = crossprod(Y.temp, t) / drop(crossprod(t))
             }
