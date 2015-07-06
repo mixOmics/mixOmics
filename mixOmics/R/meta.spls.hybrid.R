@@ -71,7 +71,8 @@ tol = 1e-06)
     # keepA.constraint: keepX.constraint, which variables are kept on the first num.comp-1 components. It is a list of characters
     # near.zero.var: do you want to remove variables with very small variance
     
-    check=Check.entry.pls(X, Y, ncomp, keepX, keepY,keepX.constraint,keepY.constraint,mode,near.zero.var=near.zero.var) # to have the warnings relative to X and Y, instead of blocks
+    check=Check.entry.pls(X, Y, ncomp, keepX, keepY,keepX.constraint,keepY.constraint,mode,
+        near.zero.var=near.zero.var,max.iter=max.iter,tol=tol) # to have the warnings relative to X and Y, instead of blocks
     X=check$X
     Y=check$Y
     ncomp=check$ncomp

@@ -46,6 +46,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     #end general checks
     
     ncomp = object$ncomp
+    newdata.input=newdata
     
     
     if(length(grep("plsda",class(object)))>0) # a DA analysis (meta).(block).(s)plsda
@@ -167,10 +168,10 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         newdata = lapply(1:J, function(x){sweep(newdata[[x]], 2, STATS = attr(X[[x]], "scaled:center"))})
         if (scale)
         newdata = lapply(1:J, function(x){sweep(newdata[[x]], 2, FUN = "/", STATS = attr(X[[x]], "scaled:scale"))})
-        
-        means.Y = attr(Y, "scaled:center");
+
+        means.Y = matrix(attr(Y, "scaled:center"),nrow=nrow(newdata.input),ncol=q,byrow=TRUE);
         if (scale)
-        {sigma.Y = attr(Y, "scaled:scale")}else{sigma.Y=1}
+        {sigma.Y = matrix(attr(Y, "scaled:scale"),nrow=nrow(newdata.input),ncol=q,byrow=TRUE)}else{sigma.Y=matrix(1,nrow=nrow(newdata.input),ncol=q)}
         concat.newdata=newdata
         
     }else{
@@ -308,7 +309,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         
         # Prediction Y.hat, B.hat and t.pred
         Ypred = lapply(1 : ncomp[i], function(x){concat.newdata[[i]] %*% Wmat[, 1:x] %*% solve(t(Pmat[, 1:x]) %*% Wmat[, 1:x]) %*% t(Cmat)[1:x, ]})
-        Ypred = sapply(Ypred, function(x){t(t(x)*sigma.Y + means.Y)}, simplify = "array")
+        Ypred = sapply(Ypred, function(x){x*sigma.Y + means.Y}, simplify = "array")
         
         Y.hat[[i]] = Ypred
         
