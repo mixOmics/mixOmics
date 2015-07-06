@@ -156,7 +156,7 @@ init , tol , verbose,mode , max.iter,study , keepA, keepA.constraint)
 # Check.entry.pls
 # --------------------------------------
 
-Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.constraint,mode,verbose, near.zero.var)
+Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.constraint,mode,verbose, near.zero.var,max.iter,tol)
 {
     
     
@@ -198,6 +198,11 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.con
         warning("Reset maximum number of variates 'ncomp' to ncol(X) = ", P, ".")
         ncomp = P
     }
+    
+    if(!is.numeric(tol) | tol<=0)
+    stop("tol must be non negative")
+    if(!is.numeric(max.iter) | max.iter<=0)
+    stop("max.iter must be non negative")
     
     
     #-- initialisation des matrices --#
@@ -290,22 +295,24 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.con
 
 
 
-if (any(keepX<0))
-stop("each component of 'keepX' must be non negative ")
-if (any(keepY<0))
-stop("each component of 'keepY' must be non negative ")
+    if (any(keepX<0))
+    stop("each component of 'keepX' must be non negative ")
+    if (any(keepY<0))
+    stop("each component of 'keepY' must be non negative ")
 
-if (any(keepX > ncol(X)))
-stop("each component of 'keepX' must be lower or equal than ", P, ".")
-if (any(keepY > ncol(Y)))
-stop("each component of 'keepY' must be lower or equal than ", Q, ".")
+    if (any(keepX > ncol(X)))
+    stop("each component of 'keepX' must be lower or equal than ", P, ".")
+    if (any(keepY > ncol(Y)))
+    stop("each component of 'keepY' must be lower or equal than ", Q, ".")
 
-if (is.numeric(unlist(keepX.constraint)) && any(unlist(keepX.constraint) > ncol(X)))
-stop("each entry of 'keepX.constraint' must be lower or equal than ", P, ".")
-if ( is.numeric(unlist(keepY.constraint)) && any(unlist(keepY.constraint) > ncol(Y)))
-stop("each entry of 'keepY.constraint' must be lower or equal than ", Q, ".")
+    if (is.numeric(unlist(keepX.constraint)) && any(unlist(keepX.constraint) > ncol(X)))
+    stop("each entry of 'keepX.constraint' must be lower or equal than ", P, ".")
+    if ( is.numeric(unlist(keepY.constraint)) && any(unlist(keepY.constraint) > ncol(Y)))
+    stop("each entry of 'keepY.constraint' must be lower or equal than ", Q, ".")
 
 
+    if(!is.logical(near.zero.var))
+    stop("near.zero.var must be either TRUE or FALSE")
 
     # match keepX.constraint and the colnames of X in order for keepX.constraint to be a list of character
     # safety if keepX.constraint contains a mixed of character/numeric. It should one or the other, not a mix
@@ -996,10 +1003,9 @@ verbose)
     if(nrow(design)!=length(A))
     stop(paste0("'design' must be a square matrix with",length(A),"columns."))
     
-    if(tol<=0)
+    if(!is.numeric(tol) | tol<=0)
     stop("tol must be non negative")
-    
-    if(max.iter<=0)
+    if(!is.numeric(max.iter) | max.iter<=0)
     stop("max.iter must be non negative")
     
     if(!is.logical(verbose))
