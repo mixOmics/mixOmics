@@ -1,5 +1,5 @@
 
-import(MASS, lattice, RGCCA, igraph, rgl, pheatmap)
+import(MASS, lattice, igraph, rgl, pheatmap,ggplot2)
 
 export(
 bin.color, 
@@ -53,7 +53,8 @@ valid,
 vip,
 withinVariation,
 wrapper.rgcca,
-wrapper.sgcca)
+wrapper.sgcca,
+wrapper.sgccda)
 
 
 S3method(cim, default)
