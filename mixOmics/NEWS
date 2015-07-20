@@ -1,3 +1,16 @@
+Changes in 5.1
+================
+selectVar has been extended to PCA, PLS and PLS-DA
+plotContrib for objects of class plsda and splsda
+wrapper.sgccda added
+RGCCA dependency no longer exists
+ggplot2 dependency added
+
+Bug fixes:
+----------
+The sPLS algorithm was reorganised to ensure convergence
+
+
 Changes in 5.0-4
 ================
 
