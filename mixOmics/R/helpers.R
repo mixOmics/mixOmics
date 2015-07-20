@@ -75,49 +75,6 @@ l2.norm=function(x)
   out=x/drop(sqrt(crossprod(x)))
 }
 
-# --------------------------------------
-# unmap
-# --------------------------------------
-unmap <- function (classification, groups = NULL, noise = NULL, ...) {
-  n <- length(classification)
-  u <- sort(unique(classification))
-  levels =  levels(classification)### Add levels
-  
-  if (is.null(groups)) {
-    groups <- u
-  } else {
-    if (any(match(u, groups, nomatch = 0) == 0)) 
-      stop("groups incompatible with classification")
-    miss <- match(groups, u, nomatch = 0) == 0
-  }
-  
-  cgroups <- as.character(groups)
-  if (!is.null(noise)) {
-    noiz <- match(noise, groups, nomatch = 0)
-    if (any(noiz == 0)) 
-      stop("noise incompatible with classification")
-    groups <- c(groups[groups != noise], groups[groups == 
-                                                  noise])
-    noise <- as.numeric(factor(as.character(noise), levels = unique(groups)))
-  }
-  
-  groups <- as.numeric(factor(cgroups, levels = unique(cgroups)))
-  classification <- as.numeric(factor(as.character(classification), levels = unique(cgroups)))
-  k <- length(groups) - length(noise)
-  nam <- levels(groups)
-  
-  if (!is.null(noise)) {
-    k <- k + 1
-    nam <- nam[1:k]
-    nam[k] <- "noise"
-  }
-  
-  z <- matrix(0, n, k, dimnames = c(names(classification), nam))
-  for (j in 1:k) z[classification == groups[j], j] <- 1
-  attr(z, "levels") = levels
-  z
-}
-
 
 #############################################################################################################
 # Functions acquired from RGCCA R-library

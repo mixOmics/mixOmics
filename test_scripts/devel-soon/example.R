@@ -1,5 +1,16 @@
 rm(list=ls())
 
+sourceDir <- function(path, trace = TRUE, ...) {
+    for (nm in list.files(path, pattern = "\\.[RrSsQq]$")) {
+        if(trace) cat(nm,":")
+        source(file.path(path, nm), ...)
+        if(trace) cat("\n")
+    }
+}
+
+sourceDir("/Users/florian/Work/git/package-mixOmics/mixOmics/R/",trace=FALSE) #load all the functions inside ixOmics/R
+
+
 ### RGCCA / SGCCA with mixOmics package version 5
 require(mixOmics)
 data(nutrimouse)
@@ -47,6 +58,7 @@ nutrimouse.sgcca1.update <- wrapper.rgcca(blocks = data,
                                          verbose = FALSE)
 
 plotIndiv(nutrimouse.sgcca1.update, blocks = NULL)
+plotIndiv(nutrimouse.sgcca1.update, blocks = c(1,2))
 
 head(nutrimouse.sgcca1.update$loadings[[1]])
 head(nutrimouse.sgcca1.update$loadings[[2]])
