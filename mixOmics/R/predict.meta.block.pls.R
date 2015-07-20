@@ -201,7 +201,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         newdata.list.study = lapply(newdata,study_split,study.test) #a list of lists. [[j]][[m]]: j is for the blocks, m is for the levels(study)
         
         # each study is normalized, depending on how the normalization was performed on the learning set (center/scale)
-        newdata.list.study.scale =vector("list",length=J) #list(list())
+        newdata.list.study.scale.temp =NULL#vector("list",length=J) #list(list())
         concat.newdata  = vector("list",length=J)
         for(j in 1:J) # loop on the blocks
         {
@@ -215,9 +215,9 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
                     {
                         if(nlevels(object$study)>1)
                         {
-                            newdata.list.study.scale[[j]][[m]]=scale(newdata.list.study[[j]][[m]], center = attr(X[[j]],paste0("means:", levels(study.test)[m])), scale = attr(X[[j]],paste0("sigma:", levels(study.test)[m])))
+                            newdata.list.study.scale.temp=scale(newdata.list.study[[j]][[m]], center = attr(X[[j]],paste0("means:", levels(study.test)[m])), scale = attr(X[[j]],paste0("sigma:", levels(study.test)[m])))
                         }else{#if just one level in object$study, the normalisation attributes are not named the same
-                            newdata.list.study.scale[[j]][[m]]=scale(newdata.list.study[[j]][[m]], center = attr(X[[j]],"scaled:center"), scale = attr(X[[j]],"scaled:scale"))
+                            newdata.list.study.scale.temp=scale(newdata.list.study[[j]][[m]], center = attr(X[[j]],"scaled:center"), scale = attr(X[[j]],"scaled:scale"))
                         }
                     }
                     
@@ -225,9 +225,9 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
                     {
                         if(nlevels(object$study)>1)
                         {
-                            newdata.list.study.scale[[j]][[m]]=scale(newdata.list.study[[j]][[m]], center = attr(X[[j]],paste0("means:", levels(study.test)[m])),scale=FALSE)
+                            newdata.list.study.scale.temp=scale(newdata.list.study[[j]][[m]], center = attr(X[[j]],paste0("means:", levels(study.test)[m])),scale=FALSE)
                         }else{#if just one level in object$study, the normalisation attributes are not named the same
-                            newdata.list.study.scale[[j]][[m]]=scale(newdata.list.study[[j]][[m]], center = attr(X[[j]],"scaled:center"),scale=FALSE)
+                            newdata.list.study.scale.temp=scale(newdata.list.study[[j]][[m]], center = attr(X[[j]],"scaled:center"),scale=FALSE)
                         }
                         
                         
@@ -235,10 +235,10 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
                     
                 }else{
                 # case 2: sample test is a new study # a new study which was not in the learning set
-                    newdata.list.study.scale[[j]][[m]]=scale(newdata.list.study[[j]][[m]],center=TRUE,scale=scale)
+                    newdata.list.study.scale.temp=scale(newdata.list.study[[j]][[m]],center=TRUE,scale=scale)
                 }
                 #concatenation of the scaled data
-                concat.newdata[[j]] = rbind(concat.newdata[[j]], unlist(newdata.list.study.scale[[j]][[m]]))
+                concat.newdata[[j]] = rbind(concat.newdata[[j]], unlist(newdata.list.study.scale.temp))#[[j]][[m]]))
             }
         }
         
@@ -256,7 +256,8 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         means.Y=matrix(0,nrow=nrow(concat.newdata[[1]]),ncol=q)
         sigma.Y=matrix(1,nrow=nrow(concat.newdata[[1]]),ncol=q)
         
-        for(m in 1:M) #loop on the blocks to define means.Y and sigma.Y for meta analysis
+        #loop on the blocks to define means.Y and sigma.Y for meta analysis
+        for(m in 1:M)
         {
             if(m%in%match.study.indice) #if some study of study.test were already in the learning set
             {
@@ -275,7 +276,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
                     {
                         sigma.Y[which(study.test%in%levels(study.learn)[match.study[m]]),]=matrix(attr(Y,paste0("sigma:", levels(study.test)[m])),nrow=length(which(study.test%in%levels(study.learn)[match.study[m]])),ncol=q,byrow=TRUE)
                     }else{#if just one level in object$study, the normalisation attributes are not named the same
-                        means.Y[which(study.test%in%levels(study.learn)[match.study[m]]),]=matrix(attr(Y,"scaled:scale"),nrow=length(which(study.test%in%levels(study.learn)[match.study[m]])),ncol=q,byrow=TRUE)
+                        sigma.Y[which(study.test%in%levels(study.learn)[match.study[m]]),]=matrix(attr(Y,"scaled:scale"),nrow=length(which(study.test%in%levels(study.learn)[match.study[m]])),ncol=q,byrow=TRUE)
                     }
                     
                     

@@ -117,7 +117,7 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
   # center the data per study, per matrix of A, scale if scale=TRUE, option bias
   mean_centered = lapply(A, function(x){mean_centering_per_study(x, study, scale, bias)})
   A = lapply(mean_centered, function(x){as.matrix(x$concat.data)})
-  ni=lapply(mean_centered[[1]]$data.list.study.scale,nrow) #number of samples per study
+  ni=table(study)#lapply(mean_centered[[1]]$data.list.study.scale,nrow) #number of samples per study
 
 
     ### Start: Initialization parameters
@@ -135,7 +135,7 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
       for(m in 1:nlevels(study))
       {
           loadings.partial.A[[k]][[m]]=matrix(nrow=NCOL(A[[k]]),ncol=N)
-          variates.partial.A[[k]][[m]]=matrix(nrow=ni[[m]],ncol=N)
+          variates.partial.A[[k]][[m]]=matrix(nrow=ni[m],ncol=N)
       }
       #variates.partial.A[[k]]=matrix(nrow=nb_ind,ncol=N)
   }
@@ -342,7 +342,19 @@ sparse.meta.block_iteration <- function (A, design, study = NULL, keepA.constrai
      loadings.A[[J]] = svd.M[[1]]$v
   } else if (init=="svd.single")
   {
-      loadings.A <-  lapply(1 : J, function(y){initsvd(lapply(y, function(x) {replace(A[[x]], is.na(A[[x]]), 0)})[[1]])})
+      alpha <-  lapply(1 : J, function(y){initsvd(lapply(y, function(x) {replace(A[[x]], is.na(A[[x]]), 0)})[[1]])})
+      
+      loadings.A = list()
+      for (j in 1:J){
+          if (nrow(A[[j]]) >= ncol(A[[j]])){
+              loadings.A[[j]] = alpha[[j]]
+          } else {
+              K <- as.matrix(A[[j]]) %*% as.matrix(t(A[[j]]))
+              N = ifelse(bias, nrow(A[[j]]), nrow(A[[j]]) - 1)
+              alpha[[j]] = drop(1/sqrt(t(alpha[[j]]) %*% K %*% alpha[[j]])) * alpha[[j]]
+              loadings.A[[j]] = t(A[[j]]) %*% alpha[[j]]
+          }
+      }
       
     ### End: Change initialization of a
     
@@ -445,127 +457,120 @@ sparse.meta.block_iteration <- function (A, design, study = NULL, keepA.constrai
 #   outputs:
 # ----------------------------------------------------------------------------------------------------------
 
+
 sparse.rgcca_iteration <- function (A, design, tau = "optimal", scheme = "centroid", scale = FALSE, max.iter = 500,
-                    verbose = FALSE, init = "svd.single", bias = FALSE, tol = .Machine$double.eps, keepA = NULL,keepA.constraint = NULL) {
-  ### Start: Initialisation parameters
-  A <- lapply(A, as.matrix)
-  J <- length(A)
-  n <- NROW(A[[1]])
-  pjs <- sapply(A, NCOL)
-  variates.A <- matrix(0, n, J)
-  ### End: Initialisation parameters
-  
-  if (!is.numeric(tau))
+verbose = FALSE, init = "svd.single", bias = FALSE, tol = .Machine$double.eps, keepA = NULL, penalty = NULL) {
+    
+    ### Start: Initialisation parameters
+    A <- lapply(A, as.matrix)
+    J <- length(A)
+    n <- NROW(A[[1]])
+    pjs <- sapply(A, NCOL)
+    variates.A <- matrix(0, n, J)
+    penalty = penalty * sqrt(pjs)
+    ### End: Initialisation parameters
+    
+    if (!is.numeric(tau))
     tau = sapply(A, tau.estimate)
     
-  loadings.A <- alpha <- M <- Minv <- K <- list()
-  which.primal <- which((n >= pjs) == 1)
-  which.dual <- which((n < pjs) == 1)
-  
-  if (init == "svd.single") {
-    for (j in which.primal) {           
-      loadings.A[[j]] <- initsvd(lapply(j, function(x) {replace(A[[x]], is.na(A[[x]]), 0)})[[1]])
-    }
-    for (j in which.dual) {
-      alpha[[j]] <- initsvd(lapply(j, function(x) {replace(A[[x]], is.na(A[[x]]), 0)})[[1]])
-      K[[j]] <- A[[j]] %*% t(A[[j]])
-    }
-  #} else if (init == "random") {
-  # for (j in which.primal) {
-  #    loadings.A[[j]] <- rnorm(pjs[j])
-  #  }
-  #  for (j in which.dual) {
-  #    alpha[[j]] <- rnorm(n)
-  #    K[[j]] <- A[[j]] %*% t(A[[j]])
-  #  }
-  } else {
-      stop("init should be 'svd.single'.")#either random or by SVD.")
-  }
-  
-  N = ifelse(bias, n, n - 1)
-  for (j in which.primal) {      
-    M[[j]] <- ginv(tau[j] * diag(pjs[j]) + (1 - tau[j]) * cov2(A[[j]], bias = bias))    
-    loadings.A[[j]] <- drop(1/sqrt(t(loadings.A[[j]]) %*% M[[j]] %*% loadings.A[[j]])) * M[[j]] %*% loadings.A[[j]]
-    variates.A[, j] <- A[[j]] %*% loadings.A[[j]]
-  }
-  
-  for (j in which.dual) {
-    M[[j]] = tau[j] * diag(n) + (1 - tau[j])/(N) * K[[j]]
-    Minv[[j]] = ginv(M[[j]])
-    alpha[[j]] = drop(1/sqrt(t(alpha[[j]]) %*% M[[j]] %*% K[[j]] %*% alpha[[j]])) * alpha[[j]]       
-    loadings.A[[j]] = t(A[[j]]) %*% alpha[[j]]
-    variates.A[, j] = A[[j]] %*% loadings.A[[j]]
-  }
-  
-  iter = 1
-  crit = numeric()
-  # converg = numeric()
-  Z = matrix(0, NROW(A[[1]]), J)
-  loadings.A_old = loadings.A
-  g <- function(x) switch(scheme, horst = x, factorial = x^2, centroid = abs(x))
-  
-  repeat {
-    variates.Aold <- variates.A
+    loadings.A <- alpha <- M <- Minv <- K <- list()
+    which.primal <- which((n >= pjs) == 1)
+    which.dual <- which((n < pjs) == 1)
     
-    for (j in which.primal) {
-      if (scheme == "horst") CbyCovq <- design[j, ]
-      if (scheme == "factorial") CbyCovq <- design[j, ] * cov2(variates.A, variates.A[, j], bias = bias)
-      if (scheme == "centroid") CbyCovq <- design[j, ] * sign(cov2(variates.A, variates.A[, j], bias = bias))     
-      
-      # Compute the inner components
-      Z[, j] = rowSums(mapply("*", CbyCovq, as.data.frame(variates.A)))
-      
-      # Computer the outer weight
-      loadings.A[[j]] = drop(1/sqrt(t(Z[, j]) %*% A[[j]] %*% M[[j]] %*% t(A[[j]]) %*% Z[, j])) * (M[[j]] %*% t(A[[j]]) %*% Z[, j])
-      
-      # sparse using keepA
-      loadings.A[[j]]=sparsity(loadings.A[[j]], keepA[[j]], keepA.constraint = keepA.constraint[[j]])
-      
-      # Update variate
-      variates.A[, j] = A[[j]] %*% loadings.A[[j]]
+    if (init == "svd.single") {
+        for (j in which.primal) {
+            loadings.A[[j]] <- initsvd(lapply(j, function(x) {replace(A[[x]], is.na(A[[x]]), 0)})[[1]])
+        }
+        for (j in which.dual) {
+            alpha[[j]] <- initsvd(lapply(j, function(x) {replace(A[[x]], is.na(A[[x]]), 0)})[[1]])
+            K[[j]] <- A[[j]] %*% t(A[[j]])
+        }
+    } else {
+        stop("init should be 'svd.single'.")#either random or by SVD.")
     }
     
-    for (j in which.dual) {
-      if (scheme == "horst") CbyCovq <- design[j, ]
-      if (scheme == "factorial") CbyCovq <- design[j, ] * cov2(variates.A, variates.A[, j], bias = bias)
-      if (scheme == "centroid") CbyCovq <- design[j, ] * sign(cov2(variates.A, variates.A[, j], bias = bias))   
-      
-      # Compute the inner components
-      Z[, j] = rowSums(mapply("*", CbyCovq, as.data.frame(variates.A)))
-      
-      # Compute the outer weight
-      alpha[[j]] = drop(1/sqrt(t(Z[, j]) %*% K[[j]] %*% Minv[[j]] %*% Z[, j])) * (Minv[[j]] %*% Z[, j])
-      loadings.A[[j]] = t(A[[j]]) %*% alpha[[j]]
-      
-      # sparse using keepA
-      loadings.A[[j]]=sparsity(loadings.A[[j]], keepA[[j]], keepA.constraint = keepA.constraint[[j]])
-      
-      # Update variate
-      variates.A[, j] = A[[j]] %*% loadings.A[[j]]
+    N = ifelse(bias, n, n - 1)
+    for (j in 1 : J){
+        if (j %in% which.primal) {
+            M[[j]] <- ginv(tau[j] * diag(pjs[j]) + (1 - tau[j]) * cov2(A[[j]], bias = bias))
+            loadings.A[[j]] <- drop(1/sqrt(t(loadings.A[[j]]) %*% M[[j]] %*% loadings.A[[j]])) * M[[j]] %*% loadings.A[[j]]
+        }
+        
+        if (j %in% which.dual) {
+            M[[j]] = tau[j] * diag(n) + (1 - tau[j])/(N) * K[[j]]
+            Minv[[j]] = ginv(M[[j]])
+            alpha[[j]] = drop(1/sqrt(t(alpha[[j]]) %*% M[[j]] %*% K[[j]] %*% alpha[[j]])) * alpha[[j]]
+            loadings.A[[j]] = t(A[[j]]) %*% alpha[[j]]
+        }
+        
+        variates.A[, j] <- A[[j]] %*% loadings.A[[j]]
     }
     
-    crit[iter] <- sum(design * g(cov2(variates.A, bias = bias)))
-    if (iter > max.iter)
-      warning(cat("The RGCCA algorithm did not converge after", max.iter ,"iterations."))
+    iter = 1
+    converg = crit = numeric()
+    Z = matrix(0, NROW(A[[1]]), J)
+    loadings.A_old = loadings.A
+    g <- function(x) switch(scheme, horst = x, factorial = x^2, centroid = abs(x))
     
-    ### Start: Match algorithm with mixOmics algo (stopping point)
-    ### if ((converg[iter] < tol & sum(stationnary_point) == J) | iter > max.iter)
-    if (max(sapply(1:J, function(x){crossprod(loadings.A[[x]] - loadings.A_old[[x]])})) < tol | iter > max.iter)
-      break
-    ### End: Match algorithm with mixOmics algo (stopping point)
+    repeat {
+        variates.Aold <- variates.A
+        
+        for (j in c(which.primal, which.dual)) {
+            
+            if (scheme == "horst") CbyCovq <- design[j, ]
+            if (scheme == "factorial") CbyCovq <- design[j, ] * cov2(variates.A, variates.A[, j], bias = bias)
+            if (scheme == "centroid") CbyCovq <- design[j, ] * sign(cov2(variates.A, variates.A[, j], bias = bias))
+            
+            # Compute the inner components
+            Z[, j] = rowSums(mapply("*", CbyCovq, as.data.frame(variates.A)))
+            
+            if (j %in% which.primal) {
+                # Computer the outer weight
+                loadings.A[[j]] = drop(1/sqrt(t(Z[, j]) %*% A[[j]] %*% M[[j]] %*% t(A[[j]]) %*% Z[, j])) * (M[[j]] %*% t(A[[j]]) %*% Z[, j])
+            }
+            
+            if (j %in% which.dual) {
+                # Compute the outer weight
+                alpha[[j]] = drop(1/sqrt(t(Z[, j]) %*% K[[j]] %*% Minv[[j]] %*% Z[, j])) * (Minv[[j]] %*% Z[, j])
+                loadings.A[[j]] = t(A[[j]]) %*% alpha[[j]]
+            }
+            
+            # sparse using keepA / penalty
+            if (!is.null(keepA) || !is.null(penalty)){
+                temp.norm = norm2(loadings.A[[j]])
+                if (!is.null(keepA)){
+                    loadings.A[[j]] = sparsity(loadings.A = loadings.A[[j]], keepA = keepA[[j]], penalty = NULL)
+                } else if (!is.null(penalty)){
+                    loadings.A[[j]] = sparsity(loadings.A = loadings.A[[j]], keepA = NULL, penalty = penalty[j])
+                }
+                loadings.A[[j]] = (loadings.A[[j]]/norm2(loadings.A[[j]]))*temp.norm
+            }
+            
+            # Update variate
+            variates.A[, j] = A[[j]] %*% loadings.A[[j]]
+        }
+        
+        crit[iter] <- sum(design * g(cov2(variates.A, bias = bias)))
+        
+        if (iter > max.iter)
+        warning(cat("The RGCCA algorithm did not converge after", max.iter ,"iterations."))
+        
+        ### Start: Match algorithm with mixOmics algo (stopping point)
+        if (max(sapply(1:J, function(x){crossprod(loadings.A[[x]] - loadings.A_old[[x]])})) < tol | iter > max.iter)
+        break
+        ### End: Match algorithm with mixOmics algo (stopping point)
+        
+        loadings.A_old <- loadings.A
+        iter <- iter + 1
+    }
     
-    loadings.A_old <- loadings.A
-    iter <- iter + 1
-  }
-    
-  if (verbose) 
+    if (verbose) 
     plot(crit, xlab = "iteration", ylab = "criteria")
-  
-  AVE_inner <- sum(design * cor(variates.A)^2/2)/(sum(design)/2)
-  
-  result <- list(variates.A = variates.A, loadings.A = loadings.A, crit = crit[which(crit != 0)], 
-                 AVE_inner = AVE_inner, design = design, tau = tau, scheme = scheme,iter=iter,
-                 keepA=keepA,keepA.constraint=keepA.constraint )
-  return(result)
+    
+    AVE_inner <- sum(design * cor(variates.A)^2/2)/(sum(design)/2)
+    
+    result <- list(variates.A = variates.A, loadings.A = loadings.A, crit = crit[which(crit != 0)], 
+    AVE_inner = AVE_inner, design = design, tau = tau, scheme = scheme,iter=iter, keepA=keepA)
+    return(result)
 }
 

@@ -79,13 +79,7 @@ layout = NULL,
     rep.space = match.arg(rep.space, c("XY-variate", "X-variate", "Y-variate"))
     
     
-    if(missing(pch))
-    {
-        pch = as.numeric(object$study)
-    }else{
-        pch=rep(pch,ceiling(object$N/length(col)))[1:object$N] # complete pch to have a vector of length N, so we can choose pch per study
 
-    }
     
     if(any(study=="all"))
     {
@@ -97,26 +91,33 @@ layout = NULL,
         {
             col=1#rep(col,ceiling(object$N/length(col)))[1:object$N] # complete col to have a vector of length N, so we can choose col per study
         }
+        if(missing(pch))
+        {
+            pch = as.numeric(object$study)
+        }else{
+            pch=rep(pch,ceiling(nrow(object$X)/length(col)))[1:nrow(object$X)] # complete pch to have a vector of length N, so we can choose pch per study
+            
+        }
         
         # l'espace de representation #
         #----------------------------#
         if (rep.space == "X-variate"){
-            x = object$variates.global$X[, comp1]
-            y = object$variates.global$X[, comp2]
+            x = object$variates$X[, comp1]
+            y = object$variates$X[, comp2]
             if (is.null(X.label)) X.label = paste("X-variate", comp1)
             if (is.null(Y.label)) Y.label = paste("X-variate", comp2)
         }
         
         if (rep.space == "Y-variate"){
-            x = object$variates.global$Y[, comp1]
-            y = object$variates.global$Y[, comp2]
+            x = object$variates$Y[, comp1]
+            y = object$variates$Y[, comp2]
             if (is.null(X.label)) X.label = paste("Y-variate", comp1)
             if (is.null(Y.label)) Y.label = paste("Y-variate", comp2)
         }
         
         if (rep.space == "XY-variate"){
-            x = (object$variates.global$X[, comp1] + object$variates.global$Y[, comp1]) / 2
-            y = (object$variates.global$X[, comp2] + object$variates.global$Y[, comp2]) / 2
+            x = (object$variates$X[, comp1] + object$variates$Y[, comp1]) / 2
+            y = (object$variates$X[, comp2] + object$variates$Y[, comp2]) / 2
             if (is.null(X.label)) X.label = paste("X-variate", comp1)
             if (is.null(Y.label)) Y.label = paste("Y-variate", comp2)
         }
@@ -126,18 +127,18 @@ layout = NULL,
         #-----------------------#
         if (length(ind.names) > 1)
         {
-            plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
+            plot(x, y, type = "n", xlab = X.label, ylab = Y.label, ...)
             text(x, y, ind.names, col = col, cex = cex, ...)
             if(abline.line) abline(v = 0, h = 0, lty = 2)
         }else{
             if (isTRUE(ind.names))
             {
-                plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
+                plot(x, y, type = "n", xlab = X.label, ylab = Y.label, ...)
                 text(x, y, ind.names, col = col, cex = cex, ...)
                 if(abline.line) abline(v = 0, h = 0, lty = 2)
             }else{
                 plot(x, y, xlab = X.label, ylab = Y.label,
-                col = col, cex = cex, pch = pch)
+                col = col, cex = cex, pch = pch, ...)
                 if(abline.line) abline(v = 0, h = 0, lty = 2)
             }
         }
@@ -172,7 +173,13 @@ layout = NULL,
         {
             col=1#rep(col,ceiling(object$N/length(col)))[1:object$N] # complete col to have a vector of length N, so we can choose col per study
         }
-        
+        if(missing(pch))
+        {
+            pch = as.numeric(object$study)
+        }else{
+            pch=rep(pch,ceiling(nrow(object$X)/length(col)))[1:nrow(object$X)] # complete pch to have a vector of length N, so we can choose pch per study
+            
+        }
 
         for (m in 1:length(study))
         {
@@ -216,23 +223,23 @@ layout = NULL,
             #-----------------------#
             if (length(ind.names) > 1)
             {
-                plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
+                plot(x, y, type = "n", xlab = X.label, ylab = Y.label, ...)
                 text(x, y, ind.names, col = col.temp, cex = cex, pch = pch.temp, ...)
                 if(abline.line) abline(v = 0, h = 0, lty = 2)
             }else{
                 if (isTRUE(ind.names))
                 {
-                    plot(x, y, type = "n", xlab = X.label, ylab = Y.label)
+                    plot(x, y, type = "n", xlab = X.label, ylab = Y.label, ...)
                     text(x, y, ind.names, col = col.temp, cex = cex, pch = pch.temp, ...)
                     if(abline.line) abline(v = 0, h = 0, lty = 2)
                 }else{
                     plot(x, y, xlab = X.label, ylab = Y.label,
-                    col = col.temp, cex = cex, pch = pch.temp)
+                    col = col.temp, cex = cex, pch = pch.temp, ...)
                     if(abline.line) abline(v = 0, h = 0, lty = 2)
                 }
             }
             
-         title(study[m])
+         title(study[m],...)
         }
         
         par(mfrow=opar)

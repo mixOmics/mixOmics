@@ -186,20 +186,40 @@ mean_centering_per_study=function(data,study,scale,bias=FALSE) {
     M = length(levels(study))   # number of groups
     # split the data
     data.list.study = study_split(data, study)
-    
+
     # center and scale data per group, and concatene the data
     concat.data = NULL
-    data.list.study.scale= list()
+    #data.list.study.scale= list()
+    meanX=list()
+    sqrt.sdX=list()
+    #time1=proc.time()
     for (m in 1:M) {
-        data.list.study.scale[[m]] = scale(data.list.study[[m]], center = TRUE, scale = scale)
+        
+        #data.list.study.scale_i = scale(data.list.study[[m]], center = TRUE, scale = scale)
+        
+        #replacing scale by fastest functions since all the computational time comes from this line of code
+        temp=data.list.study[[m]]
+        meanX[[m]]=colMeans(temp)
+        data.list.study.scale_i=t(t(temp)-meanX[[m]])
+        if(scale)
+        {
+            sqrt.sdX[[m]]=sqrt(colSums(data.list.study.scale_i^2)/(nrow(temp)-1))
+            data.list.study.scale_i=t( t(data.list.study.scale_i)/sqrt.sdX[[m]])
+        }
+        
+        
         if(bias)
-        data.list.study.scale[[m]]=data.list.study.scale[[m]]*(sqrt((nrow(data.list.study.scale[[m]])-1)/nrow(data.list.study.scale[[m]])))
+        data.list.study.scale_i=data.list.study.scale_i*(sqrt((nrow(data.list.study.scale_i)-1)/nrow(data.list.study.scale_i)))
         
-        if(sum(is.na(data.list.study.scale[[m]]))>0)
-        data.list.study.scale[[m]][is.na(data.list.study.scale[[m]])]=0
+        is.na.data=is.na(data.list.study.scale_i)
+        if(sum(is.na.data)>0)
+        data.list.study.scale_i[is.na.data]=0
         
-        concat.data = rbind(concat.data, unlist(data.list.study.scale[[m]]))
+        concat.data = rbind(concat.data, data.list.study.scale_i)
     }
+    #time2=proc.time()
+    #print("mean_centering")
+    #print(time2-time1)
     #rename rows and cols of concatenated centered (and/or scaled) data
     colnames(concat.data) = colnames(data)
     
@@ -207,19 +227,37 @@ mean_centering_per_study=function(data,study,scale,bias=FALSE) {
     indice.match=match(rownames(data),rownames(concat.data))
     concat.data=concat.data[indice.match,]
     
+    if(FALSE)#with scale function
+    {
+        if (M > 1 )
+        {
+            for(m in 1:M)
+            {
+                attr(concat.data,paste0("means:", levels(study)[m]))=attr(data.list.study.scale_i,"scaled:center")
+                attr(concat.data,paste0("sigma:", levels(study)[m]))=attr(data.list.study.scale_i,"scaled:scale")
+            }
+        } else {
+            attr(concat.data,"scaled:center")=attr(data.list.study.scale_i,"scaled:center")
+            attr(concat.data,"scaled:scale")=attr(data.list.study.scale_i,"scaled:scale")
+        }
+    }
+    
     if (M > 1 )
     {
         for(m in 1:M)
         {
-            attr(concat.data,paste0("means:", levels(study)[m]))=attr(data.list.study.scale[[m]],"scaled:center")
-            attr(concat.data,paste0("sigma:", levels(study)[m]))=attr(data.list.study.scale[[m]],"scaled:scale")
+            attr(concat.data,paste0("means:", levels(study)[m]))=meanX[[m]]#attr(data.list.study.scale_i,"scaled:center")
+            if(scale)
+            {
+            attr(concat.data,paste0("sigma:", levels(study)[m]))=sqrt.sdX[[m]]#attr(data.list.study.scale_i,"scaled:scale")
+            }else{attr(concat.data,paste0("sigma:", levels(study)[m]))=NULL}
         }
-    } else {
-        attr(concat.data,"scaled:center")=attr(data.list.study.scale[[m]],"scaled:center")
-        attr(concat.data,"scaled:scale")=attr(data.list.study.scale[[m]],"scaled:scale")
+    }else {
+        attr(concat.data,"scaled:center")=meanX[[1]]#attr(data.list.study.scale_i,"scaled:center")
+        attr(concat.data,"scaled:scale")=sqrt.sdX[[1]]#attr(data.list.study.scale_i,"scaled:scale")
     }
     
-    return(list(concat.data=concat.data,data.list.study.scale=data.list.study.scale))
+    return(list(concat.data=concat.data))#,data.list.study.scale=data.list.study.scale))
 }
 
 
