@@ -1,7 +1,7 @@
 # Copyright (C) 2009 
-# Sébastien Déjean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-# Ignacio González, Genopole Toulouse Midi-Pyrenees, France
-# Kim-Anh Lê Cao, French National Institute for Agricultural Research and 
+# Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+# Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
+# Kim-Anh Le Cao, French National Institute for Agricultural Research and
 # Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia
 # Pierre Monget, Ecole d'Ingenieur du CESI, Angouleme, France
 #
@@ -75,26 +75,24 @@ cim <-
     if ("simpleError" %in% class(err))
       stop(err[[1]], ".", call. = FALSE)
     
-    function.arg = c(names(mget(names(formals()), sys.frame(sys.nframe()))))
-    not.arg = !(user.arg %in% function.arg)
+    # if "..." is an argument, then we can have other parameters
+    #function.arg = c(names(mget(names(formals()), sys.frame(sys.nframe()))))
+    #not.arg = !(user.arg %in% function.arg)
     
-    if (any(not.arg)) {
-      unused.arg = user.arg[not.arg]
-      not.arg = which(not.arg) + 1
-      output = rep("", length(not.arg))
-      
-      for (i in 1:length(not.arg)) {
-        output[i] = paste0(unused.arg[i], " = ", arg.call[[not.arg[i]]])
-      }
-      
-      output = paste0("(", paste(output, collapse = ", "), ").")
-      msg = "unused argument "
-      if (length(not.arg) > 1) msg = "unused arguments "  
-      stop(msg, output, call. = FALSE)
-    }
-    
-    
-    
+    #if (any(not.arg)) {
+    #  unused.arg = user.arg[not.arg]
+    #  not.arg = which(not.arg) + 1
+    #  output = rep("", length(not.arg))
+    #
+    #  for (i in 1:length(not.arg)) {
+    #    output[i] = paste0(unused.arg[i], " = ", arg.call[[not.arg[i]]])
+    #  }
+    #
+    #  output = paste0("(", paste(output, collapse = ", "), ").")
+    #  msg = "unused argument "
+    #  if (length(not.arg) > 1) msg = "unused arguments "
+    #  stop(msg, output, call. = FALSE)
+    #}
     
     
     #-- color
