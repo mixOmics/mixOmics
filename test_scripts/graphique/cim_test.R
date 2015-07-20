@@ -99,8 +99,9 @@ cim(nutri.rcc,mapping="X")
 col=palette(rainbow(21))
 cim(nutri.rcc, mapping = "Y", xlab = "lipids", 
     ylab = "samples", x.sideColors = col, margins = c(6, 5))
-cim(nutri.rcc, mapping = "Y", xlab = "lipids", 
-    ylab = "samples", y.sideColors = col, margins = c(6, 5))
+col=palette(rainbow(120))
+cim(nutri.rcc, mapping = "Y", xlab = "lipids",
+ylab = "samples", y.sideColors = col, margins = c(6, 5))
 
 
 
