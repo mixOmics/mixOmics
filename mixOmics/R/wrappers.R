@@ -53,7 +53,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
 
   #-- Define blocks
   if (!is.list(blocks))
-    stop("'blocks' must be a list containing the data set.", call. = FALSE)  
+    stop("'blocks' must be a list containing the data sets.", call. = FALSE)  
   
   if (is.null(dim(Y))) {
     Y = as.factor(Y)
@@ -69,7 +69,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
   
   if (length(ncomp) == length(blocks)){
     ncomp = c(ncomp, max(ncomp))
-    message("'ncomp' has changed and extended to Y")
+    message("'ncomp' has changed and is extended to Y")
   }
   
   #-- Design
@@ -86,7 +86,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
   #-- keep.blocks
   if (is.list(keep.blocks) & (length(keep.blocks) == length(blocks))){
     keep.blocks[[length(keep.blocks) + 1]] = rep(nlevels(Y), ncomp[length(blocks) + 1])
-    message("'keep.blocks' matrix has changed and extended to Y)")
+    message("'keep.blocks' has changed and is extended to Y")
   }
   
   blocks[[length(blocks) + 1]] = ind.mat
