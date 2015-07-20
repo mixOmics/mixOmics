@@ -51,7 +51,7 @@ srgcca = function (blocks, indY = NULL,  design = 1 - diag(length(blocks)), tau 
   
   #-- blocks
   if (!is.list(blocks))
-    stop("'blocks' must be a list containing the data set.", call. = FALSE)
+    stop("'blocks' must be a list containing the data sets.", call. = FALSE)
   
   for (i in 1 : length(blocks)) {    
     if (is.data.frame(blocks[[i]])) 

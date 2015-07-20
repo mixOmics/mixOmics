@@ -1,4 +1,22 @@
-wrapper.sgcca <- function (blocks, design = NULL, penalty = NULL, scheme = "centroid", 
+# Copyright (C) 2015
+# Benoit Gautier
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+
+
+wrapper.sgcca <- function (blocks, design = NULL, penalty = NULL, scheme = "centroid",
                            scale = TRUE, bias = FALSE, max.iter = 1000,
                            tol = .Machine$double.eps, verbose = FALSE, near.zero.var = FALSE,
                            keep.blocks = NULL, ncomp = rep(2, length(blocks))) {
@@ -35,7 +53,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
 
   #-- Define blocks
   if (!is.list(blocks))
-    stop("'blocks' must be a list containing the data set.", call. = FALSE)  
+    stop("'blocks' must be a list containing the data sets.", call. = FALSE)  
   
   if (is.null(dim(Y))) {
     Y = as.factor(Y)
@@ -51,7 +69,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
   
   if (length(ncomp) == length(blocks)){
     ncomp = c(ncomp, max(ncomp))
-    message("'ncomp' has changed and extended to Y")
+    message("'ncomp' has changed and is extended to Y")
   }
   
   #-- Design
@@ -68,7 +86,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
   #-- keep.blocks
   if (is.list(keep.blocks) & (length(keep.blocks) == length(blocks))){
     keep.blocks[[length(keep.blocks) + 1]] = rep(nlevels(Y), ncomp[length(blocks) + 1])
-    message("'keep.blocks' matrix has changed and extended to Y)")
+    message("'keep.blocks' has changed and is extended to Y")
   }
   
   blocks[[length(blocks) + 1]] = ind.mat

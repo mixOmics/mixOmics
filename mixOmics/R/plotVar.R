@@ -1490,7 +1490,7 @@ plotVar.sgcca <-
     single.block = ifelse(length(block) == 1, TRUE, FALSE)
     
     #extract data
-    data = object$data
+    data = object$blocks
     
     # extraire la matrice de design
     design = object$design
@@ -1677,7 +1677,7 @@ plotVar.rgcca <-
     single.block = ifelse(length(block) == 1, TRUE, FALSE)
     
     #extract data
-    data = object$data
+    data = object$block
     
     # extraire la matrice de design
     design = object$design
