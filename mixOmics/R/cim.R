@@ -1,9 +1,9 @@
-# Copyright (C) 2009 
-# Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+# Copyright (C) 2015
 # Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-# Kim-Anh Le Cao, French National Institute for Agricultural Research and
-# Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia
-# Pierre Monget, Ecole d'Ingenieur du CESI, Angouleme, France
+# Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+# Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
+# Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+
 #
 # This program is free software; you can redistribute it and/or
 # as published by the Free Software Foundation; either version 2

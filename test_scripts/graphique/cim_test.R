@@ -3,8 +3,8 @@ library(mixOmics)
 
 ##sourceDirectory(path='C:/Users/Yan/Downloads/mixOmics1')
 
-source("../../mixOmics/R/cim.tot.R"); 
-## !!! that function should be renamed as cim?
+source("../../mixOmics/R/cim.R"); 
+## KA: function renamed as CIM
 
 set.seed(123)
 mat <- matrix(rnorm(200), 20, 10)
