@@ -57,8 +57,12 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
   
   if (is.null(dim(Y))) {
     Y = as.factor(Y)
-    ind.mat = data.frame(unmap(as.numeric(Y)))
-    names(ind.mat) = levels(Y)    
+    # KA changed as a data frame did not work:
+    ind.mat = unmap(as.numeric(Y))
+    # KA changed as a names is not doing the job:
+    colnames(ind.mat) = levels(Y)
+    # KA added: a numeric matrix
+    #ind.mat = as.matrix(ind.mat)
   } else {
     stop("'Y' should be a factor or a class vector.")
   }
@@ -78,7 +82,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
   } else if (ncol(design) != nrow(design) || ncol(design) < length(blocks) || ncol(design) > (length(blocks) + 1) || any(!design %in% c(0,1))){
     stop('Invalid design matrix.')
   } else if (ncol(design) == length(blocks)){ 
-    message('Design matrix has changed and extended to Y)')
+    message('Design matrix has changed to include Y')
     design = rbind(cbind(design, 1), 1)
     diag(design) = 0
   }
@@ -86,7 +90,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
   #-- keep.blocks
   if (is.list(keep.blocks) & (length(keep.blocks) == length(blocks))){
     keep.blocks[[length(keep.blocks) + 1]] = rep(nlevels(Y), ncomp[length(blocks) + 1])
-    message("'keep.blocks' has changed and is extended to Y")
+    message("'keep.blocks' has changed and to include Y")
   }
   
   blocks[[length(blocks) + 1]] = ind.mat

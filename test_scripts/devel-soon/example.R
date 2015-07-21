@@ -8,8 +8,11 @@ sourceDir <- function(path, trace = TRUE, ...) {
     }
 }
 
+# Florian
 sourceDir("/Users/florian/Work/git/package-mixOmics/mixOmics/R/",trace=FALSE) #load all the functions inside ixOmics/R
 
+# KA
+sourceDir("../../mixOmics/R/",trace=FALSE) #load all the functions inside ixOmics/R
 
 ### RGCCA / SGCCA with mixOmics package version 5
 require(mixOmics)
