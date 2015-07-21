@@ -1,3 +1,29 @@
+# Copyright (C) 2015
+# Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+# Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
+# Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+
+
+# ----------------------------------------------------------------
+# Internal helpers functions to run the GCCA module, not to be used externally
+# ---------------------------------------------------------------- 
+# Some of these functions have been borrowed from the RGCCA package, as indicated below
+
 # --------------------------------------
 # soft_thresholding
 # --------------------------------------
@@ -205,7 +231,10 @@ deflation <- function(X, y){
   return(list(p=p,R=R))
 }
 
+# note from KA here: this should be exported as an external function tau.estim.
+# but we would need to change the call of that function in GCCA.
 
+# this function estimates the regularization parameters according to the Strimmer formula
 tau.estimate <-function (x) {
   if (is.matrix(x) == TRUE && is.numeric(x) == FALSE) 
     stop("The data matrix must be numeric!")
