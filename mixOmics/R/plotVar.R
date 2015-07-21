@@ -1639,7 +1639,7 @@ plotVar.rgcca <-
            labels = FALSE,
            pch = c(16,17), 
            cex =  c(0.5, 0.5), 
-           col =  color.mixo(2),       #c('green', 'blue'),
+           col =  color.mixo(c(1,2)),       #c('green', 'blue'),
            font = c(2,3),
            rad.in = 0.5, 
            ...) 
