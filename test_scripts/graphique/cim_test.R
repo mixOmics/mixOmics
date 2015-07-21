@@ -34,6 +34,7 @@ cim(mat, color = color.GreenRed(51), col.sideColors = rep(c("red","blue"),each=5
 # testing transpose matrix
 
 ## FB: title in legend does not appear
+#corrigé
 cim(mat,transpose=TRUE,
     legend=list(legend = names(gene.col), col = gene.col,
                 cex=1.5,title = "Regulation")) 
@@ -109,9 +110,10 @@ nutri.rcc <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 cim(nutri.rcc, mapping="X")
 
 # FB: below: dont understand what the vector col is supposed to do?
-# plotting 1 dataset, Y, changing colors
+##x.sidecolor ne marche pas lorsque le mapping est Y erreur de ma part.
+# plotting 1 dataset, X, changing colors
 col=palette(rainbow(n = 21))
-cim(nutri.rcc, mapping = "Y", xlab = "lipids", 
+cim(nutri.rcc, mapping = "X", xlab = "lipids", 
     ylab = "samples", x.sideColors = col, margins = c(6, 5))
 
 col=palette(rainbow(n = 120))
@@ -127,6 +129,7 @@ cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6))
 cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6) )
 
 #-- select the region and "see" the zoom-out region -> FB: does that work? it does not in my RStudio. SHoudnt it be when interactive = TRUE
+##ca marche sur windows et linux par contre pour quitter il y a un bouton arreter qu'il faut cliquer avant de quitter
 
 #-- cim from X matrix
 diet.col <- color.mixo(as.numeric(nutrimouse$diet))
@@ -152,10 +155,14 @@ toxicity.spls <- spls(X, Y, ncomp = 3,
 
 # FB: le code ci dessous ne devrait montrer que 20 variables.
 # par defaut la CIM sample plotter les 120 variables selectionnees sur les 3 comp, meme lorsque l on demande comp = 1
-# plot 1 data set, Y
+# plot 1 data set, X
+#Désolé mais la j'ai pas compris. J'ai réutilisé la meme formule que dans l'ancien cim.
+#est que je dois faire une selection sur les variables?
 cim(toxicity.spls,mapping="X",comp=c(1))
 
 # et cela n a pas de sens de mettre comp = c(2,1) (ca veut dire quoi? normalement on commence par 1, puis 2 etc puisque l info decroissante)
+##erreur d'écritutre dsl
+
 cim(toxicity.spls,mapping="Y",comp=c(2,1)) 
 
 cim(toxicity.spls,cluster="none")
@@ -174,6 +181,7 @@ X <- nutrimouse$lipid
 Y <- nutrimouse$gene
 
 # cross correlation between X and Y. FB: which correlation is this? (or which formula)
+##C'est pour donner une matrice en argument par défaut on a juste besoin d'une matrice de corrélation
 cim(cor(X, Y), cluster = "none")
 
 # or one data set
@@ -198,6 +206,7 @@ spca.res <- spca(X, ncomp = 2, keepX = c(30, 30), scale = FALSE)
 
 # FB: je sais pas pk cette option la ne donne que du rouge. A retester
 #dose.col <- palette()[as.numeric(as.factor(liver.toxicity$treatment[, 3]))]
+#testé pas vu de problème
 dose.col <- color.mixo(as.numeric(as.factor(liver.toxicity$treatment[, 3])))
 
 cim(spca.res, sample.sideColors = dose.col, var.names = FALSE,
