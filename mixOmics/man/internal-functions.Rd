@@ -4,7 +4,6 @@
 \alias{Mfold}
 \alias{bin.color}
 \alias{map}
-\alias{unmap}  % this one would probably need to be an external function?
 \alias{pcasvd}
 \alias{ica.def}
 \alias{ica.par}
