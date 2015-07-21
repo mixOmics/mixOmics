@@ -1,14 +1,30 @@
 Changes in 5.1
 ================
-selectVar has been extended to PCA, PLS and PLS-DA
-plotContrib for objects of class plsda and splsda
-wrapper.sgccda added
-RGCCA dependency no longer exists
-ggplot2 dependency added
+
+New features:
+-------------
+1 - plotContrib for objects of class PLSDA and sPLSDA has been added and is of particular interest for those analysing microbial communities / metagenomics data. 
+
+2 - wrapper.sgccda was added to enable multiple data sets integration with one or several factor outcomes. Note: the prediction function for this new add on has not been fully tested yet and is not available.
+
+3 - plotIndiv has been improved dramatically. A single function can now be used for the objects PLS, sPLS, PLS-DA, SPLS-DA, rCC, PCA, sPCA, IPCA, sIPCA, rGCCA, sGCCA, sGCCDA. In addition, we now provide the new arguments (and more to come!):
+	- ellipse plots are now available, a group argument is requested for the unsupervised methods (PCA, IPCA, PLS)
+	-three types of graphical plot: graphics (version < 5.1-0), ggplot2 and lattice
+	-legend and title can be added
+
+4 - cim has been implemented for PLS, sPLS, PLS-DA, SPLS-DA, rCC, PCA, sPCA, IPCA, sIPCA and includes a wide range of options to plot a single data set in the form of a heatmap (new!), or the cross correlation between two matching data sets via the methods rCC or (s)PLS using the cross product between latent variables and loading vectors (improved with legends and color bars). We will give more examples on our website.
+
+
+Enhancements:
+----------
+1 - All wrappers for multiple data integration have been improved and re-implemented. Consequently, the dependency to RGCCA has been removed, and three wrapper functions are now available: wrapper.sgcca, wrapper.rgcca and wrapper.sgccda (see New Feature #2 above).
+
+2 - selectVar has been extended for the non sparse versions PCA, PLS and PLS-DA and output the features with decreasing absolute weights in the loading vectors. It is used in particular for plotContrib (see New feature #1 above)
+
 
 Bug fixes:
 ----------
-The sPLS algorithm was reorganised to ensure convergence
+1 - The sPLS algorithm was rewritten to ensure convergence. This implies that spls results might be slightly different from version < 5.1-0
 
 
 Changes in 5.0-4

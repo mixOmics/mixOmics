@@ -3,6 +3,9 @@
 # Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 # Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 # Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
+# Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+# Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,16 +22,16 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
-#--------------------------------------------------------------------#
-#-- Includes plotIndiv for PLS, sPLS, PLS-DA, SPLS-DA, rCC and PCA --#
-#--------------------------------------------------------------------#
+#----------------------------------------------------------------------------------------------------------#
+#-- Includes plotIndiv for PLS, sPLS, PLS-DA, SPLS-DA, rCC, PCA, sPCA, IPCA, sIPCA, rGCCA, sGCCA, sGCCDA --#
+#----------------------------------------------------------------------------------------------------------#
 
 plotIndiv <-
   function(object,
            comp = c(1, 2),
            ind.names = TRUE,
            rep.space = "X-variate",
-           blocks = NULL,
+           blocks = NULL, # to choose which block data to plot, when using GCCA module
            X.label = NULL,
            Y.label = NULL,
            abline.line = FALSE,
@@ -37,10 +40,10 @@ plotIndiv <-
            pch,
            plot.ellipse = FALSE, 
            ellipse.level = 0.95,
+           group = NULL,  # numeric vector indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
            main="plotIndiv",
            add.legend=FALSE,
-           style="ggplot2",
-           group = NULL,
+           style="ggplot2", # can choose between graphics, lattice or ggplot2
            ...) 
 {
 

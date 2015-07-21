@@ -4,8 +4,10 @@
 
 # New dependencies with ggplot2 and ellipse
 require(mixOmics); require(ellipse); require(ggplot2)
-source("./R scripts/plotIndiv.R"); source("./R scripts/wrapper.sgcca.v6.R"); 
-source("./R scripts/wrappers.R"); source("./R scripts/helpers.R")
+source("../../mixOmics/R/plotIndiv.R"); 
+
+#source("./R scripts/wrapper.sgcca.v6.R"); 
+#source("./R scripts/wrappers.R"); source("./R scripts/helpers.R")
 
 #############
 ### IPCA ####
