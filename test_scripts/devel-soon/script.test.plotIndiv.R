@@ -405,6 +405,7 @@ if (plotIndiv.sgcca){
   plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, style = "lattice", rep.space = "Y-variate")
   plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, style = "graphics", rep.space = "Y-variate")
   
+  # KA: from what I understand, this option is not available anymore:
   plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, rep.space = "XY-variate")
   plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, style = "lattice", rep.space = "XY-variate")
   plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, style = "graphics", rep.space = "XY-variate")
