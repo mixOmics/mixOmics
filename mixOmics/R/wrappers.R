@@ -1,5 +1,8 @@
 # Copyright (C) 2015
-# Benoit Gautier
+# Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+# Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
+# Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -74,7 +77,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
   
   if (length(ncomp) == length(blocks)){
     ncomp = c(ncomp, max(ncomp))
-    message("'ncomp' has changed and is extended to Y")
+    message("'ncomp' has changed to include Y as a block")
   }
   
   #-- Design
@@ -83,7 +86,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
   } else if (ncol(design) != nrow(design) || ncol(design) < length(blocks) || ncol(design) > (length(blocks) + 1) || any(!design %in% c(0,1))){
     stop('Invalid design matrix.')
   } else if (ncol(design) == length(blocks)){ 
-    message('Design matrix has changed to include Y')
+    message('Design matrix has changed to include Y as a block')
     design = rbind(cbind(design, 1), 1)
     diag(design) = 0
   }
@@ -91,7 +94,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
   #-- keep.blocks
   if (is.list(keep.blocks) & (length(keep.blocks) == length(blocks))){
     keep.blocks[[length(keep.blocks) + 1]] = rep(nlevels(Y), ncomp[length(blocks) + 1])
-    message("'keep.blocks' has changed and include Y")
+    message("'keep.blocks' has changed and include Y as a block")
   }
   
   blocks[[length(blocks) + 1]] = ind.mat

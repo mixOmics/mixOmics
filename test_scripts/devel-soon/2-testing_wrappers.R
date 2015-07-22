@@ -61,7 +61,8 @@ plotIndiv(nutrimouse.rgcca1, group = nutrimouse$diet, rep.space = "XY-variate")
 plotIndiv(nutrimouse.rgcca1, group = nutrimouse$diet, style = "lattice", rep.space = "X-variate")
 plotIndiv(nutrimouse.rgcca1, group = nutrimouse$diet, style = "graphics", rep.space = "X-variate")
 
-
+# s.match to overlay the two data sets
+s.match(nutrimouse.rgcca1$variates$gene, nutrimouse.rgcca1$variates$lipid, col = color.mixo(nutrimouse$diet), label = nutrimouse$diet)
 
 
 
@@ -72,10 +73,10 @@ plotIndiv(nutrimouse.rgcca1, group = nutrimouse$diet, style = "graphics", rep.sp
 plotVar(nutrimouse.rgcca1, block = c(1,2), col = c('green', 'blue'), cex = c(1,1))
 plotVar(nutrimouse.rgcca1, block = c(1,2), col = color.mixo(c(1,2)), cex = c(1,1))
 
-# one data set: wil throw out a warning message as it expects at least 2 data sets.
-plotVar(nutrimouse.rgcca1, block = c(2))
-# one data set
-plotVar(nutrimouse.rgcca1, block = c(1))
+# one data set: block 2
+plotVar(nutrimouse.rgcca1, block = c(2), cex = 1)
+# one data set: block 1
+plotVar(nutrimouse.rgcca1, block = c(1), cex = 1)
 
 
 
@@ -125,6 +126,11 @@ plotIndiv(nutrimouse.sgcca1, blocks = c(1,2), group = nutrimouse$diet)
 plotIndiv(nutrimouse.sgcca1, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE)
 # and legend
 plotIndiv(nutrimouse.sgcca1, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE, add.legend = TRUE, main = 'my sample plot')
+
+# s.match to overlay the two data sets
+s.match(nutrimouse.sgcca1$variates$gene, nutrimouse.sgcca1$variates$lipid, col = color.mixo(nutrimouse$diet), label = nutrimouse$diet)
+
+
 
 # plotVar: needs to update the .Rd file (KA)
 # ------
@@ -183,6 +189,10 @@ plotIndiv(nutrimouse.sgcca.keep, blocks = c(1,2), group = nutrimouse$diet, plot.
 # and legend
 plotIndiv(nutrimouse.sgcca.keep, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE, add.legend = TRUE, main = 'my sample plot')
 
+# # s.match to overlay the two data sets
+s.match(nutrimouse.sgcca1$variates$gene, nutrimouse.sgcca1$variates$lipid, col = color.mixo(nutrimouse$diet), label = nutrimouse$diet)
+
+
 # plotVar: needs to update the .Rd file (KA)
 # ------
 # both data sets at once
@@ -236,6 +246,11 @@ plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet, plot.ell
 # and legend and title
 plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE, add.legend = TRUE, main = 'my sample plot')
 
+# # s.match to overlay the two data sets
+s.match(nutrimouse.sgccda1$variates$gene, nutrimouse.sgccda1$variates$lipid, col = color.mixo(nutrimouse$diet), label = nutrimouse$diet)
+
+
+
 head(nutrimouse.sgccda1$loadings[[1]])
 head(nutrimouse.sgccda1$loadings[[2]])
 head(nutrimouse.sgccda1$loadings[[3]])
@@ -245,18 +260,13 @@ head(nutrimouse.sgccda1$loadings[[3]])
 # ------
 # both data sets at once
 plotVar(nutrimouse.sgccda1, block = c(1,2), col = c('green', 'blue'), cex = c(1,1))
-#Error in data[[block[2]]][, keep[[j]]] : 
-#(subscript) logical subscript too long
 plotVar(nutrimouse.sgccda1, block = c(1,2), col = color.mixo(c(1,2)), cex = c(1,1))
 
 
 # the first block of data
-plotVar(nutrimouse.sgccda1, block = c(1))
+plotVar(nutrimouse.sgccda1, block = c(1), cex = 1)
 # the second block of data
-plotVar(nutrimouse.sgccda1, block = c(2))
-
-# Error in data[[block[2]]][, keep[[j]]] : 
-#   (subscript) logical subscript too long
+plotVar(nutrimouse.sgccda1, block = c(2), cex = 1)
 
 # variables selected?
 # --------
