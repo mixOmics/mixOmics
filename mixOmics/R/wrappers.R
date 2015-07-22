@@ -59,7 +59,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
     Y = as.factor(Y)
     ind.mat = data.frame(unmap(as.numeric(Y)))
     # KA changed as a data frame did not work:
-    ind.mat = unmap(as.numeric(Y))
+    #ind.mat = unmap(as.numeric(Y))
     # KA changed as a names is not doing the job:
     colnames(ind.mat) = levels(Y)
     # KA added: a numeric matrix
