@@ -210,8 +210,8 @@ selectVar(nutrimouse.sgcca.keep, block = 2, comp = 1)
 # ==========================================
 data(nutrimouse)
 Y = nutrimouse$diet
-data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
-design1 = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
+design1 = matrix(c(0,1,0,1), ncol = 2, nrow = 2, byrow = TRUE)
 
 nutrimouse.sgccda1 <- wrapper.sgccda(blocks = data,
                                      Y = Y,
@@ -221,31 +221,19 @@ nutrimouse.sgccda1 <- wrapper.sgccda(blocks = data,
                                      scheme = "centroid",
                                      verbose = FALSE,
                                      bias = FALSE)
-#FR: this error is justified because blocks must contains numeric matrix, only the Y provided can be a factor
-# the following will work
-data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
-nutrimouse.sgccda1 <- wrapper.sgccda(blocks = data,
-Y = Y,
-design = design1,
-ncomp = c(2, 2),
-keep.blocks = list(c(10,10), c(15,15)),
-scheme = "centroid",
-verbose = FALSE,
-bias = FALSE)
 
-## I stoppped here, but maybe selectVar does not work
 
 # plotIndiv
 # ----------
-# should throw an error as we request all blocks to be displayed and Y has only 1 comp
+# displaying all blocks
 plotIndiv(nutrimouse.sgccda1, blocks = NULL)
 
-# yups, all good
+# displaying only 2 blocks
 plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet)
 
 # with some ellipse
 plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE)
-# and legend
+# and legend and title
 plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE, add.legend = TRUE, main = 'my sample plot')
 
 head(nutrimouse.sgccda1$loadings[[1]])
@@ -257,20 +245,20 @@ head(nutrimouse.sgccda1$loadings[[3]])
 # ------
 # both data sets at once
 plotVar(nutrimouse.sgccda1, block = c(1,2), col = c('green', 'blue'), cex = c(1,1))
+#Error in data[[block[2]]][, keep[[j]]] : 
+#(subscript) logical subscript too long
 plotVar(nutrimouse.sgccda1, block = c(1,2), col = color.mixo(c(1,2)), cex = c(1,1))
 
-# one data set
-plotVar(nutrimouse.sgccda1, block = c(2))
-# one data set
+
+# the first block of data
 plotVar(nutrimouse.sgccda1, block = c(1))
+# the second block of data
+plotVar(nutrimouse.sgccda1, block = c(2))
 
-
+# Error in data[[block[2]]][, keep[[j]]] : 
+#   (subscript) logical subscript too long
 
 # variables selected?
 # --------
-# FR: not working
-selectVar(nutrimouse.sgccda1, block = 1, comp = 1)
-# Error in UseMethod("selectVar") : 
-#   no applicable method for 'selectVar' applied to an object of class "rgcca"
-
+selectVar(nutrimouse.sgccda1, block = 1, comp = 1)$name.var
 
