@@ -242,7 +242,7 @@ layout = NULL,
          title(study[m],...)
         }
         
-        par(mfrow=opar)
+        #par(mfrow=opar)
 
     }
 
