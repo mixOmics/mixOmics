@@ -1494,27 +1494,7 @@ plotVar.sgcca <-
     
     # extraire la matrice de design
     design = object$design
-    
-    # choose the mode (canonical or regression) and if regression, decide which component to compute
-    # the correlation on
-    reg = NULL
-    if(length(block) >1){
-      if(design[block[1], block[2]] + design[block[1], block[2]] == 0) warning("There is no relationship designed between these two blocks")
-      
-      if(design[block[1], block[2]] == design[block[2], block[1]]){ 
-        mode = 'canonical'
-      } else {
-        mode = 'regression'
-        #define where to regress on:
-        # data 1 on data 2 -> reg = 1
-        # data 2 on data 1 -> reg = 0  # double check with Artur
-        reg = ifelse(design[block[1], block[2]] == 1, 1, 0)
-      }
-    } else{ # single block case
-      #check that there is a relationship between this block??
-      mode = 'regression'
-    }
-    
+
     
     keep = list()
     j=1
@@ -1530,7 +1510,7 @@ plotVar.sgcca <-
         j=j+1        
       }   
     }
-    
+        
     # -------------------------
     # compute coordinates
     # -------------------------
@@ -1540,26 +1520,10 @@ plotVar.sgcca <-
     coord = list()
     j=1
     # canonical mode or when representing only one block
-    if((mode == 'canonical') | is.null(reg)){
-      for(k in block){
+    for(k in block)
+    {
         coord[[j]] = cor(data[[k]][, keep[[j]]], object$variates[[k]][,comp], use = "pairwise")
         j=j+1
-      }
-    }else{
-      # ----- regression mode type
-      # correlation between original variables and frst latent variables (because of the deflation
-      # made for regression mode)
-      # !!!! remove??!
-      if(reg == 1){  #data 1 on data 2 
-        for(j in 1:length(block)){
-          coord[[j]] = cor(data[[block[2]]][, keep[[j]]], object$variates[[block[1]]][,comp], use = "pairwise")
-        }
-      }
-      if(reg == 0){        #data 2 on data 1 
-        for(j in 1:length(block)){
-          coord[[j]] = cor(data[[block[1]]][, keep[[j]]], object$variates[[block[2]]][,comp], use = "pairwise")
-        }
-      }
     }
     
     
@@ -1682,26 +1646,6 @@ plotVar.rgcca <-
     # extraire la matrice de design
     design = object$design
     
-    # choose the mode (canonical or regression) and if regression, decide which component to compute
-    # the correlation on
-    reg = NULL
-    if(single.block == FALSE){
-      if(design[block[1], block[2]] + design[block[1], block[2]] == 0) stop("There is no relationship designed between these two blocks")
-      
-      if(design[block[1], block[2]] == design[block[2], block[1]]){ 
-        mode = 'canonical'
-      } else {
-        mode = 'regression'
-        #define where to regress on:
-        # data 1 on data 2 -> reg = 1
-        # data 2 on data 1 -> reg = 0  # double check with Artur
-        reg = ifelse(design[block[1], block[2]] == 1, 1, 0)
-      }
-    } else{ # single block case
-      #check that there is a relationship between this block??
-      mode = 'regression'
-    }
-    
     
     # -------------------------
     # compute coordinates
@@ -1712,29 +1656,12 @@ plotVar.rgcca <-
     coord = list()
     j=1
     # canonical mode or when representing only one block
-    if((mode == 'canonical') | is.null(reg)){
-      for(k in block){
+    for(k in block)
+    {
         coord[[j]] = cor(data[[k]], object$variates[[k]][,comp], use = "pairwise")
         j=j+1
-      }
-    }else{
-      # ----- regression mode type
-      # correlation between original variables and frst latent variables (because of the deflation
-      # made for regression mode)
-      # !!!! remove??!
-      if(reg == 1){  #data 1 on data 2 
-        for(j in 1:length(block)){
-          coord[[j]] = cor(data[[block[2]]], object$variates[[block[1]]][,comp], use = "pairwise")
-        }
-      }
-      if(reg == 0){        #data 2 on data 1 
-        for(j in 1:length(block)){
-          coord[[j]] = cor(data[[block[1]]], object$variates[[block[2]]][,comp], use = "pairwise")
-        }
-      }
     }
-    
-    
+
     # -------------------
     # input parameters
     # -------------------
@@ -1764,7 +1691,7 @@ plotVar.rgcca <-
     
     par(pty = "s")
     plot(0, type = "n", xlim = c(-1, 1), ylim = c(-1, 1), 
-         xlab = paste('sGCCA, component 1'), ylab = paste('sGCCA, component 2'))
+         xlab = paste('rGCCA, component 1'), ylab = paste('rGCCA, component 2'))
     
     for(j in 1:length(block)){
       if(labels){
