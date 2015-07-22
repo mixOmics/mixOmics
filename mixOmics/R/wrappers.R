@@ -57,6 +57,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
   
   if (is.null(dim(Y))) {
     Y = as.factor(Y)
+    ind.mat = data.frame(unmap(as.numeric(Y)))
     # KA changed as a data frame did not work:
     ind.mat = unmap(as.numeric(Y))
     # KA changed as a names is not doing the job:
@@ -90,7 +91,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
   #-- keep.blocks
   if (is.list(keep.blocks) & (length(keep.blocks) == length(blocks))){
     keep.blocks[[length(keep.blocks) + 1]] = rep(nlevels(Y), ncomp[length(blocks) + 1])
-    message("'keep.blocks' has changed and to include Y")
+    message("'keep.blocks' has changed and include Y")
   }
   
   blocks[[length(blocks) + 1]] = ind.mat
@@ -102,7 +103,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
                         keep.blocks = keep.blocks, near.zero.var = near.zero.var, penalty = NULL)
   
   result.sgcca$Y = Y; result.sgcca$ind.mat = ind.mat;
-  result.sgcca$class = "sgccda"
-  class(result.sgcca) = "sgccda"
+  result.sgcca$class = c("sgccda","sgcca")
+  class(result.sgcca) = c("sgccda","sgcca")
   return(invisible(result.sgcca))
 }

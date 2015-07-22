@@ -1444,13 +1444,22 @@ plotVar.sgcca <-
            # the comp where the variables are selected
            ncomp.select = c(1,2),
            labels = FALSE,
-           pch = c(16,17), 
-           cex =  c(0.5, 0.5), 
-           col =  color.mixo(2),   #c('green', 'blue'),
-           font = c(2,3),
-           rad.in = 0.5, 
+            pch,# = c(16,17),
+            cex,# =  c(0.5, 0.5),
+            col,# =  color.mixo(2),   #c('green', 'blue'),
+            font,# = c(2,3),
+           rad.in = 0.5,
            ...) 
 {
+    if(length(block<=2))
+    {
+        if(missing(pch)) pch=c(16,17)
+        if(missing(cex)) cex =  c(0.5, 0.5)
+        if(missing(font)) font = c(2,3)
+        if(missing(col)) col =  color.mixo(2)
+        if(missing(pch)) pch=c(16,17)
+        if(missing(pch)) pch=c(16,17)
+    }
     
     ## validation des arguments
     if (length(comp) != 2)
@@ -1462,8 +1471,8 @@ plotVar.sgcca <-
     if (any(comp > object$ncomp[block])) 
       stop("the elements of 'comp' must be smaller or equal than ", object$ncomp, ".")
     
-    if(any(c(length(pch),length(cex),length(font),length(cex)) > length(block)) )
-      warning("Will only take into account the first ", length(block), " arguments (pch, cex, font or cex) for the plot")
+    #if(any(c(length(pch),length(cex),length(font),length(cex)) > length(block)) )
+    # warning("Will only take into account the first ", length(block), " arguments (pch, cex, font or cex) for the plot")
     
     if(all(ncomp.select != comp))
       stop("All argument from 'ncomp.select' differ from 'comp'")
