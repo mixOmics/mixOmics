@@ -74,23 +74,23 @@ cim <-
     if ("simpleError" %in% class(err))
       stop(err[[1]], ".", call. = FALSE)
     
-#     function.arg = c(names(mget(names(formals()), sys.frame(sys.nframe()))))
-#     not.arg = !(user.arg %in% function.arg)
-#     
-#     if (any(not.arg)) {
-#       unused.arg = user.arg[not.arg]
-#       not.arg = which(not.arg) + 1
-#       output = rep("", length(not.arg))
-#       
-#       for (i in 1:length(not.arg)) {
-#         output[i] = paste0(unused.arg[i], " = ", arg.call[[not.arg[i]]])
-#       }
-#       
-#       output = paste0("(", paste(output, collapse = ", "), ").")
-#       msg = "unused argument "
-#       if (length(not.arg) > 1) msg = "unused arguments "  
-#       stop(msg, output, call. = FALSE)
-#     }
+    #     function.arg = c(names(mget(names(formals()), sys.frame(sys.nframe()))))
+    #     not.arg = !(user.arg %in% function.arg)
+    #     
+    #     if (any(not.arg)) {
+    #       unused.arg = user.arg[not.arg]
+    #       not.arg = which(not.arg) + 1
+    #       output = rep("", length(not.arg))
+    #       
+    #       for (i in 1:length(not.arg)) {
+    #         output[i] = paste0(unused.arg[i], " = ", arg.call[[not.arg[i]]])
+    #       }
+    #       
+    #       output = paste0("(", paste(output, collapse = ", "), ").")
+    #       msg = "unused argument "
+    #       if (length(not.arg) > 1) msg = "unused arguments "  
+    #       stop(msg, output, call. = FALSE)
+    #     }
     
     
     
@@ -255,21 +255,22 @@ cim <-
      #-- comp
      if(is.null(comp))
      {comp=1:mat$ncomp}
-     if (length(comp) == 1) {
-       if (is.null(comp) || !is.numeric(comp) || comp <= 0 || comp > ncomp)
-         stop("invalid value for 'comp'.", call. = FALSE)
-     }
-     
      if (length(comp) > 1) {
-       if(length(comp) > ncomp) 
-         stop("the length of 'comp' must be smaller or equal than ", ncomp, ".", 
-              call. = FALSE)
+       comp=unique(comp)
        if (!is.numeric(comp) || any(comp < 1))
          stop("invalid vector for 'comp'.", call. = FALSE)
        if (any(comp > ncomp)) 
          stop("the elements of 'comp' must be smaller or equal than ", ncomp, ".", 
               call. = FALSE)
      }
+     
+     if (length(comp) == 1) {
+       if (is.null(comp) || !is.numeric(comp) || comp <= 0 || comp > ncomp)
+         stop("invalid value for 'comp'.", call. = FALSE)
+       comp=c(comp,comp)
+     }
+     
+     
      
      comp = round(comp)
      
@@ -381,12 +382,12 @@ cim <-
        #---------------------------------------------------------------------------#
        if(class.object[1] %in%  c("splsda","plsda",'mlsplsda'))
        {
-         keep.X = apply(abs(mat$loadings$X), 1, sum) > 0
+         keep.X = apply(abs(mat$loadings$X[,comp]), 1, sum) > 0
          cord.X = cor(mat$X[, keep.X], mat$variates$X[, comp], use = "pairwise")
          X.mat = as.matrix(mat$variates$X[, comp])
        }
        else{
-         keep.X = apply(abs(mat$rotation), 1, sum) > 0
+         keep.X = apply(abs(mat$rotation[,comp]), 1, sum) > 0
          cord.X = cor(mat$X[, keep.X], mat$x[, comp], use = "pairwise")
          X.mat = as.matrix(mat$x[, comp])
        }
@@ -473,10 +474,10 @@ cim <-
      else if(class.object[1] %in%  object.list2)
      {
        
-         bisect = mat$variates$X[, comp] + mat$variates$Y[, comp]
-         cord.X = cor(mat$X, bisect, use = "pairwise")
-         cord.Y = cor(mat$Y, bisect, use = "pairwise")
-         XY.mat = as.matrix(cord.X %*% t(cord.Y))
+       bisect = mat$variates$X[, comp] + mat$variates$Y[, comp]
+       cord.X = cor(mat$X, bisect, use = "pairwise")
+       cord.Y = cor(mat$Y, bisect, use = "pairwise")
+       XY.mat = as.matrix(cord.X %*% t(cord.Y))
        
        #-- if mapping = "XY"
        if (mapping == "XY") {
@@ -669,20 +670,20 @@ cim <-
      }
      else if(class.object[1] %in%  object.list3)
      {
-       keep.X = apply(abs(mat$loadings$X), 1, sum) > 0
-       keep.Y = apply(abs(mat$loadings$Y), 1, sum) > 0
+       keep.X = apply(abs(mat$loadings$X[,comp]), 1, sum) > 0
+       keep.Y = apply(abs(mat$loadings$Y[,comp]), 1, sum) > 0
        
        
-         if (mat$mode == "canonical") {
-           cord.X = cor(mat$X[, keep.X], mat$variates$X[, comp], use = "pairwise")
-           cord.Y = cor(mat$Y[, keep.Y], mat$variates$Y[, comp], use = "pairwise")
-         }
-         else {
-           cord.X = cor(mat$X[, keep.X], mat$variates$X[, comp], use = "pairwise")
-           cord.Y = cor(mat$Y[, keep.Y], mat$variates$X[, comp], use = "pairwise")
-         }
-         
-         XY.mat = as.matrix(cord.X %*% t(cord.Y))
+       if (mat$mode == "canonical") {
+         cord.X = cor(mat$X[, keep.X], mat$variates$X[, comp], use = "pairwise")
+         cord.Y = cor(mat$Y[, keep.Y], mat$variates$Y[, comp], use = "pairwise")
+       }
+       else {
+         cord.X = cor(mat$X[, keep.X], mat$variates$X[, comp], use = "pairwise")
+         cord.Y = cor(mat$Y[, keep.Y], mat$variates$X[, comp], use = "pairwise")
+       }
+       
+       XY.mat = as.matrix(cord.X %*% t(cord.Y))
        
        #-- if mapping = "XY"
        if (mapping == "XY") {
@@ -1023,6 +1024,7 @@ cim <-
     if (!is.null(legend))
     {if(is.null(legend$x)) legend$x = "topright"
      if(is.null(legend$bty)) legend$bty = "n"
+     if (is.null(legend$cex)) legend$cex = 0.8
      if(class.object[1] %in%  c("splsda","plsda"))
      {
        if (is.null(legend$legend)) legend$legend = mat$names$Y
@@ -1070,6 +1072,8 @@ cim <-
          }
        }
      }
+     if (is.null(legend$legend))
+       stop("argument \"legend$legend\" is missing, with no default")
      
      #-- fill
      if (is.null(legend$fill)) legend$fill = legend$col
@@ -1077,9 +1081,13 @@ cim <-
      par(mar = c(0, 0, 0, 0), new = TRUE)
      plot(0, 0, axes = FALSE, type = "n", xlab = "", ylab = "")
      
+     if (!is.null(legend$title))
+       legend(x = legend$x, y = legend$y, legend = legend$legend, 
+              col = legend$col, fill = legend$fill, bty = legend$bty,title=legend$title,cex=legend$cex, ...)
+     else
+       legend(x = legend$x, y = legend$y, legend = legend$legend, 
+              col = legend$col, fill = legend$fill, bty = legend$bty,cex=legend$cex, ...)
      
-     legend(x = legend$x, y = legend$y, legend = legend$legend, 
-            col = legend$col, fill = legend$fill, bty = legend$bty,title=legend$title,cex=legend$cex, ...)
     }
     return(invisible(res))
   }
@@ -1132,7 +1140,7 @@ imageMap <-
       temp = col.names
       col.names = row.names
       row.names = temp
-     
+      
       if (cluster == "both")
       {temp = ddc
        ddc = ddr
@@ -1372,7 +1380,7 @@ imageMap <-
           layout(lmat, widths = lwid, heights = lhei, respect = FALSE)
           
           # layout 1
-          par(mar = c(5, 2, 2, 1), cex = 0.75)				
+          par(mar = c(5, 2, 2, 1), cex = 0.75)    		
           image(z, col = color, xaxt = "n", yaxt = "n")
           box()
           par(usr = c(0, 1, 0, 1))

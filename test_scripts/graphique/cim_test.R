@@ -126,6 +126,10 @@ liver.spca <- spca(X, ncomp = 3, keepX = rep(30, 3))
 # est ce que tu pourrais mettre un warning dans la cim et bien tester que le warning apparait? (a moins qu il y ait une autre
 #solution)
 # exemple qui marche pas:
+###
+####KA:Je peux mettre un warning mais je comprends pas car chez moi ca marche comme on peux le voir 
+###dans couleur_numerique.png j'ai lancé le tout apres avoir sourcer avec devel-soon sans rien d'autre
+##
 cim(liver.spca,
 sample.names = liver.toxicity$treatment[, 3], sample.sideColors=c(1,2,3,4)[factor(liver.toxicity$treatment[, 3])],
 clust.method = c("average", "centroid"))
@@ -147,6 +151,10 @@ cim(liver.spca,
 
 # FB: X.var.name ne semble pas marcher. que l on mette true ou false ne change rien
 # Dans le .Rd il manque aussi un \method{cim}{spca}
+
+###KA:En fait, c'est normal et pas normal:
+##dans le Rd le spca serait au niveau de la method pca donc il n'y a pas l'option X.var.name pris en compte
+
 
 #Here we ask show only the variables selected (??)
 # we can also choose th scale the data on the columns
@@ -221,6 +229,8 @@ cim(nutri.rcc, mapping="X")
 # reinitaliser? du coup la premier fois il me dit quel a longueur est pas bonne
 # Error: 'x.sideColors' must be a colors character vector (matrix) of length (nrow) 21.
 # du coup j ai mis col.jet
+
+##KA:J'ai eu le meme probleme c'est du a un probleme dans palette
 
 # plotting 1 dataset, X (lipids), changing colors
 col.lipid= color.jet(n = ncol(X))     #palette(rainbow(n = 21))
@@ -304,7 +314,8 @@ cim(res.2level, sample.sideColors = cbind(stim.col, time.col),
     sample.names = paste(design$time, design$stim, sep = "_"),
     var.names = FALSE,
     ## legende marche pas?
-    legend=list( legend = levels(design$stim), col = stim.col, title = "Condition", cex = 0.9)
+    ## KA ca marche maintenant voir 
+    legend=list( legend = unique(design$stim), col = unique(stim.col), title = "Condition", cex = 0.9)
     )
 
 
@@ -312,10 +323,21 @@ cim(res.2level, sample.sideColors = cbind(stim.col, time.col),
 ## CIM representation for objects of class spls 'multilevel' 
 #------------------------------------------------------------------
 
-# FB est ce que tu peux me rajouter un exemple pr un object de type spls multilevel? Merci!
+data(liver.toxicity)
+repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
+                  6, 5, 6, 7, 7, 8, 6, 7, 8, 7, 8, 8, 9, 10, 9, 10, 11, 9, 9,
+                  10, 11, 12, 12, 10, 11, 12, 11, 12, 13, 14, 13, 14, 13, 14,
+                  13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
 
+design <- data.frame(sample = repeat.indiv) 
+res.spls.1level <- multilevel(X = liver.toxicity$gene,
+                              Y=liver.toxicity$clinic,
+                              design = design,
+                              ncomp = 3,
+                              keepX = c(50, 50, 50), keepY = c(5, 5, 5),
+                              method = 'spls', mode = 'canonical')
 
-
-
-
-
+stim.col <- c("darkblue", "purple", "green4","red3")
+cim(res.spls.1level,mapping="Y",
+    sample.sideColors = stim.col[factor(liver.toxicity$treatment[,3])],
+    legend=list(legend=unique(liver.toxicity$treatment[,3]),col=stim.col,cex=0.9))
