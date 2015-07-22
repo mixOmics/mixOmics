@@ -3,7 +3,6 @@
 # Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 # Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
 # Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-
 #
 # This program is free software; you can redistribute it and/or
 # as published by the Free Software Foundation; either version 2
@@ -75,24 +74,26 @@ cim <-
     if ("simpleError" %in% class(err))
       stop(err[[1]], ".", call. = FALSE)
     
-    # if "..." is an argument, then we can have other parameters
-    #function.arg = c(names(mget(names(formals()), sys.frame(sys.nframe()))))
-    #not.arg = !(user.arg %in% function.arg)
+#     function.arg = c(names(mget(names(formals()), sys.frame(sys.nframe()))))
+#     not.arg = !(user.arg %in% function.arg)
+#     
+#     if (any(not.arg)) {
+#       unused.arg = user.arg[not.arg]
+#       not.arg = which(not.arg) + 1
+#       output = rep("", length(not.arg))
+#       
+#       for (i in 1:length(not.arg)) {
+#         output[i] = paste0(unused.arg[i], " = ", arg.call[[not.arg[i]]])
+#       }
+#       
+#       output = paste0("(", paste(output, collapse = ", "), ").")
+#       msg = "unused argument "
+#       if (length(not.arg) > 1) msg = "unused arguments "  
+#       stop(msg, output, call. = FALSE)
+#     }
     
-    #if (any(not.arg)) {
-    #  unused.arg = user.arg[not.arg]
-    #  not.arg = which(not.arg) + 1
-    #  output = rep("", length(not.arg))
-    #
-    #  for (i in 1:length(not.arg)) {
-    #    output[i] = paste0(unused.arg[i], " = ", arg.call[[not.arg[i]]])
-    #  }
-    #
-    #  output = paste0("(", paste(output, collapse = ", "), ").")
-    #  msg = "unused argument "
-    #  if (length(not.arg) > 1) msg = "unused arguments "
-    #  stop(msg, output, call. = FALSE)
-    #}
+    
+    
     
     
     #-- color
@@ -1078,7 +1079,7 @@ cim <-
      
      
      legend(x = legend$x, y = legend$y, legend = legend$legend, 
-            col = legend$col, fill = legend$fill, bty = legend$bty, ...)
+            col = legend$col, fill = legend$fill, bty = legend$bty,title=legend$title,cex=legend$cex, ...)
     }
     return(invisible(res))
   }
