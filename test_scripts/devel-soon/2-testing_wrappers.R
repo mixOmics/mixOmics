@@ -90,6 +90,7 @@ sourceDir <- function(path, trace = TRUE, ...) {
     if(trace) cat("\n")
   }
 }
+#sourceDir("/Users/florian/Work/git/package-mixomics/mixOmics/R/",trace=FALSE)
 sourceDir("../../mixOmics/R/",trace=FALSE) #load all the functions inside ixOmics/R
 
 data(nutrimouse)
@@ -220,48 +221,55 @@ nutrimouse.sgccda1 <- wrapper.sgccda(blocks = data,
                                      scheme = "centroid",
                                      verbose = FALSE,
                                      bias = FALSE)
-# FR: errors:need to put Y as an unmapped matrix
-# see my changes in wrappers.R, l 59-63 but did not work
-Design matrix has changed to include Y
-Error: 'block 3' must be a numeric matrix.
+#FR: this error is justified because blocks must contains numeric matrix, only the Y provided can be a factor
+# the following will work
+data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
+nutrimouse.sgccda1 <- wrapper.sgccda(blocks = data,
+Y = Y,
+design = design1,
+ncomp = c(2, 2),
+keep.blocks = list(c(10,10), c(15,15)),
+scheme = "centroid",
+verbose = FALSE,
+bias = FALSE)
 
 ## I stoppped here, but maybe selectVar does not work
 
 # plotIndiv
 # ----------
 # should throw an error as we request all blocks to be displayed and Y has only 1 comp
-plotIndiv(nutrimouse.rgcca1, blocks = NULL)
+plotIndiv(nutrimouse.sgccda1, blocks = NULL)
 
 # yups, all good
-plotIndiv(nutrimouse.rgcca1, blocks = c(1,2), group = nutrimouse$diet)
+plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet)
 
 # with some ellipse
-plotIndiv(nutrimouse.rgcca1, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE)
+plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE)
 # and legend
-plotIndiv(nutrimouse.rgcca1, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE, add.legend = TRUE, main = 'my sample plot')
+plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE, add.legend = TRUE, main = 'my sample plot')
 
-head(nutrimouse.rgcca1$loadings[[1]])
-head(nutrimouse.rgcca1$loadings[[2]])
-head(nutrimouse.rgcca1$loadings[[3]])
+head(nutrimouse.sgccda1$loadings[[1]])
+head(nutrimouse.sgccda1$loadings[[2]])
+head(nutrimouse.sgccda1$loadings[[3]])
 
 
 # plotVar: needs to update the .Rd file (KA)
 # ------
 # both data sets at once
-plotVar(nutrimouse.rgcca1, block = c(1,2), col = c('green', 'blue'), cex = c(1,1))
-plotVar(nutrimouse.rgcca1, block = c(1,2), col = color.mixo(c(1,2)), cex = c(1,1))
+plotVar(nutrimouse.sgccda1, block = c(1,2), col = c('green', 'blue'), cex = c(1,1))
+plotVar(nutrimouse.sgccda1, block = c(1,2), col = color.mixo(c(1,2)), cex = c(1,1))
 
 # one data set
-plotVar(nutrimouse.rgcca1, block = c(2))
+plotVar(nutrimouse.sgccda1, block = c(2))
 # one data set
-plotVar(nutrimouse.rgcca1, block = c(1))
+plotVar(nutrimouse.sgccda1, block = c(1))
 
 
 
 # variables selected?
 # --------
 # FR: not working
-selectVar(nutrimouse.rgcca1, block = 1, comp = 1)
+selectVar(nutrimouse.sgccda1, block = 1, comp = 1)
 # Error in UseMethod("selectVar") : 
 #   no applicable method for 'selectVar' applied to an object of class "rgcca"
 

@@ -1462,8 +1462,8 @@ plotVar.sgcca <-
     if (any(comp > object$ncomp[block])) 
       stop("the elements of 'comp' must be smaller or equal than ", object$ncomp, ".")
     
-    if(any(c(length(pch),length(cex),length(font),length(cex)) > length(block)) )
-      warning("Will only take into account the first ", length(block), " arguments (pch, cex, font or cex) for the plot")
+    #if(any(c(length(pch),length(cex),length(font),length(cex)) > length(block)) )
+    # warning("Will only take into account the first ", length(block), " arguments (pch, cex, font or cex) for the plot")
     
     if(all(ncomp.select != comp))
       stop("All argument from 'ncomp.select' differ from 'comp'")
@@ -1659,8 +1659,8 @@ plotVar.rgcca <-
     if (any(comp > object$ncomp[block])) 
       stop("the elements of 'comp' must be smaller or equal than ", object$ncomp, ".")
     
-    if(any(c(length(pch),length(cex),length(font),length(cex)) > length(block)) )
-      warning("Will only take into account the first ", length(block), " arguments (pch, cex, font or cex) for the plot")
+    #if(any(c(length(pch),length(cex),length(font),length(cex)) > length(block)) )
+    # warning("Will only take into account the first ", length(block), " arguments (pch, cex, font or cex) for the plot")
     
 #     # check that the user did not enter extra arguments #
 #     # --------------------------------------------------#
