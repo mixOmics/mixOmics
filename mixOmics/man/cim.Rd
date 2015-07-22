@@ -1,13 +1,6 @@
 \name{cim}
 \encoding{latin1}
 \alias{cim}
-\alias{cim.default}
-\alias{cim.pca}
-\alias{cim.rcc}
-\alias{cim.pls}
-\alias{cim.plsda}
-\alias{cim.mlspls}
-\alias{cim.mlsplsda}
 
 \title{Clustered Image Maps (CIMs) ("heat maps")}
 
@@ -17,7 +10,7 @@ represent "high-dimensional" data sets.
 }
 
 \usage{
-\method{cim}{default}(mat,
+\method{cim}(mat,
            color = NULL,
            row.names = TRUE,
            col.names = TRUE,
@@ -54,45 +47,6 @@ represent "high-dimensional" data sets.
            legend=NULL,
            ...)
     
-\method{cim}{pca}(object, comp = 1:object$ncomp, color = NULL, sample.names = TRUE, 
-    var.names = TRUE, sample.sideColors = NULL, var.sideColors = NULL,
-    dist.method = c("euclidean", "euclidean"), 
-    clust.method = c("complete", "complete"),
-    cluster = "both", center = TRUE, scale = FALSE, \ldots)
-			
-\method{cim}{rcc}(object, comp = 1:object$ncomp, color = NULL, 
-    X.var.names = TRUE, Y.var.names = TRUE, sample.names = TRUE, 
-    x.sideColors = NULL, y.sideColors = NULL, sample.sideColors = NULL, 
-    mapping = "XY", dist.method = c("euclidean", "euclidean"), 
-    clust.method = c("complete", "complete"), cluster = "both", center = TRUE, 
-    scale = FALSE, \ldots)
-    
-\method{cim}{pls}(object, comp = 1:object$ncomp, color = NULL,
-    X.var.names = TRUE, Y.var.names = TRUE, sample.names = TRUE,
-    x.sideColors = NULL, y.sideColors = NULL, sample.sideColors = NULL, 
-    mapping = "XY", dist.method = c("euclidean", "euclidean"),
-    clust.method = c("complete", "complete"), cluster = "both", center = TRUE, 
-    scale = FALSE, \ldots)
-    
-\method{cim}{plsda}(object, comp = 1:object$ncomp, color = NULL,
-    sample.names = TRUE, var.names = TRUE, sample.sideColors = NULL, 
-    var.sideColors = NULL, dist.method = c("euclidean", "euclidean"),
-    clust.method = c("complete", "complete"), cluster = "both", center = TRUE, 
-    scale = FALSE, \ldots)
-    
-\method{cim}{mlspls}(object, comp = 1:object$ncomp, color = NULL,
-    X.var.names = TRUE, Y.var.names = TRUE, sample.names = TRUE,
-    x.sideColors = NULL, y.sideColors = NULL, sample.sideColors = NULL, 
-    mapping = "XY", dist.method = c("euclidean", "euclidean"),
-    clust.method = c("complete", "complete"), cluster = "both", center = TRUE, 
-    scale = FALSE, \ldots)
-    
-\method{cim}{mlsplsda}(object, comp = 1:object$ncomp, color = NULL,
-    sample.names = TRUE, var.names = TRUE, sample.sideColors = NULL, 
-    var.sideColors = NULL, dist.method = c("euclidean", "euclidean"),
-    clust.method = c("complete", "complete"), cluster = "both", center = TRUE, 
-    scale = FALSE, \ldots)
-}
 
 \arguments{
   \item{mat}{numeric matrix of values to be plotted.}
@@ -179,7 +133,7 @@ represent "high-dimensional" data sets.
     (or three if a side color is drawn) rows and two columns, with the row-heights \code{lhei} 
     and the column-widths \code{lwid}.}
     
-  \item{\ldots}{arguments passed to \code{cim.default}.}
+  \item{\ldots}{arguments passed to \code{cim}.}
 }
 
 \details{ 
@@ -254,17 +208,17 @@ Zaharevitz, D. W., Bunow, B., Viswanadhan, V. N., Johnson, G. S., Wittes, R. E.
 and Paull, K. D. (1997). An information-intensive approach to the molecular 
 pharmacology of cancer. \emph{Science} \bold{275}, 343-349.
 
-Gonz?lez I., Cao K.A., Davis M.J., D?jean S. (2012). Visualising associations between
+Gonzalez I., Le Cao K.A., Davis M.J., Dejean S. (2012). Visualising associations between
 paired 'omics' data sets. \emph{BioData Mining}; \bold{5}(1).
 }
 
 \author{}
 
-\seealso{\code{\link{LEGEND}}, \code{\link{heatmap}}, 
+\seealso{\code{\link{heatmap}}, 
 \code{\link{hclust}}, \code{\link{plotVar}}, 
 \code{\link{plot3dVar}}, \code{\link{network}} and 
 
-\url{http://www.math.univ-toulouse.fr/~biostat/mixOmics/} for more details.}
+\url{http://mixomics.org/graphics/} for more details.}
 
 \examples{
 ## default method
