@@ -258,6 +258,7 @@ cim <-
      if (length(comp) == 1) {
        if (is.null(comp) || !is.numeric(comp) || comp <= 0 || comp > ncomp)
          stop("invalid value for 'comp'.", call. = FALSE)
+       comp=c(comp,comp)
      }
      
      if (length(comp) > 1) {
@@ -381,12 +382,12 @@ cim <-
        #---------------------------------------------------------------------------#
        if(class.object[1] %in%  c("splsda","plsda",'mlsplsda'))
        {
-         keep.X = apply(abs(mat$loadings$X), 1, sum) > 0
+         keep.X = apply(abs(mat$loadings$X[, comp]), 1, sum) > 0
          cord.X = cor(mat$X[, keep.X], mat$variates$X[, comp], use = "pairwise")
          X.mat = as.matrix(mat$variates$X[, comp])
        }
        else{
-         keep.X = apply(abs(mat$rotation), 1, sum) > 0
+         keep.X = apply(abs(mat$rotation[, comp]), 1, sum) > 0
          cord.X = cor(mat$X[, keep.X], mat$x[, comp], use = "pairwise")
          X.mat = as.matrix(mat$x[, comp])
        }
@@ -669,8 +670,8 @@ cim <-
      }
      else if(class.object[1] %in%  object.list3)
      {
-       keep.X = apply(abs(mat$loadings$X), 1, sum) > 0
-       keep.Y = apply(abs(mat$loadings$Y), 1, sum) > 0
+       keep.X = apply(abs(mat$loadings$X[, comp]), 1, sum) > 0
+       keep.Y = apply(abs(mat$loadings$Y[, comp]), 1, sum) > 0
        
        
          if (mat$mode == "canonical") {
