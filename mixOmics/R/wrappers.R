@@ -18,12 +18,15 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
-
+# --------------------------------------
+# sgcca for multiple integration with variable selection in each block (lasso penalisation)
+#--------------------------------------
 wrapper.sgcca <- function (blocks, design = NULL, penalty = NULL, scheme = "centroid",
                            scale = TRUE, bias = FALSE, max.iter = 1000,
                            tol = .Machine$double.eps, verbose = FALSE, near.zero.var = FALSE,
                            keep.blocks = NULL, ncomp = rep(2, length(blocks))) {
-    
+  
+    # note here: mode is hard coded as canonical
   result.sgcca = srgcca(blocks = blocks, indY = NULL, design = design, tau = rep(1, length(blocks)), 
                         ncomp = ncomp, scheme = scheme, scale = scale, bias = bias, init = "svd.sgcca", 
                         tol = tol, verbose = verbose, mode = "canonical", max.iter = max.iter, 
@@ -34,11 +37,16 @@ wrapper.sgcca <- function (blocks, design = NULL, penalty = NULL, scheme = "cent
   return(invisible(result.sgcca))
 }
 
+
+# --------------------------------------
+# rgcca for multiple integration  and a regularisation parameter tau
+#--------------------------------------
 wrapper.rgcca <- function (blocks, design = NULL, penalty = NULL, scheme = "centroid", 
                            scale = TRUE, bias = FALSE, max.iter = 1000,
                            tol = .Machine$double.eps, verbose = FALSE, near.zero.var = FALSE,
                            ncomp = rep(2, length(blocks)), tau = "optimal") {
   
+  # note here: mode is hard coded as canonical
   result.sgcca = srgcca(blocks = blocks, indY = NULL, design = design, tau = tau, 
                         ncomp = ncomp, scheme = scheme, scale = scale, bias = bias, init = "svd.rgcca", 
                         tol = tol, verbose = verbose, mode = "canonical", max.iter = max.iter, 
@@ -49,6 +57,9 @@ wrapper.rgcca <- function (blocks, design = NULL, penalty = NULL, scheme = "cent
   return(invisible(result.sgcca))
 }
 
+# --------------------------------------
+# srgccda for multiple integration with a block (or more) as outcome(s) in Y and variable selection (lasso penalisation)
+#--------------------------------------
 wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid", 
                            scale = TRUE, bias = FALSE, max.iter = 1000,
                            tol = .Machine$double.eps, verbose = FALSE, near.zero.var = FALSE,
@@ -61,12 +72,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
   if (is.null(dim(Y))) {
     Y = as.factor(Y)
     ind.mat = data.frame(unmap(as.numeric(Y)))
-    # KA changed as a data frame did not work:
-    #ind.mat = unmap(as.numeric(Y))
-    # KA changed as a names is not doing the job:
     colnames(ind.mat) = levels(Y)
-    # KA added: a numeric matrix
-    #ind.mat = as.matrix(ind.mat)
   } else {
     stop("'Y' should be a factor or a class vector.")
   }
@@ -100,6 +106,7 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
   blocks[[length(blocks) + 1]] = ind.mat
   names(blocks)[length(blocks)] = "Y"
     
+  # note here: mode is hard coded as regression as we are performing a supervised analysis w.r.t Y
   result.sgcca = srgcca(blocks = blocks, indY = length(blocks), design = design, tau = rep(1, length(blocks)), 
                         ncomp = ncomp, scheme = scheme, scale = scale, bias = bias, init = "svd.da", 
                         tol = tol, verbose = verbose, mode = "regression", max.iter = max.iter,
