@@ -17,13 +17,42 @@ represent "high-dimensional" data sets.
 }
 
 \usage{
-\method{cim}{default}(mat, color = NULL, row.names = TRUE, col.names = TRUE,
-    row.sideColors = NULL, col.sideColors = NULL, row.cex = NULL, col.cex = NULL, 
-    cluster = "both", dist.method = c("euclidean", "euclidean"),
-    clust.method = c("complete", "complete"), cut.tree = c(0, 0), 
-    transpose = FALSE, symkey = TRUE, keysize = c(1, 1), zoom = FALSE, 
-    main = NULL, xlab = NULL, ylab = NULL, margins = c(5, 5), lhei = NULL, 
-    lwid = NULL, ...)
+\method{cim}{default}(mat,
+           color = NULL,
+           row.names = TRUE,
+           col.names = TRUE,
+           row.sideColors = NULL,
+           col.sideColors = NULL,
+           row.cex = NULL,
+           col.cex = NULL,
+           cluster = "both",
+           dist.method = c("euclidean", "euclidean"),
+           clust.method = c("complete", "complete"),
+           cut.tree = c(0, 0),
+           transpose = FALSE,
+           symkey = TRUE, 
+           keysize = c(1, 1),            
+           zoom = FALSE, 
+           main = NULL,
+           xlab = NULL,
+           ylab = NULL,
+           margins = c(5, 5),
+           lhei = NULL,
+           lwid = NULL,
+           comp=NULL,
+           sample.names = TRUE,
+           var.names = TRUE,
+           sample.sideColors = NULL,
+           var.sideColors = NULL,
+           center = TRUE,
+           scale = FALSE,
+           X.var.names = TRUE, 
+           Y.var.names = TRUE,
+           x.sideColors = NULL,
+           y.sideColors = NULL,
+           mapping = "XY",
+           legend=NULL,
+           ...)
     
 \method{cim}{pca}(object, comp = 1:object$ncomp, color = NULL, sample.names = TRUE, 
     var.names = TRUE, sample.sideColors = NULL, var.sideColors = NULL,
@@ -225,7 +254,7 @@ Zaharevitz, D. W., Bunow, B., Viswanadhan, V. N., Johnson, G. S., Wittes, R. E.
 and Paull, K. D. (1997). An information-intensive approach to the molecular 
 pharmacology of cancer. \emph{Science} \bold{275}, 343-349.
 
-González I., Cao K.A., Davis M.J., Déjean S. (2012). Visualising associations between
+Gonz?lez I., Cao K.A., Davis M.J., D?jean S. (2012). Visualising associations between
 paired 'omics' data sets. \emph{BioData Mining}; \bold{5}(1).
 }
 

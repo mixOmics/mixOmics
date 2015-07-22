@@ -24,9 +24,6 @@ sourceDir("/Users/florian/Work/git/package-mixOmics/mixOmics/R/",trace=FALSE) #l
 sourceDir("../../mixOmics/R/",trace=FALSE) #load all the functions inside mixOmics/R
 
 
-
-# FRANCOIS: j ai change (deux fois), cim.tot en cim, est ce que tu peux prendre cim.R s'il te plait.
-
 # =======================================================
 # simple CIM example on a matrix as input, by default distance = euclidian and mclust method = complete
 # =======================================================
@@ -59,12 +56,10 @@ obj.cim=cim(mat, color = color.GreenRed(51), col.sideColors = cond.col[cond],
 ddr <- as.hclust(obj.cim$ddr)
 # and cut the trees to obtain 3 clusters
 cl <- cutree(ddr, k = 3)
-# we give a color to the genes, so that we can assign each gene to one of the 3 colors clusters:
+# we give a color to the genes, so that we can assign each gene to one of the 3 colors clusters, up, down and null:
 gene.col <- c("up" = "red", "down" = "green", "null" = "black")
 gene.col
-
-
-# We now add a vertical side bar for the genes, colors are set to green red
+# and now add a vertical side bar for the genes, colors are set to green red
 cim(mat, color = color.GreenRed(51), col.sideColors = rep(c("red","blue"),each=5),
     row.sideColors=gene.col[cl],legend=list(legend = names(gene.col), col = gene.col,
                                             title = "Regulation", cex = 0.9))  
@@ -97,17 +92,17 @@ cim(mat,cluster="row")
 cim(mat, dist.method=c("correlation","maximum"))
 
 
-# cutting tree at different levels. 
+# cutting tree at different levels. That is pretty cool!
 cim(mat,cut.tree=c(0.5,0.2))
 
 # adding a title to the plot, label axes, adjusting margin
-cim(mat,symkey=TRUE,keysize=c(1,1),main = "My plot", xlab="sample", ylab="gene", margins=c(7,7))
+cim(mat, symkey=TRUE, keysize=c(1,1), main = "My plot", xlab="sample", ylab="gene", margins=c(7,7))
 
 # Increasing the height of the dendrogram, results in an increase of the color key
 cim(mat,lhei=c(3,4),lwid=c(2,5))
 
 # Increasing the height of the dendrogram, results in an increase of the color key
-# here the symkey is set to asymetric
+# here the symkey is set to asymetric, see ??cim
 cim(mat,lhei=c(3,4),lwid=c(2,5), symkey = FALSE)
 
 
@@ -118,22 +113,8 @@ cim(mat,lhei=c(3,4),lwid=c(2,5), symkey = FALSE)
 data(liver.toxicity)
 X <- liver.toxicity$gene
 
-# 30 genes are selected on each component
-liver.spca <- spca(X, ncomp = 3, keepX = rep(30, 3))
-
-
-#FB: si tu mets les couleurs en numeric (c(1,2,3,4)[factor(liver.toxicity$treatment[, 3])]) ca ne fait que du rouge. 
-# est ce que tu pourrais mettre un warning dans la cim et bien tester que le warning apparait? (a moins qu il y ait une autre
-#solution)
-# exemple qui marche pas:
-###
-####KA:Je peux mettre un warning mais je comprends pas car chez moi ca marche comme on peux le voir 
-###dans couleur_numerique.png j'ai lancé le tout apres avoir sourcer avec devel-soon sans rien d'autre
-##
-cim(liver.spca,
-sample.names = liver.toxicity$treatment[, 3], sample.sideColors=c(1,2,3,4)[factor(liver.toxicity$treatment[, 3])],
-clust.method = c("average", "centroid"))
-
+# 20 genes are selected on each component
+liver.spca <- spca(X, ncomp = 3, keepX = rep(20, 3))
 
 # Playing with the different available clustering methods, indicating the group colors of the samples based on acetaminophen dose
 # note that because it is a sparse method, only the genes selected on the 3 components will appear
@@ -149,17 +130,19 @@ cim(liver.spca,
     sample.names = liver.toxicity$treatment[, 3],sample.sideColors=color.mixo(factor(liver.toxicity$treatment[, 3])),
     clust.method = c("median", "complete"))
 
-# FB: X.var.name ne semble pas marcher. que l on mette true ou false ne change rien
-# Dans le .Rd il manque aussi un \method{cim}{spca}
+# other names
+cim(liver.spca, sample.names=rep(c("alpha","beta"),each=32))
 
-###KA:En fait, c'est normal et pas normal:
-##dans le Rd le spca serait au niveau de la method pca donc il n'y a pas l'option X.var.name pris en compte
+# or no var.names, no sample.names
+cim(liver.spca, var.names=FALSE, sample.names=FALSE)
 
+# with a sparse method, show only the variables selected on specific components
+# FB: le nom des variables (colonnes) est tjs le meme ce qui peut preter a confusion
+# peut on extraire plutot le nom des variables?
 
-#Here we ask show only the variables selected (??)
-# we can also choose th scale the data on the columns
-cim(liver.spca, X.var.names=TRUE,scale=TRUE)
-
+cim(liver.spca, comp = 1)
+cim(liver.spca, comp = 2)
+cim(liver.spca, comp = c(1,3))
 
 # ==================================================================
 ## CIM representation for objects of class 'sPLS-DA' 
@@ -168,17 +151,23 @@ cim(liver.spca, X.var.names=TRUE,scale=TRUE)
 Y <- liver.toxicity$treatment[, 3]
 
 # 1 - sPLS-DA analysis, where 40 and 30 genes are selected on each component
-splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(40, 30))
+splsda.liver1 <- splsda(X, Y, ncomp = 2, keepX = c(40, 30))
 
-# CIM default representation includes the total of 70 genes selected
-cim(splsda.liver, sample.sideColors = dose.col, sample.names = Y)
+# CIM default representation includes the total of 70 genes selected, with the dose color
+dose.col <- color.mixo(as.numeric(as.factor(liver.toxicity$treatment[, 3])))
+cim(splsda.liver1, sample.sideColors = dose.col, sample.names = Y)
 
 # 2 - sPLS-DA analysis, where 40 genes are selected on the first component
-splsda.liver <- splsda(X, Y, ncomp = 1, keepX = c(40))
+splsda.liver2 <- splsda(X, Y, ncomp = 1, keepX = c(40))
 # The default CIM will show only those 40 genes selected
-cim(splsda.liver, sample.sideColors = dose.col, sample.names = Y)
+cim(splsda.liver2, sample.sideColors = dose.col, sample.names = Y)
 
-
+# with a sparse method, show only the variables selected on specific components
+# FB: le nom des variables (colonnes) est tjs le meme ce qui peut preter a confusion
+# peut on extraire plutot le nom des variables?
+cim(splsda.liver1, comp = 1)
+cim(splsda.liver1, comp = 2)
+cim(splsda.liver1, comp = c(1,2))
 
 # =============================================
 ## The CIM default method to visualise cross-correlations between two data sets 
@@ -225,15 +214,8 @@ nutri.rcc <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 # plotting 1 dataset, X
 cim(nutri.rcc, mapping="X")
 
-# FB: c est bizarre pr la palette, je sais pas si ca te fait ca a toi mais moi il  faut que je relance 2 fois pr
-# reinitaliser? du coup la premier fois il me dit quel a longueur est pas bonne
-# Error: 'x.sideColors' must be a colors character vector (matrix) of length (nrow) 21.
-# du coup j ai mis col.jet
-
-##KA:J'ai eu le meme probleme c'est du a un probleme dans palette
-
 # plotting 1 dataset, X (lipids), changing colors
-col.lipid= color.jet(n = ncol(X))     #palette(rainbow(n = 21))
+col.lipid= color.jet(n = ncol(X))     
 cim(nutri.rcc, mapping = "X", xlab = "lipids", 
     ylab = "samples", x.sideColors = col.lipid, margins = c(6, 5))
 
@@ -269,6 +251,19 @@ cim(nutri.rcc, mapping = "Y", sample.names = nutrimouse$genotype,
     sample.sideColors = geno.col, xlab = "genes",
     clust.method = c("ward", "ward"))
 
+# we can also only show the variables???
+#test comp
+# FB: je comprends pas ce que tu as fait la. Le comp ne doit etre valide que pour les methodes sparse (spca, splsda, spls)
+# car techniquement les autres methodes ne selectionnent pas de variables. Du coup je me demande ce que fait cet output?
+# En tt cas il faut deactiver pr les methodes non sparse.
+cim(nutri.rcc,comp=1)
+cim(nutri.rcc,comp=3)
+cim(nutri.rcc,comp=c(1,2))
+cim(nutri.rcc,comp=c(2,1))
+cim(nutri.rcc,comp=c(1,2,2))
+cim(nutri.rcc,comp=c(2,2,2))
+
+
 # ----------------------------
 # with sPLS
 # ---------------------------
@@ -276,21 +271,27 @@ data(liver.toxicity)
 
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
-toxicity.spls <- spls(X, Y, ncomp = 3,
+liver.spls <- spls(X, Y, ncomp = 3,
                       keepX = c(20, 50, 50), keepY = c(10, 10, 10))
 
 # Here we visualise only the X variables selected 
-cim(toxicity.spls,mapping="X")
+cim(liver.spls, mapping="X")
 
 # Here we should visualise only the Y variables selected
-cim(toxicity.spls,mapping="Y") 
+cim(liver.spls, mapping="Y") 
 
 # Here we only visualise the similarity matrix between the variables by spls  
-cim(toxicity.spls, cluster="none")
+cim(liver.spls, cluster="none")
 
 # plotting two data sets with the similarity matrix as input in the funciton (see our Data Mining paper for more details)
 # Only the variables selected by the sPLS model in X and Y are represented
-cim(toxicity.spls, mapping="XY")
+cim(liver.spls, mapping="XY")
+
+# with a sparse method, show only the variables selected on specific components
+cim(liver.spls, comp = 1)
+cim(liver.spls, comp = 2)
+cim(liver.spls, comp = c(1,2))
+cim(liver.spls, comp = c(1,3))
 
 # ----------------------------------------------------------------
 ## CIM representation for objects of class splsda 'multilevel' 
@@ -309,14 +310,14 @@ stim.col <- stim.col[as.numeric(design$stim)]
 time.col <- c("orange", "cyan")[as.numeric(design$time)]
 
 
-# FB: est ce que tu peux me rajouter une legende ici? de mon experience c est le plus difficile a mettre en place sur la cim
+# The row side bar indicates the two levels of the facteor, stimulation and time.
+# the sample names have been motified on the plot.
 cim(res.2level, sample.sideColors = cbind(stim.col, time.col), 
     sample.names = paste(design$time, design$stim, sep = "_"),
     var.names = FALSE,
-    ## legende marche pas?
-    ## KA ca marche maintenant voir 
-    legend=list( legend = unique(design$stim), col = unique(stim.col), title = "Condition", cex = 0.9)
-    )
+  #setting up legend:
+    legend=list(legend = unique(design$stim), col = unique(stim.col), title = "Condition", cex = 0.9)
+)
 
 
 # ----------------------------------------------------------------
@@ -329,15 +330,37 @@ repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
                   10, 11, 12, 12, 10, 11, 12, 11, 12, 13, 14, 13, 14, 13, 14,
                   13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
 
+# sPLS is a non supervised technique, and so we only indicate the sample repetitions in the design (1 factor only here, sample)
+# sPLS takes as an input 2 data sets, and the variables selected
 design <- data.frame(sample = repeat.indiv) 
 res.spls.1level <- multilevel(X = liver.toxicity$gene,
                               Y=liver.toxicity$clinic,
                               design = design,
-                              ncomp = 3,
-                              keepX = c(50, 50, 50), keepY = c(5, 5, 5),
+                              ncomp = 2,
+                              keepX = c(50, 50), keepY = c(5, 5),
                               method = 'spls', mode = 'canonical')
 
 stim.col <- c("darkblue", "purple", "green4","red3")
-cim(res.spls.1level,mapping="Y",
-    sample.sideColors = stim.col[factor(liver.toxicity$treatment[,3])],
-    legend=list(legend=unique(liver.toxicity$treatment[,3]),col=stim.col,cex=0.9))
+
+# showing only the Y variables, and only those selected in comp 1 
+cim(res.spls.1level, mapping="Y",
+    sample.sideColors = stim.col[factor(liver.toxicity$treatment[,3])], comp = 1,
+    #setting up legend:
+    legend=list(legend = unique(liver.toxicity$treatment[,3]), col=stim.col, title = "Dose", cex=0.9))
+
+
+# showing only the X variables, for all selected on comp 1 and 2 
+cim(res.spls.1level, mapping="X",
+    sample.sideColors = stim.col[factor(liver.toxicity$treatment[,3])], 
+    #setting up legend:
+    legend=list(legend = unique(liver.toxicity$treatment[,3]), col=stim.col, title = "Dose", cex=0.9))
+
+
+# These are the cross correlations between the variables selected in X and Y.
+# The similarity matrix is obtained as in our paper in Data Mining
+cim(res.spls.1level, mapping="XY")
+
+
+
+
+

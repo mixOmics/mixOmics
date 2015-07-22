@@ -1,8 +1,7 @@
 # Copyright (C) 2015
 # Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-# Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-# Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
 # Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+# Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # This program is free software; you can redistribute it and/or
 # as published by the Free Software Foundation; either version 2
@@ -19,7 +18,7 @@
 
 
 # --------------------------------------------
-# CIM for all object 
+# CIM for all objects 
 # --------------------------------------------
 cim <-
   function(mat,
