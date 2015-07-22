@@ -1,9 +1,31 @@
-# to do:
-# create a S3 function for any sparse methods (sparse only?)
+# Copyright (C) 2015
+# Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+# Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+# Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
 
-# for sPCA, then a Y outcome should be provided
-# for sPLS, then block = X or Y should be provided
-# for sGCCA, then block = k should be provided
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+
+# ---------------------------------------------------------
+
+# to do later
+# create a S3 function?
+
+# for sPCA, then a Y 'outcome' should be provided as input
+# for sPLS, then block = X or Y should be provided as input
+# for sGCCA, then block = k should be provided as input
 
 
 plotContrib = function(object,
@@ -142,6 +164,7 @@ plotContrib = function(object,
   
   
   #   # run a kruskall wallis test and adjust the pvalues for multiple testing using Benjamini Hochberg
+  # this has been removed as the type of stat test is particular to the data
   #   kruskall.pval = apply(X[, list.select, drop = FALSE], 2, function(x){kruskal.test(x ~ Y)$p.value})
   #   kruskall.pval.adj = p.adjust(kruskall.pval, method = 'BH')
   
