@@ -255,13 +255,10 @@ cim <-
      #-- comp
      if(is.null(comp))
      {comp=1:mat$ncomp}
-     if (length(comp) == 1) {
-       if (is.null(comp) || !is.numeric(comp) || comp <= 0 || comp > ncomp)
-         stop("invalid value for 'comp'.", call. = FALSE)
-       comp=c(comp,comp)
-     }
      
      if (length(comp) > 1) {
+       
+       comp=unique(comp)
        if(length(comp) > ncomp) 
          stop("the length of 'comp' must be smaller or equal than ", ncomp, ".", 
               call. = FALSE)
@@ -271,6 +268,13 @@ cim <-
          stop("the elements of 'comp' must be smaller or equal than ", ncomp, ".", 
               call. = FALSE)
      }
+     
+     if (length(comp) == 1) {
+       if (is.null(comp) || !is.numeric(comp) || comp <= 0 || comp > ncomp)
+         stop("invalid value for 'comp'.", call. = FALSE)
+       comp=c(comp,comp)
+     }
+     
      
      comp = round(comp)
      

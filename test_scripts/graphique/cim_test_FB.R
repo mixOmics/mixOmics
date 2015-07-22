@@ -153,6 +153,8 @@ cim(nutri.rcc,comp=1)
 cim(nutri.rcc,comp=3)
 cim(nutri.rcc,comp=c(1,2))
 cim(nutri.rcc,comp=c(2,1))
+cim(nutri.rcc,comp=c(1,2,2))
+cim(nutri.rcc,comp=c(2,2,2))
 
 
 
