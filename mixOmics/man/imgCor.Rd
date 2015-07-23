@@ -69,7 +69,7 @@ If \code{Y.names = FALSE}, the name of each Y-variable is hidden.
 Default value is \code{TRUE}.
 }
 
-\author{Sebastien Dejean, Ignacio Gonzalez and Pierre Monget.}
+\author{Ignacio Gonzalez.}
 
 \seealso{\code{\link{cor}}, \code{\link{image}}, \code{\link{color.jet}}.}
 
