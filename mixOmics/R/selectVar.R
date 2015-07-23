@@ -33,13 +33,13 @@ selectVar.pls = function(object, comp =1, ...){
   
   # variables from data set X
   # name of selected variables
-  name.var.X = names(sort(abs(object$loadings$X[,comp]), decreasing = T)[1:length(object$loadings$X[,comp]!=0)])
+  name.var.X = names(sort(abs(object$loadings$X[,comp]), decreasing = T)[1:sum(object$loadings$X[,comp]!=0)])
   #value on the loading vector
   value.var.X = object$loadings$X[name.var.X,comp]
   
   # variables from data set Y
   # name of selected variables
-  name.var.Y = names(sort(abs(object$loadings$Y[,comp]), decreasing = T)[1:length(object$loadings$Y[,comp]!=0)])
+  name.var.Y = names(sort(abs(object$loadings$Y[,comp]), decreasing = T)[1:sum(object$loadings$Y[,comp]!=0)])
   #value on the loading vector
   value.var.Y = object$loadings$Y[name.var.Y,comp]
   
@@ -56,7 +56,7 @@ selectVar.plsda =  function(object, comp=1, ...){
   if(comp > object$ncomp) stop('The comp value you indicated is larger than the fitted model')
   
   # variables from data set X
-  name.var = names(sort(abs(object$loadings$X[,comp]), decreasing = T)[1:length(object$loadings$X[,comp]!=0)])
+  name.var = names(sort(abs(object$loadings$X[,comp]), decreasing = T)[1:sum(object$loadings$X[,comp]!=0)])
   #value on the loading vector
   value.var = object$loadings$X[name.var,comp]
   
@@ -73,7 +73,7 @@ selectVar.pca = function(object, comp=1, ...){
   if(comp > object$ncomp) stop('The comp value you indicated is larger than the fitted model')
   
   # variables from data set X
-  name.var = names(sort(abs(object$rotation[,comp]), decreasing = T)[1:length(object$rotation[,comp]!=0)])
+  name.var = names(sort(abs(object$rotation[,comp]), decreasing = T)[1:sum(object$rotation[,comp]!=0)])
   #value on the loading vector
   value.var = object$rotation[name.var,comp]
   
