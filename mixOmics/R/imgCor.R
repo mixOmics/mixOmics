@@ -19,18 +19,24 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+#library(mixOmics)
+#data(liver.toxicity)
+#X <- liver.toxicity$gene
+#Y <- liver.toxicity$clinic
+#imgCor(X=X[,1:10],Y=Y[,1:4])
+
 
 imgCor <-
 function(X, 
          Y,  
          type = c("combine", "separate"), 
-         col = color.jet, 
+         col = color.jet(25),
          X.names = TRUE, 
          Y.names = TRUE,		 
          XsideColor = "blue",
          YsideColor = "red",
          symkey = TRUE, 
-         keysize = 1, 
+         keysize = c(1,1),
          interactive.dev = TRUE,		 
          cexRow = NULL, 
          cexCol = NULL, 
@@ -86,7 +92,7 @@ function(X,
         ColSideColors = c(rep(YsideColor, q), rep(XsideColor, p))
         RowSideColors = c(rep(XsideColor, p), rep(YsideColor, q))
 		
-        cim(matcor, col = col, dendrogram = "none",
+        cim(matcor, color = col, dendrogram = "none",
             labRow = NULL, labCol = NULL,		 
             symkey = symkey, keysize = keysize, 
             main = "[X,Y] correlation matrix",
@@ -111,7 +117,7 @@ function(X,
         XYcor = XYcor[, q:1]
 		
         if (interactive.dev) {   
-            cim(Xcor, col = col, dendrogram = "none",
+            cim(Xcor, color = col, dendrogram = "none",
             labRow = NULL, labCol = NULL,		 
             symkey = symkey, keysize = keysize, 
             main = "X correlation matrix",			
@@ -121,7 +127,7 @@ function(X,
             breaks = breaks)
 			
             devAskNewPage(TRUE)
-            cim(Ycor, col = col, dendrogram = "none",
+            cim(Ycor, color = col, dendrogram = "none",
             labRow = NULL, labCol = NULL,		 
             symkey = symkey, keysize = keysize, 
             main = "Y correlation matrix",			
@@ -130,7 +136,7 @@ function(X,
             margins = margins, lhei = lhei, lwid = lwid,
             breaks = breaks)
 
-		    cim(XYcor, col = col, dendrogram = "none",
+		    cim(XYcor, color = col, dendrogram = "none",
             labRow = NULL, labCol = NULL,		 
             symkey = symkey, keysize = keysize, 
             main = "XY correlation matrix",			
@@ -141,7 +147,7 @@ function(X,
         }
 		else {
             getOption("device")("xpos" = 0, "ypos" = 0)
-            cim(XYcor, col = col, dendrogram = "none",
+            cim(XYcor, color = col, dendrogram = "none",
             labRow = NULL, labCol = NULL,		 
             symkey = symkey, keysize = keysize, 
             main = "XY correlation matrix",			
@@ -151,7 +157,7 @@ function(X,
             breaks = breaks)
 			
             getOption("device")("xpos" = 34, "ypos" = 34)
-            cim(Ycor, col = col, dendrogram = "none",
+            cim(Ycor, color = col, dendrogram = "none",
             labRow = NULL, labCol = NULL,		 
             symkey = symkey, keysize = keysize, 
             main = "Y correlation matrix",			
@@ -161,7 +167,7 @@ function(X,
             breaks = breaks)
 			
             getOption("device")("xpos" = 64, "ypos" = 64)
-            cim(Xcor, col = col, dendrogram = "none",
+            cim(Xcor, color = col, dendrogram = "none",
             labRow = NULL, labCol = NULL,		 
             symkey = symkey, keysize = keysize, 
             main = "X correlation matrix",			

@@ -615,15 +615,6 @@ plotIndiv(pca.res, ind.names = TRUE, pch = c(1, 3), plot.ellipse = TRUE, group.t
 plotIndiv(pca.res, plot.ellipse = FALSE, ind.names = FALSE, group.training = c(rep("group1", 10), rep("group2", 50)), cex = c(1, 5))
 
 
-data(breast.tumors)
-X <- breast.tumors$gene.exp
-Y <- breast.tumors$sample$treatment
-
-plsda.breast <- plsda(X, Y, ncomp = 3)
-
-plotIndiv(plsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, rep.space = "XY-variate", plot.ellipse = TRUE, style = "ggplot2", cex = c(1, 1))
-plotIndiv(plsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, rep.space = "XY-variate", plot.ellipse = TRUE, style = "lattice", cex = c(1, 1))
-
 data(linnerud)
 X1 <- linnerud$exercise
 Y2 <- linnerud$physiological
@@ -660,3 +651,35 @@ wrap.result.rgcca = wrapper.rgcca(data = data, design = design, tau = c(1, 1, 0)
                                   ncomp = c(2, 2, 1),
                                   scheme = "centroid", verbose = FALSE)
 plotIndiv(wrap.result.rgcca)
+
+
+
+#############
+### plsda ###
+#############
+
+data(breast.tumors)
+X <- breast.tumors$gene.exp
+Y <- breast.tumors$sample$treatment
+
+plsda.breast <- plsda(X, Y, ncomp = 3)
+
+plotIndiv(plsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, rep.space = "XY-variate", plot.ellipse = TRUE, style = "ggplot2", cex = c(1, 1))
+plotIndiv(plsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, rep.space = "XY-variate", plot.ellipse = TRUE, style = "lattice", cex = c(1, 1))
+
+
+#############
+### splsda ###
+#############
+
+data(breast.tumors)
+X <- breast.tumors$gene.exp
+Y <- breast.tumors$sample$treatment
+
+splsda.breast <- splsda(X, Y,keepX=c(10,10),ncomp=2)
+plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, rep.space = "XY-variate", plot.ellipse = TRUE, style = "ggplot2", cex = c(1, 1))
+plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, rep.space = "XY-variate", plot.ellipse = TRUE, style = "lattice", cex = c(1, 1))
+plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2))
+plotIndiv(splsda.breast)
+plotIndiv(splsda.breast,comp=c(2,3))#erreur-ok
+
