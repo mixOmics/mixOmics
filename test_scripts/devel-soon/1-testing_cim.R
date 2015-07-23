@@ -139,6 +139,7 @@ cim(liver.spca, var.names=FALSE, sample.names=FALSE)
 # with a sparse method, show only the variables selected on specific components
 # FB: le nom des variables (colonnes) est tjs le meme ce qui peut preter a confusion
 # peut on extraire plutot le nom des variables?
+##reparer erreur tres legere du à object$names
 
 cim(liver.spca, comp = 1)
 cim(liver.spca, comp = 2)
@@ -151,7 +152,7 @@ cim(liver.spca, comp = c(1,3))
 Y <- liver.toxicity$treatment[, 3]
 
 # 1 - sPLS-DA analysis, where 40 and 30 genes are selected on each component
-splsda.liver1 <- splsda(X, Y, ncomp = 2, keepX = c(40, 30))
+splsda.liver1 <- splsda(X, Y, ncomp = 3, keepX = c(40, 30,50))
 
 # CIM default representation includes the total of 70 genes selected, with the dose color
 dose.col <- color.mixo(as.numeric(as.factor(liver.toxicity$treatment[, 3])))
@@ -168,6 +169,8 @@ cim(splsda.liver2, sample.sideColors = dose.col, sample.names = Y)
 cim(splsda.liver1, comp = 1)
 cim(splsda.liver1, comp = 2)
 cim(splsda.liver1, comp = c(1,2))
+cim(splsda.liver1, comp = c(1,2,2))
+cim(splsda.liver1, comp = c(2,1))
 
 # =============================================
 ## The CIM default method to visualise cross-correlations between two data sets 
@@ -251,17 +254,6 @@ cim(nutri.rcc, mapping = "Y", sample.names = nutrimouse$genotype,
     sample.sideColors = geno.col, xlab = "genes",
     clust.method = c("ward", "ward"))
 
-# we can also only show the variables???
-#test comp
-# FB: je comprends pas ce que tu as fait la. Le comp ne doit etre valide que pour les methodes sparse (spca, splsda, spls)
-# car techniquement les autres methodes ne selectionnent pas de variables. Du coup je me demande ce que fait cet output?
-# En tt cas il faut deactiver pr les methodes non sparse.
-cim(nutri.rcc,comp=1)
-cim(nutri.rcc,comp=3)
-cim(nutri.rcc,comp=c(1,2))
-cim(nutri.rcc,comp=c(2,1))
-cim(nutri.rcc,comp=c(1,2,2))
-cim(nutri.rcc,comp=c(2,2,2))
 
 
 # ----------------------------

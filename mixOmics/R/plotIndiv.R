@@ -259,7 +259,13 @@ plotIndiv <-
     #-- End: data set
     
     #-- Start: ggplot2
-      if (style == "ggplot2"){  
+      if (style == "ggplot2"){ 
+        print(df$x)
+        print(df %>%
+          ggvis(~x, ~y, 
+                size := input_slider(10, 100),
+                opacity := input_slider(0, 1)) %>%
+          layer_points())
         #-- Initialise ggplot2
         p = ggplot(df, aes(x = x, y = y, color = group),
                            main = main,
@@ -309,6 +315,7 @@ plotIndiv <-
     
     #-- Start: Lattice
     if(style=="lattice") {
+      
         p = xyplot(y ~ x | Block, data = df, xlab = X.label, ylab = Y.label, main = main,
                group = if (display.names) {names} else {group},
                scales= list(x = list(relation = "free", limits = xlim), 
