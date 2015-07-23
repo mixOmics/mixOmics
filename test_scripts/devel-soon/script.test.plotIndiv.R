@@ -3,11 +3,42 @@
 # plotIndiv.ipca*   plotIndiv.pca*    plotIndiv.pls*    plotIndiv.plsda*  plotIndiv.rcc*    plotIndiv.rgcca*  plotIndiv.sgcca*  plotIndiv.sipca*  plotIndiv.spls*   plotIndiv.splsda*
 
 # New dependencies with ggplot2 and ellipse
-require(mixOmics); require(ellipse); require(ggplot2)
-source("../../mixOmics/R/plotIndiv.R"); 
+# require(mixOmics); require(ellipse); require(ggplot2)
+# source("../../mixOmics/R/plotIndiv.R"); 
 
 #source("./R scripts/wrapper.sgcca.v6.R"); 
 #source("./R scripts/wrappers.R"); source("./R scripts/helpers.R")
+
+
+rm(list=ls())
+
+require(mixOmics); require(ellipse); require(ggplot2)
+
+
+sourceDir <- function(path, trace = TRUE, ...) {
+  for (nm in list.files(path, pattern = "\\.[RrSsQq]$")) {
+    if(trace) cat(nm,":")
+    source(file.path(path, nm), ...)
+    if(trace) cat("\n")
+  }
+}
+
+# Florian
+sourceDir("/Users/florian/Work/git/package-mixOmics/mixOmics/R/",trace=FALSE) #load all the functions inside ixOmics/R
+
+# KA
+sourceDir("../../mixOmics/R/",trace=FALSE) #load all the functions inside ixOmics/R
+
+
+
+
+
+
+
+
+
+
+
 
 #############
 ### IPCA ####
@@ -664,8 +695,13 @@ Y <- breast.tumors$sample$treatment
 
 plsda.breast <- plsda(X, Y, ncomp = 3)
 
-plotIndiv(plsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, rep.space = "XY-variate", plot.ellipse = TRUE, style = "ggplot2", cex = c(1, 1))
-plotIndiv(plsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, rep.space = "XY-variate", plot.ellipse = TRUE, style = "lattice", cex = c(1, 1))
+# with pch and ggplot2 style - note: no need to input the group color as it is done internally in a supervised approach
+plotIndiv(plsda.breast, comp = c(1, 2),  pch = 17, ind.names = FALSE,
+          rep.space = "XY-variate", plot.ellipse = TRUE, style = "ggplot2")
+
+# with ind names and lattice style
+plotIndiv(plsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, 
+          rep.space = "XY-variate", plot.ellipse = TRUE, style = "lattice", cex = c(1, 1))
 
 
 #############
@@ -677,9 +713,19 @@ X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
 splsda.breast <- splsda(X, Y,keepX=c(10,10),ncomp=2)
+
+# default option
+plotIndiv(splsda.breast)
+
+# default option with no ind name: pch and color are set automatically
+plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2))
+
+# default option with no ind name: pch and color are set automatically, with legend
+plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2), add.legend = TRUE)
+
+
 plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, rep.space = "XY-variate", plot.ellipse = TRUE, style = "ggplot2", cex = c(1, 1))
 plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, rep.space = "XY-variate", plot.ellipse = TRUE, style = "lattice", cex = c(1, 1))
-plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2))
-plotIndiv(splsda.breast)
+
 plotIndiv(splsda.breast,comp=c(2,3))#erreur-ok
 
