@@ -1,4 +1,4 @@
-# library(mixOmics)
+library(mixOmics)
 # ##library(R.utils)
 
 
@@ -139,9 +139,13 @@ cim(liver.spca, var.names=FALSE, sample.names=FALSE)
 # with a sparse method, show only the variables selected on specific components
 # FB: le nom des variables (colonnes) est tjs le meme ce qui peut preter a confusion
 # peut on extraire plutot le nom des variables?
-##reparer erreur tres legere du à object$names
+##reparer erreur tres legere du ? object$names
+# FB: peut etre que tu as oublie de livrer: mais ca ne change rien.
 
+# ici les varaibles sont numerotees de 1:20
 cim(liver.spca, comp = 1)
+# ici les variables sont numerotees de 1:20, c est ca qui prete a confusion par rapport a au dessus. un utilisateur lambda croiait
+# que ce sont les meme variables
 cim(liver.spca, comp = 2)
 cim(liver.spca, comp = c(1,3))
 
@@ -152,7 +156,7 @@ cim(liver.spca, comp = c(1,3))
 Y <- liver.toxicity$treatment[, 3]
 
 # 1 - sPLS-DA analysis, where 40 and 30 genes are selected on each component
-splsda.liver1 <- splsda(X, Y, ncomp = 3, keepX = c(40, 30,50))
+splsda.liver1 <- splsda(X, Y, ncomp = 3, keepX = c(40, 30, 50))
 
 # CIM default representation includes the total of 70 genes selected, with the dose color
 dose.col <- color.mixo(as.numeric(as.factor(liver.toxicity$treatment[, 3])))
@@ -236,7 +240,8 @@ cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6))
 
 # In a Windows and Linux environment (not RStudio Mac), you can select the region and "see" the zoom-out region
 # you need to click on 'stop' to exit
-cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6) )
+# FB: une fois que je lance ca, je sais vraiment pas comment en sortir. j ai pas de stop ni exit button, c est ou?
+cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6), zoom =TRUE)
 
 
 # By default the clustering method is set to Complete for both rows and columns
@@ -255,6 +260,11 @@ cim(nutri.rcc, mapping = "Y", sample.names = nutrimouse$genotype,
     clust.method = c("ward", "ward"))
 
 
+# only calculates the similarity matrix based on the variate from comp = 1
+cim(nutri.rcc, comp = 1)
+
+# only calculates the similarity matrix based on the variate from comp = 1
+cim(nutri.rcc, comp = 2)
 
 # ----------------------------
 # with sPLS
@@ -265,6 +275,15 @@ X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
 liver.spls <- spls(X, Y, ncomp = 3,
                       keepX = c(20, 50, 50), keepY = c(10, 10, 10))
+
+
+# default
+cim(liver.spls)
+
+# transpose matrix, choose clustering method
+cim(liver.spls, transpose = TRUE,   
+    clust.method = c("ward", "ward"), margins = c(5, 7))
+
 
 # Here we visualise only the X variables selected 
 cim(liver.spls, mapping="X")
@@ -279,11 +298,22 @@ cim(liver.spls, cluster="none")
 # Only the variables selected by the sPLS model in X and Y are represented
 cim(liver.spls, mapping="XY")
 
+# on the X matrix only, side col var to indicate dose
+dose.col <- color.mixo(as.numeric(as.factor(liver.toxicity$treatment[, 3])))
+cim(liver.spls, mapping = "X", sample.sideColors = dose.col, 
+    sample.names = liver.toxicity$treatment[, 3])
+
+# CIM default representation includes the total of 120 genes selected, with the dose color
 # with a sparse method, show only the variables selected on specific components
 cim(liver.spls, comp = 1)
 cim(liver.spls, comp = 2)
 cim(liver.spls, comp = c(1,2))
 cim(liver.spls, comp = c(1,3))
+
+
+
+
+
 
 # ----------------------------------------------------------------
 ## CIM representation for objects of class splsda 'multilevel' 

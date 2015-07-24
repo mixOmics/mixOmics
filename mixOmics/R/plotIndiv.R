@@ -6,6 +6,7 @@
 # Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
 # Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 
+# Note: some part of this code (for plotting the ellipse) was borrowed from the ellipse package
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -189,7 +190,7 @@ plotIndiv <-
     } else if (length(col) == nlevels(group)){
       levels.color = col
     } else if (length(col) == length(x[[1]])){
-      stop("Length of 'col' is equal to the length of your block. Please use the argument 'group' to define some groups")
+      stop("Length of 'col' is equal to the number of rows in your block. Please use the argument 'group' to define the groupings")
     } else {
       stop("'col' must be a character vector of length ", nlevels(group) ," or one color")
     }
@@ -259,13 +260,7 @@ plotIndiv <-
     #-- End: data set
     
     #-- Start: ggplot2
-      if (style == "ggplot2"){ 
-        print(df$x)
-        print(df %>%
-          ggvis(~x, ~y, 
-                size := input_slider(10, 100),
-                opacity := input_slider(0, 1)) %>%
-          layer_points())
+      if (style == "ggplot2"){  
         #-- Initialise ggplot2
         p = ggplot(df, aes(x = x, y = y, color = group),
                            main = main,
@@ -315,7 +310,6 @@ plotIndiv <-
     
     #-- Start: Lattice
     if(style=="lattice") {
-      
         p = xyplot(y ~ x | Block, data = df, xlab = X.label, ylab = Y.label, main = main,
                group = if (display.names) {names} else {group},
                scales= list(x = list(relation = "free", limits = xlim), 

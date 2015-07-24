@@ -1,84 +1,31 @@
-\name{plotIndiv}
-\encoding{latin1}
-\alias{plotIndiv}
+# -----------------------------------------------------------------------------------
+# Testing_plotIndiv.R
+# Author:    KA Le Cao 
+# Date started:  23/07/2015
+# Last updated:  
+# Objective: only code for help file
+# Latest update: 
+# -----------------------------------------------------------------------------------
 
-\title{Plot of Individuals (Experimental Units)}
 
-\description{
-This function provides scatter plots for individuals (experimental units)
-representation in (regularized) CCA, (sparse) PLS regression, (sparse)RGCCA and PCA.
+rm(list=ls())
+
+sourceDir <- function(path, trace = TRUE, ...) {
+  for (nm in list.files(path, pattern = "\\.[RrSsQq]$")) {
+    if(trace) cat(nm,":")
+    source(file.path(path, nm), ...)
+    if(trace) cat("\n")
+  }
 }
 
-\usage{
-\method{plotIndiv}(object,
-           comp = c(1, 2),
-           ind.names = TRUE,
-           rep.space = "X-variate",
-           blocks = NULL, 
-           X.label = NULL,
-           Y.label = NULL,
-           abline.line = FALSE,
-           col,
-           cex,
-           pch,
-           plot.ellipse = FALSE, 
-           ellipse.level = 0.95,
-           group = NULL,  # 
-           main="plotIndiv",
-           add.legend=FALSE,
-           style="ggplot2", 
-           \ldots)
-	  
-}
+# Florian
+sourceDir("/Users/florian/Work/git/package-mixOmics/mixOmics/R/",trace=FALSE) #load all the functions inside ixOmics/R
 
-\arguments{
-  \item{object}{object of class inheriting from any \pkg{mixOmics}:  \code{PLS, sPLS, PLS-DA, SPLS-DA, rCC, PCA, sPCA, IPCA, sIPCA, rGCCA, sGCCA, sGCCDA}}, 
-  \item{comp}{integer vector of length two. The components that will be used on the horizontal 
-  and the vertical axis respectively to project the individuals.}
-    \item{ind.names}{either a character vector of names for the individuals to be plotted, 
-    or \code{FALSE} for no names. If \code{TRUE}, the row names of the first (or second) 
-  data matrix is used as names (see Details).}
-  \item{rep.space}{For objects of class \code{"rcc"}, \code{"pls"}, \code{"spls"}, character string, (partially) matching one of \code{"X-variate"}, 
-    \code{"Y-variate"} or \code{"XY-variate"}, determining the subspace to project the individuals. Defaults to \code{"XY-variate"} \code{"rcc"} object for  and \code{"X-variate"} \code{"pls"} and \code{"spls"} objects. For objects of class \code{"rgcca"} and \code{"sgcca"}, numerical value indicating the block data set form which to represent the individuals.}
-
-  \item{blocks}{integer value of name of a block to be plotted using the GCCA module. See examples.}  
-  \item{X.label}{x axis titles.}
-  \item{Y.label}{y axis titles}
-  \item{abline.line}{should the vertical and horizontal line through the center be plotted? Default set to \code{FALSE}}
-  \item{col}{character (or symbol) color to be used, possibly vector.}
-  \item{cex}{numeric character (or symbol) expansion, possibly vector.}
-  \item{pch}{plot character. A character string or a vector of single characters 
-  or integers. See \code{\link{points}} for all alternatives.}
-  \item{object}{plot.ellipse}{boolean indicating if ellipse plots should be plotted. In the \code{PCA, sPCA, IPCA, sIPCA, PLS, sPLS, rCC, rGCCA, sGCCA} non supervised objects, by default will include all data points unless the argument \code{group} is set up. In the \code{PLS-DA, SPLS-DA,sGCCDA} supervised object, by default the ellipse will be plotted accoding to the outcome \code{Y}.} 
-    \item{ellipse.level}{Numerical value indicating the confidence level of ellipse being plotted when \code{plot.ellipse =TRUE} (i.e. the size of the ellipse). The default is set to 0.95, for a 95\% region.}  
-  \item{group}{factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the supervised methods \code{PLS-DA, SPLS-DA,sGCCDA}, but needs to be input for the unsupervised methods \code{PCA, sPCA, IPCA, sIPCA, PLS, sPLS, rCC, rGCCA, sGCCA}}    
-  \item{main}{character indicating the title plot.}
-  \item{style}{argument to be set to either \code{'graphics'}, \code{'lattice'} or \code{'ggplot2'} for a style of plotting.} 
-  \item{\dots}{further graphical parameters are passed 
-	to \code{\link{text}}.}
-}
-
-\details{
-\code{plotIndiv} method makes scatter plot for individuals representation  
-depending on the subspace of projection. Each point corresponds to an individual.
-
-If \code{ind.names=TRUE} and row names is \code{NULL}, then \code{ind.names=1:n}, where
-\code{n} is the number of individuals. 
-
-The arguments \code{col}, \code{cex} and \code{pch} can be atomic vectors or vectors of
-length \code{n}. If atomic, this argument value determines the graphical attribute for all the individuals. 
-In the last case, multiple arguments values can be specified so that each point (individual)
-can be given its own graphic attributes (see \code{\link{par}}). Default values exist for this arguments. 
-
-Note: the ellipse options were borrowed from the \pkg{ellipse}.
-}
-
-\author{Ignacio Gonzalez, Benoit Gautier, Francois Bartolo, Florian Rohart}
-
-\seealso{\code{\link{plot3dIndiv}}, \code{\link{text}}, \code{\link{points}} and http://mixOmics.org/graphics for more details.}
+# KA
+sourceDir("../../mixOmics/R/",trace=FALSE) #load all the functions inside ixOmics/R
 
 
-\examples{
+
 ## plot of individuals for objects of class 'rcc' 
 # ----------------------------------------------------
 data(nutrimouse)
@@ -192,8 +139,4 @@ plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet)
 # with some ellipse, legend and title
 plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE, add.legend = TRUE, main = 'my sample plot')
 
-}
 
-\keyword{multivariate}
-\keyword{hplot}
-\keyword{dplot}

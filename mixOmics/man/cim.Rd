@@ -212,16 +212,16 @@ Gonzalez I., Le Cao K.A., Davis M.J., Dejean S. (2012). Visualising associations
 paired 'omics' data sets. \emph{BioData Mining}; \bold{5}(1).
 }
 
-\author{}
+\author{Ignacio Gonzalez, Francois Bartolo, Kim-Anh Le Cao.}
 
 \seealso{\code{\link{heatmap}}, 
 \code{\link{hclust}}, \code{\link{plotVar}}, 
 \code{\link{plot3dVar}}, \code{\link{network}} and 
 
-\url{http://mixomics.org/graphics/} for more details.}
+\url{http://mixomics.org/graphics/} for more details on all options available.}
 
 \examples{
-## default method
+## default method: shwos cross correlation between 2 data sets
 #------------------------------------------------------------------
 data(nutrimouse)
 X <- nutrimouse$lipid
@@ -236,7 +236,7 @@ nutri.rcc <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 
 cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6))
 
-#-- interactive 'zoom' 
+#-- interactive 'zoom' available as below
 \dontrun{
 
 cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6), 
@@ -244,56 +244,88 @@ cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6),
 #-- select the region and "see" the zoom-out region
 }
 
-#-- cim from X matrix
+#-- cim from X matrix with a side bar to indicate the diet
 diet.col <- palette()[as.numeric(nutrimouse$diet)]
 cim(nutri.rcc, mapping = "X", sample.names = nutrimouse$diet,
     sample.sideColors = diet.col, xlab = "lipids",
     clust.method = c("ward", "ward"), margins = c(6, 4))
 
-#-- cim from Y matrix
-geno.col = c("orange", "magenta")[as.numeric(nutrimouse$genotype)]
+#-- cim from Y matrix with a side bar to indicate the genotype
+geno.col = color.mixo(as.numeric(nutrimouse$genotype))
 cim(nutri.rcc, mapping = "Y", sample.names = nutrimouse$genotype,
     sample.sideColors = geno.col, xlab = "genes",
     clust.method = c("ward", "ward"))
 
 
-## CIM representation for objects of class '(s)(i)pca'
+## CIM representation for objects of class 'spca' (also works for sipca)
 #------------------------------------------------------------------
 data(liver.toxicity)
 X <- liver.toxicity$gene
 
-spca.res <- spca(X, ncomp = 2, keepX = c(30, 30), scale = FALSE)
+liver.spca <- spca(X, ncomp = 2, keepX = c(30, 30), scale = FALSE)
 
-dose.col <- palette()[as.numeric(as.factor(liver.toxicity$treatment[, 3]))]
+dose.col <- color.mixo(as.numeric(as.factor(liver.toxicity$treatment[, 3])))
 
-cim(spca.res, sample.sideColors = dose.col, var.names = FALSE,
+# side bar, no variable names shown
+cim(liver.spca, sample.sideColors = dose.col, var.names = FALSE,
     sample.names = liver.toxicity$treatment[, 3],
     clust.method = c("ward", "ward"))
     
 
 ## CIM representation for objects of class '(s)pls' 
 #------------------------------------------------------------------
-Y <- liver.toxicity$clinic
+data(liver.toxicity)
 
-toxicity.spls <- spls(X, Y, ncomp = 2, keepX = c(40, 30))
-cim(toxicity.spls, transpose = TRUE,   
+X <- liver.toxicity$gene
+Y <- liver.toxicity$clinic
+liver.spls <- spls(X, Y, ncomp = 3,
+                      keepX = c(20, 50, 50), keepY = c(10, 10, 10))
+
+
+# default
+cim(liver.spls)
+
+# transpose matrix, choose clustering method
+cim(liver.spls, transpose = TRUE,   
     clust.method = c("ward", "ward"), margins = c(5, 7))
 
-#-- cim from X matrix
-cim(toxicity.spls, mapping = "X", sample.sideColors = dose.col, 
+# Here we visualise only the X variables selected 
+cim(liver.spls, mapping="X")
+
+# Here we should visualise only the Y variables selected
+cim(liver.spls, mapping="Y") 
+
+# Here we only visualise the similarity matrix between the variables by spls  
+cim(liver.spls, cluster="none")
+
+# plotting two data sets with the similarity matrix as input in the funciton (see our Data Mining paper for more details)
+# Only the variables selected by the sPLS model in X and Y are represented
+cim(liver.spls, mapping="XY")
+
+# on the X matrix only, side col var to indicate dose
+dose.col <- color.mixo(as.numeric(as.factor(liver.toxicity$treatment[, 3])))
+cim(liver.spls, mapping = "X", sample.sideColors = dose.col, 
     sample.names = liver.toxicity$treatment[, 3])
+
+# CIM default representation includes the total of 120 genes selected, with the dose color
+# with a sparse method, show only the variables selected on specific components
+cim(liver.spls, comp = 1)
+cim(liver.spls, comp = 2)
+cim(liver.spls, comp = c(1,2))
+cim(liver.spls, comp = c(1,3))
 
 
 ## CIM representation for objects of class '(s)plsda' 
 #------------------------------------------------------------------
+# Setting up the Y outcome first
 Y <- liver.toxicity$treatment[, 3]
 
-splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(40, 30))
+liver.splsda <- splsda(X, Y, ncomp = 2, keepX = c(40, 30))
 
-cim(splsda.liver, sample.sideColors = dose.col, sample.names = Y)
+cim(liver.splsda, sample.sideColors = dose.col, sample.names = Y)
 
 
-## CIM representation for objects of class 'multilevel' 
+## CIM representation for objects of class 'splsda multilevel' 
 #------------------------------------------------------------------
 data(vac18.simulated)
 X <- vac18.simulated$genes
@@ -308,9 +340,54 @@ stim.col <- c("darkblue", "purple", "green4","red3")
 stim.col <- stim.col[as.numeric(design$stim)]
 time.col <- c("orange", "cyan")[as.numeric(design$time)]
 
+
+# The row side bar indicates the two levels of the facteor, stimulation and time.
+# the sample names have been motified on the plot.
 cim(res.2level, sample.sideColors = cbind(stim.col, time.col), 
     sample.names = paste(design$time, design$stim, sep = "_"),
-    var.names = FALSE)
+    var.names = FALSE,
+  #setting up legend:
+    legend=list(legend = unique(design$stim), col = unique(stim.col), title = "Condition", cex = 0.9)
+)
+
+## CIM representation for objects of class spls 'multilevel' 
+#------------------------------------------------------------------
+
+data(liver.toxicity)
+repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
+                  6, 5, 6, 7, 7, 8, 6, 7, 8, 7, 8, 8, 9, 10, 9, 10, 11, 9, 9,
+                  10, 11, 12, 12, 10, 11, 12, 11, 12, 13, 14, 13, 14, 13, 14,
+                  13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
+
+# sPLS is a non supervised technique, and so we only indicate the sample repetitions in the design (1 factor only here, sample)
+# sPLS takes as an input 2 data sets, and the variables selected
+design <- data.frame(sample = repeat.indiv) 
+res.spls.1level <- multilevel(X = liver.toxicity$gene,
+                              Y=liver.toxicity$clinic,
+                              design = design,
+                              ncomp = 2,
+                              keepX = c(50, 50), keepY = c(5, 5),
+                              method = 'spls', mode = 'canonical')
+
+stim.col <- c("darkblue", "purple", "green4","red3")
+
+# showing only the Y variables, and only those selected in comp 1 
+cim(res.spls.1level, mapping="Y",
+    sample.sideColors = stim.col[factor(liver.toxicity$treatment[,3])], comp = 1,
+    #setting up legend:
+    legend=list(legend = unique(liver.toxicity$treatment[,3]), col=stim.col, title = "Dose", cex=0.9))
+
+
+# showing only the X variables, for all selected on comp 1 and 2 
+cim(res.spls.1level, mapping="X",
+    sample.sideColors = stim.col[factor(liver.toxicity$treatment[,3])], 
+    #setting up legend:
+    legend=list(legend = unique(liver.toxicity$treatment[,3]), col=stim.col, title = "Dose", cex=0.9))
+
+
+# These are the cross correlations between the variables selected in X and Y.
+# The similarity matrix is obtained as in our paper in Data Mining
+cim(res.spls.1level, mapping="XY")
 }
 
 \keyword{multivariate}

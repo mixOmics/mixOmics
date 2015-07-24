@@ -24,20 +24,10 @@ sourceDir <- function(path, trace = TRUE, ...) {
 }
 
 # Florian
-sourceDir("/Users/florian/Work/git/package-mixOmics/mixOmics/R/",trace=FALSE) #load all the functions inside ixOmics/R
+##sourceDir("/Users/florian/Work/git/package-mixOmics/mixOmics/R/",trace=FALSE) #load all the functions inside ixOmics/R
 
 # KA
 sourceDir("../../mixOmics/R/",trace=FALSE) #load all the functions inside ixOmics/R
-
-
-
-
-
-
-
-
-
-
 
 
 #############
@@ -357,7 +347,7 @@ plotIndiv(spca.rat, ind.names = liver.toxicity$treatment[, 3], cex = 1,  group =
 ### RGCCA ###
 #############
 
-if (plotIndiv.sgcca){
+if (plotIndiv.rgcca){
   
   data(nutrimouse)
   Y = unmap(nutrimouse$diet)
