@@ -11,7 +11,7 @@ New features:
 
 4 - All wrapper methods for the multiblock module, i.e. wrapper.rgcca, wrapper.sgcca and wrapper.sgccda take the inptu argument 'blocks' (instead of previously 'data') - this is to enable a smoother transition to the next update!
 
-5 - plotIndiv has been improved dramatically. A single function can now be used for the objects PLS, sPLS, PLS-DA, SPLS-DA, rCC, PCA, sPCA, IPCA, sIPCA, rGCCA, sGCCA, sGCCDA. In addition, we now provide the new arguments (and more to come!):
+5 - plotIndiv has been improved dramatically. A single function can now be used for the objects PLS, sPLS, PLS-DA, SPLS-DA, rCC, PCA, sPCA, IPCA, sIPCA, rGCCA, sGCCA, sGCCDA (not an S3 function anymore). In addition, we now provide the new arguments (and more to come!):
 	- ellipse plots are now available, a group argument is requested for the unsupervised methods (PCA, IPCA, PLS)
 	-three types of graphical plot: graphics (version < 5.1-0), ggplot2 and lattice
 	-legend and title can be added
