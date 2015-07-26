@@ -285,7 +285,7 @@ cim <-
      
      #-- var.names
      if (is.logical(var.names)) {
-       if(isTRUE(var.names)) var.names = mat$names$var else var.names = rep("", p)
+       if(isTRUE(var.names)) var.names = mat$names$X else var.names = rep("", p)
      }
      else {
        var.names = as.vector(var.names)
@@ -381,12 +381,18 @@ cim <-
        #---------------------------------------------------------------------------#
        if(class.object[1] %in%  c("splsda","plsda",'mlsplsda'))
        {
-         keep.X = apply(abs(mat$loadings$X[,comp]), 1, sum) > 0
+         if(class.object[1] %in%  c("splsda",'mlsplsda'))
+           keep.X = apply(abs(mat$loadings$X[,comp]), 1, sum) > 0
+         else
+           keep.X = apply(abs(mat$loadings$X), 1, sum) > 0
          cord.X = cor(mat$X[, keep.X], mat$variates$X[, comp], use = "pairwise")
          X.mat = as.matrix(mat$variates$X[, comp])
        }
        else{
-         keep.X = apply(abs(mat$rotation[,comp]), 1, sum) > 0
+         if(class.object[1] %in%  c("spca","sipca"))
+           keep.X = apply(abs(mat$rotation[,comp]), 1, sum) > 0
+         else
+           keep.X = apply(abs(mat$rotation), 1, sum) > 0
          cord.X = cor(mat$X[, keep.X], mat$x[, comp], use = "pairwise")
          X.mat = as.matrix(mat$x[, comp])
        }
@@ -669,8 +675,15 @@ cim <-
      }
      else if(class.object[1] %in%  object.list3)
      {
-       keep.X = apply(abs(mat$loadings$X[,comp]), 1, sum) > 0
-       keep.Y = apply(abs(mat$loadings$Y[,comp]), 1, sum) > 0
+       if(class.object[1] %in% c("spls","mlspls"))
+       {
+         keep.X = apply(abs(mat$loadings$X[,comp]), 1, sum) > 0
+         keep.Y = apply(abs(mat$loadings$Y[,comp]), 1, sum) > 0}
+       else
+       {
+         keep.X = apply(abs(mat$loadings$X), 1, sum) > 0
+         keep.Y = apply(abs(mat$loadings$Y), 1, sum) > 0}
+         
        
        
        if (mat$mode == "canonical") {
