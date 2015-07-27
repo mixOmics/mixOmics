@@ -1,12 +1,11 @@
 # Copyright (C) 2015
-# Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
 # Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
+# Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+# Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
 # Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 # Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
-# Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-# Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 
-# Note: some part of this code (for plotting the ellipse) was borrowed from the ellipse package
+# Note: some part of this code (for plotting the ellipses) was borrowed from the ellipse package
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
