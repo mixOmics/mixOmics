@@ -132,9 +132,9 @@ plotContrib = function(object,
   # calculate the max.method per group for each variable, and identifies which group has the max max.method
   for(k in list.select){
     if (method == 'mean'){
-      method.group[[k]] = tapply(X[, k], Y, mean)
+      method.group[[k]] = tapply(X[, k], Y, mean,na.rm=TRUE)
     } else if (method == 'median'){
-      method.group[[k]] = tapply(X[, k], Y, median)
+      method.group[[k]] = tapply(X[, k], Y, median,na.rm=TRUE)
     }
     # determine which group has the highest mean/median
     if(contrib=="max")
