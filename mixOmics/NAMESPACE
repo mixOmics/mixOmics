@@ -1,5 +1,5 @@
 
-import(MASS, lattice, igraph, rgl, pheatmap,ggplot2)
+import(MASS, lattice, igraph, rgl, pheatmap, ggplot2, ellipse)
 
 export(
 bin.color, 

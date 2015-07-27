@@ -3,8 +3,8 @@ Type: Package
 Title: Omics Data Integration Project
 Version: 5.0-4
 Date: 2015-04-28
-Depends: R (>= 2.10), MASS, lattice
-Imports: RGCCA, igraph, rgl, pheatmap
+Depends: R (>= 2.10), MASS, lattice, ggplot2
+Imports: igraph, rgl, pheatmap, ellipse
 Author: Kim-Anh Le Cao,  Ignacio Gonzalez, Sebastien Dejean with key contributors Florian Rohart, Benoit Gautier
         and contributions from Pierre Monget, Jeff Coquery, FangZou Yao, Benoit Liquet. 
 Maintainer: Kim-Anh Le Cao <k.lecao@uq.edu.au>

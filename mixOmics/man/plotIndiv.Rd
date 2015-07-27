@@ -6,7 +6,7 @@
 
 \description{
 This function provides scatter plots for individuals (experimental units)
-representation in (regularized) CCA, (sparse) PLS regression, (sparse)RGCCA and PCA.
+representation in (sparse)(I)PCA, (regularized)CCA, (sparse)PLS(DA) and (sparse)(R)GCCA(DA).
 }
 
 \usage{
@@ -23,7 +23,7 @@ representation in (regularized) CCA, (sparse) PLS regression, (sparse)RGCCA and 
            pch,
            plot.ellipse = FALSE, 
            ellipse.level = 0.95,
-           group = NULL,  # 
+           group = NULL, 
            main="plotIndiv",
            add.legend=FALSE,
            style="ggplot2", 
@@ -135,7 +135,7 @@ plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2))
 # default option with no ind name: pch and color are set automatically, with legend
 plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2), add.legend = TRUE)
 
-# playing with style
+# trying the different styles
 plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, plot.ellipse = TRUE, style = "ggplot2", cex = c(1, 1))
 plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, plot.ellipse = TRUE, style = "lattice", cex = c(1, 1))
 
