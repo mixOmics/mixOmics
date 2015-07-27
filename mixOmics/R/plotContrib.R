@@ -23,13 +23,14 @@
 # to do later
 # create a S3 function?
 
+# would need to expaned for other types of objects
 # for sPCA, then a Y 'outcome' should be provided as input
 # for sPLS, then block = X or Y should be provided as input
 # for sGCCA, then block = k should be provided as input
 
 
 plotContrib = function(object,
-                       contrib=c("max","min"),
+                       contrib=c("max"),  # choose between max","min"
                        method = c("mean", "median"), 
                        comp = 1,
                        ties = TRUE, 
@@ -38,17 +39,16 @@ plotContrib = function(object,
                        cex.legend = 0.8,
                        name.var = NULL,
                        legend = TRUE,
-                       legend.color = NULL, # added
-                       title = NULL,
+                       legend.color = NULL, 
                        legend.title = 'Outcome',
-                       plot = TRUE # added
+                       plot = TRUE 
                        ) {
   
   # -------------------
   # input checks 
   # ------------------
   
-  if(!any(class(object)=="plsda")) stop("plotContrib is only available for 'plsda' and 'splsda' objects")
+  if(!any(class(object)=="plsda")) stop("plotContrib is only available for 'plsda' and 'splsda' objects for now")
   
   #method
   if(length(method) == 2){
