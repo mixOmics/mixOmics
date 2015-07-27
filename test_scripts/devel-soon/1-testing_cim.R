@@ -60,31 +60,32 @@ cl <- cutree(ddr, k = 3)
 gene.col <- c("up" = "red", "down" = "green", "null" = "black")
 gene.col
 # and now add a vertical side bar for the genes, colors are set to green red
-cim(mat, color = color.GreenRed(51), col.sideColors = rep(c("red","blue"),each=5),
+cim(mat, color = color.GreenRed(51), col.sideColors = rep(c("red","blue"), each=5),
     row.sideColors=gene.col[cl],legend=list(legend = names(gene.col), col = gene.col,
                                             title = "Regulation", cex = 0.9))  
 
 # Input matrix is transposed, legend is added, colors by default
-cim(mat, transpose=TRUE,
+# because the matrix is transposed, we still specify row.sideColors even though it appears on the columns!
+cim(mat, transpose=TRUE, row.sideColors=gene.col[cl],
     legend=list(legend = names(gene.col), col = gene.col,
                 cex=0.8,title = "Regulation")) 
 
-# row names and col names were changed, horizontal and vertical colored side bars added
+# row names and col names were changed, horizontal and vertical colored side bars added, legend expanded
 cim(mat, 
     row.names=names(gene.col)[cl], row.sideColors=gene.col[cl],
     col.sideColors = cond.col[cond], col.names=names(cond.col)[rep(c(1,2),5)],
-    legend=list(legend = names(gene.col), col = gene.col, title = "Regulation", cex = 0.8)) 
+    legend=list(legend = c(names(gene.col), names(cond.col)), col = c(gene.col, cond.col), title = "Legend", cex = 0.8)) 
 
 
 # data transposed, no side bar, no legend
 cim(mat, row.cex=0.8, col.cex=1.2, transpose=TRUE) 
 
 # data are transposed and the cluster is only performed on the columns
-cim(mat,cluster="column", 
+cim(mat,cluster="column", , row.sideColors=gene.col[cl],
     legend=list(legend = names(gene.col), col = gene.col,
                 title = "Regulation", cex = 0.9))
 
-# data are transposed and the cluster is only performed on the columns
+# data are transposed and the cluster is only performed on the rows
 cim(mat,cluster="row") 
 
 
@@ -93,7 +94,7 @@ cim(mat, dist.method=c("correlation","maximum"))
 
 
 # cutting tree at different levels. That is pretty cool!
-cim(mat,cut.tree=c(0.5,0.2))
+cim(mat, cut.tree=c(0.5,0.2))
 
 # adding a title to the plot, label axes, adjusting margin
 cim(mat, symkey=TRUE, keysize=c(1,1), main = "My plot", xlab="sample", ylab="gene", margins=c(7,7))
@@ -137,16 +138,11 @@ cim(liver.spca, sample.names=rep(c("alpha","beta"),each=32))
 cim(liver.spca, var.names=FALSE, sample.names=FALSE)
 
 # with a sparse method, show only the variables selected on specific components
-# FB: le nom des variables (colonnes) est tjs le meme ce qui peut preter a confusion
-# peut on extraire plutot le nom des variables?
-##reparer erreur tres legere du ? object$names
-# FB: peut etre que tu as oublie de livrer: mais ca ne change rien.
-
-# ici les varaibles sont numerotees de 1:20
+# on comp 1
 cim(liver.spca, comp = 1)
-# ici les variables sont numerotees de 1:20, c est ca qui prete a confusion par rapport a au dessus. un utilisateur lambda croiait
-# que ce sont les meme variables
+# on comp 2
 cim(liver.spca, comp = 2)
+# on comp 1 and 3 only
 cim(liver.spca, comp = c(1,3))
 
 # ==================================================================
@@ -168,8 +164,6 @@ splsda.liver2 <- splsda(X, Y, ncomp = 1, keepX = c(40))
 cim(splsda.liver2, sample.sideColors = dose.col, sample.names = Y)
 
 # with a sparse method, show only the variables selected on specific components
-# FB: le nom des variables (colonnes) est tjs le meme ce qui peut preter a confusion
-# peut on extraire plutot le nom des variables?
 cim(splsda.liver1, comp = 1)
 cim(splsda.liver1, comp = 2)
 cim(splsda.liver1, comp = c(1,2))
@@ -191,16 +185,6 @@ cim(cor(X, Y, method = 'spearman'), cluster = "none")
 
 # or one data set (just the matrix as an input)
 cim(as.matrix(X), cluster = "none")
-
-
-# other options: for X matrix
-dose.col <- color.mixo(as.numeric(as.factor(liver.toxicity$treatment[, 3])))
-cim(toxicity.spls, mapping = "X", sample.sideColors = dose.col, 
-    sample.names = liver.toxicity$treatment[, 3])
-
-# with a transpose and a Ward clustering method, changing the margins to allow more space for the row and column names
-cim(toxicity.spls, transpose = TRUE,   
-    clust.method = c("ward", "ward")), margins = c(5, 7))
 
 
 # ========================================================
@@ -240,7 +224,6 @@ cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6))
 
 # In a Windows and Linux environment (not RStudio Mac), you can select the region and "see" the zoom-out region
 # you need to click on 'stop' to exit
-# FB: une fois que je lance ca, je sais vraiment pas comment en sortir. j ai pas de stop ni exit button, c est ou?
 cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6), zoom =TRUE)
 
 
@@ -303,30 +286,32 @@ dose.col <- color.mixo(as.numeric(as.factor(liver.toxicity$treatment[, 3])))
 cim(liver.spls, mapping = "X", sample.sideColors = dose.col, 
     sample.names = liver.toxicity$treatment[, 3])
 
-# CIM default representation includes the total of 120 genes selected, with the dose color
-# with a sparse method, show only the variables selected on specific components
+
+# with a sparse method, show only the variables selected on specific components in both data sets
 cim(liver.spls, comp = 1)
 cim(liver.spls, comp = 2)
 cim(liver.spls, comp = c(1,2))
 cim(liver.spls, comp = c(1,3))
 
 
-
-
+# with a transpose and a Ward clustering method, changing the margins to allow more space for the row and column names
+cim(liver.spls, transpose = TRUE,   
+    clust.method = c("ward", "ward"), margins = c(5, 7))
 
 
 # ----------------------------------------------------------------
-## CIM representation for objects of class splsda 'multilevel' 
+## CIM representation for objects of class splsda 'multilevel' with a two level factor (repeated sample and time)
 #------------------------------------------------------------------
 data(vac18.simulated)
 X <- vac18.simulated$genes
 design <- data.frame(samp = vac18.simulated$sample,
-                     stim = vac18.simulated$stimulation,
-                     time = vac18.simulated$time)
+                     time = vac18.simulated$time,
+                     stim = vac18.simulated$stimulation)
 
 res.2level <- multilevel(X, ncomp = 2, design = design,
                          keepX = c(120, 10), method = 'splsda')
 
+#define colors for the levels: stimulation and time
 stim.col <- c("darkblue", "purple", "green4","red3")
 stim.col <- stim.col[as.numeric(design$stim)]
 time.col <- c("orange", "cyan")[as.numeric(design$time)]
@@ -338,12 +323,13 @@ cim(res.2level, sample.sideColors = cbind(stim.col, time.col),
     sample.names = paste(design$time, design$stim, sep = "_"),
     var.names = FALSE,
   #setting up legend:
-    legend=list(legend = unique(design$stim), col = unique(stim.col), title = "Condition", cex = 0.9)
+    legend=list(legend = c(levels(design$time), levels(design$stim)), 
+                col = c("orange", "cyan", "darkblue", "purple", "green4","red3"), title = "Condition", cex = 0.7)
 )
 
 
 # ----------------------------------------------------------------
-## CIM representation for objects of class spls 'multilevel' 
+## CIM representation for objects of class spls 'multilevel' with a one level factor
 #------------------------------------------------------------------
 
 data(liver.toxicity)
