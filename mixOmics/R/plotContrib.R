@@ -40,6 +40,7 @@ plotContrib = function(object,
                        name.var = NULL,
                        legend = TRUE,
                        legend.color = NULL, 
+                       title = NULL,
                        legend.title = 'Outcome',
                        plot = TRUE 
                        ) {

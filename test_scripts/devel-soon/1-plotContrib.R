@@ -129,7 +129,8 @@ plsda.breast <- plsda(X, Y, ncomp = 2)
 selectVar(plsda.breast, comp = 1)$name
 
 # warning appears and no output
-plotContrib(plsda.breast, comp = 1, method = 'median', ndisplay = 60, legend.color = color.mixo(2))
+plotContrib(plsda.breast, contrib = 'max', comp = 1, method = 'median', ndisplay = 60, legend.color = color.mixo(2))
+warnings()
 
 
 
