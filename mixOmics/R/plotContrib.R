@@ -30,7 +30,7 @@
 
 
 plotContrib = function(object,
-                       contrib=c("max"),  # choose between max","min"
+                       contrib=c("max"),  # choose between 'max" or "min"
                        method = c("mean", "median"), 
                        comp = 1,
                        ties = TRUE, 
@@ -50,8 +50,10 @@ plotContrib = function(object,
   # ------------------
   
   if(!any(class(object)=="plsda")) stop("plotContrib is only available for 'plsda' and 'splsda' objects for now")
+
   
-  #method
+  # method
+  # ----
   if(length(method) == 2){
     method = 'median'
     warning('Argument method: we expect either mean or median, set to median by default')

@@ -189,7 +189,8 @@ plotIndiv <-
     } else if (length(col) == nlevels(group)){
       levels.color = col
     } else if (length(col) == length(x[[1]])){
-      stop("Length of 'col' is equal to the number of rows in your block. Please use the argument 'group' to define the groupings")
+      stop("Length of 'col' should be of length = ", nlevels(group), " the number of groups. 
+           Alternatively, use the argument 'group' to give one color per sample")
     } else {
       stop("'col' must be a character vector of length ", nlevels(group) ," or one color")
     }

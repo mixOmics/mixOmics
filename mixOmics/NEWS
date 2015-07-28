@@ -9,7 +9,7 @@ New features:
 
 3 - wrapper.sgcca and wrapper.sgccda now have an argument called 'keep.blocks' that you can use as an alternative to the 'penalty' old argument. Keep.blocks is the equivalent of the keepX in the PLS method to specify the number of variables to select on each component and each block. Refer to the help file, as keep.blocks should be input as a list of length the number o blocks, and each element of the list (corresponding to a block) indicate the number of variables to select on each component (yes, it becomes, indeed, complicated).
 
-4 - All wrapper methods for the multiblock module, i.e. wrapper.rgcca, wrapper.sgcca and wrapper.sgccda take the inptu argument 'blocks' (instead of previously 'data') - this is to enable a smoother transition to the next update!
+4 - All wrapper methods for the multiblock module, i.e. wrapper.rgcca, wrapper.sgcca and wrapper.sgccda take the input argument 'blocks' (instead of previously 'data') - this is to enable a smoother transition to the next update!
 
 5 - plotIndiv has been improved dramatically. A single function can now be used for the objects PLS, sPLS, PLS-DA, SPLS-DA, rCC, PCA, sPCA, IPCA, sIPCA, rGCCA, sGCCA, sGCCDA (not an S3 function anymore). In addition, we now provide the new arguments (and more to come!):
 	- ellipse plots are now available, a group argument is requested for the unsupervised methods (PCA, IPCA, PLS)
@@ -28,7 +28,7 @@ Enhancements:
 
 Bug fixes:
 ----------
-1 - The sPLS algorithm was rewritten to ensure convergence. This implies that spls results might be slightly different from version < 5.1-0
+1 - The sPLS algorithm was rewritten to ensure convergence. This implies that spls results might be slightly different from version < 5.1-0!
 
 
 Changes in 5.0-4

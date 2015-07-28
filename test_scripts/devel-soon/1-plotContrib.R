@@ -70,10 +70,9 @@ name.var = liver.toxicity$gene.ID[, 'gene.title']
 names(name.var) = rownames(liver.toxicity$gene.ID)
 plotContrib(splsda.liver, comp = 2, method = 'median', name.var = name.var, cex.name = 0.5)
 
-# if we want to have a look at the contribution (median) for each variable, need to store in an object
-# (the plot will still be output)
-output.contrib = plotContrib(splsda.liver, comp = 2, method = 'median', name.var = name.var)
-output.contrib$contrib
+# if we want to have a look at the contribution (median) for each variable, (no plot)
+plot.contrib = plotContrib(splsda.liver, comp = 2, method = 'median', plot = FALSE)
+head(plot.contrib$contrib)
 
 # if we want to change the title of the legend
 plotContrib(splsda.liver, comp = 2, method = 'median',legend.title = 'Time')
@@ -87,12 +86,6 @@ plotContrib(splsda.liver, comp = 2, method = 'median', legend = FALSE)
 
 # if we want to change the color of the legend
 plotContrib(splsda.liver, comp = 2, method = 'median', legend.color = c(1:4))
-
-
-# if we are only interested in the numerical outputs and no plot
-plot.contrib = plotContrib(splsda.liver, comp = 2, method = 'median', plot = FALSE)
-head(plot.contrib$contrib)
-
 
 
 # splsda multilevel
@@ -120,17 +113,40 @@ plotContrib(res.1level, comp = 2, method = 'median', legend.title = 'Stimu', nam
 
 # a simple PLSDA
 # ----------------
+# breast tumors
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
 plsda.breast <- plsda(X, Y, ncomp = 2)
 
-selectVar(plsda.breast, comp = 1)$name
+name.var = as.character(breast.tumors$genes$name)
+names(name.var) = colnames(X)
 
-# warning appears and no output
-plotContrib(plsda.breast, contrib = 'max', comp = 1, method = 'median', ndisplay = 60, legend.color = color.mixo(2))
+
+# here showing the top 60
 plotContrib(plsda.breast, contrib = 'max', comp = 1, method = 'median', ndisplay = 60, legend.color = color.mixo(1:2))
-warnings()
+
+# with gene IDs
+plotContrib(plsda.breast, contrib = 'max', comp = 1, method = 'median', ndisplay = 60, 
+            name.var = name.var, cex.name = 0.6,
+            legend.color = color.mixo(1:2))
+
+
+# liver toxicity
+data(liver.toxicity)
+X <- liver.toxicity$gene
+Y <- liver.toxicity$treatment[, 4]
+
+plsda.liver <- plsda(X, Y, ncomp = 2)
+plotIndiv(plsda.liver, ind.names = Y, plot.ellipse = TRUE)
+
+
+name.var = liver.toxicity$gene.ID[, 'geneBank']
+names(name.var) = rownames(liver.toxicity$gene.ID)
+
+plotContrib(plsda.liver, contrib = 'max', comp = 1, method = 'median', ndisplay = 100, 
+            name.var = name.var, cex.name = 0.4,
+            legend.color = color.mixo(1:4))
 
 

@@ -55,7 +55,7 @@ Nguyen, D. V. and Rocke, D. M. (2002). Tumor classification by partial
 least squares using microarray gene expression data. \emph{Bioinformatics}
 \bold{18}, 39-50.
 
-Tenenhaus, M. (1998). \emph{La régression PLS: theorie et pratique}. Paris: Editions Technic.
+Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.
 }
 
 \author{Ignacio Gonzalez, Kim-Anh Le Cao and Pierre Monget.}
@@ -87,7 +87,8 @@ Y <- liver.toxicity$treatment[, 4]
 
 plsda.liver <- plsda(X, Y, ncomp = 2)
 col.rat <- as.numeric(as.factor(Y))
-plotIndiv(plsda.liver, col = col.rat, ind.names = Y)
+plotIndiv(plsda.liver, ind.names = Y, plot.ellipse = TRUE)
+
 }
 }
 
