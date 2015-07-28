@@ -1,0 +1,581 @@
+temp= toxicity.spls$variates$X[,h]/drop(t(toxicity.spls$variates$X[,h])%*%(toxicity.spls$variates$X[,h]))
+exp_var_new= 100* as.numeric(t(toxicity.spls$variates$X[,h]) %*% concat.X %*% t(concat.X) %*% temp )/nor2x
+exp_var_new
+library(mixOmics)#
+data(liver.toxicity)#
+X <- liver.toxicity$gene#
+Y <- liver.toxicity$clinic#
+#
+ncomp=10#
+toxicity.spls <- spls(X, Y, ncomp = ncomp, keepX = c(50, 50), #
+                      keepY = c(10, 10))#
+concat.X= toxicity.spls$X#
+nor2x=sum((concat.X)^2)#
+for(h in 1:ncomp)#
+{#
+	temp= toxicity.spls$variates$X[,h]/drop(t(toxicity.spls$variates$X[,h])%*%(toxicity.spls$variates$X[,h]))#
+    exp_var_new= 100* as.numeric(t(toxicity.spls$variates$X[,h]) %*% concat.X %*% t(concat.X) %*% temp )/nor2x#
+	print(exp_var_new)#
+}
+ncomp
+dim(toxicity.spls$variates$X)
+toxicity.spls <- pls(X, Y, ncomp = ncomp)
+concat.X= toxicity.spls$X#
+nor2x=sum((concat.X)^2)#
+for(h in 1:ncomp)#
+{#
+	temp= toxicity.spls$variates$X[,h]/drop(t(toxicity.spls$variates$X[,h])%*%(toxicity.spls$variates$X[,h]))#
+    exp_var_new= 100* as.numeric(t(toxicity.spls$variates$X[,h]) %*% concat.X %*% t(concat.X) %*% temp )/nor2x#
+	print(exp_var_new)#
+}
+plot(toxicity.spls)
+library(mixOmics)#
+data(liver.toxicity)#
+X <- liver.toxicity$gene#
+Y <- liver.toxicity$clinic#
+#
+ncomp=10#
+toxicity.spls <- pls(X, Y, ncomp = ncomp)#
+concat.X= toxicity.spls$X#
+nor2x=sum((concat.X)^2)#
+exp.varX=NULL#
+for(h in 1:ncomp)#
+{#
+	temp= toxicity.spls$variates$X[,h]/drop(t(toxicity.spls$variates$X[,h])%*%(toxicity.spls$variates$X[,h]))#
+    exp_var_new= 100* as.numeric(t(toxicity.spls$variates$X[,h]) %*% concat.X %*% t(concat.X) %*% temp )/nor2x#
+	print(exp_var_new)#
+    exp.varX=append(exp.varX, exp_var_new)#
+#
+}#
+#
+plot(toxicity.spls)
+exp.varX
+barplot(exp.varX, names.arg = seq(1, x$ncomp,by=1), xlab="PLS Components", ylab="Proportion of Explained Variance")
+barplot(exp.varX, names.arg = seq(1, toxicity.spls $ncomp,by=1), xlab="PLS Components", ylab="Proportion of Explained Variance")
+?splsda
+library(mixOmics)#
+data(liver.toxicity)#
+X <- liver.toxicity$gene#
+Y <- liver.toxicity$clinic#
+#
+ncomp=10#
+toxicity.spls <- pls(X, Y, ncomp = ncomp)#
+data(breast.tumors)#
+X <- breast.tumors$gene.exp#
+Y <- breast.tumors$sample$treatment#
+#
+res <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))#
+data(liver.toxicity)#
+X <- as.matrix(liver.toxicity$gene)#
+Y <- liver.toxicity$treatment[, 4]#
+#
+splsda.liver = splsda(X, Y, ncomp = 2, keepX = c(20, 20))#
+toxicity.spls=res#
+concat.X= toxicity.spls$X#
+nor2x=sum((concat.X)^2)#
+exp.varX=NULL#
+for(h in 1:ncomp)#
+{#
+	temp= toxicity.spls$variates$X[,h]/drop(t(toxicity.spls$variates$X[,h])%*%(toxicity.spls$variates$X[,h]))#
+    exp_var_new= 100* as.numeric(t(toxicity.spls$variates$X[,h]) %*% concat.X %*% t(concat.X) %*% temp )/nor2x#
+	print(exp_var_new)#
+    exp.varX=append(exp.varX, exp_var_new)#
+#
+}#
+barplot(exp.varX, names.arg = seq(1, toxicity.spls $ncomp,by=1), xlab="PLS Components", ylab="Proportion of Explained Variance")
+?plsda
+library(mixOmics)#
+data(liver.toxicity)#
+X <- liver.toxicity$gene#
+Y <- liver.toxicity$clinic#
+#
+ncomp=10#
+toxicity.spls <- pls(X, Y, ncomp = ncomp)#
+data(breast.tumors)#
+X <- breast.tumors$gene.exp#
+Y <- breast.tumors$sample$treatment#
+#
+plsda.breast <- plsda(X, Y, ncomp = 2)#
+data(liver.toxicity)#
+X <- liver.toxicity$gene#
+Y <- liver.toxicity$treatment[, 4]#
+#
+plsda.liver <- plsda(X, Y, ncomp = 2)#
+toxicity.spls=res#
+concat.X= toxicity.spls$X#
+nor2x=sum((concat.X)^2)#
+exp.varX=NULL#
+for(h in 1:ncomp)#
+{#
+	temp= toxicity.spls$variates$X[,h]/drop(t(toxicity.spls$variates$X[,h])%*%(toxicity.spls$variates$X[,h]))#
+    exp_var_new= 100* as.numeric(t(toxicity.spls$variates$X[,h]) %*% concat.X %*% t(concat.X) %*% temp )/nor2x#
+	print(exp_var_new)#
+    exp.varX=append(exp.varX, exp_var_new)#
+#
+}#
+barplot(exp.varX, names.arg = seq(1, toxicity.spls $ncomp,by=1), xlab="PLS Components", ylab="Proportion of Explained Variance")
+names(plsda.breast)
+toxicity.spls= plsda.breast#
+concat.X= toxicity.spls$X#
+nor2x=sum((concat.X)^2)#
+exp.varX=NULL#
+for(h in 1:ncomp)#
+{#
+	temp= toxicity.spls$variates$X[,h]/drop(t(toxicity.spls$variates$X[,h])%*%(toxicity.spls$variates$X[,h]))#
+    exp_var_new= 100* as.numeric(t(toxicity.spls$variates$X[,h]) %*% concat.X %*% t(concat.X) %*% temp )/nor2x#
+	print(exp_var_new)#
+    exp.varX=append(exp.varX, exp_var_new)#
+#
+}#
+barplot(exp.varX, names.arg = seq(1, toxicity.spls $ncomp,by=1), xlab="PLS Components", ylab="Proportion of Explained Variance")
+names(plsda.breast)
+data(breast.tumors)
+X <- breast.tumors$gene.exp
+Y <- breast.tumors$sample$treatment
+plsda.breast <- plsda(X, Y, ncomp = ncomp)
+concat.X= plsda.breast$X
+nor2x=sum((concat.X)^2)
+nor2x
+dim(plsda.breast$X)
+sum(is.na(plsda.breast$X))
+sum(is.na(x))
+sum(is.na(X))
+dim(X)
+head(X)
+data(liver.toxicity)
+X <- liver.toxicity$gene
+Y <- liver.toxicity$treatment[, 4]
+plsda.liver <- plsda(X, Y, ncomp = 2)
+concat.X= plsda.liver $X
+concat.X
+nor2x=sum((concat.X)^2)
+nor2x
+nor2x=sum((concat.X)^2)#
+exp.varX=NULL#
+for(h in 1:ncomp)#
+{#
+	temp= plsda.liver$variates$X[,h]/drop(t(plsda.liver$variates$X[,h])%*%(plsda.liver$variates$X[,h]))#
+    exp_var_new= 100* as.numeric(t(plsda.liver$variates$X[,h]) %*% concat.X %*% t(concat.X) %*% temp )/nor2x#
+	print(exp_var_new)#
+    exp.varX=append(exp.varX, exp_var_new)#
+#
+}#
+barplot(exp.varX, names.arg = seq(1, plsda.liver$ncomp,by=1), xlab="PLS Components", ylab="Proportion of Explained Variance")
+dim(X)
+data(liver.toxicity)#
+X <- liver.toxicity$gene#
+Y <- liver.toxicity$treatment[, 4]#
+ncomp=64#
+plsda.liver <- plsda(X, Y, ncomp = ncomp)#
+#
+concat.X= plsda.liver $X#
+nor2x=sum((concat.X)^2)#
+exp.varX=NULL#
+for(h in 1:ncomp)#
+{#
+	temp= plsda.liver$variates$X[,h]/drop(t(plsda.liver$variates$X[,h])%*%(plsda.liver$variates$X[,h]))#
+    exp_var_new= 100* as.numeric(t(plsda.liver$variates$X[,h]) %*% concat.X %*% t(concat.X) %*% temp )/nor2x#
+	print(exp_var_new)#
+    exp.varX=append(exp.varX, exp_var_new)#
+#
+}#
+barplot(exp.varX, names.arg = seq(1, plsda.liver$ncomp,by=1), xlab="PLS Components", ylab="Proportion of Explained Variance")
+dim(temp)
+temp
+library(mht)
+help.start()
+library(mht)
+help.start()
+library(mht)
+?mht
+?mht.order
+help.start()
+library(mht)
+?mht
+Sys.which('texi2dvi')
+soft_thresholding=function(x,nx)#
+{#
+    #if (nx != 0) {#
+    #    x = ifelse(abs(x) > abs(x[order(abs(x))][nx]),#
+    #    (abs(x) - abs(x[order(abs(x))][nx])) * sign(x), 0)#
+    #}#
+    #selection on a (loadings.X). modified on 19/02/15 to make sure that a!=0#
+    if(nx!=0)#
+    {#
+        absx=abs(x)#
+        x=ifelse(absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))],#
+        (absx-absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))])*sign(x),0)#
+    }#
+    x#
+}
+rm(list=ls())#
+library(bootsPLS)#
+data(linnerud)#
+data("linnerud")#
+X <- linnerud$exercise#
+Y <- linnerud$physiological#
+#
+linn.spls <- spls.hybrid(X, Y, ncomp = 3, mode = "regression", tol = 1e-25, keepX = c(1, 1, 1), keepY = c(1, 1, 1))
+soft_thresholding=function(x,nx)#
+{#
+    #if (nx != 0) {#
+    #    x = ifelse(abs(x) > abs(x[order(abs(x))][nx]),#
+    #    (abs(x) - abs(x[order(abs(x))][nx])) * sign(x), 0)#
+    #}#
+    #selection on a (loadings.X). modified on 19/02/15 to make sure that a!=0#
+    if(nx!=0)#
+    {#
+        absx=abs(x)#
+        x=ifelse(absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))],#
+        (absx-absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))])*sign(x),0)#
+    }#
+    x#
+}
+linn.spls2 <- spls(X, Y, ncomp = 3, mode = "regression", tol = 1e-25, keepX = c(1, 1, 1), keepY = c(1, 1, 1))
+linn.spls2$loadings
+soft_thresholding(c(0,-1,0),nx=1)
+soft_thresholding(x=c(0,-1,0),nx=1)
+x=c(0,-1,0)
+soft_thresholding(x=c(0,-1,0),nx=2)
+nx=2
+absx=abs(x)
+absx
+absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))]
+absx[which(rank(absx)
+==max(rank(absx)[which(rank(absx)<=(nx))]))
+]
+absx
+rank(absx)
+max(rank(absx)
+)
+rank(absx)<=(nx))
+rank(absx)<=(nx)
+which(rank(absx)<=(nx))
+rank(absx)[which(rank(absx)<=(nx))]
+max(rank(absx)[which(rank(absx)<=(nx))])
+which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))
+absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))]
+which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))
+absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]]
+x=ifelse(absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]],#
+        (absx-absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))])*sign(x),0)
+x=ifelse(absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]],#
+        (absx-absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))][1])*sign(x),0)
+x
+which.max(rank(absx)[which(rank(absx)<=(nx))])
+absx[which.max(rank(absx)[which(rank(absx)<=(nx))])]
+x=ifelse(absx>absx[absx[which.max(rank(absx)[which(rank(absx)<=(nx))])]],#
+        (absx-absx[absx[which.max(rank(absx)[which(rank(absx)<=(nx))])]])*sign(x),0)
+x
+x=ifelse(absx>absx[which.max(rank(absx)[which(rank(absx)<=(nx))])],#
+        (absx-absx[which.max(rank(absx)[which(rank(absx)<=(nx))])])*sign(x),0)
+x
+x=c(0,-1,0)
+absx=abs(x)
+x=ifelse(absx>absx[which.max(rank(absx)[which(rank(absx)<=(nx))])],
+(absx-absx[which.max(rank(absx)[which(rank(absx)<=(nx))])])*sign(x),0)
+x
+absx
+which.max(rank(absx)[which(rank(absx)<=(nx))])
+which(rank(absx)<=(nx))
+rank(absx)[which(rank(absx)<=(nx))]
+which(rank(absx)[which(rank(absx)<=(nx))])
+which.min(rank(absx)[which(rank(absx)<=(nx))])
+which.max(rank(absx)[which(rank(absx)<=(nx))])
+x=c(2,0,-1,0)#
+absx=abs(x)#
+        x=ifelse(absx>absx[which.max(rank(absx)[which(rank(absx)<=(nx))])],#
+        (absx-absx[which.max(rank(absx)[which(rank(absx)<=(nx))])])*sign(x),0)#
+#
+x
+soft_thresholding(x=c(2,0,-1,0),nx=2)
+nx=2
+which(rank(absx)<=(nx))
+rank(absx)[which(rank(absx)<=(nx))]
+which.max(rank(absx)[which(rank(absx)<=(nx))]
+)
+soft_thresholding=function(x,nx)#
+{#
+    #if (nx != 0) {#
+    #    x = ifelse(abs(x) > abs(x[order(abs(x))][nx]),#
+    #    (abs(x) - abs(x[order(abs(x))][nx])) * sign(x), 0)#
+    #}#
+    #selection on a (loadings.X). modified on 19/02/15 to make sure that a!=0#
+    if(nx!=0)#
+    {#
+        absx=abs(x)#
+        x=ifelse(absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]],#
+        (absx-absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]])*sign(x),0)#
+    }#
+    x#
+}
+soft_thresholding(x=c(2,0,-1,0),nx=2)
+soft_thresholding(x=c(0,0,0,0),nx=2)
+soft_thresholding(x=c(0,0,1,0),nx=2)
+soft_thresholding(x=c(0,0,1,0),nx=1)
+x=c(0,0,1,0)
+absx=abs(x)
+absx
+which(rank(absx)<=(nx))]
+which(rank(absx)<=(nx))
+rank(absx)[which(rank(absx)<=(nx))]
+rank(absx)
+soft_thresholding(x=c(3,3,5,3),nx=1)
+soft_thresholding(x=c(3,3,5,4),nx=1)
+soft_thresholding(x=c(3,6,5,4),nx=1)
+soft_thresholding(x=c(4,6,5,4),nx=1)
+soft_thresholding(x=c(4,6,5,4),nx=2)
+soft_thresholding(x=c(4,6,6,4),nx=3)
+soft_thresholding(x=c(4,6,6,2),nx=3)
+soft_thresholding(x=c(4,6,6,4),nx=1)
+soft_thresholding(x=c(4,6,6,4),nx=3)
+soft_thresholding(x=c(4,6,6,4),nx=4)
+soft_thresholding(x=c(4,6,6,4),nx=3)
+soft_thresholding(x=c(4,6,6,4),nx=2)
+soft_thresholding(x=c(4,6,6,4),nx=1)
+x
+x=c(4,6,6,4)
+absx=abs(x)
+x
+which(rank(absx)<=(nx))
+rank(absx)[which(rank(absx)<=(nx))]
+rank(absx)
+max(rank(absx)[which(rank(absx)<=(nx))])
+rank(absx)==max(rank(absx)[which(rank(absx)<=(nx)
+)
+rank(absx)==max(rank(absx)[which(rank(absx)<=(nx)))
+rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))
+rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]
+)
+which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]
+absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]
+]
+absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]]
+x=ifelse(absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]],#
+        (absx-absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]])*sign(x),0)
+x
+soft_thresholding(x=c(4,6,6,4),nx=1)
+nx
+nx=1
+x=c(4,6,6,4)
+nx=1
+absx=abs(x)
+which(rank(absx)<=(nx))
+rank(absx)[which(rank(absx)<=(nx))]
+max(rank(absx)[which(rank(absx)<=(nx))])
+sum(rank(abs)<=nx)
+nx
+rank(abs)<=nx
+sum(rank(absx)<=nx)
+soft_thresholding=function(x,nx)#
+{#
+    #if (nx != 0) {#
+    #    x = ifelse(abs(x) > abs(x[order(abs(x))][nx]),#
+    #    (abs(x) - abs(x[order(abs(x))][nx])) * sign(x), 0)#
+    #}#
+    #selection on a (loadings.X). modified on 19/02/15 to make sure that a!=0#
+    if(nx!=0)#
+    {#
+        absx=abs(x)#
+        if(sum(rank(absx)<=nx)>0)#
+        {#
+        	x=ifelse(absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]],#
+        	(absx-absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]])*sign(x),0)#
+    	}#
+    }#
+    x#
+}
+soft_thresholding(x=c(4,6,6,4),nx=1)
+soft_thresholding(x=c(4,6,6,4),nx=2)
+soft_thresholding(x=c(4,6,6,4),nx=3)
+soft_thresholding(x=c(4,6,6,4),nx=4)
+soft_thresholding(x=c(4,6,6,4),nx=1)
+min(rank(absx))
+x=c(4,6,6,4)
+nx=1
+absx=abs(x)
+if(sum(rank(absx)<=nx)>0) {nx=min(rank(absx))}
+x=ifelse(absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]],
+(absx-absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]])*sign(x),0)
+nx
+sum(rank(absx)<=nx)
+if(sum(rank(absx)<=nx)==0) {nx=min(rank(absx))}
+x=ifelse(absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]],
+(absx-absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]])*sign(x),0)
+x
+x=c(4,6,6,4)
+nx=1
+absx=abs(x)
+if(sum(rank(absx)<=nx)==0) {nx=min(rank(absx))}
+x=ifelse(absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]],
+(absx-absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]])*sign(x),0)
+x
+x=c(4,6,6,4)
+x
+soft_thresholding=function(x,nx)#
+{#
+    #if (nx != 0) {#
+    #    x = ifelse(abs(x) > abs(x[order(abs(x))][nx]),#
+    #    (abs(x) - abs(x[order(abs(x))][nx])) * sign(x), 0)#
+    #}#
+    #selection on a (loadings.X). modified on 19/02/15 to make sure that a!=0#
+    if(nx!=0)#
+    {#
+        absx=abs(x)#
+        if(sum(rank(absx)<=nx)>0)#
+        {#
+        	x=ifelse(absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]],#
+        	(absx-absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]])*sign(x),0)#
+    	}#
+    }#
+    x#
+}
+soft_thresholding(x=c(4,6,6,4),nx=4)
+soft_thresholding(x=c(4,6,6,4),nx=3)
+soft_thresholding(x=c(4,6,6,4),nx=2)
+soft_thresholding(x=c(4,6,6,4),nx=1)
+soft_thresholding(x=c(4,6,6,4),nx=0)
+soft_thresholding(x=c(4,6,6,4),nx=1)
+soft_thresholding(x=c(4,6,6,4),nx=3)
+soft_thresholding=function(x,nx)#
+{#
+    #if (nx != 0) {#
+    #    x = ifelse(abs(x) > abs(x[order(abs(x))][nx]),#
+    #    (abs(x) - abs(x[order(abs(x))][nx])) * sign(x), 0)#
+    #}#
+    #selection on a (loadings.X). modified on 19/02/15 to make sure that a!=0#
+    if(nx!=0)#
+    {#
+        absx=abs(x)#
+               if(sum(rank(absx)<=nx)==0) {nx=min(rank(absx))}#
+		#if(sum(rank(absx)<=nx)>0)#
+        {#
+        	x=ifelse(absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]],#
+        	(absx-absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]])*sign(x),0)#
+    	}#
+    }#
+    x#
+}
+soft_thresholding(x=c(4,6,6,4),nx=3)
+soft_thresholding(x=c(4,6,6,4),nx=1)
+soft_thresholding(x=c(4,6,6,4),nx=0)
+soft_thresholding(x=c(4,4,4,4),nx=0)
+soft_thresholding(x=c(4,4,4,4),nx=1)
+soft_thresholding=function(x,nx)#
+{#
+    #if (nx != 0) {#
+    #    x = ifelse(abs(x) > abs(x[order(abs(x))][nx]),#
+    #    (abs(x) - abs(x[order(abs(x))][nx])) * sign(x), 0)#
+    #}#
+    #selection on a (loadings.X). modified on 19/02/15 to make sure that a!=0#
+    if(nx!=0)#
+    {#
+        absx=abs(x)#
+        if(sum(rank(absx)<=nx)>0)#
+        {#
+        	x=ifelse(absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]],#
+        	(absx-absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]])*sign(x),0)#
+    	}#
+    }#
+    x#
+}
+soft_thresholding(x=c(4,6,6,4),nx=1)
+soft_thresholding(x=c(4,4,4,4),nx=1)
+soft_thresholding=function(x,nx)#
+{#
+    #if (nx != 0) {#
+    #    x = ifelse(abs(x) > abs(x[order(abs(x))][nx]),#
+    #    (abs(x) - abs(x[order(abs(x))][nx])) * sign(x), 0)#
+    #}#
+    #selection on a (loadings.X). modified on 19/02/15 to make sure that a!=0#
+    if(nx!=0)#
+    {#
+        absx=abs(x)#
+        if(sum(rank(absx)<=nx)>0)#
+        {#
+        	x=ifelse(absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]],#
+        	(absx-absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]])*sign(x),0)#
+    	}#
+    }#
+    x#
+}
+soft_thresholding(x=c(4,4,4,4),nx=1)
+soft_thresholding(x=c(4,4,4,4),nx=4)
+soft_thresholding(x=c(4,4,4,4),nx=3)
+soft_thresholding(x=c(4,4,4,4),nx=2)
+soft_thresholding(x=c(4,4,4,4),nx=3)
+soft_thresholding=function(x,nx)#
+{#
+    #if (nx != 0) {#
+    #    x = ifelse(abs(x) > abs(x[order(abs(x))][nx]),#
+    #    (abs(x) - abs(x[order(abs(x))][nx])) * sign(x), 0)#
+    #}#
+    #selection on a (loadings.X). modified on 19/02/15 to make sure that a!=0#
+    if(nx!=0)#
+    {#
+        absx=abs(x)#
+        if(sum(rank(absx)<=nx)>0)#
+        {#
+        	x=ifelse(absx>absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]],#
+        	(absx-absx[which(rank(absx)==max(rank(absx)[which(rank(absx)<=(nx))]))[1]])*sign(x),0)#
+    	}#
+    }#
+    x#
+}
+soft_thresholding(x=c(4,6,6,4),nx=4)
+soft_thresholding(x=c(4,6,6,4),nx=3)
+soft_thresholding(x=c(4,6,6,4),nx=2)
+soft_thresholding(x=c(4,6,6,4),nx=1)
+library(mixOmics)
+library(parallel)
+?parallel
+?help.start
+library(mht)
+mht.order
+library(mixOmics)
+?multilevel
+libary(mixOmics)
+library(mixOmics)
+?mixOmics
+?pls
+setwd("/Users/florian/Work/git/package-mixOmics/mixOmics/R")
+setwd("/Users/florian/Work/git/package-mixOmics/mixOmics/R")#
+files=list.files()#
+#
+for(i in 1:files)#
+{#
+	source(files[1])#
+}
+files
+source(files[i])
+files=list.files()#
+#
+for(i in 1:files)#
+{#
+	source(files[i])#
+}
+setwd("/Users/florian/Work/git/package-mixOmics/mixOmics/R")#
+files=list.files()#
+#
+for(i in 1:length(files))#
+{#
+	source(files[i])#
+}
+setwd("/Users/florian/Work/git/package-mixOmics/mixOmics/R")#
+files=list.files()#
+#
+options(warn=2)#
+for(i in 1:length(files))#
+{#
+	source(files[i])#
+}
+i
+files[44]
+setwd("/Users/florian/Work/git/package-mixOmics/mixOmics/R")#
+files=list.files()#
+#
+options(warn=2)#
+for(i in 1:length(files))#
+{#
+	source(files[i])#
+}

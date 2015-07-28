@@ -59,5 +59,5 @@ rcc.result = rcc(scale(X), scale(Y), ncomp = 2, lambda1 = param[1], lambda2 = pa
 
 # we observe quite a good deparation of the diets
 my.colors = color.mixo(as.numeric(nutrimouse$genotype))
-plotIndiv(rcc.result, ind.names = nutrimouse$diet, col = my.colors)
+plotIndiv(rcc.result, ind.names = nutrimouse$diet, group = my.colors)
 }

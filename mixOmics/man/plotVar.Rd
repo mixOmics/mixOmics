@@ -195,7 +195,7 @@ design = matrix(c(0,1,1,
 
 
 #note: the penalty parameters will need to be tuned
-wrap.result.sgcca = wrapper.sgcca(data = data, design = design, penalty = c(.3,.3, 1), 
+wrap.result.sgcca = wrapper.sgcca(blocks = data, design = design, penalty = c(.3,.3, 1),
                                   ncomp = c(2, 2, 1),
                                   scheme = "centroid", verbose = FALSE)
 wrap.result.sgcca
@@ -233,7 +233,7 @@ design = matrix(c(0,1,1,
                   1,0,1,
                   1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 #note: the tau parameter is the regularization parameter
-wrap.result.rgcca = wrapper.rgcca(data = data, design = design, tau = c(1, 1, 0), 
+wrap.result.rgcca = wrapper.rgcca(blocks = data, design = design, tau = c(1, 1, 0),
                                   ncomp = c(2, 2, 1),
                                   scheme = "centroid", verbose = FALSE)
 #wrap.result.rgcca
