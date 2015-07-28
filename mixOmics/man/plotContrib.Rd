@@ -9,8 +9,9 @@ This function provides a horizontal bar plot to visualise the highest or lowest 
 }
 
 \usage{
-plotContrib(object,
-                       contrib=c("max"),
+plotContrib(
+                       object,
+                       contrib=c("max"),  # choose between 'max" or "min"
                        method = c("mean", "median"), 
                        comp = 1,
                        ties = TRUE, 
@@ -22,7 +23,8 @@ plotContrib(object,
                        legend.color = NULL, 
                        main = NULL,
                        legend.title = 'Outcome',
-                       plot = TRUE
+                       plot = TRUE 
+                       
                        )
 	  
 }
@@ -94,7 +96,7 @@ name.var = name.var, cex.name = 0.5)
 plot.contrib = plotContrib(splsda.liver, comp = 2, method = 'median', plot = FALSE)
 head(plot.contrib$contrib)
 # change the title of the legend and title name
-plotContrib(splsda.liver, comp = 2, method = 'median',legend.title = 'Time', 
+plotContrib(splsda.liver, comp = 2, method = 'median', legend.title = 'Time', 
 main = 'Contribution plot')
 
 # no legend

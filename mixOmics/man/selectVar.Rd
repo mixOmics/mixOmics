@@ -1,6 +1,9 @@
 \name{selectVar}
 \encoding{latin1}
 \alias{selectVar}
+\alias{selectVar.pls}
+\alias{selectVar.plsda}
+\alias{selectVar.pca}
 \alias{selectVar.spls}
 \alias{selectVar.splsda}
 \alias{selectVar.spca}
