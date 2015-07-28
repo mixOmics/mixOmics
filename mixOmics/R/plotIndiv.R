@@ -49,7 +49,7 @@ plotIndiv <-
 
     class.object = class(object)
 
-    object.pls=c("pls","spls","splsda","plsda","mlsplsda","rcc")
+    object.pls=c("pls","spls","splsda","plsda","mlspls","mlsplsda","rcc")
     object.pca=c("ipca","sipca","pca","spca")
     object.blocks=c("sgcca","rgcca", "sgccda")
     
