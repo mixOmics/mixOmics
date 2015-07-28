@@ -283,7 +283,7 @@ plotIndiv <-
         p = p + scale_colour_manual(values = levels.color[match(levels(factor(as.character(group))), levels(group))],
                                   name = "Legend", breaks = levels(group)) 
         
-        p = p + labs(list(title = main, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = 2, scale = "free")
+        p = p + labs(list(title = main, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = 2, scales = "free")
                   
         #-- Legend  
         if (!add.legend) {
