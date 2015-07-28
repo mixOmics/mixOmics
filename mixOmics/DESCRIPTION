@@ -2,7 +2,7 @@ Package: mixOmics
 Type: Package
 Title: Omics Data Integration Project
 Version: 5.1
-Date: 2015-04-28
+Date: 2015-07-28
 Depends: R (>= 2.10), MASS, lattice, ggplot2
 Imports: igraph, rgl, pheatmap, ellipse
 Author: Kim-Anh Le Cao,  Ignacio Gonzalez, Sebastien Dejean with key contributors Florian Rohart, Benoit Gautier

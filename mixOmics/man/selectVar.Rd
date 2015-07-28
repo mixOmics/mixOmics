@@ -3,9 +3,13 @@
 \alias{selectVar}
 \alias{selectVar.pls}
 \alias{selectVar.plsda}
+<<<<<<< HEAD
 \alias{selectVar.pca}
+=======
+>>>>>>> 93c0425e3c5cd1f4dd65e41a2cba77ddbf9f47af
 \alias{selectVar.spls}
 \alias{selectVar.splsda}
+\alias{selectVar.pca}
 \alias{selectVar.spca}
 \alias{selectVar.sipca}
 \alias{selectVar.sgcca}

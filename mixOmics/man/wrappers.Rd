@@ -178,7 +178,7 @@ selectVar(nutrimouse.sgcca, comp = 1, block = 2)
 # variable plot on the selected variables
 plotVar(nutrimouse.sgcca, col = color.mixo(1:2), cex = c(2,2))
 
-# version 2 using the keep.block penalty criterion (number of variables to keep)
+# version 2 using the keep penalty criterion (number of variables to keep)
 # it is a list per block and per component, need to specify all variables for the 
 # Y 'outcome' here 
 # (see below for sgccda code, which is more appropriate)

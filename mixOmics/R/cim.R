@@ -1220,7 +1220,7 @@ imageMap <-
     
     if (isTRUE(zoom)) {
       graphics.off()
-      x11(xpos = -1)
+      dev.new(pos=-1)#x11(xpos = -1)
     }
     
     op = par(no.readonly = TRUE)
@@ -1372,7 +1372,7 @@ imageMap <-
           rect(xleft.old, ybottom.old, xright.old, ytop.old)
         }
         
-        x11()
+        dev.new()#x11()
         plot.par = par(no.readonly = TRUE)
         
         if (isTRUE(zone)) {
