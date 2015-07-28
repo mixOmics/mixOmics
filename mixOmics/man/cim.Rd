@@ -240,7 +240,8 @@ cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6))
 
 cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6), 
     zoom = TRUE)
-#-- select the region and "see" the zoom-out region
+#-- select the region and "see" the zoom-out region, click on 'finish' or 'exit' to get out
+# Rstudio might throw a warning message.
 }
 
 #-- cim from X matrix with a side bar to indicate the diet
@@ -249,15 +250,17 @@ cim(nutri.rcc, mapping = "X", sample.names = nutrimouse$diet,
     sample.sideColors = diet.col, xlab = "lipids",
     clust.method = c("ward", "ward"), margins = c(6, 4))
 
+\dontrun{
 #-- cim from Y matrix with a side bar to indicate the genotype
 geno.col = color.mixo(as.numeric(nutrimouse$genotype))
 cim(nutri.rcc, mapping = "Y", sample.names = nutrimouse$genotype,
     sample.sideColors = geno.col, xlab = "genes",
     clust.method = c("ward", "ward"))
-
+}
 
 ## CIM representation for objects of class 'spca' (also works for sipca)
 #------------------------------------------------------------------
+\dontrun{
 data(liver.toxicity)
 X <- liver.toxicity$gene
 
@@ -269,7 +272,7 @@ dose.col <- color.mixo(as.numeric(as.factor(liver.toxicity$treatment[, 3])))
 cim(liver.spca, sample.sideColors = dose.col, var.names = FALSE,
     sample.names = liver.toxicity$treatment[, 3],
     clust.method = c("ward", "ward"))
-    
+  }  
 
 ## CIM representation for objects of class '(s)pls' 
 #------------------------------------------------------------------
@@ -302,10 +305,12 @@ cim(liver.spls, cluster="none")
 # Only the variables selected by the sPLS model in X and Y are represented
 cim(liver.spls, mapping="XY")
 
+\dontrun{
 # on the X matrix only, side col var to indicate dose
 dose.col <- color.mixo(as.numeric(as.factor(liver.toxicity$treatment[, 3])))
 cim(liver.spls, mapping = "X", sample.sideColors = dose.col, 
     sample.names = liver.toxicity$treatment[, 3])
+
 
 # CIM default representation includes the total of 120 genes selected, with the dose color
 # with a sparse method, show only the variables selected on specific components
@@ -313,17 +318,19 @@ cim(liver.spls, comp = 1)
 cim(liver.spls, comp = 2)
 cim(liver.spls, comp = c(1,2))
 cim(liver.spls, comp = c(1,3))
+}
 
 
 ## CIM representation for objects of class '(s)plsda' 
 #------------------------------------------------------------------
+\dontrun{
 # Setting up the Y outcome first
 Y <- liver.toxicity$treatment[, 3]
 
 liver.splsda <- splsda(X, Y, ncomp = 2, keepX = c(40, 30))
 
 cim(liver.splsda, sample.sideColors = dose.col, sample.names = Y)
-
+}
 
 ## CIM representation for objects of class splsda 'multilevel' 
 # with a two level factor (repeated sample and time)
@@ -357,7 +364,7 @@ cim(res.2level, sample.sideColors = cbind(stim.col, time.col),
 
 ## CIM representation for objects of class spls 'multilevel' 
 #------------------------------------------------------------------
-
+\dontrun{
 data(liver.toxicity)
 repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
                   6, 5, 6, 7, 7, 8, 6, 7, 8, 7, 8, 8, 9, 10, 9, 10, 11, 9, 9,
@@ -397,6 +404,7 @@ cim(res.spls.1level, mapping="X",
 # These are the cross correlations between the variables selected in X and Y.
 # The similarity matrix is obtained as in our paper in Data Mining
 cim(res.spls.1level, mapping="XY")
+}
 }
 
 \keyword{multivariate}

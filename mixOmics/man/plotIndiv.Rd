@@ -181,6 +181,7 @@ plotIndiv(nutrimouse.sgcca, style = "graphics", group = nutrimouse$diet,
 
 ## variable representation for objects of class 'sgccda' 
 # ----------------------------------------------------
+\dontrun{
 # Note: the code differs from above as we use a 'supervised' GCCA analysis
 data(nutrimouse)
 Y = nutrimouse$diet
@@ -209,6 +210,7 @@ plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet)
 plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet, 
   plot.ellipse = TRUE, add.legend = TRUE, main = 'my sample plot')
 
+}
 }
 
 \keyword{multivariate}

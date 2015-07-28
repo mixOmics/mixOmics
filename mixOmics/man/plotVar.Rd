@@ -128,7 +128,7 @@ A list containing the following components:
   \item{coord.Y}{matrix of \eqn{Y}-variables coordinates.}
 }
 
-\author{Sebastien Dejean, Ignacio Gonzalez, Kim-Anh Le Cao.}
+\author{Ignacio Gonzalez, Kim-Anh Le Cao, Benoit Gautier, Florian Rohart.}
 
 \references{Gonzalez I., Le Cao K-A., Davis, M.J. and Dejean, S. (2012). Visualising associations between paired 'omics data sets. J. Data Mining 5:19. \url{http://www.biodatamining.org/content/5/1/19/abstract}}
 
@@ -174,9 +174,7 @@ plotVar(splsda.liver, var.label = FALSE)
 
 ## variable representation for objects of class 'sgcca' (or 'rgcca')
 # ----------------------------------------------------
-<<<<<<< HEAD
 ## see example in ??wrapper.sgcca
-=======
 data(nutrimouse)
 # need to unmap the Y factor diet
 Y = unmap(nutrimouse$diet)
@@ -196,7 +194,6 @@ design = matrix(c(0,1,1,
                   1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 
 
-
 #note: the penalty parameters will need to be tuned
 wrap.result.sgcca = wrapper.sgcca(blocks = data, design = design, penalty = c(.3,.3, 1),
                                   ncomp = c(2, 2, 1),
@@ -214,17 +211,17 @@ plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), ncomp.select = c(1,1),
 title(main = c('Variables selected on component 1 only'))
 plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), ncomp.select = c(2,2), labels = TRUE)
 title(main = c('Variables selected on component 2 only'))
+
 # -> this one shows the variables selected on both components
 plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), labels = TRUE)
 title(main = c('Variables selected on components 1 and 2'))
->>>>>>> 93c0425e3c5cd1f4dd65e41a2cba77ddbf9f47af
 
 ## variable representation for objects of class 'rgcca'
 # ----------------------------------------------------
 data(nutrimouse)
 # need to unmap Y for an unsupervised analysis, where Y is included as a data block in data
 Y = unmap(nutrimouse$diet)
-<<<<<<< HEAD
+
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 # with this design, all blocks are connected
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, 
@@ -240,7 +237,7 @@ nutrimouse.rgcca <- wrapper.rgcca(blocks = data,
 plotVar(nutrimouse.rgcca, comp = c(1,2), block = c(1,2), cex = c(1.5, 1.5))
 plotVar(nutrimouse.rgcca, comp = c(1,2), block = c(1,2), labels = TRUE)
 
-=======
+
 # set up the data as list
 data = list(nutrimouse$gene, nutrimouse$lipid,Y)
 # with this design, gene expression and lipids are connected to the diet factor
@@ -260,7 +257,7 @@ wrap.result.rgcca = wrapper.rgcca(blocks = data, design = design, tau = c(1, 1, 
 #wrap.result.rgcca
 plotVar(wrap.result.rgcca, comp = c(1,2), block = c(1,2))
 plotVar(wrap.result.rgcca, comp = c(1,2), block = c(1,2), labels = TRUE)
->>>>>>> 93c0425e3c5cd1f4dd65e41a2cba77ddbf9f47af
+
 }
 
 \keyword{multivariate}

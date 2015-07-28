@@ -15,6 +15,7 @@ New features:
 	- ellipse plots are now available, a group argument is requested for the unsupervised methods (PCA, IPCA, PLS)
 	-three types of graphical plot: graphics (version < 5.1-0), ggplot2 and lattice
 	-legend and title can be added
+  - NOTE: if you want to color each sample with respect to a factor (i.e. a factor of length n), then the argument to use is 'group'. If you use a supervised approach then col is a vector of length the number of groups. That may appear strange but will allow for more options down the track with the ellipse plots.
 
 6 - cim has been implemented for PLS, sPLS, PLS-DA, SPLS-DA, rCC, PCA, sPCA, IPCA, sIPCA and includes a wide range of options to plot a single data set in the form of a heatmap (new!), or the cross correlation between two matching data sets via the methods rCC or (s)PLS using the cross product between latent variables and loading vectors (improved with legends and color bars). We will give more examples on our website.
 

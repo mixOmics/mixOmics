@@ -3,13 +3,9 @@
 \alias{selectVar}
 \alias{selectVar.pls}
 \alias{selectVar.plsda}
-<<<<<<< HEAD
 \alias{selectVar.pca}
-=======
->>>>>>> 93c0425e3c5cd1f4dd65e41a2cba77ddbf9f47af
 \alias{selectVar.spls}
 \alias{selectVar.splsda}
-\alias{selectVar.pca}
 \alias{selectVar.spca}
 \alias{selectVar.sipca}
 \alias{selectVar.sgcca}
@@ -21,7 +17,6 @@
 \description{
 This function outputs the selected variables on each component for the sparse versions of the approaches (can also be generalised to the non sparse versions). 
 Note the change of name in version >= 5.0-4 to selectVar.
-
 }
 
 \usage{
@@ -33,10 +28,7 @@ Note the change of name in version >= 5.0-4 to selectVar.
 \method{selectVar}{spca}(object, comp = 1, \ldots)
 \method{selectVar}{sipca}(object, comp = 1, \ldots)
 \method{selectVar}{sgcca}(object, block = NULL, comp = 1,  \ldots)
-
-	  
- 
- }
+}
 
 \arguments{
   \item{object}{object of class inheriting from \code{"pls"}, \code{"spls"}, \code{"plsda"},\code{"splsda"}, \code{"pca"}, \code{"spca"}, \code{"sipca"}.}
@@ -56,7 +48,7 @@ These functions are only implemented for the sparse versions.
 
 
 
-\author{Kim-Anh Le Cao.}
+\author{Kim-Anh Le Cao, Florian Rohart.}
 
 \examples{
 data(liver.toxicity)

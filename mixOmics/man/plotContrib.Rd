@@ -109,6 +109,7 @@ plotContrib(splsda.liver, comp = 2, method = 'median', legend.color = c(1:4))
 
 # object 'splsda multilevel'
 # -----------------
+\dontrun{
 data(vac18)
 X <- vac18$genes
 Y <- vac18$stimulation
@@ -130,9 +131,11 @@ name.var = name.var, cex.name = 0.2)
 # too many transcripts? only output the top ones
 plotContrib(res.1level, comp = 2, method = 'median', legend.title = 'Stimu', 
 name.var = name.var, cex.name = 0.5, ndisplay = 60)
+}
 
 # object 'plsda'
 # ----------------
+\dontrun{
 # breast tumors
 # ---
 data(breast.tumors)
@@ -149,10 +152,11 @@ plotContrib(plsda.breast, contrib = 'max', comp = 1, method = 'median',
             ndisplay = 60, 
             name.var = name.var, cex.name = 0.6,
             legend.color = color.mixo(1:2))
-
+}
 
 # liver toxicity
 # ---
+\dontrun{
 data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$treatment[, 4]
@@ -167,7 +171,7 @@ names(name.var) = rownames(liver.toxicity$gene.ID)
 plotContrib(plsda.liver, contrib = 'max', comp = 1, method = 'median', ndisplay = 100, 
             name.var = name.var, cex.name = 0.4,
             legend.color = color.mixo(1:4))
-
+}
 
 }
 
