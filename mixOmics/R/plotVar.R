@@ -1473,7 +1473,7 @@ plotVar.sgcca <-
     if(any(ncomp.select > object$ncomp[comp]))
       stop("At least one argument from 'ncomp.select' is greater than the actual number of components in the sgcca model")
     
-    cat('PlotVar will only display variables selected on components', ncomp.select[1], 'and', ncomp.select[2], '\n')
+    cat('plotVar will only display variables selected on components', ncomp.select[1], 'and', ncomp.select[2], '\n')
     
 #     # check that the user did not enter extra arguments #
 #     # --------------------------------------------------#

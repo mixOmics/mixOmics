@@ -18,19 +18,58 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
+
+# --------------------------------------
+# rgcca for multiple integration  and a regularisation parameter tau
+#--------------------------------------
+wrapper.rgcca <- function (blocks, 
+                           design = NULL, 
+                           ncomp = rep(2, length(blocks)), 
+                           tau = "optimal",
+                           scheme = "centroid", 
+                           scale = TRUE, 
+                           bias = FALSE, 
+                           max.iter = 1000,
+                           tol = .Machine$double.eps, 
+                           verbose = FALSE, 
+                           near.zero.var = FALSE
+) {
+  
+  # note here: few hard coded arguments:
+  # mode  = canonical, penalty = NULL, keep = NULL, indY = NULL, init (Mode of initialization use in the SGCCA algorithm with Singular Value Decompostion ("svd") 
+  result.rgcca = srgcca(blocks = blocks, indY = NULL, design = design, tau = tau, 
+                        ncomp = ncomp, scheme = scheme, scale = scale, bias = bias, init = "svd.rgcca", 
+                        tol = tol, verbose = verbose, mode = "canonical", max.iter = max.iter, 
+                        keep = NULL, near.zero.var = near.zero.var, penalty = NULL)
+  
+  result.rgcca$class = "rgcca"
+  class(result.rgcca) = "rgcca"
+  return(invisible(result.rgcca))
+}
+
+
 # --------------------------------------
 # sgcca for multiple integration with variable selection in each block (lasso penalisation)
 #--------------------------------------
-wrapper.sgcca <- function (blocks, design = NULL, penalty = NULL, scheme = "centroid",
-                           scale = TRUE, bias = FALSE, max.iter = 1000,
-                           tol = .Machine$double.eps, verbose = FALSE, near.zero.var = FALSE,
-                           keep.blocks = NULL, ncomp = rep(2, length(blocks))) {
+wrapper.sgcca <- function (blocks, 
+                           design = NULL, 
+                           penalty = NULL, 
+                           ncomp = rep(2, length(blocks)),
+                           keep = NULL, 
+                           scheme = "centroid",
+                           scale = TRUE, 
+                           bias = FALSE, 
+                           max.iter = 1000,
+                           tol = .Machine$double.eps, 
+                           verbose = FALSE, 
+                           near.zero.var = FALSE
+                           ) {
   
     # note here: mode is hard coded as canonical
   result.sgcca = srgcca(blocks = blocks, indY = NULL, design = design, tau = rep(1, length(blocks)), 
                         ncomp = ncomp, scheme = scheme, scale = scale, bias = bias, init = "svd.sgcca", 
                         tol = tol, verbose = verbose, mode = "canonical", max.iter = max.iter, 
-                        keep.blocks = keep.blocks, near.zero.var = near.zero.var, penalty = penalty)
+                        keep = keep, near.zero.var = near.zero.var, penalty = penalty)
 
   result.sgcca$class = "sgcca"
   class(result.sgcca) = "sgcca"
@@ -38,32 +77,24 @@ wrapper.sgcca <- function (blocks, design = NULL, penalty = NULL, scheme = "cent
 }
 
 
-# --------------------------------------
-# rgcca for multiple integration  and a regularisation parameter tau
-#--------------------------------------
-wrapper.rgcca <- function (blocks, design = NULL, penalty = NULL, scheme = "centroid", 
-                           scale = TRUE, bias = FALSE, max.iter = 1000,
-                           tol = .Machine$double.eps, verbose = FALSE, near.zero.var = FALSE,
-                           ncomp = rep(2, length(blocks)), tau = "optimal") {
-  
-  # note here: mode is hard coded as canonical
-  result.sgcca = srgcca(blocks = blocks, indY = NULL, design = design, tau = tau, 
-                        ncomp = ncomp, scheme = scheme, scale = scale, bias = bias, init = "svd.rgcca", 
-                        tol = tol, verbose = verbose, mode = "canonical", max.iter = max.iter, 
-                        keep.blocks = NULL, near.zero.var = near.zero.var, penalty = NULL)
-  
-  result.sgcca$class = "rgcca"
-  class(result.sgcca) = "rgcca"
-  return(invisible(result.sgcca))
-}
 
 # --------------------------------------
 # srgccda for multiple integration with a block (or more) as outcome(s) in Y and variable selection (lasso penalisation)
 #--------------------------------------
-wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid", 
-                           scale = TRUE, bias = FALSE, max.iter = 1000,
-                           tol = .Machine$double.eps, verbose = FALSE, near.zero.var = FALSE,
-                           keep.blocks = NULL, ncomp = rep(2, length(blocks))) {
+wrapper.sgccda <- function(
+                            blocks, 
+                            Y, 
+                            design = NULL, 
+                            ncomp = rep(2, length(blocks)) ,                           
+                            keep = NULL, 
+                            scheme = "centroid", 
+                            scale = TRUE, 
+                            bias = FALSE, 
+                            max.iter = 1000,
+                           tol = .Machine$double.eps, 
+                           verbose = FALSE, 
+                           near.zero.var = FALSE
+                           ) {
 
   #-- Define blocks
   if (!is.list(blocks))
@@ -97,23 +128,24 @@ wrapper.sgccda <- function (blocks, Y, design = NULL, scheme = "centroid",
     diag(design) = 0
   }
   
-  #-- keep.blocks
-  if (is.list(keep.blocks) & (length(keep.blocks) == length(blocks))){
-    keep.blocks[[length(keep.blocks) + 1]] = rep(nlevels(Y), ncomp[length(blocks) + 1])
-    message("'keep.blocks' has changed and include Y as a block")
+  #-- keep
+  if (is.list(keep) & (length(keep) == length(blocks))){
+    keep[[length(keep) + 1]] = rep(nlevels(Y), ncomp[length(blocks) + 1])
+    message("'keep' has changed and include Y as a block")
   }
   
   blocks[[length(blocks) + 1]] = ind.mat
   names(blocks)[length(blocks)] = "Y"
     
   # note here: mode is hard coded as regression as we are performing a supervised analysis w.r.t Y
-  result.sgcca = srgcca(blocks = blocks, indY = length(blocks), design = design, tau = rep(1, length(blocks)), 
+  result.sgccada = srgcca(blocks = blocks, indY = length(blocks), design = design, tau = rep(1, length(blocks)), 
                         ncomp = ncomp, scheme = scheme, scale = scale, bias = bias, init = "svd.da", 
                         tol = tol, verbose = verbose, mode = "regression", max.iter = max.iter,
-                        keep.blocks = keep.blocks, near.zero.var = near.zero.var, penalty = NULL)
+                        keep = keep, near.zero.var = near.zero.var, penalty = NULL)
   
-  result.sgcca$Y = Y; result.sgcca$ind.mat = ind.mat;
-  result.sgcca$class = c("sgccda","sgcca")
-  class(result.sgcca) = c("sgccda","sgcca")
-  return(invisible(result.sgcca))
+  result.sgccada$Y = Y
+  result.sgccada$ind.mat = ind.mat;
+  result.sgccada$class = c("sgccda","sgcca")
+  class(result.sgccada) = c("sgccda","sgcca")
+  return(invisible(result.sgccada))
 }

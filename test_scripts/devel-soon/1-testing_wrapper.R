@@ -1,36 +1,35 @@
 # -----------------------------------------------------------------------------------
-# Testing-wrapper.R
-# Author:    B Gautier, KA Le Cao 
+# 1- Testing-wrapper.R
+# Author:    B Gautier 
 # Date started:  28/07/2015
 # Last updated:  
-# Objective:
+# Objective: first layer comparing v5-0.4 with v5.1
 # Latest update: 
 # -----------------------------------------------------------------------------------
 
-library(mixOmics)
+
+####note! the argument keep.blocks has been renamed 'keep'
+# not changed in this scripr test!!!
+
 rm(list=ls())
 
 sourceDir <- function(path, trace = TRUE, ...) {
-    for (nm in list.files(path, pattern = "\\.[RrSsQq]$")) {
-        if(trace) cat(nm,":")
-        source(file.path(path, nm), ...)
-        if(trace) cat("\n")
-    }
+  for (nm in list.files(path, pattern = "\\.[RrSsQq]$")) {
+    if(trace) cat(nm,":")
+    source(file.path(path, nm), ...)
+    if(trace) cat("\n")
+  }
 }
 
 # Florian
-##sourceDir("/Users/florian/Work/git/package-mixOmics/mixOmics/R/",trace=FALSE) #load all the functions inside ixOmics/R
+sourceDir("/Users/florian/Work/git/package-mixOmics/mixOmics/R/",trace=FALSE) #load all the functions inside ixOmics/R
 
 # KA
 sourceDir("../../mixOmics/R/",trace=FALSE) #load all the functions inside ixOmics/R
 
-
-### RGCCA # (this is version 5 to be compared with 5.1)
-# -----------
-library(mixOmics)
-
+### RGCCA / SGCCA with mixOmics package version 5
+require(mixOmics)
 data(nutrimouse)
-# need to unmap Y for an unsupervised analysis, where Y is included as a data block in data
 Y = unmap(nutrimouse$diet)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 design1 = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
@@ -42,7 +41,6 @@ nutrimouse.sgcca1 <- wrapper.rgcca(data = data,
                                    scheme = "centroid",
                                    verbose = FALSE, 
                                    bias = FALSE)
-# looking at loading vectors
 head(nutrimouse.sgcca1$loadings[[1]])
 head(nutrimouse.sgcca1$loadings[[2]])
 head(nutrimouse.sgcca1$loadings[[3]])
@@ -64,13 +62,16 @@ head(nutrimouse.sgcca2$loadings[[3]])
 nutrimouse.sgcca2$tau
 
 ### RGCCA / SGCCA with new scripts 
+#(source r script helpers.R and wrapper.sgcca.v6)
+source("./R scripts/helpers.R"); source("./R scripts/wrapper.sgcca.v6.R"); 
+source("./R scripts/wrappers.R"); source("./R scripts/plotIndiv.R")
 
 nutrimouse.sgcca1.update <- wrapper.rgcca(blocks = data,
-                                         design = design1,
-                                         tau = "optimal",
-                                         ncomp = c(2, 2, 1),
-                                         scheme = "centroid",
-                                         verbose = FALSE)
+                                          design = design1,
+                                          tau = "optimal",
+                                          ncomp = c(2, 2, 1),
+                                          scheme = "centroid",
+                                          verbose = FALSE)
 
 plotIndiv(nutrimouse.sgcca1.update, blocks = NULL)
 plotIndiv(nutrimouse.sgcca1.update, blocks = c(1,2))
@@ -108,12 +109,12 @@ source("./R scripts/helpers.R"); source("./R scripts/wrapper.sgcca.v6.R");
 source("./R scripts/wrappers.R"); source("./R scripts/plotIndiv.R")
 
 nutrimouse.sgcca1.update <- wrapper.sgcca(blocks = data,
-                                   design = design1,
-                                   penalty = c(0.3, 0.5, 1),
-                                   ncomp = c(2, 2, 1),
-                                   scheme = "centroid",
-                                   verbose = FALSE, 
-                                   bias = FALSE)
+                                          design = design1,
+                                          penalty = c(0.3, 0.5, 1),
+                                          ncomp = c(2, 2, 1),
+                                          scheme = "centroid",
+                                          verbose = FALSE, 
+                                          bias = FALSE)
 
 head(nutrimouse.sgcca1.update$loadings[[1]])
 head(nutrimouse.sgcca1.update$loadings[[2]])
@@ -214,7 +215,5 @@ nutrimouse.sgccda <- wrapper.sgccda(blocks = data,
 head(nutrimouse.sgccda$loadings[[1]])
 head(nutrimouse.sgccda$loadings[[2]])
 head(nutrimouse.sgccda$loadings[[3]])
-
-
 
 

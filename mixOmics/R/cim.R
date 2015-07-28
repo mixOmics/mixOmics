@@ -18,7 +18,7 @@
 
 
 # --------------------------------------------
-# CIM for all objects 
+# CIM for objects "pca","spca","ipca","sipca","mlsplsda","splsda","plsda","rcc","pls","spls","mlspls"
 # --------------------------------------------
 cim <-
   function(mat,

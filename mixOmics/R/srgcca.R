@@ -28,7 +28,7 @@
 srgcca = function (blocks, indY = NULL,  design = 1 - diag(length(blocks)), tau = NULL,
                     ncomp = rep(1, length(blocks)), scheme = "centroid", scale = TRUE,  
                     bias = FALSE, init = "svd.single", tol = .Machine$double.eps, verbose = FALSE,
-                    mode = "canonical", max.iter = 500, keep.blocks = NULL, near.zero.var = FALSE, 
+                    mode = "canonical", max.iter = 500, keep = NULL, near.zero.var = FALSE, 
                     penalty = NULL) { 
   
   # blocks: list of matrices
@@ -43,7 +43,7 @@ srgcca = function (blocks, indY = NULL,  design = 1 - diag(length(blocks)), tau 
   # verbose: show the progress of the algorithm
   # mode: canonical, classic, invariant, regression
   # max.iter: nobody cares about this
-  # keep.blocks: keepX of spls for each matrix of A. must be a list. Each entry must be of the same length (max ncomp)
+  # keep: keepX of spls for each matrix of A. must be a list. Each entry must be of the same length (max ncomp)
   # near.zero.var: do you want to remove variables with very small variance  
 
   #-- checking general input parameters --------------------------------------#
@@ -142,10 +142,10 @@ srgcca = function (blocks, indY = NULL,  design = 1 - diag(length(blocks)), tau 
   }
   
   #-- keepX and penalty parameters
-  if (!is.null(keep.blocks) & !is.null(penalty))
+  if (!is.null(keep) & !is.null(penalty))
     stop("select only one feature selection.")
   
-  if (is.null(keep.blocks) & is.null(penalty))
+  if (is.null(keep) & is.null(penalty))
     penalty = rep(1, length(blocks))
   
   if (!is.null(penalty)){
@@ -154,28 +154,28 @@ srgcca = function (blocks, indY = NULL,  design = 1 - diag(length(blocks)), tau 
   }
   
   keepA = NULL
-  if (!is.null(keep.blocks)){
-    if (!(is.vector(keep.blocks) || is.list(keep.blocks))){
-      stop ("keep.blocks must be either a vector or a list")
+  if (!is.null(keep)){
+    if (!(is.vector(keep) || is.list(keep))){
+      stop ("keep must be either a vector or a list")
     }
-    if (!is.list(keep.blocks)) {
-      keep.blocks = list(keep.blocks = keep.blocks)
+    if (!is.list(keep)) {
+      keep = list(keep = keep)
     }
-    if (!is.null(keep.blocks) & (length(keep.blocks) != length(blocks))) {
-      stop("keep.blocks and blocks have different lengths.")
+    if (!is.null(keep) & (length(keep) != length(blocks))) {
+      stop("keep and blocks have different lengths.")
     }
     if (is.null(ncomp)){
-      stop("keep.blocks is not NULL and ncomp is NULL.")
+      stop("keep is not NULL and ncomp is NULL.")
     }
-    if (any(sapply(1:length(keep.blocks), function(x){length(keep.blocks[[x]]) > ncomp[x]}))) {
-      stop("length of 'keep.blocks' must be lower or equal to ", paste(ncomp, collapse = ", "), ".")
+    if (any(sapply(1:length(keep), function(x){length(keep[[x]]) > ncomp[x]}))) {
+      stop("length of 'keep' must be lower or equal to ", paste(ncomp, collapse = ", "), ".")
     }
-    if (any(sapply(1:length(keep.blocks), function(x){any(keep.blocks[[x]] > ncol(blocks[[x]]))}))) {
-      stop("each component of 'keep.blocks' must be lower or equal to the number of columns for each respective 'X'.")
+    if (any(sapply(1:length(keep), function(x){any(keep[[x]] > ncol(blocks[[x]]))}))) {
+      stop("each component of 'keep' must be lower or equal to the number of columns for each respective 'X'.")
     }
     
-    keepA = lapply(1 : length(blocks), function(x){rep(ncol(blocks[[x]]), max(sapply(keep.blocks, length), ncomp[x]))})
-    keepA = lapply(1 : length(blocks), function(x){keepA[[x]][1 : length(keep.blocks[[x]])] = keep.blocks[[x]]; return(keepA[[x]])})
+    keepA = lapply(1 : length(blocks), function(x){rep(ncol(blocks[[x]]), max(sapply(keep, length), ncomp[x]))})
+    keepA = lapply(1 : length(blocks), function(x){keepA[[x]][1 : length(keep[[x]])] = keep[[x]]; return(keepA[[x]])})
   }
   
   #-- scheme
@@ -327,7 +327,7 @@ srgcca = function (blocks, indY = NULL,  design = 1 - diag(length(blocks)), tau 
     
   ### Start: Update names list with mixOmics package
   out <- list(blocks = A, indY = indY, ncomp = ncomp,
-              keep.blocks = keep.blocks, variates = variates.A, loadings = shave.matlist(loadings.A, ncomp),
+              keep = keep, variates = variates.A, loadings = shave.matlist(loadings.A, ncomp),
               loadings.star = shave.matlist(loadings.Astar, ncomp),
               names = list(indiv = row.names(blocks[[1]]), colnames = lapply(blocks, colnames), blocks = names(blocks)),
               tol = tol, iter=iter, nzv = if(near.zero.var) nzv.A, design = design,
