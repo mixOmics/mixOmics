@@ -45,27 +45,41 @@ This function provides variables representation for (regularized) CCA, (sparse) 
         var.label = FALSE, pch = NULL, cex = NULL, col = NULL, 
         font = NULL, \ldots)	
 
-\method{plotVar}{rgcca}(object, comp = c(1,2), block = c(1,2),
-           labels = FALSE, pch = c(16,17), cex =  c(0.5, 0.5), 
-           col = color.mixo(2), font = c(2,3), rad.in = 0.5, 
-           \ldots) 
+\method{plotVar}{rgcca}(
+          object, 
+           comp = c(1,2), 
+           block = c(1,2),
+           labels = FALSE,
+           pch = c(16,17), 
+           cex =  c(0.5, 0.5), 
+           col =  color.mixo(c(1,2)),       
+           font = c(2,3),
+           rad.in = 0.5, 
+           ...)
+
         
-\method{plotVar}{sgcca}(object, 
-comp = c(1,2), 
-block = c(1,2), ncomp.select = c(1,2), 
-labels = FALSE, pch = c(16,17), 
-cex =  c(0.5, 0.5), 
-col = color.mixo(2), 
-font = c(2,3), 
-rad.in = 0.5,\ldots)	
+\method{plotVar}{sgcca}(
+          object, 
+           comp = c(1,2), 
+           block = c(1,2),
+           ncomp.select = c(1,2),
+           labels = FALSE,
+           pch = c(16,17), 
+           cex =  c(0.5, 0.5), 
+           col =  color.mixo(2),   
+           font = c(2,3),
+           rad.in = 0.5, 
+           ...)	
          
 }
 
 \arguments{
   \item{object}{object of class inheriting from \code{"rcc"}, \code{"pls"}, \code{"plsda"}, 
     \code{"spls"}, \code{"splsda"}, \code{"pca"} or \code{"spca"}.}
+  \item{block}{for an object of class \code{"rgcca"} or \code{"sgcca"}, a numerical vector indicating the block variables to display.}
   \item{comp}{integer vector of length two. The components that will be used on the horizontal 
 	and the vertical axis respectively to project the variables.}
+  \item{ncomp.select}{for the sparse versions, an input vector indicating the components on which the variables were selected. Only those selected variables are displayed.}
   \item{rad.in}{numeric between 0 and 1, the radius of the inner circle. Defaults to \code{0.5}.}
   \item{cutoff}{numeric between 0 and 1. Variables with correlations below this cutoff 
     in absolute value are not plotted (see Details).}
@@ -78,8 +92,7 @@ rad.in = 0.5,\ldots)
 	or integers, can be of length 2 (one for each data set) or of length (p+q) (i.e. the total number of variables). See \code{\link{points}} for all alternatives.}
   \item{cex}{numeric vector of character expansion sizes for the plotted character and symbols, can be of length 2 (one for each data set) or of length (p+q) (i.e. the total number of variables).}
   \item{font}{numeric vector of font to be used, can be of length 2 (one for each data set) or of length (p+q) (i.e. the total number of variables). See \code{\link{par}} for details.}
-  \item{block}{for an object of class \code{"rgcca"} or \code{"sgcca"}, a numerical vector indicating the block variables to display.}
-  \item{ncomp.select}{for the sparse versions, an input vector indicating the components on which the variables were selected. Only those selected variables are displayed.}
+
   \item{\ldots}{not used currently.}
 }
 

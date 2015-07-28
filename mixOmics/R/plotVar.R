@@ -1433,8 +1433,9 @@ function(object,
     return(invisible(list(coord.X = cord.X)))
 }
 
-
-# ---------------------- RGCCA/SGCCA -------------------------#
+# ----------------------------
+#  SGCCA 
+# -------------------------#
 
 plotVar.sgcca <- 
   function(object, 

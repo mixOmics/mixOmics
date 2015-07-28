@@ -10,7 +10,7 @@ representation in (sparse)(I)PCA, (regularized)CCA, (sparse)PLS(DA) and (sparse)
 }
 
 \usage{
-\method{plotIndiv}(object,
+plotIndiv(object,
            comp = c(1, 2),
            ind.names = TRUE,
            rep.space = "X-variate",
@@ -28,7 +28,6 @@ representation in (sparse)(I)PCA, (regularized)CCA, (sparse)PLS(DA) and (sparse)
            add.legend=FALSE,
            style="ggplot2", 
            \ldots)
-	  
 }
 
 \arguments{
@@ -49,10 +48,11 @@ representation in (sparse)(I)PCA, (regularized)CCA, (sparse)PLS(DA) and (sparse)
   \item{cex}{numeric character (or symbol) expansion, possibly vector.}
   \item{pch}{plot character. A character string or a vector of single characters 
   or integers. See \code{\link{points}} for all alternatives.}
-  \item{object}{plot.ellipse}{boolean indicating if ellipse plots should be plotted. In the \code{PCA, sPCA, IPCA, sIPCA, PLS, sPLS, rCC, rGCCA, sGCCA} non supervised objects, by default will include all data points unless the argument \code{group} is set up. In the \code{PLS-DA, SPLS-DA,sGCCDA} supervised object, by default the ellipse will be plotted accoding to the outcome \code{Y}.} 
+  \item{plot.ellipse}{boolean indicating if ellipse plots should be plotted. In the \code{PCA, sPCA, IPCA, sIPCA, PLS, sPLS, rCC, rGCCA, sGCCA} non supervised objects, by default will include all data points unless the argument \code{group} is set up. In the \code{PLS-DA, SPLS-DA,sGCCDA} supervised object, by default the ellipse will be plotted accoding to the outcome \code{Y}.} 
     \item{ellipse.level}{Numerical value indicating the confidence level of ellipse being plotted when \code{plot.ellipse =TRUE} (i.e. the size of the ellipse). The default is set to 0.95, for a 95\% region.}  
   \item{group}{factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the supervised methods \code{PLS-DA, SPLS-DA,sGCCDA}, but needs to be input for the unsupervised methods \code{PCA, sPCA, IPCA, sIPCA, PLS, sPLS, rCC, rGCCA, sGCCA}}    
   \item{main}{character indicating the title plot.}
+  \item{add.legend}{boolean. Whether the legend should be added. Default is TRUE.}
   \item{style}{argument to be set to either \code{'graphics'}, \code{'lattice'} or \code{'ggplot2'} for a style of plotting.} 
   \item{\dots}{further graphical parameters are passed 
 	to \code{\link{text}}.}
@@ -89,18 +89,24 @@ nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 # default, only in the X space
 plotIndiv(nutri.res) 
 
-# ellipse with respect to genotype in the XY space, names also indicate genotype
-plotIndiv(nutri.res, rep.space= 'XY-variate', plot.ellipse = TRUE, ellipse.level = 0.9, group = nutrimouse$genotype, ind.names = nutrimouse$genotype)
+# ellipse with respect to genotype in the XY space, 
+# names also indicate genotype
+plotIndiv(nutri.res, rep.space= 'XY-variate', 
+  plot.ellipse = TRUE, ellipse.level = 0.9, 
+  group = nutrimouse$genotype, ind.names = nutrimouse$genotype)
 
 # ellipse with respect to genotype in the XY space, with legend
-plotIndiv(nutri.res, rep.space= 'XY-variate', group = nutrimouse$genotype, add.legend = TRUE)
+plotIndiv(nutri.res, rep.space= 'XY-variate', group = nutrimouse$genotype, 
+  add.legend = TRUE)
 
 
 # lattice style
-plotIndiv(nutri.res, rep.space= 'XY-variate', group = nutrimouse$genotype, add.legend = TRUE, style = 'lattice')
+plotIndiv(nutri.res, rep.space= 'XY-variate', group = nutrimouse$genotype, 
+  add.legend = TRUE, style = 'lattice')
 
 # classic style, in the Y space
-plotIndiv(nutri.res, rep.space= 'Y-variate', group = nutrimouse$genotype, add.legend = TRUE, style = 'graphics')
+plotIndiv(nutri.res, rep.space= 'Y-variate', group = nutrimouse$genotype, 
+  add.legend = TRUE, style = 'graphics')
 
 
 ## plot of individuals for objects of class 'pls' or 'spls'  
@@ -115,7 +121,10 @@ toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50),
 plotIndiv(toxicity.spls)
 
 # in the Y space, colors indicate time of necropsy, text is the dose
-plotIndiv(toxicity.spls, rep.space= 'Y-variate', group = liver.toxicity$treatment[, 'Time.Group'], ind.names = liver.toxicity$treatment[, 'Dose.Group'], add.legend = TRUE)
+plotIndiv(toxicity.spls, rep.space= 'Y-variate', 
+  group = liver.toxicity$treatment[, 'Time.Group'], 
+  ind.names = liver.toxicity$treatment[, 'Dose.Group'], 
+  add.legend = TRUE)
 
 
 ## plot of individuals for objects of class 'plsda' or 'splsda'  
@@ -136,8 +145,10 @@ plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2))
 plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2), add.legend = TRUE)
 
 # trying the different styles
-plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, plot.ellipse = TRUE, style = "ggplot2", cex = c(1, 1))
-plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, plot.ellipse = TRUE, style = "lattice", cex = c(1, 1))
+plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, 
+  plot.ellipse = TRUE, style = "ggplot2", cex = c(1, 1))
+plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), plot.indiv = FALSE, 
+  plot.ellipse = TRUE, style = "lattice", cex = c(1, 1))
 
 
 ## variable representation for objects of class 'sgcca' (or 'rgcca')
@@ -158,9 +169,14 @@ nutrimouse.sgcca <- wrapper.sgcca(blocks = data,
 plotIndiv(nutrimouse.sgcca)
 
 # for the block 'lipid' with ellipse plots and legend, different styles
-plotIndiv(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE, plot.ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", main = 'my plot')
-plotIndiv(nutrimouse.sgcca, style = "lattice", group = nutrimouse$diet, add.legend = TRUE, plot.ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", main = 'my plot')
-plotIndiv(nutrimouse.sgcca, style = "graphics", group = nutrimouse$diet, add.legend = TRUE, plot.ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", main = 'my plot')
+plotIndiv(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE, 
+  plot.ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", main = 'my plot')
+plotIndiv(nutrimouse.sgcca, style = "lattice", group = nutrimouse$diet, 
+  add.legend = TRUE, plot.ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", 
+  main = 'my plot')
+plotIndiv(nutrimouse.sgcca, style = "graphics", group = nutrimouse$diet, 
+  add.legend = TRUE, plot.ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", 
+  main = 'my plot')
 
 
 ## variable representation for objects of class 'sgccda' 
@@ -190,7 +206,8 @@ plotIndiv(nutrimouse.sgccda1)
 plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet)
 
 # with some ellipse, legend and title
-plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE, add.legend = TRUE, main = 'my sample plot')
+plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet, 
+  plot.ellipse = TRUE, add.legend = TRUE, main = 'my sample plot')
 
 }
 

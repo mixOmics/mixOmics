@@ -165,7 +165,6 @@ res.1level <- multilevel(X, ncomp = 3, design = design,
 
 # set up colors for plotIndiv
 col.stim <- c("darkblue", "purple", "green4","red3")
-col.stim <- col.stim[as.numeric(Y)]
 plotIndiv(res.1level, ind.names = Y, col = col.stim)
 
 
@@ -184,15 +183,15 @@ res.2level <- multilevel(X, ncomp = 2, design = design,
                          keepX = c(200, 200), method = 'splsda')
 
 # set up colors and pch for plotIndiv
-col.stimu <- as.numeric(design$stimu)
-pch.time <- c(20, 4)[as.numeric(design$time)]
+col.stimu <- 1:nlevels(design$stimu)
+pch.time <- c(20, 4)
 
 plotIndiv(res.2level, col = col.stimu, ind.names = FALSE,
-          pch = pch.time)
-legend('bottomright', legend = levels(design$stimu),
+          pch = pch.time, add.legend = TRUE)
+#legend('bottomright', legend = levels(design$stimu),
        col = unique(col.stimu), pch = 20, cex = 0.8, 
        title = "Stimulation")
-legend('topright', col = 'black', legend = levels(design$time),  
+#legend('topright', col = 'black', legend = levels(design$time),  
        pch = unique(pch.time), cex = 0.8, title = "Time")
 }       
 
@@ -218,7 +217,7 @@ res.spls.1level <- multilevel(X = liver.toxicity$gene,
                                        method = 'spls', mode = 'canonical')
 
 # set up colors and pch for plotIndiv
-col.stimu <- as.numeric(as.factor(design$stimu))
+col.stimu <- 1:nlevels(design$stimu)
 
 plotIndiv(res.spls.1level, rep.space = 'X-variate', ind.names = FALSE, 
           col = col.stimu, pch = 20)

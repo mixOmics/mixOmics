@@ -71,13 +71,7 @@ X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
 plsda.breast <- plsda(X, Y, ncomp = 2)
-palette(c("red", "blue"))
-col.breast <- as.numeric(as.factor(Y))
-plotIndiv(plsda.breast, ind.names = TRUE, col = col.breast)
-legend('bottomleft', c("After", "Before"), pch = c(16, 16), 
-       col = unique(col.breast), cex = 1, pt.cex = c(1.2, 1.2), 
-       title = "Treatment")
-palette("default")
+plotIndiv(plsda.breast, ind.names = TRUE, plot.ellipse = TRUE, add.legend = TRUE)
 
 \dontrun{
 ## Second example
@@ -86,8 +80,7 @@ X <- liver.toxicity$gene
 Y <- liver.toxicity$treatment[, 4]
 
 plsda.liver <- plsda(X, Y, ncomp = 2)
-col.rat <- as.numeric(as.factor(Y))
-plotIndiv(plsda.liver, ind.names = Y, plot.ellipse = TRUE)
+plotIndiv(plsda.liver, ind.names = Y, plot.ellipse = TRUE, add.legend =TRUE)
 
 }
 }

@@ -9,7 +9,7 @@ This function provides a horizontal bar plot to visualise the highest or lowest 
 }
 
 \usage{
-\method{plotContrib}(object,
+plotContrib(object,
                        contrib=c("max"),
                        method = c("mean", "median"), 
                        comp = 1,
@@ -30,6 +30,7 @@ This function provides a horizontal bar plot to visualise the highest or lowest 
 \arguments{
   \item{object}{object of class inheriting from a \code{plsda} or \code{splsda} class}, 
   \item{contrib}{a character set to 'max' or 'min' indicating if the color of the bar should correspond to the group with the maximal or minimam expression levels / abundance. By default set to 'max'.}
+  \item{method}{a character set to 'mean' or 'median' indicating the criterion to assess the contribution. We recommend using median in the case of count or skewed data.}
   \item{comp}{integer value indicating the component of interest from the object.}
   \item{ties}{boolean. If TRUE then tie groups appear in white color which will appear in the legend. Ties can happen when dealing with count data type. By default set to TRUE.}
   \item{ndisplay}{integer. }
@@ -62,15 +63,21 @@ Y <- as.factor(liver.toxicity$treatment[, 4])
 
 splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
 
-# contribution on comp 1, based on the median. Colors indicate the group in which the median expression is maximal
+# contribution on comp 1, based on the median. 
+# Colors indicate the group in which the median expression is maximal
 plotContrib(splsda.liver, comp = 1, method = 'median')
-# contribution on comp 2, based on median. Colors indicate the group in which the median expression is maximal
+
+# contribution on comp 2, based on median. 
+#Colors indicate the group in which the median expression is maximal
 plotContrib(splsda.liver, comp = 2, method = 'median')
-# contribution on comp 2, based on median. Colors indicate the group in which the median expression is minimal
+
+# contribution on comp 2, based on median. 
+# Colors indicate the group in which the median expression is minimal
 plotContrib(splsda.liver, comp = 2, method = 'median', contrib = 'min')
 
 # changing the name to gene names
-# if the user input a name.var but names(name.var) is NULL, then a warning will be output and assign names of name.var to colnames(X)
+# if the user input a name.var but names(name.var) is NULL, 
+# then a warning will be output and assign names of name.var to colnames(X)
 # this is to make sure we can match the name of the selected variables to the contribution plot.
 name.var = liver.toxicity$gene.ID[, 'geneBank']
 length(name.var)
@@ -79,14 +86,16 @@ plotContrib(splsda.liver, comp = 2, method = 'median', name.var = name.var)
 # if names are provided: ok, even when NAs
 name.var = liver.toxicity$gene.ID[, 'geneBank']
 names(name.var) = rownames(liver.toxicity$gene.ID)
-plotContrib(splsda.liver, comp = 2, method = 'median', name.var = name.var, cex.name = 0.5)
+plotContrib(splsda.liver, comp = 2, method = 'median', 
+name.var = name.var, cex.name = 0.5)
 
 
 # look at the contribution (median) for each variable
 plot.contrib = plotContrib(splsda.liver, comp = 2, method = 'median', plot = FALSE)
 head(plot.contrib$contrib)
 # change the title of the legend and title name
-plotContrib(splsda.liver, comp = 2, method = 'median',legend.title = 'Time', title = 'Contribution plot')
+plotContrib(splsda.liver, comp = 2, method = 'median',legend.title = 'Time', 
+title = 'Contribution plot')
 
 # no legend
 plotContrib(splsda.liver, comp = 2, method = 'median', legend = FALSE)
@@ -113,10 +122,12 @@ res.1level <- multilevel(X, ncomp = 3, design = design,
 name.var = vac18$tab.prob.gene[, 'Gene']
 names(name.var) = colnames(X)
 
-plotContrib(res.1level, comp = 2, method = 'median', legend.title = 'Stimu', name.var = name.var, cex.name = 0.2)
+plotContrib(res.1level, comp = 2, method = 'median', legend.title = 'Stimu', 
+name.var = name.var, cex.name = 0.2)
 
 # too many transcripts? only output the top ones
-plotContrib(res.1level, comp = 2, method = 'median', legend.title = 'Stimu', name.var = name.var, cex.name = 0.5, ndisplay = 60)
+plotContrib(res.1level, comp = 2, method = 'median', legend.title = 'Stimu', 
+name.var = name.var, cex.name = 0.5, ndisplay = 60)
 
 # object 'plsda'
 # ----------------
@@ -132,7 +143,8 @@ name.var = as.character(breast.tumors$genes$name)
 names(name.var) = colnames(X)
 
 # with gene IDs, showing the top 60
-plotContrib(plsda.breast, contrib = 'max', comp = 1, method = 'median', ndisplay = 60, 
+plotContrib(plsda.breast, contrib = 'max', comp = 1, method = 'median', 
+            ndisplay = 60, 
             name.var = name.var, cex.name = 0.6,
             legend.color = color.mixo(1:2))
 

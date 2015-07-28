@@ -1,8 +1,8 @@
-\name{wrapper}
+\name{wrappers}
 \encoding{latin1}
 \alias{wrapper.rgcca}
 \alias{wrapper.sgcca}
-\alias{wrapper.sgccada}
+\alias{wrapper.sgccda}
 
 \title{(Generalised Canonical Correlation Analysis }
 
@@ -43,7 +43,7 @@ wrapper.sgccda(
                blocks, 
                Y, 
                design = NULL, 
-               ncomp = rep(2, length(blocks))                            
+               ncomp = rep(2, length(blocks)),                            
                keep = NULL, 
                scheme = "centroid", 
                scale = TRUE, 
@@ -60,14 +60,15 @@ wrapper.sgccda(
   \item{blocks}{a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets. \code{NA}s are not allowed.}
   \item{Y}{for \code{wrapper.sgccda} only: a factor or a class vector for the discrete outcome}
   \item{design}{numeric matrix of size (number of blocks) x (number of blocks) with only 0 or 1 values. A value of 1 (0) indicates a relationship (no relationship) between the blocks to be modelled. For \code{wrapper.sgccda} the Y outcome should not be added in the design matrix as it will be done internally.}
-    \item{ncomp}{numeric vector of length the number of blocks in \code{blocks}. The number of components to include in the model for each block (does not necessarily need to take the same value for each block).}
+    \item{ncomp}{numeric vector of length the number of blocks in \code{blocks}. The number of components to include in the model for each block (does not necessarily need to take the same value for each block). By default set to 2 per block.}
   \item{tau}{for \code{wrapper.rgcca} only: numeric vector of length the number of blocks in \code{data}. Each regularization parameter will be applied on each block and takes the value between 0 (no regularisation) and 1. If tau = "optimal" the shrinkage paramaters are estimated for each block and each dimension using the Schafer and Strimmer (2005) analytical formula.}
-    \item{penalty}{for \code{wrapper.sgcca and \code{wrapper.sgccda} only: numeric vector of length the number of blocks in \code{data}. Each penalty parameter will be applied on each block and takes the value between 0 (no variable selected) and 1 (all variables included).}
+    \item{penalty}{for \code{wrapper.sgcca} and \code{wrapper.sgccda} only: numeric vector of length the number of blocks in \code{data}. Each penalty parameter will be applied on each block and takes the value between 0 (no variable selected) and 1 (all variables included).}
     \item{keep}{for \code{wrapper.sgcca} \code{wrapper.sgccda} only: a list of integer values for each block specifying the number of variables to select on each specified component. Each element of the list corresponds to a block and is of length the number of components chosen for that particular block. This argument is an alternative to the argument \code{penalty} (similar to our keepX argument in the sPLS(DA) methods). See example.}
   \item{scheme}{Either "horst", "factorial" or "centroid" (Default: "centroid"), see reference paper.}
   \item{scale}{boleean. If scale = TRUE, each block is standardized
   to zero means and unit variances (default: TRUE)}
   \item{bias}{boleean. A logical value for biaised or unbiaised estimator of the var/cov (defaults to FALSE).}
+  \item{max.iter}{integer, the maximum number of iterations.}
    \item{tol}{Convergence stopping value.}
   \item{verbose}{if set to \code{TRUE}, reports progress on computing.}
   \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations. Default value is FALSE}
@@ -75,7 +76,7 @@ wrapper.sgccda(
 
 \details{
 	These wrapper functions are improved versions from the functions of the package \pkg{RGCCA}.  
-  rGCCA is an unsupervised model is run, sGCCA is a sparse model and sGCC-DA is a supervised sparse model .
+  rGCCA is an unsupervised model is run, sGCCA is a sparse model and sGCC-DA is a supervised sparse model.
   In sGCC-DA the arguments \code{design}, \code{penalty}, \code{keep}, are specified for the blocks data in the input data \code{blocks} only.
 }
 
@@ -120,7 +121,7 @@ that contains the following components:
 
 \author{Benoit Gautier, Florian Rohart, Kim-Anh Le Cao and former RGCCA developers Arthur Tenenhaus, Vincent Guillemot.}
 
-\seealso{\code{\link{rgcca}}, \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{wrapper.sgcca}}. \code{\link{wrapper.sgccada}}.}
+\seealso{\code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{wrapper.sgcca}}. \code{\link{wrapper.sgccda}}.}
 
 \examples{
 ## RGCCA 
@@ -140,7 +141,8 @@ nutrimouse.rgcca <- wrapper.rgcca(blocks = data,
                                          scheme = "centroid",
                                          verbose = FALSE)
 
-# blocks should specify the block data set where the sample plot can be performed (ideally when there are >= 2 components!)
+# blocks should specify the block data set where the sample plot can be performed 
+# (ideally when there are >= 2 components!)
 # we indicate the diet variable colors.
 plotIndiv(nutrimouse.rgcca, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE)
 
@@ -164,8 +166,10 @@ nutrimouse.sgcca <- wrapper.sgcca(blocks = data,
                                    verbose = FALSE, 
                                    bias = FALSE)
 
-# In plotIndiv we indicate the diet variable colors and the blocks to be plotted (only blocks with comp  >=2!)
-plotIndiv(nutrimouse.sgcca, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE)
+# In plotIndiv we indicate the diet variable colors and the blocks to be plotted 
+# (only blocks with comp  >=2!)
+plotIndiv(nutrimouse.sgcca, blocks = c(1,2), group = nutrimouse$diet, 
+  plot.ellipse = TRUE)
 
 # which variables are selected on a given component?
 selectVar(nutrimouse.sgcca, comp = 1, block = 1)
@@ -175,7 +179,8 @@ selectVar(nutrimouse.sgcca, comp = 1, block = 2)
 plotVar(nutrimouse.sgcca, col = color.mixo(1:2), cex = c(2,2))
 
 # version 2 using the keep.block penalty criterion (number of variables to keep)
-# it is a list per block and per component, need to specify all variables for the Y 'outcome' here 
+# it is a list per block and per component, need to specify all variables for the 
+# Y 'outcome' here 
 # (see below for sgccda code, which is more appropriate)
 # ----
 nutrimouse.sgcca <- wrapper.sgcca(blocks = data,
@@ -189,8 +194,10 @@ nutrimouse.sgcca <- wrapper.sgcca(blocks = data,
                                   bias = FALSE)
 
 
-# In plotIndiv we indicate the diet variable colors and the blocks to be plotted (only blocks with comp  >=2!)
-plotIndiv(nutrimouse.sgcca, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE)
+# In plotIndiv we indicate the diet variable colors and the blocks to be plotted 
+# (only blocks with comp  >=2!)
+plotIndiv(nutrimouse.sgcca, blocks = c(1,2), group = nutrimouse$diet, 
+  plot.ellipse = TRUE)
 
 # which variables are selected on a given component?
 selectVar(nutrimouse.sgcca, comp = 1, block = 1)
@@ -213,7 +220,8 @@ nutrimouse.sgccda <- wrapper.sgccda(blocks = data,
                                     verbose = FALSE,
                                     bias = FALSE)
 
-plotIndiv(nutrimouse.sgccda, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE)
+plotIndiv(nutrimouse.sgccda, blocks = c(1,2), group = nutrimouse$diet, 
+  plot.ellipse = TRUE)
 
 # which variables are selected on a given component?
 selectVar(nutrimouse.sgccda, comp = 1, block = 1)

@@ -48,17 +48,14 @@
   Clustering, Classification, and Density Estimation. 
   Technical Report No. 597, Department of Statistics, University of Washington.
 }
-\seealso{
-  \code{\link{map}},
-  \code{\link{estep}},
-  \code{\link{me}}
-}
+
 \examples{
 data(nutrimouse)
 Y = unmap(nutrimouse$diet)
 Y
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
-# data could then used as an input in wrapper.rgcca, which is not, technically, a supervised method, see ??wrapper.rgcca
+# data could then used as an input in wrapper.rgcca, which is not, technically, 
+# a supervised method, see ??wrapper.rgcca
 }
 \keyword{cluster}
 % docclass is function

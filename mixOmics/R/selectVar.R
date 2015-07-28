@@ -26,8 +26,8 @@ function(...) UseMethod("selectVar")
 
 
 
-# ------------------ for sPLS object --------------------
-selectVar.pls = function(object, comp =1, ...){
+# ------------------ for (psarse) PLS object --------------------
+selectVar.pls = selectVar.spls =function(object, comp =1, ...){
   
   if(comp > object$ncomp) stop('The comp value you indicated is larger than the fitted model')
   
@@ -50,8 +50,8 @@ selectVar.pls = function(object, comp =1, ...){
 }
 
 
-# ------------------ for sPLS-DA object --------------------
-selectVar.plsda =  function(object, comp=1, ...){
+# ------------------ for (sparse) PLS-DA object --------------------
+selectVar.plsda =  selectVar.splsda =function(object, comp=1, ...){
   
   if(comp > object$ncomp) stop('The comp value you indicated is larger than the fitted model')
   
@@ -67,8 +67,8 @@ selectVar.plsda =  function(object, comp=1, ...){
 
 
 
-# ------------------ for sPCA object --------------------
-selectVar.pca = function(object, comp=1, ...){
+# ------------------ for (sparse) PCA object --------------------
+selectVar.pca = selectVar.spca =function(object, comp=1, ...){
   
   if(comp > object$ncomp) stop('The comp value you indicated is larger than the fitted model')
   

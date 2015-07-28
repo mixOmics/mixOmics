@@ -12,11 +12,15 @@
 \title{Output of selected variables}
 
 \description{
-This function outputs the selected variables on each component for the sparse versions of the approaches. 
-Note the change of name in version >= 5.0-4 to selectVar
+This function outputs the selected variables on each component for the sparse versions of the approaches (can also be generalised to the non sparse versions). 
+Note the change of name in version >= 5.0-4 to selectVar.
+
 }
 
 \usage{
+\method{selectVar}{pls}(object, comp = 1, \ldots)
+\method{selectVar}{plsda}(object, comp = 1, \ldots)
+\method{selectVar}{pca}(object, comp = 1, \ldots)
 \method{selectVar}{spls}(object, comp = 1, \ldots)
 \method{selectVar}{splsda}(object, comp = 1, \ldots)
 \method{selectVar}{spca}(object, comp = 1, \ldots)
@@ -28,8 +32,7 @@ Note the change of name in version >= 5.0-4 to selectVar
  }
 
 \arguments{
-  \item{object}{object of class inheriting from \code{"spls"}, \code{"splsda"}, \code{"spca"}, 
-    \code{"sipca"}.}
+  \item{object}{object of class inheriting from \code{"pls"}, \code{"spls"}, \code{"plsda"},\code{"splsda"}, \code{"pca"}, \code{"spca"}, \code{"sipca"}.}
   \item{comp}{integer value indicating the component of interest.}
   \item{block}{for an object of class \code{"sgcca"}, the block data sets can be specified as an input vector, for example \code{c(1,2)} for the first two blocks. Default to NULL (all block data sets)}
   \item{\ldots}{other arguments.}
