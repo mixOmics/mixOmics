@@ -79,7 +79,7 @@ plotContrib(splsda.liver, comp = 2, method = 'median',legend.title = 'Time')
 
 
 # we can change the title name
-plotContrib(splsda.liver, comp = 2, method = 'median',legend.title = 'Time', title = 'Contribution plot')
+plotContrib(splsda.liver, comp = 2, method = 'median',legend.title = 'Time', main = 'Contribution plot')
 
 # if we dont want to show the legend
 plotContrib(splsda.liver, comp = 2, method = 'median', legend = FALSE)

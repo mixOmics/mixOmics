@@ -192,7 +192,8 @@ plotIndiv <-
       stop("Length of 'col' should be of length = ", nlevels(group), " the number of groups. 
            Alternatively, use the argument 'group' to give one color per sample")
     } else {
-      stop("'col' must be a character vector of length ", nlevels(group) ," or one color")
+      stop("Length of 'col' should be of length = ", nlevels(group), " the number of groups. 
+           Alternatively, use the argument 'group' to give one color per sample")
     }
     
     #-- cex argument

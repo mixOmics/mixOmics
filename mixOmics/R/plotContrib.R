@@ -40,7 +40,7 @@ plotContrib = function(object,
                        name.var = NULL,
                        legend = TRUE,
                        legend.color = NULL, 
-                       title = NULL,
+                       main = NULL,
                        legend.title = 'Outcome',
                        plot = TRUE 
                        ) {
@@ -100,8 +100,8 @@ plotContrib = function(object,
   
   #title
   #-----
-  if(!is.null(title) & !is.character(title)){
-    warning('title needs to be of type character')
+  if(!is.null(main) & !is.character(main)){
+    warning('main needs to be of type character')
   }
   
   #legend.color
@@ -212,10 +212,10 @@ plotContrib = function(object,
   par(mar = c(5, min(9, max(sapply(name.var.output, nchar))), 4, 0))
   mp = barplot(contrib$value.var, horiz = T, las = 1, col = contrib$Contrib, axisnames = TRUE, names.arg = name.var.output, #names.arg = row.names(contrib),
                cex.names = cex.name, cex.axis = 0.7, beside = TRUE,border=NA)
-  if(is.null(title)){
+  if(is.null(main)){
     title(paste('Contribution on comp', comp))
   }else{
-    title(paste(title))
+    title(paste(main))
   }
   
   # legend

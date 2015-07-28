@@ -20,7 +20,7 @@ plotContrib(object,
                        name.var = NULL,
                        legend = TRUE,
                        legend.color = NULL, 
-                       title = NULL,
+                       main = NULL,
                        legend.title = 'Outcome',
                        plot = TRUE
                        )
@@ -39,7 +39,7 @@ plotContrib(object,
   \item{name.var}{A character vector indicating the names of the variables. The names of the vector should match the names of the input data, see example.}
   \item{legend}{boolean indicating if the legend indicating the group outcomes should be added to the plot. Default value is TRUE.}
   \item{legend.color}{A color vector of length the number of group outcomes. See examples.}
-  \item{title}{A set of characters to indicate the title of the plot. Default value is NULL.}
+  \item{main}{A set of characters to indicate the title of the plot. Default value is NULL.}
   \item{legend.title}{A set of characters to indicate the title of the legend. Default value is NULL.}
   \item{plot}{boolean indicating of the plot should be output. If set to FALSE the user can extract the contribution matrix, see example. Default value is TRUE.}
 }
@@ -95,7 +95,7 @@ plot.contrib = plotContrib(splsda.liver, comp = 2, method = 'median', plot = FAL
 head(plot.contrib$contrib)
 # change the title of the legend and title name
 plotContrib(splsda.liver, comp = 2, method = 'median',legend.title = 'Time', 
-title = 'Contribution plot')
+main = 'Contribution plot')
 
 # no legend
 plotContrib(splsda.liver, comp = 2, method = 'median', legend = FALSE)
