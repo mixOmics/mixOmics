@@ -182,7 +182,8 @@ design <- data.frame(sample = vac18.simulated$sample,
 res.2level <- multilevel(X, ncomp = 2, design = design,
                          keepX = c(200, 200), method = 'splsda')
 
-plotIndiv(res.2level, group = design$stimu, ind.names = vac18.simulated$time, add.legend = TRUE, style = 'lattice')
+plotIndiv(res.2level, group = design$stimu, ind.names = vac18.simulated$time,
+    add.legend = TRUE, style = 'lattice')
 }       
 
 ## Third example: one-factor analysis with sPLS, selecting a subset of variables
