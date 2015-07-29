@@ -18,7 +18,7 @@ plotIndiv(object,
            X.label = NULL,
            Y.label = NULL,
            abline.line = FALSE,
-           col,
+           col.per.group,
            cex,
            pch,
            plot.ellipse = FALSE, 
@@ -44,7 +44,7 @@ plotIndiv(object,
   \item{X.label}{x axis titles.}
   \item{Y.label}{y axis titles}
   \item{abline.line}{should the vertical and horizontal line through the center be plotted? Default set to \code{FALSE}}
-  \item{col}{character (or symbol) color to be used, possibly vector.}
+  \item{col.per.group}{character (or symbol) color to be used, possibly vector.}
   \item{cex}{numeric character (or symbol) expansion, possibly vector.}
   \item{pch}{plot character. A character string or a vector of single characters 
   or integers. See \code{\link{points}} for all alternatives.}
@@ -65,7 +65,7 @@ depending on the subspace of projection. Each point corresponds to an individual
 If \code{ind.names=TRUE} and row names is \code{NULL}, then \code{ind.names=1:n}, where
 \code{n} is the number of individuals. 
 
-The arguments \code{col}, \code{cex} and \code{pch} can be atomic vectors or vectors of
+The arguments \code{col.per.group}, \code{cex} and \code{pch} can be atomic vectors or vectors of
 length \code{n}. If atomic, this argument value determines the graphical attribute for all the individuals. 
 In the last case, multiple arguments values can be specified so that each point (individual)
 can be given its own graphic attributes (see \code{\link{par}}). Default values exist for this arguments. 
