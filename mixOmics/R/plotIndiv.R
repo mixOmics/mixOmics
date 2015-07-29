@@ -35,7 +35,7 @@ plotIndiv <-
            X.label = NULL,
            Y.label = NULL,
            abline.line = FALSE,
-           col,
+           col.per.group,
            cex,
            pch,
            plot.ellipse = FALSE, 
@@ -176,7 +176,7 @@ plotIndiv <-
     }
         
     #-- col argument
-    if (missing(col)){
+    if (missing(col.per.group)){
       if (nlevels(group) < 10) {
         #only 10 colors in color.mixo
         levels.color = color.mixo(1:nlevels(group))
@@ -184,15 +184,15 @@ plotIndiv <-
         #use color.jet
         levels.color = color.jet(nlevels(group))
       }
-    } else if (length(col) == 1) {
-      levels.color = rep(col, nlevels(group))
-    } else if (length(col) == nlevels(group)){
-      levels.color = col
-    } else if (length(col) == length(x[[1]])){
-      stop("Length of 'col' should be of length = ", nlevels(group), " the number of groups. 
+    } else if (length(col.per.group) == 1) {
+      levels.color = rep(col.per.group, nlevels(group))
+    } else if (length(col.per.group) == nlevels(group)){
+      levels.color = col.per.group
+    } else if (length(col.per.group) == length(x[[1]])){
+      stop("Length of 'col.per.group' should be of length = ", nlevels(group), " the number of groups. 
            Alternatively, use the argument 'group' to give one color per sample")
     } else {
-      stop("Length of 'col' should be of length = ", nlevels(group), " the number of groups. 
+      stop("Length of 'col.per.group' should be of length = ", nlevels(group), " the number of groups. 
            Alternatively, use the argument 'group' to give one color per sample")
     }
     
@@ -319,7 +319,7 @@ plotIndiv <-
                #-- Legend
                key = if(add.legend == TRUE) {list(space = "right", title = "Legend", cex.title = 1.25, cex = cex,
                                                  text = list(levels(group)),
-                                                 point = list(col = levels.color), 
+                                                 point = list(col = levels.color),
                                                  pch = if (display.names){15} else {pch})}
                      else {NULL},
                  

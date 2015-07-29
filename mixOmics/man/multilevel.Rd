@@ -165,7 +165,7 @@ res.1level <- multilevel(X, ncomp = 3, design = design,
 
 # set up colors for plotIndiv
 col.stim <- c("darkblue", "purple", "green4","red3")
-plotIndiv(res.1level, ind.names = Y, col = col.stim)
+plotIndiv(res.1level, ind.names = Y, col.per.group = col.stim)
 
 
 ## Second example: two-factor analysis with sPLS-DA, selecting a subset of variables
