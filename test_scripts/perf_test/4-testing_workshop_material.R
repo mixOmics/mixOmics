@@ -1,24 +1,41 @@
 # ----------------------------------------
 # testing orkshop material
 # date: 23/03/2015
-# latest update: 
+# latest update: 23/07/2015 for V5.1 update
 # ----------------------------------------
 
-setwd("~/Documents/k.lecao/Packages/mixOmics/GIT/package-mixomics")
+# setwd("~/Documents/k.lecao/Packages/mixOmics/GIT/package-mixomics")
+# 
+# # ------ notes for me to compile the package (if need be) on a terminal
+# R CMD build --resave-data mixOmics
+# R CMD INSTALL -l MyR/ mixOmics_5.0-4.tar.gz
+# R CMD check mixOmics --as-cran --timings
+# # ---------------------------------
+# 
+# 
+# # now in R, load the package
+# detach("package:mixOmics", unload=TRUE)
+# 
+# library(mixOmics, lib.loc = 'MyR/')
+# # check that version 5.0-4 is loaded
+# sessionInfo() # ok mixOmics 5.0-4
 
-# ------ notes for me to compile the package (if need be) on a terminal
-R CMD build --resave-data mixOmics
-R CMD INSTALL -l MyR/ mixOmics_5.0-4.tar.gz
-R CMD check mixOmics --as-cran --timings
-# ---------------------------------
 
+library(mixOmics)
+data(liver.toxicity)
+X <- liver.toxicity$gene
+Y <- liver.toxicity$clinic
 
-# now in R, load the package
-detach("package:mixOmics", unload=TRUE)
+sourceDir <- function(path, trace = TRUE, ...) {
+  for (nm in list.files(path, pattern = "\\.[RrSsQq]$")) {
+    if(trace) cat(nm,":")
+    source(file.path(path, nm), ...)
+    if(trace) cat("\n")
+  }
+}
 
-library(mixOmics, lib.loc = 'MyR/')
-# check that version 5.0-4 is loaded
-sessionInfo() # ok mixOmics 5.0-4
+# KA
+sourceDir("../../mixOmics/R/",trace=FALSE) #load all the functions inside mixOmics/R
 
 
 # ---------------------------------------
@@ -181,7 +198,7 @@ head(perf.spls$R2)
 ###################################################
 ### code chunk number 29: meth_PLSDA.Rnw:99-105
 ###################################################
-library(mixOmics)
+##library(mixOmics)
 data(liver.toxicity)
 X <- as.matrix(liver.toxicity$gene)
 # here, Y is a factor
@@ -262,9 +279,14 @@ perf.pls <- perf(liver.pls, validation = "Mfold", folds = M,
 perf.spls <- perf(liver.spls, validation = "Mfold", folds = M, 
                   progressBar = FALSE)
 
+plot(perf.spls$Q2.total)
+abline(h = 0.0975)
+
+plot(perf.pls$Q2.total)
+abline(h = 0.0975)
+
 perf.pls$Q2.total
 perf.spls$Q2.total
-
 
 ##plot(perf.pls, criterion = 'MSEP', type = 'l')
 
@@ -283,7 +305,8 @@ for(i in 1:9) {
 par(mfrow = c(1, 1))
 
 
-
+## this is to checl V5.1, making sure this output does not output 'others'
+perf.spls$features
 
 
 
