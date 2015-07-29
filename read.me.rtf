@@ -31,16 +31,7 @@ Par exemple\
 \i0\b0 "\
 Ceci copie mixOmics sur votre compte bitbucket personnel.\
 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-
-\b\fs28 \cf0 step2bis: ajouter le repertoire officiel dans votre liste de remote\
-
-\i\fs24 git remote add upstream 
-\i0 https://votre_pseudo_bitbucket@bitbucket.org/klecao/mixomics.git
-\i \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
-
-\i0\b0 \cf0 \
+\
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
@@ -56,6 +47,19 @@ Sur votre machine local, aller dans le repertoire local que vous avez creer (ici
 Ceci va copier le repertoire mixOmics qui est sur votre bitbucket vers votre machine local, avec les memes branches, tout pareil.\
 Donc vous allez avoir une branche "master" et une branche "devel" (pour l'instant)\
 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\b\fs28 \cf0 step3bis: ajouter le repertoire officiel dans votre liste de remote\
+
+\b0 aller dans le dossier mixOmics cree a la step3
+\b \
+
+\i\fs24 git remote add upstream 
+\i0 https://votre_pseudo_bitbucket@bitbucket.org/klecao/mixomics.git
+\i \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\i0\b0 \cf0 \
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
@@ -72,10 +76,10 @@ vous pouvez remarquer que les fichiers visibles sur votre machine changent quand
 
 \b\fs28 step5: comment creer une nouvelle branche?\
 
-\i\fs24 git checkout -b ma_nouvelle_branche la_branche_d_ou_je_veux_partir
+\i\fs24 git checkout -b ma_nouvelle_branche la_branche_d_ou_je_veux_partir ATTENTION, NE PAS OUBLIER LA DERNIERE PARTIE
 \i0\b0 \
 \
-par exemple: git checkout -b develFlo devel. Ceci copie la branche devel dans une nouvelle branche "develFlo" et vous place dans la nouvelle branche\
+par exemple: git checkout -b new_module devel. Ceci copie la branche devel dans une nouvelle branche "new_module" et vous place dans la nouvelle branche\
 \
 
 \b\fs28 step5: je suis perdue, ou suis-je?\
@@ -108,7 +112,7 @@ Vous pouvez modifier les fichiers (code/help files/etc) comme d'habitude avec vo
 
 \i\b git push -u origin le_nom_de_la_branche_sur_laquelle_vous_envoyez_les_modifications
 \i0\b0 \
-par exemple, j'etais sur la branche develFlo, j'ai modifie un fichier et a apres git add, git commit, je fais git push -u origin develFlo\
+par exemple, j'etais sur la branche new_module, j'ai modifie un fichier et a apres git add, git commit, je fais git push -u origin new_module\
 \
 \
 
@@ -122,6 +126,7 @@ Sur le site bitbucket, dans votre repo mixOmics, le menu a gauche "
 Ce sera genre votre_pseudo/mixomics  -> klecao/mixomics \
 La plupart du temps ce sera ma_nouvelle_branche_ou_tout_marche vers devel, ou vers une autre branche (surtout pas master)\
 \
+entre la liste des gens du groupe dans "reviewers"\
 \
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
@@ -139,7 +144,8 @@ il y a eu des modifications pendant mes vacances sur bitbucket, je veux me mettr
 
 \i\b git fetch upstream\
 git checkout master\
-git merge upstream/master
+git merge upstream/master\
+git push
 \i0\b0 \
 
 \i\b \

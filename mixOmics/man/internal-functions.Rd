@@ -19,7 +19,6 @@
 \alias{miscrossprod}
 \alias{defl.select}
 \alias{deflation}
-\alias{tau.estimate}
 
 
 \title{Internal Functions}
