@@ -44,13 +44,13 @@ plotIndiv(object,
   \item{X.label}{x axis titles.}
   \item{Y.label}{y axis titles}
   \item{abline.line}{should the vertical and horizontal line through the center be plotted? Default set to \code{FALSE}}
-  \item{col.per.group}{character (or symbol) color to be used, possibly vector.}
+  \item{col.per.group}{character (or symbol) color to be used. If a supervised method is used, a color vector indicating the color per outcome group. }
   \item{cex}{numeric character (or symbol) expansion, possibly vector.}
   \item{pch}{plot character. A character string or a vector of single characters 
   or integers. See \code{\link{points}} for all alternatives.}
   \item{plot.ellipse}{boolean indicating if ellipse plots should be plotted. In the \code{PCA, sPCA, IPCA, sIPCA, PLS, sPLS, rCC, rGCCA, sGCCA} non supervised objects, by default will include all data points unless the argument \code{group} is set up. In the \code{PLS-DA, SPLS-DA,sGCCDA} supervised object, by default the ellipse will be plotted accoding to the outcome \code{Y}.} 
     \item{ellipse.level}{Numerical value indicating the confidence level of ellipse being plotted when \code{plot.ellipse =TRUE} (i.e. the size of the ellipse). The default is set to 0.95, for a 95\% region.}  
-  \item{group}{factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the supervised methods \code{PLS-DA, SPLS-DA,sGCCDA}, but needs to be input for the unsupervised methods \code{PCA, sPCA, IPCA, sIPCA, PLS, sPLS, rCC, rGCCA, sGCCA}}    
+  \item{group}{factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the supervised methods \code{PLS-DA, SPLS-DA,sGCCDA}, but needs to be input for the unsupervised methods \code{PCA, sPCA, IPCA, sIPCA, PLS, sPLS, rCC, rGCCA, sGCCA}. By default it will assign the \code{color.mixo}.}    
   \item{main}{character indicating the title plot.}
   \item{add.legend}{boolean. Whether the legend should be added. Default is TRUE.}
   \item{style}{argument to be set to either \code{'graphics'}, \code{'lattice'} or \code{'ggplot2'} for a style of plotting.} 

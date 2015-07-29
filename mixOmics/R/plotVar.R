@@ -30,7 +30,7 @@ function(object, ...) UseMethod("plotVar")
 #--------------------- PLS, (plsda, sPLS, sPLSDA below)---------------------#
 plotVar.pls <-  
 function(object, 
-         comp = 1:2, 
+         comp = c(1,2), 
          rad.in = 0.5, 
          X.label = FALSE, 
          Y.label = FALSE, 
@@ -208,7 +208,7 @@ function(object,
 # ----------------------plsda ---------------------------#
 plotVar.plsda <-  
 function(object, 
-         comp = 1:2, 
+         comp = c(1,2), 
          rad.in = 0.5, 
          var.label = FALSE, 
          pch = NULL, 
@@ -363,7 +363,7 @@ function(object,
 #--------------------- sPLS ---------------------#
 plotVar.spls <- 
 function(object, 
-         comp = 1:2, 
+         comp = c(1,2), 
          rad.in = 0.5, 
          X.label = FALSE, 
          Y.label = FALSE, 
@@ -562,7 +562,7 @@ function(object,
 # ---------------------- sPLSDA -------------------------#
 plotVar.splsda <- 
 function(object, 
-         comp = 1:2, 
+         comp = c(1,2), 
          rad.in = 0.5, 
          var.label = FALSE, 
          pch = NULL, 
@@ -731,7 +731,7 @@ function(object,
 #-------------------------- rCC -------------------------#
 plotVar.rcc <-
 function(object, 
-         comp = 1:2, 
+         comp = c(1,2), 
          rad.in = 0.5, 
          cutoff = NULL, 
          X.label = FALSE, 
@@ -954,7 +954,7 @@ function(object,
 # -------------------------------- sPCA ----------------------------------------
 plotVar.spca <- 
 function(object, 
-         comp = 1:2, 
+         comp = c(1,2), 
          rad.in = 0.5, 
          var.label = FALSE, 
          pch = NULL, 
@@ -1123,7 +1123,7 @@ function(object,
 # ------------------------------ PCA object ------------------------------------
 plotVar.pca <-
 function(object, 
-         comp = 1:2,
+         comp = c(1,2),
          rad.in = 0.5, 		 
          var.label = FALSE,		 
          ...) 
@@ -1193,7 +1193,7 @@ function(object,
 # ------------------------------ IPCA object ------------------------------------
 plotVar.ipca <-
 function(object, 
-         comp = 1:2,
+         comp = c(1,2),
          rad.in = 0.5, 		 
          var.label = FALSE,		 
          ...) 
@@ -1268,7 +1268,7 @@ function(object,
 # -------------------------------- sIPCA ----------------------------------------
 plotVar.sipca <- 
 function(object, 
-         comp = 1:2, 
+         comp = c(1,2), 
          rad.in = 0.5, 
          var.label = FALSE, 
          pch = NULL, 

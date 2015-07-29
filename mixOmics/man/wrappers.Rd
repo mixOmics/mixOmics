@@ -158,6 +158,7 @@ head(nutrimouse.rgcca$loadings[[3]])
 
 # version 1 using the penalisation penalty criterion
 # ---
+\dontrun{
 nutrimouse.sgcca <- wrapper.sgcca(blocks = data,
                                    design = design,
                                    penalty = c(0.3, 0.5, 1),
@@ -177,6 +178,7 @@ selectVar(nutrimouse.sgcca, comp = 1, block = 2)
 
 # variable plot on the selected variables
 plotVar(nutrimouse.sgcca, col = color.mixo(1:2), cex = c(2,2))
+}
 
 # version 2 using the keep penalty criterion (number of variables to keep)
 # it is a list per block and per component, need to specify all variables for the 

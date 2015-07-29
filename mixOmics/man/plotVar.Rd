@@ -18,30 +18,30 @@ This function provides variables representation for (regularized) CCA, (sparse) 
 }
 
 \usage{
-\method{plotVar}{rcc}(object, comp = 1:2, rad.in = 0.5, cutoff = NULL,
+\method{plotVar}{rcc}(object, comp = c(1,2), rad.in = 0.5, cutoff = NULL,
         X.label = FALSE, Y.label = FALSE,
         pch = NULL, cex = NULL, col = NULL, font = NULL, \ldots)
 
-\method{plotVar}{pls}(object, comp = 1:2, rad.in = 0.5, 
+\method{plotVar}{pls}(object, comp = c(1,2), rad.in = 0.5, 
         X.label = FALSE, Y.label = FALSE, pch = NULL, cex = NULL, 
         col = NULL, font = NULL, \ldots)
 
-\method{plotVar}{plsda}(object, comp = 1:2, rad.in = 0.5, 
+\method{plotVar}{plsda}(object, comp = c(1,2), rad.in = 0.5, 
         var.label = FALSE, pch = NULL, cex = NULL, col = NULL, 
         font = NULL, \ldots)		
 
-\method{plotVar}{spls}(object, comp = 1:2, rad.in = 0.5, 
+\method{plotVar}{spls}(object, comp = c(1,2), rad.in = 0.5, 
         X.label = FALSE, Y.label = FALSE, pch = NULL, cex = NULL, 
         col = NULL, font = NULL, \ldots)	 
 
-\method{plotVar}{splsda}(object, comp = 1:2, rad.in = 0.5, 
+\method{plotVar}{splsda}(object, comp = c(1,2), rad.in = 0.5, 
         var.label = FALSE, pch = NULL, cex = NULL, col = NULL, 
         font = NULL, \ldots)
 
-\method{plotVar}{pca}(object, comp = 1:2, rad.in = 0.5, 
+\method{plotVar}{pca}(object, comp = c(1,2), rad.in = 0.5, 
         var.label = FALSE, \ldots)
 
-\method{plotVar}{spca}(object, comp = 1:2, rad.in = 0.5, 
+\method{plotVar}{spca}(object, comp = c(1,2), rad.in = 0.5, 
         var.label = FALSE, pch = NULL, cex = NULL, col = NULL, 
         font = NULL, \ldots)	
 
@@ -145,7 +145,7 @@ nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 
 plotVar(nutri.res) #(default)
 
-plotVar(nutri.res, comp = 1:2, cutoff = 0.5, 
+plotVar(nutri.res, comp = c(1,3), cutoff = 0.5, 
         X.label = TRUE, Y.label = TRUE)
 
 ## variable representation for objects of class 'pls' or 'spls'
