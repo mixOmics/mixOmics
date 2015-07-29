@@ -56,4 +56,16 @@ R CMD build --resave-data mixOmics
 R CMD check mixOmics_5.0-4.tar.gz --as-cran --timings
 R CMD INSTALL mixOmics_5.0-4.tar.gz
 
+# ====================update using devtools!!! ============================
 
+Description of devtools and hints
+http://r-pkgs.had.co.nz/release.html
+
+How to launch
+https://www.rstudio.com/products/rpackages/devtools/
+
+In R:
+
+check('mixOmics/')
+# checking reverse dependencies
+revdep_check('mixOmics/')
