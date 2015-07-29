@@ -35,12 +35,12 @@ plotIndiv <-
            X.label = NULL,
            Y.label = NULL,
            abline.line = FALSE,
-           col.per.group,
+           col.per.group=NULL, #of length nlevels (group).factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
            cex,
            pch,
            plot.ellipse = FALSE, 
            ellipse.level = 0.95,
-           group = NULL,  # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
+           col,  # of length n, one color per sample
            main="plotIndiv",
            add.legend=FALSE,
            style="ggplot2", # can choose between graphics, lattice or ggplot2
@@ -158,66 +158,66 @@ plotIndiv <-
       display.names = TRUE
     }
     
-    #-- Define group
-    if (is.null(group) & any(class.object %in% c("plsda","splsda"))){
-      group = factor(map(object$ind.mat), labels = object$names$Y)
+    #-- Define col
+    if (is.null(col) & any(class.object %in% c("plsda","splsda"))){
+      col = factor(map(object$ind.mat), labels = object$names$Y)
     } 
-    if (is.null(group) & any(class.object %in% c("sgccda"))){
-      group = factor(map(object$ind.mat), labels = object$names$colnames$Y)
+    if (is.null(col) & any(class.object %in% c("sgccda"))){
+      col = factor(map(object$ind.mat), labels = object$names$colnames$Y)
     }
-    if (!is.null(group)) {
-      if (!is.factor(group)){
-        group = as.factor(group)
+    if (!is.null(col)) {
+      if (!is.factor(col)){
+        col = as.factor(col)
       }
-      object$ind.mat = unmap(group)
+      object$ind.mat = unmap(col)
     } else {
-      group = factor(rep("No group", length(x[[1]])))
-      object$ind.mat = unmap(group)
+      col = factor(rep("No col", length(x[[1]])))
+      object$ind.mat = unmap(col)
     }
         
-    #-- col argument
+    #-- col.per.group argument
     if (missing(col.per.group)){
-      if (nlevels(group) < 10) {
+      if (nlevels(col) < 10) {
         #only 10 colors in color.mixo
-        levels.color = color.mixo(1:nlevels(group))
+        levels.color = color.mixo(1:nlevels(col))
       } else{
         #use color.jet
-        levels.color = color.jet(nlevels(group))
+        levels.color = color.jet(nlevels(col))
       }
     } else if (length(col.per.group) == 1) {
-      levels.color = rep(col.per.group, nlevels(group))
-    } else if (length(col.per.group) == nlevels(group)){
+      levels.color = rep(col.per.group, nlevels(col))
+    } else if (length(col.per.group) == nlevels(col)){
       levels.color = col.per.group
     } else if (length(col.per.group) == length(x[[1]])){
-      stop("Length of 'col.per.group' should be of length = ", nlevels(group), " the number of groups. 
-           Alternatively, use the argument 'group' to give one color per sample")
+      stop("Length of 'col.per.group' should be of length = ", nlevels(col), " the number of groups. 
+           Alternatively, use the argument 'col' to give one color per sample")
     } else {
-      stop("Length of 'col.per.group' should be of length = ", nlevels(group), " the number of groups. 
-           Alternatively, use the argument 'group' to give one color per sample")
+      stop("Length of 'col.per.group' should be of length = ", nlevels(col), " the number of groups. 
+           Alternatively, use the argument 'col' to give one color per sample")
     }
     
     #-- cex argument
     if (missing(cex)){
       if (style == "ggplot2"){
-        cex = rep(3, nlevels(group))
+        cex = rep(3, nlevels(col))
       } else if(style == "graphics"){
-        cex = rep(1, nlevels(group))
+        cex = rep(1, nlevels(col))
       } else if (style == "lattice") {
-        cex = rep(1, nlevels(group))
+        cex = rep(1, nlevels(col))
       }
     } else if (length(cex) == 1){
-        cex = rep(cex, nlevels(group))
-    } else if (length(cex) != nlevels(group)){
-        stop("'cex' must be a character vector of length ", nlevels(group) ," or one size")
+        cex = rep(cex, nlevels(col))
+    } else if (length(cex) != nlevels(col)){
+        stop("'cex' must be a character vector of length ", nlevels(col) ," or one size")
     }
     
     #-- pch argument
     if (missing(pch)) {
-      pch = 1 : nlevels(group)
+      pch = 1 : nlevels(col)
     } else if (length(pch) == 1) {
-      pch = rep(pch, nlevels(group)) 
-    } else if (length(pch) != nlevels(group)) {
-        stop("'pch' must be a character vector of length ", nlevels(group) ," or one size")
+      pch = rep(pch, nlevels(col)) 
+    } else if (length(pch) != nlevels(col)) {
+        stop("'pch' must be a character vector of length ", nlevels(col) ," or one size")
     }
 
     if (plot.ellipse) {
@@ -245,7 +245,7 @@ plotIndiv <-
     #-- Start: data set
     df = list()
     for (i in 1 : length(x)) {
-      df[[i]] = data.frame(x = x[[i]], y = y[[i]], group = group)
+      df[[i]] = data.frame(x = x[[i]], y = y[[i]], col = col)
     }
     
     df = data.frame(do.call(rbind, df), "Block" = paste0("Block: ", unlist(lapply(1 : length(df), function(z){rep(blocks[z], nrow(df[[z]]))}))))
@@ -256,32 +256,32 @@ plotIndiv <-
     
     if (plot.ellipse == TRUE){
       df.ellipse = data.frame(do.call("rbind", lapply(1 : length(x), function(k){do.call("cbind", coord.ellipse[[k]])})), "Block" = paste0("Block: ", rep(blocks, each = 100)))
-      names(df.ellipse)[1 : (2*nlevels(group))] = gsub(" ", "", paste(c("ellipse.x", "ellipse.y"), rep(levels(group), time = 1, each = 2),  sep = "."))
+      names(df.ellipse)[1 : (2*nlevels(col))] = gsub(" ", "", paste(c("ellipse.x", "ellipse.y"), rep(levels(col), time = 1, each = 2),  sep = "."))
     }
     #-- End: data set
     
     #-- Start: ggplot2
       if (style == "ggplot2"){  
         #-- Initialise ggplot2
-        p = ggplot(df, aes(x = x, y = y, color = group),
+        p = ggplot(df, aes(x = x, y = y, color = col),
                            main = main,
                            xlab = X.label, 
                            ylab = Y.label) + theme_bw()
         
         #-- Display sample or row.names
-        for (i in 1 : nlevels(group)){
+        for (i in 1 : nlevels(col)){
           if (display.names) {
-            p = p + geom_text(data = subset(df, group == levels(group)[i]),
+            p = p + geom_text(data = subset(df, col == levels(col)[i]),
                               aes(label = names), size = cex[i])
           } else {
-            p = p + geom_point(data = subset(df, group == levels(group)[i]),
+            p = p + geom_point(data = subset(df, col == levels(col)[i]),
                                size = cex[i], shape = pch[i])
           }
         }
         
         #-- Modify scale colour - Change X/Ylabel - split plots into Blocks
-        p = p + scale_colour_manual(values = levels.color[match(levels(factor(as.character(group))), levels(group))],
-                                  name = "Legend", breaks = levels(group)) 
+        p = p + scale_colour_manual(values = levels.color[match(levels(factor(as.character(col))), levels(col))],
+                                  name = "Legend", breaks = levels(col)) 
         
         p = p + labs(list(title = main, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = 2, scales = "free")
                   
@@ -298,11 +298,11 @@ plotIndiv <-
         
         #-- ellipse  
         if (plot.ellipse == TRUE) {
-          for (i in 1 : nlevels(group)){
+          for (i in 1 : nlevels(col)){
             p = p + geom_path(data = df.ellipse,
-                              aes_string(x = gsub(" ", "", paste("ellipse.x", levels(group)[i], sep = ".")),
-                                         y = gsub(" ", "", paste("ellipse.y", levels(group)[i], sep = ".")), 
-                                         label = "Block", group = NULL), color = levels.color[i])
+                              aes_string(x = gsub(" ", "", paste("ellipse.x", levels(col)[i], sep = ".")),
+                                         y = gsub(" ", "", paste("ellipse.y", levels(col)[i], sep = ".")), 
+                                         label = "Block", col = NULL), color = levels.color[i])
           }
         }
        return(p)
@@ -312,14 +312,14 @@ plotIndiv <-
     #-- Start: Lattice
     if(style=="lattice") {
         p = xyplot(y ~ x | Block, data = df, xlab = X.label, ylab = Y.label, main = main,
-               group = if (display.names) {names} else {group},
+               group = if (display.names) {names} else {col},
                scales= list(x = list(relation = "free", limits = xlim), 
                             y = list(relation = "free", limits = ylim)),
                
                #-- Legend
                key = if(add.legend == TRUE) {list(space = "right", title = "Legend", cex.title = 1.25, cex = cex,
-                                                 text = list(levels(group)),
-                                                 point = list(col = levels.color),
+                                                 text = list(levels(col)),
+                                                 point = list(col = levels.color), 
                                                  pch = if (display.names){15} else {pch})}
                      else {NULL},
                  
@@ -329,15 +329,15 @@ plotIndiv <-
                                                   panel.abline(h = 0, lty = 2, col = "darkgrey")}
                    
                                #-- Display sample or row.names
-                               for (i in 1 : nlevels(group)){
+                               for (i in 1 : nlevels(col)){
                                  if (display){
-                                   ltext(x = x[group == levels(group)[i]],
-                                         y = y[group == levels(group)[i]],
+                                   ltext(x = x[col == levels(col)[i]],
+                                         y = y[col == levels(col)[i]],
                                          cex = cex[i], col = levels.color[i], 
-                                         labels = groups[subscripts & group == levels(group)[i]])
+                                         labels = groups[subscripts & col == levels(col)[i]])
                                  } else {
-                                   lpoints(x = x[group == levels(group)[i]], 
-                                           y = y[group == levels(group)[i]], 
+                                   lpoints(x = x[col == levels(col)[i]], 
+                                           y = y[col == levels(col)[i]], 
                                            cex = cex[i], col = levels.color[i], pch = pch[i])
                                  }
                                }
@@ -351,9 +351,9 @@ plotIndiv <-
           ind = which(panels == k, arr.ind = TRUE)
           trellis.focus("panel",ind[2], ind[1])
           
-          for (i in 1 : nlevels(group)) {
-            panel.lines(x = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), gsub(" ", "", paste("ellipse.x", levels(group)[i], sep = "."))], 
-                        y = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), gsub(" ", "", paste("ellipse.y", levels(group)[i], sep = "."))],
+          for (i in 1 : nlevels(col)) {
+            panel.lines(x = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), gsub(" ", "", paste("ellipse.x", levels(col)[i], sep = "."))], 
+                        y = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), gsub(" ", "", paste("ellipse.y", levels(col)[i], sep = "."))],
                         col = levels.color[i])
           }
         }
@@ -371,9 +371,9 @@ plotIndiv <-
                if (ceiling(length(x)/2) == 1) {widths=c(0.6, 0.4)} else {widths=c(0.35, 0.35, 0.3)})
         plot(1,1, type = "n", axes = FALSE, ann = FALSE)
         if (length(ind.names) == length(x[[1]])){
-          legend(0.6, 1, col = levels.color, legend = levels(group), pch = 15, title = 'Legend', cex = 1)
+          legend(0.6, 1, col = levels.color, legend = levels(col), pch = 15, title = 'Legend', cex = 1)
         } else {
-          legend(0.6, 1, col = levels.color, legend = levels(group), pch = pch, title = 'Legend', cex = 1)
+          legend(0.6, 1, col = levels.color, legend = levels(col), pch = pch, title = 'Legend', cex = 1)
         }
       } else {
         layout(matrix(1 : (ceiling(length(x)/2) * 2), ceiling(length(x)/2), min(length(x), 2), byrow = TRUE))
@@ -387,15 +387,15 @@ plotIndiv <-
              xlim = c(xlim[[k]][1], xlim[[k]][2]), ylim = c(ylim[[k]][1], ylim[[k]][2]))
           
         #-- Display sample or row.names
-        for (i in 1 : nlevels(group)){
+        for (i in 1 : nlevels(col)){
           if (length(ind.names) == length(x[[1]])) {           
-            text(x = df[group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), "x"],
-                 y = df[group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), "y"],
-                 labels = df[group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), "names"],
+            text(x = df[col == levels(col)[i] & df$Block %in% paste0("Block: ", blocks[k]), "x"],
+                 y = df[col == levels(col)[i] & df$Block %in% paste0("Block: ", blocks[k]), "y"],
+                 labels = df[col == levels(col)[i] & df$Block %in% paste0("Block: ", blocks[k]), "names"],
                  cex = cex[i], col = levels.color[i])
           } else {
-            points(x = df[group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), "x"],
-                   y = df[group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), "y"],
+            points(x = df[col == levels(col)[i] & df$Block %in% paste0("Block: ", blocks[k]), "x"],
+                   y = df[col == levels(col)[i] & df$Block %in% paste0("Block: ", blocks[k]), "y"],
                    cex = cex[i], col = levels.color[i], pch = pch[i])
           }
         }
@@ -406,9 +406,9 @@ plotIndiv <-
         
         #-- Ellipse
         if (plot.ellipse == TRUE) {
-          for (i in 1 : nlevels(group)){
-            lines(x = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), gsub(" ", "", paste("ellipse.x", levels(group)[i], sep = "."))],
-                  y = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), gsub(" ", "", paste("ellipse.y", levels(group)[i], sep = "."))],
+          for (i in 1 : nlevels(col)){
+            lines(x = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), gsub(" ", "", paste("ellipse.x", levels(col)[i], sep = "."))],
+                  y = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), gsub(" ", "", paste("ellipse.y", levels(col)[i], sep = "."))],
                   col = levels.color[i])
           }
         } 

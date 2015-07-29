@@ -35,6 +35,7 @@ nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 
 # default, only in the X space
 plotIndiv(nutri.res) 
+plotIndiv(nutri.res,col.per.group=1)
 
 # ellipse with respect to genotype in the XY space, names also indicate genotype
 plotIndiv(nutri.res, rep.space= 'XY-variate', plot.ellipse = TRUE, ellipse.level = 0.9, group = nutrimouse$genotype, ind.names = nutrimouse$genotype)
@@ -60,6 +61,7 @@ toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50),
 
 #default
 plotIndiv(toxicity.spls)
+plotIndiv_init(toxicity.spls)
 
 # in the Y space, colors indicate time of necropsy, text is the dose
 plotIndiv(toxicity.spls, rep.space= 'Y-variate', group = liver.toxicity$treatment[, 'Time.Group'], ind.names = liver.toxicity$treatment[, 'Dose.Group'], add.legend = TRUE)
@@ -75,6 +77,8 @@ splsda.breast <- splsda(X, Y,keepX=c(10,10),ncomp=2)
 
 # default option: note the outcome color is included by default!
 plotIndiv(splsda.breast)
+plotIndiv(splsda.breast,col.per.group=1:2)
+plotIndiv(splsda.breast,group=as.numeric(factor(Y)))
 
 # default option with no ind name: pch and color are set automatically
 plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2))
@@ -122,7 +126,7 @@ nutrimouse.sgccda1 <- wrapper.sgccda(blocks = data,
                                      Y = Y,
                                      design = design1,
                                      ncomp = c(2, 2),
-                                     keep.blocks = list(c(10,10), c(15,15)),
+                                     keep = list(c(10,10), c(15,15)),
                                      scheme = "centroid",
                                      verbose = FALSE,
                                      bias = FALSE)
