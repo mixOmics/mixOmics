@@ -70,7 +70,6 @@ length \code{n}. If atomic, this argument value determines the graphical attribu
 In the last case, multiple arguments values can be specified so that each point (individual)
 can be given its own graphic attributes (see \code{\link{par}}). Default values exist for this arguments. 
 
-Note: the ellipse options were borrowed from the \pkg{ellipse}.
 }
 
 \author{Ignacio Gonzalez, Benoit Gautier, Francois Bartolo, Florian Rohart}

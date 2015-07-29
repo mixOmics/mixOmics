@@ -65,7 +65,7 @@ How to launch
 https://www.rstudio.com/products/rpackages/devtools/
 
 In R:
-
+library(devtools)
 check('mixOmics/')
 # checking reverse dependencies
 revdep_check('mixOmics/')
