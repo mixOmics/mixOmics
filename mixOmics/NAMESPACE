@@ -1,6 +1,25 @@
 
 import(MASS, lattice, igraph, rgl, pheatmap, ggplot2, ellipse)
 
+importFrom("grDevices", "as.graphicsAnnot", "chull", "col2rgb",
+             "colorRamp", "colorRampPalette", "colors", "dev.cur",
+             "dev.new", "dev.off", "dev.prev", "dev.set",
+             "devAskNewPage", "graphics.off", "gray", "gray.colors",
+             "heat.colors", "rgb")
+
+importFrom("graphics", "abline", "arrows", "axis", "barplot", "box",
+             "image", "layout", "legend", "lines", "locator", "mtext",
+             "par", "plot", "plot.default", "points", "polygon", "rect",
+             "segments", "strheight", "strwidth", "symbols", "text",
+             "title")
+
+importFrom("stats", "as.dendrogram", "as.dist", "coefficients", "cor",
+             "cov", "dist", "hclust", "lm", "lsfit", "median", "na.omit",
+             "order.dendrogram", "predict", "quantile", "reorder", "var")
+
+importFrom("utils", "setTxtProgressBar", "txtProgressBar")
+
+
 export(
 bin.color, 
 color.jet,
