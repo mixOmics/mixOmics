@@ -172,6 +172,7 @@ function(object, newdata,
     
     for (i in 1:q) {
         if(ncomp > 1) {
+
             G[i, ] = apply(object$variates$X[Yprim[, i] == 1, , drop = FALSE], 2, mean)
         }
         else {

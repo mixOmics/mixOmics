@@ -57,6 +57,13 @@ function(X,
             
             if(ncol(X)==0) {stop("No more predictors")}
             
+            #reset keepX to ncol(X) if too many variables are deleted
+            if(any(keepX>ncol(X)))
+            {
+                ind=which(keepX>ncol(X))
+                keepX[ind]=ncol(X)
+            }
+        
         }
     }
     
