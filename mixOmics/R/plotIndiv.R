@@ -108,7 +108,7 @@ style="ggplot2", # can choose between graphics, lattice or ggplot2
     }
     
     if (class.object[1] %in% object.pca)
-    blocks = "X"
+      blocks = "X"
     
     #-- rep.space
     rep.space = match.arg(rep.space, c("XY-variate", "X-variate", "Y-variate"))
@@ -122,7 +122,7 @@ style="ggplot2", # can choose between graphics, lattice or ggplot2
         }
         if (length(ind.names) > 1) {
             if (length(ind.names) != length(object$names$indiv))
-            stop("'ind.names' must be a character vector of length ", nrow(object$X), " or a boolean atomic vector.")
+              stop("'ind.names' must be a character vector of length ", nrow(object$X), " or a boolean atomic vector.")
         }
         
         x = lapply(object$variates, function(x){x[, comp1, drop = FALSE]})
@@ -255,7 +255,7 @@ style="ggplot2", # can choose between graphics, lattice or ggplot2
     
     if (plot.ellipse == TRUE){
         df.ellipse = data.frame(do.call("rbind", lapply(1 : length(x), function(k){do.call("cbind", coord.ellipse[[k]])})), "Block" = paste0("Block: ", rep(blocks, each = 100)))
-        names(df.ellipse)[1 : (2*nlevels(group))] = gsub(" ", "", paste(c("ellipse.x", "ellipse.y"), rep(levels(group), time = 1, each = 2),  sep = "."))
+        names(df.ellipse)[1 : (2*nlevels(group))] = paste0("Col", 1 : (2*nlevels(group)))
     }
     #-- End: data set
     
@@ -293,15 +293,14 @@ style="ggplot2", # can choose between graphics, lattice or ggplot2
         
         #-- abline
         if (abline.line)
-        p = p + geom_vline(aes(xintercept = 0), linetype = 2, colour = "darkgrey") + geom_hline(aes(yintercept = 0),linetype = 2,colour = "darkgrey")
+          p = p + geom_vline(aes(xintercept = 0), linetype = 2, colour = "darkgrey") + geom_hline(aes(yintercept = 0),linetype = 2,colour = "darkgrey")
         
         #-- ellipse
         if (plot.ellipse == TRUE) {
             for (i in 1 : nlevels(group)){
                 p = p + geom_path(data = df.ellipse,
-                aes_string(x = gsub(" ", "", paste("ellipse.x", levels(group)[i], sep = ".")),
-                y = gsub(" ", "", paste("ellipse.y", levels(group)[i], sep = ".")),
-                label = "Block", group = NULL), color = levels.color[i])
+                aes_string(x = paste0("Col", 2*(i - 1) + 1), y = paste0("Col", 2 * i),
+                           label = "Block", group = NULL), color = levels.color[i])
             }
         }
         return(p)
@@ -351,8 +350,8 @@ style="ggplot2", # can choose between graphics, lattice or ggplot2
                 trellis.focus("panel",ind[2], ind[1])
                 
                 for (i in 1 : nlevels(group)) {
-                    panel.lines(x = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), gsub(" ", "", paste("ellipse.x", levels(group)[i], sep = "."))],
-                    y = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), gsub(" ", "", paste("ellipse.y", levels(group)[i], sep = "."))],
+                    panel.lines(x = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), paste0("Col", 2*(i - 1) + 1)],
+                    y = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), paste0("Col", 2 * i)],
                     col = levels.color[i])
                 }
             }
@@ -406,8 +405,8 @@ style="ggplot2", # can choose between graphics, lattice or ggplot2
             #-- Ellipse
             if (plot.ellipse == TRUE) {
                 for (i in 1 : nlevels(group)){
-                    lines(x = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), gsub(" ", "", paste("ellipse.x", levels(group)[i], sep = "."))],
-                    y = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), gsub(" ", "", paste("ellipse.y", levels(group)[i], sep = "."))],
+                    lines(x = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), paste0("Col", 2*(i - 1) + 1)],
+                    y = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), paste0("Col", 2 * i)],
                     col = levels.color[i])
                 }
             }
