@@ -363,6 +363,7 @@ style="ggplot2", # can choose between graphics, lattice or ggplot2
     #-- Start: graphics
     if(style=="graphics") {
         
+        opar <- par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din", "page")]
         #-- Define layout
         if (add.legend) {
             layout(cbind(matrix(1 : (ceiling(length(x)/2) * 2), ceiling(length(x)/2), min(length(x), 2), byrow = TRUE) + 1, 1),
@@ -415,6 +416,7 @@ style="ggplot2", # can choose between graphics, lattice or ggplot2
         title(main, outer = TRUE, line = -1)
         if (length(x) != (round(length(x)/2) * 2) & length(x) != 1)
         plot(1,1, type = "n", axes = FALSE, ann = FALSE)
+        par(opar)
     }
     #-- End: graphics
 }
