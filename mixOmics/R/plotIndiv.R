@@ -127,8 +127,16 @@ style="ggplot2", # can choose between graphics, lattice or ggplot2
         
         x = lapply(object$variates, function(x){x[, comp1, drop = FALSE]})
         y = lapply(object$variates, function(x){x[, comp2, drop = FALSE]})
-        if (is.null(X.label)) X.label = paste("X-variate", comp1)
-        if (is.null(Y.label)) Y.label = paste("X-variate", comp2)
+        if (is.null(X.label)) {
+          if (rep.space == "X-variate") {X.label = paste("X-variate", comp1)}
+          if (rep.space == "Y-variate") {X.label = paste("Y-variate", comp1)}
+          if (rep.space == "XY-variate") {X.label = paste("XY-variate", comp1)}
+        }
+        if (is.null(Y.label)) {
+          if (rep.space == "X-variate") {Y.label = paste("X-variate", comp2)}
+          if (rep.space == "Y-variate") {Y.label = paste("Y-variate", comp2)}
+          if (rep.space == "XY-variate") {Y.label = paste("XY-variate", comp2)}
+        }
         
     } else if (class.object[1] %in%  object.pca) {
         
