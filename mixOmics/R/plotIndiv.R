@@ -35,11 +35,12 @@ X.label = NULL,
 Y.label = NULL,
 abline.line = FALSE,
 col.per.group,
+col,
 cex,
 pch,
 plot.ellipse = FALSE,
 ellipse.level = 0.95,
-group = NULL,  # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
+group,  # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
 main="plotIndiv",
 add.legend=FALSE,
 style="ggplot2", # can choose between graphics, lattice or ggplot2
@@ -166,137 +167,186 @@ style="ggplot2", # can choose between graphics, lattice or ggplot2
     }
     
     #-- Define group
-    if (is.null(group) & any(class.object %in% c("plsda","splsda"))){
-        group = factor(map(object$ind.mat), labels = object$names$Y)
-    }
-    if (is.null(group) & any(class.object %in% c("sgccda"))){
-        group = factor(map(object$ind.mat), labels = object$names$colnames$Y)
-    }
-    if (!is.null(group)) {
-        if (!is.factor(group)){
-            group = as.factor(group)
-        }
-        object$ind.mat = unmap(group)
+    missing.group = FALSE
+    if (missing(group) & any(class.object %in% c("plsda","splsda"))){
+      group = factor(map(object$ind.mat), labels = object$names$Y)
+    } else if (missing(group) & any(class.object %in% c("sgccda"))){
+      group = factor(map(object$ind.mat), labels = object$names$colnames$Y)
+    } else if (!missing(group)) {
+      missing.group = TRUE
+      if (!is.factor(group)){
+        group = as.factor(group)
+      }
+      object$ind.mat = unmap(group)
+      
+      if (length(group) != length(x[[1]]))
+        stop("Length of 'group' should be of length ", length(x[[1]]), ", the sample size of your data")
     } else {
-        group = factor(rep("No group", length(x[[1]])))
-        object$ind.mat = unmap(group)
+      group = factor(rep("No group", length(x[[1]])))
+      object$ind.mat = unmap(group)
     }
     
-    #-- col argument
+    #-- col.per.group argument
     if (missing(col.per.group)){
-        if (nlevels(group) < 10) {
-            #only 10 colors in color.mixo
-            levels.color = color.mixo(1:nlevels(group))
-        } else{
-            #use color.jet
-            levels.color = color.jet(nlevels(group))
-        }
-    } else if (length(col.per.group) == 1) {
-        levels.color = rep(col.per.group, nlevels(group))
-    } else if (length(col.per.group) == nlevels(group)){
-        levels.color = col.per.group
-    } else if (length(col.per.group) == length(x[[1]])){
-        stop("Length of 'col.per.group' should be of length = ", nlevels(group), " the number of groups.
-        Alternatively, use the argument 'group' to give one color per sample")
+      if (nlevels(group) < 10) {
+        #only 10 colors in color.mixo
+        col.per.group = color.mixo(1:nlevels(group))
+      } else {
+        #use color.jet
+        col.per.group = color.jet(nlevels(group))
+      }
     } else {
-        stop("Length of 'col.per.group' should be of length = ", nlevels(group), " the number of groups.
-        Alternatively, use the argument 'group' to give one color per sample")
+      if (length(col.per.group) == 1) {
+        col.per.group = rep(col.per.group, nlevels(group))
+      } else if (length(col.per.group) != length(x[[1]]) & length(col.per.group) != nlevels(group)) {
+        stop("Length of 'col.per.group' should be either of length 1 or of length ", nlevels(group), " (the number of groups) or of length ", length(x[[1]]), " (the sample size or your data).
+          Alternatively, use the argument 'col' to give one color per sample")
+      }
+      missing.group = TRUE
     }
     
+    levels.color = vector(, length(x[[1]]))
+    if (length(col.per.group) != length(x[[1]])) {
+      for (i in 1 : nlevels(group)){
+        levels.color[group == levels(group)[i]] = col.per.group[i]
+      }
+    } else {
+      levels.color = col.per.group
+    }
+    
+    #-- col argument   
+    missing.col = FALSE
+    if (!missing(col)){
+      if (length(col) > length(x[[1]]))
+        stop("Length of 'col' should be of length inferior or equal to ", length(x[[1]]),".")
+      
+      col = factor(rep(col, ceiling(length(x[[1]])/length(col)))[1 : length(x[[1]])])
+      if (!missing.group) {
+        group = col
+        levels.color = col
+        col.per.group = levels(col)
+        object$ind.mat = unmap(group)
+      }
+      missing.col = TRUE
+    } else {
+      col = levels.color
+    }
+      
     #-- cex argument
     if (missing(cex)){
-        if (style == "ggplot2"){
-            cex = rep(3, nlevels(group))
-        } else if(style == "graphics"){
-            cex = rep(1, nlevels(group))
-        } else if (style == "lattice") {
-            cex = rep(1, nlevels(group))
-        }
-    } else if (length(cex) == 1){
-        cex = rep(cex, nlevels(group))
-    } else if (length(cex) != nlevels(group)){
-        stop("'cex' must be a character vector of length ", nlevels(group) ," or one size")
-    }
-    
-    #-- pch argument
-    if (missing(pch)) {
-        pch = 1 : nlevels(group)
-    } else if (length(pch) == 1) {
-        pch = rep(pch, nlevels(group))
-    } else if (length(pch) != nlevels(group)) {
-        stop("'pch' must be a character vector of length ", nlevels(group) ," or one size")
-    }
-    
-    if (plot.ellipse) {
-        #-- Start: Computation ellipse
-        min.ellipse = max.ellipse = xlim.min = xlim.max = ylim.min = ylim.max = list()
-        ind.gp = matrice = cdg = variance = list()
-        ind.gp = lapply(1 : ncol(object$ind.mat), function(x){which(object$ind.mat[, x]==1)})
-        matrice = lapply(1 : length(x), function(z1) {lapply(ind.gp, function(z2){matrix(c(x[[z1]][z2], y[[z1]][z2]), ncol = 2)})})
-        cdg = lapply(1 : length(x), function(z){ lapply(matrice[[z]], colMeans)})
-        variance = lapply(1 : length(x), function(z){lapply(matrice[[z]], var)})
-        coord.ellipse = lapply(1 : length(x), function(z1){ lapply(1 : ncol(object$ind.mat), function(z2){ellipse(variance[[z1]][[z2]],
-            centre = cdg[[z1]][[z2]],
-            level = ellipse.level)})})
-        max.ellipse = lapply(1 : length(x), function(z1) {sapply(coord.ellipse[[z1]], function(z2){apply(z2, 2, max)})})
-        min.ellipse = lapply(1 : length(x), function(z1) {sapply(coord.ellipse[[z1]], function(z2){apply(z2, 2, min)})})
-        #-- End: Computation ellipse
-        
-        xlim = lapply(1 : length(x), function(z) {c(min(x[[z]], min.ellipse[[z]][1, ]), max(x[[z]], max.ellipse[[z]][1, ]))})
-        ylim = lapply(1 : length(x), function(z) {c(min(y[[z]], min.ellipse[[z]][2, ]), max(y[[z]], max.ellipse[[z]][2, ]))})
+      if (style == "ggplot2"){
+        cex = rep(5, length(x[[1]]))
+      } else {
+        cex = rep(1, length(x[[1]]))
+      }
     } else {
-        xlim = lapply(1 : length(x), function(z) {c(min(x[[z]]), max(x[[z]]))})
-        ylim = lapply(1 : length(x), function(z) {c(min(y[[z]]), max(y[[z]]))})
+      if (length(cex) == 1){
+        cex = rep(cex, length(x[[1]]))
+      } else if (length(cex) > length(x[[1]])) {
+        stop("Length of 'cex' should be of length inferior or equal to ", length(x[[1]]),".")
+      } else {
+        cex = rep(cex, ceiling(length(x[[1]])/length(cex)))[1 : length(x[[1]])]
+      }
+    }
+      
+    #-- pch argument
+    if (missing(pch)){
+      if (missing.col){
+        pch = as.numeric(col)
+      } else {
+        pch = as.numeric(group)
+      }
+    } else {
+      if (length(pch) == 1){
+        pch = rep(pch, length(x[[1]]))
+      } else if (length(pch) > length(x[[1]])){
+        stop("Length of 'pch' should be of length inferior or equal to ", length(group),".")
+      } else {
+        pch = rep(pch, ceiling(length(x[[1]])/length(pch)))[1 : length(x[[1]])]
+      }
+    }
+        
+    if (plot.ellipse) {
+      #-- Start: Computation ellipse
+      min.ellipse = max.ellipse = xlim.min = xlim.max = ylim.min = ylim.max = list()
+      ind.gp = matrice = cdg = variance = list()
+      ind.gp = lapply(1 : ncol(object$ind.mat), function(x){which(object$ind.mat[, x]==1)})
+      matrice = lapply(1 : length(x), function(z1) {lapply(ind.gp, function(z2){matrix(c(x[[z1]][z2], y[[z1]][z2]), ncol = 2)})})
+      cdg = lapply(1 : length(x), function(z){ lapply(matrice[[z]], colMeans)})
+      variance = lapply(1 : length(x), function(z){lapply(matrice[[z]], var)})
+      coord.ellipse = lapply(1 : length(x), function(z1){ lapply(1 : ncol(object$ind.mat), function(z2){ellipse(variance[[z1]][[z2]],
+          centre = cdg[[z1]][[z2]],
+          level = ellipse.level)})})
+      max.ellipse = lapply(1 : length(x), function(z1) {sapply(coord.ellipse[[z1]], function(z2){apply(z2, 2, max)})})
+      min.ellipse = lapply(1 : length(x), function(z1) {sapply(coord.ellipse[[z1]], function(z2){apply(z2, 2, min)})})
+      #-- End: Computation ellipse
+        
+      xlim = lapply(1 : length(x), function(z) {c(min(x[[z]], min.ellipse[[z]][1, ]), max(x[[z]], max.ellipse[[z]][1, ]))})
+      ylim = lapply(1 : length(x), function(z) {c(min(y[[z]], min.ellipse[[z]][2, ]), max(y[[z]], max.ellipse[[z]][2, ]))})
+    } else {
+      xlim = lapply(1 : length(x), function(z) {c(min(x[[z]]), max(x[[z]]))})
+      ylim = lapply(1 : length(x), function(z) {c(min(y[[z]]), max(y[[z]]))})
     }
     
     #-- Start: data set
     df = list()
     for (i in 1 : length(x)) {
-        df[[i]] = data.frame(x = x[[i]], y = y[[i]], group = group)
+      df[[i]] = data.frame(x = x[[i]], y = y[[i]], group = group)
     }
     
     df = data.frame(do.call(rbind, df), "Block" = paste0("Block: ", unlist(lapply(1 : length(df), function(z){rep(blocks[z], nrow(df[[z]]))}))))
     names(df)[1:2] = c("x", "y")
     
     if (display.names)
-    df$names = rep(ind.names, length(x))
+      df$names = rep(ind.names, length(x))
     
     if (plot.ellipse == TRUE){
-        df.ellipse = data.frame(do.call("rbind", lapply(1 : length(x), function(k){do.call("cbind", coord.ellipse[[k]])})), "Block" = paste0("Block: ", rep(blocks, each = 100)))
-        names(df.ellipse)[1 : (2*nlevels(group))] = paste0("Col", 1 : (2*nlevels(group)))
+      df.ellipse = data.frame(do.call("rbind", lapply(1 : length(x), function(k){do.call("cbind", coord.ellipse[[k]])})), "Block" = paste0("Block: ", rep(blocks, each = 100)))
+      names(df.ellipse)[1 : (2*nlevels(group))] = paste0("Col", 1 : (2*nlevels(group)))
     }
+    
+    df$pch = pch; df$cex = cex; df$col.per.group = levels.color; df$col = as.character(col)
     #-- End: data set
     
     #-- Start: ggplot2
     if (style == "ggplot2"){
         #-- Initialise ggplot2
         p = ggplot(df, aes(x = x, y = y, color = group),
-        main = main,
-        xlab = X.label,
-        ylab = Y.label) + theme_bw()
+                  main = main, xlab = X.label, ylab = Y.label) + theme_bw()
         
         #-- Display sample or row.names
-        for (i in 1 : nlevels(group)){
-            if (display.names) {
-                p = p + geom_text(data = subset(df, group == levels(group)[i]),
-                aes(label = names), size = cex[i])
-            } else {
-                p = p + geom_point(data = subset(df, group == levels(group)[i]),
-                size = cex[i], shape = pch[i])
-            }
+        for (i in levels(group)){
+          if (display.names) {
+            p = p + geom_text(data = subset(df, group == i), aes(label = names), size = 0)
+          } else {
+            p = p + geom_point(data = subset(df, group == i), size = 0, shape = 0)
+          }
         }
         
-        #-- Modify scale colour - Change X/Ylabel - split plots into Blocks
-        p = p + scale_colour_manual(values = levels.color[match(levels(factor(as.character(group))), levels(group))],
-        name = "Legend", breaks = levels(group))
+        #-- Modify scale colour - Change X/Ylabel - split plots into Blocks  
+        p = p + scale_colour_manual(values = col.per.group[match(levels(factor(as.character(group))), levels(group))], name = "Legend", breaks = levels(group))
+        p = p + labs(list(title = main, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = 2, scales = "free", as.table = FALSE)
         
-        p = p + labs(list(title = main, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = 2, scales = "free")
+        #-- color samples according to col
+        for (i in unique(col)){
+          if (display.names) {
+            p = p + geom_text(data = subset(df, col == i), 
+                              aes(label = names), 
+                              color = df[df$col == i & df$Block == paste0("Block: ", blocks[1]), ]$col,
+                              size = df[df$col == i & df$Block == paste0("Block: ", blocks[1]), ]$cex)
+          } else {
+            p = p + geom_point(data = subset(df, col == i), 
+                               color = df[df$col == i & df$Block == paste0("Block: ", blocks[1]), ]$col,
+                               size = df[df$col == i & df$Block == paste0("Block: ", blocks[1]), ]$cex, 
+                               shape = df[df$col == i & df$Block == paste0("Block: ", blocks[1]), ]$pch)
+          }
+        }      
         
         #-- Legend
         if (!add.legend) {
-            p = p + theme(legend.position="none")
-        } else if (!(display.names)) {
-            p = p + guides(colour = guide_legend(override.aes = list(shape = pch, size = cex)))
+          p = p + theme(legend.position="none")
+        } else {
+          p = p + guides(colour = guide_legend(override.aes = list(shape = "-", size = 10)))
         }
         
         #-- abline
@@ -308,7 +358,7 @@ style="ggplot2", # can choose between graphics, lattice or ggplot2
             for (i in 1 : nlevels(group)){
                 p = p + geom_path(data = df.ellipse,
                 aes_string(x = paste0("Col", 2*(i - 1) + 1), y = paste0("Col", 2 * i),
-                           label = "Block", group = NULL), color = levels.color[i])
+                           label = "Block", group = NULL), color = col.per.group[i])
             }
         }
         return(p)
@@ -323,13 +373,11 @@ style="ggplot2", # can choose between graphics, lattice or ggplot2
         y = list(relation = "free", limits = ylim)),
         
         #-- Legend
-        key = if(add.legend == TRUE) {list(space = "right", title = "Legend", cex.title = 1.25, cex = cex,
-            text = list(levels(group)),
-            point = list(col = levels.color),
-            pch = if (display.names){15} else {pch})}
+        key = if(add.legend == TRUE) {list(space = "right", title = "Legend", cex.title = 1.5,
+            text = list(levels(group)), point = list(col = col.per.group), cex = 2, pch = "-")}
         else {NULL},
         
-        panel = function(x, y, subscripts, groups, display = display.names, ...) {
+        panel = function(x, y, subscripts, groups, display = display.names,...) {
             #-- Abline
             if (abline.line) { panel.abline(v = 0, lty = 2, col = "darkgrey")
                 panel.abline(h = 0, lty = 2, col = "darkgrey")}
@@ -337,15 +385,22 @@ style="ggplot2", # can choose between graphics, lattice or ggplot2
             #-- Display sample or row.names
             for (i in 1 : nlevels(group)){
                 if (display){
-                    ltext(x = x[group == levels(group)[i]],
-                    y = y[group == levels(group)[i]],
-                    cex = cex[i], col = levels.color[i],
-                    labels = groups[subscripts & group == levels(group)[i]])
+                    ltext(x = x[group == levels(group)[i]], y = y[group == levels(group)[i]],
+                          labels = groups[subscripts & group == levels(group)[i]], col = "white", cex = 0) 
                 } else {
-                    lpoints(x = x[group == levels(group)[i]],
-                    y = y[group == levels(group)[i]],
-                    cex = cex[i], col = levels.color[i], pch = pch[i])
+                    lpoints(x = x[group == levels(group)[i]], y = y[group == levels(group)[i]], col = "white", cex = 0, pch = 0)
                 }
+            }
+            
+            #-- color samples according to col
+            for (i in unique(col)){
+              if (display) {
+                ltext(x = x[col == i], y = y[col == i], labels =  groups[subscripts & col == i],
+                      col = df[df$col == i, ]$col, cex = df[df$col == i, ]$cex)
+              } else {
+                lpoints(x = x[col == i],  y = y[col == i],
+                        col = df[df$col == i, ]$col, cex = df[df$col == i, ]$cex, pch = df[df$col == i, ]$pch)
+              }
             }
         })
         print(p) #-- the lattice plot needs to be printed in order to display the ellipse(s)
@@ -360,7 +415,7 @@ style="ggplot2", # can choose between graphics, lattice or ggplot2
                 for (i in 1 : nlevels(group)) {
                     panel.lines(x = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), paste0("Col", 2*(i - 1) + 1)],
                     y = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), paste0("Col", 2 * i)],
-                    col = levels.color[i])
+                    col = col.per.group[i])
                 }
             }
             trellis.unfocus()
@@ -375,13 +430,9 @@ style="ggplot2", # can choose between graphics, lattice or ggplot2
         #-- Define layout
         if (add.legend) {
             layout(cbind(matrix(1 : (ceiling(length(x)/2) * 2), ceiling(length(x)/2), min(length(x), 2), byrow = TRUE) + 1, 1),
-            if (ceiling(length(x)/2) == 1) {widths=c(0.6, 0.4)} else {widths=c(0.35, 0.35, 0.3)})
+                  if (ceiling(length(x)/2) == 1) {widths=c(0.6, 0.4)} else {widths=c(0.35, 0.35, 0.3)})
             plot(1,1, type = "n", axes = FALSE, ann = FALSE)
-            if (length(ind.names) == length(x[[1]])){
-                legend(0.6, 1, col = levels.color, legend = levels(group), pch = 15, title = 'Legend', cex = 1)
-            } else {
-                legend(0.6, 1, col = levels.color, legend = levels(group), pch = pch, title = 'Legend', cex = 1)
-            }
+            legend(0.6, 1, col = col.per.group, legend = levels(group), pch = "-", title = 'Legend', cex = 1.5)
         } else {
             layout(matrix(1 : (ceiling(length(x)/2) * 2), ceiling(length(x)/2), min(length(x), 2), byrow = TRUE))
         }
@@ -389,34 +440,48 @@ style="ggplot2", # can choose between graphics, lattice or ggplot2
         for (k in 1 : length(x)){
             #-- initialise plot
             plot(df[df$Block %in% paste0("Block: ", blocks[k]), "x" ],
-            df[df$Block %in% paste0("Block: ", blocks[k]), "y" ],
-            type = "n", xlab = X.label, ylab = Y.label, main = paste0("Block: ", blocks[k]),
-            xlim = c(xlim[[k]][1], xlim[[k]][2]), ylim = c(ylim[[k]][1], ylim[[k]][2]))
+                 df[df$Block %in% paste0("Block: ", blocks[k]), "y" ],
+                 type = "n", xlab = X.label, ylab = Y.label, main = paste0("Block: ", blocks[k]),
+                 xlim = c(xlim[[k]][1], xlim[[k]][2]), ylim = c(ylim[[k]][1], ylim[[k]][2]))
             
             #-- Display sample or row.names
             for (i in 1 : nlevels(group)){
-                if (length(ind.names) == length(x[[1]])) {
-                    text(x = df[group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), "x"],
-                    y = df[group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), "y"],
-                    labels = df[group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), "names"],
-                    cex = cex[i], col = levels.color[i])
-                } else {
-                    points(x = df[group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), "x"],
-                    y = df[group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), "y"],
-                    cex = cex[i], col = levels.color[i], pch = pch[i])
-                }
+              if (display.names) {
+                text(x = df[group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), "x"],
+                       y = df[group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), "y"],
+                       labels = df[group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), "names"],
+                       col = "white", cex = 0)
+              } else {
+                points(x = df[group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), "x"],
+                       y = df[group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), "y"],
+                       col = "white", cex = 0, pch = 0)
+              }
+            }  
+            
+            #-- color samples according to col
+            for (i in unique(col)){
+              if (display.names) {
+                text(x = df[df$col == i & df$Block %in% paste0("Block: ", blocks[k]), "x"],
+                     y = df[df$col == i & df$Block %in% paste0("Block: ", blocks[k]), "y"],
+                     labels = df[df$col == i & df$Block %in% paste0("Block: ", blocks[k]), "names"],
+                     col = df[df$col == i, ]$col, cex = df[df$col == i, ]$cex)
+              } else {
+                points(x = df[df$col == i & df$Block %in% paste0("Block: ", blocks[k]), "x"],
+                       y = df[df$col == i & df$Block %in% paste0("Block: ", blocks[k]), "y"],
+                       col = df[df$col == i, ]$col, cex = df[df$col == i, ]$cex, pch = df[df$col == i, ]$pch)
+              }
             }
             
             #-- Abline
             if (abline.line)
             abline(v = 0, h = 0, lty = 2)
-            
+              
             #-- Ellipse
             if (plot.ellipse == TRUE) {
                 for (i in 1 : nlevels(group)){
-                    lines(x = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), paste0("Col", 2*(i - 1) + 1)],
-                    y = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), paste0("Col", 2 * i)],
-                    col = levels.color[i])
+                  lines(x = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), paste0("Col", 2*(i - 1) + 1)],
+                        y = df.ellipse[df.ellipse$Block %in% paste0("Block: ", blocks[k]), paste0("Col", 2 * i)],
+                        col = col.per.group[i])
                 }
             }
         }
