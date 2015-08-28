@@ -1,9 +1,9 @@
 # Copyright (C) 2015
-# Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 # Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+# Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 # Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-# Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 # Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
+# Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 
 
 # This program is free software; you can redistribute it and/or
@@ -26,25 +26,25 @@
 #----------------------------------------------------------------------------------------------------------#
 
 plotIndiv <-
-function(object,
-comp = c(1, 2),
-ind.names = TRUE,
-rep.space = "X-variate",
-blocks = NULL, # to choose which block data to plot, when using GCCA module
-X.label = NULL,
-Y.label = NULL,
-abline.line = FALSE,
-col.per.group,
-col,
-cex,
-pch,
-plot.ellipse = FALSE,
-ellipse.level = 0.95,
-group,  # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
-main="plotIndiv",
-add.legend=FALSE,
-style="ggplot2", # can choose between graphics, lattice or ggplot2
-...)
+  function(object,
+           comp = c(1, 2),
+           ind.names = TRUE,
+           rep.space = "X-variate",
+           blocks = NULL, # to choose which block data to plot, when using GCCA module
+           X.label = NULL,
+           Y.label = NULL,
+           abline.line = FALSE,
+           col.per.group,
+           col,
+           cex,
+           pch,
+           plot.ellipse = FALSE,
+           ellipse.level = 0.95,
+           group,  # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
+           main="plotIndiv",
+           add.legend=FALSE,
+           style="ggplot2", # can choose between graphics, lattice or ggplot2
+           ...)
 {
     
     class.object = class(object)
