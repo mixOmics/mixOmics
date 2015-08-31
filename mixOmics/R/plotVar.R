@@ -166,7 +166,7 @@ plotVar <-
         if (!is.null(comp.select)) {
           cord.X[[1]] = cord.X[[1]][row.names(cord.X[[1]]) %in% unique(unlist(lapply(comp.select, function(x) {selectVar(object, comp = x)$name}))), ,drop = FALSE]
         }
-        ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[i]]))
+        ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[1]]))
       } else {
         cord.X[[1]] = cor(object$X, object$x[, c(comp1, comp2)], use = "pairwise")
         ind.var.sel[[1]] = sample.X[[1]] = 1 : length(colnames(object$X))
