@@ -1,8 +1,7 @@
-# Copyright (C) 2009 
-# Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-# Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-# Kim-Anh Le Cao, French National Institute for Agricultural Research and 
-# ARC Centre of Excellence ins Bioinformatics, Institute for Molecular Bioscience, University of Queensland, Australia
+# Copyright (C) 2014
+# This function was borrowed from the package caret nzv.R with some enhancements made by
+# Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
+# Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -19,29 +18,35 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
-nearZeroVar <- 
-function (x, freqCut = 95/5, uniqueCut = 10) 
+nearZeroVar <-
+function (x, freqCut = 95/5, uniqueCut = 10)
 {
-    if (is.vector(x)) 
-        x = matrix(x, ncol = 1)
+    if (is.vector(x))
+    x = matrix(x, ncol = 1)
+    
+    #speed enhancements by BG:
     freqRatio = apply(x, 2, function(data) {
-        t = table(data[!is.na(data)])
-        if (length(t) <= 1) {
+        data = na.omit(data)
+        if (length(unique(data)) == length(data)){ # No duplicate
+            return(1)
+        } else if (length(unique(data)) == 1) { # Same value
             return(0)
+        } else {
+            t = table(data)
+            return(max(t, na.rm = TRUE)/max(t[-which.max(t)], na.rm = TRUE))
         }
-        w = which.max(t)
-        return(max(t, na.rm = TRUE)/max(t[-w], na.rm = TRUE))
     })
+    
     lunique = apply(x, 2, function(data) length(unique(data[!is.na(data)])))
     ## changed in mixOmics, here we are dealing with matrices only
     # (FR: it might speed up computation if we have a LOT of columns
     #percentUnique = 100 * lunique/apply(x, 2, length)
-     percentUnique = 100 * lunique/rep(nrow(x))
+    percentUnique = 100 * lunique/rep(nrow(x))
     zeroVar = (lunique == 1) | apply(x, 2, function(data) all(is.na(data)))
-	
+    
     out = list()
-	out$Position = which((freqRatio > freqCut & percentUnique <= uniqueCut) | zeroVar)
-	names(out$Position) = NULL
+    out$Position = which((freqRatio > freqCut & percentUnique <= uniqueCut) | zeroVar)
+    names(out$Position) = NULL
     out$Metrics = data.frame(freqRatio = freqRatio, percentUnique = percentUnique)
     out$Metrics = out$Metrics[out$Position, ]
     out
