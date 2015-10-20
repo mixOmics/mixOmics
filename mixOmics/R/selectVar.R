@@ -117,35 +117,24 @@ selectVar.sgcca = function(object, block = NULL, comp = 1, ...){
     
   }
   
+  if(is.null(block)) block=1:length(object$blocks)
+  
   
   # extract selected variables
   # --------------------------
   keep = list()
   name.var = value.var = list()
-  if(is.null(block)){
-    # identify the selected variables selected on a given component comp
-    for(k in 1:length(object$data)){
-      keep[[k]] = abs(object$loadings[[k]][,comp])> 0      
-    }   
+  j=1
     #store name and value of the selected variables
-    for(k in 1:length(object$data)){
-      name.var[[k]] = names(which(keep[[k]] == TRUE))   #object$names$var[keep[[k]]]
-      value.var[[k]] = object$loadings[[k]][keep[[k]], comp]
+    for(k in block)
+    {
+       name.var [[j]] = names(sort(abs(object$loadings[[k]][,comp]), decreasing = T)[1:sum(object$loadings[[k]][,comp]!=0)])
+       #name.var[[k]] = names(which(keep[[k]] == TRUE))   #object$names$var[keep[[k]]]
+      value.var [[j]] = object$loadings[[k]][name.var[[j]],comp]
+      #value.var[[k]] = object$loadings[[k]][keep[[k]], comp]
+    j=j+1
     }
-  }else{ #end is.null(block)
-    j=1
-    # identify the selected variables selected on a given component ncomp.select
-    for(k in block){
-      keep[[j]] = abs(object$loadings[[k]][,comp])> 0
-      j=j+1        
-    }   
-    l=1
-    for(k in block){
-      name.var[[l]] = names(which(keep[[l]] == TRUE))  
-      value.var[[l]] = object$loadings[[k]][keep[[l]], comp]
-      l = l+1
-    }
-  } # end is.null (block)
+    names(name.var)=names(value.var)=names(object$blocks)[block]
   
   return(
     list(name.var = name.var, value.var = value.var, comp = comp)
