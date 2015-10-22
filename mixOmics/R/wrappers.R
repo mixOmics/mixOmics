@@ -135,17 +135,16 @@ wrapper.sgccda <- function(
   }
   
   # merge blocks and Y only to run srgcca, the output "blocks" will not contain Y
-  blocks.temp=blocks
-  blocks[[length(blocks.temp) + 1]] = ind.mat
-  names(blocks.temp)[length(blocks.temp)] = "Y"
+  blocks[[length(blocks) + 1]] = ind.mat
+  names(blocks)[length(blocks)] = "Y"
     
   # note here: mode is hard coded as regression as we are performing a supervised analysis w.r.t Y
-  result.sgccada = srgcca(blocks = blocks.temp, indY = length(blocks.temp), design = design, tau = rep(1, length(blocks.temp)),
+  result.sgccada = srgcca(blocks = blocks, indY = length(blocks), design = design, tau = rep(1, length(blocks)),
                         ncomp = ncomp, scheme = scheme, scale = scale, bias = bias, init = "svd.da", 
                         tol = tol, verbose = verbose, mode = "regression", max.iter = max.iter,
                         keep = keep, near.zero.var = near.zero.var, penalty = NULL)
   
-  result.sgccada$blocks=blocks
+  result.sgccada$blocks=result.sgccada$blocks[-length(blocks)]
   result.sgccada$Y = Y
   result.sgccada$ind.mat = ind.mat;
   result.sgccada$class = c("sgccda","sgcca")
