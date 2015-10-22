@@ -101,44 +101,44 @@ selectVar.sipca = function(object, comp=1, ...){
 
 # ------------------ for sgcca object --------------------
 
-selectVar.sgcca = function(object, block = NULL, comp = 1, ...){ 
-  
-  # check arguments
-  # -----------------
-  if(length(comp) > 1)
-    stop("Expecting one single value for 'comp'")
-  if(is.null(block)){
-    if(any(comp > object$ncomp))
-      stop("'comp' is greater than the number of components in the fitted model,
-         you need to specify the variable 'block' ")
-  }else{
-    if(any(comp > object$ncomp[block]))
-      stop("'comp' is greater than the number of components in the fitted model for the block you specified")
+selectVar.sgcca = function(object, block = NULL, comp = 1, ...){
     
-  }
-  
-  if(is.null(block)) block=1:length(object$blocks)
-  
-  
-  # extract selected variables
-  # --------------------------
-  keep = list()
-  name.var = value.var = list()
-  j=1
+    # check arguments
+    # -----------------
+    if(length(comp) > 1)
+    stop("Expecting one single value for 'comp'")
+    if(is.null(block)){
+        if(any(comp > object$ncomp))
+        stop("'comp' is greater than the number of components in the fitted model,
+        you need to specify the variable 'block' ")
+    }else{
+        if(any(comp > object$ncomp[block]))
+        stop("'comp' is greater than the number of components in the fitted model for the block you specified")
+        
+    }
+    
+    if(is.null(block)) block=1:length(object$blocks)
+    
+    
+    # extract selected variables
+    # --------------------------
+    keep = list()
+    name.var = value.var = list()
+    j=1
     #store name and value of the selected variables
     for(k in block)
     {
-       name.var [[j]] = names(sort(abs(object$loadings[[k]][,comp]), decreasing = T)[1:sum(object$loadings[[k]][,comp]!=0)])
-       #name.var[[k]] = names(which(keep[[k]] == TRUE))   #object$names$var[keep[[k]]]
-      value.var [[j]] = object$loadings[[k]][name.var[[j]],comp]
-      #value.var[[k]] = object$loadings[[k]][keep[[k]], comp]
-    j=j+1
+        name.var [[j]] = names(sort(abs(object$loadings[[k]][,comp]), decreasing = T)[1:sum(object$loadings[[k]][,comp]!=0)])
+        #name.var[[k]] = names(which(keep[[k]] == TRUE))   #object$names$var[keep[[k]]]
+        value.var [[j]] = object$loadings[[k]][name.var[[j]],comp]
+        #value.var[[k]] = object$loadings[[k]][keep[[k]], comp]
+        j=j+1
     }
     names(name.var)=names(value.var)=names(object$blocks)[block]
-  
-  return(
+    
+    return(
     list(name.var = name.var, value.var = value.var, comp = comp)
-  )
-  
+    )
+    
 }
 
