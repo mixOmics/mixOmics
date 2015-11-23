@@ -1,0 +1,96 @@
+---
+title: "mixOmics 5.1.2"
+author: "F.Rohart"
+date: "29 October 2015"
+output: pdf_document
+---
+```{r global_options, include=FALSE}
+rm(list=ls())
+#setwd("~/Work/git/package-mixomics")
+
+# knitr::opts_chunk$set(#fig.width=4, fig.height=4, 
+#                       dpi=300,
+#                       echo=FALSE, warning=FALSE, message=FALSE, fig.align='center')
+
+# if you want to change the size of figures
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE, fig.path= 'Figures/', fig.width=9, fig.height=6)
+
+library(mixOmics)
+sourceDir <- function(path, trace = TRUE, ...) {
+  for (nm in list.files(path, pattern = "\\.[RrSsQq]$")) {
+    if(trace) cat(nm,":")
+    source(file.path(path, nm), ...)
+    if(trace) cat("\n")
+  }
+}
+
+library(knitr)
+#sourceDir("/Users/florian/Work/git/package-mixOmics/mixOmics/R/",trace=FALSE)
+```
+
+This go through all the scripts in "running_scripts/" and outputs graphics and errors, if any. 
+
+```{r,echo=TRUE,fig.width=8, fig.height=6,include=FALSE,eval=FALSE}
+library(mixOmics)
+
+source("mixOmics/R/plotContrib.R")
+scripts.files=list.files("running_scripts/")
+scripts.files=scripts.files[grep(".R",scripts.files)]
+
+source("running_scripts//test_plotContrib.R")
+library(knitr)
+```
+
+
+```{r,fig.width=8.5, fig.height=7}
+library(mixOmics)
+#library(ellipse)
+#library(rgl)
+#source("mixOmics/R/selectVar.R")
+#source("mixOmics/R/ipca.R")
+
+additional.test=TRUE
+
+#source("running_scripts//test_plotContrib.R")
+
+scripts.files=list.files("running_scripts/")
+scripts.files=scripts.files[grep(".R",scripts.files)]
+scripts.files
+
+out=lapply(1:length(scripts.files),function(x){print(scripts.files[x]);try(suppressMessages(source(paste0("running_scripts/",scripts.files[x]))),silent=TRUE)})
+a=lapply(out,class)
+ind.error=grep("try-error",a)
+
+
+for(i in 1:length(scripts.files))
+{
+    cat("====================\n")
+    print(scripts.files[i])
+    if(i%in%ind.error)
+    {
+        cat(out[[i]],"\n")
+    }else{
+        cat("all good\n\n")
+    }
+    cat("====================\n")
+    
+}
+
+if(length(ind.error)>0)
+{
+  cat("\n\nerror found in the following test files:\n\n")
+  for(i in ind.error)
+  {
+      cat(scripts.files[i],"\n")
+    
+  }
+  cat("\n\n the best way forward is to source a script and traceback() to get the line that broke the code\n")
+}else{
+  
+  cat("\n\n NO ERROR found! Good luck on CRAN \n\n")
+  
+}
+
+```
+
+Note: this pdf is a light version of all the tests. If you want more, you need to change additional.test=TRUE

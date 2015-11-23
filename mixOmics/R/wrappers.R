@@ -23,7 +23,7 @@
 # rgcca for multiple integration  and a regularisation parameter tau
 #--------------------------------------
 wrapper.rgcca <- function (blocks, 
-                           design = NULL, 
+                           design =  1 - diag(length(blocks)), 
                            ncomp = rep(2, length(blocks)), 
                            tau = "optimal",
                            scheme = "centroid", 
@@ -52,7 +52,7 @@ wrapper.rgcca <- function (blocks,
 # sgcca for multiple integration with variable selection in each block (lasso penalisation)
 #--------------------------------------
 wrapper.sgcca <- function (blocks, 
-                           design = NULL, 
+                           design =  1 - diag(length(blocks)),
                            penalty = NULL, 
                            ncomp = rep(2, length(blocks)),
                            keep = NULL, 
@@ -64,6 +64,7 @@ wrapper.sgcca <- function (blocks,
                            verbose = FALSE, 
                            near.zero.var = FALSE
                            ) {
+  
   
     # note here: mode is hard coded as canonical
   result.sgcca = srgcca(blocks = blocks, indY = NULL, design = design, tau = rep(1, length(blocks)), 
@@ -144,9 +145,8 @@ wrapper.sgccda <- function(
                         tol = tol, verbose = verbose, mode = "regression", max.iter = max.iter,
                         keep = keep, near.zero.var = near.zero.var, penalty = NULL)
   
-  result.sgccada$blocks=result.sgccada$blocks[-length(blocks)]
   result.sgccada$Y = Y
-  result.sgccada$ind.mat = ind.mat;
+  result.sgccada$ind.mat = ind.mat
   result.sgccada$class = c("sgccda","sgcca")
   class(result.sgccada) = c("sgccda","sgcca")
   return(invisible(result.sgccada))
