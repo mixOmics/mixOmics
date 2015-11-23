@@ -100,7 +100,9 @@ the \eqn{Y} attributs. Default values exist for this arguments.
 }
 
 \value{
-You can store the function in an object which will return a matrix containing the \eqn{x}- and \eqn{y}- coordinates of the plotted variables, along with the various grpahical parameters used to generate the plot.
+A list containing the following components:
+  \item{coord.X}{matrix of \eqn{X}-variables coordinates.}
+  \item{coord.Y}{matrix of \eqn{Y}-variables coordinates.}
 }
 
 \author{Ignacio Gonzalez, Kim-Anh Le Cao, Benoit Gautier, Florian Rohart, Francois Bartolo.}
@@ -129,22 +131,15 @@ X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
 toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50), 
                       keepY = c(10, 10, 10))
-
+	
 plotVar(toxicity.spls, cex = c(1,0.8))
 
 ## variable representation for objects of class 'splsda'
 # ----------------------------------------------------
 \dontrun{
-  data(liver.toxicity)
-  X <- liver.toxicity$gene
-  Y <- as.factor(liver.toxicity$treatment[, 4])
-  
-  ncomp <- 2
-  keepX <- rep(20, ncomp)
-  
-  splsda.liver <- splsda(X, Y, ncomp = ncomp, keepX = keepX)
-  # use of pch symbols
-  plotVar(splsda.liver, pch = 16, col = 3)
+data(liver.toxicity)
+X <- liver.toxicity$gene
+Y <- as.factor(liver.toxicity$treatment[, 4])
 
 ncomp <- 2
 keepX <- rep(20, ncomp)
@@ -153,9 +148,8 @@ splsda.liver <- splsda(X, Y, ncomp = ncomp, keepX = keepX)
 plotVar(splsda.liver)
 }
 
-## variable representation for objects of class 'sgcca' 
+## variable representation for objects of class 'sgcca' (or 'rgcca')
 # ----------------------------------------------------
-
 ## see example in ??wrapper.sgcca
 data(nutrimouse)
 # need to unmap the Y factor diet
@@ -180,14 +174,13 @@ design = matrix(c(0,1,1,
 wrap.result.sgcca = wrapper.sgcca(blocks = data, design = design, penalty = c(.3,.3, 1),
                                   ncomp = c(2, 2, 1),
                                   scheme = "centroid", verbose = FALSE)
-#wrap.result.sgcca
+wrap.result.sgcca
 
+#variables selected on component 1 for the two blocks:
+selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$name.var
 
-# showing 2 blocks, with variables selected on comp 1 for block 1 and comp 1 for block 2
-plotVar(wrap.result.sgcca, comp = c(1,2), 
-        blocks = c(1,2), comp.select = c(1,1), 
-        overlap = FALSE,
-        main = 'Variables selected on component 1 only')
+#variables selected on component 2 for each block: 
+selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$name.var
 
 
 plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), comp.select = c(1,1),
@@ -213,12 +206,11 @@ design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3,
                 byrow = TRUE, dimnames = list(names(data), names(data)))
 
 nutrimouse.rgcca <- wrapper.rgcca(blocks = data,
-                                  design = design,
-                                  tau = "optimal",
-                                  ncomp = c(2, 2, 1),
-                                  scheme = "centroid",
-                                  verbose = FALSE)
-
+                                         design = design,
+                                         tau = "optimal",
+                                         ncomp = c(2, 2, 1),
+                                         scheme = "centroid",
+                                         verbose = FALSE)
 
 plotVar(nutrimouse.rgcca, comp = c(1,2), block = c(1,2), cex = c(1.5, 1.5))
 

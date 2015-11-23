@@ -287,6 +287,7 @@ plotVar <-
       }
     } else if (class.object[1] %in%  object.pca) {
       if (class.object[1] %in%  c("sipca", "spca")){
+        
           cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(c(comp1, comp2), function(x){selectVar(object, comp = x)$name})))],
                           object$x[, c(comp1, comp2)], use = "pairwise")
         ind.var.sel[[1]] = sample.X[[1]] = 1 : length(colnames(object$X))
@@ -323,7 +324,7 @@ plotVar <-
       } else {
         count.data = paste(paste(sapply(data[-length(data)], length), collapse =  ", "), length(data[[length(data)]]), sep = " and ")
       }
-      stop(argument, " must be either a vector of length ", length(data),
+      stop(argument, " must be either a vector of length ", length(data), 
            " or a list of ", length(data), " vector components of length ", count.data, " respectively.",call.= FALSE)
     }
 
@@ -356,7 +357,9 @@ plotVar <-
       stop.message('pch', sample.X)     
     }
     
-    #-- col argument
+
+    
+    #-- col argument 
     if (missing(col)) {
       if (length(cord.X) < 10) {
         col = unlist(lapply(1 : length(cord.X), function(x){rep(color.mixo(x), sum(sapply(cord.X[x], nrow)))}))

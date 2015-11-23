@@ -5,7 +5,6 @@
 # Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
 # Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 
-
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -358,24 +357,6 @@ plotIndiv <-
       col = levels.color
     }
     
-    #-- col argument   
-    missing.col = FALSE
-    if (!missing(col)){
-      if (length(col) > length(x[[1]]))
-        stop("Length of 'col' should be of length inferior or equal to ", length(x[[1]]),".")
-      
-      col = factor(rep(col, ceiling(length(x[[1]])/length(col)))[1 : length(x[[1]])])
-      if (!missing.group) {
-        group = col
-        levels.color = col
-        col.per.group = levels(col)
-        object$ind.mat = unmap(group)
-      }
-      missing.col = TRUE
-    } else {
-      col = levels.color
-    }
-      
     #-- cex argument
     if (missing(cex)){
       if (style == "ggplot2"){
@@ -397,7 +378,7 @@ plotIndiv <-
         cex = rep(cex, ceiling(length(x[[1]])/length(cex)))[1 : length(x[[1]])]
       }
     }
-      
+    
     #-- pch argument
     if (missing(pch)){
       if (missing.col){
@@ -439,8 +420,9 @@ plotIndiv <-
       matrice = lapply(1 : length(x), function(z1) {lapply(ind.gp, function(z2){matrix(c(x[[z1]][z2], y[[z1]][z2]), ncol = 2)})})
       cdg = lapply(1 : length(x), function(z){ lapply(matrice[[z]], colMeans)})
       variance = lapply(1 : length(x), function(z){lapply(matrice[[z]], var)})
-      coord.ellipse = lapply(1 : length(x), function(z1){ lapply(1 : ncol(object$ind.mat),
-          function(z2){ellipse(variance[[z1]][[z2]],centre = cdg[[z1]][[z2]],level = ellipse.level)})})
+      coord.ellipse = lapply(1 : length(x), function(z1){ lapply(1 : ncol(object$ind.mat), function(z2){ellipse(variance[[z1]][[z2]],
+                                                                                                                centre = cdg[[z1]][[z2]],
+                                                                                                                level = ellipse.level)})})
       max.ellipse = lapply(1 : length(x), function(z1) {sapply(coord.ellipse[[z1]], function(z2){apply(z2, 2, max)})})
       min.ellipse = lapply(1 : length(x), function(z1) {sapply(coord.ellipse[[z1]], function(z2){apply(z2, 2, min)})})
       #-- End: Computation ellipse
@@ -491,6 +473,7 @@ plotIndiv <-
     
     if (display.names)
       df$names = rep(ind.names, length(x))
+    
     df$pch = pch; df$cex = cex; df$col.per.group = levels.color[group]; df$col = as.character(col)
     
     if (plot.centroid == TRUE || plot.star==TRUE){
@@ -549,6 +532,7 @@ plotIndiv <-
     
     #-- Start: ggplot2
     if (style == "ggplot2"){
+      
       #-- Initialise ggplot2
       p = ggplot(df, aes(x = x, y = y, color = group),
                  main = main, xlab = X.label, ylab = Y.label) + theme_bw()
@@ -1035,6 +1019,7 @@ plotIndiv <-
             }
           }
         }
+        
         
         #-- draws axes/box --#
         if (axes.box == "box") {

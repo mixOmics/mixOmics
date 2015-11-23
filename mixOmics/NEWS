@@ -27,6 +27,7 @@ Bug fixes:
 3 - blank page in network when saving as a pdf solved
 
 
+
 Changes in 5.1.2 (patches)
 ================
 
@@ -42,6 +43,7 @@ Bug fixes:
 - plotIndiv: X and Y.label fixed, par() bug fixed
 
 -rgcca tau parameter output enhanced.
+
 
 
 

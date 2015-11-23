@@ -78,7 +78,6 @@ plotIndiv(sipca.res, ind.names = liver.toxicity$treatment[, 4],
 plotIndiv(sipca.res, cex = 0.01,
             col = as.numeric(as.factor(liver.toxicity$treatment[, 4])),style="3d")
 }
-
 # variables representation
 plotVar(sipca.res, cex = 2.5)
 \dontrun{

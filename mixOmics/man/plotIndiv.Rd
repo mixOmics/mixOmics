@@ -138,6 +138,7 @@ keepY = c(10, 10, 10))
 #default
 plotIndiv(toxicity.spls)
 
+
 # indicating the centroid
 plotIndiv(toxicity.spls, rep.space= 'X-variate', ind.names = FALSE,
           group = liver.toxicity$treatment[, 'Time.Group'], plot.centroid = TRUE)
@@ -146,18 +147,12 @@ plotIndiv(toxicity.spls, rep.space= 'X-variate', ind.names = FALSE,
 plotIndiv(toxicity.spls, rep.space= 'X-variate', ind.names = FALSE,
           group = liver.toxicity$treatment[, 'Time.Group'], plot.centroid = TRUE, plot.star = TRUE)
 
+
 # indicating the star and ellipse
 plotIndiv(toxicity.spls, rep.space= 'X-variate', ind.names = FALSE,
           group = liver.toxicity$treatment[, 'Time.Group'], plot.centroid = TRUE,
             plot.star = TRUE, plot.ellipse = TRUE)
 
-\dontrun{
-# in the Y space, colors indicate time of necropsy, text is the dose, 
-# changing the color per group, ellipse plots
-plotIndiv(toxicity.spls, rep.space= 'Y-variate', group = liver.toxicity$treatment[, 'Time.Group'], 
-          ind.names = liver.toxicity$treatment[, 'Dose.Group'], add.legend = TRUE,
-          col.per.group = c(1:4), plot.ellipse = TRUE)
-}
 
 
 \dontrun{
@@ -176,7 +171,7 @@ Y <- breast.tumors$sample$treatment
 
 splsda.breast <- splsda(X, Y,keepX=c(10,10),ncomp=2)
 
-# default option: note the outcome color is included by default as it is a supervised approach
+# default option: note the outcome color is included by default!
 plotIndiv(splsda.breast)
 
 \dontrun{
@@ -193,7 +188,7 @@ plotIndiv(splsda.breast)
     plot.ellipse = TRUE, style = "lattice", cex = c(1, 1))
 }
 
-## plot of individuals for objects of class 'sgcca' (or 'rgcca')
+## variable representation for objects of class 'sgcca' (or 'rgcca')
 # ----------------------------------------------------
 data(nutrimouse)
 Y = unmap(nutrimouse$diet)
@@ -239,7 +234,10 @@ scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)
 
-# displaying all blocks. by default colors correspond to outcome Y
+
+# plotIndiv
+# ----------
+# displaying all blocks. bu default colors correspond to outcome Y
 plotIndiv(nutrimouse.sgccda1)
 
 \dontrun{
