@@ -13,7 +13,7 @@ R CMD build --resave-data mixOmics
 2- CHECK
 On verifie que le package compile sans erreur, l’option --as-cran n’est pas obligatoire mais avant de faire une pull requests il faut la mettre (il y a plus de verifications). --timings est aussi demande par le cran pour verifier que ca ne prend pas 20 ans pour compiler (d’ou les dontrun{} dans les help file .Rd pour les fonctions critiques…)
 
-R CMD check mixOmics_5.1.tar.gz  --as-cran --timings
+R CMD check mixOmics_5.1.2.tar.gz  --as-cran --timings
 
 Si des erreurs sont presentes, le build ou le check le dira.
 Vous aurez aussi le log complet dans mixOmics.Rcheck/00check.log ainsi que le manuel pdf genere.
@@ -21,10 +21,10 @@ Vous aurez aussi le log complet dans mixOmics.Rcheck/00check.log ainsi que le ma
 3- INSTALL
 Vous pouvez ensuite installer, soit dans un repertoire local que vous appelez par exemple MyR (dans ce cas, lorsque vous chargez la librairie dans R il faut mettre: library(mixOmics, lib.loc = ‘’MyR/‘):
 
-R CMD INSTALL -l MyR/ mixOmics_5.1.tar.gz
+R CMD INSTALL -l MyR/ mixOmics_5.1.2.tar.gz
 
 Soit direct:
-R CMD INSTALL mixOmics_5.1.tar.gz
+R CMD INSTALL mixOmics_5.1.2.tar.gz
 
 Soit via RStudio en demandant d’installer le .tar.gaz
 
@@ -53,8 +53,8 @@ R CMD INSTALL -l MyR/ mixOmics_5.0-4.tar.gz
 
 En resume pour la compilation et installation non local:
 R CMD build --resave-data mixOmics
-R CMD check mixOmics_5.0-4.tar.gz --as-cran --timings
-R CMD INSTALL mixOmics_5.0-4.tar.gz
+R CMD check mixOmics_5.2.0.tar.gz --as-cran --timings
+R CMD INSTALL mixOmics_5.2.0.tar.gz
 
 # ====================update using devtools!!! ============================
 
@@ -65,6 +65,8 @@ How to launch
 https://www.rstudio.com/products/rpackages/devtools/
 
 In R:
+install.packages("devtools")
+
 library(devtools)
 check('mixOmics/')
 # checking reverse dependencies
