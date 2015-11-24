@@ -1,6 +1,8 @@
-# Copyright (C) 2015
-# Benoit Liquet, Universite de Bordeaux, France
-# Kim-Anh Le Cao, Queensland Facility for Advanced Bioinformatics, University of Queensland, Brisbane, Australia
+# Author : F.Rohart,  Australian Institute for Bioengineering and Nanotechnology, The University of Queensland, Brisbane, QLD
+# created: pre 01-01-2013
+# last modification: 10-10-2014
+# Copyright (C) 2014
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -15,6 +17,5 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-# this is the S3 function (see pheatmap.multilevel.splsda1fact and pheatmap.multilevel.splsda2fact)
-pheatmap.multilevel <- function(result, ...) UseMethod("pheatmap.multilevel")
 
+.onAttach <- function(libname, pkgname){ packageStartupMessage("\nLoaded mixOmics ",as.character(packageDescription("mixOmics")[["Version"]]))}

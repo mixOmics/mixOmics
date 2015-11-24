@@ -53,8 +53,8 @@ R CMD INSTALL -l MyR/ mixOmics_5.0-4.tar.gz
 
 En resume pour la compilation et installation non local:
 R CMD build --resave-data mixOmics
-R CMD check mixOmics_5.0-4.tar.gz --as-cran --timings
-R CMD INSTALL mixOmics_5.0-4.tar.gz
+R CMD check mixOmics_5.2.0.tar.gz --as-cran --timings
+R CMD INSTALL mixOmics_5.2.0.tar.gz
 
 # ====================update using devtools!!! ============================
 
@@ -65,6 +65,8 @@ How to launch
 https://www.rstudio.com/products/rpackages/devtools/
 
 In R:
+install.packages("devtools")
+
 library(devtools)
 check('mixOmics/')
 # checking reverse dependencies
