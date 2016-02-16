@@ -165,7 +165,6 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
     } else {
       meta.block.result <- sparse.rgcca_iteration(R, design, tau = if (is.matrix(tau)){tau[n, ]} else {"optimal"}, scheme = scheme, init = init, tol = tol,
                         verbose = verbose, max.iter = max.iter,
-                        keepA.constraint=if (!is.null(keepA.constraint)) {lapply(keepA.constraint, function(x){unlist(x[n])})} else {NULL} ,
                         keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL})
     }
     
@@ -467,7 +466,7 @@ verbose = FALSE, init = "svd.single", bias = FALSE, tol = .Machine$double.eps, k
     n <- NROW(A[[1]])
     pjs <- sapply(A, NCOL)
     variates.A <- matrix(0, n, J)
-    penalty = penalty * sqrt(pjs)
+    if(!is.null(penalty))    penalty = penalty * sqrt(pjs)
     ### End: Initialisation parameters
     
     if (!is.numeric(tau))
@@ -515,7 +514,8 @@ verbose = FALSE, init = "svd.single", bias = FALSE, tol = .Machine$double.eps, k
     repeat {
         variates.Aold <- variates.A
         
-        for (j in c(which.primal, which.dual)) {
+        for (j in c(which.primal, which.dual))
+        {
             
             if (scheme == "horst") CbyCovq <- design[j, ]
             if (scheme == "factorial") CbyCovq <- design[j, ] * cov2(variates.A, variates.A[, j], bias = bias)

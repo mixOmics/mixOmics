@@ -163,7 +163,7 @@ norm2 = function(vec){
 # --------------------------------------
 # sparsity function
 # --------------------------------------
-sparsity=function(loadings.A,keepA,keepA.constraint)
+sparsity=function(loadings.A,keepA,keepA.constraint=NULL,penalty=NULL)
 {
     
     if(!is.null(keepA.constraint))
@@ -173,7 +173,11 @@ sparsity=function(loadings.A,keepA,keepA.constraint)
     {
         nx=length(loadings.A) - keepA
         loadings.A=soft_thresholding_L1(loadings.A,nx)
+    }else if (!is.null(penalty))
+    {
+        loadings.A = soft.threshold(loadings.A, penalty)
     }
+
     return(loadings.A)
 }
 
@@ -203,13 +207,14 @@ mean_centering_per_study=function(data,study,scale,bias=FALSE) {
         data.list.study.scale_i=t(t(temp)-meanX[[m]])
         if(scale)
         {
-            sqrt.sdX[[m]]=sqrt(colSums(data.list.study.scale_i^2)/(nrow(temp)-1))
+            if(bias)
+            {
+                sqrt.sdX[[m]]=sqrt(colSums(data.list.study.scale_i^2)/(nrow(temp)))
+            }else{
+                sqrt.sdX[[m]]=sqrt(colSums(data.list.study.scale_i^2)/(nrow(temp)-1))
+            }
             data.list.study.scale_i=t( t(data.list.study.scale_i)/sqrt.sdX[[m]])
         }
-        
-        
-        if(bias)
-        data.list.study.scale_i=data.list.study.scale_i*(sqrt((nrow(data.list.study.scale_i)-1)/nrow(data.list.study.scale_i)))
         
         is.na.data=is.na(data.list.study.scale_i)
         if(sum(is.na.data)>0)
@@ -254,7 +259,10 @@ mean_centering_per_study=function(data,study,scale,bias=FALSE) {
         }
     }else {
         attr(concat.data,"scaled:center")=meanX[[1]]#attr(data.list.study.scale_i,"scaled:center")
-        attr(concat.data,"scaled:scale")=sqrt.sdX[[1]]#attr(data.list.study.scale_i,"scaled:scale")
+        if(scale)
+        {
+            attr(concat.data,"scaled:scale")=sqrt.sdX[[1]]#attr(data.list.study.scale_i,"scaled:scale")
+        }else{attr(concat.data,"scaled:scale")=NULL}
     }
     
     return(list(concat.data=concat.data))#,data.list.study.scale=data.list.study.scale))

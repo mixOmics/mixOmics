@@ -930,7 +930,7 @@ verbose)
         indY=length(A)
         
         if (mode == "canonical")
-        ncomp = c(ncomp, min(ncomp, nlevels(Y) - 1))
+        ncomp = c(ncomp, min(ncomp, ncol(Y) - 1))
         if (mode == "regression")
         ncomp = c(ncomp, max(ncomp))
         #adjust ncomp for Y
@@ -1343,7 +1343,7 @@ if(missing(keepX.constraint) || length(keepX.constraint)==0)
         }
         
         # we need numbers in keepX.constraint from now on
-        keepX.constraint[[q]]= lapply(keepX.constraint[[q]],function(x){match(x,colnames(X[[q]]))})
+        keepX.constraint[[q]]= sapply(keepX.constraint[[q]],function(x){match(x,colnames(X[[q]]))})
     }
     
     keepA.constraint=keepX.constraint

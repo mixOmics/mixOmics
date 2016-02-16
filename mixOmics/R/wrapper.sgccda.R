@@ -127,7 +127,7 @@ verbose = FALSE
     result$call = cl
     result$ncomp = ncomp
     result$names$Y = attr(result$Y[[1]], "levels")
-    row.names(result$variates$Y) = row.names(X); row.names(result$loadings$Y) = paste0("Y", c(1 : nlevels(Y)))
+    row.names(result$variates$Y) = row.names(X); row.names(result$loadings$Y) = paste0("Y", c(1 : nlevels(Y.input)))
     names(result)[names(result) == "keepA"] = "keepX"; result$keepX = keepA
     class(result) = "sgccda"
     return(invisible(result))

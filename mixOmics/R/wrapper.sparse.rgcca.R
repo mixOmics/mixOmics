@@ -36,10 +36,7 @@ near.zero.var)
     
     #print("you")
     #check keepA and keepA constraint
-    check=check.keepA.and.keepA.constraint(X=X,keepX=keepX,keepX.constraint=keepX.constraint,ncomp=ncomp)
-    keepA=check$keepA
-    keepA.constraint=check$keepA.constraint
-    
+
     #print(keepA)
     #print(keepA.constraint)
     #print(length(X))
@@ -58,7 +55,11 @@ near.zero.var)
     bias=check$bias
     near.zero.var=check$near.zero.var
 
-    
+    check=check.keepA.and.keepA.constraint(X=X,keepX=keepX,keepX.constraint=keepX.constraint,ncomp=ncomp)
+    keepA=check$keepA
+    keepA.constraint=check$keepA.constraint
+
+
     result.rgcca = sparse.meta.block(A = X, design = design, tau = tau,
     ncomp = ncomp,
     scheme = scheme, scale = scale,
