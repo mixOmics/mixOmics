@@ -292,6 +292,8 @@ res=wrapper.meta.block.splsda(list(data),Y=type.id,ncomp=2)
 ## =========================================================================================================
 
 
+type.id.light=factor(type.id.light)
+type.id=factor(type.id)
 
 ## ======================================================================
 ## ==      data for one study
