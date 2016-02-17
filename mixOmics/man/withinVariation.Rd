@@ -49,7 +49,6 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
 
 \seealso{\code{\link{multilevel}}, \code{\link{spls}}, \code{\link{splsda}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, 
-\code{\link{plot3dIndiv}}, \code{\link{plot3dVar}},
 \code{\link{cim}}, \code{\link{network}}.}
 
 \examples{
@@ -74,9 +73,9 @@ col.stim <- c("darkblue", "purple", "green4","red3")
 col.stim <- col.stim[as.numeric(vac18$stimulation)]
 
 # plotIndiv comparing both PCA and PCA multilevel
-plotIndiv(res.pca, ind.names = vac18$stimulation, col = col.stim)
+plotIndiv(res.pca, ind.names = vac18$stimulation, group = col.stim)
 title(main = 'PCA ')
-plotIndiv(res.pca.1level, ind.names = vac18$stimulation, col = col.stim)
+plotIndiv(res.pca.1level, ind.names = vac18$stimulation, group = col.stim)
 title(main = 'PCA multilevel')
 }
 

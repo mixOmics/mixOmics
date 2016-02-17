@@ -4,7 +4,7 @@
 
 \title{Sparse Partial Least Squares Discriminant Analysis (sPLS-DA)}
 
-\description{Function to perform sparse Partial Least Squares to classify samples (supervised analysis). sPLS-DA approach enables variable selection.
+\description{Function to perform sparse Partial Least Squares to classify samples (supervised analysis) and select variables.
 }
 
 \usage{
@@ -25,7 +25,7 @@ splsda(X, Y, ncomp = 2, keepX = rep(ncol(X), ncomp),
 
 \details{
 \code{splsda} function fit sPLS models with \eqn{1, \ldots ,}\code{ncomp} components
-to the factor or class vector \code{Y}. The appropriate indicator 
+to the factor or class vector \code{Y}. The appropriate indicator (dummy)
 matrix is created.
 }
 
@@ -58,7 +58,6 @@ Le Cao, K.-A., Boitard, S. and Besse, P. (2011). Sparse PLS Discriminant Analysi
 
 \seealso{\code{\link{spls}}, \code{\link{summary}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, 
-\code{\link{plot3dIndiv}}, \code{\link{plot3dVar}},
 \code{\link{cim}}, \code{\link{network}}, \code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org for more details.}
 
 \examples{
@@ -71,13 +70,10 @@ Y <- as.factor(breast.tumors$sample$treatment)
 
 res <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 
-col.breast <- color.mixo(as.numeric(Y))
 
 # individual names appear
-plotIndiv(res, ind.names = Y, col = col.breast)
-legend('topright', c('Before', 'After'), pch = c(16, 16), 
-       col = unique(col.breast), 
-       title = "Treatment")
+plotIndiv(res, ind.names = Y, add.legend = TRUE, plot.ellipse =TRUE)
+
 
 ## Second example
 \dontrun{
@@ -90,9 +86,8 @@ Y <- as.factor(liver.toxicity$treatment[, 4])
 
 splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
 
-col.rat <- color.mixo(Y)
 # individual name is set to the treatment
-plotIndiv(splsda.liver, col = col.rat, ind.names = Y)
+plotIndiv(splsda.liver, ind.names = Y, plot.ellipse = TRUE, add.legend = TRUE)
 }
 }
 

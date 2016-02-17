@@ -65,14 +65,14 @@ spca.rat <- spca(liver.toxicity$gene, ncomp = 3, keepX = rep(50, 3))
 spca.rat
 
 ## variable representation
-plotVar(spca.rat, X.label = TRUE, cex = 0.5)
-\dontrun{plot3dVar(spca.rat)}
+plotVar(spca.rat, cex = 0.5)
+\dontrun{plotVar(spca.rat,style="3d")}
 
 ## samples representation
-plotIndiv(spca.rat, ind.names = liver.toxicity$treatment[, 3], cex = 0.5, 
-          col = as.numeric(liver.toxicity$treatment[, 3]))
-\dontrun{plot3dIndiv(spca.rat, cex = 0.01, 
-            col = as.numeric(liver.toxicity$treatment[, 3]))}
+plotIndiv(spca.rat, ind.names = liver.toxicity$treatment[, 3], 
+          group = as.numeric(liver.toxicity$treatment[, 3]))
+\dontrun{plotIndiv(spca.rat, cex = 0.01,
+        col = as.numeric(liver.toxicity$treatment[, 3]),style="3d")}
 }
 
 \keyword{algebra}
