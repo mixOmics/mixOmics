@@ -423,8 +423,8 @@ perf.spls <-function(object,
             MSEP.mat[omit, , k] = (Y.test - Y.hat[, , k])^2
             
             # added: record selected features in each set
-            featuresX[[k]] = c(unlist(featuresX[[k]]), select.var(spls.res, comp = k)$name.X)
-            featuresY[[k]] = c(unlist(featuresY[[k]]), select.var(spls.res, comp = k)$name.Y)
+            featuresX[[k]] = c(unlist(featuresX[[k]]), selectVar(spls.res, comp = k)$name.X)
+            featuresY[[k]] = c(unlist(featuresY[[k]]), selectVar(spls.res, comp = k)$name.Y)
 
           } # end loop on k
         }        
@@ -457,8 +457,8 @@ perf.spls <-function(object,
         remove.naX = which(is.na(featuresX[[k]]))
         remove.naY = which(is.na(featuresY[[k]]))
         # then summarise as a factor and output the percentage of appearance
-        list.features.X[[k]] = sort(summary(as.factor(featuresX[[k]][-remove.naX]))/M, decreasing = TRUE)
-        list.features.Y[[k]] = sort(summary(as.factor(featuresY[[k]][-remove.naY]))/M, decreasing = TRUE)
+        list.features.X[[k]] = sort(table(as.factor(featuresX[[k]][-remove.naX]))/M, decreasing = TRUE)
+        list.features.Y[[k]] = sort(table(as.factor(featuresY[[k]][-remove.naY]))/M, decreasing = TRUE)
         
     }
     names(list.features.X)  = names(list.features.Y) = paste('comp', 1:ncomp)
@@ -733,7 +733,7 @@ perf.splsda <- function(object,
     spls.res = splsda(X.train, Y.train, ncomp, max.iter, tol, keepX=keepX, near.zero.var = near.zero.var)  
     # added: record selected features
     for(k in 1:ncomp){
-      features[[k]] = c(unlist(features[[k]]), select.var(spls.res, comp = k)$name)
+      features[[k]] = c(unlist(features[[k]]), selectVar(spls.res, comp = k)$name)
     }
     
     if (!is.null(spls.res$nzv$Position)) X.test = X.test[, -spls.res$nzv$Position]
@@ -760,7 +760,7 @@ perf.splsda <- function(object,
     #remove the NA value that was added for initialisation
     remove.na = which(is.na(features[[k]]))
     # then summarise as a factor and output the percentage of appearance
-    list.features[[k]] = sort(summary(as.factor(features[[k]][-remove.na]))/M, decreasing = TRUE)
+    list.features[[k]] = sort(table(as.factor(features[[k]][-remove.na]))/M, decreasing = TRUE)
   }
   
 

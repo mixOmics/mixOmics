@@ -1,3 +1,29 @@
+# Copyright (C) 2015
+# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+# Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+# Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+
+# --------------------------------------------------------------------------------------
+# Internal helpers functions to run "mixOmics" and "sparse.meta.block" functions
+# --------------------------------------------------------------------------------------
+# Some of these functions have been borrowed from the RGCCA package, as indicated below
+
+
 
 # --------------------------------------
 # match.keepX.constraint after removing variables with near.zer.var for instance
@@ -60,7 +86,7 @@ nearZeroVar <- function (x, freqCut = 95/5, uniqueCut = 10) {
     
     lunique = apply(x, 2, function(data) length(unique(data[!is.na(data)])))
     
-    percentUnique = 100 * lunique/rep(nrow(x))
+    percentUnique = 100 * lunique/nrow(x)
     zeroVar = (lunique == 1) | apply(x, 2, function(data) all(is.na(data)))
     
     out = list()
@@ -108,18 +134,14 @@ study_split = function(data, study)
 # --------------------------------------
 soft_thresholding_L1=function(x,nx)
 {
-    #if (nx != 0) {
-    #    x = ifelse(abs(x) > abs(x[order(abs(x))][nx]),
-    #    (abs(x) - abs(x[order(abs(x))][nx])) * sign(x), 0)
-    #}
-    
+   
     #selection on a (loadings.X). modified on 19/02/15 to make sure that a!=0
     if(nx!=0)
     {
         absa = abs(x)
         if(any(rank(absa, ties.method = "max") <= nx)) {
             x = ifelse(rank(absa, ties.method = "max") <= nx, 0,
-            sign(x) * (absa - max(absa[rank(absa, ties.method = "max") <= nx])))
+                        sign(x) * (absa - max(absa[rank(absa, ties.method = "max") <= nx])))
         }
     }
     
