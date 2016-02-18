@@ -1,10 +1,8 @@
-# Copyright (C) 2014
-# Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-# Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-# Amrit Singh, University of British Columbia, Vancouver.
-# Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
-# Pierre Monget, Ecole d'Ingenieur du CESI, Angouleme, France
-#
+# Copyright (C) 2015
+# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+# created: 27-05-2015
+# last modified: 18-02-2016
+
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -19,9 +17,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-# created: 27/05/15
-# modified: 29/05/15
-# author: Florian Rohart
 
 # This function makes a prediction of a 'newdata' by using the results of 'object'.
 # Depending on the class of the object (meta).(block).(s)pls(da) (16 classes so far), the input data is different

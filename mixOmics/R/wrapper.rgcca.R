@@ -1,5 +1,8 @@
-# Copyright (C) 2013
-# Kim-Anh Le Cao, University of Queensland, Brisbane, Australia
+# Copyright (C) 2015
+# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+# created: 22-04-2015
+# last modified: 18-02-2016
+
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2

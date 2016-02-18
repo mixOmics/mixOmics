@@ -1,28 +1,50 @@
-# Author : F.Rohart
-# created 22-04-2015
-# last modified 22-04-2015
+# Copyright (C) 2015
+# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+# created: 22-04-2015
+# last modified: 18-02-2016
+
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
 #
-# perform the meta.pls on a subset of variables on one only dimension, deflate the intial matrices X and Y (already center by study)
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-# mean centering with attach and without modify.na, need to look at how to remove some of means/sigma when nearZerVar is used
-# we can have a list of studies for Discriminant Analyses, not for pls/spls as they would be overlapping batch effects
+
+# ========================================================================================================
+# pls: perform a PLS
+# this function is a particular setting of meta.spls.hybrid, the formatting of the input is checked in wrapper.meta.spls.hybrid
+# ========================================================================================================
+
+# X: numeric matrix of predictors
+# Y: numeric vector or matrix of responses
+# ncomp: the number of components to include in the model. Default to 2.
+# scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
+# tol: Convergence stopping value.
+# max.iter: integer, the maximum number of iterations.
+# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
 
-wrapper.pls <- function(X, Y, ncomp = 2, mode = c("regression", "canonical", "invariant", "classic"),
-            max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = TRUE)
+pls <- function(X,
+Y,
+ncomp = 2,
+scale = TRUE,
+mode = c("regression", "canonical", "invariant", "classic"),
+tol = 1e-06,
+max.iter = 500,
+near.zero.var = FALSE)
 {
     
     
     #-- validation des arguments --#
     # most of the checks are done in the wrapper.meta.spls.hybrid function
-    
-    #if (!is.numeric(X) || !is.numeric(Y))
-    #stop("'X' and/or 'Y' must be a numeric matrix.")
-
-#X = as.matrix(X)
-#Y = as.matrix(Y)
-
-
     if(missing(ncomp)) ncomp=2
 
     result <- wrapper.meta.spls.hybrid(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,

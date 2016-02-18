@@ -1,32 +1,48 @@
-# Author : F.Rohart
-# created 18-08-2014
-# last modified 18-08-2014
+# Copyright (C) 2015
+# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+# created: 22-04-2015
+# last modified: 18-02-2016
+
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
 #
-# perform the meta.pls on a subset of variables on one only dimension, deflate the intial matrices X and Y (already center by study)
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-# mean centering with attach and without modify.na, need to look at how to remove some of means/sigma when nearZerVar is used
-# we can have a list of studies for Discriminant Analyses, not for pls/spls as they would be overlapping batch effects
 
-mixOmics=function(  X,
+# ========================================================================================================
+# mixOmics: perform one of the package's function depending on the input data (list or matrix, vector or categerical data, etc)
+# ========================================================================================================
+
+
+mixOmics=function(X,
 Y,
 indY, #only use if Y not provided
-ncomp,
-keepX, #sparse
-keepX.constraint, #hybrid
-keepY, #sparse
-keepY.constraint, #hybrid
 study, #meta
+ncomp,
+keepX.constraint, #hybrid
+keepY.constraint, #hybrid
+keepX, #sparse
+keepY, #sparse
 design, #block
 tau=NULL,# rgcca, number between 0,1 or "optimal"
-init,
 scheme, #block
+mode,
 scale,
 bias,
-near.zero.var=FALSE,
-mode,
+init,
 tol= 1e-06,
+verbose=FALSE,
 max.iter=500,
-verbose=FALSE)
+near.zero.var=FALSE)
 
 {
     if(is.list(X) & !is.data.frame(X))# either rgcca, sgcca,sgcca-DA, meta.block, meta.block-DA
