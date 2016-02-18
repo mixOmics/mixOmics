@@ -92,13 +92,13 @@ near.zero.var=FALSE)
                     {
                         if(missing(scale)) scale=FALSE
                         message("a block Partial Least Squares - Discriminant Analysis is being performed (block PLS-DA)")
-                        res=wrapper.block.plsda(X=X, Y=Y, indY=indY, ncomp = ncomp,design=design,scheme=scheme,
+                        res=block.plsda(X=X, Y=Y, indY=indY, ncomp = ncomp,design=design,scheme=scheme,
                         mode = mode,scale=scale,bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=near.zero.var)
                         
                     }else{# meta.block.plsda
                         if(missing(scale)) scale=FALSE
                         message("a meta block Partial Least Squares - Discriminant Analysis is being performed (meta.block.PLS-DA)")
-                        res=wrapper.meta.block.plsda(X=X, Y=Y, indY=indY,study=study, ncomp = ncomp,design=design,scheme=scheme,
+                        res=meta.block.plsda(X=X, Y=Y, indY=indY,study=study, ncomp = ncomp,design=design,scheme=scheme,
                         mode = mode,scale=scale,bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=near.zero.var)
                     }
                     
@@ -108,7 +108,7 @@ near.zero.var=FALSE)
                     {
                         if(missing(scale)) scale=FALSE
                         message("a block sparse Partial Least Squares - Discriminant Analysis is being performed (block.sPLS-DA)")
-                        res=wrapper.meta.block.splsda(X=X, Y=Y, indY=indY, ncomp = ncomp,keepX=keepX,keepX.constraint=keepX.constraint,
+                        res=meta.block.splsda(X=X, Y=Y, indY=indY, ncomp = ncomp,keepX=keepX,keepX.constraint=keepX.constraint,
                         design=design,scheme=scheme,mode= mode,scale=scale,bias=bias,init=init,tol=tol,verbose=verbose,
                         max.iter=max.iter,near.zero.var=near.zero.var)
                         
@@ -116,7 +116,7 @@ near.zero.var=FALSE)
                     }else{# meta.block.splsda
                         if(missing(scale)) scale=FALSE
                         message("a meta block sparse Partial Least Squares - Discriminant Analysis is being performed (meta.block.sPLS-DA)")
-                        res=wrapper.meta.block.splsda(X=X, Y=Y, indY=indY, ncomp = ncomp,study=study,keepX=keepX,keepX.constraint=keepX.constraint,
+                        res=meta.block.splsda(X=X, Y=Y, indY=indY, ncomp = ncomp,study=study,keepX=keepX,keepX.constraint=keepX.constraint,
                         design=design,scheme=scheme,mode= mode,scale=scale,bias=bias,init=init,tol=tol,verbose=verbose,
                         max.iter=max.iter,near.zero.var=near.zero.var)
                     }
@@ -132,13 +132,13 @@ near.zero.var=FALSE)
                     {
                         if(missing(scale)) scale=FALSE
                         message("a block Partial Least Squares is being performed (block PLS)")
-                        res=wrapper.block.pls(X=X, Y=Y, indY=indY, ncomp = ncomp,design=design,scheme=scheme,
+                        res=block.pls(X=X, Y=Y, indY=indY, ncomp = ncomp,design=design,scheme=scheme,
                         mode = mode,scale=scale,bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=near.zero.var)
                         
                     }else{# meta.block.pls
                         if(missing(scale)) scale=FALSE
                         message("a meta block Partial Least Squares is being performed (meta.block.PLS)")
-                        res=wrapper.meta.block.pls(X=X, Y=Y, indY=indY,study=study, ncomp = ncomp,design=design,scheme=scheme,
+                        res=meta.block.pls(X=X, Y=Y, indY=indY,study=study, ncomp = ncomp,design=design,scheme=scheme,
                         mode = mode,scale=scale,bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=near.zero.var)
                     }
                     
@@ -148,7 +148,7 @@ near.zero.var=FALSE)
                     {
                         if(missing(scale)) scale=FALSE
                         message("a block sparse Partial Least Squares is being performed (block.sPLS)")
-                        res=wrapper.block.spls(X=X, Y=Y, indY=indY, ncomp = ncomp,keepX=keepX,keepX.constraint=keepX.constraint,
+                        res=block.spls(X=X, Y=Y, indY=indY, ncomp = ncomp,keepX=keepX,keepX.constraint=keepX.constraint,
                         design=design,scheme=scheme,mode= mode,scale=scale,bias=bias,init=init,tol=tol,verbose=verbose,
                         max.iter=max.iter,near.zero.var=near.zero.var)
                         
@@ -156,7 +156,7 @@ near.zero.var=FALSE)
                     }else{# meta.block.spls
                         if(missing(scale)) scale=FALSE
                         message("a meta block sparse Partial Least Squares is being performed (meta.block.sPLS)")
-                        res=wrapper.meta.block.spls(X=X, Y=Y, indY=indY, ncomp = ncomp,study=study,keepX=keepX,keepX.constraint=keepX.constraint,
+                        res=meta.block.spls(X=X, Y=Y, indY=indY, ncomp = ncomp,study=study,keepX=keepX,keepX.constraint=keepX.constraint,
                         design=design,scheme=scheme,mode= mode,scale=scale,bias=bias,init=init,tol=tol,verbose=verbose,
                         max.iter=max.iter,near.zero.var=near.zero.var)
                         
@@ -222,13 +222,13 @@ near.zero.var=FALSE)
                 {
                     if(missing(scale)) scale=TRUE
                     message("a Partial Least Squares - Discriminant Analysis is being performed (PLS-DA)")
-                    res=wrapper.plsda(X=X, Y=Y, ncomp = ncomp, mode = mode,
+                    res=plsda(X=X, Y=Y, ncomp = ncomp, mode = mode,
                     max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
                     
                 }else{# meta
                     if(missing(scale)) scale=FALSE
                     message("a meta Partial Least Squares - Discriminant Analysis is being performed (meta.PLS-DA)")
-                    res=wrapper.meta.plsda(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,
+                    res=meta.plsda(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,
                     max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
                 }
                 
@@ -238,13 +238,13 @@ near.zero.var=FALSE)
                 {
                     if(missing(scale)) scale=TRUE
                     message("a sparse Partial Least Squares - Discriminant Analysis is being performed (sPLS-DA)")
-                    res=wrapper.splsda(X=X, Y=Y, ncomp = ncomp, mode = mode, keepX=keepX,keepX.constraint=keepX.constraint,
+                    res=splsda(X=X, Y=Y, ncomp = ncomp, mode = mode, keepX=keepX,keepX.constraint=keepX.constraint,
                     max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
                     
                 }else{# meta
                     if(missing(scale)) scale=FALSE
                     message("a meta sparse Partial Least Squares - Discriminant Analysis is being performed (meta.sPLS-DA)")
-                    res=wrapper.meta.splsda(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,keepX=keepX,keepX.constraint=keepX.constraint,
+                    res=meta.splsda(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,keepX=keepX,keepX.constraint=keepX.constraint,
                     max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
                 }
                 
@@ -261,13 +261,13 @@ near.zero.var=FALSE)
                 {
                     if(missing(scale)) scale=TRUE
                     message("a Partial Least Squares is being performed (PLS)")
-                    res=wrapper.pls(X=X, Y=Y, ncomp = ncomp, mode = mode,
+                    res=pls(X=X, Y=Y, ncomp = ncomp, mode = mode,
                     max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
                     
                 }else{ # meta
                     if(missing(scale)) scale=FALSE
                     message("a meta Partial Least Squares is being performed (meta.PLS)")
-                    res=wrapper.meta.pls(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,
+                    res=meta.pls(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,
                     max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
                 }
                 
@@ -276,13 +276,13 @@ near.zero.var=FALSE)
                 {
                     if(missing(scale)) scale=TRUE
                     message("a sparse Partial Least Squares is being performed (sPLS)")
-                    res=wrapper.spls(X=X, Y=Y, ncomp = ncomp, mode = mode, keepX=keepX,keepY=keepY,
+                    res=spls(X=X, Y=Y, ncomp = ncomp, mode = mode, keepX=keepX,keepY=keepY,
                     keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,max.iter = max.iter, tol = tol,
                     near.zero.var = near.zero.var,scale = scale)
                 }else{
                     if(missing(scale)) scale=FALSE
                     message("a meta sparse Partial Least Squares is being performed (meta.sPLS)")
-                    res=wrapper.meta.spls(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,keepX=keepX,keepY=keepY,
+                    res=meta.spls(X=X, Y=Y, ncomp = ncomp, mode = mode, study=study,keepX=keepX,keepY=keepY,
                     keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,max.iter = max.iter, tol = tol,
                     near.zero.var = near.zero.var,scale = scale)
                     
