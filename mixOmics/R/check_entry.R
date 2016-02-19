@@ -290,6 +290,73 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.con
     keepY.constraint=keepY.constraint,keepX=keepX,keepY=keepY,nzv.A=nzv.A))
 }
 
+Check.entry.meta.block.spls = function(A, indY, design ,ncomp , scheme , scale ,  bias,
+init , tol , verbose,mode , max.iter,study , keepA, keepA.constraint)
+{
+    
+    if (length(A) < 1)
+    stop("A is a list with at least 2 blocks.")
+    
+    if (is.null(indY)) {
+        if (mode != "canonical")
+        stop("Only canonical deflation can be done with indY empty")
+    } else if (!abs(indY - round(indY) < 1e-25)) {
+        stop ("indY must be an integer")
+    } else if (indY > length(A)) {
+        stop ("indY must point to a block of A")
+    } else if (!(mode %in% c("canonical", "invariant", "classic", "regression"))) {
+        stop("Choose one of the four following modes: canonical, invariant, classic or regression")
+    }
+    
+    x=unlist(lapply(A,nrow))
+    if(!isTRUE(all.equal( max(x) ,min(x))))
+    stop("The samplesize mmust be the same for all blocks")
+    
+    
+    #set the default study factor
+    if(missing(study))
+    {
+        study=factor(rep(1,nrow(A[[1]])))
+    }else{
+        study=as.factor(study)
+    }
+    if(length(study)!=nrow(A[[1]])) stop(paste0("'study' must be a factor of length ",x[1],"."))
+    
+    #check dimnames, ncomp, keepA and keepA.constraint per block of A
+    for(q in 1:length(A))
+    {
+        check=Check.entry.single(A[[q]], ncomp[q], keepA[[q]], keepA.constraint[[q]],q)
+        A[[q]]=check$X
+        ncomp[q]=check$ncomp
+    }
+    
+    
+    if (!(scheme %in% c("horst", "factorial","centroid"))) {
+        stop("Choose one of the three following schemes: horst, centroid or factorial")
+    } else {
+        if (verbose)
+        cat("Computation of the SGCCA block components based on the", scheme, "scheme \n")
+    }
+    
+    if(!init%in%c("svd","svd.single"))
+    stop("init should be one of 'svd' or 'svd.single'")
+    
+    study=as.factor(study)
+    
+    if(tol<=0)
+    stop("tol must be non negative")
+    
+    if(!is.logical(verbose))
+    stop("verbose must be either TRUE or FALSE")
+    if(!is.logical(scale))
+    stop("scale must be either TRUE or FALSE")
+    if(!is.logical(bias))
+    stop("bias must be either TRUE or FALSE")
+    
+    
+    return(list(A=A,ncomp=ncomp,study=study))
+    
+}
 
 # --------------------------------------
 # Check.entry.wrapper.sparse.meta.block

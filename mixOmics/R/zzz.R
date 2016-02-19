@@ -18,4 +18,4 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
-.onAttach <- function(libname, pkgname){ packageStartupMessage("\nLoaded mixOmics ",as.character(packageDescription("mixOmics")[["Version"]]))}
+.onAttach <- function(libname, pkgname){ packageStartupMessage("\nLoaded mixOmicsv6 ",as.character(packageDescription("mixOmicsv6")[["Version"]]))}

@@ -21,8 +21,8 @@ wrapper.sgcca = function(
 X,
 design = 1 - diag(length(X)),
 ncomp = rep(1, length(X)),
-keepA,
-keepA.constraint,
+keepX,
+keepX.constraint,
 scheme = "centroid",
 mode="canonical",
 scale = TRUE,
@@ -36,7 +36,7 @@ max.iter
   # call function
   #rgcca <- function(A, C = 1-diag(length(A)), tau = rep(1, length(A)), ncomp = rep(1, length(A)), scheme = "centroid", scale = TRUE , init="svd", bias = TRUE, tol = .Machine$double.eps, verbose=TRUE)
   
-     check=check.keepA.and.keepA.constraint(X=X,keepA=keepA,keepA.constraint=keepA.constraint,ncomp=ncomp)
+     check=check.keepA.and.keepA.constraint(X=X,keepX=keepX,keepX.constraint=keepX.constraint,ncomp=ncomp)
      keepA=check$keepA
      keepA.constraint=check$keepA.constraint
      
@@ -44,7 +44,9 @@ max.iter
   check=Check.entry.meta.block.spls(A=X, indY=NULL, design=design ,ncomp=ncomp , scheme=scheme , scale=scale ,  bia=bias,
   init=init , tol=tol , verbose=verbose,mode=mode, max.iter=max.iter,keepA=keepA, keepA.constraint=keepA.constraint)
   
-  
+  print(dim(X[[1]]))
+  print(dim(X[[2]]))
+  temp=crossprod(X[[1]],X[[2]])
   result.sgcca = sparse.meta.block(A = X, design = design, tau = NULL,
                        ncomp = ncomp,
                        scheme = scheme, scale = scale,
