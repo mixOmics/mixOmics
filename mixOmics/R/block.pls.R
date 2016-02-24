@@ -1,8 +1,12 @@
-# Copyright (C) 2015
-# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#############################################################################################################
+# Author :
+#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#
 # created: 22-04-2015
-# last modified: 18-02-2016
-
+# last modified: 24-02-2016
+#
+# Copyright (C) 2015
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -16,11 +20,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
 
 
 # ========================================================================================================
 # block.pls: perform a horizontal PLS on a combination of datasets, input as a list in X
-# this function is a particular setting of sparse.mint.block, the formatting of the input is checked in wrapper.sparse.mint.block
+# this function is a particular setting of internal_mint.block, the formatting of the input is checked in internal_wrapper.mint.block
 # ========================================================================================================
 
 # X: a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets. \code{NA}s are not allowed.
@@ -55,14 +60,17 @@ max.iter = 500,
 near.zero.var = FALSE)
 
 {
+    # ========================================================================================================
+    # block.pls: perform a horizontal PLS on a combination of datasets, input as a list in X
+    # this function is a particular setting of internal_mint.block, the formatting of the input is checked in internal_wrapper.mint.block
+    # ========================================================================================================
 
-
-    result <- wrapper.sparse.mint.block(X=X,Y=Y,indY=indY,ncomp=ncomp,design=design,scheme=scheme,mode=mode,scale=scale,
+    result <- internal_wrapper.mint.block(X=X,Y=Y,indY=indY,ncomp=ncomp,design=design,scheme=scheme,mode=mode,scale=scale,
     bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=near.zero.var)
     
     
     cl = match.call()
-    cl[[1]] = as.name("block.pls")
+    #cl[[1]] = as.name("block.pls")
     
     out=list(call=cl,X=result$X,Y=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,variates=result$variates,loadings=result$loadings,
     names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)

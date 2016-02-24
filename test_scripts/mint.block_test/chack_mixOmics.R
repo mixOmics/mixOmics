@@ -2,39 +2,39 @@
 ############# PLS #############
 ###############################
 #### Difference because of not the same starting point between the 2 algo "pls" and "spls" in mixOmics package when tol = 1e-06
-#source("/Users/florian/Work/git/package-mixomics/test_scripts/meta.block_test/chack_mixOmics.R")
+#source("/Users/florian/Work/git/package-mixomics/test_scripts/mint.block_test/chack_mixOmics.R")
 rm(list=ls())
 setwd("/Users/florian/Work/git/package-mixOmics/")
-library(mixOmics)
+library(mixOmicsv6)
 
 
-load("test_scripts/meta.block_test/Fibro-ESC-iPSC.6exp.167samples.light.Rdata") #load data, type.id, exp among others
+load("test_scripts/mint.block_test/Fibro-ESC-iPSC.6exp.167samples.light.Rdata") #load data, type.id, exp among others
 
 
 
 source("mixOmics/R/check_entry.R")
 source("mixOmics/R/helpers.R")
-source("mixOmics/R/sparse.meta.block.R")
+source("mixOmics/R/sparse.mint.block.R")
 
-source("mixOmics/R/meta.spls.hybrid.R")
+source("mixOmics/R/mint.spls.hybrid.R")
 source("mixOmics/R/pls.R")
 source("mixOmics/R/plsda.R")
 source("mixOmics/R/spls.R")
 source("mixOmics/R/splsda.R")
-source("mixOmics/R/meta.pls.R")
-source("mixOmics/R/meta.plsda.R")
-source("mixOmics/R/meta.spls.R")
-source("mixOmics/R/meta.splsda.R")
+source("mixOmics/R/mint.pls.R")
+source("mixOmics/R/mint.plsda.R")
+source("mixOmics/R/mint.spls.R")
+source("mixOmics/R/mint.splsda.R")
 
-source("mixOmics/R/wrapper.sparse.meta.block.R")
+source("mixOmics/R/wrapper.sparse.mint.block.R")
 source("mixOmics/R/block.pls.R")
 source("mixOmics/R/block.spls.R")
 source("mixOmics/R/block.plsda.R")
 source("mixOmics/R/block.splsda.R")
-source("mixOmics/R/meta.block.pls.R")
-source("mixOmics/R/meta.block.spls.R")
-source("mixOmics/R/meta.block.plsda.R")
-source("mixOmics/R/meta.block.splsda.R")
+source("mixOmics/R/mint.block.pls.R")
+source("mixOmics/R/mint.block.spls.R")
+source("mixOmics/R/mint.block.plsda.R")
+source("mixOmics/R/mint.block.splsda.R")
 
 
 source("mixOmics/R/wrapper.rgcca.R")
@@ -50,8 +50,17 @@ source("mixOmics/R/mixOmics.R")
 
 
 
-    
-    
+sourceDir <- function(path, trace = TRUE, ...) {
+    for (nm in list.files(path, pattern = "\\.[RrSsQq]$")) {
+        if(trace) cat(nm,":")
+        source(file.path(path, nm), ...)
+        if(trace) cat("\n")
+    }
+}
+sourceDir("/Users/florian/Work/git/package-mixOmics/mixOmics/R/",trace=FALSE)
+source("/Users/florian/Work/git/package-mixOmics/mixOmics/R/predict.mint.block.pls.R")
+
+
     
 
 Y.mat=unmap(type.id)
@@ -82,9 +91,9 @@ colnames(data.near.zero)=c(colnames(data),paste0("nearzero",1:10))
 ## =========================================================================================================
 
 
-#wraper.meta.spls.hybrid, function not available to user, so not a proper check to conduct
-res=wrapper.meta.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE,tol=1e-25)
-res=wrapper.meta.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(10,5),ncomp=3,near.zero.var=FALSE,tol=1e-25)
+#wraper.mint.spls.hybrid, function not available to user, so not a proper check to conduct
+res=wrapper.mint.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE,tol=1e-25)
+res=wrapper.mint.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(10,5),ncomp=3,near.zero.var=FALSE,tol=1e-25)
 
 
 
@@ -98,127 +107,127 @@ res=wrapper.meta.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("E
 
 
 #######  wraper.pls
-res=wrapper.pls(X=data.light,Y=Y.mat.light)
-res=wrapper.pls(X=data.light,Y=Y.mat.light,ncomp=3)
-res=wrapper.pls(X=data.near.zero,Y=Y.mat,ncomp=3)
-res=wrapper.pls(X=data.near.zero,Y=Y.mat,near.zero.var=TRUE)
+res=pls(X=data.light,Y=Y.mat.light)
+res=pls(X=data.light,Y=Y.mat.light,ncomp=3)
+res=pls(X=data.near.zero,Y=Y.mat,ncomp=3)
+res=pls(X=data.near.zero,Y=Y.mat,near.zero.var=TRUE)
 ### errors
-res=wrapper.pls(X=data.light,Y=Y.mat.light,ncomp=0)
-res=wrapper.pls(X=data.light,Y=Y.mat.light,ncomp=c(3,3))
-res=wrapper.pls(X=list(data.light),Y=Y.mat.light)
-res=wrapper.pls(X=data.light,Y=Y.mat)
-res=wrapper.pls(X=data.light,Y=type.id.light)
-res=wrapper.pls(X=data.light)
-res=wrapper.pls(X=data.light,Y=NULL)
-res=wrapper.pls(X=data.light,Y=Y.mat.light,mode="bla")
-res=wrapper.pls(X=data.light,Y=Y.mat.light,max.iter=-10)
-res=wrapper.pls(X=data.light,Y=Y.mat.light,tol=-1)
-res=wrapper.pls(X=data.light,Y=Y.mat.light,scale=2)
-res=wrapper.pls(X=data.light,Y=Y.mat.light,near.zero.var=3)
+res=pls(X=data.light,Y=Y.mat.light,ncomp=0)
+res=pls(X=data.light,Y=Y.mat.light,ncomp=c(3,3))
+res=pls(X=list(data.light),Y=Y.mat.light)
+res=pls(X=data.light,Y=Y.mat)
+res=pls(X=data.light,Y=type.id.light)
+res=pls(X=data.light)
+res=pls(X=data.light,Y=NULL)
+res=pls(X=data.light,Y=Y.mat.light,mode="bla")
+res=pls(X=data.light,Y=Y.mat.light,max.iter=-10)
+res=pls(X=data.light,Y=Y.mat.light,tol=-1)
+res=pls(X=data.light,Y=Y.mat.light,scale=2)
+res=pls(X=data.light,Y=Y.mat.light,near.zero.var=3)
 
 
 
 
 #######  wraper.spls
-res=wrapper.spls(X=data.light,Y=Y.mat.light)
-res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(10,5,15))
-res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(10,5)) #complete keepX
-res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(10),keepX.constraint=list(comp1=c(100,1,3),comp2=c(10)))
-res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(1),keepX.constraint=list(comp1=c(100),comp2=c(10)))
-res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX.constraint=list(comp1=c(100),comp2=c(10)))
-res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepY=c(3),keepY.constraint=list(comp1=c(1),comp2=c(2)))
+res=spls(X=data.light,Y=Y.mat.light)
+res=spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(10,5,15))
+res=spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(10,5)) #complete keepX
+res=spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(10),keepX.constraint=list(comp1=c(100,1,3),comp2=c(10)))
+res=spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(1),keepX.constraint=list(comp1=c(100),comp2=c(10)))
+res=spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX.constraint=list(comp1=c(100),comp2=c(10)))
+res=spls(X=data.light,Y=Y.mat.light,ncomp=3,keepY=c(3),keepY.constraint=list(comp1=c(1),comp2=c(2)))
 ### errors, only difference with pls is keepX/Y and keepX.constraint/keepY.constraint
-res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(10,5,15,3))
-res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(10,5,-15))
-res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=2,keepX=c(50),keepX.constraint=list(comp1=c(100),comp2=c(10)))
-res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepY=c(10,5,15,3))
-res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=3,keepY=c(10,5,-15))
-res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=2,keepY=c(2,1,1))
-res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=2,keepY=c(2,1,1))
-res=wrapper.spls(X=data.light,Y=Y.mat.light,ncomp=2,keepY=c(3),keepY.constraint=list(comp1=c(100),comp2=c(10)))
+res=spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(10,5,15,3))
+res=spls(X=data.light,Y=Y.mat.light,ncomp=3,keepX=c(10,5,-15))
+res=spls(X=data.light,Y=Y.mat.light,ncomp=2,keepX=c(50),keepX.constraint=list(comp1=c(100),comp2=c(10)))
+res=spls(X=data.light,Y=Y.mat.light,ncomp=3,keepY=c(10,5,15,3))
+res=spls(X=data.light,Y=Y.mat.light,ncomp=3,keepY=c(10,5,-15))
+res=spls(X=data.light,Y=Y.mat.light,ncomp=2,keepY=c(2,1,1))
+res=spls(X=data.light,Y=Y.mat.light,ncomp=2,keepY=c(2,1,1))
+res=spls(X=data.light,Y=Y.mat.light,ncomp=2,keepY=c(3),keepY.constraint=list(comp1=c(100),comp2=c(10)))
 
 
 #######  wraper.plsda
-res=wrapper.plsda(X=data.light,Y=type.id.light,ncomp=3)
+res=plsda(X=data.light,Y=type.id.light,ncomp=3)
 ### errors, only difference with pls is Y factor
-res=wrapper.plsda(X=data.light,Y=Y.mat)
-res=wrapper.plsda(X=data.light,Y=NULL)
+res=plsda(X=data.light,Y=Y.mat)
+res=plsda(X=data.light,Y=NULL)
 
 
 #######  wraper.splsda
-res=wrapper.splsda(X=data.light,Y=type.id.light)
-res=wrapper.splsda(X=data.light,Y=type.id.light,ncomp=3,keepX=c(10,5,15))
-res=wrapper.splsda(X=data.light,Y=type.id.light,ncomp=3,keepX=c(10,5)) #complete keepX
-res=wrapper.splsda(X=data.light,Y=type.id.light,ncomp=3,keepX=c(10),keepX.constraint=list(comp1=c(100,1,3),comp2=c(10)))
-res=wrapper.splsda(X=data.light,Y=type.id.light,ncomp=3,keepX=c(1),keepX.constraint=list(comp1=c(100),comp2=c(10)))
-res=wrapper.splsda(X=data.light,Y=type.id.light,ncomp=3,keepX.constraint=list(comp1=c(100),comp2=c(10)))
+res=splsda(X=data.light,Y=type.id.light)
+res=splsda(X=data.light,Y=type.id.light,ncomp=3,keepX=c(10,5,15))
+res=splsda(X=data.light,Y=type.id.light,ncomp=3,keepX=c(10,5)) #complete keepX
+res=splsda(X=data.light,Y=type.id.light,ncomp=3,keepX=c(10),keepX.constraint=list(comp1=c(100,1,3),comp2=c(10)))
+res=splsda(X=data.light,Y=type.id.light,ncomp=3,keepX=c(1),keepX.constraint=list(comp1=c(100),comp2=c(10)))
+res=splsda(X=data.light,Y=type.id.light,ncomp=3,keepX.constraint=list(comp1=c(100),comp2=c(10)))
 ### errors, only difference with spls is Y factor and keepY
-res=wrapper.splsda(X=data.light,Y=Y.mat,ncomp=3,keepX=c(10,5,15))
-res=wrapper.splsda(X=data.light,Y=NULL,ncomp=3,keepX=c(10,5,15))
-res=wrapper.splsda(X=data.light,Y=type.id.light,ncomp=3,keepY=c(3),keepY.constraint=list(comp1=c(1),comp2=c(2)))
-res=wrapper.splsda(X=data.light,Y=type.id.light,ncomp=3,keepY=c(3))
+res=splsda(X=data.light,Y=Y.mat,ncomp=3,keepX=c(10,5,15))
+res=splsda(X=data.light,Y=NULL,ncomp=3,keepX=c(10,5,15))
+res=splsda(X=data.light,Y=type.id.light,ncomp=3,keepY=c(3),keepY.constraint=list(comp1=c(1),comp2=c(2)))
+res=splsda(X=data.light,Y=type.id.light,ncomp=3,keepY=c(3))
 
 
 
 #######  wraper.block.pls
-res=wrapper.block.pls(X=A.light,indY=2)
-res=wrapper.block.pls(list(data),Y=Y.mat,ncomp=2)
-res2=wrapper.block.pls(list(data),Y=Y.mat,ncomp=2,bias=TRUE)
-res3=wrapper.block.pls(list(data),Y=Y.mat,ncomp=2,scale=FALSE)
+res=block.pls(X=A.light,indY=2)
+res=block.pls(list(data),Y=Y.mat,ncomp=2)
+res2=block.pls(list(data),Y=Y.mat,ncomp=2,bias=TRUE)
+res3=block.pls(list(data),Y=Y.mat,ncomp=2,scale=FALSE)
 all.equal(res,res2)
 all.equal(res,res3)
-res=wrapper.block.pls(list(data.light),Y=Y.mat.light,ncomp=2,verbose=TRUE,tol=1e-30)
-res=wrapper.block.pls(list(data.near.zero),Y=Y.mat,ncomp=2,near.zero.var=TRUE)
+res=block.pls(list(data.light),Y=Y.mat.light,ncomp=2,verbose=TRUE,tol=1e-30)
+res=block.pls(list(data.near.zero),Y=Y.mat,ncomp=2,near.zero.var=TRUE)
 ### errors
-res=wrapper.block.pls(X=data.light,Y=type.id.light)
-res=wrapper.block.pls(X=list(data.light),Y=type.id.light)
-res=wrapper.block.pls(X=list(data.light),Y=Y.mat)
-res=wrapper.block.pls(X=A.light)
-res=wrapper.block.pls(list(data),Y=Y.mat,scheme="bla")
-res=wrapper.block.pls(list(data),Y=Y.mat,design="bla")
+res=block.pls(X=data.light,Y=type.id.light)
+res=block.pls(X=list(data.light),Y=type.id.light)
+res=block.pls(X=list(data.light),Y=Y.mat)
+res=block.pls(X=A.light)
+res=block.pls(list(data),Y=Y.mat,scheme="bla")
+res=block.pls(list(data),Y=Y.mat,design="bla")
 
 
 
 
 
 #######  wraper.block.spls
-res=wrapper.block.spls(X=A.light,indY=2,keepX=list(block1=c(10,5,15),block2=c(3,2)),ncomp=c(3,3))
-res=wrapper.block.spls(list(data),Y=Y.mat,keepX=list(block1=c(10,5,15),block2=c(3,2)),ncomp=3)
+res=block.spls(X=A.light,indY=2,keepX=list(block1=c(10,5,15),block2=c(3,2)),ncomp=c(3,3))
+res=block.spls(list(data),Y=Y.mat,keepX=list(block1=c(10,5,15),block2=c(3,2)),ncomp=3)
 ### errors, only difference with block.pls is keepX/Y and keepX.constraint/keepY.constraint
-res=wrapper.block.spls(X=list(data),Y=Y.mat,ncomp=3,keepX=c(10,5,15,3))
-res=wrapper.block.spls(X=list(data),Y=Y.mat,ncomp=3,keepX=list(c(10,5,-15)))
-res=wrapper.block.spls(X=list(data),Y=Y.mat,ncomp=2,keepX=c(50),keepX.constraint=list(comp1=c(100),comp2=c(10)))
-res=wrapper.block.spls(X=list(data),Y=Y.mat,ncomp=2,keepX=list(c(50)),keepX.constraint=list(list(comp1=c(100),comp2=c(10))))
-res=wrapper.block.spls(X=list(data),Y=Y.mat,ncomp=3,keepY=c(10,5,15,3))
-res=wrapper.block.spls(X=list(data),Y=Y.mat,ncomp=3,keepY=c(2,2,3,1))
-res=wrapper.block.spls(X=list(data),Y=Y.mat,ncomp=3,keepY=c(10,5,-15))
-res=wrapper.block.spls(X=list(data),Y=Y.mat,ncomp=2,keepY=c(3),keepY.constraint=list(comp1=c(100),comp2=c(10)))
+res=block.spls(X=list(data),Y=Y.mat,ncomp=3,keepX=c(10,5,15,3))
+res=block.spls(X=list(data),Y=Y.mat,ncomp=3,keepX=list(c(10,5,-15)))
+res=block.spls(X=list(data),Y=Y.mat,ncomp=2,keepX=c(50),keepX.constraint=list(comp1=c(100),comp2=c(10)))
+res=block.spls(X=list(data),Y=Y.mat,ncomp=2,keepX=list(c(50)),keepX.constraint=list(list(comp1=c(100),comp2=c(10))))
+res=block.spls(X=list(data),Y=Y.mat,ncomp=3,keepY=c(10,5,15,3))
+res=block.spls(X=list(data),Y=Y.mat,ncomp=3,keepY=c(2,2,3,1))
+res=block.spls(X=list(data),Y=Y.mat,ncomp=3,keepY=c(10,5,-15))
+res=block.spls(X=list(data),Y=Y.mat,ncomp=2,keepY=c(3),keepY.constraint=list(comp1=c(100),comp2=c(10)))
 
 
 
 
 
 #######  wraper.block.plsda
-res=wrapper.block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
-res=wrapper.block.plsda(list(data),Y=type.id,ncomp=2)
+res=block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
+res=block.plsda(list(data),Y=type.id,ncomp=2)
 ### errors, only difference with pls is Y factor
-res=wrapper.block.plsda(X=list(data),Y=Y.mat)
-res=wrapper.block.plsda(X=list(data),Y=NULL)
+res=block.plsda(X=list(data),Y=Y.mat)
+res=block.plsda(X=list(data),Y=NULL)
 
 
 
 #######  wraper.block.splsda
-res=wrapper.block.splsda(X=list(X=data,Y=type.id),keepX=list(block1=c(10,5)),indY=2,ncomp=c(3,2))
-res=wrapper.block.splsda(X=list(X=data,Y=type.id),keepX=list(block1=c(10,5)),indY=2,ncomp=c(2,2))
-res=wrapper.block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(c(100)),
+res=block.splsda(X=list(X=data,Y=type.id),keepX=list(block1=c(10,5)),indY=2,ncomp=c(3,2))
+res=block.splsda(X=list(X=data,Y=type.id),keepX=list(block1=c(10,5)),indY=2,ncomp=c(2,2))
+res=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(c(100)),
             keepX.constraint=list(list(comp1=c("ENSG00000001084","ENSG00000001461"),comp2=c("ENSG00000000938"))))
 ### errors, only difference with spls is Y factor and keepY
-res=wrapper.block.splsda(X=list(data),Y=Y.mat,ncomp=3,keepX=c(10,5,15))
-res=wrapper.block.splsda(X=list(data),Y=NULL,ncomp=3,keepX=c(10,5,15))
-res=wrapper.block.splsda(X=list(data),Y=type.id,ncomp=3,keepX=c(10,5,15))
-res=wrapper.block.splsda(X=list(data),Y=type.id.light,ncomp=3,keepX=c(3),keepX.constraint=list(comp1=c(1),comp2=c(2)))
-res=wrapper.block.splsda(X=list(data),Y=type.id.light,ncomp=3,keepX=c(3),keepX.constraint=list(list(comp1=c(1),comp2=c(2))))
-res=wrapper.block.splsda(X=list(data),Y=type.id.light,ncomp=3,keepX=list(c(3)),keepX.constraint=list(list(comp1=c(1),comp2=c(2))))
+res=block.splsda(X=list(data),Y=Y.mat,ncomp=3,keepX=c(10,5,15))
+res=block.splsda(X=list(data),Y=NULL,ncomp=3,keepX=c(10,5,15))
+res=block.splsda(X=list(data),Y=type.id,ncomp=3,keepX=c(10,5,15))
+res=block.splsda(X=list(data),Y=type.id.light,ncomp=3,keepX=c(3),keepX.constraint=list(comp1=c(1),comp2=c(2)))
+res=block.splsda(X=list(data),Y=type.id.light,ncomp=3,keepX=c(3),keepX.constraint=list(list(comp1=c(1),comp2=c(2))))
+res=block.splsda(X=list(data),Y=type.id.light,ncomp=3,keepX=list(c(3)),keepX.constraint=list(list(comp1=c(1),comp2=c(2))))
 
 
 
@@ -226,7 +235,7 @@ res=wrapper.block.splsda(X=list(data),Y=type.id.light,ncomp=3,keepX=list(c(3)),k
 
 # same results for sgccda and block.splsda. outputs are different though
 res=wrapper.sgccda(X=data,Y=type.id,keepA=list(c(10,5,10)),ncomp=3)
-res2=wrapper.block.splsda(X=list(X=data),Y=type.id,keepX=list(c(10,5,10)),ncomp=3,mode="canonical")
+res2=block.splsda(X=list(X=data),Y=type.id,keepX=list(c(10,5,10)),ncomp=3,mode="canonical")
 
 
 
@@ -235,51 +244,51 @@ res2=wrapper.block.splsda(X=list(X=data),Y=type.id,keepX=list(c(10,5,10)),ncomp=
 ## ======================================================================
 
 
-#######  wraper.meta.pls
-res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=exp)
-res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=as.character(exp))
-res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE)
-### errors, only difference with not meta is study
-res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=c(1,50))
-res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=1:167)
-res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=c(1,rep(2,166)))
-res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=c(1,1,rep(2,165)))
-res=wrapper.meta.pls(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE)
+#######  wraper.mint.pls
+res=mint.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=exp)
+res=mint.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=as.character(exp))
+res=mint.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE)
+### errors, only difference with not mint is study
+res=mint.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=c(1,50))
+res=mint.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=1:167)
+res=mint.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=c(1,rep(2,166)))
+res=mint.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=c(1,1,rep(2,165)))
+res=mint.pls(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE)
 
 
 
-#######  wraper.meta.plsda
-res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=exp)
-### errors, only difference with not meta is study
-res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=c(1,50))
-res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=1:167)
-res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=c(1,rep(2,166)))
-res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=c(1,1,rep(2,165)))
+#######  wraper.mint.plsda
+res=mint.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=exp)
+### errors, only difference with not mint is study
+res=mint.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=c(1,50))
+res=mint.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=1:167)
+res=mint.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=c(1,rep(2,166)))
+res=mint.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=c(1,1,rep(2,165)))
 
 
-#######  wraper.meta.spls
-res=wrapper.meta.spls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
+#######  wraper.mint.spls
+res=mint.spls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
-#######  wraper.meta.splsda
-res=wrapper.meta.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
+#######  wraper.mint.splsda
+res=mint.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
 
 
-#######  wraper.meta.block.pls
-res=wrapper.meta.block.pls(X=list(X=data,Y=Y.mat),indY=2,ncomp=c(2,2))
-res=wrapper.meta.block.pls(list(data),Y=Y.mat,ncomp=2)
+#######  wraper.mint.block.pls
+res=mint.block.pls(X=list(X=data,Y=Y.mat),indY=2,ncomp=c(2,2))
+res=mint.block.pls(list(data),Y=Y.mat,ncomp=2)
 
-#######  wraper.meta.block.spls
-res=wrapper.meta.block.spls(X=list(X=data,Y=Y.mat),indY=2,keepX=list(block1=c(10,5)),ncomp=c(2,2))
-res=wrapper.meta.block.spls(list(data),Y=Y.mat,ncomp=2)
+#######  wraper.mint.block.spls
+res=mint.block.spls(X=list(X=data,Y=Y.mat),indY=2,keepX=list(block1=c(10,5)),ncomp=c(2,2))
+res=mint.block.spls(list(data),Y=Y.mat,ncomp=2)
 
-#######  wraper.meta.block.plsda
-res=wrapper.meta.block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
-res=wrapper.meta.block.plsda(list(data),Y=type.id,ncomp=2)
+#######  wraper.mint.block.plsda
+res=mint.block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
+res=mint.block.plsda(list(data),Y=type.id,ncomp=2)
 
-#######  wraper.meta.block.splsda
-res=wrapper.meta.block.splsda(X=list(X=data,Y=type.id),indY=2,keepX=list(block1=c(10,5)),ncomp=c(2,2))
-res=wrapper.meta.block.splsda(list(data),Y=type.id,ncomp=2)
+#######  wraper.mint.block.splsda
+res=mint.block.splsda(X=list(X=data,Y=type.id),indY=2,keepX=list(block1=c(10,5)),ncomp=c(2,2))
+res=mint.block.splsda(list(data),Y=type.id,ncomp=2)
 
 
 
@@ -332,7 +341,7 @@ system.time(splsda(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=TRUE)
 system.time(mixOmics(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=TRUE))
 
 system.time(splsda(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE))
-system.time(wrapper.splsda(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE,scale=TRUE))
+system.time(splsda(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE,scale=TRUE))
 system.time(mixOmics(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE,scale=TRUE))
 #note: difference of time due to different number of iterations (due to the convergence that we have now) and maybe other things:
 sp1=splsda(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE)
@@ -345,21 +354,21 @@ sp1$iter;sp2$iter
 ## ==      data for several study
 ## ======================================================================
 
-#meta.pls
+#mint.pls
 res=mixOmics(data,Y=Y.mat,ncomp=3,study=exp)
 
-#meta.spls
+#mint.spls
 res=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(100,50),ncomp=3)
 res1=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(100,50),ncomp=3)#with gene names in keepX.constraint
 res2=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c(120,179)),keepX=c(100,50),ncomp=3)#with numbers in keepX.constraint
     all.equal(res1,res2)
-res=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c(120,179)),ncomp=3)#meta.spls missing keepX is completed by pls-like
+res=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c(120,179)),ncomp=3)#mint.spls missing keepX is completed by pls-like
 res$keepX
 
-#meta.plsda
+#mint.plsda
 res=mixOmics(data,type.id,ncomp=3,study=exp)
 
-#meta.splsda
+#mint.splsda
 res=mixOmics(X=data,Y=type.id,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(10,15),ncomp=3)
 
 
@@ -369,7 +378,7 @@ res=mixOmics(X=data,Y=type.id,study=exp,keepX.constraint=list(c("ENSG00000006576
 res=mixOmics(X=list(data),Y=unmap(type.id),study=exp)
 
 #block.spls
-res=mixOmics(X=list(data),Y=unmap(type.id),keepX=c(10,5,15),study=exp)
+res=mixOmics(X=list(data),Y=unmap(type.id),keepX=list(10,5,15),study=exp)
 res=mixOmics(X=list(data=data,Y=Y.mat),indY=2,keepX=list(c(10,5,15)),ncomp=c(3,3),study=exp)
 res=mixOmics(X=A,indY=2,keepX.constraint=list(X=list(1:10)),ncomp=c(3,1)) # OK
 

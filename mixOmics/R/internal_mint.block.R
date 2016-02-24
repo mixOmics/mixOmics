@@ -1,6 +1,32 @@
 #############################################################################################################
+# Copyright (C) 2015
+# Amrit Singh
+# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+# Benoit Gautier
+#
+# created: 20-07-2014
+# last modified: 24-02-2016
+
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
+
+
+#############################################################################################################
 #
 # Date: July 20, 2014
+# last modified: 24-02-2016
 # Author: Amrit Singh
 # sparse generalized canonical correlation discriminant analysis (sgccda)
 #
@@ -31,7 +57,7 @@
 #           ncomp - vector specifying number of components to keep per datasets
 #   outputs:
 # ----------------------------------------------------------------------------------------------------------
-sparse.mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NULL,#rep(1, length(A)),
+internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NULL,#rep(1, length(A)),
                             ncomp = rep(1, length(A)), scheme = "centroid", scale = TRUE,  bias = FALSE,
                             init = "svd.single", tol = 1e-06, verbose = FALSE,
                             mode = "canonical", max.iter = 500,study = NULL, keepA = NULL,

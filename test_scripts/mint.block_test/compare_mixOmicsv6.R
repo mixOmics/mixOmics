@@ -9,27 +9,27 @@ library(mixOmics)
 
 source("mixOmics/R/check_entry.R")
 source("mixOmics/R/helpers.R")
-source("mixOmics/R/sparse.meta.block.R")
+source("mixOmics/R/sparse.mint.block.R")
 
-source("mixOmics/R/meta.spls.hybrid.R")
+source("mixOmics/R/mint.spls.hybrid.R")
 source("mixOmics/R/pls.R")
 source("mixOmics/R/plsda.R")
 source("mixOmics/R/spls.R")
 source("mixOmics/R/splsda.R")
-source("mixOmics/R/meta.pls.R")
-source("mixOmics/R/meta.plsda.R")
-source("mixOmics/R/meta.spls.R")
-source("mixOmics/R/meta.splsda.R")
+source("mixOmics/R/mint.pls.R")
+source("mixOmics/R/mint.plsda.R")
+source("mixOmics/R/mint.spls.R")
+source("mixOmics/R/mint.splsda.R")
 
-source("mixOmics/R/wrapper.sparse.meta.block.R")
+source("mixOmics/R/wrapper.sparse.mint.block.R")
 source("mixOmics/R/block.pls.R")
 source("mixOmics/R/block.spls.R")
 source("mixOmics/R/block.plsda.R")
 source("mixOmics/R/block.splsda.R")
-source("mixOmics/R/meta.block.pls.R")
-source("mixOmics/R/meta.block.spls.R")
-source("mixOmics/R/meta.block.plsda.R")
-source("mixOmics/R/meta.block.splsda.R")
+source("mixOmics/R/mint.block.pls.R")
+source("mixOmics/R/mint.block.spls.R")
+source("mixOmics/R/mint.block.plsda.R")
+source("mixOmics/R/mint.block.splsda.R")
 
 
 source("mixOmics/R/wrapper.rgcca.R")
@@ -76,23 +76,23 @@ lapply(checklist, function(x){all.equal(plsv5.abs[names(plsv5.abs) == x],
 
 
 #=============================================================================================================================================
-#                           meta.PLS
+#                           mint.PLS
 #=============================================================================================================================================
 
 
-source("../multi-group/meta.pls.R")
-source("../multi-group/meta.spls.R")
+source("../multi-group/mint.pls.R")
+source("../multi-group/mint.spls.R")
 source("../multi-group/helpers.R")
 
 study=factor(c(rep(1,15),rep(2,15),rep(3,10)))
 
-plsv5=meta.pls(X,Y,study=study)
+plsv5=mint.pls(X,Y,study=study)
 
 
 
 source("mixOmics/R/check_entry.R")
 source("mixOmics/R/helpers.R")
-plsv6=wrapper.meta.pls(X,Y,study=study)
+plsv6=wrapper.mint.pls(X,Y,study=study)
 
 
 all.equal(plsv5$loadings.global$X,plsv6$loadings$X)
@@ -106,7 +106,7 @@ all.equal(plsv5$loadings.partial$X,plsv6$loadings.partial$X)
 #                           PLSDA
 #=============================================================================================================================================
 
-load("test_scripts/meta.block_test/Fibro-ESC-iPSC.6exp.167samples.light.Rdata") #load data, type.id, exp among others
+load("test_scripts/mint.block_test/Fibro-ESC-iPSC.6exp.167samples.light.Rdata") #load data, type.id, exp among others
 
 #one study
 ind=which(exp=="Briggs")
@@ -132,20 +132,20 @@ lapply(checklist, function(x){all.equal(plsdav5.abs[names(plsdav5.abs) == x],
 
 
 #=============================================================================================================================================
-#                           meta.PLSDA
+#                           mint.PLSDA
 #=============================================================================================================================================
 
-source("../multi-group/meta.pls.R")
-source("../multi-group/meta.spls.R")
+source("../multi-group/mint.pls.R")
+source("../multi-group/mint.spls.R")
 source("../multi-group/helpers.R")
 
 Y.mat=unmap(type.id)
 rownames(Y.mat)=rownames(data)
-plsdav5=meta.pls(data,Y.mat,study=exp)
+plsdav5=mint.pls(data,Y.mat,study=exp)
 
 source("mixOmics/R/check_entry.R")
 source("mixOmics/R/helpers.R")
-plsdav6=wrapper.meta.plsda(X=data,Y=type.id,ncomp=2,study=exp,near.zero.var=FALSE)
+plsdav6=wrapper.mint.plsda(X=data,Y=type.id,ncomp=2,study=exp,near.zero.var=FALSE)
 
 
 all.equal(plsdav5$loadings.global$X,plsdav6$loadings$X)
@@ -182,21 +182,21 @@ lapply(checklist, function(x){all.equal(splsv5.abs[names(splsv5.abs) == x],
 
 
 #=============================================================================================================================================
-#                           meta.sPLS
+#                           mint.sPLS
 #=============================================================================================================================================
 
 
-source("../multi-group/meta.pls.R")
-source("../multi-group/meta.spls.R")
+source("../multi-group/mint.pls.R")
+source("../multi-group/mint.spls.R")
 source("../multi-group/helpers.R")
 study=factor(c(rep(1,15),rep(2,15),rep(3,10)))
 
-splsv5=meta.spls(X,Y,ncomp=3,keepX=c(10,10,10),study=study)
+splsv5=mint.spls(X,Y,ncomp=3,keepX=c(10,10,10),study=study)
 
 source("mixOmics/R/check_entry.R")
 source("mixOmics/R/helpers.R")
-source("mixOmics/R/meta.spls.R")
-splsv6=wrapper.meta.spls(X,Y,ncomp=3,keepX=c(10,10,10),study=study)
+source("mixOmics/R/mint.spls.R")
+splsv6=wrapper.mint.spls(X,Y,ncomp=3,keepX=c(10,10,10),study=study)
 
 
 all.equal(splsv5$loadings.global$X,splsv6$loadings$X)
@@ -212,7 +212,7 @@ all.equal(splsv5$variates.partial$X,splsv6$variates.partial$X)
 #=============================================================================================================================================
 
 
-#load("test_scripts/meta.block_test/Fibro-ESC-iPSC.6exp.167samples.light.Rdata") #load data, type.id, exp among others
+#load("test_scripts/mint.block_test/Fibro-ESC-iPSC.6exp.167samples.light.Rdata") #load data, type.id, exp among others
 
 #one study
 ind=which(exp=="Briggs")
@@ -239,22 +239,22 @@ lapply(checklist, function(x){all.equal(splsdav5.abs[names(splsdav5.abs) == x],
 
 
 #=============================================================================================================================================
-#                           meta.sPLSDA
+#                           mint.sPLSDA
 #=============================================================================================================================================
 
 
-source("../multi-group/meta.pls.R")
-source("../multi-group/meta.spls.R")
+source("../multi-group/mint.pls.R")
+source("../multi-group/mint.spls.R")
 source("../multi-group/helpers.R")
 
 Y.mat=unmap(type.id)
 rownames(Y.mat)=rownames(data)
-splsdav5=meta.spls(data,Y.mat,study=exp,ncomp=3,keepX=c(10,10,10))
+splsdav5=mint.spls(data,Y.mat,study=exp,ncomp=3,keepX=c(10,10,10))
 
 source("mixOmics/R/check_entry.R")
 source("mixOmics/R/helpers.R")
-source("mixOmics/R/meta.splsda.R")
-splsdav6=wrapper.meta.splsda(X=data,Y=type.id,ncomp=3,study=exp,near.zero.var=FALSE,keepX=c(10,10,10))
+source("mixOmics/R/mint.splsda.R")
+splsdav6=wrapper.mint.splsda(X=data,Y=type.id,ncomp=3,study=exp,near.zero.var=FALSE,keepX=c(10,10,10))
 
 
 all.equal(splsdav5$loadings.global$X,splsdav6$loadings$X)

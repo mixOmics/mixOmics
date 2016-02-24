@@ -52,7 +52,7 @@ near.zero.var)
 
 
     
-    result.rgcca = sparse.mint.block(A = X, design = design, tau = tau,
+    result.rgcca = internal_mint.block(A = X, design = design, tau = tau,
     ncomp = ncomp,
     scheme = scheme, scale = scale,
     init = init, bias = bias, tol = tol, verbose = verbose,

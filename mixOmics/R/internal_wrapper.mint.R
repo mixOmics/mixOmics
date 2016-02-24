@@ -1,8 +1,12 @@
-# Copyright (C) 2015
-# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#############################################################################################################
+# Author :
+#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#
 # created: 22-04-2015
-# last modified: 18-02-2016
-
+# last modified: 24-02-2016
+#
+# Copyright (C) 2015
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -16,6 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
 
 
 # ========================================================================================================
@@ -38,7 +43,7 @@
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
 
-wrapper.mint.spls.hybrid <- function(X,
+internal_wrapper.mint <- function(X,
 Y,
 study,
 ncomp=2,
@@ -114,7 +119,7 @@ tol = 1e-06)
     nzv.A=check$nzv.A
 
 
-    result <- sparse.mint.block(A = list(X = X, Y = Y), indY = 2, mode = mode, ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
+    result <- internal_mint.block(A = list(X = X, Y = Y), indY = 2, mode = mode, ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
     design = design, keepA = list(keepX,keepY),keepA.constraint = list(keepX.constraint,keepY.constraint),
     scale = scale, scheme = "centroid",init="svd", study = study)#,near.zero.var=near.zero.var)
     

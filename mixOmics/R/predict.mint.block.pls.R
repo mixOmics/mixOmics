@@ -27,7 +27,7 @@ predict.mixOmics <-
 predict.pls <-  predict.spls<- predict.plsda <- predict.splsda <-
 predict.mint.pls <- predict.mint.spls <- predict.mint.plsda <- predict.mint.splsda <-
 predict.block.pls <- predict.block.spls <- predict.block.plsda <- predict.block.splsda <-
-predict.mint.block.pls <- predict.mint.block.spls <- predict.mint.block.plsda <- predict.mint.block.splsda <-
+predict.mint.block.pls <- predict.mint.block.spls <- predict.mint.block.plsda <- predict.mint.block.splsda <- predict.sgcca <-
 
 function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),  ...)
 {

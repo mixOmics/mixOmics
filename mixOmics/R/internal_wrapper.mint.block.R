@@ -1,8 +1,12 @@
-# Copyright (C) 2015
-# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#############################################################################################################
+# Author :
+#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#
 # created: 22-04-2015
-# last modified: 18-02-2016
-
+# last modified: 24-02-2016
+#
+# Copyright (C) 2015
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -16,6 +20,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
+
 
 # perform the mint.pls on a subset of variables on one only dimension, deflate the intial matrices X and Y (already center by study)
 
@@ -23,7 +29,7 @@
 # we can have a list of studies for Discriminant Analyses, not for pls/spls as they would be overlapping batch effects
 
 
-wrapper.sparse.mint.block <- function(  X,
+internal_wrapper.mint.block <- function(  X,
 Y,
 indY,
 study,
@@ -96,7 +102,7 @@ near.zero.var = FALSE)
     # near.zero.var: do you want to remove variables with very small variance
     
     
-    result=sparse.mint.block(A=A,indY=indY,design=design,ncomp=ncomp,scheme = scheme,
+    result=internal_mint.block(A=A,indY=indY,design=design,ncomp=ncomp,scheme = scheme,
     scale =scale,  bias = bias,init = init, tol = tol, verbose = verbose,tau=NULL,
     mode = mode, max.iter = max.iter,study = study, keepA = keepA,
     keepA.constraint = keepA.constraint)#, near.zero.var = near.zero.var)

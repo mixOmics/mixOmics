@@ -1,7 +1,12 @@
+#############################################################################################################
 # Copyright (C) 2009
 # Kim-Anh Le Cao, French National Institute for Agricultural Research and
 # ARC Centre of Excellence ins Bioinformatics, Institute for Molecular Bioscience, University of Queensland, Australia
+# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 # Leigh Coonan, Queensland Faculty for Advanced Bioinformatics, Australia
+#
+# created: 2010?
+# last modified: 24-02-2016
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -16,6 +21,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
+
 
 plot.pca  <- #plot.spca <- plot.ipca <- plot.sipca <-
 function(   x,

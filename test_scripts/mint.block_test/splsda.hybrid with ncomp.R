@@ -2,49 +2,39 @@
 ############# PLS #############
 ###############################
 #### Difference because of not the same starting point between the 2 algo "pls" and "spls" in mixOmics package when tol = 1e-06
-#source("/Users/florian/Work/git/package-mixomics/test_scripts/meta.block_test/chack_mixOmics.R")
+#source("/Users/florian/Work/git/package-mixomics/test_scripts/mint.block_test/chack_mixOmics.R")
 rm(list=ls())
 setwd("/Users/florian/Work/git/package-mixOmics/")
-#library(mixOmics)
-
-sourceDir <- function(path, trace = TRUE, ...) {
-    for (nm in list.files(path, pattern = "\\.[RrSsQq]$")) {
-        if(trace) cat(nm,":")
-        source(file.path(path, nm), ...)
-        if(trace) cat("\n")
-    }
-}
-sourceDir("/Users/florian/Work/git/package-mixOmics/mixOmics/R/",trace=FALSE)
-source("/Users/florian/Work/git/package-mixOmics/mixOmics/R/predict.meta.block.pls.R")
+library(mixOmics)
 
 
-load("test_scripts/meta.block_test/Fibro-ESC-iPSC.6exp.167samples.light.Rdata") #load data, type.id, exp among others
+load("test_scripts/mint.block_test/Fibro-ESC-iPSC.6exp.167samples.light.Rdata") #load data, type.id, exp among others
 
 
 
-if(FALSE){source("mixOmics/R/check_entry.R")
+source("mixOmics/R/check_entry.R")
 source("mixOmics/R/helpers.R")
-source("mixOmics/R/sparse.meta.block.R")
+source("mixOmics/R/sparse.mint.block.R")
 
-source("mixOmics/R/meta.spls.hybrid.R")
+source("mixOmics/R/mint.spls.hybrid.R")
 source("mixOmics/R/pls.R")
 source("mixOmics/R/plsda.R")
 source("mixOmics/R/spls.R")
 source("mixOmics/R/splsda.R")
-source("mixOmics/R/meta.pls.R")
-source("mixOmics/R/meta.plsda.R")
-source("mixOmics/R/meta.spls.R")
-source("mixOmics/R/meta.splsda.R")
+source("mixOmics/R/mint.pls.R")
+source("mixOmics/R/mint.plsda.R")
+source("mixOmics/R/mint.spls.R")
+source("mixOmics/R/mint.splsda.R")
 
-source("mixOmics/R/wrapper.sparse.meta.block.R")
+source("mixOmics/R/wrapper.sparse.mint.block.R")
 source("mixOmics/R/block.pls.R")
 source("mixOmics/R/block.spls.R")
 source("mixOmics/R/block.plsda.R")
 source("mixOmics/R/block.splsda.R")
-source("mixOmics/R/meta.block.pls.R")
-source("mixOmics/R/meta.block.spls.R")
-source("mixOmics/R/meta.block.plsda.R")
-source("mixOmics/R/meta.block.splsda.R")
+source("mixOmics/R/mint.block.pls.R")
+source("mixOmics/R/mint.block.spls.R")
+source("mixOmics/R/mint.block.plsda.R")
+source("mixOmics/R/mint.block.splsda.R")
 
 
 source("mixOmics/R/wrapper.rgcca.R")
@@ -54,7 +44,7 @@ source("mixOmics/R/wrapper.sgccda.R") #same as block.splsda
 
 
 source("mixOmics/R/mixOmics.R")
-}
+
 
 
 
@@ -92,9 +82,13 @@ colnames(data.near.zero)=c(colnames(data),paste0("nearzero",1:10))
 ## =========================================================================================================
 
 
-#wraper.meta.spls.hybrid, function not available to user, so not a proper check to conduct
-res=wrapper.meta.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE,tol=1e-25)
-res=wrapper.meta.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(10,5),ncomp=3,near.zero.var=FALSE,tol=1e-25)
+#wraper.mint.spls.hybrid, function not available to user, so not a proper check to conduct
+res=wrapper.mint.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE,tol=1e-25)
+
+res1=wrapper.mint.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(10,5),ncomp=3,near.zero.var=FALSE,tol=1e-25)
+
+
+res2=wrapper.mint.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(10,5),ncomp=3,near.zero.var=FALSE,tol=1e-25)
 
 
 
@@ -174,7 +168,7 @@ res=wrapper.splsda(X=data.light,Y=type.id.light,ncomp=3,keepY=c(3))
 res=wrapper.block.pls(X=A.light,indY=2)
 res=wrapper.block.pls(list(data),Y=Y.mat,ncomp=2)
 res2=wrapper.block.pls(list(data),Y=Y.mat,ncomp=2,bias=TRUE)
-res3=wrapper.block.pls(list(data),Y=Y.mat,ncomp=2,scale=FALSE,verbose=TRUE)
+res3=wrapper.block.pls(list(data),Y=Y.mat,ncomp=2,scale=FALSE)
 all.equal(res,res2)
 all.equal(res,res3)
 res=wrapper.block.pls(list(data.light),Y=Y.mat.light,ncomp=2,verbose=TRUE,tol=1e-30)
@@ -245,51 +239,51 @@ res2=wrapper.block.splsda(X=list(X=data),Y=type.id,keepX=list(c(10,5,10)),ncomp=
 ## ======================================================================
 
 
-#######  wraper.meta.pls
-res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=exp)
-res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=as.character(exp))
-res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE)
-### errors, only difference with not meta is study
-res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=c(1,50))
-res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=1:167)
-res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=c(1,rep(2,166)))
-res=wrapper.meta.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=c(1,1,rep(2,165)))
-res=wrapper.meta.pls(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE)
+#######  wraper.mint.pls
+res=wrapper.mint.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=exp)
+res=wrapper.mint.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=as.character(exp))
+res=wrapper.mint.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE)
+### errors, only difference with not mint is study
+res=wrapper.mint.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=c(1,50))
+res=wrapper.mint.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=1:167)
+res=wrapper.mint.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=c(1,rep(2,166)))
+res=wrapper.mint.pls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,study=c(1,1,rep(2,165)))
+res=wrapper.mint.pls(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE)
 
 
 
-#######  wraper.meta.plsda
-res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=exp)
-### errors, only difference with not meta is study
-res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=c(1,50))
-res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=1:167)
-res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=c(1,rep(2,166)))
-res=wrapper.meta.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=c(1,1,rep(2,165)))
+#######  wraper.mint.plsda
+res=wrapper.mint.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=exp)
+### errors, only difference with not mint is study
+res=wrapper.mint.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=c(1,50))
+res=wrapper.mint.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=1:167)
+res=wrapper.mint.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=c(1,rep(2,166)))
+res=wrapper.mint.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=c(1,1,rep(2,165)))
 
 
-#######  wraper.meta.spls
-res=wrapper.meta.spls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
+#######  wraper.mint.spls
+res=wrapper.mint.spls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
-#######  wraper.meta.splsda
-res=wrapper.meta.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
+#######  wraper.mint.splsda
+res=wrapper.mint.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
 
 
-#######  wraper.meta.block.pls
-res=wrapper.meta.block.pls(X=list(X=data,Y=Y.mat),indY=2,ncomp=c(2,2))
-res=wrapper.meta.block.pls(list(data),Y=Y.mat,ncomp=2)
+#######  wraper.mint.block.pls
+res=wrapper.mint.block.pls(X=list(X=data,Y=Y.mat),indY=2,ncomp=c(2,2))
+res=wrapper.mint.block.pls(list(data),Y=Y.mat,ncomp=2)
 
-#######  wraper.meta.block.spls
-res=wrapper.meta.block.spls(X=list(X=data,Y=Y.mat),indY=2,keepX=list(block1=c(10,5)),ncomp=c(2,2))
-res=wrapper.meta.block.spls(list(data),Y=Y.mat,ncomp=2)
+#######  wraper.mint.block.spls
+res=wrapper.mint.block.spls(X=list(X=data,Y=Y.mat),indY=2,keepX=list(block1=c(10,5)),ncomp=c(2,2))
+res=wrapper.mint.block.spls(list(data),Y=Y.mat,ncomp=2)
 
-#######  wraper.meta.block.plsda
-res=wrapper.meta.block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
-res=wrapper.meta.block.plsda(list(data),Y=type.id,ncomp=2)
+#######  wraper.mint.block.plsda
+res=wrapper.mint.block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
+res=wrapper.mint.block.plsda(list(data),Y=type.id,ncomp=2)
 
-#######  wraper.meta.block.splsda
-res=wrapper.meta.block.splsda(X=list(X=data,Y=type.id),indY=2,keepX=list(block1=c(10,5)),ncomp=c(2,2))
-res=wrapper.meta.block.splsda(list(data),Y=type.id,ncomp=2)
+#######  wraper.mint.block.splsda
+res=wrapper.mint.block.splsda(X=list(X=data,Y=type.id),indY=2,keepX=list(block1=c(10,5)),ncomp=c(2,2))
+res=wrapper.mint.block.splsda(list(data),Y=type.id,ncomp=2)
 
 
 
@@ -302,8 +296,6 @@ res=wrapper.meta.block.splsda(list(data),Y=type.id,ncomp=2)
 ## =========================================================================================================
 
 
-type.id.light=factor(type.id.light)
-type.id=factor(type.id)
 
 ## ======================================================================
 ## ==      data for one study
@@ -355,21 +347,21 @@ sp1$iter;sp2$iter
 ## ==      data for several study
 ## ======================================================================
 
-#meta.pls
+#mint.pls
 res=mixOmics(data,Y=Y.mat,ncomp=3,study=exp)
 
-#meta.spls
+#mint.spls
 res=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(100,50),ncomp=3)
 res1=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(100,50),ncomp=3)#with gene names in keepX.constraint
 res2=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c(120,179)),keepX=c(100,50),ncomp=3)#with numbers in keepX.constraint
     all.equal(res1,res2)
-res=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c(120,179)),ncomp=3)#meta.spls missing keepX is completed by pls-like
+res=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c(120,179)),ncomp=3)#mint.spls missing keepX is completed by pls-like
 res$keepX
 
-#meta.plsda
+#mint.plsda
 res=mixOmics(data,type.id,ncomp=3,study=exp)
 
-#meta.splsda
+#mint.splsda
 res=mixOmics(X=data,Y=type.id,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(10,15),ncomp=3)
 
 

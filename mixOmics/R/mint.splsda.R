@@ -1,8 +1,12 @@
-# Copyright (C) 2015
-# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#############################################################################################################
+# Author :
+#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#
 # created: 22-04-2015
-# last modified: 18-02-2016
-
+# last modified: 24-02-2016
+#
+# Copyright (C) 2015
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -16,11 +20,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
 
 
 # ========================================================================================================
 # mint.splsda: perform a vertical PLS on a combination of experiments, input as a matrix in X
-# this function is a particular setting of mint.spls.hybrid, the formatting of the input is checked in wrapper.mint.spls.hybrid
+# this function is a particular setting of internal_mint.block, the formatting of the input is checked in internal_wrapper.mint
 # ========================================================================================================
 
 # X: numeric matrix of predictors
@@ -65,12 +70,12 @@ near.zero.var = FALSE)
     Y.mat=unmap(Y)
     colnames(Y.mat) = paste0("Y", 1:ncol(Y.mat))
 
-    result <- wrapper.mint.spls.hybrid(X=X,Y=Y.mat,ncomp=ncomp,near.zero.var=near.zero.var,study=study,mode=mode,
+    result <- internal_wrapper.mint(X=X,Y=Y.mat,ncomp=ncomp,near.zero.var=near.zero.var,study=study,mode=mode,
     keepX=keepX,keepX.constraint=keepX.constraint,max.iter=max.iter,tol=tol,scale=scale)
     
     
     cl = match.call()
-    cl[[1]] = as.name("mint.splsda")
+    #cl[[1]] = as.name("mint.splsda")
     
     
     
@@ -84,7 +89,7 @@ near.zero.var = FALSE)
     row.names(out$variates$Y) = row.names(out$variates$X)
     row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(Y)))
     
-    class(out) = "mint.splsda"
+    class(out) = c("mint.splsda","mint.pls","pls")
     return(invisible(out))
     
     

@@ -47,7 +47,7 @@ max.iter
   print(dim(X[[1]]))
   print(dim(X[[2]]))
   temp=crossprod(X[[1]],X[[2]])
-  result.sgcca = sparse.mint.block(A = X, design = design, tau = NULL,
+  result.sgcca = internal_mint.block(A = X, design = design, tau = NULL,
                        ncomp = ncomp,
                        scheme = scheme, scale = scale,
                        init = init, bias = bias, tol = tol, verbose = verbose,
@@ -93,7 +93,7 @@ max.iter
     
   )
 
-  class(output) = 'rgcca'
+  class(output) = 'sgcca'
   return(invisible(output))
   
 }

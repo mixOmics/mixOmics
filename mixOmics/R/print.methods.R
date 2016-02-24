@@ -1,14 +1,20 @@
-# Copyright (C) 2009 
-# Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-# Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-# Kim-Anh Le Cao, French National Institute for Agricultural Research and 
-# ARC Centre of Excellence ins Bioinformatics, Institute for Molecular Bioscience, University of Queensland, Australia
-# Leigh Coonan, Student, University of Queensland, Australia
-# Fangzhou Yao, Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia and
-# Shangai University of Finance and Economics, Shanghai, P.R. China
-# Jeff Coquery, Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia and
-# Sup Biotech, Paris, France
-
+#############################################################################################################
+# Author :
+#   Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+#   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
+#   Kim-Anh Le Cao, French National Institute for Agricultural Research and
+#   ARC Centre of Excellence ins Bioinformatics, Institute for Molecular Bioscience, University of Queensland, Australia
+#   Leigh Coonan, Student, University of Queensland, Australia
+#   Fangzhou Yao, Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia and
+#   Shangai University of Finance and Economics, Shanghai, P.R. China
+#   Jeff Coquery, Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia and
+#   Sup Biotech, Paris, France
+#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#
+# created: 2009
+# last modified: 24-02-2016
+#
+# Copyright (C) 2009
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,6 +29,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
 
 
 #------------------ print method for pls ------------------#
@@ -235,31 +242,28 @@ function(x, ...)
 # ------------------------ print for pca --------------------------------
 print.pca <- function(x, ...) {
     
-
+    
     cat("Eigenvalues for the first ", x$ncomp, "principal components:", "\n")
     print(x$sdev[1:x$ncomp])
     cat("\n")
     
+    per.var = as.vector(x$sdev^2/x$var.tot)
+    cum.var=as.vector(cumsum(per.var))
+    x$sdev=as.vector(x$sdev)
+    names(x$sdev) = paste("PC", 1:length(x$sdev), sep = "")
+    names(per.var) = paste("PC", 1:length(per.var), sep = "")
+    names(cum.var) = paste("PC", 1:length(cum.var), sep = "")
     
-    #if(!x$NA.X) {
-        per.var = as.vector(x$sdev^2/x$var.tot)
-        cum.var=as.vector(cumsum(per.var))
-        x$sdev=as.vector(x$sdev)
-        names(x$sdev) = paste("PC", 1:length(x$sdev), sep = "")
-        names(per.var) = paste("PC", 1:length(per.var), sep = "")
-        names(cum.var) = paste("PC", 1:length(cum.var), sep = "")
-        
-        cat("Proportion of explained variance for the first ", x$ncomp, "principal components:", "\n")
-        print(per.var[1:x$ncomp])
-        cat("\n")
-
-        cat("Cumulative proportion explained variance for the first ", x$ncomp, "principal components:", "\n")
-        print(cum.var[1:x$ncomp])
-        cat("\n")
-
-        cat(" Other available components: \n", "-------------------- \n")
-        cat(" loading vectors: see object$rotation \n")
-        #}
+    cat("Proportion of explained variance for the first ", x$ncomp, "principal components:", "\n")
+    print(per.var[1:x$ncomp])
+    cat("\n")
+    
+    cat("Cumulative proportion explained variance for the first ", x$ncomp, "principal components:", "\n")
+    print(cum.var[1:x$ncomp])
+    cat("\n")
+    
+    cat(" Other available components: \n", "-------------------- \n")
+    cat(" loading vectors: see object$rotation \n")
 }
 
 # ------------------------ print for spca -------------------------

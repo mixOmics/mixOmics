@@ -115,7 +115,7 @@ verbose = FALSE
     Y=unmap(Y)
     
     
-    result <- wrapper.sparse.mint.block(X=X,Y=Y,ncomp=ncomp,keepX.constraint=keepA.constraint,
+    result <- internal_wrapper.mint.block(X=X,Y=Y,ncomp=ncomp,keepX.constraint=keepA.constraint,
     keepX=keepA,scheme=scheme,mode=mode,scale=scale,
     bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=FALSE)
     

@@ -1,8 +1,12 @@
-# Copyright (C) 2015
-# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#############################################################################################################
+# Author :
+#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#
 # created: 22-04-2015
-# last modified: 18-02-2016
-
+# last modified: 24-02-2016
+#
+# Copyright (C) 2015
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -16,11 +20,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
 
 
 # ========================================================================================================
 # mint.spls: perform a vertical PLS on a combination of experiments, input as a matrix in X
-# this function is a particular setting of mint.spls.hybrid, the formatting of the input is checked in wrapper.mint.spls.hybrid
+# this function is a particular setting of internal_mint.block, the formatting of the input is checked in internal_wrapper.mint
 # ========================================================================================================
 
 # X: numeric matrix of predictors
@@ -52,19 +57,19 @@ max.iter = 500,
 near.zero.var = FALSE)
 {
 
-    result <- wrapper.mint.spls.hybrid(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,study=study,mode=mode,
+    result <- internal_wrapper.mint(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,study=study,mode=mode,
     keepX=keepX,keepY=keepY,keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,max.iter=max.iter,tol=tol)
     
     
     cl = match.call()
-    cl[[1]] = as.name("mint.spls")
+    #cl[[1]] = as.name("mint.spls")
     
     out=list(call=cl,X=result$X[[1]],Y=result$Y[[1]],ncomp=result$ncomp,study=result$study,mode=result$mode,keepX=result$keepA[[1]],keepY=result$keepA[[2]],
     keepX.constraint=result$keepA.constraint[[1]],keepY.constraint=result$keepA.constraint[[2]],
     variates=result$variates,loadings=result$loadings,variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,
     names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
     
-    class(out) = "mint.spls"
+    class(out) = c("mint.spls","mint.pls","pls")
     return(invisible(out))
  
     
