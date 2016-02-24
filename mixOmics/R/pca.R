@@ -134,18 +134,10 @@ function(X,
   else {
     #-- borrowed from 'prcomp' function
     res = svd(X, nu = 0)
-    
-    if (ncomp < ncol(X)) {
-      result$sdev = res$d[1:ncomp] / sqrt(max(1, nrow(X) - 1))
-      result$rotation = res$v[, 1:ncomp, drop = FALSE]
-      result$x = X %*% res$v[, 1:ncomp, drop = FALSE]
-    }
-    else {
-      result$sdev = res$d / sqrt(max(1, nrow(X) - 1))
-      result$rotation = res$v
-      result$x = X %*% res$v
-    }
-    
+
+    result$sdev = res$d[1:ncomp] / sqrt(max(1, nrow(X) - 1))
+    result$rotation = res$v[, 1:ncomp, drop = FALSE]
+    result$x = X %*% res$v[, 1:ncomp, drop = FALSE]
     
     names(result$sdev) = paste("PC", 1:length(result$sdev), sep = "")
     dimnames(result$rotation) = list(X.names, paste("PC", 1:ncol(result$rotation), sep = ""))
