@@ -36,8 +36,9 @@ center = TRUE,
 scale = FALSE,
 max.iter = 500,
 tol = 1e-09,
-logratio = c('none','CLR','ILR'),
-V=NULL)
+logratio = 'none',# one of ('none','CLR','ILR')
+V=NULL,
+multilevel=NULL)
 {
     #-- checking general input parameters --------------------------------------#
     #---------------------------------------------------------------------------#
@@ -151,9 +152,6 @@ V=NULL)
     #-- logratio transformation --#
     #-----------------------------#
     
-    
-    #-- pca approach -----------------------------------------------------------#
-    #---------------------------------------------------------------------------#
     is.na.X = is.na(X)
     na.X = FALSE
     if (any(is.na.X)) na.X = TRUE
@@ -165,6 +163,22 @@ V=NULL)
     scale = if (is.null(sc)) FALSE else sc,
     names = list(var = X.names, sample = ind.names))
     
+    
+    #---------------------------------------------------------------------------#
+    #-- multilevel approach ----------------------------------------------------#
+    
+    if(!is.null(multilevel))
+    {
+        Xw <- withinVariation(X, design = multilevel)
+        X=Xw
+    }
+    #-- multilevel approach ----------------------------------------------------#
+    #---------------------------------------------------------------------------#
+
+
+    #-- pca approach -----------------------------------------------------------#
+    #---------------------------------------------------------------------------#
+
     if(logratio == 'CLR' | logratio=='none')
     {
         #-- if there are missing values use NIPALS agorithm
@@ -226,6 +240,10 @@ V=NULL)
     result$loadings = list(result$rotation)
     result$variates = list(result$x)
     
+    if(!is.null(multilevel))
+    result=c(result, list(Xw = Xw, design = multilevel))
+
+
     class(result) = c("pca","prcomp")
     return(invisible(result))
 }
