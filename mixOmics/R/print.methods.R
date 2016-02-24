@@ -241,7 +241,7 @@ print.pca <- function(x, ...) {
     cat("\n")
     
     
-    if(!x$NA.X) {
+    #if(!x$NA.X) {
         per.var = as.vector(x$sdev^2/x$var.tot)
         cum.var=as.vector(cumsum(per.var))
         x$sdev=as.vector(x$sdev)
@@ -259,7 +259,7 @@ print.pca <- function(x, ...) {
 
         cat(" Other available components: \n", "-------------------- \n")
         cat(" loading vectors: see object$rotation \n")
-    }
+        #}
 }
 
 # ------------------------ print for spca -------------------------

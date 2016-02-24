@@ -146,14 +146,15 @@ function(X,
       result$x = X %*% res$v
     }
     
-    result$var.tot=sum((res$d/ sqrt(max(1, nrow(X) - 1)))^2)
-    result$ss=res$d
     
     names(result$sdev) = paste("PC", 1:length(result$sdev), sep = "")
     dimnames(result$rotation) = list(X.names, paste("PC", 1:ncol(result$rotation), sep = ""))
     dimnames(result$x) = list(ind.names, paste("PC", 1:ncol(result$x), sep = ""))
   }
   
+  result$var.tot=sum(X^2 / max(1, nrow(X) - 1))# same as all res$d, or variance after nipals replacement of the missing values
+
+
   # to be similar to other methods, add loadings and variates as outputs
   result$loadings = list(result$rotation)
   result$variates = list(result$x)

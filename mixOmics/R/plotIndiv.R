@@ -279,10 +279,10 @@ axes.box = "box",
         {
             if (style == "3d")
             {
-                inf=c((object$sdev)[comp1]/sum(object$sdev),(object$sdev)[comp2]/sum(object$sdev),(object$sdev)[comp3]/sum(object$sdev))
+                inf=c((object$sdev[comp1])^2/object$var.tot,(object$sdev[comp2])^2/object$var.tot,(object$sdev[comp3]^2)/object$var.tot)
                 inf = round(inf,2)
             } else {
-                inf = c((object$sdev)[comp1]/sum(object$sdev),(object$sdev)[comp2]/sum(object$sdev))
+                inf = c((object$sdev[comp1])^2/object$var.tot,(object$sdev[comp2])^2/object$var.tot)
                 inf = round(inf,2)}
             
         }
