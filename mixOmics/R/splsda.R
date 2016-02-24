@@ -20,7 +20,7 @@
 
 # ========================================================================================================
 # splsda: perform a sPLS-DA
-# this function is a particular setting of meta.spls.hybrid, the formatting of the input is checked in wrapper.meta.spls.hybrid
+# this function is a particular setting of mint.spls.hybrid, the formatting of the input is checked in wrapper.mint.spls.hybrid
 # ========================================================================================================
 
 # X: numeric matrix of predictors
@@ -49,7 +49,7 @@ near.zero.var = FALSE)
     
     
     #-- validation des arguments --#
-    # most of the checks are done in the wrapper.meta.spls.hybrid function
+    # most of the checks are done in the wrapper.mint.spls.hybrid function
     
     if (is.null(Y))
     stop("'Y' has to be something else than NULL.")
@@ -64,7 +64,7 @@ near.zero.var = FALSE)
     Y.mat=unmap(Y)
     colnames(Y.mat) = paste0("Y", 1:ncol(Y.mat))
 
-    result <- wrapper.meta.spls.hybrid(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
+    result <- wrapper.mint.spls.hybrid(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
     keepX=keepX,keepX.constraint=keepX.constraint,max.iter=max.iter,tol=tol)
     
     

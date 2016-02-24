@@ -19,13 +19,14 @@
 
 
 # ========================================================================================================
-# block.pls: perform a horizontal PLS on a combination of datasets, input as a list in X
+# mint.block.pls: perform a horizontal PLS on a combination of datasets, input as a list in X
 # this function is a particular setting of sparse.mint.block, the formatting of the input is checked in wrapper.sparse.mint.block
 # ========================================================================================================
 
 # X: a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets. \code{NA}s are not allowed.
-# Y: outcome
+# Y: a factor or a class vector for the discrete outcome.
 # indY: to supply if Y is missing, indicate the position of the outcome in the list X.
+# study: grouping factor indicating which samples are from the same study
 # ncomp: numeric vector of length the number of blocks in \code{X}. The number of components to include in the model for each block (does not necessarily need to take the same value for each block). By default set to 2 per block.
 # design: the input design.
 # scheme: the input scheme, one of "horst", "factorial" or ""centroid". Default to "centroid"
@@ -39,36 +40,73 @@
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
 
-block.pls <- function(X,
+
+mint.block.plsda <- function(X,
 Y,
 indY,
+study,
 ncomp=rep(2,length(X)),
 design,
 scheme,
-mode,
 scale = TRUE,
 bias,
 init ,
 tol = 1e-06,
 verbose,
+mode,
 max.iter = 500,
 near.zero.var = FALSE)
-
 {
+    if(!missing(Y))
+    {
+        if (is.null(dim(Y))) {
+            Y = as.factor(Y)
+        }  else {
+            stop("'Y' should be a factor or a class vector.")
+        }
+        
+        Y.input=Y
+        Y=unmap(Y)
+        colnames(Y) = paste0("Y", 1:ncol(Y))
+
+    }else if(!missing(indY))
+    {
+        temp=X[[indY]] #not called Y to not be an input of the wrapper.sparse.mint.block
+        if (is.null(dim(temp))) {
+            temp = as.factor(temp)
+        }  else {
+            stop("'Y' should be a factor or a class vector.")
+        }
+        Y.input=temp
+        X[[indY]]=unmap(temp)
+    }else if(missing(indY))
+    {
+        stop("Either 'Y' or 'indY' is needed")
+        
+    }
 
 
-    result <- wrapper.sparse.mint.block(X=X,Y=Y,indY=indY,ncomp=ncomp,design=design,scheme=scheme,mode=mode,scale=scale,
+    result <- wrapper.sparse.mint.block(X=X,Y=Y,indY=indY,study=study,ncomp=ncomp,design=design,scheme=scheme,mode=mode,scale=scale,
     bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=near.zero.var)
-    
-    
+
+
+
     cl = match.call()
-    cl[[1]] = as.name("block.pls")
+    cl[[1]] = as.name("mint.block.plsda")
     
-    out=list(call=cl,X=result$X,Y=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,variates=result$variates,loadings=result$loadings,
+    
+    out=list(call=cl,X=result$X,Y=Y.input,ind.mat=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,study=result$study,
+    variates=result$variates,loadings=result$loadings,variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,
     names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
-    
+
+
     if(!missing(ncomp))   out$ncomp=ncomp
-    class(out) = "block.pls"
+
+
+    class(out) = "mint.block.plsda"
     return(invisible(out))
     
 }
+
+
+

@@ -41,20 +41,20 @@ max.iter
      keepA.constraint=check$keepA.constraint
      
   
-  check=Check.entry.meta.block.spls(A=X, indY=NULL, design=design ,ncomp=ncomp , scheme=scheme , scale=scale ,  bia=bias,
+  check=Check.entry.mint.block.spls(A=X, indY=NULL, design=design ,ncomp=ncomp , scheme=scheme , scale=scale ,  bia=bias,
   init=init , tol=tol , verbose=verbose,mode=mode, max.iter=max.iter,keepA=keepA, keepA.constraint=keepA.constraint)
   
   print(dim(X[[1]]))
   print(dim(X[[2]]))
   temp=crossprod(X[[1]],X[[2]])
-  result.sgcca = sparse.meta.block(A = X, design = design, tau = NULL,
+  result.sgcca = sparse.mint.block(A = X, design = design, tau = NULL,
                        ncomp = ncomp,
                        scheme = scheme, scale = scale,
                        init = init, bias = bias, tol = tol, verbose = verbose,
                        keepA.constraint=NULL,
                        keepA=keepA,
                        max.iter=max.iter,
-                       study=factor(rep(1,nrow(A[[1]]))),#meta.rgcca not coded yet
+                       study=factor(rep(1,nrow(A[[1]]))),#mint.rgcca not coded yet
                        mode=mode
                        )
 

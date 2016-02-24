@@ -19,8 +19,8 @@
 
 
 # ========================================================================================================
-# wrapper.meta.spls.hybrid: perform a vertical PLS on a combination of experiments, input as a matrix in X
-# this function is a particular setting of sparse.meta.block, the formatting of the input is checked in wrapper.sparse.meta.block
+# wrapper.mint.spls.hybrid: perform a vertical PLS on a combination of experiments, input as a matrix in X
+# this function is a particular setting of sparse.mint.block, the formatting of the input is checked in wrapper.sparse.mint.block
 # internal function. Do not export in NAMESPACE.
 # ========================================================================================================
 
@@ -38,7 +38,7 @@
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
 
-wrapper.meta.spls.hybrid <- function(X,
+wrapper.mint.spls.hybrid <- function(X,
 Y,
 study,
 ncomp=2,
@@ -114,7 +114,7 @@ tol = 1e-06)
     nzv.A=check$nzv.A
 
 
-    result <- sparse.meta.block(A = list(X = X, Y = Y), indY = 2, mode = mode, ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
+    result <- sparse.mint.block(A = list(X = X, Y = Y), indY = 2, mode = mode, ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
     design = design, keepA = list(keepX,keepY),keepA.constraint = list(keepX.constraint,keepY.constraint),
     scale = scale, scheme = "centroid",init="svd", study = study)#,near.zero.var=near.zero.var)
     
@@ -122,7 +122,7 @@ tol = 1e-06)
     if(near.zero.var)
     result$nzv=nzv.A
 
-    class(result) = c("meta.spls.hybrid")
+    class(result) = c("mint.spls.hybrid")
     return(invisible(result))
     
 }

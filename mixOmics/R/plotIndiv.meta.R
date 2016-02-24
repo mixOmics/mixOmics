@@ -20,12 +20,12 @@
 
 
 #--------------------------------------------------------------------#
-#-- Includes plotIndiv for meta.pls, meta.spls, meta.plsda, meta.splsda --#
+#-- Includes plotIndiv for mint.pls, mint.spls, mint.plsda, mint.splsda --#
 #--------------------------------------------------------------------#
 
 
 #--------------------- PLS and sPLS ---------------------#
-plotIndiv.meta.pls <- plotIndiv.meta.spls <- plotIndiv.meta.plsda <- plotIndiv.meta.splsda <-
+plotIndiv.mint.pls <- plotIndiv.mint.spls <- plotIndiv.mint.plsda <- plotIndiv.mint.splsda <-
 function(object,
 comp = 1:2,
 ind.names = TRUE,
@@ -84,7 +84,7 @@ layout = NULL,
     if(any(study=="all"))
     {
         
-        if(any(class(object)%in%c("meta.plsda","meta.splsda")) & missing(col))
+        if(any(class(object)%in%c("mint.plsda","mint.splsda")) & missing(col))
         {
             col=as.numeric(object$Y)
         }else if (missing(col))
@@ -166,7 +166,7 @@ layout = NULL,
         par(mfrow=layout)
         
         
-        if(any(class(object)%in%c("meta.plsda","meta.splsda")) & missing(col))
+        if(any(class(object)%in%c("mint.plsda","mint.splsda")) & missing(col))
         {
             col=as.numeric(object$Y)
         }else if (missing(col))

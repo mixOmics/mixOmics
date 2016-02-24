@@ -19,7 +19,7 @@
 
 
 # -------------------------- for plsda and splsda ---------------------------------------
-predict.meta.pls <- predict.meta.spls <- predict.meta.plsda <-predict.meta.splsda<-
+predict.mint.pls <- predict.mint.spls <- predict.mint.plsda <-predict.mint.splsda<-
 function(object, newdata,study.test,
 method = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), ...)
 #method = "all", ...)
@@ -34,7 +34,7 @@ method = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), ...)
     study.learn=object$study
     concat.Y.init=object$concat.Y.init
 
-    if(any(class(object)%in%c("meta.plsda","meta.splsda")))
+    if(any(class(object)%in%c("mint.plsda","mint.splsda")))
     {
         q = ncol(object$ind.mat)
     }else{
@@ -181,7 +181,7 @@ Y.hat.2[, , h] = concat.X.test %*% as.matrix(B) #+ ones %*% intercept     #so fa
 
     # ----  if Y is a factor  -----------------
     
-    if(any(class(object)%in%c("meta.plsda","meta.splsda")))
+    if(any(class(object)%in%c("mint.plsda","mint.splsda")))
     {
         # ----    max distance -----------------
         cls = list()

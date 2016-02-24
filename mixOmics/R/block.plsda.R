@@ -20,7 +20,7 @@
 
 # ========================================================================================================
 # block.plsda: perform a horizontal PLS-DA on a combination of datasets, input as a list in X
-# this function is a particular setting of sparse.meta.block, the formatting of the input is checked in wrapper.sparse.meta.block
+# this function is a particular setting of sparse.mint.block, the formatting of the input is checked in wrapper.sparse.mint.block
 # ========================================================================================================
 
 # X: a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets. \code{NA}s are not allowed.
@@ -68,7 +68,7 @@ near.zero.var = FALSE)
 
     }else if(!missing(indY))
     {
-        temp=X[[indY]] #not called Y to not be an input of the wrapper.sparse.meta.block
+        temp=X[[indY]] #not called Y to not be an input of the wrapper.sparse.mint.block
         if (is.null(dim(temp))) {
             temp = as.factor(temp)
         }  else {
@@ -82,7 +82,7 @@ near.zero.var = FALSE)
 
     }
 
-    result <- wrapper.sparse.meta.block(X=X,Y=Y,indY=indY,ncomp=ncomp,design=design,scheme=scheme,mode=mode,scale=scale,
+    result <- wrapper.sparse.mint.block(X=X,Y=Y,indY=indY,ncomp=ncomp,design=design,scheme=scheme,mode=mode,scale=scale,
     bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=near.zero.var)
 
 

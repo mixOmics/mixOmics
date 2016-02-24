@@ -290,7 +290,7 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.con
     keepY.constraint=keepY.constraint,keepX=keepX,keepY=keepY,nzv.A=nzv.A))
 }
 
-Check.entry.meta.block.spls = function(A, indY, design ,ncomp , scheme , scale ,  bias,
+Check.entry.mint.block.spls = function(A, indY, design ,ncomp , scheme , scale ,  bias,
 init , tol , verbose,mode , max.iter,study , keepA, keepA.constraint)
 {
     
@@ -359,11 +359,11 @@ init , tol , verbose,mode , max.iter,study , keepA, keepA.constraint)
 }
 
 # --------------------------------------
-# Check.entry.wrapper.sparse.meta.block
+# Check.entry.wrapper.sparse.mint.block
 # --------------------------------------
 
 
-Check.entry.wrapper.sparse.meta.block = function(X,
+Check.entry.wrapper.sparse.mint.block = function(X,
 Y,
 indY, #only use if Y not provided
 ncomp,
@@ -371,7 +371,7 @@ keepX, #sparse
 keepX.constraint, #hybrid
 keepY, #sparse
 keepY.constraint, #hybrid
-study, #meta
+study, #mint
 design, #block
 init,
 scheme, #block
@@ -383,7 +383,7 @@ tol,
 max.iter,
 verbose)
 {
-    #need to give the default values of meta.block.spls to mixOmics
+    #need to give the default values of mint.block.spls to mixOmics
     
     if(!is.list(X))
     {stop("X must be a list")}
@@ -428,7 +428,7 @@ verbose)
     
     
     # =====================================================
-    # meta.block.spls_iteration algo
+    # mint.block.spls_iteration algo
     # =====================================================
     if(!missing(Y))# Y is not missing, we don't care about indY
     {
@@ -525,7 +525,7 @@ verbose)
     
     
     # =====================================================
-    # with or without tau (RGGCA or meta.block.spls algo)
+    # with or without tau (RGGCA or mint.block.spls algo)
     # =====================================================
     x=unlist(lapply(A,nrow))
     if(!isTRUE(all.equal( max(x) ,min(x))))
@@ -625,7 +625,7 @@ verbose,
 max.iter,
 near.zero.var)
 {
-    #need to give the default values of meta.block.spls to mixOmics
+    #need to give the default values of mint.block.spls to mixOmics
     
     if(!is.list(X))
     {stop("X must be a list of at list two matrices")}
@@ -689,7 +689,7 @@ near.zero.var)
     
     
     # =====================================================
-    # with or without tau (RGGCA or meta.block.spls algo)
+    # with or without tau (RGGCA or mint.block.spls algo)
     # =====================================================
     
     x=unlist(lapply(A,nrow))

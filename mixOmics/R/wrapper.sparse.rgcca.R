@@ -63,13 +63,13 @@ near.zero.var)
     keepA.constraint=check$keepA.constraint
 
 
-    result.rgcca = sparse.meta.block(A = X, design = design, tau = tau,
+    result.rgcca = sparse.mint.block(A = X, design = design, tau = tau,
     ncomp = ncomp,
     scheme = scheme, scale = scale,
     init = init, bias = bias, tol = tol, verbose = verbose,
     keepA.constraint=keepA.constraint,keepA=keepA,
     max.iter=max.iter,
-    study=factor(rep(1,nrow(A[[1]]))),#meta.rgcca not coded yet
+    study=factor(rep(1,nrow(A[[1]]))),#mint.rgcca not coded yet
     mode="canonical"
     )
     

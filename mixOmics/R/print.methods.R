@@ -235,14 +235,6 @@ function(x, ...)
 # ------------------------ print for pca --------------------------------
 print.pca <- function(x, ...) {
     
- 
-    per.var = as.vector(x$sdev/sum(x$sdev))
-    cum.var=as.vector(cumsum(per.var))
-    x$sdev=as.vector(x$sdev)
-    names(x$sdev) = paste("PC", 1:length(x$sdev), sep = "")
-    names(per.var) = paste("PC", 1:length(per.var), sep = "")
-    names(cum.var) = paste("PC", 1:length(cum.var), sep = "")
-    
 
     cat("Eigenvalues for the first ", x$ncomp, "principal components:", "\n")
     print(x$sdev[1:x$ncomp])
@@ -250,6 +242,13 @@ print.pca <- function(x, ...) {
     
     
     if(!x$NA.X) {
+        per.var = as.vector(x$sdev^2/x$var.tot)
+        cum.var=as.vector(cumsum(per.var))
+        x$sdev=as.vector(x$sdev)
+        names(x$sdev) = paste("PC", 1:length(x$sdev), sep = "")
+        names(per.var) = paste("PC", 1:length(per.var), sep = "")
+        names(cum.var) = paste("PC", 1:length(cum.var), sep = "")
+        
         cat("Proportion of explained variance for the first ", x$ncomp, "principal components:", "\n")
         print(per.var[1:x$ncomp])
         cat("\n")

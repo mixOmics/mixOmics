@@ -19,8 +19,8 @@
 
 
 # ========================================================================================================
-# meta.block.pls: perform a horizontal PLS on a combination of datasets, input as a list in X
-# this function is a particular setting of sparse.meta.block, the formatting of the input is checked in wrapper.sparse.meta.block
+# mint.block.pls: perform a horizontal PLS on a combination of datasets, input as a list in X
+# this function is a particular setting of sparse.mint.block, the formatting of the input is checked in wrapper.sparse.mint.block
 # ========================================================================================================
 
 # X: a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets. \code{NA}s are not allowed.
@@ -45,7 +45,7 @@
 
 
 
-meta.block.spls <- function(X,
+mint.block.spls <- function(X,
 Y,
 indY,
 study,
@@ -67,14 +67,14 @@ near.zero.var = FALSE)
 {
     
     
-    result <- wrapper.sparse.meta.block(X=X,Y=Y,indY=indY,study=study,ncomp=ncomp,keepX.constraint=keepX.constraint,
+    result <- wrapper.sparse.mint.block(X=X,Y=Y,indY=indY,study=study,ncomp=ncomp,keepX.constraint=keepX.constraint,
     keepY.constraint=keepY.constraint,keepX=keepX,keepY=keepY,design=design,scheme=scheme,mode=mode,scale=scale,
     bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=near.zero.var)
     
     
     
     cl = match.call()
-    cl[[1]] = as.name("meta.block.spls")
+    cl[[1]] = as.name("mint.block.spls")
     
     if(missing(indY))
     {
@@ -97,7 +97,7 @@ near.zero.var = FALSE)
     if(!missing(ncomp))   out$ncomp=ncomp
 
 
-    class(out) = "meta.block.spls"
+    class(out) = "mint.block.spls"
     return(invisible(out))
     
 }

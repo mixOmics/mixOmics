@@ -22,8 +22,8 @@ which.function.should.I.use=function()
 {
     function.one.study.one.TypeOfData=c("pls","plsda","spls","splsda")
     function.one.study.multiple.TypeOfData=paste0("block.",function.one.study.one.TypeOfData) # block.pls
-    function.multiple.study.one.TypeOfData=paste0("meta.",function.one.study.one.TypeOfData) # meta.pls
-    function.multiple.study.multiple.TypeOfData=paste0("meta.",function.one.study.multiple.TypeOfData) # meta.block.pls
+    function.multiple.study.one.TypeOfData=paste0("mint.",function.one.study.one.TypeOfData) # mint.pls
+    function.multiple.study.multiple.TypeOfData=paste0("mint.",function.one.study.multiple.TypeOfData) # mint.block.pls
     
     
     all.functions=c(function.one.study.one.TypeOfData,function.one.study.multiple.TypeOfData,
@@ -47,7 +47,7 @@ which.function.should.I.use=function()
         #------------
         # Question 2: block analysis
         #------------
-        message("Q2: Do you have multiple types of data that you want to analyse together, e.g. transcriptomics, proteomics, metabolomics? If you are unsure, look up the example.")
+        message("Q2: Do you have multiple types of data that you want to analyse together, e.g. transcriptomics, proteomics, mintbolomics? If you are unsure, look up the example.")
         Q2=readline("yes, no or example. \n ")
         
         while(is.na(charmatch(Q2,c("yes","no","example"))) | charmatch(Q2,c("yes","no","example"))==0)
@@ -68,7 +68,7 @@ which.function.should.I.use=function()
             rasterImage(img,100,300,250,450)
             par(opar)
 
-            message("Q2: Do you have multiple types of data that you want to analyse together, e.g. transcriptomics, proteomics, metabolomics? ")
+            message("Q2: Do you have multiple types of data that you want to analyse together, e.g. transcriptomics, proteomics, mintbolomics? ")
             Q2=readline("yes or no. \n ")
             while(is.na(charmatch(Q2,c("yes","no"))) | charmatch(Q2,c("yes","no"))==0)
             {
@@ -79,18 +79,18 @@ which.function.should.I.use=function()
         if(!is.na(charmatch(Q2,"no")))# Q2==no, no block
         {
             final.function=c(function.one.study.one.TypeOfData,function.multiple.study.one.TypeOfData)#initialise the final answer
-            cat("You are analysing a single type of data. You can use the following functions",final.function,"\n",sep="\n") # pls, meta.pls
+            cat("You are analysing a single type of data. You can use the following functions",final.function,"\n",sep="\n") # pls, mint.pls
         }else# Q2==yes, block
         {
             final.function=c(function.one.study.multiple.TypeOfData,function.multiple.study.multiple.TypeOfData)#initialise the final answer
-            cat("You are doing a horizontal analysis. You can use the following functions\n",final.function,"\n",sep="\n") # meta.block.pls, block.pls,
+            cat("You are doing a horizontal analysis. You can use the following functions\n",final.function,"\n",sep="\n") # mint.block.pls, block.pls,
         }
         
         
         
         
         #------------
-        # Question 3: meta analysis
+        # Question 3: mint analysis
         #------------
         message("Q3: Do you have multiple experiments of the same type of data that you want to combine together, e.g. transcriptomics from several studies? If you are unsure, look up the example.")
         Q3=readline("yes, no or example. \n ")
@@ -105,7 +105,7 @@ which.function.should.I.use=function()
             if(!is.na(charmatch(Q2,"no")))# no block
             {
                 message("Example has been plotted, hope it helps.")
-                fpath <- system.file("extdata", "cat.jpeg", package="mixOmicsv6")# meta without block
+                fpath <- system.file("extdata", "cat.jpeg", package="mixOmicsv6")# mint without block
                 library(jpeg)
                 img=readJPEG(fpath)
                 opar=par(no.readonly=TRUE)
@@ -116,7 +116,7 @@ which.function.should.I.use=function()
 
             }else{# block
                 message("Example has been plotted, hope it helps.")
-                fpath <- system.file("extdata", "dog.jpeg", package="mixOmicsv6")# meta and block
+                fpath <- system.file("extdata", "dog.jpeg", package="mixOmicsv6")# mint and block
                 library(jpeg)
                 img=readJPEG(fpath)
                 opar=par(no.readonly=TRUE)
@@ -135,7 +135,7 @@ which.function.should.I.use=function()
             }
         }
         
-        if(!is.na(charmatch(Q3,"no"))) # no meta
+        if(!is.na(charmatch(Q3,"no"))) # no mint
         {
             if(!is.na(charmatch(Q2,"no")))
             {
@@ -145,15 +145,15 @@ which.function.should.I.use=function()
                 final.function=function.one.study.multiple.TypeOfData
                 cat("You are doing a horizontal analysis without combining different studies of the same type of data. You can use the following functions:",final.function,"\n",sep="\n")# block.pls
             }
-        }else# Q2==yes, meta
+        }else# Q2==yes, mint
         {
             if(!is.na(charmatch(Q2,"one")))
             {
                 final.function=function.multiple.study.one.TypeOfData
-                cat("You are analysing a single type of data and several studies. You can use the following functions",final.function,"\n",sep="\n") # meta.pls
+                cat("You are analysing a single type of data and several studies. You can use the following functions",final.function,"\n",sep="\n") # mint.pls
             }else{# Q2==multiple
                 final.function=function.multiple.study.multiple.TypeOfData
-                cat("You are doing a horizontal and vertical analysis and combining different studies of the same type of data. You can use the following functions:",final.function,"\n",sep="\n")# meta.block.pls
+                cat("You are doing a horizontal and vertical analysis and combining different studies of the same type of data. You can use the following functions:",final.function,"\n",sep="\n")# mint.block.pls
             }
         }
         
@@ -173,7 +173,7 @@ which.function.should.I.use=function()
         if(!is.na(charmatch(Q4,"example")))# Q2==example, plot an example
         {
             message("Example has been plotted, hope it helps.")
-            fpath <- system.file("extdata", "DA-analysis.jpg", package="mixOmicsv6")# meta without block
+            fpath <- system.file("extdata", "DA-analysis.jpg", package="mixOmicsv6")# mint without block
             library(jpeg)
             img=readJPEG(fpath)
             opar=par(no.readonly=TRUE)
@@ -195,12 +195,12 @@ which.function.should.I.use=function()
         if(!is.na(charmatch(Q4,"yes")))
         {
             final.function=final.function[grep("da",final.function)]
-            cat("You want to perform a Discriminant Analysis. You can use the following functions",final.function,"\n",sep="\n") # meta.pls
+            cat("You want to perform a Discriminant Analysis. You can use the following functions",final.function,"\n",sep="\n") # mint.pls
             
             
         }else{
             final.function=final.function[-grep("da",final.function)]
-            cat("You are not performing a Discriminant Analysis. You can use the following functions",final.function,"\n",sep="\n") # meta.pls
+            cat("You are not performing a Discriminant Analysis. You can use the following functions",final.function,"\n",sep="\n") # mint.pls
             
         }
         
@@ -218,12 +218,12 @@ which.function.should.I.use=function()
         if(!is.na(charmatch(Q5,"yes")))
         {
             final.function=final.function[grep("sp",final.function)]
-            cat("You want to perform a sparse Analysis. You can use the following function",final.function,"\n",sep="\n") # meta.pls
+            cat("You want to perform a sparse Analysis. You can use the following function",final.function,"\n",sep="\n") # mint.pls
             
             
         }else{
             final.function=final.function[-grep("sp",final.function)]
-            cat("You are not performing a sparse Analysis. You can use the following function",final.function,"\n",sep="\n") # meta.pls
+            cat("You are not performing a sparse Analysis. You can use the following function",final.function,"\n",sep="\n") # mint.pls
             
         }
     }

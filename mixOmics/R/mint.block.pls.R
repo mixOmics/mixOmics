@@ -19,19 +19,15 @@
 
 
 # ========================================================================================================
-# meta.block.pls: perform a horizontal PLS on a combination of datasets, input as a list in X
-# this function is a particular setting of sparse.meta.block, the formatting of the input is checked in wrapper.sparse.meta.block
+# mint.block.pls: perform a horizontal and vertical PLS on a combination of datasets, input as a list in X
+# this function is a particular setting of sparse.mint.block, the formatting of the input is checked in wrapper.sparse.mint.block
 # ========================================================================================================
 
 # X: a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets. \code{NA}s are not allowed.
-# Y: a factor or a class vector for the discrete outcome.
+# Y: outcome
 # indY: to supply if Y is missing, indicate the position of the outcome in the list X.
 # study: grouping factor indicating which samples are from the same study
 # ncomp: numeric vector of length the number of blocks in \code{X}. The number of components to include in the model for each block (does not necessarily need to take the same value for each block). By default set to 2 per block.
-# keepX.constraint: A list of same length as X. Each entry keepX.constraint[[i]] is a list containing which variables of X[[i]] are to be kept on each of the first PLS-components
-# keepY.constraint: Only used if Y is provided, otherwise extracted from keepX.constraint. A list containing which variables of Y are to be kept on each of the first PLS-components
-# keepX: A vector of same length as X.  Each entry keepX[i] is the number of X[[i]]-variables kept in the model on the last components (once all keepX.constraint[[i]] are used).
-# keepY: Only used if Y is provided. Each entry keepY[i] is the number of Y-variables kept in the model on the last components.
 # design: the input design.
 # scheme: the input scheme, one of "horst", "factorial" or ""centroid". Default to "centroid"
 # mode: input mode, one of "canonical", "classic", "invariant" or "regression". Default to "regression"
@@ -44,86 +40,39 @@
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
 
-
-meta.block.splsda <- function(X,
+mint.block.pls <- function(X,
 Y,
 indY,
 study,
 ncomp=rep(2,length(X)),
-keepX.constraint,
-keepX,
 design,
 scheme,
-mode,
 scale = TRUE,
 bias,
 init ,
 tol = 1e-06,
 verbose,
+mode,
 max.iter = 500,
 near.zero.var = FALSE)
 {
-    if(!missing(Y))
-    {
-        if (is.null(dim(Y))) {
-            Y = as.factor(Y)
-        }  else {
-            stop("'Y' should be a factor or a class vector.")
-        }
-        
-        Y.input=Y
-        Y=unmap(Y)
-        colnames(Y) = paste0("Y", 1:ncol(Y))
-
-    }else if(!missing(indY))
-    {
-        temp=X[[indY]] #not called Y to not be an input of the wrapper.sparse.meta.block
-        if (is.null(dim(temp))) {
-            temp = as.factor(temp)
-        }  else {
-            stop("'Y' should be a factor or a class vector.")
-        }
-        Y.input=temp
-        X[[indY]]=unmap(temp)
-    }else if(missing(indY))
-    {
-        stop("Either 'Y' or 'indY' is needed")
-        
-    }
-
     
-    result <- wrapper.sparse.meta.block(X=X,Y=Y,indY=indY,study=study,ncomp=ncomp,keepX.constraint=keepX.constraint,
-    keepX=keepX,design=design,scheme=scheme,mode=mode,scale=scale,
+    result <- wrapper.sparse.mint.block(X=X,Y=Y,indY=indY,study=study,ncomp=ncomp,design=design,scheme=scheme,mode=mode,scale=scale,
     bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=near.zero.var)
-    
-    
-    
+
+
     cl = match.call()
-    cl[[1]] = as.name("meta.block.splsda")
-    
-    if(missing(indY))
-    {
-        keepX=result$keepA[-(length(X)+1)]
-        keepY=result$keepA[length(X)+1][[1]]
-        keepX.constraint=result$keepA.constraint[-(length(X)+1)]
-        keepY.constraint=result$keepA.constraint[length(X)+1]
-    }else{
-        keepX=result$keepA[-indY]
-        keepY=result$keepA[indY][[1]]
-        keepX.constraint=result$keepA.constraint[-indY]
-        keepY.constraint=result$keepA.constraint[indY][[1]]
-    }
+    cl[[1]] = as.name("mint.block.pls")
     
     
-    out=list(call=cl,X=result$X,Y=Y.input,ind.mat=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,study=result$study,
-    keepX=keepX,keepY=keepY,keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,
+    out=list(call=cl,X=result$X,Y=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,study=result$study,
     variates=result$variates,loadings=result$loadings,variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,
     names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
 
     if(!missing(ncomp))   out$ncomp=ncomp
 
 
-    class(out) = "meta.block.splsda"
+    class(out) = "mint.block.pls"
     return(invisible(out))
     
 }

@@ -19,7 +19,7 @@
 
 
 # --------------------------------------------------------------------------------------
-# Internal helpers functions to run "mixOmics" and "sparse.meta.block" functions
+# Internal helpers functions to run "mixOmics" and "sparse.mint.block" functions
 # --------------------------------------------------------------------------------------
 # Some of these functions have been borrowed from the RGCCA package, as indicated below
 
@@ -100,7 +100,7 @@ nearZeroVar <- function (x, freqCut = 95/5, uniqueCut = 10) {
 
 
 # --------------------------------------
-# study_split: is used for meata.pls and meta.spls
+# study_split: is used for meata.pls and mint.spls
 # --------------------------------------
 study_split = function(data, study)
 {

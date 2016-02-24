@@ -19,15 +19,15 @@
 
 
 # This function makes a prediction of a 'newdata' by using the results of 'object'.
-# Depending on the class of the object (meta).(block).(s)pls(da) (16 classes so far), the input data is different
-# and the preparation of the data is different - different scaling for instance if object="meta...."
+# Depending on the class of the object (mint).(block).(s)pls(da) (16 classes so far), the input data is different
+# and the preparation of the data is different - different scaling for instance if object="mint...."
 # However, the prediction formula is the same for all classes, thus only one code
 
 predict.mixOmics <-
 predict.pls <-  predict.spls<- predict.plsda <- predict.splsda <-
-predict.meta.pls <- predict.meta.spls <- predict.meta.plsda <- predict.meta.splsda <-
+predict.mint.pls <- predict.mint.spls <- predict.mint.plsda <- predict.mint.splsda <-
 predict.block.pls <- predict.block.spls <- predict.block.plsda <- predict.block.splsda <-
-predict.meta.block.pls <- predict.meta.block.spls <- predict.meta.block.plsda <- predict.meta.block.splsda <-
+predict.mint.block.pls <- predict.mint.block.spls <- predict.mint.block.plsda <- predict.mint.block.splsda <-
 
 function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),  ...)
 {
@@ -44,7 +44,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     newdata.input=newdata
     
     
-    if(length(grep("plsda",class(object)))>0) # a DA analysis (meta).(block).(s)plsda
+    if(length(grep("plsda",class(object)))>0) # a DA analysis (mint).(block).(s)plsda
     {
         #if DA analysis, the unmap Y is in ind.mat
         Y.factor=object$Y
@@ -57,7 +57,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     
 
     ### if the object is a block, the input newdata is different, we check newdata, make sure it's a list and check newdata/X
-    if(length(grep("block",class(object)))==0) # not a block (pls/spls/plsda/splsda/meta...)
+    if(length(grep("block",class(object)))==0) # not a block (pls/spls/plsda/splsda/mint...)
     {
         p=ncol(object$X)
         if(is.list(object$X))
@@ -154,9 +154,9 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     
     scale=object$scale # X and Y are both mean centered by groups and if scale=TRUE they are scaled by groups
 
-    ### if the object is not a meta analysis, the input study.test is missing and we can go faster to scale the data
-    if(length(grep("meta",class(object)))==0 )#| nlevels(factor(object$study))<=1) #not a meta object or just one level in the study
-    {   # not a meta (pls/spls/plsda/splsda/block...)
+    ### if the object is not a mint analysis, the input study.test is missing and we can go faster to scale the data
+    if(length(grep("mint",class(object)))==0 )#| nlevels(factor(object$study))<=1) #not a mint object or just one level in the study
+    {   # not a mint (pls/spls/plsda/splsda/block...)
 
         # scale newdata if just one study
         if (!is.null(attr(X[[1]], "scaled:center")))
@@ -170,7 +170,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         concat.newdata=newdata
         
     }else{
-        # a meta analysis
+        # a mint analysis
         
         #check study.test
         if(missing(study.test))
@@ -251,7 +251,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         means.Y=matrix(0,nrow=nrow(concat.newdata[[1]]),ncol=q)
         sigma.Y=matrix(1,nrow=nrow(concat.newdata[[1]]),ncol=q)
         
-        #loop on the blocks to define means.Y and sigma.Y for meta analysis
+        #loop on the blocks to define means.Y and sigma.Y for mint analysis
         for(m in 1:M)
         {
             if(m%in%match.study.indice) #if some study of study.test were already in the learning set
@@ -280,7 +280,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         }
         
     }
-    ### end if object is a meta analysis
+    ### end if object is a mint analysis
     
     ### at this stage we have
     # X         # list of blocks
@@ -338,14 +338,14 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     {
         out=list(predict=Y.hat,variates=t.pred,B.hat=B.hat)
         out$newdata=concat.newdata
-    }else{# not a block (pls/spls/plsda/splsda/meta...)
+    }else{# not a block (pls/spls/plsda/splsda/mint...)
         out=list(predict=Y.hat[[1]],variates=t.pred[[1]],B.hat=B.hat[[1]])
         out$newdata=concat.newdata[[1]]
 
     }
     
     ### if the object is a DA analysis, we gives the class of each sample depending on 'method'
-    if(length(grep("plsda",class(object)))>0) # a DA analysis (meta).(block).(s)plsda
+    if(length(grep("plsda",class(object)))>0) # a DA analysis (mint).(block).(s)plsda
     {
         Y.prim = unmap(object$Y)
         G = cls = list()

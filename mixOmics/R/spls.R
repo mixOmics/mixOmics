@@ -20,7 +20,7 @@
 
 # ========================================================================================================
 # spls: perform a sPLS
-# this function is a particular setting of meta.spls.hybrid, the formatting of the input is checked in wrapper.meta.spls.hybrid
+# this function is a particular setting of mint.spls.hybrid, the formatting of the input is checked in wrapper.mint.spls.hybrid
 # ========================================================================================================
 
 # X: numeric matrix of predictors
@@ -50,7 +50,7 @@ max.iter = 500,
 near.zero.var = FALSE)
 {
 
-    result <- wrapper.meta.spls.hybrid(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
+    result <- wrapper.mint.spls.hybrid(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
     keepX=keepX,keepY=keepY,keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,max.iter=max.iter,tol=tol)
     
     
@@ -62,7 +62,7 @@ near.zero.var = FALSE)
     variates=result$variates,loadings=result$loadings,names=result$names,
     tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
     
-    class(out) = "spls"
+    class(out) = c("spls","pls")
     return(invisible(out))
  
     

@@ -17,13 +17,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-# perform the meta.pls on a subset of variables on one only dimension, deflate the intial matrices X and Y (already center by study)
+# perform the mint.pls on a subset of variables on one only dimension, deflate the intial matrices X and Y (already center by study)
 
 # mean centering with attach and without modify.na, need to look at how to remove some of means/sigma when nearZerVar is used
 # we can have a list of studies for Discriminant Analyses, not for pls/spls as they would be overlapping batch effects
 
 
-wrapper.sparse.meta.block <- function(  X,
+wrapper.sparse.mint.block <- function(  X,
 Y,
 indY,
 study,
@@ -55,7 +55,7 @@ near.zero.var = FALSE)
     #print(missing(ncomp))
 
     
-    check=Check.entry.wrapper.sparse.meta.block(X=X,Y=Y,indY=indY,ncomp=ncomp,keepX=keepX,
+    check=Check.entry.wrapper.sparse.mint.block(X=X,Y=Y,indY=indY,ncomp=ncomp,keepX=keepX,
     keepX.constraint=keepX.constraint,keepY=keepY,keepY.constraint=keepY.constraint,
     study=study,design=design,init=init,scheme=scheme,
     scale=scale,bias=bias,near.zero.var=near.zero.var,mode=mode,tol=tol,
@@ -96,7 +96,7 @@ near.zero.var = FALSE)
     # near.zero.var: do you want to remove variables with very small variance
     
     
-    result=sparse.meta.block(A=A,indY=indY,design=design,ncomp=ncomp,scheme = scheme,
+    result=sparse.mint.block(A=A,indY=indY,design=design,ncomp=ncomp,scheme = scheme,
     scale =scale,  bias = bias,init = init, tol = tol, verbose = verbose,tau=NULL,
     mode = mode, max.iter = max.iter,study = study, keepA = keepA,
     keepA.constraint = keepA.constraint)#, near.zero.var = near.zero.var)
@@ -107,7 +107,7 @@ near.zero.var = FALSE)
     if(near.zero.var)
     result$nzv=nzv.A
 
-    class(result) = c("sparse.meta.block")
+    class(result) = c("sparse.mint.block")
     return(invisible(result))
     
 

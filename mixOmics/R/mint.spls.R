@@ -19,63 +19,56 @@
 
 
 # ========================================================================================================
-# meta.block.pls: perform a horizontal and vertical PLS on a combination of datasets, input as a list in X
-# this function is a particular setting of sparse.meta.block, the formatting of the input is checked in wrapper.sparse.meta.block
+# mint.spls: perform a vertical PLS on a combination of experiments, input as a matrix in X
+# this function is a particular setting of mint.spls.hybrid, the formatting of the input is checked in wrapper.mint.spls.hybrid
 # ========================================================================================================
 
-# X: a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets. \code{NA}s are not allowed.
-# Y: outcome
-# indY: to supply if Y is missing, indicate the position of the outcome in the list X.
+# X: numeric matrix of predictors
+# Y: numeric vector or matrix of responses
+# ncomp: the number of components to include in the model. Default to 2.
 # study: grouping factor indicating which samples are from the same study
-# ncomp: numeric vector of length the number of blocks in \code{X}. The number of components to include in the model for each block (does not necessarily need to take the same value for each block). By default set to 2 per block.
-# design: the input design.
-# scheme: the input scheme, one of "horst", "factorial" or ""centroid". Default to "centroid"
-# mode: input mode, one of "canonical", "classic", "invariant" or "regression". Default to "regression"
+# keepX.constraint: A list containing which variables of X are to be kept on each of the first PLS-components.
+# keepY.constraint: A list containing which variables of Y are to be kept on each of the first PLS-components
+# keepX: number of \eqn{X} variables kept in the model on the last components (once all keepX.constraint[[i]] are used).
+# keepY: number of \eqn{Y} variables kept in the model on the last components.
 # scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
-# bias: boleean. A logical value for biaised or unbiaised estimator of the var/cov (defaults to FALSE).
-# init: intialisation of the algorithm, one of "svd" or "svd.single". Default to "svd"
 # tol: Convergence stopping value.
-# verbose: if set to \code{TRUE}, reports progress on computing.
 # max.iter: integer, the maximum number of iterations.
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
 
-meta.block.pls <- function(X,
+mint.spls <- function(X,
 Y,
-indY,
+ncomp = 2,
+mode = c("regression", "canonical", "invariant", "classic"),
 study,
-ncomp=rep(2,length(X)),
-design,
-scheme,
+keepX.constraint=NULL,
+keepY.constraint=NULL,
+keepX=rep(ncol(X), ncomp),
+keepY=rep(ncol(Y), ncomp),
 scale = TRUE,
-bias,
-init ,
 tol = 1e-06,
-verbose,
-mode,
 max.iter = 500,
 near.zero.var = FALSE)
 {
+
+    result <- wrapper.mint.spls.hybrid(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,study=study,mode=mode,
+    keepX=keepX,keepY=keepY,keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,max.iter=max.iter,tol=tol)
     
-    result <- wrapper.sparse.meta.block(X=X,Y=Y,indY=indY,study=study,ncomp=ncomp,design=design,scheme=scheme,mode=mode,scale=scale,
-    bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=near.zero.var)
-
-
+    
     cl = match.call()
-    cl[[1]] = as.name("meta.block.pls")
+    cl[[1]] = as.name("mint.spls")
     
-    
-    out=list(call=cl,X=result$X,Y=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,study=result$study,
+    out=list(call=cl,X=result$X[[1]],Y=result$Y[[1]],ncomp=result$ncomp,study=result$study,mode=result$mode,keepX=result$keepA[[1]],keepY=result$keepA[[2]],
+    keepX.constraint=result$keepA.constraint[[1]],keepY.constraint=result$keepA.constraint[[2]],
     variates=result$variates,loadings=result$loadings,variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,
     names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
-
-    if(!missing(ncomp))   out$ncomp=ncomp
-
-
-    class(out) = "meta.block.pls"
+    
+    class(out) = "mint.spls"
     return(invisible(out))
+ 
+    
+    
+    
     
 }
-
-
-

@@ -44,9 +44,9 @@ function(   x,
     #-- scree plot -------------------------------------------------------------#
     #---------------------------------------------------------------------------#
     
-    variances = (x$sdev^2)
+    variances = (x$sdev^2)[1:ncomp] # relative variance
     if(explained.var==TRUE)
-    variances=variances[1:ncomp]/sum(variances) #explained variances
+    variances=variances/x$var.tot #explained variances
     
     if (type == "barplot")
     barplot(variances, names.arg = seq(1, ncomp),

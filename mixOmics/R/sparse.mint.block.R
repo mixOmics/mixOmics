@@ -31,11 +31,11 @@
 #           ncomp - vector specifying number of components to keep per datasets
 #   outputs:
 # ----------------------------------------------------------------------------------------------------------
-sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NULL,#rep(1, length(A)),
+sparse.mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=NULL,#rep(1, length(A)),
                             ncomp = rep(1, length(A)), scheme = "centroid", scale = TRUE,  bias = FALSE,
                             init = "svd.single", tol = 1e-06, verbose = FALSE,
                             mode = "canonical", max.iter = 500,study = NULL, keepA = NULL,
-                            keepA.constraint = NULL){#, near.zero.var = FALSE) { # meta.hybrid.spls
+                            keepA.constraint = NULL){#, near.zero.var = FALSE) { # mint.hybrid.spls
   
 
   # A: list of matrices
@@ -62,7 +62,7 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
   #if(is.null(indY) & is.null(tau))
   #stop("Either 'indY' or 'tau' is needed")
   
-  #check=Check.entry.meta.block.spls(A, indY, design ,ncomp , scheme , scale ,  bias,
+  #check=Check.entry.mint.block.spls(A, indY, design ,ncomp , scheme , scale ,  bias,
   #                                  init , tol , verbose,mode, sparse , max.iter,study , keepA, keepA.constraint)
   #A=check$A
   #ncomp=check$ncomp
@@ -72,41 +72,7 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
   # at this stage keepA.constraint need to be character, to remove easily variables with near zero variance
   ### near.zero.var, remove the variables with very small variances
   
-  if(FALSE)
-  {
-  if(near.zero.var == TRUE)
-  {
-    nzv.A = lapply(A,nearZeroVar)
-    for(q in 1:length(A))
-    {
-      if (length(nzv.A[[q]]$Position) > 0)
-      {
-        names.remove.X=colnames(A[[q]])[nzv.A[[q]]$Position]
-        A[[q]] = A[[q]][, -nzv.A[[q]]$Position,drop=FALSE]
-        if (verbose)
-        warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
-        if(ncol(A[[q]]) == 0) {stop("No more variables in X")}
-        
-        # at this stage, keepA.constraint need to be numbers
-        if(length(keepA.constraint[[q]])>0)
-        {
-          #remove the variables from keepA.constraint if removed by near.zero.var
-          keepA.constraint[[q]]=match.keepX.constraint(names.remove.X,keepA.constraint[[q]])
-          # replace character by numbers
-          keepA.constraint[[q]]= lapply(keepA.constraint[[q]],function(x){match(x,colnames(A[[q]]))})
-        }
-        #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
-        if(any(keepA[[q]]>ncol(A[[q]])))
-        {
-            ind=which(keepA[[q]]>ncol(A[[q]]))
-            keepA[[q]][ind]=ncol(A[[q]])
-        }
-      }
 
-    }
-  }
-  }
-  
   # keepA is updated to be of length length(A) now, the first entries correspond to the keepA.constraint if it was provided
   
   for(q in 1:length(A))
@@ -153,17 +119,17 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
   {
     #if (verbose)
     #  cat(paste0("Computation of the SGCCA block components #", n, " is under progress... \n"))
-    meta.block.result = NULL
+    mint.block.result = NULL
     
     ### Start: Estimation ai
     if (is.null(tau))
     {
-      meta.block.result <- sparse.meta.block_iteration(R, design,study = study,
+      mint.block.result <- sparse.mint.block_iteration(R, design,study = study,
                         keepA.constraint=if (!is.null(keepA.constraint)) {lapply(keepA.constraint, function(x){unlist(x[n])})} else {NULL} ,
                         keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL},indY = indY,
                         scheme = scheme, init = init, max.iter = max.iter, tol = tol,   verbose = verbose)
     } else {
-      meta.block.result <- sparse.rgcca_iteration(R, design, tau = if (is.matrix(tau)){tau[n, ]} else {"optimal"}, scheme = scheme, init = init, tol = tol,
+      mint.block.result <- sparse.rgcca_iteration(R, design, tau = if (is.matrix(tau)){tau[n, ]} else {"optimal"}, scheme = scheme, init = init, tol = tol,
                         verbose = verbose, max.iter = max.iter,
                         keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL})
     }
@@ -178,25 +144,25 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
         {
             for(m in 1:nlevels(study))
             {
-                loadings.partial.A[[k]][[m]][,n]=matrix(meta.block.result$loadings.partial.A.comp[[k]][[m]],ncol=1)
-                variates.partial.A[[k]][[m]][,n]=matrix(meta.block.result$variates.partial.A.comp[[k]][[m]],ncol=1)
+                loadings.partial.A[[k]][[m]][,n]=matrix(mint.block.result$loadings.partial.A.comp[[k]][[m]],ncol=1)
+                variates.partial.A[[k]][[m]][,n]=matrix(mint.block.result$variates.partial.A.comp[[k]][[m]],ncol=1)
             }
-            #variates.partial.A[[k]][,n]=matrix(unlist(meta.block.result$variates.partial.A.comp[[k]]),ncol=1)
+            #variates.partial.A[[k]][,n]=matrix(unlist(mint.block.result$variates.partial.A.comp[[k]]),ncol=1)
         }
     }
     
-    AVE_inner[n] <- meta.block.result$AVE_inner
-    crit[[n]] <- meta.block.result$crit
-    tau.rgcca[[n]] <- meta.block.result$tau
+    AVE_inner[n] <- mint.block.result$AVE_inner
+    crit[[n]] <- mint.block.result$crit
+    tau.rgcca[[n]] <- mint.block.result$tau
     
-    for (k in 1:J) variates.A[[k]][, n] <- meta.block.result$variates.A[, k]
-    #for (q in which(n < ndefl)) if (sum(meta.block.result$loadings.A[[q]] != 0) <= 1)
+    for (k in 1:J) variates.A[[k]][, n] <- mint.block.result$variates.A[, k]
+    #for (q in which(n < ndefl)) if (sum(mint.block.result$loadings.A[[q]] != 0) <= 1)
     # warning(sprintf("Deflation failed because only one variable was selected for block #", q, "! \n"))
     
     
     # deflation if there are more than 1 component and if we haven't reach the max number of component(N)
     if (N != 1 & n != N) {
-      defla.result <- defl.select(meta.block.result$variates.A, R, ndefl, n, nbloc = J, indY = indY, mode = mode, aa = meta.block.result$loadings.A)
+      defla.result <- defl.select(mint.block.result$variates.A, R, ndefl, n, nbloc = J, indY = indY, mode = mode, aa = mint.block.result$loadings.A)
       R <- defla.result$resdefl
       defl.matrix[[n + 1]] <- R
     }
@@ -205,15 +171,15 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
       if (N != 1) {
         P[[k]][, n - 1] <- defla.result$pdefl[[k]]
       }
-      loadings.A[[k]][, n] <- meta.block.result$loadings.A[[k]]
+      loadings.A[[k]][, n] <- mint.block.result$loadings.A[[k]]
     }
     
     if (n == 1) {
-      for (k in 1 : J) loadings.Astar[[k]][, n] <- meta.block.result$loadings.A[[k]]
+      for (k in 1 : J) loadings.Astar[[k]][, n] <- mint.block.result$loadings.A[[k]]
     } else {
-      for (k in 1 : J) loadings.Astar[[k]][, n] <- meta.block.result$loadings.A[[k]] - loadings.Astar[[k]][, (1 : n - 1), drop = F] %*% drop(t(loadings.A[[k]][, n]) %*% P[[k]][, 1 : (n - 1), drop = F])
+      for (k in 1 : J) loadings.Astar[[k]][, n] <- mint.block.result$loadings.A[[k]] - loadings.Astar[[k]][, (1 : n - 1), drop = F] %*% drop(t(loadings.A[[k]][, n]) %*% P[[k]][, 1 : (n - 1), drop = F])
     }
-    iter=c(iter,meta.block.result$iter)
+    iter=c(iter,mint.block.result$iter)
   }
   
   if (verbose)
@@ -294,7 +260,7 @@ sparse.meta.block = function (A, indY = NULL,  design = 1 - diag(length(A)),tau=
 #   outputs:
 # ----------------------------------------------------------------------------------------------------------
 
-sparse.meta.block_iteration <- function (A, design, study = NULL, keepA.constraint = NULL, keepA = NULL,  indY = NULL,
+sparse.mint.block_iteration <- function (A, design, study = NULL, keepA.constraint = NULL, keepA = NULL,  indY = NULL,
                                        scheme = "centroid", init = "svd", max.iter = 500, tol = 1e-06, verbose = TRUE, bias = FALSE)
 {
   
