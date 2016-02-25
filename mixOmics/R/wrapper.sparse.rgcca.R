@@ -34,21 +34,11 @@ tol = 1e-6,
 verbose = FALSE,
 near.zero.var)
 {
-    # call function
-    #rgcca <- function(A, C = 1-diag(length(A)), tau = rep(1, length(A)), ncomp = rep(1, length(A)), scheme = "centroid", scale = TRUE , init="svd", bias = TRUE, tol = .Machine$double.eps, verbose=TRUE)
-    
-    #print("you")
-    #check keepA and keepA constraint
 
-    #print(keepA)
-    #print(keepA.constraint)
-    #print(length(X))
-    
-    #print("bla")
-    
-    # check needed
+
     check=Check.entry.rgcca(X = X, design = design, tau = tau, ncomp = ncomp, scheme = scheme, scale = scale,
-    init = init, bias = bias, tol = tol, verbose = verbose, max.iter=max.iter, mode=mode,near.zero.var=near.zero.var)
+    init = init, bias = bias, tol = tol, verbose = verbose, max.iter=max.iter, mode=mode,near.zero.var=near.zero.var,keepX=keepX,
+    keepX.constraint=keepX.constraint)
     X=check$A
     ncomp=check$ncomp
     design=check$design
@@ -56,11 +46,10 @@ near.zero.var)
     scheme=check$scheme
     verbose=check$verbose
     bias=check$bias
-    near.zero.var=check$near.zero.var
-
-    check=check.keepA.and.keepA.constraint(X=X,keepX=keepX,keepX.constraint=keepX.constraint,ncomp=ncomp)
-    keepA=check$keepA
+    nzv.A=check$nzv.A
     keepA.constraint=check$keepA.constraint
+    keepA=check$keepA
+
 
 
     result.rgcca = internal_mint.block(A = X, design = design, tau = tau,
@@ -69,7 +58,7 @@ near.zero.var)
     init = init, bias = bias, tol = tol, verbose = verbose,
     keepA.constraint=keepA.constraint,keepA=keepA,
     max.iter=max.iter,
-    study=factor(rep(1,nrow(A[[1]]))),#mint.rgcca not coded yet
+    study=factor(rep(1,nrow(X[[1]]))),#mint.rgcca not coded yet
     mode="canonical"
     )
     
@@ -107,8 +96,8 @@ near.zero.var)
     ncomp = ncomp,
     crit = result.rgcca$crit,
     AVE = list(AVE.X = result.rgcca$AVE$AVE_X, result.rgcca$AVE$AVE_outer, result.rgcca$AVE$AVE_inner), #rename?
-    names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames))
-    
+    names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames)),
+    nzv=result.rgcca$nzv
     )
     
     class(output) = 'sparse.rgcca'

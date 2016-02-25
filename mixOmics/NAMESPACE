@@ -94,6 +94,7 @@ unmap,
 vip,
 withinVariation,
 which.function.should.I.use,
+wrapper.sparse.rgcca,
 wrapper.rgcca,
 wrapper.sgcca,
 wrapper.sgccda)

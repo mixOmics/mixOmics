@@ -817,7 +817,9 @@ bias,
 tol,
 verbose,
 max.iter,
-near.zero.var)
+near.zero.var,
+keepX,
+keepX.constraint)
 {
     #need to give the default values of mint.block.spls to mixOmics
     
@@ -931,6 +933,13 @@ near.zero.var)
     if(!is.logical(near.zero.var))
     stop("near.zero.var must be either TRUE or FALSE")
     
+    # construction of keepA and keepA.constraint
+    check=check.keepA.and.keepA.constraint(X=A,keepX=keepX,keepX.constraint=keepX.constraint,ncomp=ncomp)
+    keepA=check$keepA
+    keepA.constraint=check$keepA.constraint
+    
+    
+    
     # at this stage keepA.constraint need to be character, to remove easily variables with near zero variance
     ### near.zero.var, remove the variables with very small variances
     if(near.zero.var == TRUE)
@@ -946,14 +955,28 @@ near.zero.var)
                 warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
                 if(ncol(A[[q]]) == 0) {stop(paste0("No more variables in",A[[q]]))}
                 
+                # at this stage, keepA.constraint need to be numbers
+                if(length(keepA.constraint[[q]])>0)
+                {
+                    #remove the variables from keepA.constraint if removed by near.zero.var
+                    keepA.constraint[[q]]=match.keepX.constraint(names.remove.X,keepA.constraint[[q]])
+                    # replace character by numbers
+                    keepA.constraint[[q]]= lapply(keepA.constraint[[q]],function(x){match(x,colnames(A[[q]]))})
+                }
+                #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
+                if(any(keepA[[q]]>ncol(A[[q]])))
+                {
+                    ind=which(keepA[[q]]>ncol(A[[q]]))
+                    keepA[[q]][ind]=ncol(A[[q]])
+                }
             }
             
         }
     }else{nzv.A=NULL}
     
     
-    return(list(A=A,ncomp=ncomp,design=design,init=init,scheme=scheme,verbose=verbose,bias=bias,nzv.A=nzv.A))
-    
+    return(list(A=A,ncomp=ncomp,design=design,init=init,scheme=scheme,verbose=verbose,bias=bias,nzv.A=nzv.A,
+    keepA=keepA,keepA.constraint=keepA.constraint))
 }
 
 
