@@ -9,7 +9,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 2009
-# last modified: 24-02-2016
+# last modified: 25-02-2016
 #
 # Copyright (C) 2009
 #
@@ -87,7 +87,7 @@ multilevel=NULL)
     logratio = choices[pmatch(logratio, choices)]
     
     if (any(is.na(logratio)) || length(logratio) > 1)
-    stop("'logration' should be one of 'CLR' ,'ILR'or 'none'.", call. = FALSE)
+    stop("'logratio' should be one of 'CLR' ,'ILR'or 'none'.", call. = FALSE)
     
     
     #-- cheking center and scale
@@ -120,26 +120,14 @@ multilevel=NULL)
     #-----------------------------#
     #-- logratio transformation --#
     
-    if(logratio == 'ILR')
-    {
-        if(is.null(V))
-        {
-            # back-transformation to clr-space, will be used later to recalculate loadings etc
-            V = clr.backtransfo(X)
-        }
-        if(any(class(X)!='ilr'))
-        {   # data are ilr transformed, then the data loose 1 variable, but we'll use V to reconstruct the matrix
-            X = ilr.transfo(X)
-            
-            if (ncomp >= min(ncol(X), nrow(X)))
-            stop("use smaller 'ncomp'", call. = FALSE)
-            
-        }
-    }else if(logratio == 'CLR')
-    {
-        X = clr.transfo(X)
-    }
-    #if logratio="none", do nothing
+    transfo=logratio.transfo(X=X,logratio=logratio,V=V)
+    X=transfo$X
+    V=transfo$V
+    
+    #as X may have changed
+    if (ncomp >= min(ncol(X), nrow(X)))
+    stop("use smaller 'ncomp'", call. = FALSE)
+    
     
     X = scale(X, center = center, scale = scale)
     cen = attr(X, "scaled:center")
@@ -240,11 +228,15 @@ multilevel=NULL)
     result$loadings = list(result$rotation)
     result$variates = list(result$x)
     
+    # output multilevel if needed
     if(!is.null(multilevel))
     result=c(result, list(Xw = Xw, design = multilevel))
 
 
     class(result) = c("pca","prcomp")
+    if(!is.null(multilevel))
+    class(result)=c("mlpca",class(result))
+    
     return(invisible(result))
 }
 

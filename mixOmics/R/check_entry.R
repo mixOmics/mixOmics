@@ -1,8 +1,12 @@
-# Copyright (C) 2015
-# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#############################################################################################################
+# Author :
+#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#
 # created: 22-04-2015
-# last modified: 18-02-2016
-
+# last modified: 25-02-2016
+#
+# Copyright (C) 2015
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -16,7 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
+#############################################################################################################
 
 
 # --------------------------------------
@@ -70,7 +74,7 @@ Check.entry.single = function(X,  ncomp, keepX, keepX.constraint,q)
 # Check.entry.pls
 # --------------------------------------
 
-Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.constraint,mode,verbose, near.zero.var,max.iter,tol)
+Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.constraint,mode,verbose, near.zero.var,max.iter,tol,logratio,DA,multilevel)
 {
     
     if(missing(mode)) mode="regression"
@@ -87,11 +91,38 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.con
     
     X = as.matrix(X)
     
-    Y = as.matrix(Y)
+    if (!(logratio %in% c("none", "CLR")))
+    {stop("Choose one of the two following logratio transformation: none or CLR")}
     
-    if (!is.numeric(X) || !is.numeric(Y))
-    stop("'X' and/or 'Y' must be a numeric matrix.")
+    if(!is.null(multilevel))
+    {
+        #multilevel analysis: withinVariation and then pls-like
+        # f it's DA analysis, Y is ignored and we look in 'multilevel' input parameter
+        if(DA)
+        {
+            if(!is.null(Y))
+            {
+                message("Multilevel Analysis will be performed based on 'multilevel' input, 'Y' is ignored")
+            }
+            Y=multilevel
+        }else{
+            if ((nrow(X) != nrow(multilevel)))
+            stop("unequal number of rows in 'X' and 'multilevel'.")
+            Y = as.matrix(Y)
+            
+            if (!is.numeric(X) || !is.numeric(Y))
+            stop("'X' and/or 'Y' must be a numeric matrix.")
+            
+        }
+    }else{
+        Y = as.matrix(Y)
+        
+        if (!is.numeric(X) || !is.numeric(Y))
+        stop("'X' and/or 'Y' must be a numeric matrix.")
+        
+    }
     
+
     N = nrow(X)
     Q = ncol(Y)
     P= ncol(X)

@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 24-02-2016
+# last modified: 25-02-2016
 #
 # Copyright (C) 2015
 #
@@ -52,11 +52,15 @@ keepY,
 scale = TRUE,
 tol = 1e-06,
 max.iter = 500,
-near.zero.var = FALSE)
+near.zero.var = FALSE,
+logratio="none",   # one of "none", "CLR"
+multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVariation. Y is ommited and shouldbe included in multilevel design
 {
 
+
     result <- internal_wrapper.mint(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
-    keepX=keepX,keepY=keepY,keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,max.iter=max.iter,tol=tol)
+    keepX=keepX,keepY=keepY,keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,max.iter=max.iter,tol=tol,logratio=logratio,
+    multilevel=multilevel,DA=FALSE)
     
     
     cl = match.call()
@@ -67,7 +71,16 @@ near.zero.var = FALSE)
     variates=result$variates,loadings=result$loadings,names=result$names,
     tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
     
+   
     class(out) = c("spls","pls")
+    
+    if(!is.null(multilevel))
+    {
+        out$Xw=result$Xw
+        out$multilevel=multilevel
+        class(out)=c("mlspls",class(out))
+    }
+    
     return(invisible(out))
  
     
@@ -75,3 +88,4 @@ near.zero.var = FALSE)
     
     
 }
+

@@ -26,7 +26,7 @@
 #############################################################################################################
 #
 # Date: July 20, 2014
-# last modified: 24-02-2016
+# last modified: 25-02-2016
 # Author: Amrit Singh
 # sparse generalized canonical correlation discriminant analysis (sgccda)
 #
@@ -94,7 +94,7 @@ internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)),ta
   #ncomp=check$ncomp
   #study=check$study
   
-  
+
   # at this stage keepA.constraint need to be character, to remove easily variables with near zero variance
   ### near.zero.var, remove the variables with very small variances
   

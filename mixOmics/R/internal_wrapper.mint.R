@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 24-02-2016
+# last modified: 25-02-2016
 #
 # Copyright (C) 2015
 #
@@ -55,7 +55,10 @@ mode,
 scale=FALSE,
 near.zero.var=FALSE,
 max.iter = 500,
-tol = 1e-06)
+tol = 1e-06,
+logratio="none",   # one of "none", "CLR"
+DA=FALSE,           # indicate whether it's a DA analysis, only used for the multilvel approach with withinVariation
+multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVariation. Y is ommited and shouldbe included in multilevel design
 {
     
     if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0 || length(ncomp)>1)
@@ -107,7 +110,7 @@ tol = 1e-06)
     # near.zero.var: do you want to remove variables with very small variance
     
     check=Check.entry.pls(X, Y, ncomp, keepX, keepY,keepX.constraint,keepY.constraint,mode,
-        near.zero.var=near.zero.var,max.iter=max.iter,tol=tol) # to have the warnings relative to X and Y, instead of blocks
+        near.zero.var=near.zero.var,max.iter=max.iter,tol=tol,logratio=logratio,DA=DA,multilevel=multilevel) # to have the warnings relative to X and Y, instead of blocks
     X=check$X
     Y=check$Y
     ncomp=check$ncomp
@@ -117,15 +120,77 @@ tol = 1e-06)
     keepX=check$keepX
     keepY=check$keepY
     nzv.A=check$nzv.A
+    
+    
+    
+    #-----------------------------#
+    #-- logratio transformation --#
+    
+    transfo=logratio.transfo(X=X,logratio=logratio)
+    X=transfo$X
+    
+    #as X may have changed
+    if (ncomp >= min(ncol(X), nrow(X)))
+    stop("use smaller 'ncomp'", call. = FALSE)
+    
+    #-- logratio transformation --#
+    #-----------------------------#
+    
+    
+    #---------------------------------------------------------------------------#
+    #-- multilevel approach ----------------------------------------------------#
+    
+    if(!is.null(multilevel))
+    {
+        if(!DA)
+        {
+            Xw = withinVariation(X, design  = multilevel)
+            Yw = withinVariation(Y, design = multilevel)
+            X=Xw
+            Y=Yw
+        }else{
+            Xw <- withinVariation(X, design = multilevel)
+            X=Xw
+            
+            #-- Need to set Y variable for 1 or 2 factors
+            Y = multilevel[, -1]
+            if (!is.null(dim(Y))) {
+                Y = apply(Y, 1, paste, collapse = ".")  #  paste is to combine in the case we have 2 levels
+            }
+            Y = as.factor(Y)
+            Y.factor=Y
+            Y=unmap(Y)
+            colnames(Y) = paste0("Y", 1:ncol(Y))
+            rownames(Y)=rownames(X)
+            # if DA keepY should be all the levels (which is not happening in the check because of multilevel
+            keepY=rep(ncol(Y),ncomp)
 
+        }
+    }
+    #-- multilevel approach ----------------------------------------------------#
+    #---------------------------------------------------------------------------#
+
+
+    #---------------------------------------------------------------------------#
+    #-- pls approach ----------------------------------------------------#
 
     result <- internal_mint.block(A = list(X = X, Y = Y), indY = 2, mode = mode, ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
     design = design, keepA = list(keepX,keepY),keepA.constraint = list(keepX.constraint,keepY.constraint),
     scale = scale, scheme = "centroid",init="svd", study = study)#,near.zero.var=near.zero.var)
     
+    #-- pls approach ----------------------------------------------------#
+    #---------------------------------------------------------------------------#
+
     result$ncomp = ncomp
     if(near.zero.var)
     result$nzv=nzv.A
+    
+    if(!is.null(multilevel) & DA)
+    result$Y.factor=Y.factor
+    
+    if(!is.null(multilevel))
+    result$Xw=Xw
+
 
     class(result) = c("mint.spls.hybrid")
     return(invisible(result))
