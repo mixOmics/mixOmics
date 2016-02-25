@@ -113,8 +113,10 @@ verbose = FALSE
     
     Y.input=Y
     Y=unmap(Y)
-    
-    
+    colnames(Y) = levels(Y)#paste0("Y", 1:ncol(Y.mat))
+
+
+
     result <- internal_wrapper.mint.block(X=X,Y=Y,ncomp=ncomp,keepX.constraint=keepA.constraint,
     keepX=keepA,scheme=scheme,mode=mode,scale=scale,
     bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=FALSE)
@@ -130,7 +132,7 @@ verbose = FALSE
     result$call = cl
     result$ncomp = ncomp
     result$names$Y = attr(result$Y[[1]], "levels")
-    row.names(result$variates$Y) = row.names(X); row.names(result$loadings$Y) = paste0("Y", c(1 : nlevels(Y.input)))
+    #row.names(result$variates$Y) = row.names(X); row.names(result$loadings$Y) = paste0("Y", c(1 : nlevels(Y.input)))
     names(result)[names(result) == "keepA"] = "keepX"; result$keepX = keepA
     class(result) = "sgccda"
     return(invisible(result))

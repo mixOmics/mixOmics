@@ -30,7 +30,7 @@ bias = FALSE,
 tol = 1e-6,
 verbose = FALSE,
 max.iter=500,
-near.zero.var)
+near.zero.var = FALSE)
 {
     
     # call function
@@ -48,8 +48,7 @@ near.zero.var)
     scheme=check$scheme
     verbose=check$verbose
     bias=check$bias
-    near.zero.var=check$near.zero.var
-
+    nzv.A=check$nzv.A
 
     
     result.rgcca = internal_mint.block(A = X, design = design, tau = tau,
@@ -57,7 +56,7 @@ near.zero.var)
     scheme = scheme, scale = scale,
     init = init, bias = bias, tol = tol, verbose = verbose,
     max.iter=max.iter,
-    study=factor(rep(1,nrow(A[[1]]))),#mint.rgcca not coded yet
+    study=factor(rep(1,nrow(X[[1]]))),#mint.rgcca not coded yet
     mode="canonical"
     )
     
@@ -92,7 +91,8 @@ near.zero.var)
     ncomp = ncomp,
     crit = result.rgcca$crit,
     AVE = list(AVE.X = result.rgcca$AVE$AVE_X, result.rgcca$AVE$AVE_outer, result.rgcca$AVE$AVE_inner), #rename?
-    names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames))
+    names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames)),
+    nzv=result.rgcca$nzv
     
     )
     

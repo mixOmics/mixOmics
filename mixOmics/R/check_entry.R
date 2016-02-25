@@ -636,6 +636,169 @@ verbose)
 }
 
 
+# --------------------------------------
+# Check.entry.sgcca
+# --------------------------------------
+
+
+Check.entry.sgcca = function(X,
+design,
+ncomp ,
+scheme,
+mode,
+scale,
+init,
+bias,
+tol,
+verbose,
+max.iter,
+near.zero.var,
+keepX,
+keepX.constraint)
+{
+    #need to give the default values of mint.block.spls to mixOmics
+    
+    if(!is.list(X))
+    {stop("X must be a list of at list two matrices")}
+    
+    if(length(X)<2)
+    {stop("X must be a list of at list two matrices")}
+    
+    if(missing(ncomp)) {ncomp = rep(1, length(X))}
+    
+    #check dimnames and ncomp per block of A
+    for(q in 1:length(X))
+    {
+        check=Check.entry.single(X[[q]], ncomp[q],q=q)
+        X[[q]]=check$X
+        ncomp[q]=check$ncomp
+    }
+    
+    
+    #check length(ncomp)=length(A)
+    if(length(ncomp)!=length(X)) stop("'ncomp' must be a vector of length the number of blocks in X")
+    #check ncomp[q]<ncol(X[[q]])
+    for(q in 1:length(X))
+    {
+        ncomp[q] = round(ncomp[q])
+        if(ncomp[q] > ncol(X[[q]]))
+        {
+            warning(paste0("Reset maximum number of variates 'ncomp[",q,"]' to ncol(X[[",q,"]])= ", ncol(X[[q]]), "."))
+            ncomp[q] = ncol(X[[q]])
+        }
+    }
+    
+    #add names to the blocks if no names or not unique name for each block
+    if(length(unique(names(X)))!=length(X))
+    names(X)=paste0("block",1:length(X))
+    
+    A=X#input
+    
+    if(missing(init)) init="svd"
+    
+    if(!init%in%c("svd","svd.single"))
+    stop("init should be one of 'svd' or 'svd.single'")
+    if (!(mode %in% c("canonical", "invariant", "classic", "regression")))
+    {stop("Choose one of the four following modes: canonical, invariant, classic or regression")}
+    
+    
+    # =====================================================
+    # with or without tau (RGGCA or mint.block.spls algo)
+    # =====================================================
+    
+    x=unlist(lapply(A,nrow))
+    if(!isTRUE(all.equal( max(x) ,min(x))))
+    stop("The samplesize must be the same for all blocks")
+    
+    
+    
+    #check scheme
+    if(missing(scheme)) scheme= "centroid"
+    if (!(scheme %in% c("horst", "factorial","centroid"))) {
+        stop("Choose one of the three following schemes: horst, centroid or factorial")
+    } else {
+        if (verbose)
+        cat("Computation of the SGCCA block components based on the", scheme, "scheme \n")
+    }
+    
+    
+    if(missing(design))
+    {design=1 - diag(length(A))}
+    
+    #check design matrix
+    if(nrow(design)!=ncol(design))
+    stop(paste0("'design' must be a square matrix."))
+    if(nrow(design)!=length(A))
+    stop(paste0("'design' must be a square matrix with",length(A),"columns."))
+    
+    
+    if(missing(bias)) bias= FALSE
+    if(missing(verbose)) verbose= FALSE
+    
+    if(tol<=0)
+    stop("tol must be non negative")
+    
+    if(max.iter<=0)
+    stop("max.iter must be non negative")
+    
+    if(!is.logical(verbose))
+    stop("verbose must be either TRUE or FALSE")
+    if(!is.logical(scale))
+    stop("scale must be either TRUE or FALSE")
+    if(!is.logical(bias))
+    stop("bias must be either TRUE or FALSE")
+    if(!is.logical(near.zero.var))
+    stop("near.zero.var must be either TRUE or FALSE")
+    
+    
+    # construction of keepA and keepA.constraint
+    check=check.keepA.and.keepA.constraint(X=A,keepX=keepX,keepX.constraint=keepX.constraint,ncomp=ncomp)
+    keepA=check$keepA
+    keepA.constraint=check$keepA.constraint
+    
+    
+    
+    # at this stage keepA.constraint need to be character, to remove easily variables with near zero variance
+    ### near.zero.var, remove the variables with very small variances
+    if(near.zero.var == TRUE)
+    {
+        nzv.A = lapply(A,nearZeroVar)
+        for(q in 1:length(A))
+        {
+            if (length(nzv.A[[q]]$Position) > 0)
+            {
+                names.remove.X=colnames(A[[q]])[nzv.A[[q]]$Position]
+                A[[q]] = A[[q]][, -nzv.A[[q]]$Position,drop=FALSE]
+                if (verbose)
+                warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
+                if(ncol(A[[q]]) == 0) {stop(paste0("No more variables in",A[[q]]))}
+                
+                # at this stage, keepA.constraint need to be numbers
+                if(length(keepA.constraint[[q]])>0)
+                {
+                    #remove the variables from keepA.constraint if removed by near.zero.var
+                    keepA.constraint[[q]]=match.keepX.constraint(names.remove.X,keepA.constraint[[q]])
+                    # replace character by numbers
+                    keepA.constraint[[q]]= lapply(keepA.constraint[[q]],function(x){match(x,colnames(A[[q]]))})
+                }
+                #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
+                if(any(keepA[[q]]>ncol(A[[q]])))
+                {
+                    ind=which(keepA[[q]]>ncol(A[[q]]))
+                    keepA[[q]][ind]=ncol(A[[q]])
+                }
+            }
+            
+        }
+    }else{nzv.A=NULL}
+    
+    
+    return(list(A=A,ncomp=ncomp,design=design,init=init,scheme=scheme,verbose=verbose,bias=bias,nzv.A=nzv.A,
+    keepA=keepA,keepA.constraint=keepA.constraint))
+    
+}
+
+
 
 # --------------------------------------
 # Check.entry.rgcca
@@ -768,7 +931,28 @@ near.zero.var)
     if(!is.logical(near.zero.var))
     stop("near.zero.var must be either TRUE or FALSE")
     
-    return(list(A=A,ncomp=ncomp,design=design,init=init,scheme=scheme,verbose=verbose,bias=bias,near.zero.var=near.zero.var))
+    # at this stage keepA.constraint need to be character, to remove easily variables with near zero variance
+    ### near.zero.var, remove the variables with very small variances
+    if(near.zero.var == TRUE)
+    {
+        nzv.A = lapply(A,nearZeroVar)
+        for(q in 1:length(A))
+        {
+            if (length(nzv.A[[q]]$Position) > 0)
+            {
+                names.remove.X=colnames(A[[q]])[nzv.A[[q]]$Position]
+                A[[q]] = A[[q]][, -nzv.A[[q]]$Position,drop=FALSE]
+                if (verbose)
+                warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
+                if(ncol(A[[q]]) == 0) {stop(paste0("No more variables in",A[[q]]))}
+                
+            }
+            
+        }
+    }else{nzv.A=NULL}
+    
+    
+    return(list(A=A,ncomp=ncomp,design=design,init=init,scheme=scheme,verbose=verbose,bias=bias,nzv.A=nzv.A))
     
 }
 

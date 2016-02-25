@@ -20,6 +20,7 @@
 wrapper.sgcca = function(
 X,
 design = 1 - diag(length(X)),
+penalty = NULL,
 ncomp = rep(1, length(X)),
 keepX,
 keepX.constraint,
@@ -30,24 +31,32 @@ init = "svd",
 bias = TRUE,
 tol = .Machine$double.eps,
 verbose = FALSE,
-max.iter
+max.iter=500,
+near.zero.var = FALSE
 ){
   
   # call function
   #rgcca <- function(A, C = 1-diag(length(A)), tau = rep(1, length(A)), ncomp = rep(1, length(A)), scheme = "centroid", scale = TRUE , init="svd", bias = TRUE, tol = .Machine$double.eps, verbose=TRUE)
   
-     check=check.keepA.and.keepA.constraint(X=X,keepX=keepX,keepX.constraint=keepX.constraint,ncomp=ncomp)
-     keepA=check$keepA
-     keepA.constraint=check$keepA.constraint
-     
   
-  check=Check.entry.mint.block.spls(A=X, indY=NULL, design=design ,ncomp=ncomp , scheme=scheme , scale=scale ,  bia=bias,
-  init=init , tol=tol , verbose=verbose,mode=mode, max.iter=max.iter,keepA=keepA, keepA.constraint=keepA.constraint)
+  check=Check.entry.sgcca(X=X, design=design ,ncomp=ncomp , scheme=scheme , scale=scale ,  bias=bias,
+  init=init , tol=tol , verbose=verbose,mode=mode, max.iter=max.iter,near.zero.var=near.zero.var,keepX=keepX,keepX.constraint=keepX.constraint)
   
-  print(dim(X[[1]]))
-  print(dim(X[[2]]))
-  temp=crossprod(X[[1]],X[[2]])
-  result.sgcca = internal_mint.block(A = X, design = design, tau = NULL,
+
+  A=check$A
+  design=check$design
+  ncomp=check$ncomp
+  init=check$init
+  scheme=check$scheme
+  verbose=check$verbose
+  bias=check$bias
+  near.zero.var=check$near.zero.var
+  keepA.constraint=check$keepA.constraint
+  keepA=check$keepA
+  nzv.A=check$nzv.A
+  
+  
+  result.sgcca = internal_mint.block(A = A, design = design, tau = NULL,
                        ncomp = ncomp,
                        scheme = scheme, scale = scale,
                        init = init, bias = bias, tol = tol, verbose = verbose,
@@ -55,7 +64,7 @@ max.iter
                        keepA=keepA,
                        max.iter=max.iter,
                        study=factor(rep(1,nrow(A[[1]]))),#mint.rgcca not coded yet
-                       mode=mode
+                       mode=mode,penalty=penalty
                        )
 
   # outputs
@@ -80,16 +89,17 @@ max.iter
   output = list(
     class = cl,
     X = X,
-    variates = result.rgcca$variates,
-    loadings = result.rgcca$loadings,
-    loadings.star = result.rgcca$loadings.star,
+    variates = result.sgcca$variates,
+    loadings = result.sgcca$loadings,
+    loadings.star = result.sgcca$loadings.star,
     design = design,
-    tau = result.rgcca$tau,
+    penalty=penalty,
     scheme = scheme,
     ncomp = ncomp, 
-    crit = result.rgcca$crit,
-    AVE = list(AVE.X = result.rgcca$AVE$AVE_X, result.rgcca$AVE$AVE_outer, result.rgcca$AVE$AVE_inner), #rename?
-    names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames))
+    crit = result.sgcca$crit,
+    AVE = list(AVE.X = result.sgcca$AVE$AVE_X, result.sgcca$AVE$AVE_outer, result.sgcca$AVE$AVE_inner), #rename?
+    names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames)),
+    nzv=result.sgcca$nzv
     
   )
 

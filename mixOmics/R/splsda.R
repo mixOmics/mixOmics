@@ -70,7 +70,7 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
         }
         
         Y.mat=unmap(Y)
-        colnames(Y.mat) = paste0("Y", 1:ncol(Y.mat))
+        colnames(Y.mat) = levels(Y)#paste0("Y", 1:ncol(Y.mat))
     }else{Y.mat=Y}
     
     result <- internal_wrapper.mint(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
@@ -87,8 +87,8 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
     variates=result$variates,loadings=result$loadings,
     names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
     out$names$Y = levels(out$Y)
-    row.names(out$variates$Y) = row.names(out$variates$X)
-    row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(out$Y)))
+    #row.names(out$variates$Y) = row.names(out$variates$X)
+    #row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(out$Y)))
     
     class(out) = c("splsda","pls")
     

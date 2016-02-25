@@ -65,7 +65,7 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
         }
         
         Y.mat=unmap(Y)
-        colnames(Y.mat) = paste0("Y", 1:ncol(Y.mat))
+        colnames(Y.mat) = levels(Y)#paste0("Y", 1:ncol(Y.mat))
     }else{Y.mat=NULL}
 
     
@@ -80,8 +80,8 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
     mode=result$mode,variates=result$variates,loadings=result$loadings,
     names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
     out$names$Y = levels(out$Y)
-    row.names(out$variates$Y) = row.names(out$variates$X)
-    row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(out$Y)))
+    #row.names(out$variates$Y) = row.names(out$variates$X)
+    #row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(out$Y)))
     
    
     class(out) = c("plsda","pls")

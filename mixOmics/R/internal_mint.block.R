@@ -61,7 +61,7 @@ internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)),ta
                             ncomp = rep(1, length(A)), scheme = "centroid", scale = TRUE,  bias = FALSE,
                             init = "svd.single", tol = 1e-06, verbose = FALSE,
                             mode = "canonical", max.iter = 500,study = NULL, keepA = NULL,
-                            keepA.constraint = NULL){#, near.zero.var = FALSE) { # mint.hybrid.spls
+                            keepA.constraint = NULL, penalty = NULL){#, near.zero.var = FALSE) { # mint.hybrid.spls
   
 
   # A: list of matrices
@@ -153,11 +153,11 @@ internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)),ta
       mint.block.result <- sparse.mint.block_iteration(R, design,study = study,
                         keepA.constraint=if (!is.null(keepA.constraint)) {lapply(keepA.constraint, function(x){unlist(x[n])})} else {NULL} ,
                         keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL},indY = indY,
-                        scheme = scheme, init = init, max.iter = max.iter, tol = tol,   verbose = verbose)
+                        scheme = scheme, init = init, max.iter = max.iter, tol = tol,   verbose = verbose,penalty = penalty)
     } else {
       mint.block.result <- sparse.rgcca_iteration(R, design, tau = if (is.matrix(tau)){tau[n, ]} else {"optimal"}, scheme = scheme, init = init, tol = tol,
                         verbose = verbose, max.iter = max.iter,
-                        keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL})
+                        keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL}, penalty = penalty)
     }
     
     ### End: Estimation ai
@@ -287,7 +287,8 @@ internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)),ta
 # ----------------------------------------------------------------------------------------------------------
 
 sparse.mint.block_iteration <- function (A, design, study = NULL, keepA.constraint = NULL, keepA = NULL,  indY = NULL,
-                                       scheme = "centroid", init = "svd", max.iter = 500, tol = 1e-06, verbose = TRUE, bias = FALSE)
+                                        scheme = "centroid", init = "svd", max.iter = 500, tol = 1e-06, verbose = TRUE, bias = FALSE,
+                                        penalty=NULL)
 {
   
   # keepA.constraint is a list of positions in A of the variables to keep on the component
@@ -305,8 +306,9 @@ sparse.mint.block_iteration <- function (A, design, study = NULL, keepA.constrai
   ### Start: Initialization parameters
   J <- length(A); J2 <- J-1; pjs = sapply(A, NCOL)
   AVE_X <- rep(0, J);
-  
-  
+  if(!is.null(penalty))    penalty = penalty * sqrt(pjs)
+
+
   iter <- 1
   converg <- crit <- numeric()
   variates.A <- Z <- matrix(0, NROW(A[[1]]), J)
@@ -361,7 +363,12 @@ sparse.mint.block_iteration <- function (A, design, study = NULL, keepA.constrai
   
   for (q in 1:J)
   {
-    variates.A[, q] <- A[[q]]%*%loadings.A[[q]]#apply(A[[q]], 1, crossprod, loadings.A[[q]])
+      if(misdata)
+      {
+          variates.A[, q] <- apply(A[[q]], 1, miscrossprod, loadings.A[[q]])
+      }else{
+          variates.A[, q] <- A[[q]]%*%loadings.A[[q]]
+      }
     loadings.A[[q]] <- l2.norm(as.vector(loadings.A[[q]]))
     loadings.partial.A.comp[[q]] = list()
   }
@@ -392,7 +399,12 @@ sparse.mint.block_iteration <- function (A, design, study = NULL, keepA.constrai
       temp=0
       for (m in 1:nlevels_study)
       {
-        loadings.partial.A.comp[[q]][[m]] <-t(A_split[[q]][[m]])%*%Z_split[[m]] #apply(t(A_split[[q]][[m]]), 1, crossprod, Z_split[[m]])
+          if(misdata)
+          {
+              loadings.partial.A.comp[[q]][[m]] <- apply(t(A_split[[q]][[m]]), 1, miscrossprod, Z_split[[m]])
+          }else{
+              loadings.partial.A.comp[[q]][[m]] <- t(A_split[[q]][[m]])%*%Z_split[[m]]
+          }
         temp=temp+loadings.partial.A.comp[[q]][[m]]
       }
       loadings.A[[q]]=temp
@@ -401,12 +413,26 @@ sparse.mint.block_iteration <- function (A, design, study = NULL, keepA.constrai
       # check the following
       #loadings.partial.A.comp = lapply(1 : J, function(x){lapply(1 : nlevels_study, function(y){ A_split[[x]][[y]] %*% Z_split[[x]]})})
       
+      # sparse using keepA / penalty
+      if (!is.null(penalty))
+      {
+          loadings.A[[q]] = sparsity(loadings.A[[q]], keepA = NULL,keepA.constraint = NULL, penalty = penalty[q])
+      }else{
+          loadings.A[[q]] = sparsity(loadings.A[[q]],keepA[[q]],keepA.constraint[[q]],penalty=NULL)
+      }
       
-      loadings.A[[q]]=sparsity(loadings.A[[q]],keepA[[q]],keepA.constraint[[q]])
+    
+    
+    
       loadings.A[[q]]=l2.norm(as.vector(loadings.A[[q]]))
       
       ### Step B end: Computer the outer weight ###
-      variates.A[, q] <- A[[q]]%*%loadings.A[[q]] #apply(A[[q]], 1, crossprod, loadings.A[[q]])
+      if(misdata)
+      {
+          variates.A[, q] <-  apply(A[[q]], 1, miscrossprod, loadings.A[[q]])
+      }else{
+          variates.A[, q] <-  A[[q]]%*%loadings.A[[q]]
+      }
     }
     
     crit[iter] <- sum(design * g(cov2(variates.A, bias = bias)))
@@ -428,7 +454,14 @@ sparse.mint.block_iteration <- function (A, design, study = NULL, keepA.constrai
   
   
   #calculation variates.partial.A.comp
-  variates.partial.A.comp = lapply(1 : J, function(x){lapply(1 : nlevels_study, function(y){ A_split[[x]][[y]] %*% loadings.A[[x]]})})  
+  variates.partial.A.comp = lapply(1 : J, function(x){lapply(1 : nlevels_study, function(y){
+      if(misdata)
+      {
+          apply(A_split[[x]][[y]], 1, miscrossprod, loadings.A[[x]])
+      }else{
+          A_split[[x]][[y]] %*% loadings.A[[x]]
+      }
+  })})
   
   if (verbose)
     plot(crit, xlab = "iteration", ylab = "criteria")
