@@ -25,7 +25,7 @@
 
 
 #--------------------- PLS and sPLS ---------------------#
-plotIndiv.mint.pls <- plotIndiv.mint.spls <- plotIndiv.mint.plsda <- plotIndiv.mint.splsda <-
+plotIndiv.mint.spls <- plotIndiv.mint.splsda <-
 function(object,
 comp = 1:2,
 ind.names = TRUE,

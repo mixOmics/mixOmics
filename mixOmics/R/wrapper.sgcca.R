@@ -95,17 +95,17 @@ near.zero.var = FALSE
   
   output = list(
     class = cl,
-    X = X,
+    X = result.sgcca$X,
     variates = result.sgcca$variates,
     loadings = result.sgcca$loadings,
     loadings.star = result.sgcca$loadings.star,
-    design = design,
+    design = result.sgcca$design,
     penalty=penalty,
-    scheme = scheme,
-    ncomp = ncomp, 
+    scheme = result.sgcca$scheme,
+    ncomp = result.sgcca$ncomp,
     crit = result.sgcca$crit,
     AVE = list(AVE.X = result.sgcca$AVE$AVE_X, result.sgcca$AVE$AVE_outer, result.sgcca$AVE$AVE_inner), #rename?
-    names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames)),
+    names=result.sgcca$names,#names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames)),
     nzv=result.sgcca$nzv
     
   )

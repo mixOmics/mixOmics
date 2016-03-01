@@ -104,7 +104,7 @@ plotVar <-
         blocks = object$names$blocks
         
         if (class.object[1] == "sgccda")
-          blocks = blocks[-object$indY]
+            blocks = names(object$X)#blocks[-object$indY]
         
       } else if (is.numeric(blocks) & min(blocks) > 0 &  max(blocks) <= length(object$names$blocks)) {
         blocks = object$names$blocks[blocks]
@@ -112,11 +112,11 @@ plotVar <-
         if (!any(blocks %in% object$names$blocks))
           stop("One element of 'blocks' does not match with the names of the blocks")
       } else {
-        stop("Incorrect value for 'blocks", call. = FALSE)
+        stop("Incorrect value for 'blocks'", call. = FALSE)
       }
       object$variates = object$variates[names(object$variates) %in% blocks]
       object$names$colnames = object$names$colnames[names(object$names$colnames) %in% blocks] 
-      object$blocks = object$blocks[names(object$blocks) %in% blocks]
+      object$blocks = object$X[names(object$X) %in% blocks]
       
       if (any(object$ncomp[blocks] == 1)) {
         stop(paste("The number of components for one selected block '", paste(blocks, collapse = " - "),"' is 1. The number of components must be superior or equal to 2."), call. = FALSE)

@@ -88,17 +88,17 @@ near.zero.var = FALSE)
     
     output = list(
     class = cl,
-    X = X,
+    X = result.rgcca$X,
     variates = result.rgcca$variates,
     loadings = result.rgcca$loadings,
     loadings.star = result.rgcca$loadings.star,
-    design = design,
+    design = result.rgcca$design,
     tau = result.rgcca$tau,
-    scheme = scheme,
-    ncomp = ncomp,
+    scheme = result.rgcca$scheme,
+    ncomp = result.rgcca$ncomp,
     crit = result.rgcca$crit,
     AVE = list(AVE.X = result.rgcca$AVE$AVE_X, result.rgcca$AVE$AVE_outer, result.rgcca$AVE$AVE_inner), #rename?
-    names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames)),
+    names=result.rgcca$names,#names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames)),
     nzv=result.rgcca$nzv
     
     )

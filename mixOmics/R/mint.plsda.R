@@ -84,7 +84,7 @@ near.zero.var = FALSE)
 
     
     
-    class(out) = c("mint.plsda","mint.pls","pls")
+    class(out) = c("mint.plsda","mint.splsda","mint.spls","mint.pls","pls")
     return(invisible(out))
     
 

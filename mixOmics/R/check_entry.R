@@ -321,6 +321,8 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.con
     keepY.constraint=keepY.constraint,keepX=keepX,keepY=keepY,nzv.A=nzv.A))
 }
 
+if(FALSE)
+{
 Check.entry.mint.block.spls = function(A, indY, design ,ncomp , scheme , scale ,  bias,
 init , tol , verbose,mode , max.iter,study , keepA, keepA.constraint)
 {
@@ -361,6 +363,11 @@ init , tol , verbose,mode , max.iter,study , keepA, keepA.constraint)
         ncomp[q]=check$ncomp
     }
     
+    #force all rownames to be the same for all blocks in A
+    ind.names=rownames(A[[1]])
+    
+
+
     
     if (!(scheme %in% c("horst", "factorial","centroid"))) {
         stop("Choose one of the three following schemes: horst, centroid or factorial")
@@ -388,7 +395,7 @@ init , tol , verbose,mode , max.iter,study , keepA, keepA.constraint)
     return(list(A=A,ncomp=ncomp,study=study))
     
 }
-
+}
 # --------------------------------------
 # Check.entry.wrapper.sparse.mint.block
 # --------------------------------------
@@ -434,7 +441,6 @@ verbose)
         X[[q]]=check$X
         ncomp[q]=check$ncomp
     }
-    
     
     #check ncomp[q]<ncol(X[[q]])
     for(q in 1:length(X))
@@ -527,6 +533,10 @@ verbose)
     # --------------------------------------------------------------------------------
     # at this stage, we have A, indY, keepA, keepA.constraint, ncomp verified
     # --------------------------------------------------------------------------------
+    
+    #force all rownames to be the same
+    ind.names=rownames(A[[1]])
+    lapply(A,function(x){rownames(x)=ind.names})
     
     if (!(mode %in% c("canonical", "invariant", "classic", "regression")))
     {stop("Choose one of the four following modes: canonical, invariant, classic or regression")}

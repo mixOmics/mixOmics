@@ -135,7 +135,7 @@ verbose = FALSE
     result$ind.mat=result$Y[[1]]
     result$Y=Y.input    
     result$call = cl
-    result$ncomp = ncomp
+    result$ncomp = result$ncomp
     result$names$Y = attr(result$Y[[1]], "levels")
     #row.names(result$variates$Y) = row.names(X); row.names(result$loadings$Y) = paste0("Y", c(1 : nlevels(Y.input)))
     names(result)[names(result) == "keepA"] = "keepX"; result$keepX = keepA

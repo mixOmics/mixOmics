@@ -160,7 +160,7 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
             Y = as.factor(Y)
             Y.factor=Y
             Y=unmap(Y)
-            colnames(Y) = paste0("Y", 1:ncol(Y))
+            colnames(Y) = levels(Y)#paste0("Y", 1:ncol(Y))
             rownames(Y)=rownames(X)
             # if DA keepY should be all the levels (which is not happening in the check because of multilevel
             keepY=rep(ncol(Y),ncomp)

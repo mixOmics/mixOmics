@@ -110,6 +110,16 @@ S3method(plot, perf)
 S3method(plot, rcc)
 S3method(plot, pca)
 
+S3method(plotIndiv, pls)
+S3method(plotIndiv, rcc)
+S3method(plotIndiv, pca)
+S3method(plotIndiv, sipca)
+S3method(plotIndiv, sgcca)
+S3method(plotIndiv, sgccda)
+S3method(plotIndiv, rgcca)
+S3method(plotIndiv, mint.spls)
+S3method(plotIndiv, mint.splsda)
+
 
 S3method(predict, pls)
 S3method(predict, spls)

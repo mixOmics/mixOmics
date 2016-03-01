@@ -98,6 +98,7 @@ internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)),ta
   # at this stage keepA.constraint need to be character, to remove easily variables with near zero variance
   ### near.zero.var, remove the variables with very small variances
   
+  names(ncomp) = names(A)
 
   # keepA is updated to be of length length(A) now, the first entries correspond to the keepA.constraint if it was provided
   
@@ -268,7 +269,8 @@ internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)),ta
               variates = variates.A, loadings = shave.matlist(loadings.A, ncomp),
               variates.partial= if(is.null(tau)) {variates.partial.A} ,loadings.partial= if(is.null(tau)) {loadings.partial.A},
               loadings.star = shave.matlist(loadings.Astar, ncomp),
-              names = names,tol = tol, iter=iter, #nzv = if(near.zero.var) nzv.A,
+              names = list(indiv = row.names(A[[1]]), colnames = lapply(A, colnames), blocks = names(A)),
+              tol = tol, iter=iter, #nzv = if(near.zero.var) nzv.A,
               design = design,
               scheme = scheme,  crit = crit, AVE = AVE, defl.matrix = defl.matrix,
               init = init, bias = bias,

@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 25-02-2016
+# last modified: 01-03-2016
 #
 # Copyright (C) 2015
 #
@@ -71,7 +71,7 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
         
         Y.mat=unmap(Y)
         colnames(Y.mat) = levels(Y)#paste0("Y", 1:ncol(Y.mat))
-    }else{Y.mat=Y}
+    }else{Y.mat=NULL}
     
     result <- internal_wrapper.mint(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
     keepX=keepX,keepX.constraint=keepX.constraint,max.iter=max.iter,tol=tol,logratio=logratio,

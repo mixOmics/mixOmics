@@ -20,11 +20,31 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
+plotIndiv <-
+function(object, ...) UseMethod("plotIndiv")
+
+
 #----------------------------------------------------------------------------------------------------------#
 #-- Includes plotIndiv for PLS, sPLS, PLS-DA, SPLS-DA, rCC, PCA, sPCA, IPCA, sIPCA, rGCCA, sGCCA, sGCCDA --#
 #----------------------------------------------------------------------------------------------------------#
 
-plotIndiv <-
+plotIndiv.pls=
+#plotIndiv.plsda=   # because pls too
+#plotIndiv.spls=    # because pls too
+#plotIndiv.splsda=  # because pls too
+#plotIndiv.mlspls=  # because pls too
+#plotIndiv.mlsplsda=# because pls too
+plotIndiv.rcc=
+plotIndiv.pca=
+#plotIndiv.ipca=    # because pca too
+plotIndiv.sipca=
+#plotIndiv.spca=    # because pca too
+#plotIndiv.prcomp=  # because pca too
+plotIndiv.sgcca=
+plotIndiv.rgcca=
+#plotIndiv.sgccda=  #because plotIndiv_diablo from Amrit
+
+
 function(object,
 comp = NULL,
 rep.space = NULL,
@@ -57,7 +77,7 @@ axes.box = "box",
     class.object = class(object)
     object.pls=c("pls","spls","splsda","plsda","mlspls","mlsplsda","rcc")
     object.pca=c("ipca","sipca","pca","spca","prcomp")
-    object.blocks=c("sgcca","rgcca", "sgccda")
+    object.blocks=c("sgcca","rgcca")#, "sgccda")
     
     ### Start: Validation of arguments
     ncomp = object$ncomp
@@ -135,15 +155,15 @@ axes.box = "box",
         if (is.null(blocks)){
             blocks = object$names$blocks
             
-            if (class.object[1] == "sgccda")
-            blocks = blocks[-object$indY]
+            #if (class.object[1] == "sgccda")
+            #blocks = blocks[-object$indY]
         } else if (is.numeric(blocks) & min(blocks) > 0 &  max(blocks) <= length(object$names$blocks)) {
             blocks = object$names$blocks[blocks]
         } else if (is.character(blocks)) {
             if (!any(blocks %in% object$names$blocks))
             stop("One element of 'blocks' does not match with the names of the blocks")
         } else {
-            stop("Incorrect value for 'blocks", call. = FALSE)
+            stop("Incorrect value for 'blocks'", call. = FALSE)
         }
         object$variates = object$variates[names(object$variates) %in% blocks]
         
@@ -323,10 +343,10 @@ axes.box = "box",
     missing.group = FALSE
     if (missing(group) & any(class.object %in% c("plsda","splsda","mlsplsda")))
     {
-        group = factor(map(object$ind.mat), labels = object$names$Y)
-    } else if (missing(group) & any(class.object %in% c("sgccda")))
-    {
-        group = factor(map(object$ind.mat), labels = object$names$colnames$Y)
+        group = object$Y#factor(map(object$ind.mat), labels = object$names$Y)
+    #} else if (missing(group) & any(class.object %in% c("sgccda")))
+    #{
+    #    group = object$Y#factor(map(object$ind.mat), labels = object$names$colnames$Y)
     } else if (!missing(group))
     {
         missing.group = TRUE

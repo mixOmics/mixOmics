@@ -108,8 +108,10 @@ near.zero.var = FALSE)
     keepA.constraint = keepA.constraint)#, near.zero.var = near.zero.var)
     
     
-    
-    result$ncomp = ncomp
+    result$names$blocks=result$names$blocks[-indY]
+    result$ncomp = result$ncomp[-indY]
+    result$names$colnames = result$names$colnames[-indY]
+
     if(near.zero.var)
     result$nzv=nzv.A
 

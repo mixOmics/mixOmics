@@ -61,7 +61,7 @@ near.zero.var = FALSE)
     variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,names=result$names,
         tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
     
-    class(out) = c("mint.pls","pls")
+    class(out) = c("mint.pls","mint.spls","pls")
     return(invisible(out))
 
 

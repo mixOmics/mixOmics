@@ -72,7 +72,7 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
     {
         out$Xw=result$Xw
         out$multilevel=multilevel
-        class(out)=c("mlplsd",class(out))
+        class(out)=c("mlpls",class(out))
     }
     
     return(invisible(out))
