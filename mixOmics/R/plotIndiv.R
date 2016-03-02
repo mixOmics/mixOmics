@@ -19,6 +19,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+# last modified: 01-03-2016
+
 
 plotIndiv <-
 function(object, ...) UseMethod("plotIndiv")
@@ -1013,7 +1015,7 @@ axes.box = "box",
             if (add.legend) {
                 legend3d(x="right",
                 legend = levels(group),
-                col = unique(col),
+                col = col.per.group,
                 pch = rep(16,length(unique(pch))),
                 pt.cex = unique(cex),
                 bty="n")
