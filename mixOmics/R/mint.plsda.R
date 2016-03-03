@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 24-02-2016
+# last modified: 01-03-2016
 #
 # Copyright (C) 2015
 #
@@ -64,7 +64,7 @@ near.zero.var = FALSE)
     }
     
     Y.mat=unmap(Y)
-    colnames(Y.mat) = paste0("Y", 1:ncol(Y.mat))
+    colnames(Y.mat) = levels(Y)#paste0("Y", 1:ncol(Y.mat))
 
 
     result <- internal_wrapper.mint(X=X,Y=Y.mat,study=study,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
@@ -75,7 +75,7 @@ near.zero.var = FALSE)
     
     
 
-    out=list(call=cl,X=result$X[[1]],Y=Y,ind.mat=result$Y[[1]],ncomp=result$ncomp,study=result$study,mode=result$mode,variates=result$variates,loadings=result$loadings,
+    out=list(call=cl,X=result$X[-result$indY][[1]],Y=Y,ind.mat=result$X[result$indY][[1]],ncomp=result$ncomp,study=result$study,mode=result$mode,variates=result$variates,loadings=result$loadings,
         variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,
         names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
     out$names$Y = levels(Y)
@@ -84,7 +84,7 @@ near.zero.var = FALSE)
 
     
     
-    class(out) = c("mint.plsda","mint.splsda","mint.spls","mint.pls","pls")
+    class(out) = c("mint.plsda","mint.pls","pls","DA")
     return(invisible(out))
     
 

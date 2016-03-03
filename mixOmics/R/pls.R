@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 25-02-2016
+# last modified: 01-03-2016
 #
 # Copyright (C) 2015
 #
@@ -62,11 +62,11 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
     cl = match.call()
     #cl[[1]] = as.name("pls")
     
-    out=list(call=cl,X=result$X[[1]],Y=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,variates=result$variates,loadings=result$loadings,
+    out=list(call=cl,X=result$X[-result$indY][[1]],Y=result$X[result$indY][[1]],ncomp=result$ncomp,mode=result$mode,variates=result$variates,loadings=result$loadings,
         names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
      
 
-    class(out) = "pls"
+    class(out) = c("pls")
     
     if(!is.null(multilevel))
     {

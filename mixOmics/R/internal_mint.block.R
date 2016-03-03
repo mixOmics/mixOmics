@@ -26,7 +26,7 @@
 #############################################################################################################
 #
 # Date: July 20, 2014
-# last modified: 25-02-2016
+# last modified: 01-03-2016
 # Author: Amrit Singh
 # sparse generalized canonical correlation discriminant analysis (sgccda)
 #
@@ -153,7 +153,7 @@ internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)),ta
     {
       mint.block.result <- sparse.mint.block_iteration(R, design,study = study,
                         keepA.constraint=if (!is.null(keepA.constraint)) {lapply(keepA.constraint, function(x){unlist(x[n])})} else {NULL} ,
-                        keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL},indY = indY,
+                        keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL},
                         scheme = scheme, init = init, max.iter = max.iter, tol = tol,   verbose = verbose,penalty = penalty)
     } else {
       mint.block.result <- sparse.rgcca_iteration(R, design, tau = if (is.matrix(tau)){tau[n, ]} else {"optimal"}, scheme = scheme, init = init, tol = tol,
@@ -264,7 +264,7 @@ internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)),ta
   ### End: Output
   
   ### Start: Update names list with mixOmics package
-  out <- list(X = if (is.null(indY)){A} else {A[-indY]}, Y = if (is.null(indY)){NULL} else {A[indY]}, ncomp = ncomp, mode = mode,
+  out <- list(X = A, indY = indY, ncomp = ncomp, mode = mode,
               keepA = keepA, keepA.constraint = keepA.constraint,
               variates = variates.A, loadings = shave.matlist(loadings.A, ncomp),
               variates.partial= if(is.null(tau)) {variates.partial.A} ,loadings.partial= if(is.null(tau)) {loadings.partial.A},
@@ -288,7 +288,7 @@ internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)),ta
 #   outputs:
 # ----------------------------------------------------------------------------------------------------------
 
-sparse.mint.block_iteration <- function (A, design, study = NULL, keepA.constraint = NULL, keepA = NULL,  indY = NULL,
+sparse.mint.block_iteration <- function (A, design, study = NULL, keepA.constraint = NULL, keepA = NULL,
                                         scheme = "centroid", init = "svd", max.iter = 500, tol = 1e-06, verbose = TRUE, bias = FALSE,
                                         penalty=NULL)
 {

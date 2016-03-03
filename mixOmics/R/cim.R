@@ -1272,14 +1272,14 @@ cim <-
      else if(class.object[1] %in%  c("mlsplsda"))
      {
        if (is.null(legend$legend) && is.null(legend$col)) {
-         if (ncol(mat$design) >= 2) {
-           df = data.frame(mat$design[, 2], sample.sideColors[, 1])
+         if (ncol(mat$multilevel) >= 2) {
+           df = data.frame(mat$multilevel[, 2], sample.sideColors[, 1])
            df = unique(df)
            legend$legend = as.character(df[, 1])
            legend$col = as.character(df[, 2])
          }
-         if (ncol(mat$design) == 3) {
-           df = data.frame(mat$design[, 3], sample.sideColors[, 2])
+         if (ncol(mat$multilevel) == 3) {
+           df = data.frame(mat$multilevel[, 3], sample.sideColors[, 2])
            df = unique(df)
            legend$legend = c(legend$legend, as.character(df[, 1]))
            legend$col = c(legend$col, as.character(df[, 2]))
@@ -1290,14 +1290,14 @@ cim <-
      {
        if (mapping != "XY") {
          if (is.null(legend$legend) && is.null(legend$col)) {
-           if (ncol(mat$design) >= 2) {
-             df = data.frame(mat$design[, 2], sample.sideColors[, 1])
+           if (ncol(mat$multilevel) >= 2) {
+             df = data.frame(mat$multilevel[, 2], sample.sideColors[, 1])
              df = unique(df)
              legend$legend = as.character(df[, 1])
              legend$col = as.character(df[, 2])
            }
-           if (ncol(mat$design) == 3) {
-             df = data.frame(mat$design[, 3], sample.sideColors[, 2])
+           if (ncol(mat$multilevel) == 3) {
+             df = data.frame(mat$multilevel[, 3], sample.sideColors[, 2])
              df = unique(df)
              legend$legend = c(legend$legend, as.character(df[, 1]))
              legend$col = c(legend$col, as.character(df[, 2]))

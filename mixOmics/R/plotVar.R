@@ -20,6 +20,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+# last modified: 01-03-2016
+
 
 #----------------------------------------------------------------------------------------------------------#
 #-- Includes plotVar for PLS, sPLS, PLS-DA, SPLS-DA, rCC, PCA, sPCA, IPCA, sIPCA, rGCCA, sGCCA, sGCCDA --#
@@ -51,9 +53,9 @@ plotVar <-
 {
     
     class.object = class(object)
-    object.pls=c("pls","spls","splsda","plsda","mlspls","mlsplsda","rcc")
+    object.pls=c("pls","spls","mlspls","mlsplsda","rcc")
     object.pca=c("ipca","sipca","pca","spca")
-    object.blocks=c("sgcca","rgcca", "sgccda")
+    object.blocks=c("sgcca","rgcca")
     
     #-- check that the user did not enter extra arguments
     arg.call = match.call()
@@ -98,12 +100,12 @@ plotVar <-
     
     ### Start: Validation of arguments
     ncomp = object$ncomp
-    if (class.object[1] %in% object.blocks) {
+    if (any(class.object %in% object.blocks)) {
       
       if (is.null(blocks)){
-        blocks = object$names$blocks
+          blocks = names(object$X)#names$blocks
         
-        if (class.object[1] == "sgccda")
+        if (any(class.object == "DA"))
             blocks = names(object$X)#blocks[-object$indY]
         
       } else if (is.numeric(blocks) & min(blocks) > 0 &  max(blocks) <= length(object$names$blocks)) {
@@ -117,12 +119,17 @@ plotVar <-
       object$variates = object$variates[names(object$variates) %in% blocks]
       object$names$colnames = object$names$colnames[names(object$names$colnames) %in% blocks] 
       object$blocks = object$X[names(object$X) %in% blocks]
+      if(any(class.object %in% "sgcca"))
+      {
+          
+          
+      }
       
       if (any(object$ncomp[blocks] == 1)) {
         stop(paste("The number of components for one selected block '", paste(blocks, collapse = " - "),"' is 1. The number of components must be superior or equal to 2."), call. = FALSE)
       }
       ncomp = object$ncomp[blocks]
-    } else if (class.object[1] %in% c("rcc", "pls", "spls", "mlspls")) {
+    } else if (any(class.object %in% c("rcc", "pls", "spls", "mlspls"))) {
       blocks = c("X", "Y")
     } else {
       blocks = "X"
@@ -181,19 +188,31 @@ plotVar <-
     cord.X = sample.X = ind.var.sel = list()
     if(style=="3d")
     {
-      if (class.object[1] %in%  c(object.pls, object.blocks)) {
-        if (class.object[1] == "rcc"){
+      if (any(class.object%in%  c(object.pls, object.blocks))) {
+        if (any(class.object == "rcc")){
           cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2, comp3)] + object$variates$Y[, c(comp1, comp2, comp3)], use = "pairwise")
           cord.X[[2]] = cor(object$Y, object$variates$X[, c(comp1, comp2, comp3)] + object$variates$Y[, c(comp1, comp2, comp3)], use = "pairwise")
           sample.X = lapply(cord.X, function(x){1 : nrow(x)})
-        } else if (class.object[1] %in%  "pls") {
+        
+        } else if (any(class.object %in% "plsda")){
+            cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2, comp3)], use = "pairwise")
+            sample.X = lapply(cord.X, function(x){1 : nrow(x)})
+        
+        } else if (any(class.object %in%  "pls")) {
           cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2, comp3)], use = "pairwise")
           cord.X[[2]] = cor(object$Y, if(object$mode ==  "canonical"){object$variates$Y[, c(comp1, comp2, comp3)]} else {object$variates$X[, c(comp1, comp2, comp3)]}, use = "pairwise")
           sample.X = lapply(cord.X, function(x){1 : nrow(x)})
-        } else if (class.object[1] %in% "plsda"){
-          cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2, comp3)], use = "pairwise")
-          sample.X = lapply(cord.X, function(x){1 : nrow(x)})
-        } else if (class.object[1] %in%  c("spls", "mlspls")){
+        
+        } else if (any(class.object %in%  c("splsda", "mlsplsda"))){
+            cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(c(comp1, comp2, comp3, comp.select), function(x){selectVar(object, comp = x)$name})))],
+            object$variates$X[, c(comp1, comp2, comp3, comp.select)], use = "pairwise")
+            ind.var.sel[[1]] = sample.X[[1]] = 1 : length(colnames(object$X))
+            if (!is.null(comp.select)) {
+                cord.X[[1]] = cord.X[[1]][row.names(cord.X[[1]]) %in% unique(unlist(lapply(comp.select, function(x) {selectVar(object, comp = x)$name}))), ,drop = FALSE]
+            }
+            ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[1]]))
+
+        } else if (any(class.object %in%  c("spls", "mlspls"))){
           cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(c(comp1, comp2, comp3), function(x){selectVar(object, comp = x)$X$name})))],
                             object$variates$X[, c(comp1, comp2, comp3)], use = "pairwise")
           cord.X[[2]] = cor(object$Y[, colnames(object$Y) %in% unique(unlist(lapply(c(comp1, comp2, comp3), function(x){selectVar(object, comp = x)$Y$name})))],
@@ -206,15 +225,7 @@ plotVar <-
           }
           ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[1]]))
           ind.var.sel[[2]] = which(colnames(object$Y) %in% rownames(cord.X[[2]]))
-        } else if (class.object[1] %in%  c("splsda", "mlsplsda")){
-          cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(c(comp1, comp2, comp3, comp.select), function(x){selectVar(object, comp = x)$name})))],
-                            object$variates$X[, c(comp1, comp2, comp3, comp.select)], use = "pairwise")      
-          ind.var.sel[[1]] = sample.X[[1]] = 1 : length(colnames(object$X))
-          if (!is.null(comp.select)) {
-            cord.X[[1]] = cord.X[[1]][row.names(cord.X[[1]]) %in% unique(unlist(lapply(comp.select, function(x) {selectVar(object, comp = x)$name}))), ,drop = FALSE]
-          }
-          ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[1]]))
-        } else {
+                } else {
           cord.X = lapply(blocks, function(x){cor(object$blocks[[x]], object$variates[[x]][, c(comp1, comp2, comp3)], use = "pairwise")})
           ind.var.sel = sample.X = lapply(object$blocks, function(x){1 : ncol(x)})
           if (!is.null(comp.select)) {
@@ -224,8 +235,8 @@ plotVar <-
             ind.var.sel[[i]] = which(colnames(object$X) %in% rownames(cord.X[[i]]))
           }
         }
-      } else if (class.object[1] %in%  object.pca) {
-        if (class.object[1] %in%  c("sipca", "spca")){
+      } else if (any(class.object %in%  object.pca)) {
+        if (any(class.object %in%  c("sipca", "spca"))){
           
             cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(c(comp1, comp2, comp3), function(x){selectVar(object, comp = x)$name})))],
                               object$x[, c(comp1, comp2, comp3)], use = "pairwise")
@@ -242,19 +253,31 @@ plotVar <-
       }
     }
     else
-    {if (class.object[1] %in%  c(object.pls, object.blocks)) {
-      if (class.object[1] == "rcc"){
+    {if (any(class.object %in%  c(object.pls, object.blocks))) {
+      if (any(class.object == "rcc")){
         cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2)] + object$variates$Y[, c(comp1, comp2)], use = "pairwise")
         cord.X[[2]] = cor(object$Y, object$variates$X[, c(comp1, comp2)] + object$variates$Y[, c(comp1, comp2)], use = "pairwise")
         sample.X = lapply(cord.X, function(x){1 : nrow(x)})
-      } else if (class.object[1] %in%  "pls") {
+      
+      } else if (any(class.object %in% "plsda")){
+          cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2)], use = "pairwise")
+          sample.X = lapply(cord.X, function(x){1 : nrow(x)})
+          
+      } else if (any(class.object %in%  "pls")) {
         cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2)], use = "pairwise")
         cord.X[[2]] = cor(object$Y, if(object$mode ==  "canonical"){object$variates$Y[, c(comp1, comp2)]} else {object$variates$X[, c(comp1, comp2)]}, use = "pairwise")
         sample.X = lapply(cord.X, function(x){1 : nrow(x)})
-      } else if (class.object[1] %in% "plsda"){
-        cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2)], use = "pairwise")
-        sample.X = lapply(cord.X, function(x){1 : nrow(x)})
-      } else if (class.object[1] %in%  c("spls", "mlspls")){
+      
+      } else if (any(class.object %in%  c("splsda", "mlsplsda"))){
+          cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(c(comp1, comp2, comp.select), function(x){selectVar(object, comp = x)$name})))],
+          object$variates$X[, c(comp1, comp2, comp.select)], use = "pairwise")
+          ind.var.sel[[1]] = sample.X[[1]] = 1 : length(colnames(object$X))
+          if (!is.null(comp.select)) {
+              cord.X[[1]] = cord.X[[1]][row.names(cord.X[[1]]) %in% unique(unlist(lapply(comp.select, function(x) {selectVar(object, comp = x)$name}))), ,drop = FALSE]
+          }
+          ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[1]]))
+
+      } else if (any(class.object %in%  c("spls", "mlspls"))){
         cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(c(comp1, comp2), function(x){selectVar(object, comp = x)$X$name})))],
                           object$variates$X[, c(comp1, comp2)], use = "pairwise")
         cord.X[[2]] = cor(object$Y[, colnames(object$Y) %in% unique(unlist(lapply(c(comp1, comp2), function(x){selectVar(object, comp = x)$Y$name})))],
@@ -267,14 +290,7 @@ plotVar <-
         }
         ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[1]]))
         ind.var.sel[[2]] = which(colnames(object$Y) %in% rownames(cord.X[[2]]))
-      } else if (class.object[1] %in%  c("splsda", "mlsplsda")){
-        cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(c(comp1, comp2, comp.select), function(x){selectVar(object, comp = x)$name})))],
-                          object$variates$X[, c(comp1, comp2, comp.select)], use = "pairwise")      
-        ind.var.sel[[1]] = sample.X[[1]] = 1 : length(colnames(object$X))
-        if (!is.null(comp.select)) {
-          cord.X[[1]] = cord.X[[1]][row.names(cord.X[[1]]) %in% unique(unlist(lapply(comp.select, function(x) {selectVar(object, comp = x)$name}))), ,drop = FALSE]
-        }
-        ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[1]]))
+      
       } else {
         cord.X = lapply(blocks, function(x){cor(object$blocks[[x]], object$variates[[x]][, c(comp1, comp2)], use = "pairwise")})
         ind.var.sel = sample.X = lapply(object$blocks, function(x){1 : ncol(x)})
@@ -285,8 +301,8 @@ plotVar <-
           ind.var.sel[[i]] = which(colnames(object$blocks[[i]]) %in% rownames(cord.X[[i]]))
         }
       }
-    } else if (class.object[1] %in%  object.pca) {
-      if (class.object[1] %in%  c("sipca", "spca")){
+    } else if (any(class.object %in%  object.pca)) {
+      if (any(class.object %in%  c("sipca", "spca"))){
         
           cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(c(comp1, comp2), function(x){selectVar(object, comp = x)$name})))],
                           object$x[, c(comp1, comp2)], use = "pairwise")

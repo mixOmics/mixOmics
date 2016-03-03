@@ -114,11 +114,19 @@ network <-
     object.rcc="rcc"
     object.blocks=c("sgcca","rgcca", "sgccda")
     
+    if(! any(class.object %in% c(object.pls,object.rcc,object.blocks)))
+    stop( " 'network' is only implemented for the following objects: pls, spls, mlspls, rcc, sgcca, rgcca, sgccda", call.=FALSE)
     
-    if(class.object[1] %in% c(object.rcc,object.pls))
+    
+    if(any(class.object %in% c(object.rcc,object.pls)))
     {
       p = ncol(mat$X)
       q = ncol(mat$Y)
+      if(length(q)==0)
+      {
+          mat$Y=mat$ind.mat
+          q=ncol(mat$indY)
+      }
       n = nrow(mat$X)
       ncomp = mat$ncomp  
       
@@ -152,7 +160,7 @@ network <-
       
       #-- row.names
       if (is.logical(row.names)) {
-        if(isTRUE(row.names)) row.names = mat$names$X else row.names = rep("", p)
+        if(isTRUE(row.names)) row.names = mat$names$colnames$X else row.names = rep("", p)
       }
       else {
         row.names = as.vector(row.names)
@@ -163,7 +171,7 @@ network <-
       
       #-- col.names
       if (is.logical(col.names)) {
-        if(isTRUE(col.names)) col.names = mat$names$Y else col.names = rep("", q)
+        if(isTRUE(col.names)) col.names = mat$names$colnames$Y else col.names = rep("", q)
       }
       else {
         col.names = as.vector(col.names)
@@ -182,7 +190,7 @@ network <-
       
       #-- network ----------------------------------------------------------------#
       #---------------------------------------------------------------------------#
-      if(class.object[1] %in% object.rcc)
+      if(any(class.object %in% object.rcc))
       {
         #-- similarity matrix --#
         bisect = mat$variates$X[, comp] + mat$variates$Y[, comp]
@@ -190,7 +198,7 @@ network <-
         cord.Y = cor(mat$Y, bisect, use = "pairwise")
         mat = cord.X %*% t(cord.Y)
       }
-      else if(class.object[1] %in% object.pls)
+      else if(any(class.object %in% object.pls))
       {
         #-- variable selection --#
         if (all(class(mat) %in% "pls")) {
@@ -219,7 +227,7 @@ network <-
       }
       
     }
-    else if(class.object[1] %in% object.blocks)
+    else if(any(class.object %in% object.blocks))
     {
       if (is.null(blocks)){
         if (any(mat$ncomp > 1)){
@@ -278,7 +286,7 @@ network <-
       
       
       #-- block.var.names
-      num.var = unlist(lapply(mat$blocks[blocks], ncol))
+      num.var = unlist(lapply(mat$X[blocks], ncol))
       
       
       if (is.logical(block.var.names)) {
@@ -333,13 +341,13 @@ network <-
           else
             keep = abs(mat$loadings[[k]][, comp[[k]]]) > 0
           
-          coord[[j]] = cor(mat$blocks[[k]][, keep], mat$variates[[k]][, comp[[k]]])
+          coord[[j]] = cor(mat$X[[k]][, keep], mat$variates[[k]][, comp[[k]]])
           j = j + 1
         }
       }
       else {
         for(k in blocks){
-          coord[[j]] = cor(mat$blocks[[k]], mat$variates[[k]][, comp[[k]]])
+          coord[[j]] = cor(mat$X[[k]], mat$variates[[k]][, comp[[k]]])
           j = j + 1
         }
       }
@@ -423,7 +431,7 @@ network <-
     }
     
     #-- color.node
-    if(class.object[1] %in% object.blocks)
+    if(any(class.object %in% object.blocks))
     {
       if (is.null(color.node)) {
         color.node = c("#FBB4AE", "#B3CDE3", "#CCEBC5", "#DECBE4", "#FED9A6", 
@@ -452,7 +460,7 @@ network <-
            call. = FALSE)
     
     #-- shape.node
-    if(class.object[1] %in% object.blocks)
+    if(any(class.object%in% object.blocks))
     {
       if (is.null(shape.node)) {
         shape.node = "circle"
@@ -566,7 +574,7 @@ network <-
     
     #-- network approach -------------------------------------------------------#
     #---------------------------------------------------------------------------#
-    if(!(class.object[1] %in% object.blocks))
+    if(!(any(class.object %in% object.blocks)))
       w = as.vector(t(mat))
     
     #-- check threshold
@@ -594,10 +602,10 @@ network <-
     
     # Definition of nodes #
     #---------------------#
-    if(class.object[1] %in% object.blocks)
+    if(any(class.object %in% object.blocks))
     {
       group = NULL
-      temp = lapply(mat$blocks, function(x) colnames(x))
+      temp = lapply(mat$X, function(x) colnames(x))
       
       for (i in 1:length(temp)) {
         group = c(group, rep(names(temp)[i], length(temp[[i]])))
@@ -606,7 +614,7 @@ network <-
       nodes = data.frame(name = unlist(temp), group = group)
     }
     
-    else if(class.object[1] %in% object.pls)
+    else if(any(class.object %in% object.pls))
     { w = as.vector(t(mat))
       
       Xn=sum(keep.X)
@@ -663,7 +671,7 @@ network <-
     
     V(gR)$label.family = "sans"
     
-    if(class.object[1] %in% object.blocks)
+    if(any(class.object %in% object.blocks))
     {
       V(gR)$label = unlist(block.var.names)
       
@@ -1010,7 +1018,7 @@ network <-
     res=list(gR = gR)
     
     
-    if(class.object[1] %in% object.blocks)
+    if(any(class.object %in% object.blocks))
     {
       l = 1
       for (i in 1:(length(blocks)-1)){

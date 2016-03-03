@@ -31,6 +31,7 @@ function(object, ...) UseMethod("plotIndiv")
 #----------------------------------------------------------------------------------------------------------#
 
 plotIndiv.pls=
+plotIndiv.spls=
 #plotIndiv.plsda=   # because pls too
 #plotIndiv.spls=    # because pls too
 #plotIndiv.splsda=  # because pls too
@@ -77,9 +78,9 @@ axes.box = "box",
 {
     
     class.object = class(object)
-    object.pls=c("pls","spls","splsda","plsda","mlspls","mlsplsda","rcc")
+    object.pls=c("pls","spls","mlspls","rcc")
     object.pca=c("ipca","sipca","pca","spca","prcomp")
-    object.blocks=c("sgcca","rgcca")#, "sgccda")
+    object.blocks=c("sgcca","rgcca")
     
     ### Start: Validation of arguments
     ncomp = object$ncomp
@@ -139,7 +140,7 @@ axes.box = "box",
     
     
     #-- rep.space
-    if(is.null(rep.space) && class.object[1] %in% c(object.blocks,object.pca,"splsda","plsda","mlsplsda"))
+    if(is.null(rep.space) && any(class.object %in% c(object.blocks,object.pca,"splsda","plsda","mlsplsda")))
     {
         rep.space="X-variate"
     }
@@ -152,12 +153,12 @@ axes.box = "box",
     
     
     
-    if (class.object[1] %in% object.blocks) {
+    if (any(class.object %in% object.blocks)) {
         
         if (is.null(blocks)){
-            blocks = object$names$blocks
+            blocks = names(object$X)#names$blocks
             
-            #if (class.object[1] == "sgccda")
+            #if (any(class.object %in% c("sgccda","plsda","splsda")))
             #blocks = blocks[-object$indY]
         } else if (is.numeric(blocks) & min(blocks) > 0 &  max(blocks) <= length(object$names$blocks)) {
             blocks = object$names$blocks[blocks]
@@ -184,7 +185,7 @@ axes.box = "box",
 
     
     #-- Specific to pls object (choice between X, Y and XY)
-    if (class.object[1] %in% object.pls)
+    if (any(class.object %in% object.pls))
     {
         if (rep.space == "multi")
         {blocks=c("X","Y");object$variates = object$variates[names(object$variates) %in% blocks]}
@@ -202,14 +203,14 @@ axes.box = "box",
         }
     }
     
-    if (class.object[1] %in% object.pca)
+    if (any(class.object %in% object.pca))
     blocks = "X"
     
     
     #-- xlim,ylim
     lim.X = FALSE
     if (!is.null(xlim)){
-        if (class.object[1] %in% object.blocks ||!class.object[1] %in% c(object.pca,"splsda","plsda","mlsplsda")){
+        if (any(class.object %in% object.blocks) ||!any(class.object %in% c(object.pca,"splsda","plsda","mlsplsda"))){
             if (!is.list(xlim) || length(xlim) != length(blocks) || length(unlist(xlim)) != 2 * length(blocks))
             stop("'xlim' must be a list of ",length(blocks)," vectors of length 2.",call. = FALSE)
         } else {
@@ -223,7 +224,7 @@ axes.box = "box",
     
     lim.Y = FALSE
     if (!is.null(ylim)){
-        if (class.object[1] %in% object.blocks ||!class.object[1] %in% c(object.pca,"splsda","plsda","mlsplsda")){
+        if (any(class.object %in% object.blocks) ||!any(class.object %in% c(object.pca,"splsda","plsda","mlsplsda"))){
             if (!is.list(ylim) || length(ylim) != length(blocks) || length(unlist(ylim)) != 2 * length(blocks))
             stop("'ylim' must be a list of ",length(blocks)," vectors of length 2.",call. = FALSE)
         } else {
@@ -236,7 +237,7 @@ axes.box = "box",
     
     #-- Start: Retrieve variates from object
     x = y = z=list()
-    if (class.object[1] %in%  c(object.pls, object.blocks))
+    if (any(class.object %in%  c(object.pls, object.blocks)))
     {
         
         if (is.logical(ind.names) & isTRUE(ind.names))
@@ -275,7 +276,7 @@ axes.box = "box",
             if (rep.space == "XY-variate") {Z.label = paste("XY-variate", comp3)}
         }
         
-    } else if (class.object[1] %in%  object.pca)
+    } else if (any(class.object %in%  object.pca))
     {
         
         if (is.logical(ind.names))
@@ -297,7 +298,7 @@ axes.box = "box",
         
         
         #-- Variance explained
-        if (class.object[1] %in% "pca")
+        if (any(class.object %in% "pca"))
         {
             if (style == "3d")
             {
@@ -311,20 +312,20 @@ axes.box = "box",
         if (is.null(X.label))
         {
             X.label = paste("PC", comp1,sep='')
-            if (class.object[1] %in% "pca") {percentage=paste(inf[1]*100,"% expl. var")
+            if (any(class.object %in% "pca")) {percentage=paste(inf[1]*100,"% expl. var")
                 X.label = paste(X.label,percentage,sep=": ")}
         }
         if (is.null(Y.label))
         {
             Y.label = paste("PC", comp2,sep='')
-            if (class.object[1] %in% "pca") {percentage=paste(inf[2]*100,"% expl. var")
+            if (any(class.object %in% "pca")) {percentage=paste(inf[2]*100,"% expl. var")
                 
                 Y.label = paste(Y.label,percentage,sep=": ")}
         }
         if (is.null(Z.label)&&style=="3d")
         {
             Z.label = paste("PC", comp3,sep='')
-            if (class.object[1] %in% "pca") {percentage=paste(inf[3]*100,"% expl. var")
+            if (any(class.object %in% "pca")) {percentage=paste(inf[3]*100,"% expl. var")
                 Z.label = paste(Z.label,percentage,sep=": ")}
         }
     }
@@ -343,12 +344,10 @@ axes.box = "box",
     
     #-- Define group
     missing.group = FALSE
-    if (missing(group) & any(class.object %in% c("plsda","splsda","mlsplsda")))
+    if (missing(group) & any(class.object=="DA"))
     {
         group = object$Y#factor(map(object$ind.mat), labels = object$names$Y)
-    #} else if (missing(group) & any(class.object %in% c("sgccda")))
-    #{
-    #    group = object$Y#factor(map(object$ind.mat), labels = object$names$colnames$Y)
+        object$ind.mat = unmap(group) # added in v6 cause $ind.mat is the scaled (if scale=TRUE) version of ind.mat(=unmap(Y))
     } else if (!missing(group))
     {
         missing.group = TRUE
@@ -537,7 +536,7 @@ axes.box = "box",
         }
     }
     
-    if(class.object[1] %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda"))
+    if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")))
     {
         if(is.null(main)){
             df = data.frame(do.call(rbind, df), "Block" = "PlotIndiv")}
@@ -598,7 +597,7 @@ axes.box = "box",
         names(df.ellipse)[1 : (2*nlevels(group))] = paste0("Col", 1 : (2*nlevels(group)))
     }
     
-    if(plot.ellipse == TRUE && class.object[1] %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda"))
+    if(plot.ellipse == TRUE && any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")))
     {
         if(is.null(main))
         {
@@ -655,7 +654,7 @@ axes.box = "box",
         if (lim.Y) p = p + coord_cartesian(ylim=ylim)
         
         #-- color samples according to col
-        if(class.object[1] %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda"))
+        if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")))
         {for (i in unique(col)){
             if (display.names) {
                 p = p + geom_point(data = subset(df, col == i),size = 0, shape = 0,
@@ -792,7 +791,7 @@ axes.box = "box",
         if (plot.centroid) {
             panels = trellis.currentLayout(which = "panel")
             for (k in 1 : length(x)){
-                if(class.object[1] %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda"))
+                if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")))
                 {other=TRUE}
                 else
                 {
@@ -817,7 +816,7 @@ axes.box = "box",
         if (plot.star) {
             panels = trellis.currentLayout(which = "panel")
             for (k in 1 : length(x)){
-                if(class.object[1] %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda"))
+                if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")))
                 {other=TRUE}
                 else
                 {
@@ -845,7 +844,7 @@ axes.box = "box",
         if (plot.ellipse) {
             panels = trellis.currentLayout(which = "panel")
             for (k in 1 : length(x)){
-                if(class.object[1] %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda"))
+                if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")))
                 {other.ellipse=TRUE}
                 else
                 {
@@ -877,7 +876,7 @@ axes.box = "box",
         
         for (k in 1 : length(x)){
             #-- initialise plot
-            if(class.object[1] %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda"))
+            if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")))
             {titlemain=NULL
                 other=TRUE
                 if(plot.ellipse)
@@ -1000,7 +999,7 @@ axes.box = "box",
                 next3d()
             }
             
-            if(class.object[1] %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda"))
+            if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")))
             {
                 other=TRUE
                 if(plot.ellipse)
@@ -1135,7 +1134,7 @@ axes.box = "box",
             mtext3d(X.label, "x-+", line = 1)
             mtext3d(Y.label, "y-+", line = 1.5)
             mtext3d(Z.label, "z+-", line = 1)
-            if( ! class.object[1] %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda"))
+            if( ! any(class.object%in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")))
             title3d(main=paste0("Block: ", blocks[k]))
         }
         #-- output --#

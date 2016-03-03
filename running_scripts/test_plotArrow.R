@@ -49,7 +49,7 @@ data(nutrimouse)
 Y = unmap(nutrimouse$diet)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 design1 = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
-nutrimouse.sgcca <- wrapper.sgcca(blocks = data,
+nutrimouse.sgcca <- wrapper.sgcca(X = data,
                                   design = design1,
                                   penalty = c(0.3, 0.5, 1),
                                   ncomp = c(2, 2, 3),
@@ -95,11 +95,11 @@ Y = nutrimouse$diet
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
 design1 = matrix(c(0,1,0,1), ncol = 2, nrow = 2, byrow = TRUE)
 
-nutrimouse.sgccda1 <- wrapper.sgccda(blocks = data,
+nutrimouse.sgccda1 <- wrapper.sgccda(X = data,
 Y = Y,
 design = design1,
 ncomp = c(2, 2),
-keep = list(c(10,10), c(15,15)),
+keepX = list(c(10,10), c(15,15)),
 scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)
@@ -121,8 +121,6 @@ plotArrow(nutrimouse.sgccda1,  add.legend = TRUE, main = 'my sample plot', ind.n
 if(additional.test==TRUE)
 {
     
-    
-    library(mixOmics)
     
     
     ### PLS, sPLS

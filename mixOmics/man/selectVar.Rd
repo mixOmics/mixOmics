@@ -95,7 +95,7 @@ design = matrix(c(0,1,1,
                   1,0,1,
                   1,1,0), ncol = 3, nrow = 3, byrow = T)
 #note: the penalty parameters need to be tuned
-wrap.result.sgcca = wrapper.sgcca(blocks = data, design = design, penalty = c(.3,.3, 1),
+wrap.result.sgcca = wrapper.sgcca(X = data, design = design, penalty = c(.3,.3, 1),
                                   ncomp = c(2, 2, 1),
                                   scheme = "centroid", verbose = FALSE)
 
@@ -103,15 +103,15 @@ wrap.result.sgcca = wrapper.sgcca(blocks = data, design = design, penalty = c(.3
 selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))
 
 #variables selected on component 1 for each block
-selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'Block 1'$name
-selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'Block 2'$name
+selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'block1'$name
+selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'block2'$name
 
 #variables selected on component 2 for each block 
-selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'Block 1'$name
-selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'Block 2'$name
+selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'block1'$name
+selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'block2'$name
 
 # loading value of the variables selected on the first block
-selectVar(wrap.result.sgcca, comp = 1, block = 1)$'Block 1'$value
+selectVar(wrap.result.sgcca, comp = 1, block = 1)$'block1'$value
 }
 
 }

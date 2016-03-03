@@ -99,6 +99,50 @@ Y <- liver.toxicity$clinic
 
 toxicity.spls <- spls(X, Y, ncomp = 2, keepX = c(50, 50), 
                       keepY = c(10, 10))
+
+## Second example: one-factor analysis with sPLS, selecting a subset of variables
+#--------------------------------------------------------------
+\dontrun{
+data(liver.toxicity)
+# note: we made up those data, pretending they are repeated measurements
+repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
+6, 5, 6, 7, 7, 8, 6, 7, 8, 7, 8, 8, 9, 10, 9, 10, 11, 9, 9,
+10, 11, 12, 12, 10, 11, 12, 11, 12, 13, 14, 13, 14, 13, 14,
+13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
+summary(as.factor(repeat.indiv)) # 16 rats, 4 measurements each
+
+# this is a spls (unsupervised analysis) so no need to mention any factor in design
+# we only perform a one level variation split
+design <- data.frame(sample = repeat.indiv)
+res.spls.1level <- spls(X = liver.toxicity$gene,
+Y=liver.toxicity$clinic,
+multilevel = design,
+ncomp = 3,
+keepX = c(50, 50, 50), keepY = c(5, 5, 5),
+mode = 'canonical')
+
+# set up colors and pch for plotIndiv
+col.stimu <- 1:nlevels(design$stimu)
+
+plotIndiv(res.spls.1level, rep.space = 'X-variate', ind.names = FALSE,
+group = liver.toxicity$treatment$Dose.Group,
+pch = 20, main = 'Gene expression subspace',
+add.legend = TRUE)
+
+
+plotIndiv(res.spls.1level, rep.space = 'Y-variate', ind.names = FALSE,
+group = liver.toxicity$treatment$Dose.Group,
+pch = 20, main = 'Clinical measurements ssubpace',
+add.legend = TRUE)
+
+plotIndiv(res.spls.1level, rep.space = 'XY-variate', ind.names = FALSE,
+group = liver.toxicity$treatment$Dose.Group,
+pch = 20, main = 'Both Gene expression and Clinical subspaces',
+add.legend = TRUE)
+
+}
+
+
 }
 
 \keyword{regression}

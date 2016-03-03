@@ -74,8 +74,45 @@ res <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 # individual names appear
 plotIndiv(res, ind.names = Y, add.legend = TRUE, plot.ellipse =TRUE)
 
+## Second example: one-factor analysis with sPLS-DA, selecting a subset of variables
+# as in the paper Liquet et al.
+#--------------------------------------------------------------
+data(vac18)
+X <- vac18$genes
+Y <- vac18$stimulation
+# sample indicates the repeated measurements
+design <- data.frame(sample = vac18$sample,
+stimul = vac18$stimulation)
 
-## Second example
+# multilevel sPLS-DA model
+res.1level <- splsda(X, ncomp = 3, multilevel = design,
+    keepX = c(30, 137, 123))
+
+# set up colors for plotIndiv
+col.stim <- c("darkblue", "purple", "green4","red3")
+plotIndiv(res.1level, ind.names = Y, col.per.group = col.stim)
+
+## Third example: two-factor analysis with sPLS-DA, selecting a subset of variables
+# as in the paper Liquet et al.
+#--------------------------------------------------------------
+\dontrun{
+data(vac18.simulated) # simulated data
+
+X <- vac18.simulated$genes
+design <- data.frame(sample = vac18.simulated$sample,
+stimu = vac18.simulated$stimulation,
+time = vac18.simulated$time)
+
+res.2level <- splsda(X, ncomp = 2, multilevel = design,
+keepX = c(200, 200))
+
+plotIndiv(res.2level, group = design$stimu, ind.names = vac18.simulated$time,
+add.legend = TRUE, style = 'lattice')
+}
+
+
+
+## Fourth example
 \dontrun{
 ## Second example
 data(liver.toxicity)

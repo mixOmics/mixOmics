@@ -222,12 +222,12 @@ if(additional.test==TRUE)
     13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
     
     design <- data.frame(sample = repeat.indiv)
-    res.spls.1level <- multilevel(X = liver.toxicity$gene,
+    res.spls.1level <- spls(X = liver.toxicity$gene,
     Y=liver.toxicity$clinic,
-    design = design,
+    multilevel = design,
     ncomp = 3,
     keepX = c(50, 50, 50), keepY = c(5, 5, 5),
-    method = 'spls', mode = 'canonical')
+    mode = 'canonical')
     
     
     network(res.spls.1level)

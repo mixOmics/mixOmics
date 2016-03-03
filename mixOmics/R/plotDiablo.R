@@ -1,22 +1,54 @@
-################################################
+#############################################################################################################
+# Author :
+#   Amrit Singh
+#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
-# visualizationFunctions.R
-# Author: Amrit Singh
-# Date: April 01, 2016
+# created: ?
+# last modified: 03-03-2016
 #
+# Copyright (C) 2015
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
+
+
+
+# ========================================================================================================
 # functions
 #     1) plotIndiv_diablo; 2 sub-functions; splotMatPlot() and panel.ellipses
 #     2) circosPlot_diablo
 #     3) heatmap_diablo
 #     4) enrichPathwayNetwork_diablo
 #
-################################################
+# ========================================================================================================
 
-## plotIndiv_diablo
-plotIndiv.sgccda = function(object, Y, ncomp = 1, groupOrder = levels(Y)){
+
+plotDiablo= function(object,
+ncomp = 1,
+groupOrder)
+{
+    
+    if(!class=="sgccda")
+    stop("'plotDiablo' is only available for 'sgccda' object")
+    
     #library(mixOmics)  ## needed for color.mixo
   VarX <- do.call(cbind, lapply(object$variates, function(i) i[, ncomp]))
   datNames <- colnames(VarX)
+  
+  Y=object$Y
+  if(missing(groupOrder)) groupOrder= levels(Y)
   
   if (!is.factor(Y))
     stop(gettextf("Y must be a factor!"))

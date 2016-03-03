@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 24-02-2016
+# last modified: 01-03-2016
 #
 # Copyright (C) 2015
 #
@@ -108,10 +108,11 @@ near.zero.var = FALSE)
     keepA.constraint = keepA.constraint)#, near.zero.var = near.zero.var)
     
     
-    result$names$blocks=result$names$blocks[-indY]
-    result$ncomp = result$ncomp[-indY]
-    result$names$colnames = result$names$colnames[-indY]
-
+    #result$names$blocks=result$names$blocks[-indY]
+    #result$ncomp = result$ncomp[-indY]
+    #result$names$colnames = result$names$colnames[-indY]
+    result$indY=indY
+    
     if(near.zero.var)
     result$nzv=nzv.A
 

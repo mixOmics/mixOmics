@@ -117,8 +117,8 @@ design <- data.frame(samp = vac18.simulated$sample,
 time = vac18.simulated$time,
 stim = vac18.simulated$stimulation)
 
-res.2level <- multilevel(X, ncomp = 2, design = design,
-keepX = c(120, 10), method = 'splsda')
+res.2level <- splsda(X, ncomp = 2, multilevel = design,
+keepX = c(120, 10))
 
 #define colors for the levels: stimulation and time
 stim.col <- c("darkblue", "purple", "green4","red3")
@@ -151,12 +151,11 @@ repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
 # in the design (1 factor only here, sample)
 # sPLS takes as an input 2 data sets, and the variables selected
 design <- data.frame(sample = repeat.indiv)
-res.spls.1level <- multilevel(X = liver.toxicity$gene,
+res.spls.1level <- spls(X = liver.toxicity$gene,
 Y=liver.toxicity$clinic,
-design = design,
+multilevel = design,
 ncomp = 2,
 keepX = c(50, 50), keepY = c(5, 5),
-method = 'spls',
 mode = 'canonical')
 
 stim.col <- c("darkblue", "purple", "green4","red3")
@@ -379,8 +378,8 @@ if(additional.test==TRUE)
     stim = vac18.simulated$stimulation,
     time = vac18.simulated$time)
     
-    res.2level <- multilevel(X, ncomp = 2, design = design,
-    keepX = c(120, 10), method = 'splsda')
+    res.2level <- splsda(X, ncomp = 2, multilevel = design,
+    keepX = c(120, 10))
     
     stim.col <- c("darkblue", "purple", "green4","red3")
     stim.col <- stim.col[as.numeric(design$stim)]
@@ -405,12 +404,12 @@ if(additional.test==TRUE)
     13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
     
     design <- data.frame(row = repeat.indiv)
-    res.spls.1level <- multilevel(X = liver.toxicity$gene,
+    res.spls.1level <- spls(X = liver.toxicity$gene,
     Y=liver.toxicity$clinic,
-    design = design,
+    multilevel = design,
     ncomp = 3,
     keepX = c(50, 50, 50), keepY = c(5, 5, 5),
-    method = 'spls', mode = 'canonical')
+    mode = 'canonical')
     
     col <- c("darkblue", "purple", "green4","red3")
     cim(res.spls.1level,mapping="Y",

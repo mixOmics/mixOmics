@@ -66,6 +66,7 @@ perf,
 plotArrow,
 plotContrib,
 plotIndiv, 
+plotDiablo,
 plotVar, 
 pls,
 plsda, 
@@ -111,11 +112,11 @@ S3method(plot, rcc)
 S3method(plot, pca)
 
 S3method(plotIndiv, pls)
+S3method(plotIndiv, spls)
 S3method(plotIndiv, rcc)
 S3method(plotIndiv, pca)
 S3method(plotIndiv, sipca)
 S3method(plotIndiv, sgcca)
-S3method(plotIndiv, sgccda)
 S3method(plotIndiv, rgcca)
 S3method(plotIndiv, mint.spls)
 S3method(plotIndiv, mint.splsda)
@@ -144,8 +145,8 @@ S3method(print, sgcca)
 S3method(print, rgcca)
 
 
+S3method(selectVar, spls)
 S3method(selectVar, pls)
-S3method(selectVar, plsda)
 S3method(selectVar, pca)
 S3method(selectVar, sipca)
 S3method(selectVar, sgcca)

@@ -1,4 +1,3 @@
-library(mixOmics)
 #######################################################################################################
 #######################################################################################################
 #                                           from help file
@@ -62,8 +61,8 @@ design <- data.frame(sample = vac18$sample,
 stimul = vac18$stimulation)
 
 # multilevel sPLS-DA model
-res.1level <- multilevel(X, ncomp = 3, design = design,
-method = "splsda", keepX = c(30, 137, 123))
+res.1level = splsda(X, ncomp = 3, multilevel = design,
+ keepX = c(30, 137, 123))
 
 
 name.var = vac18$tab.prob.gene[, 'Gene']
@@ -82,7 +81,7 @@ data(breast.tumors)
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
-plsda.breast <- plsda(X, Y, ncomp = 2)
+plsda.breast <- plsda(X, Y, ncomp = 2,near.zero.var=TRUE)
 
 name.var = as.character(breast.tumors$genes$name)
 names(name.var) = colnames(X)
@@ -185,8 +184,8 @@ if(additional.test==TRUE)
     design <- data.frame(sample = vac18$sample,
     stimul = vac18$stimulation)
     
-    res.1level <- multilevel(X, ncomp = 3, design = design,
-    method = "splsda", keepX = c(30, 137, 123))
+    res.1level <- splsda(X, ncomp = 3, multilevel = design,
+        keepX = c(30, 137, 123))
     
     
     plotContrib(res.1level,contrib='max')
@@ -246,11 +245,11 @@ if(additional.test==TRUE)
     data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
     design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
     
-    nutrimouse.sgccda <- wrapper.sgccda(blocks = data,
+    nutrimouse.sgccda <- wrapper.sgccda(X = data,
     Y = Y,
     design = design,
-    keep = list(c(10,10), c(15,15)),
-    ncomp = c(2, 2, 1),
+    keepX = list(c(10,10), c(15,15)),
+    ncomp = c(2, 2),
     scheme = "centroid",
     verbose = FALSE,
     bias = FALSE)

@@ -43,8 +43,8 @@ if(additional.test==TRUE)
     liver.ipca=pca(liver.toxicity$gene,ncomp=2)
     plotIndiv(liver.ipca)
     plot(liver.ipca)
-    liver.ipca=pca(liver.toxicity$gene,ncomp=64)
-    plotIndiv(liver.ipca,comp=c(63,64))
+    liver.ipca=pca(liver.toxicity$gene,ncomp=63)
+    plotIndiv(liver.ipca,comp=c(62,63))
     plot(liver.ipca)
     
     #test mode

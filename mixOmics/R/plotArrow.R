@@ -44,9 +44,13 @@ plotArrow <-
 {
     
     class.object = class(object)
-    object.pls=c("pls","spls","mlspls","rcc")
-    object.blocks=c("sgcca","rgcca", "sgccda")
+    object.pls=c("pls","spls","rcc")
+    object.blocks=c("sgcca","rgcca")
     
+    if(! any(class.object %in% c(object.pls,object.blocks)))
+    stop( " 'plotArrow' is only implemented for the following objects: pls, spls, rcc, sgcca, rgcca", call.=FALSE)
+
+
     ### Start: Validation of arguments
     ncomp = object$ncomp
     
@@ -54,12 +58,12 @@ plotArrow <-
       stop("'position.names' must be one of 'centroid', 'start' , 'end' .", call. = FALSE)
     
     
-    if (class.object[1] %in% object.blocks) {
+    if (any(class.object %in% object.blocks)) {
       
       blocks = object$names$blocks
       
-      if (class.object[1] == "sgccda")
-        blocks = blocks[-object$indY]
+      #if (class.object[1] == "sgccda")
+      # blocks = blocks[-object$indY]
       object$variates = object$variates[names(object$variates) %in% blocks]
       
       if (any(object$ncomp[blocks] == 1)) {
@@ -108,7 +112,7 @@ plotArrow <-
     comp1 = round(comp[1]); comp2 = round(comp[2])
     
     
-    if (class.object[1] %in% object.pls){
+    if (any(class.object %in% object.pls)){
       blocks=c("X","Y");object$variates = object$variates[names(object$variates) %in% blocks]
       
     }
@@ -173,8 +177,8 @@ plotArrow <-
     
     #-- Define group
     missing.group = FALSE
-    if (missing(group) & any(class.object %in% c("sgccda"))){
-      group = factor(map(object$ind.mat), labels = object$names$colnames$Y)
+    if (missing(group) & any(class.object %in% c("DA"))){
+        group = object$Y#factor(map(object$ind.mat), labels = object$names$colnames$Y)
     } else if (!missing(group)) {
       missing.group = TRUE
       if (!is.factor(group)){

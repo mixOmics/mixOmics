@@ -93,7 +93,7 @@ design = matrix(c(0,1,1,
                   1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 
 #note: the penalty parameters will need to be tuned
-wrap.result.sgcca = wrapper.sgcca(data = data, design = design, penalty = c(.3,.5, 1), 
+wrap.result.sgcca = wrapper.sgcca(X = data, design = design, penalty = c(.3,.5, 1),
                                   ncomp = c(2, 2, 1),
                                   scheme = "centroid", verbose = FALSE)
 wrap.result.sgcca

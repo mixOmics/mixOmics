@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 25-02-2016
+# last modified: 01-03-2016
 #
 # Copyright (C) 2015
 #
@@ -524,10 +524,31 @@ verbose)
         ncomp = c(ncomp, max(ncomp))
         #adjust ncomp for Y
         
+        ### Start check design matrix
+        if (missing(design)) {
+            design = 1 - diag(length(A))
+        } else if (ncol(design) != nrow(design) || ncol(design) < length(X) || ncol(design) > (length(X) + 1) || any(!design %in% c(0,1))){
+            stop(paste0("'design' must be a square matrix with ",length(X),"columns."))
+        } else if (ncol(design) == length(X)){
+            message('Design matrix has changed to include Y as a block')
+            design = rbind(cbind(design, 1), 1)
+            diag(design) = 0
+        }
+        ### End check design matrix
+
+
         
     }else{        #missing(Y) but indY not missing
         A=X #list provided as input
         
+        ### Start check design matrix
+        if (missing(design)) {
+            design = 1 - diag(length(A))
+        } else if (ncol(design) != nrow(design) || ncol(design) < length(A) || ncol(design) > (length(A) + 1) || any(!design %in% c(0,1))){
+            stop(paste0("'design' must be a square matrix with ",length(A),"columns."))
+        }     ### End check design matrix
+
+
     }
     
     # --------------------------------------------------------------------------------
@@ -579,15 +600,6 @@ verbose)
         if (verbose)
         cat("Computation of the SGCCA block components based on the", scheme, "scheme \n")
     }
-    
-    if(missing(design))
-    {design=1 - diag(length(A))}
-    
-    #check design matrix
-    if(nrow(design)!=ncol(design))
-    stop(paste0("'design' must be a square matrix."))
-    if(nrow(design)!=length(A))
-    stop(paste0("'design' must be a square matrix with",length(A),"columns."))
     
     if(!is.numeric(tol) | tol<=0)
     stop("tol must be non negative")

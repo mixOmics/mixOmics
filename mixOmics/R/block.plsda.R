@@ -70,6 +70,7 @@ near.zero.var = FALSE)
 
     Y.input=Y
     Y=unmap(Y)
+    colnames(Y)=levels(Y.input)
 
     }else if(!missing(indY))
     {
@@ -81,6 +82,8 @@ near.zero.var = FALSE)
         }
         Y.input=temp
         X[[indY]]=unmap(temp)
+        colnames(X[[indY]])=levels(Y.input)
+
     }else if(missing(indY))
     {
         stop("Either 'Y' or 'indY' is needed")
@@ -94,12 +97,10 @@ near.zero.var = FALSE)
     cl = match.call()
     #cl[[1]] = as.name("block.plsda")
     
-    out=list(call=cl,X=result$X,Y=Y.input,ind.mat=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,variates=result$variates,loadings=result$loadings,
-    names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
+    out=list(call=cl,X=result$X[-result$indY],Y=Y.input,ind.mat=result$X[result$indY][[1]],ncomp=result$ncomp,mode=result$mode,variates=result$variates,loadings=result$loadings,
+    names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale,design=result$design,scheme=result$scheme,indY=result$indY)
     
-    if(!missing(ncomp))   out$ncomp=ncomp
-
-    class(out) = c("block.plsda","block.pls")
+    class(out) = c("block.plsda","block.pls","sgccda","sgcca","DA")
     return(invisible(out))
     
 }

@@ -363,20 +363,20 @@ print.sgcca<- function(x, ...){
     cat("\nCall:\n", deparse(x$class, width.cutoff = 500), "\n\n")
     
     # components
-    for(k in 1 : length(x$blocks)){
+    for(k in 1 : length(x$X)){
         cat(" sGCCA with", x$ncomp[[k]], "components on block", k, "named", x$names$blocks[k], "\n")
     }
     cat("\n")
     
     # dimension
-    for(k in 1 : length(x$blocks)){
-        cat(" Dimension of block", k, 'is ', dim(x$blocks[[k]]), "\n")
+    for(k in 1 : length(x$X)){
+        cat(" Dimension of block", k, 'is ', dim(x$X[[k]]), "\n")
     }
     cat("\n")
     
     # selected variables
     list.select = list()
-    for(k in 1:length(x$blocks)){
+    for(k in 1:length(x$X)){
         list.select[[k]] = apply(x$loadings[[k]], 2, function(x){sum(x!=0)})
         cat(" Selection of", list.select[[k]], "variables on each of the sGCCA components on the block", k, "\n")
     }

@@ -18,6 +18,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+# last modified: 01-03-2016
+
 
 #--------------------------------------------------------------------#
 #-- Includes plotIndiv for mint.pls, mint.spls, mint.plsda, mint.splsda --#
@@ -86,7 +88,13 @@ layout = NULL,
         
         if(any(class(object)%in%c("mint.plsda","mint.splsda")) & missing(col))
         {
-            col=as.numeric(object$Y)
+            if (nlevels(object$Y) < 10) {
+                #only 10 colors in color.mixo
+                col = color.mixo(as.numeric(object$Y))
+            } else {
+                #use color.jet
+                col = color.jet(as.numeric(object$Y))
+            }
         }else if (missing(col))
         {
             col=1#rep(col,ceiling(object$N/length(col)))[1:object$N] # complete col to have a vector of length N, so we can choose col per study
@@ -168,10 +176,16 @@ layout = NULL,
         
         if(any(class(object)%in%c("mint.plsda","mint.splsda")) & missing(col))
         {
-            col=as.numeric(object$Y)
+            if (nlevels(object$Y) < 10) {
+                #only 10 colors in color.mixo
+                col = color.mixo(as.numeric(object$Y))
+            } else {
+                #use color.jet
+                col = color.jet(as.numeric(object$Y))
+            }
         }else if (missing(col))
         {
-            col=1#rep(col,ceiling(object$N/length(col)))[1:object$N] # complete col to have a vector of length N, so we can choose col per study
+            col=rep(1,nrow(object$X)) # complete col to have a vector of length N, so we can choose col per study
         }
         if(missing(pch))
         {
@@ -242,7 +256,7 @@ layout = NULL,
          title(study[m],...)
         }
         
-        #par(mfrow=opar)
+        #par(mfrow=opar) # commented out so that the user can keep plotting graphs next to these ones
 
     }
 

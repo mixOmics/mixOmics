@@ -1,9 +1,8 @@
 # created on 12/03/15
+# last modified: 02-03-2016
 # Author: F.Rohart
 #purpose: test the pls/plsda/spls/splsda function
 
-
-library(mixOmics)
 
 #######################################################################################################
 #######################################################################################################
@@ -134,6 +133,38 @@ if(additional.test==TRUE)
     #test9=splsda(X, Y=Z, ncomp = 2, keepX = c(50, 50000)) # with keepY too big
     #test10=splsda(X=X, ncomp = 2, keepY = c(50, 50)) #with too many arguments
     
+    
+    
+    #######  wraper.pls
+    res=pls(X,Y)
+    res=pls(X,Y,ncomp=3)
+    res=pls(X,Y,ncomp=3)
+    res=pls(X,Y,near.zero.var=TRUE)
+    
+    
+    
+    #######  wraper.spls
+    res=spls(X,Y)
+    res=spls(X,Y,ncomp=3,keepX=c(10,5,15))
+    res=spls(X,Y,ncomp=3,keepX=c(10,5)) #complete keepX
+    res=spls(X,Y,ncomp=3,keepX=c(10),keepX.constraint=list(comp1=c(100,1,3),comp2=c(10)))
+    res=spls(X,Y,ncomp=3,keepX=c(1),keepX.constraint=list(comp1=c(100),comp2=c(10)))
+    res=spls(X,Y,ncomp=3,keepX.constraint=list(comp1=c(100),comp2=c(10)))
+    res=spls(X,Y,ncomp=3,keepY=c(3),keepY.constraint=list(comp1=c(1),comp2=c(2)))
+    
+    #######  wraper.plsda
+    res=plsda(X,Z,ncomp=3)
+    
+    
+    #######  wraper.splsda
+    res=splsda(X,Z)
+    res=splsda(X,Z,ncomp=3,keepX=c(10,5,15))
+    res=splsda(X,Z,ncomp=3,keepX=c(10,5)) #complete keepX
+    res=splsda(X,Z,ncomp=3,keepX=c(10),keepX.constraint=list(comp1=c(100,1,3),comp2=c(10)))
+    res=splsda(X,Z,ncomp=3,keepX=c(1),keepX.constraint=list(comp1=c(100),comp2=c(10)))
+    res=splsda(X,Z,ncomp=3,keepX.constraint=list(comp1=c(100),comp2=c(10)))
+    
+
     
     
 }

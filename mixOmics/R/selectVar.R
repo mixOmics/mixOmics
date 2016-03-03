@@ -34,7 +34,7 @@ get.name.and.value=function(x,comp)
 
 
 # ------------------ for all object  --------------------
-selectVar.pls  = selectVar.plsda  =
+selectVar.spls  = selectVar.pls  =
 selectVar.sgcca = selectVar.rgcca = 
 selectVar.pca =selectVar.sipca=
 function(object, comp =1, block=NULL, ...)

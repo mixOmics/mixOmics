@@ -134,10 +134,10 @@ data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, 
                 byrow = TRUE, dimnames = list(names(data), names(data)))
 
-nutrimouse.rgcca <- wrapper.rgcca(blocks = data,
+nutrimouse.rgcca <- wrapper.rgcca(X = data,
                                          design = design,
                                          tau = "optimal",
-                                         ncomp = c(2, 2, 1),
+                                         ncomp = c(3, 3, 2),
                                          scheme = "centroid",
                                          verbose = FALSE)
 
@@ -159,7 +159,7 @@ head(nutrimouse.rgcca$loadings[[3]])
 # version 1 using the penalisation penalty criterion
 # ---
 \dontrun{
-nutrimouse.sgcca <- wrapper.sgcca(blocks = data,
+nutrimouse.sgcca <- wrapper.sgcca(X = data,
                                    design = design,
                                    penalty = c(0.3, 0.5, 1),
                                    ncomp = c(3, 3, 2),
@@ -187,12 +187,12 @@ nutrimouse.sgcca <- wrapper.sgcca(blocks = data,
 # Y 'outcome' here 
 # (see below for sgccda code, which is more appropriate)
 # ----
-nutrimouse.sgcca <- wrapper.sgcca(blocks = data,
+nutrimouse.sgcca <- wrapper.sgcca(X = data,
                                   design = design,
-                                  ncomp = c(2, 2, 1),
+                                  ncomp = c(2, 2, 2),
                                   # for keep: each element of the list corresponds to a block 
                                   # and is of length the # comp per block
-                                  keep = list(c(10,10), c(15,15), c(ncol(Y))),
+                                  keepX = list(c(10,10), c(15,15), c(ncol(Y))),
                                   scheme = "centroid",
                                   verbose = FALSE, 
                                   bias = FALSE)
@@ -215,11 +215,11 @@ Y = nutrimouse$diet
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 
-nutrimouse.sgccda <- wrapper.sgccda(blocks = data,
+nutrimouse.sgccda <- wrapper.sgccda(X = data,
                                     Y = Y,
                                     design = design,
-                                    keep = list(c(10,10), c(15,15)),
-                                    ncomp = c(2, 2, 1),
+                                    keepX = list(c(10,10), c(15,15)),
+                                    ncomp = c(3,3),
                                     scheme = "centroid",
                                     verbose = FALSE,
                                     bias = FALSE)

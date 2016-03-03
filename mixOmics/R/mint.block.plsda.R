@@ -53,12 +53,12 @@ study,
 ncomp=rep(2,length(X)),
 design,
 scheme,
+mode,
 scale = TRUE,
 bias,
 init ,
 tol = 1e-06,
 verbose,
-mode,
 max.iter = 500,
 near.zero.var = FALSE)
 {
@@ -108,7 +108,7 @@ near.zero.var = FALSE)
     if(!missing(ncomp))   out$ncomp=ncomp
 
 
-    class(out) = c("mint.block.plsda","mint.block.pls")
+    class(out) = c("mint.block.plsda","mint.block.pls","block.pls","sgccda","sgcca","DA")
     return(invisible(out))
     
 }

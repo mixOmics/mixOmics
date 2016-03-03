@@ -75,8 +75,8 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
     
     cl = match.call()
     #cl[[1]] = as.name("plsda")
-    
-    out=list(call=cl,X=result$X[[1]],Y=if(is.null(multilevel)){Y}else{result$Y.factor},ind.mat=result$Y[[1]],ncomp=result$ncomp,
+
+    out=list(call=cl,X=result$X[-result$indY][[1]],Y=if(is.null(multilevel)){Y}else{result$Y.factor},ind.mat=result$X[result$indY][[1]],ncomp=result$ncomp,
     mode=result$mode,variates=result$variates,loadings=result$loadings,
     names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
     out$names$Y = levels(out$Y)
@@ -84,7 +84,7 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
     #row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(out$Y)))
     
    
-    class(out) = c("plsda","pls")
+    class(out) = c("plsda","pls","DA")
 
     if(!is.null(multilevel))
     {

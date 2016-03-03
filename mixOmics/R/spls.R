@@ -66,13 +66,13 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
     cl = match.call()
     #cl[[1]] = as.name("spls")
     
-    out=list(call=cl,X=result$X[[1]],Y=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,keepX=result$keepA[[1]],keepY=result$keepA[[2]],
+    out=list(call=cl,X=result$X[-result$indY][[1]],Y=result$X[result$indY][[1]],ncomp=result$ncomp,mode=result$mode,keepX=result$keepA[[1]],keepY=result$keepA[[2]],
     keepX.constraint=result$keepA.constraint[[1]],keepY.constraint=result$keepA.constraint[[2]],
     variates=result$variates,loadings=result$loadings,names=result$names,
     tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
     
    
-    class(out) = c("spls","pls")
+    class(out) = c("spls")
     
     if(!is.null(multilevel))
     {

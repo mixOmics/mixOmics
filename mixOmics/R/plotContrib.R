@@ -96,13 +96,13 @@ plotContrib = function(object,
     
     names.block=as.character(names(selected.var)[1]) #it should be one block and ncomp, so we take the first one
     #what follows can be combined if pls-objects get a "block" output
-    if(any(class(object)%in%"plsda"))
+    if(any(class(object)%in%c("plsda","splsda")))
     {
         X=object[names.block][[1]]
     }
     if(any(class(object)%in%"sgccda"))
     {
-        X=object$block[names.block][[1]]
+        X=object$X[names.block][[1]]
     }
     
     #name.var
@@ -123,13 +123,15 @@ plotContrib = function(object,
         ind=which(colnames.X=="")
         if(length(ind)>0) colnames.X[ind]=colnames(X)[ind]
     }
-
-    if(any(class(object)%in%"sgccda"))
-    {
-        Y = object$Y
-    }else{
-        Y = factor(map(object$ind.mat), labels= object$names$Y)
-    }
+    
+    #v6: all $Y are factors for DA methods
+#if(any(class(object)%in%"sgccda"))
+#{
+#       Y = object$Y
+#   }else{
+#       Y = factor(map(object$ind.mat), labels= object$names$Y)
+#   }
+    Y=object$Y
     
     #title
     #-----
@@ -243,7 +245,7 @@ plotContrib = function(object,
         mp = barplot(contrib$importance, horiz = T, las = 1, col = contrib$Contrib, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(contrib),
         cex.names = cex.name, cex.axis = 0.7, beside = TRUE,border=NA)
         if(is.null(main)){
-            if(class.object[1] %in% c("sgcca","sgccda","spls"))
+            if(class.object[1] %in% c("sgcca","sgccda"))
             title(paste0('Contribution on comp ', comp, "\nBlock '", names.block,"'"))
             else
             title(paste('Contribution on comp', comp))

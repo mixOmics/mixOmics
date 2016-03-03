@@ -124,8 +124,9 @@ design <- data.frame(sample = vac18$sample,
                      stimul = vac18$stimulation)
 
 # multilevel sPLS-DA model
-res.1level <- multilevel(X, ncomp = 3, design = design,
-                         method = "splsda", keepX = c(30, 137, 123))
+res.1level = splsda(X, ncomp = 3, multilevel = design,
+                keepX = c(30, 137, 123))
+
 
 
 name.var = vac18$tab.prob.gene[, 'Gene']

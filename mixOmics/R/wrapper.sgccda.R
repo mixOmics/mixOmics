@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 25-02-2016
+# last modified: 01-03-2016
 #
 # Copyright (C) 2015
 #
@@ -27,8 +27,8 @@ X,
 Y,
 design = NULL,
 ncomp = rep(1, length(X)),
-keepA,
-keepA.constraint,
+keepX,
+keepX.constraint,
 scheme = "centroid",
 mode="canonical",
 scale = TRUE,
@@ -70,9 +70,9 @@ verbose = FALSE
     if (is.null(design)) {
         design = 1 - diag(length(X) + 1)
     } else if (ncol(design) != nrow(design) || ncol(design) < length(X) || ncol(design) > (length(X) + 1) || any(!design %in% c(0,1))){
-        stop('invalid design matrix.')
+        stop('Invalid design matrix.')
     } else if (ncol(design) == length(X)){
-        warning('Design matrix changed')
+        message('Design matrix has changed to include Y as a block')
         design = rbind(cbind(design, 1), 1)
         diag(design) = 0
     }
@@ -106,7 +106,7 @@ verbose = FALSE
     
     
     
-    check=check.keepA.and.keepA.constraint(X=X,keepX=keepA,keepX.constraint=keepA.constraint,ncomp=ncomp)
+    check=check.keepA.and.keepA.constraint(X=X,keepX=keepX,keepX.constraint=keepX.constraint,ncomp=ncomp)
     keepA=check$keepA
     keepA.constraint=check$keepA.constraint
     
@@ -123,7 +123,7 @@ verbose = FALSE
 
 
     result <- internal_wrapper.mint.block(X=X,Y=Y,ncomp=ncomp,keepX.constraint=keepA.constraint,
-    keepX=keepA,scheme=scheme,mode=mode,scale=scale,
+    keepX=keepA,scheme=scheme,mode=mode,scale=scale,design=design,
     bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=FALSE)
     
     
@@ -132,14 +132,16 @@ verbose = FALSE
     
     cl = match.call()
     cl[[1]] = as.name("sgccda")
-    result$ind.mat=result$Y[[1]]
+    temp=result$X
+    result$X=temp[-result$indY]    
+    result$ind.mat=temp[result$indY][[1]]
     result$Y=Y.input    
     result$call = cl
     result$ncomp = result$ncomp
     result$names$Y = attr(result$Y[[1]], "levels")
     #row.names(result$variates$Y) = row.names(X); row.names(result$loadings$Y) = paste0("Y", c(1 : nlevels(Y.input)))
     names(result)[names(result) == "keepA"] = "keepX"; result$keepX = keepA
-    class(result) = "sgccda"
+    class(result) = c("sgccda","sgcca","DA")
     return(invisible(result))
     
     

@@ -1,4 +1,3 @@
-library(mixOmics)
 #######################################################################################################
 #######################################################################################################
 #                                           from help file
@@ -104,7 +103,7 @@ data(nutrimouse)
 Y = unmap(nutrimouse$diet)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 design1 = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
-nutrimouse.sgcca <- wrapper.sgcca(blocks = data,
+nutrimouse.sgcca <- wrapper.sgcca(X = data,
 design = design1,
 penalty = c(0.3, 0.5, 1),
 ncomp = c(2, 2, 3),
@@ -145,14 +144,15 @@ Y = nutrimouse$diet
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
 design1 = matrix(c(0,1,0,1), ncol = 2, nrow = 2, byrow = TRUE)
 
-nutrimouse.sgccda1 <- wrapper.sgccda(blocks = data,
+nutrimouse.sgccda1 <- wrapper.sgccda(X = data,
 Y = Y,
 design = design1,
 ncomp = c(2, 2),
-keep = list(c(10,10), c(15,15)),
-scheme = "centroid",
+keepX = list(c(10,10), c(15,15)),
+scheme = "centroid",mode="regression",
 verbose = FALSE,
-bias = FALSE)
+bias = TRUE,scale=TRUE,tol=1e-6)
+nutrimouse.sgccda1$loadings$Y
 
 
 # plotIndiv
@@ -404,8 +404,8 @@ if(additional.test==TRUE)
                          stimul = vac18$stimulation)
     
     # multilevel sPLS-DA model
-    res.1level <- multilevel(X, ncomp = 3, design = design,
-                             method = "splsda", keepX = c(30, 137, 123))
+    res.1level <- splsda(X, ncomp = 3, multilevel = design,
+                             keepX = c(30, 137, 123))
     
     # set up colors for plotIndiv
     col.stim <- c("darkblue", "purple", "green4","red3")
@@ -418,8 +418,8 @@ if(additional.test==TRUE)
                          stimu = vac18.simulated$stimulation,
                          time = vac18.simulated$time)
     
-    res.2level <- multilevel(X, ncomp = 2, design = design,
-                             keepX = c(200, 200), method = 'splsda')
+    res.2level <- splsda(X, ncomp = 2, multilevel = design,
+                             keepX = c(200, 200))
     
     plotIndiv(res.2level, group = design$stimu, ind.names = vac18.simulated$time,
               add.legend = TRUE, style = 'lattice')
@@ -435,12 +435,12 @@ if(additional.test==TRUE)
     # this is a spls (unsupervised analysis) so no need to mention any factor in design
     # we only perform a one level variation split
     design <- data.frame(sample = repeat.indiv) 
-    res.spls.1level <- multilevel(X = liver.toxicity$gene,
+    res.spls.1level <- spls(X = liver.toxicity$gene,
                                   Y=liver.toxicity$clinic,
-                                  design = design,
+                                  multilevel = design,
                                   ncomp = 3,
                                   keepX = c(50, 50, 50), keepY = c(5, 5, 5),
-                                  method = 'spls', mode = 'canonical')
+                                  mode = 'canonical')
     
     # set up colors and pch for plotIndiv
     col.stimu <- 1:nlevels(design$stimu)

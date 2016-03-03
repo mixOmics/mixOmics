@@ -128,7 +128,7 @@ near.zero.var = FALSE)
     if(!missing(ncomp))   out$ncomp=ncomp
 
 
-    class(out) = c("mint.block.splsda","mint.block.pls")
+    class(out) = c("mint.block.splsda","mint.block.spls","block.spls","sgccda","sgcca","DA")
     return(invisible(out))
     
 }

@@ -68,7 +68,7 @@ near.zero.var = FALSE)
     }
     
     Y.mat=unmap(Y)
-    colnames(Y.mat) = paste0("Y", 1:ncol(Y.mat))
+    colnames(Y.mat) = levels(Y)#paste0("Y", 1:ncol(Y.mat))
 
     result <- internal_wrapper.mint(X=X,Y=Y.mat,ncomp=ncomp,near.zero.var=near.zero.var,study=study,mode=mode,
     keepX=keepX,keepX.constraint=keepX.constraint,max.iter=max.iter,tol=tol,scale=scale)
@@ -79,7 +79,7 @@ near.zero.var = FALSE)
     
     
     
-    out=list(call=cl,X=result$X[[1]],Y=Y,ind.mat=result$Y[[1]],ncomp=result$ncomp,study=result$study,
+    out=list(call=cl,X=result$X[-result$indY][[1]],Y=Y,ind.mat=result$X[result$indY][[1]],ncomp=result$ncomp,study=result$study,
         mode=result$mode,keepX=result$keepA[[1]],keepY=result$keepA[[2]],
         keepX.constraint=result$keepA.constraint[[1]],keepY.constraint=result$keepA.constraint[[2]],
         variates=result$variates,loadings=result$loadings,
@@ -89,7 +89,7 @@ near.zero.var = FALSE)
     row.names(out$variates$Y) = row.names(out$variates$X)
     row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(Y)))
     
-    class(out) = c("mint.splsda","mint.pls","pls")
+    class(out) = c("mint.splsda","splsda","spls","DA")
     return(invisible(out))
     
     
