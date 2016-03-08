@@ -1,6 +1,6 @@
-\name{celltype}
+\name{stemcells}
 \encoding{latin1}
-\alias{celltype}
+\alias{stemcells}
 
 \docType{data}
 
@@ -10,7 +10,7 @@
 This data set contains the expression of a random subset of 1,000 genes in 167 samples from 6 independent studies and 3 cell types.
 }
 
-\usage{data(celltype)}
+\usage{data(stemcells)}
 
 \format{
 A list containing the following components:
