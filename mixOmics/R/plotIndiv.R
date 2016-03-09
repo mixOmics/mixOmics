@@ -73,6 +73,7 @@ cex,
 pch,
 alpha=0.2,
 axes.box = "box",
+layout=NULL,
 ...
 )
 {
@@ -174,8 +175,10 @@ axes.box = "box",
             stop(paste("The number of components for one selected block '", paste(blocks, collapse = " - "),"' is 1. The number of components must be superior or equal to 2."), call. = FALSE)
         }
         
-        if (is.null(object$indY) & rep.space %in% c("Y-variate", "XY-variate")) {
+        if (rep.space != "X-variate") {
             stop("For an object of class 'blocks', 'rep.space' must be 'X-variate", call. = FALSE)
+        }else{
+            rep.space="multi" #rep.space is not used afterwards, put to "multi" to plot all blocks
         }
         ncomp = object$ncomp[blocks]
     }
@@ -312,20 +315,20 @@ axes.box = "box",
         if (is.null(X.label))
         {
             X.label = paste("PC", comp1,sep='')
-            if (any(class.object %in% "pca")) {percentage=paste(inf[1]*100,"% expl. var")
+            if (any(class.object %in% "pca")) {percentage=paste0(inf[1]*100,"% expl. var")
                 X.label = paste(X.label,percentage,sep=": ")}
         }
         if (is.null(Y.label))
         {
             Y.label = paste("PC", comp2,sep='')
-            if (any(class.object %in% "pca")) {percentage=paste(inf[2]*100,"% expl. var")
+            if (any(class.object %in% "pca")) {percentage=paste0(inf[2]*100,"% expl. var")
                 
                 Y.label = paste(Y.label,percentage,sep=": ")}
         }
         if (is.null(Z.label)&&style=="3d")
         {
             Z.label = paste("PC", comp3,sep='')
-            if (any(class.object %in% "pca")) {percentage=paste(inf[3]*100,"% expl. var")
+            if (any(class.object %in% "pca")) {percentage=paste0(inf[3]*100,"% expl. var")
                 Z.label = paste(Z.label,percentage,sep=": ")}
         }
     }
@@ -536,13 +539,15 @@ axes.box = "box",
         }
     }
     
-    if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")))
+    if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")) | rep.space !="multi")
     {
         if(is.null(main)){
             df = data.frame(do.call(rbind, df), "Block" = "PlotIndiv")}
         else
         {
             df = data.frame(do.call(rbind, df), "Block" = main)
+            if(style %in%c("ggplot2","lattice"))
+            main=NULL # to avoid double title
         }
     }else{
     df = data.frame(do.call(rbind, df), "Block" = paste0("Block: ", unlist(lapply(1 : length(df), function(z){rep(blocks[z], nrow(df[[z]]))}))))
@@ -742,6 +747,7 @@ axes.box = "box",
     
     #-- Start: Lattice
     if(style=="lattice") {
+     
         p = xyplot(y ~ x | Block, data = df, xlab = X.label, ylab = Y.label, main = main,
         group = if (display.names) {names} else {group},
         scales= list(x = list(relation = "free", limits = xlim),
@@ -864,19 +870,44 @@ axes.box = "box",
     #-- End: Lattice
     
     #-- Start: graphics
-    if(style=="graphics") {
+    if(style=="graphics")
+    {
         
         opar <- par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din", "page")]
-        par(mfrow=c(1,length(blocks)))
+        
+        nResp=length(blocks)
+        if (is.null(layout))
+        {
+            nRows = min(c(3, ceiling(nResp/2)))
+            nCols=min(c(3,ceiling(nResp/nRows)))
+            layout = c(nRows, nCols)
+        }else{
+            if (length(layout) != 2 || !is.numeric(layout) || any(is.na(layout)))
+            stop("'layout' must be a numeric vector of length 2.")
+            nRows = layout[1]
+            nCols = layout[2]
+        }
+        if (nRows * nCols < nResp) devAskNewPage(TRUE)
+        
+        
+        #opar=par("mfrow") # save the current mfrow to load it at the end of the function
+        #print(layout)
+        par(mfrow=layout)
+        
+        
+        
+        #par(mfrow=c(1,length(blocks)))
         #-- Define layout
         if (add.legend)
-        par(mai=c( 1.360000, 1.093333, 1.093333,(max(strwidth(levels(group),"inches")))+0.6),xpd=TRUE)
-        else
-        par(mar=c(5,4,4,2))
+        {
+            par(mai=c( 1.360000, 1.093333, 1.093333,(max(strwidth(levels(group),"inches")))+0.6),xpd=TRUE)
+        }else{
+            #par(mar=c(5,4,4,2))
+        }
         
         for (k in 1 : length(x)){
             #-- initialise plot
-            if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")))
+            if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")) | rep.space !="multi")
             {titlemain=NULL
                 other=TRUE
                 if(plot.ellipse)
@@ -973,12 +1004,19 @@ axes.box = "box",
                 }
             }
             
-            title(main, outer = TRUE, line = -1,...)
+            if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda"))| rep.space !="multi")
+            {
+                title(main,...)
+            }else{
+                title(main, outer = TRUE, line = -1,...)
+            }
         }
         
-        opar["usr"]=par()["usr"]
+        #opar["usr"]=par()["usr"]
         
-        par(opar)
+        #par(mai=opar["mai"])
+        #par(mar=opar["mar"])
+        
     }
     #-- End: graphics
     
