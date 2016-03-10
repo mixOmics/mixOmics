@@ -530,9 +530,7 @@ layout=NULL,
         {
             df[[i]] = data.frame(x = x[[i]], y = y[[i]],z=z[[i]],group = group)
         }
-    }
-    else
-    {
+    }else{
         for (i in 1 : length(x))
         {
             df[[i]] = data.frame(x = x[[i]], y = y[[i]], group = group)
@@ -551,6 +549,7 @@ layout=NULL,
         }
     }else{
     df = data.frame(do.call(rbind, df), "Block" = paste0("Block: ", unlist(lapply(1 : length(df), function(z){rep(blocks[z], nrow(df[[z]]))}))))
+    df$Block=factor(df$Block,levels=unique(df$Block))
     }
     
     
@@ -652,7 +651,7 @@ layout=NULL,
         
         #-- Modify scale colour - Change X/Ylabel - split plots into Blocks
         p = p + scale_colour_manual(values = unique(col.per.group)[match(levels(factor(as.character(group))), levels(group))], name = "Legend", breaks = levels(group))
-        p = p + labs(list(title = main, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = 2, scales = "free", as.table = FALSE)
+        p = p + labs(list(title = main, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = 2, scales = "free", as.table = TRUE) #as.table to plot in the same order as the factor
         
         #-- xlim, ylim
         if (lim.X) p = p + coord_cartesian(xlim=xlim)
@@ -747,8 +746,8 @@ layout=NULL,
     
     #-- Start: Lattice
     if(style=="lattice") {
-     
-        p = xyplot(y ~ x | Block, data = df, xlab = X.label, ylab = Y.label, main = main,
+        
+        p = xyplot(y ~ x | Block, data = df, xlab = X.label, ylab = Y.label, main = main,as.table=TRUE, #as.table plot in order
         group = if (display.names) {names} else {group},
         scales= list(x = list(relation = "free", limits = xlim),
         y = list(relation = "free", limits = ylim)),
@@ -1025,7 +1024,8 @@ layout=NULL,
     if(style=="3d") {
         
         for (k in 1 : length(x)){
-            open3d()
+            if(lenght(x)>1) open3d() # removing the popping up window when there's only one block (for shiny)
+            
             par3d(windowRect = c(500, 30, 1100, 630))
             Sys.sleep(0.1)
             
