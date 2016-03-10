@@ -4,7 +4,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: ?
-# last modified: 03-03-2016
+# last modified: 08-03-2016
 #
 # Copyright (C) 2015
 #
@@ -35,51 +35,60 @@
 # ========================================================================================================
 
 
-plotDiablo= function(object,
+plot.sgccda=plotDiablo= function(object,
 ncomp = 1,
 groupOrder)
 {
     
-    if(!class=="sgccda")
-    stop("'plotDiablo' is only available for 'sgccda' object")
+    #if(!any(class(object) %in% "sgccda"))
+    #stop("'plotDiablo' is only available for 'sgccda' object")
     
     #library(mixOmics)  ## needed for color.mixo
-  VarX <- do.call(cbind, lapply(object$variates, function(i) i[, ncomp]))
-  datNames <- colnames(VarX)
-  
-  Y=object$Y
-  if(missing(groupOrder)) groupOrder= levels(Y)
-  
-  if (!is.factor(Y))
+    
+    #need to reorder variates and loadings to put 'Y' in last
+    indY=object$indY
+    object$variates=c(object$variates[-indY],object$variates[indY])
+    object$loadings=c(object$loadings[-indY],object$loadings[indY])
+    
+    VarX <- do.call(cbind, lapply(object$variates, function(i) i[, ncomp]))
+    datNames <- colnames(VarX)
+    
+    if(ncol(VarX)<=2)
+    stop("This function is only available when there are more than 3 blocks") # so 2 blocks + the outcome Y
+    
+    Y=object$Y
+    if(missing(groupOrder)) groupOrder= levels(Y)
+    
+    if (!is.factor(Y))
     stop(gettextf("Y must be a factor!"))
-  if (length(ncomp) != 1)
+    if (length(ncomp) != 1)
     stop(gettextf("You can only choose one component"))
-  
-  numberOfCols <- ncol(VarX)
-  numberOfRows <- numberOfCols - 1
-  
-  mat <- matrix(0, nrow = numberOfRows, ncol = numberOfRows)
-  for(i in 1:nrow(mat)){
-    for(j in 1:ncol(mat)){
-      mat[i,j] <- paste(i,j, sep="_")
+    
+    numberOfCols <- ncol(VarX)
+    numberOfRows <- numberOfCols - 1
+    
+    mat <- matrix(0, nrow = numberOfRows, ncol = numberOfRows)
+    for(i in 1:nrow(mat)){
+        for(j in 1:ncol(mat)){
+            mat[i,j] <- paste(i,j, sep="_")
+        }
     }
-  }
-  plotType = list(cor=mat[lower.tri(mat)], scatter=mat[upper.tri(mat)],
-                  lab=diag(mat), 
-                  bar=paste(1:(numberOfRows-1), numberOfCols, sep="_"),
-                  stackedbar=paste(numberOfRows, numberOfCols, sep="_"))
-  
-  par(mfrow = c(numberOfRows, numberOfCols), mar = rep.int(1/2, 4), oma = c(2,2,2,2))
-  for(i in 1:numberOfRows){
-    for(j in 1:numberOfCols){
-      ptype <- unlist(lapply(plotType, function(x){
-        intersect(paste(i,j,sep="_"), x)
-      }))
-      splotMatPlot(x=VarX[, i], y=VarX[, j], datNames, Y, ptype, groupOrder)
-      if(i == 1 & j %in% seq(2, numberOfRows, 1)){Axis(side = 3, x=VarX[, i])}
-      if(j == numberOfRows & i %in% seq(1, numberOfRows-1, 1)){Axis(side = 4, x=VarX[, i])}
+    plotType = list(cor=mat[lower.tri(mat)], scatter=mat[upper.tri(mat)],
+    lab=diag(mat),
+    bar=paste(1:(numberOfRows-1), numberOfCols, sep="_"),
+    stackedbar=paste(numberOfRows, numberOfCols, sep="_"))
+    
+    par(mfrow = c(numberOfRows, numberOfCols), mar = rep.int(1/2, 4), oma = c(2,2,2,2))
+    for(i in 1:numberOfRows){
+        for(j in 1:numberOfCols){
+            ptype <- unlist(lapply(plotType, function(x){
+                intersect(paste(i,j,sep="_"), x)
+            }))
+            splotMatPlot(x=VarX[, i], y=VarX[, j], datNames, Y, ptype, groupOrder)
+            if(i == 1 & j %in% seq(2, numberOfRows, 1)){Axis(side = 3, x=VarX[, i])}
+            if(j == numberOfRows & i %in% seq(1, numberOfRows-1, 1)){Axis(side = 4, x=VarX[, i])}
+        }
     }
-  }
 }
 
 
@@ -125,7 +134,7 @@ panel.ellipses = function(x, y, Y = Y, pch = par("pch"), col.lm = "red", axes = 
     cdg = lapply(matrice, colMeans)
     variance = lapply(matrice, var)
     
-    library(ellipse)
+    #library(ellipse)
     coord.ellipse = lapply(1:nlevels(Y), function(x){ellipse(variance[[x]], centre = cdg[[x]], ellipse.level = 0.95)})
     max.ellipse = sapply(coord.ellipse, function(x){apply(x, 2, max)})
     min.ellipse = sapply(coord.ellipse, function(x){apply(x, 2, min)})
