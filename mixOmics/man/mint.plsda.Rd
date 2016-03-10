@@ -85,13 +85,13 @@ In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org for more details.}
 
 \examples{
-data(celltype)
+data(stemcells)
 
-res=mint.plsda(X=gene,Y=celltype,ncomp=3,near.zero.var=FALSE,study=study)
+res=mint.plsda(X=stemcells$gene,Y=stemcells$celltype,ncomp=3,near.zero.var=FALSE,study=stemcells$study)
 
 plotIndiv(res,ind.names=FALSE)
-plotIndiv(res,ind.names=FALSE,study=levels(study)) #plot study-specific outputs for all studies
-plotIndiv(res,ind.names=FALSE,study="2") #plot study-specific outputs for study "2"
+plotIndiv(res,ind.names=FALSE,study=levels(stemcells$study)) #plot study-specific outputs for all studies
+plotIndiv(res,ind.names=FALSE,study="2",col=as.numeric(stemcells$celltype)) #plot study-specific outputs for study "2"
 
 }
 

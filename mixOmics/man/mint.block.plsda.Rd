@@ -97,9 +97,6 @@ In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org for more details.}
 
 \examples{
-data(celltype)
-
-res=mint.splsda(X=gene,Y=celltype,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=study)
 
 }
 

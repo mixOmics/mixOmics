@@ -154,7 +154,8 @@ soft_thresholding_L1=function(x,nx)
 soft.threshold = function (x, sumabs = 1)
 return(soft(x, BinarySearch(x, sumabs)))
 
-BinarySearch = function(argu,sumabs){
+BinarySearch = function(argu,sumabs)
+{
     if(norm2(argu)==0 || sum(abs(argu/norm2(argu)))<=sumabs) return(0)
     lam1 <- 0
     lam2 <- max(abs(argu))-1e-5
@@ -175,7 +176,8 @@ BinarySearch = function(argu,sumabs){
 
 soft = function(x,d) return(sign(x)*pmax(0, abs(x)-d))
 
-norm2 = function(vec){
+norm2 = function(vec)
+{
     a <- sqrt(sum(vec^2))
     if(a==0) a <- .05
     return(a)
@@ -204,6 +206,34 @@ sparsity=function(loadings.A,keepA,keepA.constraint=NULL,penalty=NULL)
 }
 
 
+
+
+# --------------------------------------
+# scaling with or without bias
+# --------------------------------------
+scale.function=function(temp,scale=TRUE,bias=FALSE)
+{
+    meanX=colMeans(temp)
+    data.list.study.scale_i=t(t(temp)-meanX)
+    if(scale)
+    {
+        if(bias)
+        {
+            sqrt.sdX=sqrt(colSums(data.list.study.scale_i^2)/(nrow(temp)))
+        }else{
+            sqrt.sdX=sqrt(colSums(data.list.study.scale_i^2)/(nrow(temp)-1))
+        }
+        data.list.study.scale_i=t( t(data.list.study.scale_i)/sqrt.sdX)
+    }
+    
+    is.na.data=is.na(data.list.study.scale_i)
+    if(sum(is.na.data)>0)
+    data.list.study.scale_i[is.na.data]=0
+    
+    out=list(data_scale=data.list.study.scale_i,meanX=meanX,sqrt.sdX=sqrt.sdX)
+    return(out)
+}
+
 # --------------------------------------
 # Mean centering/scaling per study
 # --------------------------------------
@@ -213,37 +243,13 @@ mean_centering_per_study=function(data,study,scale,bias=FALSE) {
     # split the data
     data.list.study = study_split(data, study)
 
+    res=lapply(data.list.study,scale.function,scale=scale,bias=bias)
+
     # center and scale data per group, and concatene the data
-    concat.data = NULL
-    #data.list.study.scale= list()
-    meanX=list()
-    sqrt.sdX=list()
-    #time1=proc.time()
-    for (m in 1:M) {
-        
-        #data.list.study.scale_i = scale(data.list.study[[m]], center = TRUE, scale = scale)
-        
-        #replacing scale by fastest functions since all the computational time comes from this line of code
-        temp=data.list.study[[m]]
-        meanX[[m]]=colMeans(temp)
-        data.list.study.scale_i=t(t(temp)-meanX[[m]])
-        if(scale)
-        {
-            if(bias)
-            {
-                sqrt.sdX[[m]]=sqrt(colSums(data.list.study.scale_i^2)/(nrow(temp)))
-            }else{
-                sqrt.sdX[[m]]=sqrt(colSums(data.list.study.scale_i^2)/(nrow(temp)-1))
-            }
-            data.list.study.scale_i=t( t(data.list.study.scale_i)/sqrt.sdX[[m]])
-        }
-        
-        is.na.data=is.na(data.list.study.scale_i)
-        if(sum(is.na.data)>0)
-        data.list.study.scale_i[is.na.data]=0
-        
-        concat.data = rbind(concat.data, data.list.study.scale_i)
-    }
+    concat.data =do.call("rbind", lapply(res,function(x){x[[1]]}))
+    meanX=lapply(res,function(x){x[[2]]})
+    sqrt.sdX=lapply(res,function(x){x[[3]]})
+
     #time2=proc.time()
     #print("mean_centering")
     #print(time2-time1)
@@ -394,14 +400,14 @@ defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical
     for (q in 1 : nbloc) {
         ### Start: insertion of new deflations (See La regression PLS Theorie et pratique (page 139))
         if ( nn <= nncomp[q] ) {
-            if ((mode == "canonical") || (q != indY)) {
+            if ((mode == "canonical") || (q != indY)) { #deflation of each block independently from the others, except indY
                 defltmp <- deflation(rr[[q]], yy[ , q])
                 resdefl[[q]] <- defltmp$R
                 pdefl[[q]]   <- defltmp$p
             } else if (mode == "classic") {
                 resdefl[[q]] <- Reduce("+", lapply(c(1:nbloc)[-q], function(x) {rr[[q]] - yy[ ,x]%*%t(aa[[q]])}))/(nbloc-1)
                 pdefl[[q]]   <-  rep(0,NCOL(rr[[q]]))
-            } else if (mode == "invariant") {
+            } else if (mode == "invariant") { #no deflation
                 resdefl[[q]] <- rr[[q]]
                 pdefl[[q]]   <-  rep(0,NCOL(rr[[q]]))
             } else if (mode == "regression") {

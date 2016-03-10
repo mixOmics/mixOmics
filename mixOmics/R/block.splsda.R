@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 24-02-2016
+# last modified: 04-03-2016
 #
 # Copyright (C) 2015
 #
@@ -48,7 +48,7 @@
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
 
-block.splsda <- function(X,
+block.splsda <- wrapper.sgccda <- function(X,
 Y,
 indY,
 ncomp=rep(2,length(X)),

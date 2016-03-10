@@ -1,6 +1,7 @@
 \name{block.splsda}
 \encoding{latin1}
 \alias{block.splsda}
+\alias{wrapper.sgccda}
 
 \title{Horizontal sparse Partial Least Squares - Discriminant Analysis (sPLS-DA) Regression}
 

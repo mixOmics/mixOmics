@@ -95,14 +95,15 @@ In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org for more details.}
 
 \examples{
-data(celltype)
+data(stemcells)
 # need to unmap Y for an unsupervised analysis
-Y = unmap(celltype)
-res=mint.spls(X=gene,Y=Y,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=study)
+Y = unmap(stemcells$celltype)
+res=mint.spls(X=stemcells$gene,Y=Y,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=stemcells$study)
+
 plotIndiv(res,ind.names=FALSE)
-plotIndiv(res,ind.names=FALSE,study=levels(study),col=as.numeric(celltype)) #plot study-specific outputs for all studies
-plotIndiv(res,ind.names=TRUE,study=levels(study),col=as.numeric(celltype))
-plotIndiv(res,ind.names=FALSE,study="2",col=as.numeric(celltype)) #plot study-specific outputs for study "2"
+plotIndiv(res,ind.names=FALSE,study=levels(stemcells$study),col=as.numeric(stemcells$celltype)) #plot study-specific outputs for all studies
+plotIndiv(res,ind.names=TRUE,study=levels(stemcells$study),col=as.numeric(stemcells$celltype))
+plotIndiv(res,ind.names=FALSE,study="2",col=as.numeric(stemcells$celltype)) #plot study-specific outputs for study "2"
 
 }
 

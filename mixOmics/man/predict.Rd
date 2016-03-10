@@ -1,9 +1,21 @@
 \name{predict}
 \encoding{latin1}
-\alias{predict.splsda}
-\alias{predict.plsda}
+\alias{predict}
 \alias{predict.pls}
 \alias{predict.spls}
+\alias{predict.plsda}
+\alias{predict.splsda}
+
+\alias{predict.mint.pls}
+\alias{predict.mint.spls}
+\alias{predict.mint.plsda}
+\alias{predict.mint.splsda}
+
+\alias{predict.mint.block.pls}
+\alias{predict.mint.block.spls}
+\alias{predict.mint.block.plsda}
+\alias{predict.mint.block.splsda}
+
 
 \title{Predict Method for PLS, sPLS, PLS-DA or sPLS-DA}
 
@@ -12,22 +24,15 @@ Predicted values based on PLS, sparse PLS, PLS-DA or sparse PLS-DA models. New r
 variates are predicted using a fitted model and a new matrix of observations.
 }
 
-\usage{
-\method{predict}{pls}(object, newdata, ...)
-
-\method{predict}{spls}(object, newdata, ...)
-
-\method{predict}{plsda}(object, newdata, method = c("all", "max.dist", 
-        "centroids.dist", "mahalanobis.dist"), ...)
-
-\method{predict}{splsda}(object, newdata, method = c("all", "max.dist", 
-        "centroids.dist", "mahalanobis.dist"), ...)
+\usage{predict(object, newdata, study.test, method = c("all", "max.dist",
+"centroids.dist", "mahalanobis.dist"), ...)
 }
 
 \arguments{
   \item{object}{object of class inheriting from \code{"pls"}, \code{"spls"}, \code{"plsda"} or \code{"splsda"}.}
   \item{newdata}{data matrix in which to look for for explanatory variables to be used for prediction.}
-  \item{method}{method to be applied for \code{plsda} or \code{splsda} to predict the class of new data, 
+\item{study.test}{grouping factor indicating which samples of \code{newdata} are from the same study. Overlap with \code{object$study} are allowed.}
+  \item{method}{method to be applied for discriminant methods to predict the class of new data,
     should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \code{"max.dist"} (see Details). 
 	Defaults to \code{"all"}.}
   \item{...}{not used currently.}

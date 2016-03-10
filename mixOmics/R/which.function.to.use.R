@@ -65,7 +65,7 @@ which.function.should.I.use=function()
             message("Example has been plotted, hope it helps.")
             #to run example, find the file to plot, import it and plot it!
             fpath <- system.file("extdata", "jellyfish.jpg", package="mixOmicsv6")
-            library(jpeg)
+            #library(jpeg)
             img=readJPEG(fpath)
             opar=par(no.readonly=TRUE)
             par(mar=c(1,1,3,1))
@@ -111,7 +111,7 @@ which.function.should.I.use=function()
             {
                 message("Example has been plotted, hope it helps.")
                 fpath <- system.file("extdata", "cat.jpeg", package="mixOmicsv6")# mint without block
-                library(jpeg)
+                #library(jpeg)
                 img=readJPEG(fpath)
                 opar=par(no.readonly=TRUE)
                 par(mar=c(1,1,3,1))
@@ -122,7 +122,7 @@ which.function.should.I.use=function()
             }else{# block
                 message("Example has been plotted, hope it helps.")
                 fpath <- system.file("extdata", "dog.jpeg", package="mixOmicsv6")# mint and block
-                library(jpeg)
+                #library(jpeg)
                 img=readJPEG(fpath)
                 opar=par(no.readonly=TRUE)
                 par(mar=c(1,1,3,1))
@@ -179,7 +179,7 @@ which.function.should.I.use=function()
         {
             message("Example has been plotted, hope it helps.")
             fpath <- system.file("extdata", "DA-analysis.jpg", package="mixOmicsv6")# mint without block
-            library(jpeg)
+            #library(jpeg)
             img=readJPEG(fpath)
             opar=par(no.readonly=TRUE)
             par(mar=c(1,1,3,1))

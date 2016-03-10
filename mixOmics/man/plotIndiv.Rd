@@ -94,6 +94,8 @@ data matrix is used as names (see Details).}
 or integers. See \code{\link{points}} for all alternatives.}
 \item{alpha}{Semi-transparent colors (0 < \code{'alpha'} < 1) }
 \item{axes.box}{for style '3d', argument to be set to either \code{'axes'}, \code{'box'}, \code{'bbox'} or \code{'all'}, defining the shape of the box.}
+\item{study}{Indicates which study-specific outputs to plot. Default to "all".v"}
+\item{layout}{layout parameter passed to mfrow. Only used when \code{study} is not "all"}
 \item{...}{external arguments or type par can be added with \code{style = 'graphics'}}
 }
 

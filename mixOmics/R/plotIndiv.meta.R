@@ -257,6 +257,7 @@ layout = NULL,
         }
         
         #par(mfrow=opar) # commented out so that the user can keep plotting graphs next to these ones
+        if (nRows * nCols < nResp) devAskNewPage(FALSE)
 
     }
 

@@ -746,7 +746,7 @@ network <-
     cex0 = 2 * V(gR)$label.cex
     
     def.par = par(no.readonly = TRUE)
-    
+    par(mfrow=c(1,1))
     dev.new()
     par(pty = "s", mar = c(0, 0, 0, 0))
     plot(1:100, 1:100, type = "n", axes = FALSE, xlab = "", ylab = "")

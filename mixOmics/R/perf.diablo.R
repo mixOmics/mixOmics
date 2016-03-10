@@ -4,7 +4,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 01-04-2015
-# last modified: 01-03-2016
+# last modified: 04-03-2016
 #
 # Copyright (C) 2009
 #
@@ -32,8 +32,9 @@
 #           folds - number of folds if validation = "Mfold"
 # ----------------------------------------------------------------------------------------------------------
 
-perf_diablo <- function (object, method.predict = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
-validation = c("Mfold", "loo"), folds = 10, parallel = FALSE, cpus=cpus, ...) {
+perf.sgccda <- function (object, method.predict = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
+validation = c("Mfold", "loo"), folds = 10, parallel = FALSE, cpus=cpus, ...)
+{
     
     ### Start: Initialization parameters
     assign("object", object, pos = 1);

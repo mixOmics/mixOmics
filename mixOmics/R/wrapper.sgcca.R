@@ -29,16 +29,16 @@ X,
 design = 1 - diag(length(X)),
 penalty = NULL,
 ncomp = rep(1, length(X)),
-keepX,
 keepX.constraint,
+keepX,
 scheme = "centroid",
 mode="canonical",
 scale = TRUE,
-init = "svd",
 bias = TRUE,
+init = "svd",
 tol = .Machine$double.eps,
 verbose = FALSE,
-max.iter=500,
+max.iter=1000,
 near.zero.var = FALSE
 ){
   
@@ -67,7 +67,7 @@ near.zero.var = FALSE
                        ncomp = ncomp,
                        scheme = scheme, scale = scale,
                        init = init, bias = bias, tol = tol, verbose = verbose,
-                       keepA.constraint=NULL,
+                       keepA.constraint=keepA.constraint,
                        keepA=keepA,
                        max.iter=max.iter,
                        study=factor(rep(1,nrow(A[[1]]))),#mint.rgcca not coded yet

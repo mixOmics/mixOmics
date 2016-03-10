@@ -8,33 +8,44 @@
 }
 
 \usage{	
-wrapper.sgcca(data, design = 1 - diag(length(data)), 
-penalty = rep(1, length(data)),
-  ncomp = rep(1, length(data)), 
-  scheme = "centroid", 
-  scale = TRUE, 
-  init = "svd", 
-  bias = TRUE, 
-  tol = .Machine$double.eps, 
-  verbose = FALSE)
-}	
+wrapper.sgcca(X,
+design = 1 - diag(length(X)),
+penalty = NULL,
+ncomp = rep(1, length(X)),
+keepX.constraint,
+keepX,
+scheme = "centroid",
+mode="canonical",
+scale = TRUE,
+bias = TRUE,
+init = "svd",
+tol = .Machine$double.eps,
+verbose = FALSE,
+max.iter=1000,
+near.zero.var = FALSE)
+}
 
 \arguments{
-  \item{data}{a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables. \code{NA}s are not allowed.}
+  \item{X}{a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables. \code{NA}s are not allowed.}
   \item{design}{numeric matrix of size (number of blocks) x (number of blocks) with only 0 or 1 values. A value of 1 (0) indicates a relationship (no relationship) between the blocks to be modelled using sGCCA.}
-  \item{penalty}{numeric vector of length the number of blocks in \code{data}. Each penalty parameter will be applied on each block and takes the value between 0 (no variable selected) and 1 (all variables included).}
-  \item{ncomp}{numeric vector of length the number of blocks in \code{data}. The number of components to include in the model for each block (does not necessarily takes the same value for each block).}
-  \item{scheme}{Either "horst", "factorial" or "centroid"
+  \item{penalty}{numeric vector of length the number of blocks in \code{X}. Each penalty parameter will be applied on each block and takes the value between 0 (no variable selected) and 1 (all variables included).}
+  \item{ncomp}{numeric vector of length the number of blocks in \code{X}. The number of components to include in the model for each block (does not necessarily takes the same value for each block).}
+\item{keepX.constraint}{A list of same length as X. Each entry keepX.constraint[[i]] is a list containing which variables of X[[i]] are to be kept on each of the first PLS-components}
+\item{keepX}{ A vector of same length as X.  Each entry keepX[i] is the number of X[[i]]-variables kept in the model on the last components (once all keepX.constraint[[i]] are used).}
+\item{scheme}{Either "horst", "factorial" or "centroid"
   (Default: "centroid").}
-  \item{scale}{If scale = TRUE, each block is standardized
-  to zero means and unit variances (default: TRUE)}
-  \item{init}{Mode of initialization use in the SGCCA
-  algorithm, either by Singular Value Decompostion ("svd")
-  or random ("random") (default : "svd").}
-  \item{bias}{A logical value for biaised or unbiaised
-  estimator of the var/cov (defaults to TRUE).}
-   \item{tol}{Convergence stopping value.}
-    \item{verbose}{if set to \code{TRUE}, reports progress on computing.}
+\item{mode}{character string. What type of algorithm to use, (partially) matching
+one of \code{"regression"}, \code{"canonical"}, \code{"invariant"} or \code{"classic"}.
+See Details.}
+\item{scale}{boleean. If scale = TRUE, each block is standardized
+to zero means and unit variances (default: TRUE)}
+\item{bias}{boleean. A logical value for biaised or unbiaised estimator of the var/cov (defaults to FALSE).}
+\item{init}{Mode of initialization use in the algorithm, either by Singular Value Decompostion of the product of each block of X with Y ("svd") or each block independently ("svd.single") . Default to "svd".}
+\item{tol}{Convergence stopping value.}
+\item{verbose}{if set to \code{TRUE}, reports progress on computing.}
+\item{max.iter}{integer, the maximum number of iterations.}
+\item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations. Default value is FALSE}
+
 }
 
 \details{
@@ -74,7 +85,7 @@ that contains the following components:
 
 \author{Arthur Tenenhaus, Vincent Guillemot and Kim-Anh Le Cao.}
 
-\seealso{\code{\link{sgcca}}, \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{wrapper.rgcca}}, \code{\link{rgcca}} and \url{http://www.mixOmics.org} for more details.}
+\seealso{\code{\link{wrapper.sgcca}}, \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{wrapper.rgcca}} and \url{http://www.mixOmics.org} for more details.}
 
 \examples{
 data(nutrimouse)

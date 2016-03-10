@@ -1,5 +1,5 @@
 
-import(MASS, lattice, igraph, rgl, ggplot2,corpcor)
+import(MASS, lattice, igraph, rgl, ggplot2,corpcor,parallel,jpeg)
 
 importFrom("grDevices", "as.graphicsAnnot", "chull", "col2rgb",
              "colorRamp", "colorRampPalette", "colors", "dev.cur",
@@ -27,6 +27,7 @@ block.pls,
 block.plsda,
 block.spls,
 block.splsda, 
+circosPlot,
 color.jet,
 color.GreenRed,
 color.spectral,
@@ -35,6 +36,7 @@ cov2,
 cim, 
 deflation,
 defl.select,
+heatmapDiablo,
 ica.par,
 ica.def,
 image.tune.rcc, 
@@ -65,11 +67,12 @@ pcasvd,
 perf,
 plotArrow,
 plotContrib,
-plotIndiv, 
 plotDiablo,
+plotIndiv, 
 plotVar, 
 pls,
 plsda, 
+predict.mint.splsda,
 rcc,
 scale2,
 scatterutil.base, 
@@ -77,7 +80,6 @@ scatterutil.eti,
 scatterutil.grid, 
 selectVar,
 sipca,
-s.match,
 soft_thresholding_L1,
 soft.threshold,
 sparsity,
@@ -95,7 +97,6 @@ unmap,
 vip,
 withinVariation,
 which.function.should.I.use,
-wrapper.sparse.rgcca,
 wrapper.rgcca,
 wrapper.sgcca,
 wrapper.sgccda)
@@ -110,6 +111,7 @@ S3method(image, tune.rcc)
 S3method(plot, perf)
 S3method(plot, rcc)
 S3method(plot, pca)
+S3method(plot, sgccda)
 
 S3method(plotIndiv, pls)
 S3method(plotIndiv, spls)
@@ -121,11 +123,6 @@ S3method(plotIndiv, rgcca)
 S3method(plotIndiv, mint.spls)
 S3method(plotIndiv, mint.splsda)
 
-
-S3method(predict, pls)
-S3method(predict, spls)
-S3method(predict, plsda)
-S3method(predict, splsda)
 
 S3method(summary, pls)
 S3method(summary, spls)

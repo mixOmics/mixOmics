@@ -16,25 +16,32 @@ ncomp = 2,
 center = TRUE,
 scale = FALSE,
 max.iter = 500,
-tol = 1e-09)
+tol = 1e-09,
+logratio = 'none',
+V=NULL,
+multilevel=NULL)
 }
 
 \arguments{
-  \item{X}{a numeric matrix (or data frame) which provides the
+\item{X}{a numeric matrix (or data frame) which provides the
     data for the principal components analysis. It can contain missing values.}
-  \item{ncomp}{integer, if data is complete \code{ncomp} decides the number of components and associated 
+\item{ncomp}{integer, if data is complete \code{ncomp} decides the number of components and associated
     eigenvalues to display from the \code{pcasvd} algorithm and if the data has missing values, 
-	\code{ncomp} gives the number of components to keep to perform the reconstitution of the data using 
+    \code{ncomp} gives the number of components to keep to perform the reconstitution of the data using
 	the NIPALS algorithm. If \code{NULL}, function sets \code{ncomp = min(nrow(X), ncol(X))}}	
-  \item{center}{a logical value indicating whether the variables should be shifted to be zero centered. 
+\item{center}{a logical value indicating whether the variables should be shifted to be zero centered.
     Alternately, a vector of length equal the number of columns of \code{X} can be supplied. 
     The value is passed to \code{\link{scale}}.} 
-  \item{scale}{a logical value indicating whether the variables should be scaled to have 
+\item{scale}{a logical value indicating whether the variables should be scaled to have
     unit variance before the analysis takes place. The default is \code{FALSE} for consistency with \code{prcomp} 
     function, but in general scaling is advisable. Alternatively, a vector of length equal the number of 
     columns of \code{X} can be supplied. The value is passed to \code{\link{scale}}.} 
-  \item{max.iter}{integer, the maximum number of iterations in the NIPALS algorithm.}
-  \item{tol}{a positive real, the tolerance used in the NIPALS algorithm.}
+\item{max.iter}{integer, the maximum number of iterations in the NIPALS algorithm.}
+\item{tol}{a positive real, the tolerance used in the NIPALS algorithm.}
+\item{logratio}{one of ('none','CLR','ILR'). Default to 'none'}
+\item{V}{Matrix used in the logratio transformation id provided.}
+\item{multilevel}{Design matrix for multilevel anaylis (for repeated measurements). A numeric matrix or data frame. The first column
+indicates the repeated measures on each individual, i.e. the individuals ID. If \code{  method = 'splsda'}, the 2nd and 3rd columns are factors. If \code{method = 'spls'} then you can choose to only input the repeated measures (column 1) or the 2nd AND 3rd columns to split the variation for a 2 level factor. See Details.}
 }
 
 \details{

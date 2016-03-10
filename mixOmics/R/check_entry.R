@@ -512,18 +512,8 @@ verbose)
         
         keepA[[length(X)+1]]=keepY
         
-        # build the list A and indY
+        # check design matrix before adding Y in
         A=X
-        A[[length(A)+1]]=Y
-        names(A)[length(A)]="Y"
-        indY=length(A)
-        
-        if (mode == "canonical")
-        ncomp = c(ncomp, min(ncomp, ncol(Y) - 1))
-        if (mode == "regression")
-        ncomp = c(ncomp, max(ncomp))
-        #adjust ncomp for Y
-        
         ### Start check design matrix
         if (missing(design)) {
             design = 1 - diag(length(A))
@@ -536,6 +526,17 @@ verbose)
         }
         ### End check design matrix
 
+
+        # build the list A and indY
+        A[[length(A)+1]]=Y
+        names(A)[length(A)]="Y"
+        indY=length(A)
+        
+        if (mode == "canonical")
+        ncomp = c(ncomp, min(ncomp, ncol(Y) - 1))
+        if (mode == "regression")
+        ncomp = c(ncomp, max(ncomp))
+        #adjust ncomp for Y
 
         
     }else{        #missing(Y) but indY not missing
@@ -856,6 +857,9 @@ keepX.constraint)
     
     if(missing(ncomp)) {ncomp = rep(1, length(X))}
     
+    #check length(ncomp)=length(A)
+    if(length(ncomp)!=length(X)) stop("'ncomp' must be a vector of length the number of blocks in X")
+
     #check dimnames and ncomp per block of A
     for(q in 1:length(X))
     {
@@ -865,8 +869,6 @@ keepX.constraint)
     }
     
     
-    #check length(ncomp)=length(A)
-    if(length(ncomp)!=length(X)) stop("'ncomp' must be a vector of length the number of blocks in X")
     #check ncomp[q]<ncol(X[[q]])
     for(q in 1:length(X))
     {

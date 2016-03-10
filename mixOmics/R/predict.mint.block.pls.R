@@ -1,7 +1,7 @@
 # Copyright (C) 2015
 # Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 # created: 27-05-2015
-# last modified: 18-02-2016
+# last modified: 04-03-2016
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -23,13 +23,13 @@
 # and the preparation of the data is different - different scaling for instance if object="mint...."
 # However, the prediction formula is the same for all classes, thus only one code
 
-predict.mixOmics <-
-predict.pls <-  predict.spls<- predict.plsda <- predict.splsda <-
-predict.mint.pls <- predict.mint.spls <- predict.mint.plsda <- predict.mint.splsda <-
-predict.block.pls <- predict.block.spls <- predict.block.plsda <- predict.block.splsda <-
-predict.mint.block.pls <- predict.mint.block.spls <- predict.mint.block.plsda <- predict.mint.block.splsda <- predict.sgcca <-
+#predict.mixOmics <-
+#predict.pls <-  predict.spls<- predict.plsda <- predict.splsda <-
+#predict.mint.pls <- predict.mint.spls <- predict.mint.plsda <- predict.mint.splsda <-
+#predict.block.pls <- predict.block.spls <- predict.block.plsda <- predict.block.splsda <-
+#predict.mint.block.pls <- predict.mint.block.spls <- predict.mint.block.plsda <- predict.mint.block.splsda <- #predict.sgcca <-
 
-function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),  ...)
+predict.mint.splsda <- function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),  ...)
 {
     
     if(any(class(object)%in%c("rgcca","sparse.rgcca")))
