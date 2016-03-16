@@ -72,7 +72,7 @@ near.zero.var = FALSE)
     
     out=list(call=cl,X=result$X,Y=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,study=result$study,
     variates=result$variates,loadings=result$loadings,variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,
-    names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
+    names=result$names,init=result$init,bias=result$bias,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
 
     if(!missing(ncomp))   out$ncomp=ncomp
 

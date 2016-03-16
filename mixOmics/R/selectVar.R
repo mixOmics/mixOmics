@@ -68,15 +68,15 @@ function(object, comp =1, block=NULL, ...)
     #if all blocks are considered by default (null.block=TRUE) and it's a DA analysis, then we don't show Y
     if(null.block)
     {
-        if(length(grep("plsda",class(object)))>0)
+        if(length(grep("sgccda",class(object)))>0)
+        {
+            out=out[-object$indY] #remove Y
+        }else if(length(grep("plsda",class(object)))>0)
         {
             out=out[-2] #remove Y
             out=out[[1]]
         }
-        if(length(grep("sgccda",class(object)))>0)
-        {
-            out=out[-object$indY] #remove Y
-        }
+
     }
     
     if(length(grep("pca",class(object)))>0 | length(grep("sipca",class(object)))>0)

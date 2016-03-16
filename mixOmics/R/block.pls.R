@@ -73,7 +73,8 @@ near.zero.var = FALSE)
     #cl[[1]] = as.name("block.pls")
     
     out=list(call=cl,X=result$X,indY=result$indY,ncomp=result$ncomp,mode=result$mode,variates=result$variates,loadings=result$loadings,
-    names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale,design=result$design,scheme=result$scheme,indY=result$indY)
+    names=result$names,init=result$init,bias=result$bias,
+    tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale,design=result$design,scheme=result$scheme,indY=result$indY)
     
     class(out) = c("block.pls","sgcca")
     return(invisible(out))

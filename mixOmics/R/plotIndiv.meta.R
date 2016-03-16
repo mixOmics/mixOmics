@@ -27,7 +27,7 @@
 
 
 #--------------------- PLS and sPLS ---------------------#
-plotIndiv.mint.spls <- plotIndiv.mint.splsda <-
+plotIndiv.mint.pls<-plotIndiv.mint.spls <- plotIndiv.mint.plsda <-plotIndiv.mint.splsda <-
 function(object,
 comp = 1:2,
 ind.names = TRUE,
@@ -86,7 +86,7 @@ layout = NULL,
     if(any(study=="all"))
     {
         
-        if(any(class(object)%in%c("mint.plsda","mint.splsda")) & missing(col))
+        if(any(class(object)%in%c("DA")) & missing(col))
         {
             if (nlevels(object$Y) < 10) {
                 #only 10 colors in color.mixo
@@ -168,6 +168,9 @@ layout = NULL,
                 nCols = layout[2]
             }
             if (nRows * nCols < nResp) devAskNewPage(TRUE)
+        }else{
+            nRows=1
+            nCols=1
         }
         opar=par("mfrow") # save the current mfrow to load it at the end of the function
         #print(layout)

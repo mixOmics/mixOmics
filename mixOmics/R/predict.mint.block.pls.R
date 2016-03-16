@@ -29,7 +29,9 @@
 #predict.block.pls <- predict.block.spls <- predict.block.plsda <- predict.block.splsda <-
 #predict.mint.block.pls <- predict.mint.block.spls <- predict.mint.block.plsda <- predict.mint.block.splsda <- #predict.sgcca <-
 
-predict.mint.splsda <- function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),  ...)
+predict.block.pls <-predict.block.spls <-
+predict.pls <-predict.spls <-
+function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),  ...)
 {
     
     if(any(class(object)%in%c("rgcca","sparse.rgcca")))
@@ -146,11 +148,16 @@ predict.mint.splsda <- function(object, newdata,study.test,method = c("all", "ma
         
     }
     
+    #need to reorder variates and loadings to put 'Y' in last
+    indY=object$indY
+    object$variates=c(object$variates[-indY],object$variates[indY])
+    object$loadings=c(object$loadings[-indY],object$loadings[indY])
     
     p = lapply(X, ncol)
     q = ncol(Y)
     J=length(X) #at this stage we have a list of blocks
-    variatesX = object$variates[-(J + 1)]; loadingsX = object$loadings[-(J + 1)]
+    variatesX = object$variates[-(J + 1)];
+    loadingsX = object$loadings[-(J + 1)]
     
     scale=object$scale # X and Y are both mean centered by groups and if scale=TRUE they are scaled by groups
 
@@ -164,9 +171,9 @@ predict.mint.splsda <- function(object, newdata,study.test,method = c("all", "ma
         if (scale)
         newdata = lapply(1:J, function(x){sweep(newdata[[x]], 2, FUN = "/", STATS = attr(X[[x]], "scaled:scale"))})
 
-        means.Y = matrix(attr(Y, "scaled:center"),nrow=nrow(newdata.input),ncol=q,byrow=TRUE);
+        means.Y = matrix(attr(Y, "scaled:center"),nrow=nrow(newdata.input[[1]]),ncol=q,byrow=TRUE);
         if (scale)
-        {sigma.Y = matrix(attr(Y, "scaled:scale"),nrow=nrow(newdata.input),ncol=q,byrow=TRUE)}else{sigma.Y=matrix(1,nrow=nrow(newdata.input),ncol=q)}
+        {sigma.Y = matrix(attr(Y, "scaled:scale"),nrow=nrow(newdata.input[[1]]),ncol=q,byrow=TRUE)}else{sigma.Y=matrix(1,nrow=nrow(newdata.input[[1]]),ncol=q)}
         concat.newdata=newdata
         
     }else{

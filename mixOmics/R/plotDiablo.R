@@ -46,6 +46,8 @@ groupOrder)
     #library(mixOmics)  ## needed for color.mixo
     
     #need to reorder variates and loadings to put 'Y' in last
+    opar <- par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din", "page")]
+
     indY=object$indY
     object$variates=c(object$variates[-indY],object$variates[indY])
     object$loadings=c(object$loadings[-indY],object$loadings[indY])
@@ -89,6 +91,7 @@ groupOrder)
             if(j == numberOfRows & i %in% seq(1, numberOfRows-1, 1)){Axis(side = 4, x=VarX[, i])}
         }
     }
+    par(opar)
 }
 
 

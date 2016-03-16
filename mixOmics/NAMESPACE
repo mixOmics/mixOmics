@@ -1,5 +1,5 @@
 
-import(MASS, lattice, igraph, rgl, ggplot2,corpcor,parallel,jpeg)
+import(MASS, lattice, igraph, rgl, ggplot2,corpcor,parallel,jpeg, RColorBrewer, plyr)
 
 importFrom("grDevices", "as.graphicsAnnot", "chull", "col2rgb",
              "colorRamp", "colorRampPalette", "colors", "dev.cur",
@@ -20,6 +20,13 @@ importFrom("stats", "as.dendrogram", "as.dist", "coefficients", "cor",
 importFrom("utils", "setTxtProgressBar", "txtProgressBar","packageDescription")
 
 importFrom("ellipse","ellipse")
+
+importFrom("dplyr","group_by")
+
+importFrom("tidyr","gather")
+
+
+importFrom("reshape2","melt","dcast")
 
 export(
 bin.color,
@@ -43,6 +50,7 @@ image.tune.rcc,
 imgCor,
 initsvd,
 ipca,
+logratio.transfo,
 loo,
 l2.norm,
 mat.rank, 
@@ -72,7 +80,6 @@ plotIndiv,
 plotVar, 
 pls,
 plsda, 
-predict.mint.splsda,
 rcc,
 scale2,
 scatterutil.base, 
@@ -105,6 +112,7 @@ S3method(perf, pls)
 S3method(perf, spls)
 S3method(perf, plsda)
 S3method(perf, splsda)
+S3method(perf, sgccda)
 
 S3method(image, tune.rcc)
 
@@ -120,9 +128,15 @@ S3method(plotIndiv, pca)
 S3method(plotIndiv, sipca)
 S3method(plotIndiv, sgcca)
 S3method(plotIndiv, rgcca)
+S3method(plotIndiv, mint.pls)
 S3method(plotIndiv, mint.spls)
+S3method(plotIndiv, mint.plsda)
 S3method(plotIndiv, mint.splsda)
 
+S3method(predict, pls)
+S3method(predict, spls)
+S3method(predict, block.pls)
+S3method(predict, block.spls)
 
 S3method(summary, pls)
 S3method(summary, spls)

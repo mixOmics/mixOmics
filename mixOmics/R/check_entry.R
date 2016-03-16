@@ -516,7 +516,7 @@ verbose)
         A=X
         ### Start check design matrix
         if (missing(design)) {
-            design = 1 - diag(length(A))
+            design = 1 - diag(length(A)+1)
         } else if (ncol(design) != nrow(design) || ncol(design) < length(X) || ncol(design) > (length(X) + 1) || any(!design %in% c(0,1))){
             stop(paste0("'design' must be a square matrix with ",length(X),"columns."))
         } else if (ncol(design) == length(X)){

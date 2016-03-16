@@ -6,6 +6,7 @@
 
 ## RGCCA
 # --------------
+library(mixOmicsv6)
 data(nutrimouse)
 # need to unmap Y for an unsupervised analysis, where Y is included as a data block in data
 Y = unmap(nutrimouse$diet)
@@ -17,7 +18,7 @@ byrow = TRUE, dimnames = list(names(data), names(data)))
 nutrimouse.rgcca <- wrapper.rgcca(X = data,
 #design = design,
 tau = "optimal",
-ncomp = c(3, 3, 2),
+ncomp = c(2, 2, 2),
 scheme = "centroid",
 verbose = FALSE)
 
@@ -25,11 +26,62 @@ verbose = FALSE)
 # (ideally when there are >= 2 components!)
 # we indicate the diet variable colors.
 plotIndiv(nutrimouse.rgcca, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE)
+plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, plot.ellipse = TRUE)
+plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, plot.ellipse = TRUE,style="graphics")
+plot(1:10,1:10)
+
+plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, plot.ellipse = TRUE,style="graphics",add.legend=TRUE)
+plot(1:10,1:10)
 
 # have a look at the looadings
 head(nutrimouse.rgcca$loadings[[1]])
 head(nutrimouse.rgcca$loadings[[2]])
 head(nutrimouse.rgcca$loadings[[3]])
+
+
+
+
+## sparse RGCCA
+# --------------
+data(nutrimouse)
+# need to unmap Y for an unsupervised analysis, where Y is included as a data block in data
+Y = unmap(nutrimouse$diet)
+data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
+# with this design, all blocks are connected
+design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3,
+byrow = TRUE, dimnames = list(names(data), names(data)))
+
+nutrimouse.srgcca <- wrapper.rgcca(X = data,
+#design = design,
+tau = "optimal",
+ncomp = c(2, 2, 2),
+scheme = "centroid",
+verbose = FALSE)
+
+# blocks should specify the block data set where the sample plot can be performed
+# (ideally when there are >= 2 components!)
+# we indicate the diet variable colors.
+#plotIndiv(nutrimouse.srgcca, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE)
+
+# have a look at the looadings
+head(nutrimouse.srgcca$loadings[[1]])
+head(nutrimouse.srgcca$loadings[[2]])
+head(nutrimouse.srgcca$loadings[[3]])
+
+
+
+
+nutrimouse.srgcca2 <- wrapper.rgcca(X = data,
+#design = design,
+tau = "optimal",
+ncomp = c(2, 2, 2),
+keepX=NULL,
+scheme = "centroid",
+verbose = FALSE)
+# have a look at the looadings
+head(nutrimouse.srgcca2$loadings[[1]])
+head(nutrimouse.srgcca2$loadings[[2]])
+head(nutrimouse.srgcca2$loadings[[3]])
 
 
 ## sGCCA
@@ -41,7 +93,7 @@ head(nutrimouse.rgcca$loadings[[3]])
 nutrimouse.sgcca <- wrapper.sgcca(X = data,
 design = design,
 penalty = c(0.3, 0.5, 1),
-ncomp = c(3, 3, 2),
+ncomp = c(3, 3, 3),
 scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)

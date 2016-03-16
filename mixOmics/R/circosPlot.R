@@ -30,7 +30,8 @@ figSize = 800,
 segmentWidth = 25,
 linePlotWidth = 90,
 showIntraLinks = FALSE,
-groupOrder = NULL)
+cex.legend=0.8,
+ncol.legend=1)
 {
     options(stringsAsFactors = FALSE);
     set.seed(1234);
@@ -54,20 +55,16 @@ groupOrder = NULL)
     if(missing(corThreshold))
     stop("'corThreshold' is missing", call.=FALSE) # so 2 blocks in X + the outcome Y
 
-    library(dplyr)
-    library(tidyr)
-    library(reshape2)
-    library(RColorBrewer)
-    
-    par(mfrow  = c(1,1), mar = rep(1, 4))
+
+#par(mfrow  = c(1,1), mar = rep(1, 4))
     
     X <- object$X
     Y <- object$Y
-    if(is.null(groupOrder)){
-        Y2 <- Y
-    } else {
-        Y2 <- factor(as.character(Y), levels = groupOrder)
-    }
+    
+    #need to reorder variates and loadings to put 'Y' in last
+    indY=object$indY
+    object$variates=c(object$variates[-indY],object$variates[indY])
+    object$loadings=c(object$loadings[-indY],object$loadings[indY])
     
     keepA = lapply(object$loadings, function(i) apply(abs(i), 1, sum) > 0)
     cord = mapply(function(x, y, keep){
@@ -120,6 +117,7 @@ groupOrder = NULL)
     linePlotR <- circleR + segmentWidth
     chrLabelsR <- (figSize / 2.0)  ;
     
+    opar1=par("mar")
     par(mar=c(2, 2, 2, 2));
     
     plot(c(1,figSize), c(1,figSize), type="n", axes=FALSE, xlab="", ylab="", main="");
@@ -131,14 +129,9 @@ groupOrder = NULL)
     drawLinks(R=linksR, cir=db,   mapping=links,   col=linkColors, drawIntraChr=showIntraLinks);
     
     # Plot expression values
-    if(is.null(groupOrder)){
-        groupOrder
-    } else {
-        groupOrder
-    }
-    cTypes <- unique(featExp[,1]) #Get the different disease/cancer types (lines)
+    cTypes <- levels(Y)#unique(featExp[,1]) #Get the different disease/cancer types (lines)
     #lineCols <- rainbow(nrow(cTypes), alpha=0.5);
-    lineCols <- color.mixo(match(levels(Y2), levels(Y)))
+    lineCols <- color.mixo(1:nlevels(Y))#color.mixo(match(levels(Y), levels(Y)))
     
     # Fixme: remove this loop and send the whole expr dframe to drawLinePlot
     for (i in 1:length(chr.names)){
@@ -153,24 +146,27 @@ groupOrder = NULL)
         
         # Reorder columns
         cOrder <- c(c(grep("seg.name", colnames(expr)),
-        grep("seg.po", colnames(expr))),c(1:nrow(cTypes)+1))
+        grep("seg.po", colnames(expr))),c(1:length(cTypes)+1))
         expr <- expr[, cOrder];
         
         # Plot data on each sub segment
         subChr <- subset(db, db$seg.name == chr.names[i] )
         drawLinePlot(R=linePlotR, cir=subChr,   W=linePlotWidth, lineWidth=1, mapping=expr, col=lineCols, scale=FALSE);
     }
-    
+    opar=par("xpd")
+    par(xpd=TRUE) # to authorise the legend to be written outside the margin, otherwise it's too small
     # Plot legend
     # First legeng bottom left corner
     legend(x=5, y = (circleR/4), title="Correlations", c("Positive Correlation", "Negative Correlation"),
-    col = c(colors()[134], colors()[128]), pch = 19, cex=0.8, bty = "n")
+    col = c(colors()[134], colors()[128]), pch = 19, cex=cex.legend, bty = "n")
     # Second legend bottom righ corner
-    legend(x=figSize-(circleR/3), y = (circleR/3), title="Expression", legend=levels(Y2),  ## changed PAM50 to Y
-    col = lineCols, pch = 19, cex=0.8, bty = "n")
+    legend(x=figSize-(circleR/3), y = (circleR/3), title="Expression", legend=levels(Y),  ## changed PAM50 to Y
+    col = lineCols, pch = 19, cex=cex.legend, bty = "n",ncol=ncol.legend)
     # third legend top left corner
     legend(x=figSize-(circleR/2), y = figSize, title="Correlation cut-off", legend=paste("r", corThreshold, sep = "="),
-    col = "black", cex=0.8, bty = "n")
+    col = "black", cex=cex.legend, bty = "n")
+    
+    par(xpd=opar,mar=opar1)# put the previous defaut parameter for xpd
 }
 
 drawIdeogram <- function(R, xc=400, yc=400, cir, W,

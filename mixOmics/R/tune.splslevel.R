@@ -18,7 +18,6 @@
 ## note: this should probably be set up as an S3 function.
 tune.splslevel <- function (X, Y,
                             design, 
-                            mode = 'canonical',
                             ncomp = NULL, 
                             test.keepX = rep(ncol(X), ncomp), test.keepY = rep(ncol(Y), ncomp), 
                             already.tested.X = NULL, already.tested.Y = NULL) {
@@ -60,7 +59,6 @@ tune.splslevel <- function (X, Y,
   rownames(cor.value) = paste("varX", test.keepX, sep = "")
   colnames(cor.value) = paste("varY", test.keepY, sep = "")
   
-  if(mode != 'canonical') stop('Can only compute spls with a canonical mode')
   
   for (i in 1:length(test.keepX)) {
     for (j in 1:length(test.keepY)) {

@@ -440,7 +440,7 @@ sparse.mint.block_iteration <- function (A, design, study = NULL, keepA.constrai
     crit[iter] <- sum(design * g(cov2(variates.A, bias = bias)))
     
     if (iter > max.iter)
-      warning(cat("The SGCCA algorithm did not converge after", max.iter ,"iterations."))
+    warning("The SGCCA algorithm did not converge")#cat("The SGCCA algorithm did not converge after", max.iter ,"iterations."))
     
     ### Start: Match algorithm with mixOmics algo (stopping point)
     ### if ((converg[iter] < tol & sum(stationnary_point) == J) | iter > max.iter)
@@ -580,7 +580,7 @@ verbose = FALSE, init = "svd.single", bias = FALSE, tol = .Machine$double.eps, k
         crit[iter] <- sum(design * g(cov2(variates.A, bias = bias)))
         
         if (iter > max.iter)
-        warning(cat("The RGCCA algorithm did not converge after", max.iter ,"iterations."))
+        warning("The RGCCA algorithm did not converge")#"cat("The RGCCA algorithm did not converge after", max.iter ,"iterations."))
         
         ### Start: Match algorithm with mixOmics algo (stopping point)
         if (max(sapply(1:J, function(x){crossprod(loadings.A[[x]] - loadings.A_old[[x]])})) < tol | iter > max.iter)

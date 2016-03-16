@@ -81,23 +81,16 @@ near.zero.var = FALSE)
     cl = match.call()
     #cl[[1]] = as.name("mint.block.spls")
     
-    if(missing(indY))
-    {
-        keepX=result$keepA[-(length(X)+1)]
-        keepY=result$keepA[length(X)+1][[1]]
-        keepX.constraint=result$keepA.constraint[-(length(X)+1)]
-        keepY.constraint=result$keepA.constraint[length(X)+1]
-    }else{
-        keepX=result$keepA[-indY]
-        keepY=result$keepA[indY][[1]]
-        keepX.constraint=result$keepA.constraint[-indY]
-        keepY.constraint=result$keepA.constraint[indY][[1]]
-    }
-    
+    # create a keepY and keepY.constraint
+    keepX=result$keepA[-result$indY]
+    keepY=result$keepA[result$indY][[1]]
+    keepX.constraint=result$keepA.constraint[-result$indY]
+    keepY.constraint=result$keepA.constraint[result$indY][[1]]
+        
     out=list(call=cl,X=result$X,Y=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,study=result$study,
     keepX=keepX,keepY=keepY,keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,
     variates=result$variates,loadings=result$loadings,variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,
-    names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
+    names=result$names,init=result$init,bias=result$bias,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
   
     if(!missing(ncomp))   out$ncomp=ncomp
 

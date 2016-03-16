@@ -126,7 +126,7 @@ plotIndiv(nutrimouse.sgcca, style = "graphics", group = nutrimouse$diet,
 
 # stars and centroids
 plotIndiv(nutrimouse.sgcca, style = "graphics", group = nutrimouse$diet, 
-          add.legend = TRUE, plot.ellipse = TRUE, ellipse.level = 0.5, blocks = c("gene", "lipid"),
+          add.legend = FALSE, plot.ellipse = TRUE, ellipse.level = 0.5, blocks = c("gene", "lipid"),
           main = 'my plot', plot.centroid = TRUE, plot.star = TRUE)
 
 # stars and centroids

@@ -141,11 +141,10 @@ layout=NULL,
     
     
     #-- rep.space
-    if(is.null(rep.space) && any(class.object %in% c(object.blocks,object.pca,"splsda","plsda","mlsplsda")))
+    if(is.null(rep.space) && any(class.object %in% c(object.blocks,object.pca,"DA")))#"splsda","plsda","mlsplsda")))
     {
         rep.space="X-variate"
-    }
-    else if(is.null(rep.space))
+    }else if(is.null(rep.space))
     {
         rep.space="multi"
     }
@@ -536,8 +535,8 @@ layout=NULL,
             df[[i]] = data.frame(x = x[[i]], y = y[[i]], group = group)
         }
     }
-    
-    if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")) | rep.space !="multi")
+        
+    if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")))
     {
         if(is.null(main)){
             df = data.frame(do.call(rbind, df), "Block" = "PlotIndiv")}
@@ -551,8 +550,6 @@ layout=NULL,
     df = data.frame(do.call(rbind, df), "Block" = paste0("Block: ", unlist(lapply(1 : length(df), function(z){rep(blocks[z], nrow(df[[z]]))}))))
     df$Block=factor(df$Block,levels=unique(df$Block))
     }
-    
-    
     
     if(style=="3d")
     {
@@ -648,17 +645,18 @@ layout=NULL,
                 p = p + geom_point(data = subset(df[,c("col","x0","y0","Block","cex","pch","group")], group == i),aes(x=x0,y=y0), size = 0, shape = 0)
             }
         }
-        
+
+
         #-- Modify scale colour - Change X/Ylabel - split plots into Blocks
         p = p + scale_colour_manual(values = unique(col.per.group)[match(levels(factor(as.character(group))), levels(group))], name = "Legend", breaks = levels(group))
         p = p + labs(list(title = main, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = 2, scales = "free", as.table = TRUE) #as.table to plot in the same order as the factor
-        
+
         #-- xlim, ylim
         if (lim.X) p = p + coord_cartesian(xlim=xlim)
         if (lim.Y) p = p + coord_cartesian(ylim=ylim)
-        
+
         #-- color samples according to col
-        if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")))
+        if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")) ) #condition if only one block to plot
         {for (i in unique(col)){
             if (display.names) {
                 p = p + geom_point(data = subset(df, col == i),size = 0, shape = 0,
@@ -710,19 +708,18 @@ layout=NULL,
         
         
         }
-        
-        
+
         #-- Legend
         if (!add.legend) {
             p = p + theme(legend.position="none")
         } else {
             p = p + guides(colour = guide_legend(override.aes = list(shape = if(display.names) {19} else unique(pch.legend), size = unique(cex))))
         }
-        
+
         #-- abline
         if (abline.line)
         p = p + geom_vline(aes(xintercept = 0), linetype = 2, colour = "darkgrey") + geom_hline(aes(yintercept = 0),linetype = 2,colour = "darkgrey")
-        
+
         #-- star
         if (plot.star == TRUE) {
             for (i in 1 : nlevels(group)){
@@ -731,7 +728,7 @@ layout=NULL,
                 label = "Block"),color = unique(col.per.group)[i])
             }
         }
-        
+
         #-- ellipse
         if (plot.ellipse == TRUE) {
             for (i in 1 : nlevels(group)){
@@ -740,6 +737,7 @@ layout=NULL,
                 label = "Block", group = NULL), color = unique(col.per.group)[i])
             }
         }
+
         plot(p)
     }
     #-- End: ggplot2
@@ -774,11 +772,7 @@ layout=NULL,
                 }
             }
             
-            
-            
-            
-            
-            
+  
             #-- color samples according to col
             for (i in unique(col)){
                 if (display) {
@@ -872,7 +866,7 @@ layout=NULL,
     if(style=="graphics")
     {
         
-        opar <- par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din", "page")]
+        opar <- par(c("mai","mar","usr"))
         
         nResp=length(blocks)
         if (is.null(layout))
@@ -897,14 +891,13 @@ layout=NULL,
         
         #par(mfrow=c(1,length(blocks)))
         #-- Define layout
-        if (add.legend)
-        {
-            par(mai=c( 1.360000, 1.093333, 1.093333,(max(strwidth(levels(group),"inches")))+0.6),xpd=TRUE)
-        }else{
-            #par(mar=c(5,4,4,2))
-        }
         
         for (k in 1 : length(x)){
+            if (add.legend)
+            {
+                par(mai=c( 1.360000, 1.093333, 1.093333,(max(strwidth(levels(group),"inches")))+0.6),xpd=TRUE)
+            }#else{}
+            
             #-- initialise plot
             if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")) | rep.space !="multi")
             {titlemain=NULL
@@ -965,7 +958,8 @@ layout=NULL,
                 legend(par()$usr[2]+0.1,par()$usr[4] - (par()$usr[4]-par()$usr[3])/2, col = col.per.group, legend = levels(group), pch = if(display.names) {16} else unique(pch.legend), title = 'Legend', cex = 0.8)
                 
             }
-            
+            if(add.legend)
+            par(xpd=FALSE) # so the abline does not go outside the plot
             #-- Abline
             if (abline.line)
             abline(v = 0, h = 0, lty = 2,...)
@@ -1013,6 +1007,8 @@ layout=NULL,
         
         #opar["usr"]=par()["usr"]
         
+        par(opar)
+
         #par(mai=opar["mai"])
         #par(mar=opar["mar"])
         
@@ -1024,7 +1020,7 @@ layout=NULL,
     if(style=="3d") {
         
         for (k in 1 : length(x)){
-            if(lenght(x)>1) open3d() # removing the popping up window when there's only one block (for shiny)
+            if(length(x)>1) open3d() # removing the popping up window when there's only one block (for shiny)
             
             par3d(windowRect = c(500, 30, 1100, 630))
             Sys.sleep(0.1)

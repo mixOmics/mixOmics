@@ -32,18 +32,25 @@
 #           folds - number of folds if validation = "Mfold"
 # ----------------------------------------------------------------------------------------------------------
 
-perf.sgccda <- function (object, method.predict = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
-validation = c("Mfold", "loo"), folds = 10, parallel = FALSE, cpus=cpus, ...)
+perf.sgccda <- function (object,
+method.predict = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
+validation = c("Mfold"),
+folds,
+parallel = FALSE,
+cpus=2,
+max.iter=500,
+...)
 {
     
     ### Start: Initialization parameters
     assign("object", object, pos = 1);
-    X = object$X; level.Y = object$names$Y;
+    X = object$X; level.Y = object$names$colnames$Y;
     assign("J", NULL, pos = 1); J = length(X)
-    Y = object$ind.mat; Y = map(Y); Y = factor(Y, labels = level.Y)
+    Y = object$Y#ind.mat; Y = map(Y); Y = factor(Y, labels = level.Y)
     n = nrow(X[[1]]);
+    indY=object$indY
     
-    if (method.predict == "all") {
+    if (any(method.predict == "all")) {
         method.select = c("max.dist", "centroids.dist", "mahalanobis.dist")
     } else {
         method.select = method.predict
@@ -53,7 +60,13 @@ validation = c("Mfold", "loo"), folds = 10, parallel = FALSE, cpus=cpus, ...)
     method.predict = match.arg(method.predict, choices = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), several.ok = TRUE)
     
     ### Start: Check parameter validation / set up sample
+    if (any(is.na(validation)) || length(validation) > 1)
+    stop("'validation' should be one of 'Mfold' or 'loo'.", call. = FALSE)
+    
     if (validation == "Mfold") {
+        
+        if(missing(folds)) folds=10
+        
         if (!(abs(folds - round(folds)) < .Machine$double.eps) || is.null(folds) || folds < 2 || folds > n) {
             stop(paste("Invalid number of folds.", "folds must be an integer contained between", 2, "and", n))
         } else {
@@ -62,21 +75,21 @@ validation = c("Mfold", "loo"), folds = 10, parallel = FALSE, cpus=cpus, ...)
             folds = lapply(folds, sort)
         }
     } else if (validation == "loo"){
-        if (!is.null(folds))
-        warning("folds is not NULL and validation equal to loo / loo applied")
+        if (!missing(folds))
+        warning("validation='loo' is applied and 'folds' is ignored")
         M = n
         folds = split(1:n, rep(1:n, length = n))
     } else{
-        stop("validation can be only Mfold or loo")
+        stop("validation can be only 'Mfold' or 'loo'")
     }
     ### Start: Check parameter validation / set up sample
     
     ### Start: Training samples (X.training and Y.training) and Test samples (X.test / Y.test)
     assign("X.training", NULL, pos = 1); assign("Y.training", NULL, pos = 1)
-    X.training = lapply(folds, function(x){lapply(1:J, function(y) {X[[y]][-x, ]})})
+    X.training = lapply(folds, function(x){out=lapply(1:J, function(y) {X[[y]][-x, ]});names(out)=names(X);out}) #need to name the block for prediction
     Y.training = lapply(folds, function(x) {Y[-x]});
     
-    X.test = lapply(folds, function(x){lapply(1:J, function(y) {X[[y]][x, , drop = FALSE]})})
+    X.test = lapply(folds, function(x){out=lapply(1:J, function(y) {X[[y]][x, , drop = FALSE]});names(out)=names(X);out})#need to name the block for prediction
     Y.test = lapply(folds, function(x) {Y[x]});
     ### End: Training samples (X.training and Y.training) and Test samples (X.test / Y.test)
     
@@ -86,15 +99,17 @@ validation = c("Mfold", "loo"), folds = 10, parallel = FALSE, cpus=cpus, ...)
     ### Estimation models
     if (parallel == TRUE) {
         cl <- makeCluster(cpus, type = "SOCK")
-        clusterExport(cl, c("map", "unmap","defl.select", "deflation", "diablo", "sgcca", "scale2", "cov2", "sgccak", "norm2", "miscrossprod")) ## Later on mixOmics package
+        #clusterExport(cl, c("internal_wrapper.mint.block", "unmap","Check.entry.wrapper.sparse.mint.block", "internal_mint.block", "block.splsda",
+        #"mean_centering_per_study", "sparse.mint.block_iteration", "defl.select", "study_split", "initsvd",
+        #"miscrossprod","cov2","sparsity"),envir=environment()) ## Later on mixOmics package
         clusterExport(cl, c("X.training", "Y.training", "object", "J"))
-        model = parLapply(cl, 1 : M, function(x) {diablo(X = X.training[[x]], Y = Y.training[[x]], ncomp = object$ncomp[-(J+1)], keepX = object$keepX, penalty = object$penalty,
-            design = object$design, max.iter = object$max.iter, tol = object$tol, init = object$init, scheme = object$scheme,
+        model = parLapply(cl, 1 : M, function(x) {block.splsda(X = X.training[[x]], Y = Y.training[[x]], ncomp = object$ncomp[-indY], keepX = object$keepX,
+            design = object$design, max.iter = max.iter, tol = object$tol, init = object$init, scheme = object$scheme,
             bias = object$bias, mode = object$mode)})
         stopCluster(cl)
     } else {
-        model = lapply(1 : M, function(x) {diablo(X = X.training[[x]], Y = Y.training[[x]], ncomp = object$ncomp[-(J+1)], keepX = object$keepX, penalty = object$penalty,
-            design = object$design, max.iter = object$max.iter, tol = object$tol, init = object$init, scheme = object$scheme,
+        model = lapply(1 : M, function(x) {block.splsda(X = X.training[[x]], Y = Y.training[[x]], ncomp = object$ncomp[-indY], keepX = object$keepX,
+            design = object$design, max.iter = max.iter, tol = object$tol, init = object$init, scheme = object$scheme,
             bias = object$bias, mode = object$mode)})
     }
     
@@ -110,7 +125,7 @@ validation = c("Mfold", "loo"), folds = 10, parallel = FALSE, cpus=cpus, ...)
     
     ### Start: Analysis feature selection
     # Statistics: stability
-    list.features = lapply(1 : J, function(x){lapply(features[[x]], function(y){sort(summary(as.factor(y))/M, decreasing = TRUE)})})
+    list.features = lapply(1 : J, function(x){lapply(features[[x]], function(y){(sort(table(factor(y))/M, decreasing = TRUE))})})
     
     # Statistics: original model (object)
     final.features = lapply(1 : J, function(x){lapply(1 : object$ncomp[x],
@@ -247,18 +262,18 @@ validation = c("Mfold", "loo"), folds = 10, parallel = FALSE, cpus=cpus, ...)
         
         ### Start: Average prediction
         # if ncomp[[X]] < max(ncomp), copy the last prediction
-        Y.mean = lapply(1 : max(object$ncomp[-(J + 1)]), function(x){lapply(1 : J,
+        Y.mean = lapply(1 : max(object$ncomp[-indY]), function(x){lapply(1 : J,
             function(y){Y.all[[y]][[min(x, object$ncomp[y])]]})})
         
         # Sort matrix
-        Y.mean = lapply(1 : max(object$ncomp[-(J + 1)]), function(x){lapply(1 : J,
+        Y.mean = lapply(1 : max(object$ncomp[-indY]), function(x){lapply(1 : J,
             function(y){Y.mean[[x]][[y]][sort(unlist(folds), index.return = TRUE)$ix, , drop = FALSE]})})
         
         # Average score
-        Y.mean = lapply(1 : max(object$ncomp[-(J + 1)]), function(x){Reduce("+", Y.mean[[x]])/length(X)})
+        Y.mean = lapply(1 : max(object$ncomp[-indY]), function(x){Reduce("+", Y.mean[[x]])/length(X)})
         
         # Determine index of the max
-        Y.mean = sapply(1 : max(object$ncomp[-(J + 1)]), function(x){apply(Y.mean[[x]], 1, which.max)})
+        Y.mean = sapply(1 : max(object$ncomp[-indY]), function(x){apply(Y.mean[[x]], 1, which.max)})
         
         # Define colnames
         colnames(Y.mean) = paste("comp", 1 : max(object$ncomp[-(J + 1)]))
@@ -266,21 +281,21 @@ validation = c("Mfold", "loo"), folds = 10, parallel = FALSE, cpus=cpus, ...)
         # Estimation error.rate
         #Y.mean.res = sapply(1:max(object$ncomp[-(J + 1)]), function(x){temp = diag(table(factor(Y.mean[, x], levels = c(1:nlevels(Y))), Y))
         #                                                              c(temp/summary(Y), sum(temp)/length(Y))})
-        Y.mean.res = sapply(1:max(object$ncomp[-(J + 1)]), function(x){mat = table(factor(Y.mean[, x], levels = c(1:nlevels(Y))), Y)
+        Y.mean.res = sapply(1:max(object$ncomp[-indY]), function(x){mat = table(factor(Y.mean[, x], levels = c(1:nlevels(Y))), Y)
             mat2 <- mat
             diag(mat2) <- 0
             err = c(c(colSums(mat2)/summary(Y), sum(mat2)/length(Y)), mean(colSums(mat2)/colSums(mat)))
         })
         
         Y.mean.res = t(Y.mean.res)
-        row.names(Y.mean.res) = paste("comp", 1:max(object$ncomp[-(J + 1)]))
+        row.names(Y.mean.res) = paste("comp", 1:max(object$ncomp[-indY]))
         colnames(Y.mean.res) = c(levels(Y), "Overall.ER", "Overall.BER")
         ### End: Average prediction
         
         ### Start: Vote on the dataset
         # if ncomp[[X]] < max(ncomp), copy the last prediction
-        Y.vote = lapply(1 : J, function(x){lapply(method.select, function(y){if(ncol(Y.predict[[x]][[y]]) < max(object$ncomp[-(J + 1)])){
-            Y.predict[[x]][[y]] = cbind(Y.predict[[x]][[y]], matrix(rep(Y.predict[[x]][[y]][, object$ncomp[x]], max(object$ncomp[-(J + 1)]) - ncol(Y.predict[[x]][[y]])), ncol = (max(object$ncomp[-(J + 1)]) - ncol(Y.predict[[x]][[y]])), nrow = nrow(X[[x]])))
+        Y.vote = lapply(1 : J, function(x){lapply(method.select, function(y){if(ncol(Y.predict[[x]][[y]]) < max(object$ncomp[-indY])){
+            Y.predict[[x]][[y]] = cbind(Y.predict[[x]][[y]], matrix(rep(Y.predict[[x]][[y]][, object$ncomp[x]], max(object$ncomp[-indY]) - ncol(Y.predict[[x]][[y]])), ncol = (max(object$ncomp[-indY]) - ncol(Y.predict[[x]][[y]])), nrow = nrow(X[[x]])))
         } else {
             Y.predict[[x]][[y]]
         }})})
@@ -290,15 +305,15 @@ validation = c("Mfold", "loo"), folds = 10, parallel = FALSE, cpus=cpus, ...)
             function(y){Y.vote[[x]][[y]][sort(unlist(folds), index.return = TRUE)$ix, , drop = FALSE]})})
         
         # Reorganization method.select / component / Data
-        Y.vote = lapply(1 : length(method.select), function(x){lapply(1 : max(object$ncomp[-(J + 1)]),
+        Y.vote = lapply(1 : length(method.select), function(x){lapply(1 : max(object$ncomp[-indY]),
             function(y){lapply(1 : J, function(z){Y.vote[[z]][[x]][, y, drop = FALSE]})})})
         
         # Merge method.select
-        Y.vote = lapply(1 : length(method.select), function(x){lapply(1 : max(object$ncomp[-(J + 1)]),
+        Y.vote = lapply(1 : length(method.select), function(x){lapply(1 : max(object$ncomp[-indY]),
             function(y){ do.call(cbind, Y.vote[[x]][[y]])})})
         
         # Estimation Majority Vote
-        Y.vote = lapply(1 : length(method.select), function(x){lapply(1 : max(object$ncomp[-(J + 1)]),
+        Y.vote = lapply(1 : length(method.select), function(x){lapply(1 : max(object$ncomp[-indY]),
             function(y){apply(Y.vote[[x]][[y]], 1, function(z){
                 temp = table(z)
                 if (length(names(temp)[temp == max(temp)]) > 1){
@@ -313,13 +328,22 @@ validation = c("Mfold", "loo"), folds = 10, parallel = FALSE, cpus=cpus, ...)
         #                                                                 function(y){temp = diag(table(factor(y, levels = c(1:nlevels(Y))), Y))
         #                                                                            1 - c(temp/summary(Y), sum(temp)/length(Y))
         #                                                                })})
+        ## compute error but ignore unsure subjects (erorr rate is more optimistic)
+        #Y.vote.res = lapply(1 : length(method.select), function(x){apply(Y.vote[[x]], 2,
+        #                                                                 function(y){temp=table(factor(y, levels = c(1:nlevels(Y))), Y)
+        #                                                                 diag(temp) <- 0
+        #                                                                 err = c(colSums(temp)/summary(Y), sum(temp)/length(Y), mean(colSums(temp)/summary(Y)))
+        #                                                                 return(err=err)
+        #                                                                 })})
+        ## subjects with NA are considered false
         Y.vote.res = lapply(1 : length(method.select), function(x){apply(Y.vote[[x]], 2,
-            function(y){temp=table(factor(y, levels = c(1:nlevels(Y))), Y)
+            function(y){
+                y[is.na(y)] <- nlevels(Y)+5   ## adding a new level for unsure subjects (replacing NA with this level)
+                temp=table(factor(y, levels = c(1:nlevels(Y), nlevels(Y)+1)), Y)
                 diag(temp) <- 0
                 err = c(colSums(temp)/summary(Y), sum(temp)/length(Y), mean(colSums(temp)/summary(Y)))
                 return(err=err)
             })})
-        
         
         Y.vote = lapply(1 : length(method.select), function(x){colnames(Y.vote[[x]]) = paste("comp", 1:max(object$ncomp[-(J + 1)]))
             return(Y.vote[[x]])})
@@ -328,6 +352,7 @@ validation = c("Mfold", "loo"), folds = 10, parallel = FALSE, cpus=cpus, ...)
             row.names(Y.vote.res[[x]]) = c(levels(Y), "Overall.ER", "Overall.BER")
             return(t(Y.vote.res[[x]]))})
         names(Y.vote) = method.select; names(Y.vote.res) = method.select
+
         ### End: Vote on the dataset
     }
     ### End: Supplementary analysis for sgcca

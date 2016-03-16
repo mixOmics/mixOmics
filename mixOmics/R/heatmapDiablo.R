@@ -36,9 +36,8 @@
 heatmapDiablo = function(object,
 ncomp=1,
 margins = c(2, 15),
-pos.legend="topleft",
-cex.legend=1.5,
-groupOrder = NULL)
+pos.legend="topright",
+cex.legend=1.5)
 {
     
     # check input object
@@ -53,12 +52,7 @@ groupOrder = NULL)
 
     X <- object$X
     Y <- object$Y
-    if(is.null(groupOrder)){
-        Y2 <- Y
-    } else {
-        Y2 <- factor(as.character(Y), levels = groupOrder)
-    }
-    
+
     #need to reorder variates and loadings to put 'Y' in last
     indY=object$indY
     object$variates=c(object$variates[-indY],object$variates[indY])
@@ -70,7 +64,7 @@ groupOrder = NULL)
     keepA = lapply(object$loadings, function(i) apply(abs(i), 1, sum) > 0)
     XDatList <- mapply(function(x, y){
         x[, y]
-    }, x=X, y=keepA[-length(keepA)])
+    }, x=X, y=keepA[-length(keepA)],SIMPLIFY=FALSE)
     XDat <- do.call(cbind, XDatList)
     XDat[which(XDat > 2)] <- 2
     XDat[which(XDat < -2)] <- -2
@@ -79,13 +73,17 @@ groupOrder = NULL)
     VarLabels <- factor(rep(names(X), lapply(keepA[-length(keepA)], sum)), levels = names(X)[order(names(X))])
     
     ## Plot heatmap
+    opar <- par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din", "page")]
+    par(mfrow=c(1,1))
     cim(XDat, row.names = rep("", nrow(XDat)), col.names = rep("", ncol(XDat)),
     col.sideColors = dark[as.numeric(VarLabels)],
-    row.sideColors = color.mixo(match(levels(Y2), levels(Y))[as.numeric(Y)]), margins = margins)
+    row.sideColors = color.mixo(as.numeric(Y)), margins = margins)
     
-    legend("topleft",c("Rows",c(levels(Y)[order(levels(Y))],"",
-    "Columns",names(X))),col=c(1,color.mixo(match(levels(Y2), levels(Y)))[order(levels(Y))],1,
+    legend(pos.legend,c("Rows",c(levels(Y)[order(levels(Y))],"",
+    "Columns",names(X))),col=c(1,color.mixo(1:nlevels(Y)),1,
     1,dark[1:nlevels(VarLabels)][match(levels(VarLabels), names(X))]),
     pch=c(NA,rep(19,nlevels(Y)),NA,NA,rep(19,nlevels(VarLabels))),bty="n",cex=cex.legend,text.font=c(2,rep(1,nlevels(Y)),NA,2,rep(1,nlevels(VarLabels))))
+    
+    par(opar)
 }
 
