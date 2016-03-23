@@ -32,7 +32,8 @@ representation in (sparse)(I)PCA, (regularized)CCA, (sparse)PLS(DA) and (sparse)
            plot.centroid=FALSE,
            plot.star=FALSE,
            main=NULL,
-           add.legend=FALSE,
+            subtitle,
+            add.legend=FALSE,
            X.label = NULL,
            Y.label = NULL,
            Z.label = NULL,
@@ -44,21 +45,37 @@ representation in (sparse)(I)PCA, (regularized)CCA, (sparse)PLS(DA) and (sparse)
            pch,
            alpha=0.2,
            axes.box = "box",
+            layout=NULL,
            ...
 )
 
 \method{plotIndiv}{mint.spls}(object,
-comp = 1:2,
-ind.names = TRUE,
+comp = NULL,
+rep.space = NULL,
+blocks = NULL, # to choose which block data to plot, when using GCCA module
+group,  # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
+col.per.group,
+style="ggplot2", # can choose between graphics,3d, lattice or ggplot2
 study="all",
-rep.space = "X-variate",
+plot.ellipse = FALSE,
+ellipse.level = 0.95,
+plot.centroid=FALSE,
+plot.star=FALSE,
+main=NULL,
+subtitle,
+add.legend=FALSE,
 X.label = NULL,
 Y.label = NULL,
-col,
-pch,
-cex = 1,
+Z.label = NULL,
 abline.line = FALSE,
-layout = NULL,
+xlim=NULL,
+ylim=NULL,
+col,
+cex,
+pch,
+alpha=0.2,
+axes.box = "box",
+layout=NULL,
 ...)
 
 }

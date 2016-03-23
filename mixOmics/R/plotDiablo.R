@@ -35,15 +35,16 @@
 # ========================================================================================================
 
 
-plot.sgccda=plotDiablo= function(object,
+plot.sgccda=plotDiablo= function(x,
 ncomp = 1,
-groupOrder)
+groupOrder,...)
 {
     
     #if(!any(class(object) %in% "sgccda"))
     #stop("'plotDiablo' is only available for 'sgccda' object")
     
     #library(mixOmics)  ## needed for color.mixo
+    object=x
     
     #need to reorder variates and loadings to put 'Y' in last
     opar <- par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din", "page")]

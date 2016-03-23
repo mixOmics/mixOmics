@@ -4,7 +4,7 @@ Title: Omics Data Integration Project
 Version: 6.0.0
 Date: 2015-11-06
 Depends: R (>= 2.10), MASS, lattice, ggplot2
-Imports: igraph, rgl, ellipse, corpcor, jpeg, RColorBrewer, plyr,parallel
+Imports: igraph, rgl, ellipse, corpcor, jpeg, RColorBrewer, plyr,parallel, dplyr, tidyr, reshape2
 Author: Kim-Anh Le Cao,  Ignacio Gonzalez, Sebastien Dejean with key contributors Florian Rohart, Benoit Gautier
         and contributions from Pierre Monget, Jeff Coquery, FangZou Yao, Benoit Liquet. 
 Maintainer: Kim-Anh Le Cao <k.lecao@uq.edu.au>
@@ -29,3 +29,4 @@ Repository: CRAN
 Date/Publication: 2014-09-01 15:47:59
 Packaged: 2014-09-01 11:59:23 UTC; klecao
 NeedsCompilation: no
+LazyData: true

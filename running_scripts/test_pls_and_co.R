@@ -9,6 +9,7 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+opar <- par(no.readonly = TRUE)
 
 # pls
 # ----
@@ -22,6 +23,21 @@ X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
 
 toxicity.pls <- pls(X, Y, ncomp = 3)
+
+plotIndiv(toxicity.pls, group=rep(1:4,16))
+plotIndiv(toxicity.pls, group=factor(rep(1:4,16),labels=c("a","b","c","d")),add.legend=TRUE)
+plotIndiv(toxicity.pls, group=rep(1:4,16),ind.names=FALSE)
+plotIndiv(toxicity.pls, group=rep(1:4,16),ind.names=FALSE,add.legend=TRUE)
+plotIndiv(toxicity.pls, group=rep(1:4,16),plot.ellipse=TRUE,add.legend=TRUE)
+
+
+plotIndiv(toxicity.pls, group=rep(1:4,16),style="lattice")
+plotIndiv(toxicity.pls, group=factor(rep(1:4,16),labels=c("a","b","c","d")),add.legend=TRUE,style="lattice")
+plotIndiv(toxicity.pls, group=rep(1:4,16),ind.names=FALSE,style="lattice")
+plotIndiv(toxicity.pls, group=rep(1:4,16),ind.names=FALSE,add.legend=TRUE,style="lattice")
+plotIndiv(toxicity.pls, group=rep(1:4,16),plot.ellipse=TRUE,add.legend=TRUE,style="lattice")
+plotIndiv(toxicity.pls, group=rep(1:4,16),plot.star=TRUE,plot.centroid=TRUE,style="lattice")
+
 
 # plsda
 # ----
@@ -168,3 +184,4 @@ if(additional.test==TRUE)
     
     
 }
+par(opar)

@@ -3,6 +3,7 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+opar <- par(no.readonly = TRUE)
 
 data(liver.toxicity)
 
@@ -13,9 +14,9 @@ ipca.res
 # samples representation
 plotIndiv(ipca.res, ind.names = as.character(liver.toxicity$treatment[, 4]),
 group = as.numeric(as.factor(liver.toxicity$treatment[, 4])))
-plotIndiv(ipca.res, cex = 0.01,
-col = as.numeric(as.factor(liver.toxicity$treatment[, 4])),style="3d")
+plotIndiv(ipca.res, cex = 0.01,col = as.numeric(as.factor(liver.toxicity$treatment[, 4])),style="3d")
 
+plotIndiv(ipca.res, style="3d",col = as.numeric(as.factor(liver.toxicity$treatment[, 4])))
 
 # variables representation
 plotVar(ipca.res, cex = 0.5)
@@ -86,3 +87,5 @@ if(additional.test==TRUE)
     #plotIndiv(liver.ipca)
     
 }
+par(opar)
+

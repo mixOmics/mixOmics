@@ -121,13 +121,20 @@ function (X, ncomp  = 3, mode = c("deflation","parallel"),
         cl = match.call()
 		cl[[1]] = as.name('sipca')
 
-        result = (list(call=cl, X = X, ncomp=ncomp, keepX=keepX, unmixing = t(unmix_mat), mixing = t(mix_mat), loadings = list(t(independent_mat.new)), rotation = t(independent_mat.new),
-        kurtosis = kurt[order(kurt,decreasing=TRUE)],names = list(X = X.names, indiv = ind.names)))
+        result = (list(call=cl, X = X, ncomp=ncomp, keepX=keepX, unmixing = t(unmix_mat), mixing = t(mix_mat), loadings = list(X=t(independent_mat.new)), rotation = t(independent_mat.new),
+        kurtosis = kurt[order(kurt,decreasing=TRUE)],names = list(X = X.names, sample = ind.names)))
 		
 		result$x = ipc_mat
-        result$variates=list(ipc_mat)
+        result$variates=list(X=ipc_mat)
         dimnames(result$x) = list(ind.names, paste("IPC", 1:ncol(result$rotation), sep = " "))
 		
-		class(result) = c("sipca")
+		class(result) = c("sipca","ipca","pca")
+               
+        #calcul explained variance
+        explX=explained_variance(X,result$variates$X,ncomp)
+        result$explained_variance=explX
+    
+    
+        
 		return(invisible(result))
     } 

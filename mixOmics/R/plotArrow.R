@@ -132,7 +132,7 @@ plotArrow <-
     display.names.end = FALSE
     
     if (isTRUE(ind.names)) {
-      ind.names = object$names$indiv
+      ind.names = object$names$sample
       
       if ( position.names=="centroid"){
         display.centroid = TRUE
@@ -147,8 +147,8 @@ plotArrow <-
       
     }
     else if (length(ind.names) > 1 ) {
-      if (length(ind.names) != length(object$names$indiv))
-        stop("'ind.names' must be a character vector of length ", length(object$names$indiv), " or boolean  .")
+      if (length(ind.names) != length(object$names$sample))
+        stop("'ind.names' must be a character vector of length ", length(object$names$sample), " or boolean  .")
       
       if ( position.names=="centroid"){
         display.centroid = TRUE

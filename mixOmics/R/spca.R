@@ -174,11 +174,17 @@ function(X,
                    iter = vect.iter,
                    rotation = mat.v,
                    x = mat.u,
-                   names = list(X = X.names, indiv = ind.names),
-                   loadings=list(mat.v),
-                   variates=list(mat.u)
+                   names = list(X = X.names, sample = ind.names),
+                   loadings=list(X=mat.v),
+                   variates=list(X=mat.u)
               ))
 			  
     class(result) = c("spca", "prcomp", "pca")
+    
+    #calcul explained variance
+    explX=explained_variance(X,result$variates$X,ncomp)
+    result$explained_variance=explX
+    
+    
     return(invisible(result))
 }

@@ -227,7 +227,7 @@ internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)),ta
         {
             rownames(loadings.partial.A[[k]][[m]])=colnames(A[[k]])
             colnames(loadings.partial.A[[k]][[m]])=paste0("comp ", 1:max(ncomp))
-            rownames(variates.partial.A[[k]][[m]])=rownames(mean_centered[[1]]$data.list.study.scale[[m]])
+            rownames(variates.partial.A[[k]][[m]])=rownames(mean_centered[[1]]$rownames.study[[m]])
             colnames(variates.partial.A[[k]][[m]])=paste0("comp ", 1:max(ncomp))
         }
     }
@@ -269,7 +269,7 @@ internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)),ta
               variates = variates.A, loadings = shave.matlist(loadings.A, ncomp),
               variates.partial= if(is.null(tau)) {variates.partial.A} ,loadings.partial= if(is.null(tau)) {loadings.partial.A},
               loadings.star = shave.matlist(loadings.Astar, ncomp),
-              names = list(indiv = row.names(A[[1]]), colnames = lapply(A, colnames), blocks = names(A)),
+              names = list(sample = row.names(A[[1]]), colnames = lapply(A, colnames), blocks = names(A)),
               tol = tol, iter=iter, #nzv = if(near.zero.var) nzv.A,
               design = design,
               scheme = scheme,  crit = crit, AVE = AVE, defl.matrix = defl.matrix,

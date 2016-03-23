@@ -210,9 +210,15 @@ function(   X,
     cor = cor,
     loadings = list(X = xcoef, Y = ycoef),
     variates = list(X = U, Y = V),
-    names = list(indiv = ind.names, colnames = list(X=colnames(X),Y=colnames(Y)), blocks = c("X","Y"),#list(X = X.names, Y = Y.names, indiv = ind.names,
+    names = list(sample = ind.names, colnames = list(X=colnames(X),Y=colnames(Y)), blocks = c("X","Y"),#list(X = X.names, Y = Y.names, indiv = ind.names,
     data = data.names),
     lambda = lambda)
+    
+    #calcul explained variance
+    explX=explained_variance(result$X,result$variates$X,ncomp)
+    explY=explained_variance(result$Y,result$variates$Y,ncomp)
+    result$explained_variance=list(X=explX,Y=explY)
+    
     
     class(result) = "rcc"
     return(invisible(result))

@@ -3,6 +3,7 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+opar <- par(no.readonly = TRUE)
 
 data(nutrimouse)
 X <- nutrimouse$lipid
@@ -444,7 +445,7 @@ if(additional.test==TRUE)
     cim(toxicity.spls,threshold=0.6,cluster="row", mapping="Y")
 
     
-    
 }
+par(opar)
 
 

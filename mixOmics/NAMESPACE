@@ -34,16 +34,17 @@ block.pls,
 block.plsda,
 block.spls,
 block.splsda, 
+cim, 
+cimDiablo,
 circosPlot,
 color.jet,
 color.GreenRed,
 color.spectral,
 color.mixo,
 cov2,
-cim, 
 deflation,
 defl.select,
-heatmapDiablo,
+explained_variance,
 ica.par,
 ica.def,
 image.tune.rcc, 
@@ -125,7 +126,6 @@ S3method(plotIndiv, pls)
 S3method(plotIndiv, spls)
 S3method(plotIndiv, rcc)
 S3method(plotIndiv, pca)
-S3method(plotIndiv, sipca)
 S3method(plotIndiv, sgcca)
 S3method(plotIndiv, rgcca)
 S3method(plotIndiv, mint.pls)
@@ -159,6 +159,5 @@ S3method(print, rgcca)
 S3method(selectVar, spls)
 S3method(selectVar, pls)
 S3method(selectVar, pca)
-S3method(selectVar, sipca)
 S3method(selectVar, sgcca)
 

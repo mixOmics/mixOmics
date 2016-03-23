@@ -3,6 +3,7 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+opar <- par(no.readonly = TRUE)
 
 ##!! NOTE from KA: the help file not updated yet.
 
@@ -242,3 +243,4 @@ if(additional.test==TRUE)
     plotArrow(nutri.sgcca,xlim=c(1,5))
     
 }
+par(opar)

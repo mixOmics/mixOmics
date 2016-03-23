@@ -3,6 +3,8 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+opar <- par(no.readonly = TRUE)
+
 ## sGCC-DA
 # -------------
 #library(mixOmicsv6)
@@ -12,37 +14,43 @@ Y = nutrimouse$diet
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 
-nutrimouse.sgccda <- wrapper.sgccda(X = data,
+nutrimouse.sgccda <- wrapper.sgccda(X=data,
 Y = Y,
 design = design,
 keepX = list(c(10,10), c(15,15)),
-ncomp = c(3, 3),
+ncomp = c(2, 2),
 scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)
 
+plotIndiv(nutrimouse.sgccda,style="graphics")
+
 plotIndiv(nutrimouse.sgccda,style="graphics",add.legend=TRUE,ind.names=FALSE,abline.line=TRUE)
 plotIndiv(nutrimouse.sgccda,style="graphics",add.legend=FALSE,ind.names=FALSE,abline.line=TRUE)
 
+
+par(mfrow=c(1,1))
 circosPlot(nutrimouse.sgccda,corThreshold=0.7,ncol=2,cex.legend=1.1)
+circosPlot(nutrimouse.sgccda,corThreshold=0.7,ncol=2,cex.legend=1.1,cex.labels=2)
+
 
 #compatibility with par(mfrow)
 par(mfrow=c(2,2))
 circosPlot(nutrimouse.sgccda,corThreshold=0.6,ncol=1,cex.legend=0.6)
 circosPlot(nutrimouse.sgccda,corThreshold=0.7,ncol=1,cex.legend=0.6)
-circosPlot(nutrimouse.sgccda,corThreshold=0.8,ncol=1,cex.legend=0.6)
+circosPlot(nutrimouse.sgccda,corThreshold=0.8,ncol=1,cex.legend=0.6,showIntraLinks=TRUE)
 plotIndiv(nutrimouse.sgccda,style="graphics",add.legend=FALSE,layout=c(2,2)) # Amrit function
 plot(1:10)
 
 par(mfrow=c(2,2))
 plotDiablo(nutrimouse.sgccda)
 
-heatmapDiablo(nutrimouse.sgccda)
-heatmapDiablo(nutrimouse.sgccda,pos.legend="right")
-heatmapDiablo(nutrimouse.sgccda,pos.legend="right",cex.legend=0.3)
+cimDiablo(nutrimouse.sgccda)
+cimDiablo(nutrimouse.sgccda,pos.legend="right")
+cimDiablo(nutrimouse.sgccda,pos.legend="right",cex.legend=0.3)
 
 
-plotIndiv(nutrimouse.sgccda) # Amrit function
+plotIndiv(nutrimouse.sgccda)
 #plotIndiv(nutrimouse.sgccda, blocks = c(1,2), group = nutrimouse$diet,
 #plot.ellipse = TRUE)
 
@@ -73,3 +81,6 @@ if(additional.test==TRUE)
     cat("no additional tests")
     
 }
+
+par(opar)
+

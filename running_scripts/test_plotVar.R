@@ -3,6 +3,7 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+opar <- par(no.readonly = TRUE)
 
 data(nutrimouse)
 X <- nutrimouse$lipid
@@ -510,3 +511,4 @@ if(additional.test==TRUE)
     #test add.legend
     plotVar(nutri.sgcca,add.legend=FALSE)
 }
+par(opar)

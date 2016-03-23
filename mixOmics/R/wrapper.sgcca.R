@@ -93,7 +93,7 @@ near.zero.var = FALSE
   cl = match.call()
   cl[[1]] = as.name('sgcca')
   
-  output = list(
+  out = list(
     class = cl,
     X = result.sgcca$X,
     variates = result.sgcca$variates,
@@ -110,7 +110,12 @@ near.zero.var = FALSE
     
   )
 
-  class(output) = 'sgcca'
-  return(invisible(output))
+    #calcul explained variance
+    explX=lapply(1:length(out$X),function(x){explained_variance(out$X[[x]],variates=out$variates[[x]],ncomp=out$ncomp[[x]])})
+    out$explained_variance=explX
+    names(out$explained_variance)=names(out$X)
+
+  class(out) = 'sgcca'
+  return(invisible(out))
   
 }

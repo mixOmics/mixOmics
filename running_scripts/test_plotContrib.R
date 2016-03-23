@@ -3,6 +3,8 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+opar <- par(no.readonly = TRUE)
+
 data(liver.toxicity)
 X <- as.matrix(liver.toxicity$gene)
 Y <- as.factor(liver.toxicity$treatment[, 4])
@@ -307,4 +309,5 @@ if(additional.test==TRUE)
     plotContrib(nutrimouse.sgccda,plot=FALSE,main="plot")
     
 }
+par(opar)
 

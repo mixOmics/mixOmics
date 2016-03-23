@@ -26,7 +26,7 @@
 # --------------------------------------
 # Check.entry.single
 # --------------------------------------
-Check.entry.single = function(X,  ncomp, keepX, keepX.constraint,q)
+Check.entry.single = function(X,  ncomp,q=q)
 {
 
     #-- validation des arguments --#
@@ -264,7 +264,7 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.con
         if(!is.numeric(unlist(keepX.constraint)))
         {
             ind=match(unlist(keepX.constraint),colnames(X))
-            if(sum(is.na(ind))>0) stop("'keepX.constraint' must contains a subset of colnames(X) or the position of the X-variables you wish to keep.")
+            if(sum(is.na(ind))>0) stop("'keepX.constraint' must contain a subset of colnames(X) or the position of the X-variables you wish to keep.")
         }
         X.indice=X[,unlist(keepX.constraint),drop=FALSE]
         keepX.constraint=relist(colnames(X.indice),skeleton=keepX.constraint)
@@ -276,7 +276,7 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint,keepY.con
         if(!is.numeric(unlist(keepY.constraint)))
         {
             ind=match(unlist(keepY.constraint),colnames(Y))
-            if(sum(is.na(ind))>0) stop("'keepY.constraint' must contains a subset of colnames(Y) or the position of the Y-variables you wish to keep.")
+            if(sum(is.na(ind))>0) stop("'keepY.constraint' must contain a subset of colnames(Y) or the position of the Y-variables you wish to keep.")
         }
         Y.indice=Y[,unlist(keepY.constraint),drop=FALSE]
         keepY.constraint=relist(colnames(Y.indice),skeleton=keepY.constraint)
@@ -1136,7 +1136,7 @@ check.keepA.and.keepA.constraint=function(X,keepX,keepX.constraint,ncomp)
                 if(!is.numeric(unlist(keepX.constraint[[q]])))
                 {
                     ind=match(unlist(keepX.constraint[[q]]),colnames(X[[q]]))
-                    if(sum(is.na(ind))>0) stop("'keepX.constraint' must contains a subset of colnames(X) or the position of the X-variables you wish to keep.")
+                    if(sum(is.na(ind))>0) stop("'keepX.constraint' must contain a subset of colnames(X) or the position of the X-variables you wish to keep.")
                 }
                 X.indice=X[[q]][,unlist(keepX.constraint[[q]]),drop=FALSE]
                 keepX.constraint[[q]]=relist(colnames(X.indice),skeleton=keepX.constraint[[q]])

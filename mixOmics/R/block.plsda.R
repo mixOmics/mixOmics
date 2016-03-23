@@ -101,6 +101,11 @@ near.zero.var = FALSE)
     names=result$names,init=result$init,bias=result$bias,
     tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale,design=result$design,scheme=result$scheme,indY=result$indY)
     
+    #calcul explained variance
+    explX=lapply(1:length(out$X),function(x){explained_variance(out$X[[x]],variates=out$variates[[x]],ncomp=out$ncomp[[x]])})
+    out$explained_variance=explX
+    names(out$explained_variance)=names(out$X)
+    
     class(out) = c("block.plsda","block.pls","sgccda","sgcca","DA")
     return(invisible(out))
     

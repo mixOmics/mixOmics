@@ -3,6 +3,8 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+opar <- par(no.readonly = TRUE)
+
 data(liver.toxicity)
 
 # implement IPCA on a microarray dataset
@@ -30,3 +32,4 @@ if(additional.test==TRUE)
     
     
 }
+par(opar)

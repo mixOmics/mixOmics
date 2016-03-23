@@ -1,0 +1,776 @@
+#############################################################################################################
+# Author :
+#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#
+# created: 16-03-2016
+# last modified: 23-03-2016
+#
+# Copyright (C) 2016
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
+
+
+# --------------------------------------------------------------------------------------
+# Internal helpers functions to run "plotIndiv" functions
+# --------------------------------------------------------------------------------------
+
+
+check.input.plotIndiv=function(object,
+comp = NULL,
+rep.space = NULL,
+blocks = NULL, # to choose which block data to plot, when using GCCA module
+ind.names = TRUE,
+style="ggplot2", # can choose between graphics,3d, lattice or ggplot2
+#study="all",
+plot.ellipse = FALSE,
+ellipse.level = 0.95,
+plot.centroid=FALSE,
+plot.star=FALSE,
+add.legend=FALSE,
+X.label = NULL,
+Y.label = NULL,
+Z.label = NULL,
+abline.line = FALSE,
+xlim = NULL,
+ylim = NULL,
+alpha=0.2,
+axes.box = "box")
+{
+    
+    
+    # --------------------------------------------------------------------------------------
+    #           independent from class.object
+    # --------------------------------------------------------------------------------------
+    
+    ### Start: Validation of arguments
+    ncomp = object$ncomp
+    
+    #-- style
+    if (!style %in% c("ggplot2", "lattice", "graphics","3d"))
+    stop("'style' must be one of 'ggplot2', 'lattice', 'graphics' or '3d' .", call. = FALSE)
+    
+    #-- axes.box
+    choices = c("box", "bbox", "both")
+    axes.box = choices[pmatch(axes.box, choices)]
+    
+    if (is.na(axes.box))
+    stop("'axes.box' should be one of 'box', 'bbox' or 'both'.",call. = FALSE)
+    
+    #-- ellipse.level
+    if ((ellipse.level > 1) | (ellipse.level < 0))
+    stop("The value taken by 'ellipse.level' must be between 0 and 1")
+    
+    #-- add.legend
+    if (length(add.legend) != 1 || !is.logical(add.legend))
+    stop("'add.legend' must be a logical value.", call. = FALSE)
+    
+    #-- alpha correlation
+    if (!is.numeric(alpha) | (alpha > 1) | (alpha < 0))
+    stop("The value taken by 'alpha' must be between 0 and 1", call. = FALSE)
+    
+    
+    #-- comp
+    if(is.null(comp))
+    {
+        if (style=="3d")
+        {
+            comp=c(1:3)
+        }else{
+            comp=c(1:2)
+        }
+    }
+    if (length(comp) != 2 && !(style=="3d"))
+    {
+        stop("'comp' must be a numeric vector of length 2.", call. = FALSE)
+    }else if(length(comp) != 3 && (style=="3d"))
+    {
+        stop("'comp' must be a numeric vector of length 3.", call. = FALSE)
+    }
+    
+    if (!is.numeric(comp))
+    stop("Invalid vector for 'comp'.")
+    
+    if (any(ncomp < max(comp)))
+    stop("Each element of 'comp' must be smaller or equal than ", max(object$ncomp), ".", call. = FALSE)
+    
+    comp1 = round(comp[1]); comp2 = round(comp[2])
+    if (style=="3d") {comp3 = round(comp[3])}else{comp3=NULL}
+    
+    
+    rep.space = match.arg(rep.space, c("XY-variate", "X-variate", "Y-variate","multi"))
+
+
+    #plot.ellipse
+    if(!is.logical(plot.ellipse))
+    stop("'plot.ellipse' must be either TRUE or FALSE", call. = FALSE)
+
+    #plot.centroid
+    if(!is.logical(plot.centroid))
+    stop("'plot.centroid' must be either TRUE or FALSE", call. = FALSE)
+
+    #plot.star
+    if(!is.logical(plot.star))
+    stop("'plot.star' must be either TRUE or FALSE", call. = FALSE)
+
+    #add.legend
+    if(!is.logical(add.legend))
+    stop("'add.legend' must be either TRUE or FALSE", call. = FALSE)
+    
+    # abline.line
+    if(!is.logical(abline.line))
+    stop("'abline.line' must be either TRUE or FALSE", call. = FALSE)
+
+    #X.label,Y.label,Z.label
+    if(!is.null(X.label))
+    {
+        if(length(X.label)!=1 | !is.vector(X.label))
+        {
+            stop("'X.label' must be a vector of length 1", call. = FALSE)
+        }
+    }
+    
+    if(!is.null(Y.label))
+    {
+        if(length(Y.label)!=1 | !is.vector(Y.label))
+        {
+            stop("'Y.label' must be a vector of length 1", call. = FALSE)
+        }
+    }
+
+    if(!is.null(Z.label))
+    {
+        if(style!="3d") warning("'Z.label' is not used as style!='3d'")
+        if(length(Z.label)!=1 | !is.vector(Z.label))
+        {
+            stop("'Z.label' must be a vector of length 1", call. = FALSE)
+        }
+    }
+
+
+    if (is.logical(ind.names) & isTRUE(ind.names))
+    {
+        ind.names = object$names$sample
+    }
+    if (length(ind.names) > 1)
+    {
+        if (length(ind.names) != length(object$names$sample))
+        stop("'ind.names' must be a character vector of length ", length(object$names$sample), " or a boolean atomic vector.")
+    }
+
+
+    display.names = FALSE
+    #if(any(study=="all") | length(study)==1)
+    #{
+        if (length(ind.names) == length(object$names$sample))
+        {
+            display.names = TRUE
+        }
+        #}
+        if(FALSE)
+        {
+            #else{
+            #check that ind.names is of correct dimension, that is, each ind.names[[i]] is of same length as x[[i]]
+            #not sure why this check? to give a different name to the same sample?
+            t=0
+            for(i in 1:length(ind.names))
+            {
+                if (length(ind.names[[i]]) == length(x[[i]]))
+                {
+                    t=t+1
+                }
+                
+            }
+            if(t==length(ind.names))
+            {
+                display.names = TRUE
+                
+            }
+        
+        }
+
+    # --------------------------------------------------------------------------------------
+    #           need blocks
+    # --------------------------------------------------------------------------------------
+    #-- xlim,ylim
+    if (!is.null(xlim))
+    {
+        if(length(blocks)==1) # a single graph is plotted, xlim needs to be a vector of length 2
+        {
+            if (!is.numeric(xlim) || length(xlim) != 2)
+            stop("'xlim' must be a vector of length 2.",call. = FALSE)
+            
+            xlim=list(xlim)
+            
+        }else{ # multiple graphs are plotted, xlim needs to be a list of vectors of length 2
+            
+            if (!is.list(xlim) || length(xlim) != length(blocks) || length(unlist(xlim)) != 2 * length(blocks))
+            stop("'xlim' must be a list of ",length(blocks)," vectors of length 2.",call. = FALSE)
+        }
+    }
+    
+    if (!is.null(ylim))
+    {
+        if(length(blocks)==1) # a single graph is plotted, ylim needs to be a vector of length 2
+        {
+            if (!is.numeric(ylim) || length(ylim) != 2)
+            stop("'ylim' must be a vector of length 2.",call. = FALSE)
+            
+            ylim=list(ylim)
+            
+        }else{ # multiple graphs are plotted, ylim needs to be a list of vectors of length 2
+            
+            if (!is.list(ylim) || length(ylim) != length(blocks) || length(unlist(ylim)) != 2 * length(blocks))
+            stop("'ylim' must be a list of ",length(blocks)," vectors of length 2.",call. = FALSE)
+        }
+    }
+    
+    
+    
+
+    
+
+
+    out=list(axes.box=axes.box,comp=c(comp1,comp2,comp3),rep.space=rep.space,xlim=xlim,ylim=ylim,ind.names=ind.names,display.names=display.names)
+    
+}
+
+
+internal_getVariatesAndLabels=function(object,comp,blocks,rep.space,style,X.label,Y.label,Z.label)
+{
+    
+    class.object = class(object)
+    object.pls=c("pls","spls","mlspls","rcc")
+    object.blocks=c("sgcca","rgcca")
+    object.mint=c("mint.pls","mint.spls","mint.plsda","mint.splsda")
+    
+    #-- Start: Retrieve variates from object
+    x = y = z=list()
+    if (any(class.object %in%  c(object.pls, object.blocks, object.mint)))
+    {
+        
+
+        x = lapply(object$variates, function(x){x[, comp[1], drop = FALSE]})
+        y = lapply(object$variates, function(x){x[, comp[2], drop = FALSE]})
+        if(style=="3d"){ z = lapply(object$variates, function(x){x[, comp[3], drop = FALSE]})}else{z=NULL}
+        
+        
+        #-- Variance explained for pls and block.pls obejcts
+        
+        # we display explained variance when only 1block is plotted and the object is not MINT
+        if (!any(class.object%in%object.mint) & length(blocks)==1 && rep.space != "XY-variate")
+        {
+            if (style == "3d")
+            {
+                inf=round(object$explained_variance[[blocks]][c(comp[1],comp[2],comp[3])],2)#c((object$sdev[comp[1]])^2/object$var.tot,(object$sdev[comp[2]])^2/object$var.tot,(object$sdev[comp[3]]^2)/object$var.tot)
+            } else {
+                inf = round(object$explained_variance[[blocks]][c(comp[1],comp[2])],2)# c((object$sdev[comp[1]])^2/object$var.tot,(object$sdev[comp[2]])^2/object$var.tot)
+            }
+            
+            # for future development: if a label with explained variance for each blocks :
+            #   inf=lapply(object$explained_variance,function(x){round(x[c(comp[1],comp[2])],2)})
+            #   lapply(inf,function(x){paste0("variate ",comp[2],": ",x[comp[2]],"% expl. var")})}
+            
+            
+            if (is.null(X.label))
+            {
+                percentage=paste0(inf[1]*100,"% expl. var")
+                if (rep.space == "multi") {X.label = paste0("variate ", comp[1], ": ",percentage)}
+                if (rep.space == "X-variate") {X.label = paste0("X-variate ", comp[1], ": ",percentage)}
+                if (rep.space == "Y-variate") {X.label = paste0("Y-variate ", comp[1], ": ",percentage)}
+                if (rep.space == "XY-variate") {X.label = paste0("XY-variate ", comp[1], ": ",percentage)}
+            }
+            if (is.null(Y.label))
+            {
+                percentage=paste0(inf[2]*100,"% expl. var")
+                if (rep.space == "multi") {Y.label = paste0("variate ", comp[2], ": ",percentage)}
+                if (rep.space == "X-variate") {Y.label = paste0("X-variate ", comp[2], ": ",percentage)}
+                if (rep.space == "Y-variate") {Y.label = paste0("Y-variate ", comp[2], ": ",percentage)}
+                if (rep.space == "XY-variate") {Y.label = paste0("XY-variate ", comp[2], ": ",percentage)}
+            }
+            if (is.null(Z.label)&&style=="3d")
+            {
+                percentage=paste0(inf[3]*100,"% expl. var")
+                if (rep.space == "multi") {Z.label = paste0("variate ", comp[3], ": ",percentage)}
+                if (rep.space == "X-variate") {Z.label = paste0("X-variate ", comp[3], ": ",percentage)}
+                if (rep.space == "Y-variate") {Z.label = paste0("Y-variate ", comp[3], ": ",percentage)}
+                if (rep.space == "XY-variate") {Z.label = paste0("XY-variate ", comp[3], ": ",percentage)}
+            }
+        }
+        
+        
+        
+        if (is.null(X.label))
+        {
+            if (rep.space == "multi") {X.label = paste0("variate ", comp[1])}
+            if (rep.space == "X-variate") {X.label = paste("X-variate", comp[1])}
+            if (rep.space == "Y-variate") {X.label = paste("Y-variate", comp[1])}
+            if (rep.space == "XY-variate") {X.label = paste("XY-variate", comp[1])}
+        }
+        if (is.null(Y.label))
+        {
+            if (rep.space == "multi") {Y.label = paste("variate", comp[2])}
+            if (rep.space == "X-variate") {Y.label = paste("X-variate", comp[2])}
+            if (rep.space == "Y-variate") {Y.label = paste("Y-variate", comp[2])}
+            if (rep.space == "XY-variate") {Y.label = paste("XY-variate", comp[2])}
+        }
+        if (is.null(Z.label)&&style=="3d")
+        {
+            if (rep.space == "multi") {Z.label = paste("variate", comp[3])}
+            if (rep.space == "X-variate") {Z.label = paste("X-variate", comp[3])}
+            if (rep.space == "Y-variate") {Z.label = paste("Y-variate", comp[3])}
+            if (rep.space == "XY-variate") {Z.label = paste("XY-variate", comp[3])}
+        }
+        
+    }
+    
+    
+    #-- End: Retrieve variates from object
+    
+    out=list(x=x,y=y,z=z,X.label=X.label,Y.label=Y.label,Z.label=Z.label)
+    
+    
+}
+
+
+
+shape.input.plotIndiv=function(object,n,#number of total samples
+blocks = NULL, # to choose which block data to plot, when using GCCA module
+x,y,z,
+ind.names = TRUE,
+group,  # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
+col.per.group,
+style="ggplot2", # can choose between graphics,3d, lattice or ggplot2
+study="all",
+plot.ellipse = FALSE,
+ellipse.level = 0.95,
+plot.centroid=FALSE,
+plot.star=FALSE,
+main=NULL,
+xlim = NULL,
+ylim = NULL,
+col,
+cex,
+pch,
+display.names)
+{
+    
+    class.object = class(object)
+    object.mint=c("mint.pls","mint.spls","mint.plsda","mint.splsda")
+    
+    # --------------------------------------------------------------------------------------
+    #           need class.object whether it's DA
+    # --------------------------------------------------------------------------------------
+
+    #-- Define group
+    missing.group = FALSE
+    if (missing(group) & any(class(object)=="DA"))
+    {
+        group = object$Y#factor(map(object$ind.mat), labels = object$names$Y)
+        object$ind.mat = unmap(group) # added in v6 cause $ind.mat is the scaled (if scale=TRUE) version of ind.mat(=unmap(Y))
+    } else if (!missing(group))
+    {
+        missing.group = TRUE
+        if (!is.factor(group))
+        {
+            group = as.factor(group)
+        }
+        object$ind.mat = unmap(group)
+        
+        if (length(group) != n)
+        stop("Length of 'group' should be of length ", n, ", the sample size of your data")
+    } else {
+        if(plot.star || plot.centroid || plot.ellipse)
+        warning('plot.star , plot.ellipse and plot.centroid work only if !group==NULL')
+        plot.star=plot.centroid=plot.ellipse=FALSE
+        group = factor(rep("No group", n))
+        object$ind.mat = unmap(group)
+    }
+    
+    
+    
+    # --------------------------------------------------------------------------------------
+    #           independent from class.object
+    # --------------------------------------------------------------------------------------
+
+    #-- col.per.group argument
+    if (missing(col.per.group))
+    {
+        if (nlevels(group) < 10) {
+            #only 10 colors in color.mixo
+            col.per.group = color.mixo(1:nlevels(group))
+        } else {
+            #use color.jet
+            col.per.group = color.jet(nlevels(group))
+        }
+    } else {
+        if (length(col.per.group) == 1)
+        {
+            col.per.group = rep(col.per.group, nlevels(group))
+        } else if (length(col.per.group) != n & length(col.per.group) != nlevels(group))
+        {
+            stop("Length of 'col.per.group' should be either of length 1 or of length ", nlevels(group), " (the number of groups) or of length ", n, " (the sample size or your data).
+            Alternatively, use the argument 'col' to give one color per sample")
+        }
+        missing.group = TRUE
+    }
+    
+    levels.color = vector(, n)
+    if (length(col.per.group) != n)
+    {
+        for (i in 1 : nlevels(group))
+        {
+            levels.color[group == levels(group)[i]] = col.per.group[i]
+        }
+    } else {
+        levels.color = col.per.group
+    }
+    
+    #-- col argument
+    missing.col = FALSE
+    if (!missing(col))
+    {
+        if (length(col) > n)
+        stop("Length of 'col' should be of length inferior or equal to ", n,".")
+        
+        col = factor(rep(col, ceiling(n/length(col)))[1 : n])
+        if (!missing.group)
+        {
+            group = col
+            levels.color = col
+            col.per.group = levels(col)
+            object$ind.mat = unmap(group)
+        }
+        missing.col = TRUE
+    } else {
+        col = levels.color
+    }
+    
+    #-- cex argument
+    if (missing(cex))
+    {
+        if (style == "ggplot2")
+        {
+            cex = rep(5, n)
+            cex = cex[as.factor(group)]
+        } else {
+            cex = rep(1, n)
+            cex = cex[as.factor(group)]
+        }
+    } else {
+        if (length(cex) == 1)
+        {
+            cex = rep(cex, n)
+            cex = cex[as.factor(group)]
+        } else if (length(cex) > n)
+        {
+            stop("Length of 'cex' should be of length inferior or equal to ", n,".")
+        } else if (length(cex) == length(unique(group)))
+        {
+            cex = cex[as.factor(group)]
+        }else {
+            cex = rep(cex, ceiling(n/length(cex)))[1 : n]
+        }
+    }
+    
+    if (plot.ellipse)
+    {
+        #-- Start: Computation ellipse
+        min.ellipse = max.ellipse = xlim.min = xlim.max = ylim.min = ylim.max = list()
+        ind.gp = matrice = cdg = variance = list()
+        ind.gp = lapply(1 : ncol(object$ind.mat), function(x){which(object$ind.mat[, x]==1)})
+        matrice = lapply(1 : length(x), function(z1) {lapply(ind.gp, function(z2){matrix(c(x[[z1]][z2], y[[z1]][z2]), ncol = 2)})})
+        cdg = lapply(1 : length(x), function(z){ lapply(matrice[[z]], colMeans)})
+        variance = lapply(1 : length(x), function(z){lapply(matrice[[z]], var)})
+        coord.ellipse = lapply(1 : length(x), function(z1){ lapply(1 : ncol(object$ind.mat), function(z2){ellipse(variance[[z1]][[z2]],
+            centre = cdg[[z1]][[z2]],
+            level = ellipse.level)})})
+        max.ellipse = lapply(1 : length(x), function(z1) {sapply(coord.ellipse[[z1]], function(z2){apply(z2, 2, max)})})
+        min.ellipse = lapply(1 : length(x), function(z1) {sapply(coord.ellipse[[z1]], function(z2){apply(z2, 2, min)})})
+        #-- End: Computation ellipse
+        if (is.null(xlim))
+        xlim = lapply(1 : length(x), function(z) {c(min(x[[z]], min.ellipse[[z]][1, ]), max(x[[z]], max.ellipse[[z]][1, ]))})
+        if (is.null(ylim))
+        ylim = lapply(1 : length(x), function(z) {c(min(y[[z]], min.ellipse[[z]][2, ]), max(y[[z]], max.ellipse[[z]][2, ]))})
+        
+    }
+    # no need for xlim and ylim as ggplot2, lattice and graphics are good without by default
+    #else {
+    #  if (is.null(xlim))
+    #    xlim = lapply(1 : length(x), function(z) {c(min(x[[z]]), max(x[[z]]))})
+    #    if (is.null(ylim))
+    #    ylim = lapply(1 : length(x), function(z) {c(min(y[[z]]), max(y[[z]]))})
+    #}
+    
+    
+    # --------------------------------------------------------------------------------------
+    #           not independent from class.object: for the title of the plot, either "PlotIndiv" or "block:.."
+    # --------------------------------------------------------------------------------------
+
+    #-- pch argument
+    if (missing(pch) & !any(class.object%in%object.mint))
+    {
+        if (missing.col)
+        {
+            if(style=="3d")
+            {
+                pch = unlist(lapply(1 : length(length(levels(col))), function(x){rep(c("sphere", "tetra", "cube", "octa", "icosa", "dodeca")[x], length(col==x))}))
+            }else
+            {
+                pch = as.numeric(col)
+            }
+        } else {
+            if(style=="3d")
+            {
+                pch = unlist(lapply(1 : length(length(levels(group))), function(x){rep(c("sphere", "tetra", "cube", "octa", "icosa", "dodeca")[x], length(group==x))}))
+                
+            }else{
+                pch = as.numeric(group)
+            }
+        }
+    }else if (any(class.object%in%object.mint))
+    {
+        if(missing(pch))
+        {
+            # a pch per study, forced
+            pch = as.numeric(object$study)
+        }else{
+            if(length(pch)!=length(object$study))
+            stop("'pch' needs to be of length 'object$study' as each of 'pch' represents a specific study",call.=FALSE)
+        }
+    } else {
+        if (style=="3d")
+        {
+            if (!all(unlist(pch) %in% c("sphere", "tetra", "cube", "octa", "icosa", "dodeca")))
+            stop("pch' must be a simple character or character vector from {'sphere', 'tetra', 'cube', 'octa', 'icosa', 'dodeca'}.",
+            call. = FALSE)
+        }
+        if (length(pch) == 1)
+        {
+            pch = rep(pch, n)
+        } else if (length(pch) > n)
+        {
+            stop("Length of 'pch' should be of length inferior or equal to ", length(group),".")
+        } else if (length(pch) == length(unique(group)))
+        {
+            pch = pch[as.factor(group)]
+        } else {
+            pch = rep(pch, ceiling(n/length(pch)))[1 : n]
+        }
+        display.names = FALSE
+    }
+    
+    
+
+    # constructing data.frame df
+    if(any(study=="all"))# | length(study)==1)
+    {
+        #-- Start: data set
+        df = list()
+        if(style=="3d")
+        {
+            for (i in 1 : length(x))
+            {
+                df[[i]] = data.frame(x = x[[i]], y = y[[i]],z=z[[i]],group = group)
+            }
+        }else{
+            for (i in 1 : length(x))
+            {
+                df[[i]] = data.frame(x = x[[i]], y = y[[i]], group = group)
+            }
+        }
+        
+        main.save=main # to use for plot.ellipse
+        if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda")) & length(blocks)==1 & !any(class(object)%in%object.mint)) # add blocks==1 to allow "multi" with plsda
+        {
+            if(is.null(main))
+            {
+                df = data.frame(do.call(rbind, df), "Block" = "PlotIndiv")
+                if(style %in%c("graphics"))
+                main="PlotIndiv" # to add title to graphics
+
+            }else
+            {
+                df = data.frame(do.call(rbind, df), "Block" = main)
+                if(style %in%c("ggplot2","lattice"))
+                main=NULL # to avoid double title
+            }
+            df$Block=as.factor(df$Block)
+        }else{
+            df = data.frame(do.call(rbind, df), "Block" = paste0("Block: ", unlist(lapply(1 : length(df), function(z){rep(blocks[z], nrow(df[[z]]))}))))
+            df$Block=factor(df$Block,levels=unique(df$Block))
+        }
+        
+        if(style=="3d")
+        {
+            names(df)[1:3] = c("x", "y","z")
+        }else{
+            names(df)[1:2] = c("x", "y")
+        }
+        
+        if (display.names)
+        df$names = rep(ind.names, length(x))
+        
+        df$pch = pch; df$cex = cex; df$col.per.group = levels.color[group]; #FR: don't understand what is that changing as levels.color is already group?
+        df$col = as.character(col)
+        
+        
+        if (plot.centroid == TRUE || plot.star==TRUE)
+        {
+            df=cbind(df,rep(0,nrow(df)))
+            n=ncol(df)
+            df=cbind(df,rep(0,nrow(df)))
+            for (i in 1:nlevels(group))
+            {
+                if(length(x)>1)
+                {
+                    for (k in 1 : length(x))
+                    {
+                        x0=mean(df[df$group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), "x"])
+                        y0=mean(df[df$group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]) , "y"])
+                        df[df$group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), n]=x0
+                        df[df$group == levels(group)[i] & df$Block %in% paste0("Block: ", blocks[k]), n+1]=y0
+                        names(df)[c(ncol(df)-1,ncol(df))]=c("x0","y0")
+                    }
+                }else{
+                    x0=mean(df[df$group == levels(group)[i] , "x"])
+                    y0=mean(df[df$group == levels(group)[i]  , "y"])
+                    df[df$group == levels(group)[i] , n]=x0
+                    df[df$group == levels(group)[i] , n+1]=y0
+                    names(df)[c(ncol(df)-1,ncol(df))]=c("x0","y0")
+                }
+                
+            }
+        }
+        
+        if (plot.ellipse == TRUE)
+        {
+            df.ellipse = data.frame(do.call("rbind", lapply(1 : length(x), function(k){do.call("cbind", coord.ellipse[[k]])})), "Block" = paste0("Block: ", rep(blocks, each = 100)))
+            
+            
+            names(df.ellipse)[1 : (2*nlevels(group))] = paste0("Col", 1 : (2*nlevels(group)))
+            df.ellipse$ellipse.level=ellipse.level
+        }else{
+            df.ellipse=NULL
+        }
+        
+        if(plot.ellipse == TRUE && any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda"))& length(blocks)==1& !any(class(object)%in%object.mint))
+        {
+            if(is.null(main.save))
+            {
+                df.ellipse$Block="PlotIndiv"
+            }else{
+                df.ellipse$Block=main.save
+            }
+        }
+        
+
+
+        pch.legend=NULL
+        if(missing.col)
+        {
+            
+            for (i in 1:nlevels(factor(col)))
+            {
+                pch.legend=c(pch.legend,df[df$col == levels(factor(col))[i], ]$pch)}
+        }else{
+            for (i in 1:nlevels(group))
+            {
+                pch.legend=c(pch.legend,df[df$group == levels(group)[i], ]$pch)
+            }
+        }
+        df$pch.legend=pch.legend
+        
+    }else{
+
+
+        #mint object
+        #display.names=FALSE # so far ggplot and lattice require a unique vector of names. when the code changes, we can use ind.names (list)
+        group.mint=split(group,object$study)[study]
+        group=as.factor(unlist(group.mint))
+        pch=as.vector(unlist(split(pch,object$study)[study]))
+        cex=as.vector(unlist(split(cex,object$study)[study]))
+        
+        col.per.group.mint=as.vector(unlist(split(levels.color,object$study)[study]))
+        col=as.vector(unlist(split(col,object$study)[study]))
+        
+
+        
+        #-- Start: data set
+        df = list()
+        if(style=="3d")
+        {
+            for (i in 1 : length(x))
+            {
+                df[[i]] = data.frame(x = x[[i]], y = y[[i]],z=z[[i]],group = group.mint[[i]])
+            }
+        }else{
+            for (i in 1 : length(x))
+            {
+                df[[i]] = data.frame(x = x[[i]], y = y[[i]], group = group.mint[[i]])
+            }
+        }
+        
+        df = data.frame(do.call(rbind, df), "Block" = paste0("Study: ", unlist(lapply(1 : length(df), function(z){rep(blocks[z], nrow(df[[z]]))}))))
+        df$Block=factor(df$Block,levels=unique(df$Block))
+        
+        #print(df)
+
+        if(style=="3d")
+        {
+            names(df)[1:3] = c("x", "y","z")
+        }else{
+            names(df)[1:2] = c("x", "y")
+        }
+        
+        # no names for MINT object
+        #if (display.names)
+        #df$names = rep(ind.names, length(x))
+        
+        df$pch = pch; df$cex = cex; df$col.per.group = col.per.group.mint; df$col = as.character(col)
+        
+        
+        pch.legend=NULL
+        if(missing.col)
+        {
+            
+            for (i in 1:nlevels(factor(col)))
+            {
+                pch.legend=c(pch.legend,df[df$col == levels(factor(col))[i], ]$pch)}
+        }else{
+            for (i in 1:nlevels(group))
+            {
+                pch.legend=c(pch.legend,df[df$group == levels(group)[i], ]$pch)
+            }
+        }
+        
+        df$pch.legend=pch.legend
+        
+        df.ellipse=NULL # no ellipse so far
+        
+    }
+    
+    if(any(study=="all")) study=levels(object$study)
+    
+    # match study with names of the study
+    study.ind=match(study,levels(object$study))
+    
+    #print(df)
+
+    out=list(df=df,study.ind=study.ind,df.ellipse=df.ellipse,col.per.group=col.per.group,main=main,display.names=display.names,xlim=xlim,ylim=ylim,missing.col=missing.col,plot.ellipse=plot.ellipse,plot.centroid=plot.centroid,plot.star=plot.star)
+}
+
+
+

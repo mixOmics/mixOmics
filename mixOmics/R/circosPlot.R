@@ -30,9 +30,15 @@ figSize = 800,
 segmentWidth = 25,
 linePlotWidth = 90,
 showIntraLinks = FALSE,
+line=TRUE,
 cex.legend=0.8,
-ncol.legend=1)
+ncol.legend=1,
+cex.labels=1)
 {
+    # to satisfy R CMD check that doesn't recognise x, y and group as variable (in aes)
+    Features=Exp=Dataset=Mean=linkColors=chrom=po=NULL
+
+
     options(stringsAsFactors = FALSE);
     set.seed(1234);
     
@@ -123,7 +129,7 @@ ncol.legend=1)
     plot(c(1,figSize), c(1,figSize), type="n", axes=FALSE, xlab="", ylab="", main="");
     
     # Plot ideogram
-    drawIdeogram(R=circleR, cir=db, W=segmentWidth,  show.band.labels=TRUE, show.chr.labels=TRUE, chr.labels.R= chrLabelsR, chrData=chr);
+    drawIdeogram(R=circleR, cir=db, W=segmentWidth,  show.band.labels=TRUE, show.chr.labels=TRUE, chr.labels.R= chrLabelsR, chrData=chr,cex.labels=cex.labels);
     
     # Plot links
     drawLinks(R=linksR, cir=db,   mapping=links,   col=linkColors, drawIntraChr=showIntraLinks);
@@ -134,24 +140,27 @@ ncol.legend=1)
     lineCols <- color.mixo(1:nlevels(Y))#color.mixo(match(levels(Y), levels(Y)))
     
     # Fixme: remove this loop and send the whole expr dframe to drawLinePlot
-    for (i in 1:length(chr.names)){
-        seg.name <- gsub("chr","",chr.names[i]);
-        #Get data for each segment
-        expr <- subset(featExp,featExp$Dataset==seg.name)
-        
-        expr <- dcast(expr, formula = Features ~ Y, value.var="Mean")   ## changed PAM50 to Y
-        expr <- merge(expr, chr, by.x="Features", by.y="name");
-        expr$po <- (as.numeric(expr$chromStart) + as.numeric(expr$chromEnd)) / 2.0;
-        expr <- dplyr::rename(expr, seg.name = chrom, seg.po = po);
-        
-        # Reorder columns
-        cOrder <- c(c(grep("seg.name", colnames(expr)),
-        grep("seg.po", colnames(expr))),c(1:length(cTypes)+1))
-        expr <- expr[, cOrder];
-        
-        # Plot data on each sub segment
-        subChr <- subset(db, db$seg.name == chr.names[i] )
-        drawLinePlot(R=linePlotR, cir=subChr,   W=linePlotWidth, lineWidth=1, mapping=expr, col=lineCols, scale=FALSE);
+    if(line==TRUE)
+    {
+        for (i in 1:length(chr.names)){
+            seg.name <- gsub("chr","",chr.names[i]);
+            #Get data for each segment
+            expr <- subset(featExp,featExp$Dataset==seg.name)
+            
+            expr <- dcast(expr, formula = Features ~ Y, value.var="Mean")   ## changed PAM50 to Y
+            expr <- merge(expr, chr, by.x="Features", by.y="name");
+            expr$po <- (as.numeric(expr$chromStart) + as.numeric(expr$chromEnd)) / 2.0;
+            expr <- dplyr::rename(expr, seg.name = chrom, seg.po = po);
+            
+            # Reorder columns
+            cOrder <- c(c(grep("seg.name", colnames(expr)),
+            grep("seg.po", colnames(expr))),c(1:length(cTypes)+1))
+            expr <- expr[, cOrder];
+            
+            # Plot data on each sub segment
+            subChr <- subset(db, db$seg.name == chr.names[i] )
+            drawLinePlot(R=linePlotR, cir=subChr,   W=linePlotWidth, lineWidth=1, mapping=expr, col=lineCols, scale=FALSE);
+        }
     }
     opar=par("xpd")
     par(xpd=TRUE) # to authorise the legend to be written outside the margin, otherwise it's too small
@@ -160,6 +169,7 @@ ncol.legend=1)
     legend(x=5, y = (circleR/4), title="Correlations", c("Positive Correlation", "Negative Correlation"),
     col = c(colors()[134], colors()[128]), pch = 19, cex=cex.legend, bty = "n")
     # Second legend bottom righ corner
+    if(line==TRUE)
     legend(x=figSize-(circleR/3), y = (circleR/3), title="Expression", legend=levels(Y),  ## changed PAM50 to Y
     col = lineCols, pch = 19, cex=cex.legend, bty = "n",ncol=ncol.legend)
     # third legend top left corner
@@ -172,7 +182,8 @@ ncol.legend=1)
 drawIdeogram <- function(R, xc=400, yc=400, cir, W,
 show.band.labels = FALSE,
 show.chr.labels = FALSE, chr.labels.R = 0,
-chrData)
+chrData,
+cex.labels)
 {
     # Draw the main circular plot: segments, bands and labels
     chr.po    <- cir;
@@ -217,7 +228,7 @@ chrData)
         if (show.chr.labels){
             w.m <- (v1+v2)/2;
             chr.t <- gsub("chr", "", chr.s);
-            draw.text.rt(xc, yc, chr.labels.R, w.m, chr.t, cex=1, segmentWidth = W, parallel=TRUE);
+            draw.text.rt(xc, yc, chr.labels.R, w.m, chr.t, cex=cex.labels, segmentWidth = W, parallel=TRUE);
         }
     } #End for
 }
@@ -449,6 +460,11 @@ genChr <-function (expr, bandWidth = 1.0)
 
 genLinks <- function(chr, corMat, threshold)
 {
+    
+    # to satisfy R CMD check that doesn't recognise x, y and group as variable (in aes)
+    Var1=Var2=chrom=NULL
+
+
     # Generates the links corresponding to pairwise correlations
     #
     # Args:

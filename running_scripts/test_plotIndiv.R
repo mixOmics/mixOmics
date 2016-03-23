@@ -3,6 +3,7 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+opar <- par(no.readonly = TRUE)
 
 data(nutrimouse)
 X <- nutrimouse$lipid
@@ -372,12 +373,12 @@ if(additional.test==TRUE)
     
     ##test xlim,ylim, different style
     
-    plotIndiv(toxicity.spls,ylim=list(c(1,5),c(1,5)),style="graphics")
-    plotIndiv(toxicity.spls,ylim=list(c(1,5),c(1,5)),style="ggplot2")
-    plotIndiv(toxicity.spls,xlim=list(c(1,5),c(1,5)),style="lattice")
-    plotIndiv(nutri.sgcca,xlim=list(c(1,5),c(4,5),c(3,6)),style="graphics")
-    plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(4,5),c(3,6)),style="lattice")
-    plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(4,5),c(3,6)),style="ggplot2")
+    plotIndiv(toxicity.spls,ylim=list(c(-10,5),c(1,5)),style="graphics")
+    plotIndiv(toxicity.spls,ylim=list(c(-10,5),c(1,5)),style="ggplot2")#not working
+    plotIndiv(toxicity.spls,xlim=list(c(-10,5),c(1,5)),style="lattice")
+    plotIndiv(nutri.sgcca,xlim=list(c(1,5),c(0,5),c(4,6)),style="graphics")
+    plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(0,5),c(4,6)),style="lattice")
+    plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(4,5),c(4,6)),style="ggplot2") #not working
 
     
     # testing star and centroid
@@ -460,7 +461,8 @@ if(additional.test==TRUE)
               group = liver.toxicity$treatment$Dose.Group,
               pch = 20, main = 'Both Gene expression and Clinical subspaces',
               add.legend = TRUE)
-    
-  
+
+    par(mfrow=c(1,1))
 }
+par(opar)
 

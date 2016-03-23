@@ -33,7 +33,7 @@
 
 # This function is a small wrapper of cim. For more customisation, please use cim
 
-heatmapDiablo = function(object,
+cimDiablo = function(object,
 ncomp=1,
 margins = c(2, 15),
 pos.legend="topright",

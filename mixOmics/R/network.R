@@ -1,8 +1,15 @@
-# Copyright (C) 2015
-# Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-# Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-# Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-
+#############################################################################################################
+# Author :
+#   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
+#   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+#   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#
+# created: 2009
+# last modified: 23-03-2016
+#
+# Copyright (C) 2009
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -16,7 +23,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
+#############################################################################################################
 
 network <-
   function(mat,
@@ -746,9 +753,8 @@ network <-
     cex0 = 2 * V(gR)$label.cex
     
     def.par = par(no.readonly = TRUE)
-    par(mfrow=c(1,1))
     dev.new()
-    par(pty = "s", mar = c(0, 0, 0, 0))
+    par(pty = "s", mar = c(0, 0, 0, 0),mfrow=c(1,1))
     plot(1:100, 1:100, type = "n", axes = FALSE, xlab = "", ylab = "")
     cha = V(gR)$label
     cha = paste("", cha, "")
@@ -767,7 +773,8 @@ network <-
       l = layout.fun(gR)
     }
     
-    if (isTRUE(!interactive)) {
+    if (isTRUE(!interactive))
+    {
       if (isTRUE(show.color.key)) {
         layout(lmat, widths = lwid, heights = lhei, respect = FALSE)
         par(mar = c(5, 4, 2, 1), cex = 0.75)
@@ -780,10 +787,10 @@ network <-
         par(new = TRUE)
       }
       
-      par(pty = "s", mar = c(0, 0, 0, 0))
+      par(pty = "s", mar = c(0, 0, 0, 0),mfrow=c(1,1))
       plot(gR, layout = l)
       par(def.par)
-    }	
+    }
     
     #-----------------------#
     # procedure interactive #

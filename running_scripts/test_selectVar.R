@@ -5,6 +5,7 @@
 #######################################################################################################
 #######################################################################################################
 # last modified: 02-03-2016
+opar <- par(no.readonly = TRUE)
 
 data(liver.toxicity)
 X = liver.toxicity$gene
@@ -111,5 +112,8 @@ if(additional.test==TRUE)
     nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = c(3, 2, 2))
     selectVar(nutri.sgcca) ###
     selectVar(nutri.sgcca,block=c(1,2,3))
+    selectVar(nutri.sgcca,block=c(3))
 
 }
+par(opar)
+

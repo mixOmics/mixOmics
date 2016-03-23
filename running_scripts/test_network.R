@@ -3,6 +3,7 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+opar <- par(no.readonly = TRUE)
 
 ## network representation for objects of class 'rcc'
 data(nutrimouse)
@@ -388,3 +389,5 @@ if(additional.test==TRUE)
     }
     
 }
+
+par(opar)

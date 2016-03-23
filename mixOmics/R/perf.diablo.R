@@ -358,19 +358,19 @@ max.iter=500,
     ### End: Supplementary analysis for sgcca
     
     result = list()
-    result$error.rate.X = error.mat
-    result$error.rate.X.class = error.mat.class
-    result$predict.X = Y.all
-    result$class.X = Y.predict
+    result$error.rate = error.mat
+    result$error.rate.class = error.mat.class
+    result$predict = Y.all
+    result$class = Y.predict
     
     result$features$stable = list.features
-    result$features$final = final.features
+    #result$features$final = final.features
     
     if (length(X) > 1){
-        result$AverageScore.class = Y.mean
-        result$AverageScore.error.rate = Y.mean.res
-        result$MajorityVote.class = Y.vote
-        result$MajorityVote.error.rate = Y.vote.res
+        result$AveragePredict.class = Y.mean
+        result$AveragePredict.error.rate = Y.mean.res
+        result$MajorityClass = Y.vote
+        result$MajorityClass.error.rate = Y.vote.res
     }
     
     method = "plsda.mthd"

@@ -18,9 +18,13 @@
 ## note: this should probably be set up as an S3 function.
 tune.splslevel <- function (X, Y,
                             design, 
-                            ncomp = NULL, 
-                            test.keepX = rep(ncol(X), ncomp), test.keepY = rep(ncol(Y), ncomp), 
-                            already.tested.X = NULL, already.tested.Y = NULL) {
+                            ncomp = NULL,
+                            mode="regression",
+                            test.keepX = rep(ncol(X), ncomp),
+                            test.keepY = rep(ncol(Y), ncomp),
+                            already.tested.X = NULL,
+                            already.tested.Y = NULL)
+{
   
   cat("For a multilevel spls analysis, the tuning criterion is based on the maximisation of the correlation between the components from both data sets", "\n")
   

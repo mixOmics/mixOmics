@@ -225,8 +225,8 @@ multilevel=NULL)
     
     
     # to be similar to other methods, add loadings and variates as outputs
-    result$loadings = list(result$rotation)
-    result$variates = list(result$x)
+    result$loadings = list(X=result$rotation)
+    result$variates = list(X=result$x)
     
     # output multilevel if needed
     if(!is.null(multilevel))
@@ -237,6 +237,10 @@ multilevel=NULL)
     if(!is.null(multilevel))
     class(result)=c("mlpca",class(result))
     
+    #calcul explained variance    
+    result$explained_variance=result$sdev^2/result$var.tot
+    
+
     return(invisible(result))
 }
 

@@ -93,6 +93,11 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
         class(out)=c("mlplsda",class(out))
     }
 
+
+    #calcul explained variance
+    explX=explained_variance(out$X,out$variates$X,ncomp)
+    out$explained_variance=list(X=explX)
+
     return(invisible(out))
     
     

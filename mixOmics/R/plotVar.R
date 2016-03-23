@@ -100,9 +100,11 @@ plotVar <-
     
     ### Start: Validation of arguments
     ncomp = object$ncomp
-    if (any(class.object %in% object.blocks)) {
+    if (any(class.object %in% object.blocks))
+    {
       
-      if (is.null(blocks)){
+      if (is.null(blocks))
+      {
           blocks = names(object$X)#names$blocks
         
         if (any(class.object == "DA"))
@@ -119,9 +121,10 @@ plotVar <-
       object$variates = object$variates[names(object$variates) %in% blocks]
       object$names$colnames = object$names$colnames[names(object$names$colnames) %in% blocks] 
       object$blocks = object$X[names(object$X) %in% blocks]
+      
       if(any(class.object %in% "sgcca"))
       {
-          
+          #can't remember what's supposed to go on here
           
       }
       
@@ -514,11 +517,16 @@ plotVar <-
       stop("Cutoff value very high for the components ", comp1, " and ", comp2, ".No variable was selected.")
     
     if (overlap)
-      df$Block = ""
+    {
+        df$Block = main
+        if(style %in%c("ggplot2","lattice"))
+        main=NULL # to avoid double title
+    }
     #-- End: data set
 
     #-- Start: ggplot2
-    if (style == "ggplot2" &  plot){
+    if (style == "ggplot2" &  plot)
+    {
       # visible variable issues for x, y and Circle
       # according to http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when
       # one hack is to set to NULL first.
@@ -546,7 +554,7 @@ plotVar <-
       
       #-- Modify scale colour - Change X/Ylabel - split plots into Blocks  
       p = p + scale_x_continuous(limits = c(-1, 1)) + scale_y_continuous(limits = c(-1, 1))
-      p = p + labs(list(title = main, x = X.label, y = Y.label)) + facet_wrap(~ Block)
+      p = p + labs(list(title = main, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = 2, as.table = TRUE)
       
       #-- Remove Legend
    # p = p + theme(legend.position="none")
@@ -568,7 +576,8 @@ plotVar <-
     #-- End: ggplot2
     
     #-- Start: Lattice
-    if(style == "lattice" ) {
+    if(style == "lattice" )
+    {
       legend = list(space = "right", title = "Legend", cex.title = 1.25, 
                    points=list(col=unique(col),cex = unique(cex),pch = unique(pch)),                       
                    text = list(blocks))
@@ -614,7 +623,7 @@ plotVar <-
         }
         trellis.unfocus()  
       } else {
-        p = xyplot(y ~ x | Block, data = df, xlab = X.label, ylab = Y.label, main = main,
+        p = xyplot(y ~ x | Block, data = df, xlab = X.label, ylab = Y.label, main = main, as.table = TRUE,
                    scales = list(x = list(relation = "free", limits = c(-1, 1)),
                                  y = list(relation = "free", limits = c(-1, 1))),
                    col = "white",
@@ -655,10 +664,12 @@ plotVar <-
     #-- End: Lattice
     
     #-- Start: graphics
-    if(style=="graphics" ) {
+    if(style=="graphics" )
+    {
       
       
-      if (overlap) {
+      if (overlap)
+      {
         
         if(add.legend){
           opar = par(no.readonly = TRUE)
@@ -704,7 +715,7 @@ plotVar <-
           lines(x = circle[circle$Circle == i, "x"], y = circle[circle$Circle == i, "y"], col = "black")
         }
         
-        title(main, outer = TRUE, line = -1)
+        title(main)#, outer = TRUE, line = -1)
         
         if (add.legend) par(opar)
         

@@ -1,8 +1,12 @@
-# Copyright (C) 2015
-# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#############################################################################################################
+# Author :
+#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#
 # created: 27-05-2015
-# last modified: 04-03-2016
-
+# last modified: 24-03-2016
+#
+# Copyright (C) 2016
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -16,12 +20,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
 
-
+# ========================================================================================================
 # This function makes a prediction of a 'newdata' by using the results of 'object'.
 # Depending on the class of the object (mint).(block).(s)pls(da) (16 classes so far), the input data is different
 # and the preparation of the data is different - different scaling for instance if object="mint...."
 # However, the prediction formula is the same for all classes, thus only one code
+# ========================================================================================================
 
 #predict.mixOmics <-
 #predict.pls <-  predict.spls<- predict.plsda <- predict.splsda <-
@@ -54,6 +60,10 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     }else{
         #if not DA, Y is in object$Y
         Y=object$Y
+        if(is.null(Y)) # block analysis
+        {
+            Y=object$X[[object$indY]]
+        }
     }
     q=ncol(Y)
     
@@ -98,7 +108,10 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         
         # we transform everything in lists
         X=list(X=object$X)
+        object$X=X
         newdata=list(newdata=newdata)
+        
+        object$indY=2
         
     }else{
 
@@ -106,7 +119,14 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         if(!is.list(newdata))
         stop("'newdata' should be a list")
         
-        X = object$X
+        if(!is.null(object$indY))
+        {
+            X = object$X[-object$indY]
+        }else{
+            X=object$X
+        }
+        object$X=X
+
         p = lapply(X, ncol)
 
         # deal with near.zero.var in object, to remove the same variable in newdata as in object$X (already removed in object$X)
@@ -146,13 +166,18 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         if(all.equal(lapply(newdata,colnames),lapply(X,colnames))!=TRUE)
         stop("Each 'newdata[[i]]' must include all the variables of 'object$X[[i]]'")
         
+        #need to reorder variates and loadings to put 'Y' in last
+        if(!is.null(object$indY))
+        {
+            indY=object$indY
+            object$variates=c(object$variates[-indY],object$variates[indY])
+            object$loadings=c(object$loadings[-indY],object$loadings[indY])
+        }
+        
+        
     }
     
-    #need to reorder variates and loadings to put 'Y' in last
-    indY=object$indY
-    object$variates=c(object$variates[-indY],object$variates[indY])
-    object$loadings=c(object$loadings[-indY],object$loadings[indY])
-    
+
     p = lapply(X, ncol)
     q = ncol(Y)
     J=length(X) #at this stage we have a list of blocks
@@ -160,6 +185,8 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     loadingsX = object$loadings[-(J + 1)]
     
     scale=object$scale # X and Y are both mean centered by groups and if scale=TRUE they are scaled by groups
+    
+    save(list=ls(),file="temp.Rdata")
 
     ### if the object is not a mint analysis, the input study.test is missing and we can go faster to scale the data
     if(length(grep("mint",class(object)))==0 )#| nlevels(factor(object$study))<=1) #not a mint object or just one level in the study
@@ -171,10 +198,11 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         if (scale)
         newdata = lapply(1:J, function(x){sweep(newdata[[x]], 2, FUN = "/", STATS = attr(X[[x]], "scaled:scale"))})
 
-        means.Y = matrix(attr(Y, "scaled:center"),nrow=nrow(newdata.input[[1]]),ncol=q,byrow=TRUE);
+        means.Y = matrix(attr(Y, "scaled:center"),nrow=nrow(newdata[[1]]),ncol=q,byrow=TRUE);
         if (scale)
-        {sigma.Y = matrix(attr(Y, "scaled:scale"),nrow=nrow(newdata.input[[1]]),ncol=q,byrow=TRUE)}else{sigma.Y=matrix(1,nrow=nrow(newdata.input[[1]]),ncol=q)}
+        {sigma.Y = matrix(attr(Y, "scaled:scale"),nrow=nrow(newdata[[1]]),ncol=q,byrow=TRUE)}else{sigma.Y=matrix(1,nrow=nrow(newdata[[1]]),ncol=q)}
         concat.newdata=newdata
+        names(concat.newdata)=names(X)
         
     }else{
         # a mint analysis
@@ -340,6 +368,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     names(Y.hat)=names(t.pred)=names(B.hat)=names(object$X)
 
     
+
     # basic prediction results
     if(length(grep("block",class(object)))!=0 )
     {
@@ -348,122 +377,22 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     }else{# not a block (pls/spls/plsda/splsda/mint...)
         out=list(predict=Y.hat[[1]],variates=t.pred[[1]],B.hat=B.hat[[1]])
         out$newdata=concat.newdata[[1]]
-
+        
     }
-    
-    ### if the object is a DA analysis, we gives the class of each sample depending on 'method'
-    if(length(grep("plsda",class(object)))>0) # a DA analysis (mint).(block).(s)plsda
-    {
-        Y.prim = unmap(object$Y)
-        G = cls = list()
-        for (i in 1 : J)
-        {
-            G[[i]] = sapply(1:q, function(x) {apply(as.matrix(variatesX[[i]][Y.prim[, x] == 1,,drop=FALSE]), 2, mean)})
-            if (ncomp[i] == 1)
-            G[[i]] = t(t(G[[i]]))
-            else
-            G[[i]] = t(G[[i]])
-            colnames(G[[i]]) = paste("dim", c(1:ncomp[i]), sep = " ")
 
-        }
-        names(G)=names(object$X)
+
+    # get the classification for each new sample if the object is a DA
+    if(any(class(object)=="DA")) # a DA analysis (mint).(block).(s)plsda
+    {
+        # creating temporary 'blocks' outputs to pass into the internal_predict.DA function
+        out.temp=list(predict=Y.hat,variates=t.pred,B.hat=B.hat)
+        out.temp$newdata=concat.newdata
         
-        ### Start: Maximum distance
-        if (any(method == "all") || any(method == "max.dist"))
-        {
-            cls$max.dist = lapply(1:J, function(x){matrix(sapply(1:ncomp[x], ### List level
-                function(y){apply(Y.hat[[x]][, , y, drop = FALSE], 1,  ### component level
-                    function(z){which(z == max(z))}) ### matrix level
-                }), nrow = nrow(newdata[[x]]), ncol = ncomp[x])
-            })
-            cls$max.dist = lapply(1:J, function(x){colnames(cls$max.dist[[x]]) = paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
-                rownames(cls$max.dist[[x]]) = rownames(newdata[[x]]); return(cls$max.dist[[x]])})
-            names(cls$max.dist)=names(object$X)
-        }
+        # getting classification for each new sample
+        classif.DA=internal_predict.DA(object=object,q=q,out=out.temp,method=method)
+        out=c(out,classif.DA)
         
-        
-        ### Start: Centroids distance
-        if (any(method == "all") || any(method == "centroids.dist"))
-        {
-            cl = list()
-            centroids.fun = function(x, G, h, i) {
-                q = nrow(G[[i]])
-                x = matrix(x, nrow = q, ncol = h, byrow = TRUE)
-                
-                if (h > 1) {
-                    d = apply((x - G[[i]][, 1:h])^2, 1, sum)
-                }
-                else {
-                    d = (x - G[[i]][, 1])^2
-                }
-                cl.id = which.min(d)
-            }
-            
-            for (i in 1 : J)
-            {
-                cl[[i]] = matrix(nrow = nrow(newdata[[1]]), ncol = ncomp[i])
-                
-                for (h in 1 : ncomp[[i]])
-                {
-                    cl.id = apply(matrix(t.pred[[i]][, 1:h], ncol = h), 1, function(x) {centroids.fun(x = x, G = G, h = h, i = i)})
-                    cl[[i]][, h] = cl.id
-                }
-            }
-            
-            cls$centroids.dist = lapply(1:J, function(x){colnames(cl[[x]]) = paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
-                rownames(cl[[x]]) = rownames(newdata[[x]]); return(cl[[x]])})
-            names(cls$centroids.dist)=names(object$X)
-        }### End: Centroids distance
-        
-        
-        ### Start: Mahalanobis distance
-        if (any(method == "all") || any(method == "mahalanobis.dist"))
-        {
-            cl = list()
-            Sr.fun = function(x, G, Yprim, h, i) {
-                q = nrow(G[[i]])
-                Xe = Yprim %*% G[[i]][, 1:h]
-                #Xr = object$variates$X[, 1:h] - Xe
-                Xr = variatesX[[i]][, 1:h] - Xe
-                Sr = t(Xr) %*% Xr/nrow(Y)
-                Sr.inv = solve(Sr)
-                x = matrix(x, nrow = q, ncol = h, byrow = TRUE)
-                if (h > 1) {
-                    mat = (x - G[[i]][, 1:h]) %*% Sr.inv %*% t(x - G[[i]][, 1:h])
-                    d = apply(mat^2, 1, sum)
-                } else {
-                    d = drop(Sr.inv) * (x - G[[i]][, 1])^2
-                }
-                cl.id = which.min(d)
-            }
-            
-            for (i in 1 : J){
-                cl[[i]] = matrix(nrow = nrow(newdata[[1]]), ncol = ncomp[i])
-                
-                for (h in 1:ncomp[[i]]) {
-                    cl.id = apply(matrix(t.pred[[i]][, 1:h], ncol = h), 1, Sr.fun, G = G, Yprim = Y.prim, h = h, i = i)
-                    cl[[i]][, h] = cl.id
-                }
-            }
-            
-            cls$mahalanobis.dist = lapply(1:J, function(x){colnames(cl[[x]]) = paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
-                rownames(cl[[x]]) = rownames(newdata[[x]]);return(cl[[x]])})
-            names(cls$mahalanobis.dist)=names(object$X)
-        } ### End: Mahalanobis distance
-        
-        out$class=cls
-        
-        if(length(grep("block",class(object)))!=0 ) # a block
-        {
-            out$centroids = G
-        }else{ #not a block
-            out$centroids = G[[1]]
-            out$class=lapply(out$class,function(x){x[[1]]})
-        }
-        if (any(method == "all")) method = "all"
-        out$method = method
-    }### End if discriminant analysis is performed
-    
+    }
     
     
     out

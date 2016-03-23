@@ -4,14 +4,20 @@
 ## =========================================================================================================
 ## =========================================================================================================
 
-data(celltype) #load gene, celltype and study
+opar <- par(no.readonly = TRUE)
 
-Y.mat=unmap(type.id)
-rownames(Y.mat)=rownames(data)
-ind=which(exp=="Briggs")
-study.light=exp[ind]
-type.id.light=type.id[ind]
-data.light=data[ind,]
+data(stemcells) #load gene, celltype and study
+
+data=stemcells$gene
+type.id=stemcells$celltype
+exp=stemcells$study
+
+Y.mat=unmap(stemcells$celltype)
+rownames(Y.mat)=rownames(stemcells$gene)
+ind=which(stemcells$study=="1")
+study.light=stemcells$study[ind]
+type.id.light=stemcells$celltype[ind]
+data.light=stemcells$gene[ind,]
 Y.mat.light=unmap(type.id.light)
 rownames(Y.mat.light)=rownames(data.light)
 
@@ -21,8 +27,8 @@ A.light=list(X=data.light,Y=Y.mat.light)
 
 #add useless column for near.zero.var=TRUE tests
 
-data.near.zero=cbind(data,matrix(0,nrow=nrow(data),ncol=10))
-colnames(data.near.zero)=c(colnames(data),paste0("nearzero",1:10))
+data.near.zero=cbind(stemcells$gene,matrix(0,nrow=nrow(stemcells$gene),ncol=10))
+colnames(data.near.zero)=c(colnames(stemcells$gene),paste0("nearzero",1:10))
 
 
 
@@ -40,167 +46,42 @@ colnames(data.near.zero)=c(colnames(data),paste0("nearzero",1:10))
 ## ======================================================================
 
 
-## RGCCA
-# --------------
-data(nutrimouse)
-# need to unmap Y for an unsupervised analysis, where Y is included as a data block in data
-Y = unmap(nutrimouse$diet)
-data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
-# with this design, all blocks are connected
-design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3,
-byrow = TRUE, dimnames = list(names(data), names(data)))
-
-nutrimouse.rgcca <- wrapper.rgcca(X = data,
-#design = design,
-tau = "optimal",
-ncomp = c(3, 3, 2),
-scheme = "centroid",
-verbose = FALSE)
-
-# blocks should specify the block data set where the sample plot can be performed
-# (ideally when there are >= 2 components!)
-# we indicate the diet variable colors.
-plotIndiv(nutrimouse.rgcca, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE)
-
-# have a look at the looadings
-head(nutrimouse.rgcca$loadings[[1]])
-head(nutrimouse.rgcca$loadings[[2]])
-head(nutrimouse.rgcca$loadings[[3]])
-
-
-## sGCCA
-# -------------
-# same data as above but sparse approach
-
-# version 1 using the penalisation penalty criterion
-# ---
-nutrimouse.sgcca <- wrapper.sgcca(X = data,
-design = design,
-penalty = c(0.3, 0.5, 1),
-ncomp = c(3, 3, 2),
-scheme = "centroid",
-verbose = FALSE,
-bias = FALSE)
-
-# In plotIndiv we indicate the diet variable colors and the blocks to be plotted
-# (only blocks with comp  >=2!)
-plotIndiv(nutrimouse.sgcca, blocks = c(1,2), group = nutrimouse$diet,
-plot.ellipse = TRUE)
-
-# which variables are selected on a given component?
-selectVar(nutrimouse.sgcca, comp = 1, block = 1)
-selectVar(nutrimouse.sgcca, comp = 1, block = 2)
-
-# variable plot on the selected variables
-plotVar(nutrimouse.sgcca, col = color.mixo(1:3), cex = c(2,5,3))
-
-# version 2 using the keep penalty criterion (number of variables to keep)
-# it is a list per block and per component, need to specify all variables for the
-# Y 'outcome' here
-# (see below for sgccda code, which is more appropriate)
-# ----
-nutrimouse.sgcca <- wrapper.sgcca(X = data,
-design = design,
-ncomp = c(2, 2, 2),
-# for keep: each element of the list corresponds to a block
-# and is of length the # comp per block
-keepX = list(c(10,10), c(15,15), c(ncol(Y))),
-scheme = "centroid",
-verbose = FALSE,
-bias = FALSE)
-
-
-# In plotIndiv we indicate the diet variable colors and the blocks to be plotted
-# (only blocks with comp  >=2!)
-plotIndiv(nutrimouse.sgcca, blocks = c(1,2), group = nutrimouse$diet,
-plot.ellipse = TRUE)
-
-# which variables are selected on a given component?
-selectVar(nutrimouse.sgcca, comp = 1, block = 1)
-selectVar(nutrimouse.sgcca, comp = 1, block = 2)
-
-
-## sGCC-DA
-# -------------
-data(nutrimouse)
-Y = nutrimouse$diet
-data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
-design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
-
-nutrimouse.sgccda <- wrapper.sgccda(X = data,
-Y = Y,
-design = design,
-keepX = list(c(10,10), c(15,15)),
-ncomp = c(3, 3),
-scheme = "centroid",
-verbose = FALSE,
-bias = FALSE)
-
-plotIndiv(nutrimouse.sgccda,Y=Y) # Amrit function
-#plotIndiv(nutrimouse.sgccda, blocks = c(1,2), group = nutrimouse$diet,
-#plot.ellipse = TRUE)
-
-# which variables are selected on a given component?
-selectVar(nutrimouse.sgccda, comp = 1, block = 1)
-selectVar(nutrimouse.sgccda, comp = 1, block = 2)
-
-# variable plot on the selected variables
-plotVar(nutrimouse.sgccda, col = color.mixo(1:2), cex = c(2,2))
-
-
-
-
-
-data(nutrimouse)
-# need to unmap Y for an unsupervised analysis, where Y is included as a data block in data
-Y = unmap(nutrimouse$diet)
-data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
-# with this design, all blocks are connected
-design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3,
-byrow = TRUE, dimnames = list(names(data), names(data)))
-
-nutrimouse.rgcca <- wrapper.rgcca(X = data,
-#design = design,
-tau = "optimal",
-ncomp = c(3, 3, 2),
-scheme = "centroid",
-verbose = FALSE)
-
 
 
 #######  wraper.block.pls
-res=block.pls(X=data,indY=3)
-res=block.pls(list(nutrimouse$gene),Y=Y,ncomp=2)
-res2=block.pls(list(nutrimouse$gene),Y=Y,ncomp=2,bias=TRUE)
-res3=block.pls(list(nutrimouse$gene),Y=Y,ncomp=2,scale=FALSE)
+res=block.pls(list(data),Y=Y.mat,ncomp=2)
+res2=block.pls(list(data),Y=Y.mat,ncomp=2,bias=TRUE)
+res3=block.pls(list(data),Y=Y.mat,ncomp=2,scale=FALSE)
 
-
+selectVar(res,block=2)
 
 #######  wraper.block.spls
 res=block.spls(X=A.light,indY=2,keepX=list(block1=c(10,5,15),block2=c(3,2)),ncomp=c(3,3))
 res=block.spls(list(data),Y=Y.mat,keepX=list(block1=c(10,5,15),block2=c(3,2)),ncomp=3)
 
+selectVar(res)
+selectVar(res,block=2,comp=3)
 
 
 #######  wraper.block.plsda
 res=block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
 res=block.plsda(list(data),Y=type.id,ncomp=2)
 
+selectVar(res,block=2)
 
 
 #######  wraper.block.splsda
 res=block.splsda(X=list(X=data,Y=type.id),keepX=list(block1=c(10,5)),indY=2,ncomp=c(3,2))
 res=block.splsda(X=list(X=data,Y=type.id),keepX=list(block1=c(10,5)),indY=2,ncomp=c(2,2))
 res=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(c(100)),
-keepX.constraint=list(list(comp1=c("ENSG00000001084","ENSG00000001461"),comp2=c("ENSG00000000938"))))
+keepX.constraint=list(list(comp1=c("ENSG00000187243","ENSG00000175573"),comp2=c("ENSG00000133475"))))
 
-
-
-
-
-# same results for sgccda and block.splsda. outputs are different though
-res=wrapper.sgccda(X=data,Y=type.id,keepA=list(c(10,5,10)),ncomp=3)
 res2=block.splsda(X=list(X=data),Y=type.id,keepX=list(c(10,5,10)),ncomp=3,mode="canonical")
+
+
+selectVar(res2)
+selectVar(res2,block=2,comp=2)
+
 
 
 
@@ -222,9 +103,46 @@ res=mint.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=exp)
 #######  wraper.mint.spls
 res=mint.spls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
+selectVar(res)
+selectVar(res,block=2,comp=3)
+plotVar(res)
+
+
+#source("mixOmics/R/plotIndiv.pls.R")
+
+
+#source("mixOmics/R/plotIndiv.pls.R")
+#source("mixOmics/R/check.plotIndiv.R")
+#source("mixOmics/R/internal_graphicModule.R")
+#source("mixOmics/R/plotIndiv.mint.R")
+
+#plotIndiv(res,study=1)
+plotIndiv(res,study=c(1:2,"all",5:6))
+plotIndiv(res,study=c(1:2,"all",6:5),group=type.id)
+plotIndiv(res,study=c(1:2,"all",6:5),group=type.id,subtitle=paste0("study:",letters[seq( from = 1, to = 5 )]))
+plotIndiv(res,study=c(1:2,"all",6:5),group=type.id,subtitle=letters[seq( from = 1, to = 5 )],main="MINT")
+
+
+plotIndiv(res,study=c(1:2,"all",5:6),style="lattice")
+plotIndiv(res,study=c(1:2,"all",6:5),group=type.id,style="lattice")
+
+plotIndiv(res,study=c(1:2,"all",5:6),style="graphics")
+plotIndiv(res,study=c(1:2,"all",6:5),group=type.id,style="graphics")
+
+
+plotIndiv(res,ind.names=FALSE)
+
+plotIndiv(res,ind.names=FALSE,group=type.id)
+
+plotIndiv(res,ind.names=FALSE,group=type.id,add.legend=TRUE)
+
+
+
 #######  wraper.mint.splsda
 res=mint.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
+selectVar(res)
+selectVar(res,block=2,comp=3)
 
 
 #######  wraper.mint.block.pls
@@ -235,15 +153,22 @@ res=mint.block.pls(list(data),Y=Y.mat,ncomp=2)
 res=mint.block.spls(X=list(X=data,Y=Y.mat),indY=2,keepX=list(block1=c(10,5)),ncomp=c(2,2))
 res=mint.block.spls(list(data),Y=Y.mat,ncomp=2)
 
+selectVar(res)
+selectVar(res,block=2,comp=2)
+plotVar(res)
+
+
 #######  wraper.mint.block.plsda
 res=mint.block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
 res=mint.block.plsda(list(data),Y=type.id,ncomp=2)
 
 #######  wraper.mint.block.splsda
-res=mint.block.splsda(X=list(X=data,Y=type.id),indY=2,keepX=list(block1=c(10,5)),ncomp=c(2,2))
 res=mint.block.splsda(list(data),Y=type.id,ncomp=2)
+res=mint.block.splsda(X=list(X=data,Y=type.id),indY=2,keepX=list(block1=c(10,5)),ncomp=c(2,2))
 
-
+selectVar(res)
+selectVar(res,block=2,comp=2)
+plotVar(res)
 
 
 
@@ -309,10 +234,9 @@ sp1$iter;sp2$iter
 res=mixOmics(data,Y=Y.mat,ncomp=3,study=exp)
 
 #mint.spls
-res=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(100,50),ncomp=3)
-res1=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(100,50),ncomp=3)#with gene names in keepX.constraint
+res1=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000187243","ENSG00000175573")),keepX=c(100,50),ncomp=3)#with gene names in keepX.constraint
 res2=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c(120,179)),keepX=c(100,50),ncomp=3)#with numbers in keepX.constraint
-all.equal(res1,res2)
+all.equal(res,res1)
 res=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c(120,179)),ncomp=3)#mint.spls missing keepX is completed by pls-like
 res$keepX
 
@@ -320,7 +244,7 @@ res$keepX
 res=mixOmics(data,type.id,ncomp=3,study=exp)
 
 #mint.splsda
-res=mixOmics(X=data,Y=type.id,study=exp,keepX.constraint=list(c("ENSG00000006576","ENSG00000008226")),keepX=c(10,15),ncomp=3)
+res=mixOmics(X=data,Y=type.id,study=exp,keepX.constraint=list(c("ENSG00000187243","ENSG00000175573")),keepX=c(10,15),ncomp=3)
 
 
 
@@ -365,7 +289,6 @@ res2=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(c(5,10),2),ncomp=c(3,3))
 res3=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(list(c(5,10),3),list(2)),ncomp=c(3,3))
 
 
-all.equal(res,res3)
 
 which(res$loadings$X[,1]!=0)
 which(res$loadings$X[,2]!=0)
@@ -394,5 +317,6 @@ res=mixOmics(X=A,tau=c(1,1),keepX=list(c(10,10)),ncomp=c(3,3))#OK
 res=mixOmics(X=A,tau=c(1,1),keepX=list(5,2),keepX.constraint=list(list(c(5,10))),ncomp=c(2,2)) #OK
 
 
+par(opar)
 
 

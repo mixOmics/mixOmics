@@ -4,7 +4,6 @@
 \alias{selectVar.pls}
 \alias{selectVar.spls}
 \alias{selectVar.pca}
-\alias{selectVar.sipca}
 \alias{selectVar.sgcca}
 \alias{selectVar.rgcca}
 \alias{select.var}
@@ -20,7 +19,6 @@ This function outputs the selected variables on each component for the sparse ve
 \method{selectVar}{pls}(object, comp =1, block=NULL,\ldots)
 \method{selectVar}{pca}(object, comp =1, block=NULL,\ldots)
 \method{selectVar}{spls}(object, comp =1, block=NULL,\ldots)
-\method{selectVar}{sipca}(object, comp =1, block=NULL,\ldots)
 \method{selectVar}{sgcca}(object, comp =1, block=NULL, \ldots)
 \method{selectVar}{rgcca}(object, comp =1, block=NULL, \ldots)
 }

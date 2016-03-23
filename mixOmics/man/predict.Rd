@@ -1,6 +1,5 @@
 \name{predict}
 \encoding{latin1}
-\alias{predict}
 \alias{predict.pls}
 \alias{predict.spls}
 \alias{predict.plsda}
@@ -24,8 +23,8 @@ Predicted values based on PLS, sparse PLS, PLS-DA or sparse PLS-DA models. New r
 variates are predicted using a fitted model and a new matrix of observations.
 }
 
-\usage{predict(object, newdata, study.test, method = c("all", "max.dist",
-"centroids.dist", "mahalanobis.dist"), ...)
+\usage{
+\method{predict}{pls}(object, newdata,study.test,method = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),\ldots)
 }
 
 \arguments{
@@ -87,7 +86,7 @@ newdata
 
 pred <- predict(linn.pls, newdata)
 
-plotIndiv(linn.pls, comp = 1:2, rep.space = "X-variate")
+plotIndiv(linn.pls, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE)
 points(pred$variates[, 1], pred$variates[, 2], pch = 19, cex = 1.2)
 text(pred$variates[, 1], pred$variates[, 2], 
      c("new ind.1", "new ind.2"), pos = 3)

@@ -224,6 +224,8 @@ scale.function=function(temp,scale=TRUE,bias=FALSE)
             sqrt.sdX=sqrt(colSums(data.list.study.scale_i^2)/(nrow(temp)-1))
         }
         data.list.study.scale_i=t( t(data.list.study.scale_i)/sqrt.sdX)
+    }else{
+        sqrt.sdX=NULL
     }
     
     is.na.data=is.na(data.list.study.scale_i)
@@ -249,6 +251,7 @@ mean_centering_per_study=function(data,study,scale,bias=FALSE) {
     concat.data =do.call("rbind", lapply(res,function(x){x[[1]]}))
     meanX=lapply(res,function(x){x[[2]]})
     sqrt.sdX=lapply(res,function(x){x[[3]]})
+    rownames.study=lapply(res,function(x){rownames(x[[1]])})
 
     #time2=proc.time()
     #print("mean_centering")
@@ -293,7 +296,7 @@ mean_centering_per_study=function(data,study,scale,bias=FALSE) {
         }else{attr(concat.data,"scaled:scale")=NULL}
     }
     
-    return(list(concat.data=concat.data))#,data.list.study.scale=data.list.study.scale))
+    return(list(concat.data=concat.data,rownames.study=rownames.study))#,data.list.study.scale=data.list.study.scale))
 }
 
 

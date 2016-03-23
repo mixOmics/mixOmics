@@ -92,8 +92,6 @@ near.zero.var = FALSE)
     variates=result$variates,loadings=result$loadings,variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,
     names=result$names,init=result$init,bias=result$bias,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
   
-    if(!missing(ncomp))   out$ncomp=ncomp
-
 
     class(out) = c("mint.block.spls","block.spls","sgcca")
     return(invisible(out))

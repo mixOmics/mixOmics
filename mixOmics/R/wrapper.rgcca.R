@@ -83,7 +83,7 @@ near.zero.var=FALSE)
     cl = match.call()
     cl[[1]] = as.name('sparse.rgcca')
     
-    output = list(
+    out = list(
     class = cl,
     X = result.rgcca$X,
     variates = result.rgcca$variates,
@@ -100,7 +100,13 @@ near.zero.var=FALSE)
     nzv=result.rgcca$nzv
     )
     
-    class(output) = c("sparse.rgcca","rgcca")
-    return(invisible(output))
+    #calcul explained variance
+    explX=lapply(1:length(out$X),function(x){explained_variance(out$X[[x]],variates=out$variates[[x]],ncomp=out$ncomp[[x]])})
+    out$explained_variance=explX
+    names(out$explained_variance)=names(out$X)
+
+
+    class(out) = c("sparse.rgcca","rgcca")
+    return(invisible(out))
     
 }
