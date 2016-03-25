@@ -283,14 +283,15 @@ if(additional.test==TRUE)
     plotIndiv(nutri.res,main="plot",Y.label="Y1",comp=c(2,3))
     
     ##test graphics,add.legend with add after points and abline
-    
-    plotIndiv(nutri.res,style="graphics")
+    # working properly if layout is done, otherwise par(mfrow) is reset to 1,1, which messes up with the abline and points. no problem when plotting only one block
+    plotIndiv(nutri.res,style="graphics",layout=c(1,2))
     abline(0,0)
     plotIndiv(nutri.res,style="graphics",add.legend=T)
     points(0,0)
     plotIndiv(nutri.res,style="graphics")
     abline(0,0)
     
+    par(mfrow=c(1,1))
     ###PLSDA
     
     data(breast.tumors)
@@ -376,9 +377,9 @@ if(additional.test==TRUE)
     plotIndiv(toxicity.spls,ylim=list(c(-10,5),c(1,5)),style="graphics")
     plotIndiv(toxicity.spls,ylim=list(c(-10,5),c(1,5)),style="ggplot2")#not working
     plotIndiv(toxicity.spls,xlim=list(c(-10,5),c(1,5)),style="lattice")
-    plotIndiv(nutri.sgcca,xlim=list(c(1,5),c(0,5),c(4,6)),style="graphics")
-    plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(0,5),c(4,6)),style="lattice")
-    plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(4,5),c(4,6)),style="ggplot2") #not working
+    plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(0,5),c(0,1)),style="graphics")
+    plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(0,5),c(0,1)),style="lattice")
+    plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(4,5),c(0,1)),style="ggplot2") #not working
 
     
     # testing star and centroid

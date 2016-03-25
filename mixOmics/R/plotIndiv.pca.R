@@ -58,10 +58,20 @@ pch,
 alpha=0.2,
 axes.box = "box",
 layout=NULL,
+size.title=rel(2),
+size.subtitle=rel(1.5),
+size.xlabel=rel(1),
+size.ylabel=rel(1),
+size.axis=rel(0.8),
+legend.text.size=rel(1),
+legend.title.size=rel(1.1),
+legend.position="right",
 ...
 )
 {
-    
+    plot_parameters=list(size.title=size.title,size.subtitle=size.subtitle,size.xlabel=size.xlabel,size.ylabel=size.ylabel,size.axis=size.axis,
+    legend.text.size=legend.text.size,legend.title.size=legend.title.size,legend.position=legend.position)
+
     
     blocks = "X"
     rep.space= "X-variate"
@@ -69,7 +79,7 @@ layout=NULL,
     check = check.input.plotIndiv(object=object,comp = comp,rep.space = rep.space,blocks = blocks, ind.names = ind.names,
     style=style, plot.ellipse = plot.ellipse, ellipse.level = ellipse.level, plot.centroid=plot.centroid,
     plot.star=plot.star, add.legend=add.legend,X.label = X.label,Y.label = Y.label,Z.label = Z.label,abline.line = abline.line,
-    xlim = xlim,ylim = ylim,alpha=alpha,axes.box = axes.box)
+    xlim = xlim,ylim = ylim,alpha=alpha,axes.box = axes.box,plot_parameters=plot_parameters)
     
     # retrieve outputs from the checks
     axes.box=check$axes.box
@@ -145,7 +155,7 @@ layout=NULL,
     internal_graphicModule(df=df,plot.centroid=plot.centroid,col.per.group=col.per.group,main=main,X.label=X.label,Y.label=Y.label,Z.label=Z.label,
     xlim=xlim,ylim=ylim,class.object=class(object),display.names=display.names,add.legend=add.legend,
     abline.line=abline.line,plot.star=plot.star,plot.ellipse=plot.ellipse,df.ellipse=df.ellipse,style=style,layout=layout,missing.col=missing.col,
-    axes.box=axes.box)
+    axes.box=axes.box,plot_parameters=plot_parameters)
     
     return(invisible(list(df=df,df.ellipse=df.ellipse)))
 

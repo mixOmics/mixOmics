@@ -31,6 +31,31 @@ data.near.zero=cbind(stemcells$gene,matrix(0,nrow=nrow(stemcells$gene),ncol=10))
 colnames(data.near.zero)=c(colnames(stemcells$gene),paste0("nearzero",1:10))
 
 
+res=mint.spls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
+
+#source("/Users/florian/Work/git/package-mixomics/mixOmics/R/plotIndiv.mint.R")
+#source("/Users/florian/Work/git/package-mixomics/mixOmics/R/check.plotIndiv.R")
+#source("/Users/florian/Work/git/package-mixomics/mixOmics/R/internal_graphicModule.R")
+
+plotIndiv(res,study=c(1:2,"all",6:5),group=type.id)
+plotIndiv(res,study=c(1:2,"all",6:5),group=type.id,add.legend=T)
+plotIndiv(res,study=c("all"),group=type.id,add.legend=T)
+plotIndiv(res,study=c("1"),group=type.id,add.legend=T)
+plotIndiv(res,study=c(1,2),group=type.id,add.legend=T,main="bla")
+
+plotIndiv(res,study=c(1:2),group=type.id,add.legend=T,legend.position="right",legend.title.size=rel(2),legend.text.size=rel(1.7),size.xlabel=rel(1.2),size.ylabel=rel(1.2),size.axis=rel(1.2),size.subtitle=rel(3),size.title=rel(4),main="bla")
+
+plotIndiv(res,study=c(1:2),group=type.id,add.legend=T,legend.position="bottom",legend.title.size=rel(2),legend.text.size=rel(1.7),size.xlabel=rel(1.2),size.ylabel=rel(1.2),size.axis=rel(1.2),size.subtitle=rel(3),size.title=rel(4),main="bla")
+
+plotIndiv(res,study=c(1,2),group=type.id,add.legend=T,style="lattice")
+
+plotIndiv(res,study=c(1:2,"all",6:5),group=type.id,add.legend=T,pch=14+as.numeric(factor(exp)))
+
+
+plotIndiv(res,study=c(1:2,"all",6:5),group=type.id,subtitle=paste0("study:",letters[seq( from = 1, to = 5 )]))
+plotIndiv(res,study=c(1:2,"all",6:5),group=type.id,subtitle=letters[seq( from = 1, to = 5 )],main="MINT")
+
+
 
 #wraper.mint.spls.hybrid, function not available to user, so not a proper check to conduct
 #res=wrapper.mint.spls.hybrid(X=data,Y=Y.mat,study=exp,keepX=c(10,5,10),ncomp=3,near.zero.var=FALSE,tol=1e-25)

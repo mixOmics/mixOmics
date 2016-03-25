@@ -70,8 +70,8 @@ ilr.transfo <- function(x, fast=TRUE, min.value = min(x[which(x !=0)])*0.01){
     }
   } else {
     for (i in 1:ncol(x.ilr)){
-      x.ilr[,i]=sqrt((D-i)/(D-i+1))*log(apply(as.matrix(x[,(i+1):D]), 1, gm)/(x[,i]+ min.value)+ min.value)	
-      #x.ilr[,i]=sqrt((D-i)/(D-i+1))*log(apply(as.matrix(x[,(i+1):D]), 1, gm)/(x[,i]))
+        x.ilr[,i]=sqrt((D-i)/(D-i+1))*log(apply(as.matrix(x[,(i+1):D]), 1, function(x){exp(log(x))})/(x[,i]+ min.value)+ min.value)
+      #x.ilr[,i]=sqrt((D-i)/(D-i+1))*log(apply(as.matrix(x[,(i+1):D]), 1, function(x){exp(log(x))})/(x[,i]))
     }
   }
   class(x.ilr)='ilr'

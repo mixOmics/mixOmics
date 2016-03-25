@@ -34,11 +34,16 @@ plotIndiv(nutrimouse.rgcca, blocks = c(1), group = nutrimouse$diet, plot.ellipse
 
 plotIndiv(nutrimouse.rgcca, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE)
 plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, plot.ellipse = TRUE)
+
+#without layout, mfrow is reset
 plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, plot.ellipse = TRUE,style="graphics")
 plot(1:10,1:10)
 
-plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, plot.ellipse = TRUE,style="graphics",add.legend=TRUE)
+#with layout, we can combine
+plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, plot.ellipse = TRUE,style="graphics",layout=c(2,2))
 plot(1:10,1:10)
+
+plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, plot.ellipse = TRUE,style="graphics",add.legend=TRUE)
 
 # have a look at the looadings
 head(nutrimouse.rgcca$loadings[[1]])

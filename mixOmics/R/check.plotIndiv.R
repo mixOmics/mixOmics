@@ -47,7 +47,8 @@ abline.line = FALSE,
 xlim = NULL,
 ylim = NULL,
 alpha=0.2,
-axes.box = "box")
+axes.box = "box",
+plot_parameters)
 {
     
     
@@ -158,7 +159,43 @@ axes.box = "box")
             stop("'Z.label' must be a vector of length 1", call. = FALSE)
         }
     }
-
+    
+    # plot_parameters
+    #plot_parameters=list(size.title=size.title,size.subtitle=size.subtitle,size.xlabel=size.xlabel,size.ylabel=size.ylabel,size.axis=size.axis,
+    #legend.text.size=legend.text.size,legend.title.size=legend.title.size,legend.position=legend.position)
+    size.title=plot_parameters$size.title
+    size.subtitle=plot_parameters$size.subtitle
+    size.xlabel=plot_parameters$size.xlabel
+    size.ylabel=plot_parameters$size.ylabel
+    size.axis=plot_parameters$size.axis
+    legend.text.size=plot_parameters$legend.text.size
+    legend.title.size=plot_parameters$legend.title.size
+    legend.position=plot_parameters$legend.position
+    
+    if(!is.numeric(size.title) || length(size.title)>1 || size.title<0)
+    stop("'size.title' needs to be a non negative number")
+    
+    if(!is.numeric(size.subtitle) || length(size.subtitle)>1 || size.subtitle<0)
+    stop("'size.subtitle' needs to be a non negative number")
+   
+   if(!is.numeric(size.xlabel) || length(size.xlabel)>1 || size.xlabel<0)
+   stop("'size.xlabel' needs to be a non negative number")
+   
+   if(!is.numeric(size.ylabel) || length(size.ylabel)>1 || size.ylabel<0)
+   stop("'size.ylabel' needs to be a non negative number")
+   
+   if(!is.numeric(size.axis) || length(size.axis)>1 || size.axis<0)
+   stop("'size.axis' needs to be a non negative number")
+   
+   if(!is.numeric(legend.text.size) || length(legend.text.size)>1 || legend.text.size<0)
+   stop("'legend.text.size' needs to be a non negative number")
+   
+   if(!is.numeric(legend.title.size) || length(legend.title.size)>1 || legend.title.size<0)
+   stop("'legend.title.size' needs to be a non negative number")
+   
+   if(length(legend.position)>1 || !legend.position%in%c("bottom","left","right","top"))
+   stop('"legend.position" needs to be one of "bottom","left","right" or "top"')
+   
 
     if (is.logical(ind.names) & isTRUE(ind.names))
     {
@@ -463,7 +500,7 @@ display.names)
     {
         if (style == "ggplot2")
         {
-            cex = rep(5, n)
+            cex = rep(3, n)
             cex = cex[as.factor(group)]
         } else {
             cex = rep(1, n)
