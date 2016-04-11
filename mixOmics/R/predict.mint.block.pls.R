@@ -186,7 +186,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     
     scale=object$scale # X and Y are both mean centered by groups and if scale=TRUE they are scaled by groups
     
-    save(list=ls(),file="temp.Rdata")
+    #save(list=ls(),file="temp.Rdata")
 
     ### if the object is not a mint analysis, the input study.test is missing and we can go faster to scale the data
     if(length(grep("mint",class(object)))==0 )#| nlevels(factor(object$study))<=1) #not a mint object or just one level in the study

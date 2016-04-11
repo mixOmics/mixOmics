@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 16-03-2016
-# last modified: 23-03-2016
+# last modified: 11-04-2016
 #
 # Copyright (C) 2016
 #
@@ -30,7 +30,6 @@
 
 check.input.plotIndiv=function(object,
 comp = NULL,
-rep.space = NULL,
 blocks = NULL, # to choose which block data to plot, when using GCCA module
 ind.names = TRUE,
 style="ggplot2", # can choose between graphics,3d, lattice or ggplot2
@@ -110,9 +109,6 @@ plot_parameters)
     comp1 = round(comp[1]); comp2 = round(comp[2])
     if (style=="3d") {comp3 = round(comp[3])}else{comp3=NULL}
     
-    
-    rep.space = match.arg(rep.space, c("XY-variate", "X-variate", "Y-variate","multi"))
-
 
     #plot.ellipse
     if(!is.logical(plot.ellipse))
@@ -171,7 +167,8 @@ plot_parameters)
     legend.text.size=plot_parameters$legend.text.size
     legend.title.size=plot_parameters$legend.title.size
     legend.position=plot_parameters$legend.position
-    
+    point.lwd=plot_parameters$point.lwd
+
     if(!is.numeric(size.title) || length(size.title)>1 || size.title<0)
     stop("'size.title' needs to be a non negative number")
     
@@ -196,7 +193,9 @@ plot_parameters)
    if(length(legend.position)>1 || !legend.position%in%c("bottom","left","right","top"))
    stop('"legend.position" needs to be one of "bottom","left","right" or "top"')
    
-
+   if(!is.numeric(point.lwd) || length(point.lwd)>1 || point.lwd<0)
+   stop("'point.lwd' needs to be a non negative number")
+   
     if (is.logical(ind.names) & isTRUE(ind.names))
     {
         ind.names = object$names$sample
@@ -280,12 +279,12 @@ plot_parameters)
     
 
 
-    out=list(axes.box=axes.box,comp=c(comp1,comp2,comp3),rep.space=rep.space,xlim=xlim,ylim=ylim,ind.names=ind.names,display.names=display.names)
+    out=list(axes.box=axes.box,comp=c(comp1,comp2,comp3),xlim=xlim,ylim=ylim,ind.names=ind.names,display.names=display.names)
     
 }
 
 
-internal_getVariatesAndLabels=function(object,comp,blocks,rep.space,style,X.label,Y.label,Z.label)
+internal_getVariatesAndLabels=function(object,comp,blocks.init,blocks,rep.space,style,X.label,Y.label,Z.label)
 {
     
     class.object = class(object)
@@ -307,13 +306,26 @@ internal_getVariatesAndLabels=function(object,comp,blocks,rep.space,style,X.labe
         #-- Variance explained for pls and block.pls obejcts
         
         # we display explained variance when only 1block is plotted and the object is not MINT
-        if (!any(class.object%in%object.mint) & length(blocks)==1 && rep.space != "XY-variate")
+        #        if (!any(class.object%in%object.mint) & length(blocks)==1 && rep.space != "XY-variate")
+        if (length(blocks)==1 && rep.space != "XY-variate")
         {
             if (style == "3d")
             {
                 inf=round(object$explained_variance[[blocks]][c(comp[1],comp[2],comp[3])],2)#c((object$sdev[comp[1]])^2/object$var.tot,(object$sdev[comp[2]])^2/object$var.tot,(object$sdev[comp[3]]^2)/object$var.tot)
             } else {
-                inf = round(object$explained_variance[[blocks]][c(comp[1],comp[2])],2)# c((object$sdev[comp[1]])^2/object$var.tot,(object$sdev[comp[2]])^2/object$var.tot)
+                if(any(class.object%in%object.mint))
+                {
+                    if(blocks%in%c("X","Y")) # means that study=="all"
+                    {
+                        inf = round(object$explained_variance[[blocks]]$"all data"[c(comp[1],comp[2])],2)
+                    }else{
+                        inf = round(object$explained_variance[[blocks.init]][[blocks]][c(comp[1],comp[2])],2)# c((object$sdev[comp[1]])^2/object$var.tot,(object$sdev[comp[2]])^2/object$var.tot)
+                    
+                    }
+                }else{
+                    inf = round(object$explained_variance[[blocks]][c(comp[1],comp[2])],2)
+
+                }
             }
             
             # for future development: if a label with explained variance for each blocks :

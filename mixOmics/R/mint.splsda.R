@@ -83,7 +83,7 @@ near.zero.var = FALSE)
         keepX.constraint=result$keepA.constraint[[1]],keepY.constraint=result$keepA.constraint[[2]],
         variates=result$variates,loadings=result$loadings,
         variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,
-        names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
+        names=result$names,tol=result$tol,iter=result$iter,max.iter=result$max.iter,nzv=result$nzv,scale=scale)
     out$names$Y = levels(Y)
     row.names(out$variates$Y) = row.names(out$variates$X)
     row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(Y)))

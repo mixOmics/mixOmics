@@ -97,13 +97,14 @@ near.zero.var=FALSE)
     crit = result.rgcca$crit,
     AVE = list(AVE.X = result.rgcca$AVE$AVE_X, result.rgcca$AVE$AVE_outer, result.rgcca$AVE$AVE_inner), #rename?
     names=result.rgcca$names,#names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames)),
-    nzv=result.rgcca$nzv
+    nzv=result.rgcca$nzv,
+    explained_variance=result.rgcca$explained_variance
     )
     
     #calcul explained variance
-    explX=lapply(1:length(out$X),function(x){explained_variance(out$X[[x]],variates=out$variates[[x]],ncomp=out$ncomp[[x]])})
-    out$explained_variance=explX
-    names(out$explained_variance)=names(out$X)
+    #explX=lapply(1:length(out$X),function(x){explained_variance(out$X[[x]],variates=out$variates[[x]],ncomp=out$ncomp[[x]])})
+    #out$explained_variance=explX
+    #names(out$explained_variance)=names(out$X)
 
 
     class(out) = c("sparse.rgcca","rgcca")

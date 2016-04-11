@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 01-03-2016
+# last modified: 11-04-2016
 #
 # Copyright (C) 2015
 #
@@ -61,7 +61,7 @@ near.zero.var = FALSE)
     #print(missing(ncomp))
 
     
-    check=Check.entry.wrapper.sparse.mint.block(X=X,Y=Y,indY=indY,ncomp=ncomp,keepX=keepX,
+    check=Check.entry.wrapper.mint.block(X=X,Y=Y,indY=indY,ncomp=ncomp,keepX=keepX,
     keepX.constraint=keepX.constraint,keepY=keepY,keepY.constraint=keepY.constraint,
     study=study,design=design,init=init,scheme=scheme,
     scale=scale,bias=bias,near.zero.var=near.zero.var,mode=mode,tol=tol,

@@ -109,8 +109,8 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
     # keepA.constraint: keepX.constraint, which variables are kept on the first num.comp-1 components. It is a list of characters
     # near.zero.var: do you want to remove variables with very small variance
     
-    check=Check.entry.pls(X, Y, ncomp, keepX, keepY,keepX.constraint,keepY.constraint,mode,
-        near.zero.var=near.zero.var,max.iter=max.iter,tol=tol,logratio=logratio,DA=DA,multilevel=multilevel) # to have the warnings relative to X and Y, instead of blocks
+    check=Check.entry.pls(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.constraint, mode=mode, scale=scale,
+        near.zero.var=near.zero.var, max.iter=max.iter ,tol=tol ,logratio=logratio ,DA=DA, multilevel=multilevel) # to have the warnings relative to X and Y, instead of blocks
     X=check$X
     Y=check$Y
     ncomp=check$ncomp
@@ -153,10 +153,12 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
             X=Xw
             
             #-- Need to set Y variable for 1 or 2 factors
-            Y = multilevel[, -1]
-            if (!is.null(dim(Y))) {
+            Y = multilevel[, -1,drop=FALSE]
+            if (ncol(Y)>0)
+            {
                 Y = apply(Y, 1, paste, collapse = ".")  #  paste is to combine in the case we have 2 levels
             }
+            
             Y = as.factor(Y)
             Y.factor=Y
             Y=unmap(Y)
@@ -164,11 +166,12 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
             rownames(Y)=rownames(X)
             # if DA keepY should be all the levels (which is not happening in the check because of multilevel
             keepY=rep(ncol(Y),ncomp)
-
+        
         }
     }
     #-- multilevel approach ----------------------------------------------------#
     #---------------------------------------------------------------------------#
+    save(list=ls(),file="temp.Rdata")
 
 
     #---------------------------------------------------------------------------#

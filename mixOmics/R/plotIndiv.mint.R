@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 16-03-2016
-# last modified: 23-03-2016
+# last modified: 11-04-2016
 #
 # Copyright (C) 2016
 #
@@ -71,11 +71,12 @@ size.axis=rel(0.8),
 legend.text.size=rel(1),
 legend.title.size=rel(1.1),
 legend.position="right",
+point.lwd=1,
 ...
 )
 {
     plot_parameters=list(size.title=size.title,size.subtitle=size.subtitle,size.xlabel=size.xlabel,size.ylabel=size.ylabel,size.axis=size.axis,
-    legend.text.size=legend.text.size,legend.title.size=legend.title.size,legend.position=legend.position)
+    legend.text.size=legend.text.size,legend.title.size=legend.title.size,legend.position=legend.position,point.lwd=point.lwd)
 
 
     if(any(class(object)%in%c("mint.block.pls","mint.block.spls","mint.block.plsda","mint.block.splsda")))
@@ -87,6 +88,8 @@ legend.position="right",
     {
         rep.space="X-variate"
     }
+    rep.space = match.arg(rep.space, c("XY-variate", "X-variate", "Y-variate","multi"))
+
     ind.names=FALSE
     # --------------------------------------------------------------------------------------
     #           need study
@@ -187,12 +190,14 @@ legend.position="right",
                 object$variates$XYvariates = (object$variates$X + object$variates$Y)/2
                 object$variates = object$variates["XYvariates"]; blocks = "XY combined"
             }
-            
+            blocks.init=blocks #save for "internal_getVariatesAndLabels"
             blocks=study
             
             
         }else{ #length(study)>1
             
+            blocks=c("X","Y")
+
             if (rep.space == "multi")
             {
                 rep.space="X-variate"; warning("More than one study is plotted, 'rep.space' is set to 'X-variate'. Alternatively, you can input 'Y-variate'")
@@ -204,8 +209,22 @@ legend.position="right",
             if (rep.space == "Y-variate")
             {blocks = "Y"}
             
+
             #extract variates for each "blocks" for "study"
-            object$variates = lapply(object$variates.partial,function(x){ out=lapply(study, function(y){x[[y]]});names(out)=study;out})[names(object$variates) %in% blocks][[1]]
+            object$variates = lapply(object$variates.partial,function(x){ out=lapply(study, function(y){x[[y]]});names(out)=study;out})[names(object$variates) %in% blocks]#[[1]]
+            
+            #if XY-variate, combine the previous variates (relative to "blocks" and "study")
+            if (rep.space == "XY-variate")
+            {
+                for(i in 1:length(object$variates$X))
+                {
+                    object$variates$XYvariates[[i]]=(object$variates$X[[i]]+object$variates$Y[[i]])/2
+                }
+                names(object$variates$XYvariates)=names(object$variates$X)
+                object$variates = object$variates[["XYvariates"]]
+            }else{
+                object$variates=object$variates[[1]] # get rid of the $X or $Y
+            }
             
             # blocks becomes study, so each study is plotted
             blocks=study
@@ -215,16 +234,14 @@ legend.position="right",
             plot.centroid=FALSE
         }
 
-
         #-- check inputs
-        check = check.input.plotIndiv(object=object,comp = comp,rep.space = rep.space,blocks = blocks, ind.names = ind.names,
+        check = check.input.plotIndiv(object=object,comp = comp,blocks = blocks, ind.names = ind.names,
         style=style, plot.ellipse = plot.ellipse, ellipse.level = ellipse.level, plot.centroid=plot.centroid,
         plot.star=plot.star, add.legend=add.legend,X.label = X.label,Y.label = Y.label,Z.label = Z.label,abline.line = abline.line,
         xlim = xlim,ylim = ylim,alpha=alpha,axes.box = axes.box,plot_parameters=plot_parameters)
         #-- retrieve outputs from the checks
         axes.box=check$axes.box
         comp=check$comp
-        rep.space=check$rep.space
         xlim=check$xlim
         ylim=check$ylim
         ind.names=check$ind.names
@@ -232,14 +249,15 @@ legend.position="right",
         
 
         #-- get the variates
-        variate=internal_getVariatesAndLabels(object,comp,blocks,rep.space,style=style,X.label=X.label,Y.label=Y.label,Z.label=Z.label)
+        variate=internal_getVariatesAndLabels(object,comp,blocks.init=blocks.init,blocks=blocks,rep.space=rep.space,style=style,X.label=X.label,
+            Y.label=Y.label,Z.label=Z.label)
         #-- retrieve outputs
         x=variate$x
         y=variate$y
         z=variate$z
-        X.label=variate$X.label
-        Y.label=variate$Y.label
-        Z.label=variate$Z.label
+        X.label=variate$X.label #only the last one of the loop is used
+        Y.label=variate$Y.label #only the last one of the loop is used
+        Z.label=variate$Z.label #only the last one of the loop is used 
 
         n=nrow(object$X)
 
@@ -285,7 +303,7 @@ legend.position="right",
     style="ggplot2-MINT"
 
     #call plot module (ggplot2,lattice,graphics,3d)
-    internal_graphicModule(df=df,plot.centroid=plot.centroid,col.per.group=col.per.group,main=main,X.label=X.label,Y.label=Y.label,
+    res=internal_graphicModule(df=df,plot.centroid=plot.centroid,col.per.group=col.per.group,main=main,X.label=X.label,Y.label=Y.label,
     xlim=xlim,ylim=ylim,class.object=class(object),display.names=display.names,add.legend=add.legend,
     abline.line=abline.line,plot.star=plot.star,plot.ellipse=plot.ellipse,df.ellipse=df.ellipse,style=style,layout=layout,missing.col=missing.col,
     #for ggplot2-MINT
@@ -294,7 +312,7 @@ legend.position="right",
 
 
 
-    return(invisible(list(df=df)))
+    return(invisible(list(df=df,graph=res)))
 
 
 }

@@ -106,14 +106,14 @@ near.zero.var = FALSE
     crit = result.sgcca$crit,
     AVE = list(AVE.X = result.sgcca$AVE$AVE_X, result.sgcca$AVE$AVE_outer, result.sgcca$AVE$AVE_inner), #rename?
     names=result.sgcca$names,#names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames)),
-    nzv=result.sgcca$nzv
-    
+    nzv=result.sgcca$nzv,
+    explained_variance=result.sgcca$explained_variance
   )
 
     #calcul explained variance
-    explX=lapply(1:length(out$X),function(x){explained_variance(out$X[[x]],variates=out$variates[[x]],ncomp=out$ncomp[[x]])})
-    out$explained_variance=explX
-    names(out$explained_variance)=names(out$X)
+    #explX=lapply(1:length(out$X),function(x){explained_variance(out$X[[x]],variates=out$variates[[x]],ncomp=out$ncomp[[x]])})
+    #out$explained_variance=explX
+    #names(out$explained_variance)=names(out$X)
 
   class(out) = 'sgcca'
   return(invisible(out))

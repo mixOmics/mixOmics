@@ -57,19 +57,23 @@ V=NULL)
 # -----------------
 
 # KA changed the function to add a nin value when many zeroes in data (prob with log and division by 0 otherwise)
-ilr.transfo <- function(x, fast=TRUE, min.value = min(x[which(x !=0)])*0.01){
+ilr.transfo <- function(x, fast=TRUE, min.value = min(x[which(x !=0)])*0.01)
+{
   
   # ilr transformation
   x.ilr=matrix(NA,nrow=nrow(x),ncol=ncol(x)-1)
   D=ncol(x)
   # KA added: a little something to avoid 0 values
-  if(fast){
-    for (i in 1:ncol(x.ilr)){
+  if(fast)
+  {
+    for (i in 1:ncol(x.ilr))
+    {
       x.ilr[,i]=sqrt((D-i)/(D-i+1))*log(((apply(as.matrix(x[,(i+1):D,drop=FALSE]),1,prod)+ min.value)^(1/(D-i)))/(x[,i]+ min.value))
       #x.ilr[,i]=sqrt((D-i)/(D-i+1))*log(((apply(as.matrix(x[,(i+1):D,drop=FALSE]),1,prod))^(1/(D-i)))/(x[,i]))
     }
   } else {
-    for (i in 1:ncol(x.ilr)){
+    for (i in 1:ncol(x.ilr))
+    {
         x.ilr[,i]=sqrt((D-i)/(D-i+1))*log(apply(as.matrix(x[,(i+1):D]), 1, function(x){exp(log(x))})/(x[,i]+ min.value)+ min.value)
       #x.ilr[,i]=sqrt((D-i)/(D-i+1))*log(apply(as.matrix(x[,(i+1):D]), 1, function(x){exp(log(x))})/(x[,i]))
     }
@@ -83,10 +87,12 @@ ilr.transfo <- function(x, fast=TRUE, min.value = min(x[which(x !=0)])*0.01){
 
 # 2 - back transformation from ilr to clr space
 # -------------------
-clr.backtransfo = function(x){
+clr.backtransfo = function(x)
+{
   # construct orthonormal basis
   V <- matrix(0, nrow=ncol(x), ncol=ncol(x)-1)
-  for( i in 1:ncol(V) ){
+  for( i in 1:ncol(V) )
+  {
     V[1:i,i] <- 1/i
     V[i+1,i] <- (-1)
     V[,i] <- V[,i]*sqrt(i/(i+1))
@@ -98,13 +104,15 @@ clr.backtransfo = function(x){
 
 
 # CLR transformation
-clr.transfo <- function(x){
+clr.transfo <- function(x)
+{
   # KA added
   min.value = min(x[which(x !=0)])*0.01
   
   
   #if(dim(x)[2] < 2) stop("data must be of dimension greater equal 2")
-  if(dim(x)[2] == 1){
+  if(dim(x)[2] == 1)
+  {
     res <- list(x.clr=x, gm=rep(1,dim(x)[1]))	    	
   } else{
     geometricmean <- function (x) {
@@ -132,7 +140,8 @@ clr.transfo <- function(x){
 #data: data.raw (count data.frame )
 #indiv is a data.frame with information on the sample
 ## sample is the colname use as ID for example RSID
-mixMC.filter <- function(data, indiv , sample , affiliation=NULL, taxonomy=NULL){
+mixMC.filter <- function(data, indiv , sample , affiliation=NULL, taxonomy=NULL)
+{
   
   if(is.matrix(data))
     data=as.data.frame(data)
@@ -197,7 +206,8 @@ mixMC.filter <- function(data, indiv , sample , affiliation=NULL, taxonomy=NULL)
 # KA changed the function to add a nan value when many zeroes in data (prob with log and division by 0 otherwise)
 #data: data.filter (filter count data.frame )
 #log_normalisation is the choice between log TSS normalisation or not
-normalisation.TSS <- function(data, log_normalisation = FALSE){
+normalisation.TSS <- function(data, log_normalisation = FALSE)
+{
   
   if(is.matrix(data))
     data=as.data.frame(data)

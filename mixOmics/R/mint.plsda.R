@@ -77,7 +77,7 @@ near.zero.var = FALSE)
 
     out=list(call=cl,X=result$X[-result$indY][[1]],Y=Y,ind.mat=result$X[result$indY][[1]],ncomp=result$ncomp,study=result$study,mode=result$mode,variates=result$variates,loadings=result$loadings,
         variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,
-        names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
+        names=result$names,tol=result$tol,iter=result$iter,max.iter=result$max.iter,nzv=result$nzv,scale=scale)
     out$names$Y = levels(Y)
     row.names(out$variates$Y) = row.names(out$variates$X)
     row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(Y)))

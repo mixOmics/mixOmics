@@ -63,7 +63,7 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
     #cl[[1]] = as.name("pls")
     
     out=list(call=cl,X=result$X[-result$indY][[1]],Y=result$X[result$indY][[1]],ncomp=result$ncomp,mode=result$mode,variates=result$variates,loadings=result$loadings,
-        names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
+        names=result$names,tol=result$tol,iter=result$iter,max.iter=result$max.iter,nzv=result$nzv,scale=scale,explained_variance=result$explained_variance)
      
 
     class(out) = c("pls")
@@ -76,9 +76,9 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
     }
     
     #calcul explained variance
-    explX=explained_variance(out$X,out$variates$X,ncomp)
-    explY=explained_variance(out$Y,out$variates$Y,ncomp)
-    out$explained_variance=list(X=explX,Y=explY)
+    #explX=explained_variance(out$X,out$variates$X,ncomp)
+    #explY=explained_variance(out$Y,out$variates$Y,ncomp)
+    #out$explained_variance=list(X=explX,Y=explY)
     
     return(invisible(out))
 

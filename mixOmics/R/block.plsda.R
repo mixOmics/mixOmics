@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 24-02-2016
+# last modified: 11-04-2016
 #
 # Copyright (C) 2015
 #
@@ -47,7 +47,7 @@
 block.plsda <- function(X,
 Y,
 indY,
-ncomp=rep(2,length(X)),
+ncomp = rep(2,length(X)),
 design,
 scheme,
 mode,
@@ -60,52 +60,65 @@ max.iter = 500,
 near.zero.var = FALSE)
 
 {
-    if(!missing(Y))
+    # check inpuy 'Y' and transformation in a dummy matrix
+    if (!missing(Y))
     {
-        if (is.null(dim(Y))) {
+        if (is.null(dim(Y)))
+        {
             Y = as.factor(Y)
-        }  else {
+        } else {
             stop("'Y' should be a factor or a class vector.")
         }
 
-    Y.input=Y
-    Y=unmap(Y)
-    colnames(Y)=levels(Y.input)
-
-    }else if(!missing(indY))
+    Y.input = Y
+    Y = unmap(Y)
+    colnames(Y) = levels(Y.input)
+    }else if (!missing(indY))
     {
-        temp=X[[indY]] #not called Y to not be an input of the wrapper.sparse.mint.block
-        if (is.null(dim(temp))) {
+        temp = X[[indY]] #not called Y to not be an input of the wrapper.sparse.mint.block
+        if (is.null(dim(temp)))
+        {
             temp = as.factor(temp)
-        }  else {
+        } else {
             stop("'Y' should be a factor or a class vector.")
         }
-        Y.input=temp
-        X[[indY]]=unmap(temp)
-        colnames(X[[indY]])=levels(Y.input)
+        
+        Y.input = temp
+        X[[indY]] = unmap(temp)
+        colnames(X[[indY]]) = levels(Y.input)
 
-    }else if(missing(indY))
+    } else if (missing(indY))
     {
         stop("Either 'Y' or 'indY' is needed")
-
     }
-
-    result <- internal_wrapper.mint.block(X=X,Y=Y,indY=indY,ncomp=ncomp,design=design,scheme=scheme,mode=mode,scale=scale,
-    bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=near.zero.var)
-
-
-    cl = match.call()
-    #cl[[1]] = as.name("block.plsda")
     
-    out=list(call=cl,X=result$X[-result$indY],Y=Y.input,ind.mat=result$X[result$indY][[1]],ncomp=result$ncomp,mode=result$mode,variates=result$variates,loadings=result$loadings,
-    names=result$names,init=result$init,bias=result$bias,
-    tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale,design=result$design,scheme=result$scheme,indY=result$indY)
+    # call to 'internal_wrapper.mint.block'
+    result <- internal_wrapper.mint.block(X=X, Y=Y, indY=indY, ncomp=ncomp, design=design, scheme=scheme, mode=mode, scale=scale,
+    bias=bias, init=init, tol=tol, verbose=verbose, max.iter=max.iter, near.zero.var=near.zero.var)
+
+    # choose the desired output from 'result'
+    out=list(call = match.call(),
+        X = result$X[-result$indY],
+        Y = Y.input,
+        ind.mat = result$X[result$indY][[1]],
+        ncomp = result$ncomp,
+        mode = result$mode,
+        variates = result$variates,
+        loadings = result$loadings,
+        names = result$names,
+        init = result$init,
+        bias = result$bias,
+        tol = result$tol,
+        iter = result$iter,
+        max.iter = result$max.iter,
+        nzv = result$nzv,
+        scale = result$scale,
+        design = result$design,
+        scheme = result$scheme,
+        indY = result$indY,
+        explained_variance = result$explained_variance[-result$indY])
     
-    #calcul explained variance
-    explX=lapply(1:length(out$X),function(x){explained_variance(out$X[[x]],variates=out$variates[[x]],ncomp=out$ncomp[[x]])})
-    out$explained_variance=explX
-    names(out$explained_variance)=names(out$X)
-    
+    # give a class
     class(out) = c("block.plsda","block.pls","sgccda","sgcca","DA")
     return(invisible(out))
     

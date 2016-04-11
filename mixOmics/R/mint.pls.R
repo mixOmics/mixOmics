@@ -59,7 +59,7 @@ near.zero.var = FALSE)
 
     out=list(call=cl,X=result$X[-result$indY][[1]],Y=result$X[result$indY][[1]],ncomp=result$ncomp,study=result$study,mode=result$mode,variates=result$variates,loadings=result$loadings,
     variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,names=result$names,
-        tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
+        tol=result$tol,iter=result$iter,max.iter=result$max.iter,nzv=result$nzv,scale=scale)
     
     class(out) = c("mint.pls","pls")
     return(invisible(out))

@@ -64,14 +64,18 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
         
         if (is.null(dim(Y)))
         {
-            Y = as.factor(Y)
+            Y = factor(Y)
         }  else {
             stop("'Y' should be a factor or a class vector.")
         }
         
         Y.mat=unmap(Y)
         colnames(Y.mat) = levels(Y)#paste0("Y", 1:ncol(Y.mat))
-    }else{Y.mat=NULL}
+    }else{
+        if(!missing(Y))
+        message("'Y' is ignored as multilevel analysis is selected; Y should be included in the 'multilevel' design matrix")
+        Y.mat=NULL
+    }
     
     result <- internal_wrapper.mint(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
     keepX=keepX,keepX.constraint=keepX.constraint,max.iter=max.iter,tol=tol,logratio=logratio,
@@ -84,7 +88,7 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
     out=list(call=cl,X=result$X[-result$indY][[1]],Y=if(is.null(multilevel)){Y}else{result$Y.factor},ind.mat=result$X[result$indY][[1]],ncomp=result$ncomp,mode=result$mode,keepX=result$keepA[[1]],keepY=result$keepA[[2]],
     keepX.constraint=result$keepA.constraint[[1]],keepY.constraint=result$keepA.constraint[[2]],
     variates=result$variates,loadings=result$loadings,
-    names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
+    names=result$names,tol=result$tol,iter=result$iter,max.iter=result$max.iter,nzv=result$nzv,scale=scale,explained_variance=result$explained_variance[-result$indY])
     out$names$Y = levels(out$Y)
     #row.names(out$variates$Y) = row.names(out$variates$X)
     #row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(out$Y)))
@@ -99,8 +103,8 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
     }
     
     #calcul explained variance
-    explX=explained_variance(out$X,out$variates$X,ncomp)
-    out$explained_variance=list(X=explX)
+    #explX=explained_variance(out$X,out$variates$X,ncomp)
+    #out$explained_variance=list(X=explX)
     
     return(invisible(out))
     

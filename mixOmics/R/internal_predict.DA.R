@@ -165,7 +165,7 @@ internal_predict.DA=function(object,out,q=q,method)
     }### End if discriminant analysis is performed
     
     
-    save(list=ls(),file="temp.Rdata")
+    #save(list=ls(),file="temp.Rdata")
     
     # at this stage, we have the classification of each sample for each dataset of object$X
     

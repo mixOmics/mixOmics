@@ -5,7 +5,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 2015
-# last modified: 15-03-2016
+# last modified: 11-04-2016
 #
 # Copyright (C) 2015
 #
@@ -45,7 +45,7 @@
 # verbose: if TRUE, shows component and nrepeat being tested.
 
 
-confusion_matrix=function(Y.learn,Y.test,pred)
+get.confusion_matrix=function(Y.learn,Y.test,pred)
 {
     ClassifResult=array(0,c(nlevels(factor(Y.learn)),nlevels(factor(Y.learn))))
     rownames(ClassifResult)=levels(factor(Y.learn))
@@ -63,14 +63,17 @@ confusion_matrix=function(Y.learn,Y.test,pred)
     ClassifResult
 }
 
-get.BER=function(out,nlev)
+get.BER=function(X)
 {
-    if(missing(nlev)) nlev=2
+    if(!is.numeric(X)| !is.matrix(X) | length(dim(X)) != 2 | nrow(X)!=ncol(X))
+    stop("'X' must be a square numeric matrix")
+    
+    nlev=nrow(X)
     #calculation of the BER
-    ClassifResult.temp=out
+    ClassifResult.temp=X
     diag(ClassifResult.temp)=0
-    BER_test=sum(apply(ClassifResult.temp,1,sum,na.rm=TRUE)/apply(out,1,sum,na.rm=TRUE),na.rm=TRUE)/nlev
-    return(BER_test)
+    BER=sum(apply(ClassifResult.temp,1,sum,na.rm=TRUE)/apply(X,1,sum,na.rm=TRUE),na.rm=TRUE)/nlev
+    return(BER)
 }
 
 
@@ -78,7 +81,7 @@ get.BER=function(out,nlev)
 tune.splsda <- function (X, Y, ncomp = 1, test.keepX = c(5, 10, 15),
 already.tested.X = NULL, validation = "Mfold",folds=10,
 dist ="max.dist",
-measure=c("overall","BER"),
+measure=c("overall"), # one of c("overall","BER")
 progressBar = TRUE,
 near.zero.var = FALSE,nrepeat=1,
 logratio = c('none','CLR'),
@@ -338,7 +341,7 @@ verbose=TRUE)
             
         }else if(measure=="BER")
         {
-            error=apply(prediction.comp,c(3,2),function(x){conf=confusion_matrix(Y.learn=factor(Y),Y.test=factor(Y),pred=x); get.BER(conf,nlev=nlevels(Y))})
+            error=apply(prediction.comp,c(3,2),function(x){conf=get.confusion_matrix(Y.learn=factor(Y),Y.test=factor(Y),pred=x); get.BER(conf)})
             rownames(error)=test.keepX
             colnames(error)=paste0("nrep",1:nrepeat)
             
@@ -357,7 +360,7 @@ verbose=TRUE)
         mat.mean.error[,comp]=error.mean
         
         # confusion matrix for keepX.opt
-        error.per.class.keepX.opt.comp=apply(prediction.comp[,,keepX.opt,drop=FALSE],2,function(x){conf=confusion_matrix(Y.learn=factor(Y),Y.test=factor(Y),pred=x); out=(apply(conf,1,sum)-diag(conf))/summary(Y)})
+        error.per.class.keepX.opt.comp=apply(prediction.comp[,,keepX.opt,drop=FALSE],2,function(x){conf=get.confusion_matrix(Y.learn=factor(Y),Y.test=factor(Y),pred=x); out=(apply(conf,1,sum)-diag(conf))/summary(Y)})
         
         rownames(error.per.class.keepX.opt.comp)=levels(Y)
         colnames(error.per.class.keepX.opt.comp)=paste0("nrep",1:nrepeat)

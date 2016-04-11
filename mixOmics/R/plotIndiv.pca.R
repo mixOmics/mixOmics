@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 16-03-2016
-# last modified: 23-03-2016
+# last modified: 11-04-2016
 #
 # Copyright (C) 2016
 #
@@ -66,17 +66,18 @@ size.axis=rel(0.8),
 legend.text.size=rel(1),
 legend.title.size=rel(1.1),
 legend.position="right",
+point.lwd=1,
 ...
 )
 {
     plot_parameters=list(size.title=size.title,size.subtitle=size.subtitle,size.xlabel=size.xlabel,size.ylabel=size.ylabel,size.axis=size.axis,
-    legend.text.size=legend.text.size,legend.title.size=legend.title.size,legend.position=legend.position)
+    legend.text.size=legend.text.size,legend.title.size=legend.title.size,legend.position=legend.position,point.lwd=point.lwd)
 
     
     blocks = "X"
     rep.space= "X-variate"
     
-    check = check.input.plotIndiv(object=object,comp = comp,rep.space = rep.space,blocks = blocks, ind.names = ind.names,
+    check = check.input.plotIndiv(object=object,comp = comp,blocks = blocks, ind.names = ind.names,
     style=style, plot.ellipse = plot.ellipse, ellipse.level = ellipse.level, plot.centroid=plot.centroid,
     plot.star=plot.star, add.legend=add.legend,X.label = X.label,Y.label = Y.label,Z.label = Z.label,abline.line = abline.line,
     xlim = xlim,ylim = ylim,alpha=alpha,axes.box = axes.box,plot_parameters=plot_parameters)
@@ -84,7 +85,6 @@ legend.position="right",
     # retrieve outputs from the checks
     axes.box=check$axes.box
     comp=check$comp
-    rep.space=check$rep.space
     xlim=check$xlim
     ylim=check$ylim
     ind.names=check$ind.names
@@ -149,14 +149,14 @@ legend.position="right",
     plot.centroid=out$plot.centroid
     plot.star=out$plot.star
     
-    save(list=ls(),file="temp.Rdata")
+    #save(list=ls(),file="temp.Rdata")
     
     #call plot module (ggplot2,lattice,graphics,3d)
-    internal_graphicModule(df=df,plot.centroid=plot.centroid,col.per.group=col.per.group,main=main,X.label=X.label,Y.label=Y.label,Z.label=Z.label,
+    res=internal_graphicModule(df=df,plot.centroid=plot.centroid,col.per.group=col.per.group,main=main,X.label=X.label,Y.label=Y.label,Z.label=Z.label,
     xlim=xlim,ylim=ylim,class.object=class(object),display.names=display.names,add.legend=add.legend,
     abline.line=abline.line,plot.star=plot.star,plot.ellipse=plot.ellipse,df.ellipse=df.ellipse,style=style,layout=layout,missing.col=missing.col,
     axes.box=axes.box,plot_parameters=plot_parameters)
     
-    return(invisible(list(df=df,df.ellipse=df.ellipse)))
+    return(invisible(list(df=df,df.ellipse=df.ellipse,graph=res)))
 
 }

@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 24-02-2016
+# last modified: 11-04-2016
 #
 # Copyright (C) 2015
 #
@@ -69,32 +69,38 @@ near.zero.var = FALSE)
 {
     
     
+    # call to 'internal_wrapper.mint.block'
     result <- internal_wrapper.mint.block(X=X,Y=Y,indY=indY,ncomp=ncomp,keepX.constraint=keepX.constraint,
     keepY.constraint=keepY.constraint,keepX=keepX,keepY=keepY,design=design,scheme=scheme,mode=mode,scale=scale,
     bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=near.zero.var)
     
     
-    cl = match.call()
-    
-    # create a keepY and keepY.constraint
-    keepX=result$keepA[-result$indY]
-    keepY=result$keepA[result$indY][[1]]
-    keepX.constraint=result$keepA.constraint[-result$indY]
-    keepY.constraint=result$keepA.constraint[result$indY][[1]]
-        
-    out=list(call=cl,X=result$X,indY=result$indY,ncomp=result$ncomp,mode=result$mode,keepX=keepX,keepY=keepY,
-    keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,
-    variates=result$variates,loadings=result$loadings,names=result$names,init=result$init,bias=result$bias,
-    tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale,design=result$design,scheme=result$scheme)
+    # choose the desired output from 'result'
+    out=list(call = match.call(),
+        X = result$X,
+        indY = result$indY,
+        ncomp = result$ncomp,
+        mode = result$mode,
+        keepX = result$keepA[-result$indY],
+        keepY = result$keepA[result$indY][[1]],
+        keepX.constraint = result$keepA.constraint[-result$indY],
+        keepY.constraint = result$keepA.constraint[result$indY][[1],
+        variates = result$variates,
+        loadings = result$loadings,
+        names = result$names,
+        init = result$init,
+        bias = result$bias,
+        tol = result$tol,
+        iter = result$iter,
+        max.iter = result$max.iter,
+        nzv = result$nzv,
+        scale = result$scale,
+        design = result$design,
+        scheme = result$scheme,
+        explained_variance = result$explained_variance)
 
-    #calcul explained variance
-    explX=lapply(1:length(out$X),function(x){explained_variance(out$X[[x]],variates=out$variates[[x]],ncomp=out$ncomp[[x]])})
-    out$explained_variance=explX
-    names(out$explained_variance)=names(out$X)
-
+    # give a class
     class(out) = c("block.spls","sgcca")
-    #out$cl[[1]]=class(out)
-
     return(invisible(out))
     
 }
