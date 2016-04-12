@@ -180,13 +180,13 @@ near.zero.var=FALSE)
             {
                 message("A RGCCA analysis is being performed")
                 if(missing(scale)) scale=FALSE
-                res=wrapper.rgcca(X=X,design=design,tau=tau,ncomp = ncomp,mode=mode,
+                res=wrapper.rgcca(X=X,design=design,tau=tau,ncomp = ncomp,
                 max.iter=max.iter,scheme = scheme,scale = scale,init = init,bias = bias,tol = tol,verbose = verbose)
                 
             }else{ #sparse RGCCA
                 if(missing(scale)) scale=FALSE
                 message("A sparse RGCCA analysis is being performed")
-                res=wrapper.rgcca(X=X,design=design,tau=tau,mode=mode,ncomp = ncomp,keepX=keepX,keepX.constraint=keepX.constraint,
+                res=wrapper.rgcca(X=X,design=design,tau=tau,ncomp = ncomp,keepX=keepX,keepX.constraint=keepX.constraint,
                 max.iter=max.iter,scheme = scheme,scale = scale,init = init,bias = bias,tol = tol,verbose = verbose)
                 
                 

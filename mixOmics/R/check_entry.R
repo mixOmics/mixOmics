@@ -696,6 +696,13 @@ verbose)
     if ((missing(indY) & missing(Y)))
     stop("Either 'Y' or 'indY' is needed")
     
+    #check that there's no block in x called "Y"
+    #if (!missing(Y))
+    #{
+    #   if(any(names(X)=="Y"))
+    #   stop("A block in 'X' is called 'Y'. Please change")
+    #}
+    
     if (missing(ncomp))
     ncomp = rep(1, length(X))
     
@@ -737,8 +744,7 @@ verbose)
     
     
     if (!missing(Y))# Y is not missing, so we don't care about indY
-    {
-        
+    {        
         if (!missing(indY))
         warning("'Y' and 'indY' are provided, 'Y' is used.")
         
