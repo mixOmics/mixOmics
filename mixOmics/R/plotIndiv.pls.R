@@ -177,7 +177,7 @@ point.lwd=1,
     #save(list=ls(),file="temp.Rdata")
 
     #call plot module (ggplot2,lattice,graphics,3d)
-    res=internal_graphicModule(df=df,plot.centroid=plot.centroid,col.per.group=col.per.group,main=main,X.label=X.label,Y.label=Y.label,
+    res=internal_graphicModule(df=df,plot.centroid=plot.centroid,col.per.group=col.per.group,main=main,X.label=X.label,Y.label=Y.label,Z.label=Z.label,
     xlim=xlim,ylim=ylim,class.object=class(object),display.names=display.names,add.legend=add.legend,
     abline.line=abline.line,plot.star=plot.star,plot.ellipse=plot.ellipse,df.ellipse=df.ellipse,style=style,layout=layout,missing.col=missing.col,
     axes.box=axes.box,plot_parameters=plot_parameters)

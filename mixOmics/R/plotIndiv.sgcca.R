@@ -122,7 +122,7 @@ point.lwd=1,
 
 
     #-- check inputs
-    check = check.input.plotIndiv(object=object,comp = comp,rep.space = rep.space,blocks = blocks, ind.names = ind.names,
+    check = check.input.plotIndiv(object=object,comp = comp,blocks = blocks, ind.names = ind.names,
     style=style, plot.ellipse = plot.ellipse, ellipse.level = ellipse.level, plot.centroid=plot.centroid,
     plot.star=plot.star, add.legend=add.legend,X.label = X.label,Y.label = Y.label,Z.label = Z.label,abline.line = abline.line,
     xlim = xlim,ylim = ylim,alpha=alpha,axes.box = axes.box,plot_parameters=plot_parameters)
@@ -136,7 +136,7 @@ point.lwd=1,
 
 
     #-- get the variates
-    variate=internal_getVariatesAndLabels(object,comp,blocks=blocks,style=style,X.label=X.label,Y.label=Y.label,Z.label=Z.label)
+    variate=internal_getVariatesAndLabels(object,comp,blocks=blocks,style=style,X.label=X.label,Y.label=Y.label,Z.label=Z.label,rep.space=rep.space)
     #-- retrieve outputs
     x=variate$x
     y=variate$y
@@ -178,7 +178,7 @@ point.lwd=1,
     }
 
     #call plot module (ggplot2,lattice,graphics,3d)
-    res=internal_graphicModule(df=df,plot.centroid=plot.centroid,col.per.group=col.per.group,main=main,X.label=X.label,Y.label=Y.label,
+    res=internal_graphicModule(df=df,plot.centroid=plot.centroid,col.per.group=col.per.group,main=main,X.label=X.label,Y.label=Y.label,Z.label=Z.label,
     xlim=xlim,ylim=ylim,class.object=class(object),display.names=display.names,add.legend=add.legend,
     abline.line=abline.line,plot.star=plot.star,plot.ellipse=plot.ellipse,df.ellipse=df.ellipse,style=style,layout=layout,missing.col=missing.col,
     axes.box=axes.box,plot_parameters=plot_parameters)

@@ -70,6 +70,9 @@ near.zero.var = FALSE)
             stop("'Y' should be a factor or a class vector.")
         }
         
+        if (nlevels(Y) == 1)
+        stop("'Y' should be a factor with more than one level")
+
         Y.input=Y
         Y=unmap(Y)
         colnames(Y) = paste0("Y", 1:ncol(Y))
@@ -82,6 +85,9 @@ near.zero.var = FALSE)
         }  else {
             stop("'Y' should be a factor or a class vector.")
         }
+        if (nlevels(temp) == 1)
+        stop("'X[[indY]]' should be a factor with more than one level")
+
         Y.input=temp
         X[[indY]]=unmap(temp)
     }else if(missing(indY))

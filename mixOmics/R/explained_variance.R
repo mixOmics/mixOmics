@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 15-04-2015
-# last modified: 25-02-2016
+# last modified: 12-04-2016
 #
 # Copyright (C) 2015
 #
@@ -27,29 +27,29 @@
 # ========================================================================================================
 
 
-explained_variance=function(data,variates,ncomp)
+explained_variance=function(data, variates, ncomp)
 {
     #check input data
-    check=Check.entry.single(data,ncomp)
-    data=check$X
-    ncomp=check$ncomp
+    check = Check.entry.single(data,ncomp)
+    data = check$X
+    ncomp = check$ncomp
     
-    isna=is.na(data)
-    if(sum(isna>0))
+    isna = is.na(data)
+    if (sum(isna > 0))
     {
-        warnings("NA values put to zero, results will differ from PCA methods used with NIPALS")
-        data[isna]=0
+        warning("NA values put to zero, results will differ from PCA methods used with NIPALS")
+        data[isna] = 0
     }
-    nor2x=sum((data)^2) # total variance in the data
-	exp.varX=NULL
-	for(h in 1:ncomp)
+    nor2x = sum((data)^2) # total variance in the data
+	exp.varX = NULL
+	for (h in 1:ncomp)
 	{
-		temp= variates[,h]/drop(t(variates[,h])%*%(variates[,h]))
-	    exp_var_new= as.numeric(t(variates[,h]) %*% data %*% t(data) %*% temp )/nor2x
-	    exp.varX=append(exp.varX, exp_var_new)
+		temp = variates[, h]/drop(t(variates[, h])%*%(variates[, h]))
+	    exp_var_new = as.numeric(t(variates[, h]) %*% data %*% t(data) %*% temp )/nor2x
+	    exp.varX = append(exp.varX, exp_var_new)
 	
 	}
-    names(exp.varX)=paste("comp",1:ncomp)
+    names(exp.varX) = paste("comp", 1:ncomp)
     
     # result: vector of length ncomp with the explained variance per component
     exp.varX

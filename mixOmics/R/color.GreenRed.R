@@ -1,4 +1,4 @@
-# Copyright (C) 2015 
+# Copyright (C) 2015
 # Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,28 +18,24 @@
 #-- green-black-red gradient colors --#
 #-------------------------------------#
 color.GreenRed <-
-  function (n, alpha = 1) 
-  {
+function (n, alpha = 1)
+{
     #-- checking general input parameters --------------------------------------#
     #---------------------------------------------------------------------------#
     
     #-- n
     if (length(n) > 1 || !is.finite(n))
-      stop("'n' must be an integer positive value.", 
-           call. = FALSE)
+    stop("'n' must be an integer positive value.", call. = FALSE)
     
     if (n < 1)
-      stop("'n' must be an integer positive value.", 
-           call. = FALSE)
+    stop("'n' must be an integer positive value.", call. = FALSE)
     
     #-- alpha
     if (length(alpha) > 1 || !is.finite(alpha))
-      stop("'alpha' must be an numeric value in the range [0, 1].", 
-           call. = FALSE)
+    stop("'alpha' must be an numeric value in the range [0, 1].", call. = FALSE)
     
     if (alpha < 0 || alpha > 1)
-      stop("'alpha' must be an numeric value in the range [0, 1].", 
-           call. = FALSE)
+    stop("'alpha' must be an numeric value in the range [0, 1].", call. = FALSE)
     
     alpha = round(255 * alpha)
     
@@ -53,6 +49,6 @@ color.GreenRed <-
     ramp = colorRamp(c(green, "black", red), space = "Lab")
     
     rgb(ramp(seq(0, 1, length = n)), alpha = alpha, maxColorValue = 255)
-  }
+}
 
 

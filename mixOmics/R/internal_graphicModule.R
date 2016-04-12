@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 16-03-2016
-# last modified: 23-03-2016
+# last modified: 12-04-2016
 #
 # Copyright (C) 2016
 #
@@ -26,8 +26,6 @@
 # Internal helpers functions to run "plotIndiv" functions
 # --------------------------------------------------------------------------------------
 
-# I want a function that is gonna use:
-
 # df: data frame with all the information needed: coordinates (x,y,z), grouping factor 'group', 'Block' that indicates the block, names (ind.names), 'pch', 'cex' or each point, 'col.per.group' that gives the color of each point, 'pch.legend' that gives the pch of each point for the legend (same as pch?)
 # as well as: x0 and y0 if plot centroid==TRUE
 # plot.centroid
@@ -42,38 +40,59 @@
 # add.legend
 # display.names
 
-internal_graphicModule=function(df,plot.centroid,col.per.group,main,X.label,Y.label,Z.label,xlim,ylim,zlim,class.object,
-display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,layout=NULL,missing.col,axes.box,study.levels,plot_parameters,...)
+internal_graphicModule=function(df,
+plot.centroid,
+col.per.group,
+main,
+X.label,
+Y.label,
+Z.label,
+xlim,
+ylim,
+zlim,
+class.object,
+display.names,
+add.legend,
+abline.line,
+plot.star,
+plot.ellipse,
+df.ellipse,
+style,
+layout=NULL,
+missing.col,
+axes.box,
+study.levels,
+plot_parameters)
 {
-    object.pls=c("pls","spls","mlspls","rcc")
-    object.pca=c("ipca","sipca","pca","spca","prcomp")
-    object.blocks=c("sgcca","rgcca")
-    object.mint=c("mint.pls","mint.spls","mint.plsda","mint.splsda")
+    object.pls = c("pls", "spls", "mlspls", "rcc")
+    object.pca = c("ipca", "sipca", "pca", "spca", "prcomp")
+    object.blocks = c("sgcca", "rgcca")
+    object.mint = c("mint.pls", "mint.spls", "mint.plsda", "mint.splsda")
     #class.object=class(object)
     
     # to satisfy R CMD check that doesn't recognise x, y and group as variable (in aes)
-    x=y=group=NULL
+    x = y = group = NULL
     
-    size.title=plot_parameters$size.title
-    size.subtitle=plot_parameters$size.subtitle
-    size.xlabel=plot_parameters$size.xlabel
-    size.ylabel=plot_parameters$size.ylabel
-    size.axis=plot_parameters$size.axis
-    legend.text.size=plot_parameters$legend.text.size
-    legend.title.size=plot_parameters$legend.title.size
-    legend.position=plot_parameters$legend.position
-    point.lwd=plot_parameters$point.lwd
+    size.title = plot_parameters$size.title
+    size.subtitle = plot_parameters$size.subtitle
+    size.xlabel = plot_parameters$size.xlabel
+    size.ylabel = plot_parameters$size.ylabel
+    size.axis = plot_parameters$size.axis
+    legend.text.size = plot_parameters$legend.text.size
+    legend.title.size = plot_parameters$legend.title.size
+    legend.position = plot_parameters$legend.position
+    point.lwd = plot_parameters$point.lwd
     
     #-- Start: ggplot2
-    if(style=="ggplot2")
+    if (style == "ggplot2")
     {
-        nResp=nlevels(df$Block)
+        nResp = nlevels(df$Block)
         if (is.null(layout))
         {
             nRows = min(c(3, ceiling(nResp/2)))
-            nCols=min(c(3,ceiling(nResp/nRows)))
+            nCols = min(c(3, ceiling(nResp/nRows)))
             layout = c(nRows, nCols)
-        }else{
+        } else {
             if (length(layout) != 2 || !is.numeric(layout) || any(is.na(layout)))
             stop("'layout' must be a numeric vector of length 2.")
             nRows = layout[1]
@@ -85,31 +104,33 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
         #-- Initialise ggplot2
         p = ggplot(df, aes(x = x, y = y, color = group),
         main = main, xlab = X.label, ylab = Y.label) +
-        theme_bw() +theme(strip.text=element_text(size=size.subtitle,face="bold"))
+        theme_bw() + theme(strip.text = element_text(size = size.subtitle, face = "bold"))
         
 
         #}
         
         #-- Display sample or row.names
-        for (i in levels(df$group)){
-            if (display.names) {
+        for (i in levels(df$group))
+        {
+            if (display.names)
+            {
                 p = p +geom_point(data = subset(df, df$group == i),size = 0, shape = 0)+ geom_text(data = subset(df, df$group == i), aes(label = names), size = 0,show.legend  = F)
             } else {
                 p = p + geom_point(data = subset(df, df$group == i), size = 0, shape = 0)
             }
-            if(plot.centroid==TRUE)
+            if (plot.centroid == TRUE)
             {
-                p = p + geom_point(data = subset(df[,c("col","x0","y0","Block","cex","pch","group")], df$group == i),aes(x=x0,y=y0), size = 0, shape = 0)
+                p = p + geom_point(data = subset(df[, c("col", "x0", "y0", "Block", "cex", "pch", "group")], df$group == i), aes(x=x0,y=y0), size = 0, shape = 0)
             }
         }
         
         
         #-- Modify scale colour - Change X/Ylabel - split plots into Blocks
-        if(!any(class.object%in%object.mint))
+        if (!any(class.object %in% object.mint))
         {
             
             p = p + scale_colour_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = "Legend", breaks = levels(df$group))
-        }else{
+        } else {
             p = p + scale_colour_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = "Outcome", breaks = levels(df$group)) +
             labs(shape = "Study", values= c("a","b"))#levels(object$study)[study.ind])
             
@@ -142,12 +163,12 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
                 size = unique(df[df$col == i & df$Block == levels(df$Block)[1], ]$cex),
                 shape = df[df$col == i, ]$pch,stroke = point.lwd)# unique(df[df$col == i & df$Block == paste0("Block: ", blocks[1]), ]$pch))
             }
-            if(plot.centroid==TRUE)
+            if (plot.centroid == TRUE)
             {
-                p = p + geom_point(data = subset(df[,c("col","x0","y0","Block","cex","pch","group")], col == i),aes(x=x0,y=y0),
+                p = p + geom_point(data = subset(df[, c("col", "x0", "y0", "Block", "cex", "pch", "group")], col == i), aes(x = x0, y = y0),
                 color = unique(df[df$col == i & df$Block == levels(df$Block)[1], ]$col),
                 size = unique(df[df$col == i & df$Block == levels(df$Block)[1], ]$cex),
-                shape = 8,stroke = point.lwd)
+                shape = 8, stroke = point.lwd)
             }
             
             
@@ -161,15 +182,13 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
             p = p + theme(legend.position="none")
         } else {
             p = p + guides(colour = guide_legend(override.aes = list(shape = if(display.names | any(class.object%in%object.mint) ) {19} else unique(df$pch.legend), size = unique(df$cex),stroke=point.lwd)))    +
-            theme(legend.title=element_text(size=legend.title.size),legend.text=element_text(size=legend.text.size))+
-            theme(legend.position=legend.position)#,legend.direction="vertical")
-
-
+            theme(legend.title=element_text(size=legend.title.size),legend.text=element_text(size=legend.text.size)) +
+            theme(legend.position=legend.position)
         }
         
         #-- abline
         if (abline.line)
-        p = p + geom_vline(aes(xintercept = 0), linetype = 2, colour = "darkgrey") + geom_hline(aes(yintercept = 0),linetype = 2,colour = "darkgrey")
+        p = p + geom_vline(aes(xintercept = 0), linetype = 2, colour = "darkgrey") + geom_hline(aes(yintercept = 0), linetype = 2, colour = "darkgrey")
         
         #-- star
         if (plot.star == TRUE)
@@ -177,8 +196,8 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
             for (i in 1 : nlevels(df$group))
             {
                 p = p + geom_segment(data = subset(df, group == levels(df$group)[i]),
-                aes(x = x0, y = y0,xend=x,yend=y,
-                label = "Block"),color = unique(col.per.group)[i],size = point.lwd)
+                aes(x = x0, y = y0, xend = x, yend = y,
+                label = "Block"), color = unique(col.per.group)[i],size = point.lwd)
             }
         }
         
@@ -189,7 +208,7 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
             {
                 p = p + geom_path(data = df.ellipse,
                 aes_string(x = paste0("Col", 2*(i - 1) + 1), y = paste0("Col", 2 * i),
-                label = "Block", group = NULL), color = unique(col.per.group)[i],size = point.lwd)
+                label = "Block", group = NULL), color = unique(col.per.group)[i], size = point.lwd)
             }
         }
         
@@ -198,16 +217,16 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
     #-- End: ggplot2
     
     #-- Start: ggplot2
-    if(style=="ggplot2-MINT")
+    if (style=="ggplot2-MINT")
     {
         
-        nResp=nlevels(df$Block)
+        nResp = nlevels(df$Block)
         if (is.null(layout))
         {
             nRows = min(c(3, ceiling(nResp/2)))
-            nCols=min(c(3,ceiling(nResp/nRows)))
+            nCols = min(c(3, ceiling(nResp/nRows)))
             layout = c(nRows, nCols)
-        }else{
+        } else {
             if (length(layout) != 2 || !is.numeric(layout) || any(is.na(layout)))
             stop("'layout' must be a numeric vector of length 2.")
             nRows = layout[1]
@@ -218,34 +237,27 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
         #note: at this present time, ggplot2 does not allow xlim to be changed per subplot, so cannot use xlim properly
         
         #-- Initialise ggplot2
-        p = ggplot(df, aes(x = x, y = y, color = group,shape=factor(pch,labels=study.levels)),
+        p = ggplot(df, aes(x = x, y = y, color = group, shape = factor(pch, labels = study.levels)),
         main = main, xlab = X.label, ylab = Y.label) +
-        theme_bw() +theme(strip.text=element_text(size=size.subtitle,face="bold"))
-        
-        
-        #}
+        theme_bw() + theme(strip.text = element_text(size = size.subtitle, face = "bold"))
         
         #-- Display sample or row.names
         for (i in levels(df$group))
         {
-                p = p + geom_point(data = subset(df, df$group == i), size = subset(df, df$group == i)$cex[1],stroke = point.lwd)
+                p = p + geom_point(data = subset(df, df$group == i), size = subset(df, df$group == i)$cex[1], stroke = point.lwd)
         }
         
-        
         #-- Modify scale colour - Change X/Ylabel - split plots into Blocks
-
-            p = p + scale_colour_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = "Outcome", breaks = levels(df$group)) +
+        p = p + scale_colour_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = "Outcome", breaks = levels(df$group)) +
             labs(shape = "Study")#levels(object$study)[study.ind])
 
         p = p + scale_shape_manual(values = as.numeric(levels(factor(df$pch)))) # replace the shape/pch by the input, it's converted by default to 1,2,3.. by ggplots
 
         p = p + labs(list(title = main, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = nCols, scales = "free", as.table = TRUE) #as.table to plot in the same order as the factor
-        p = p + theme(plot.title=element_text(size=size.title),axis.title.x=element_text(size=size.xlabel),axis.title.y=element_text(size=size.ylabel),axis.text=element_text(size=size.axis))# bigger title
+        p = p + theme(plot.title = element_text(size=size.title), axis.title.x = element_text(size=size.xlabel), axis.title.y = element_text(size = size.ylabel), axis.text = element_text(size = size.axis))# bigger title
         
         #-- xlim, ylim
-        p = p + coord_cartesian(xlim=xlim,ylim=ylim)
-        
-   
+        p = p + coord_cartesian(xlim = xlim, ylim = ylim)
         
         #-- Legend
         if (!add.legend)
@@ -253,29 +265,25 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
             p = p + theme(legend.position="none")
         }else{
             p = p + guides(colour = guide_legend(override.aes = list(size = unique(df$cex)))) +
-            theme(legend.title=element_text(size=legend.title.size),legend.text=element_text(size=legend.text.size))+
-            theme(legend.position=legend.position)#,legend.direction="vertical")
-
+            theme(legend.title = element_text(size = legend.title.size),legend.text = element_text(size = legend.text.size))+
+            theme(legend.position = legend.position)#,legend.direction="vertical")
         }
         
         #-- abline
         if (abline.line)
         p = p + geom_vline(aes(xintercept = 0), linetype = 2, colour = "darkgrey") + geom_hline(aes(yintercept = 0),linetype = 2,colour = "darkgrey")
 
-        
         plot(p)
     }
     #-- End: ggplot2
     
     #internal_lattice=function(df,group,blocks,names,plot.centroid,x0,y0,col.per.group,main,X.label,Y.label,lim.X,xlim,lim.Y,ylim,class.object,
     #col,display.names,add.legend,abline.line,pch.legend,cex,plot.star,x,y,plot.ellipse,df.ellipse)
-    if(style=="lattice")
+    if (style=="lattice")
     {
         #-- Start: Lattice
-        
-        
-
-        p = xyplot(y ~ x | Block, data = df, xlab = list(label=X.label,cex=size.xlabel), ylab = list(label=X.label,cex=size.ylabel), main = list(label=main,cex=size.title),as.table=TRUE, #as.table plot in order
+        p = xyplot(y ~ x | Block, data = df, xlab = list(label=X.label,cex=size.xlabel), ylab = list(label=X.label,cex=size.ylabel),
+        main = list(label = main, cex = size.title), as.table = TRUE, #as.table plot in order
         groups = if (display.names) {names} else {group},
         scales= list(x = list(relation = "free", limits = xlim,cex=size.axis),
         y = list(relation = "free", limits = ylim,cex=size.axis)),
@@ -283,29 +291,38 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
         #-- Legend
         key = if(add.legend == TRUE)
         {
-            if(!any(class.object%in%object.mint))
+            if (!any(class.object%in%object.mint))
             {
-            list(space = legend.position, title = "Legend", cex.title = legend.title.size,
-            point = list(col =  col.per.group),cex=legend.text.size, pch = if(display.names | any(class.object%in%object.mint)) {16} else unique(df$pch.legend),text = list(levels(df$group)))
-            }else{#we add the shape legend
+                list(space = legend.position, title = "Legend", cex.title = legend.title.size,
+                point = list(col =  col.per.group),cex=legend.text.size, pch = if(display.names | any(class.object%in%object.mint)) {16} else unique(df$pch.legend),text = list(levels(df$group)))
+            } else {#we add the shape legend
                 list(space = legend.position, cex.title = legend.title.size,
-                point = list(col =  c(NA,col.per.group,NA,NA,rep("black",length(study.levels)))),cex=c(legend.title.size,rep(legend.text.size,length(col.per.group)),legend.text.size,legend.title.size,rep(legend.text.size,nlevels(factor(df$pch)))), pch = c(NA,rep(16,length(col.per.group)),NA,NA,as.numeric(levels(factor(df$pch)))),text = list(outcome=c("Outcome",levels(df$group),"","Study",study.levels)))
+                point = list(
+                col =  c(NA, col.per.group, NA, NA, rep("black", length(study.levels)))),
+                cex = c(legend.title.size, rep(legend.text.size, length(col.per.group)), legend.text.size, legend.title.size, rep(legend.text.size,nlevels(factor(df$pch)))),
+                pch = c(NA, rep(16, length(col.per.group)), NA, NA, as.numeric(levels(factor(df$pch)))),
+                text = list(outcome = c("Outcome", levels(df$group), "", "Study", study.levels))
+                )
             }
-        }
-        
-        else {NULL},
+        } else {
+            NULL
+        },
         
         panel = function(x, y, subscripts, groups, display = display.names,...)
         {
             #-- Abline
-            if (abline.line) { panel.abline(v = 0, lty = 2, col = "darkgrey")
-                panel.abline(h = 0, lty = 2, col = "darkgrey")}
+            if (abline.line)
+            {
+                panel.abline(v = 0, lty = 2, col = "darkgrey")
+                panel.abline(h = 0, lty = 2, col = "darkgrey")
+            }
             
             #-- Display sample or row.names
             for (i in 1 : nlevels(df$group))
             {
                 
-                if (display){
+                if (display)
+                {
                     ltext(x = df$x[df$group == levels(df$group)[i]], y = df$y[df$group == levels(df$group)[i]],
                     labels = groups[subscripts & df$group == levels(df$group)[i]], col = "white", cex = 0)
                 } else {
@@ -317,7 +334,8 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
             #-- color samples according to col
             for (i in unique(df$col))
             {
-                if (display) {
+                if (display)
+                {
                     ltext(x = df$x[subscripts] [df$col[subscripts] == i], y = df$y[subscripts] [df$col[subscripts] == i],
                     labels =  groups[subscripts & df$col == i],
                     col = df[df$col == i, ]$col, cex = df$cex[subscripts][df$col[subscripts] == i])
@@ -337,17 +355,16 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
             for (k in 1 : nlevels(df$Block))
             {
 
-                other=df$Block %in% levels(df$Block)[k]#paste0("Block: ", blocks[k])
+                other = df$Block %in% levels(df$Block)[k] #paste0("Block: ", blocks[k])
                 ind = which(panels == k, arr.ind = TRUE)
-                trellis.focus("panel",ind[2], ind[1],highlight = FALSE)
+                trellis.focus("panel", ind[2], ind[1], highlight = FALSE)
                 
                 for (i in 1 : nlevels(df$group))
                 {
-                    x0=mean(df[other & df$group == levels(df$group)[i] , ]$x)
-                    y0=mean(df[other & df$group == levels(df$group)[i] , ]$y)
-                    panel.points(x = x0,
-                    y = y0,
-                    col = unique(col.per.group)[i],pch=8,cex=df[other & df$group == levels(df$group)[i] , ]$cex)
+                    x0 = mean(df[other & df$group == levels(df$group)[i], ]$x)
+                    y0 = mean(df[other & df$group == levels(df$group)[i], ]$y)
+                    panel.points(x = x0, y = y0, col = unique(col.per.group)[i],
+                        pch = 8, cex = df[other & df$group == levels(df$group)[i], ]$cex)
                 }
             }
             trellis.unfocus()
@@ -362,17 +379,20 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
             for (k in 1 : nlevels(df$Block))
             {
      
-                other=df$Block %in% levels(df$Block)[k]#paste0("Block: ", blocks[k])
+                other = df$Block %in% levels(df$Block)[k]#paste0("Block: ", blocks[k])
                 ind = which(panels == k, arr.ind = TRUE)
-                trellis.focus("panel",ind[2], ind[1],highlight = FALSE)
+                trellis.focus("panel", ind[2], ind[1], highlight = FALSE)
                 
                 for (i in 1 : nlevels(df$group))
                 {
                     for (q in 1: length(df[other & df$group == levels(df$group)[i]  , "x"]))
                     {
-                        x0=mean(df[other & df$group == levels(df$group)[i] , ]$x)
-                        y0=mean(df[other & df$group == levels(df$group)[i] , ]$y)
-                        panel.segments(x0,y0,df[other & df$group == levels(df$group)[i],]$x[q],df[other & df$group == levels(df$group)[i],]$y[q], col = unique(col.per.group)[i], cex = df[other & df$group == levels(df$group)[i], ]$cex, pch = df[other & df$group == levels(df$group)[i], ]$pch)
+                        x0 = mean(df[other & df$group == levels(df$group)[i] , ]$x)
+                        y0 = mean(df[other & df$group == levels(df$group)[i] , ]$y)
+                        panel.segments(x0, y0, df[other & df$group == levels(df$group)[i], ]$x[q],
+                        df[other & df$group == levels(df$group)[i], ]$y[q],
+                        col = unique(col.per.group)[i], cex = df[other & df$group == levels(df$group)[i], ]$cex,
+                        pch = df[other & df$group == levels(df$group)[i], ]$pch)
                     }
                 }
             }
@@ -390,11 +410,12 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
             for (k in 1 : nlevels(df$Block))
             {
   
-                other.ellipse=df.ellipse$Block %in% levels(df$Block)[k]#paste0("Block: ", blocks[k])
+                other.ellipse = df.ellipse$Block %in% levels(df$Block)[k]#paste0("Block: ", blocks[k])
                 ind = which(panels == k, arr.ind = TRUE)
-                trellis.focus("panel",ind[2], ind[1],highlight = FALSE)
+                trellis.focus("panel",ind[2], ind[1], highlight = FALSE)
                 
-                for (i in 1 : nlevels(df$group)) {
+                for (i in 1 : nlevels(df$group))
+                {
                     panel.lines(x = df.ellipse[other.ellipse, paste0("Col", 2*(i - 1) + 1)],
                     y = df.ellipse[other.ellipse, paste0("Col", 2 * i)],
                     col = unique(col.per.group)[i])
@@ -407,81 +428,73 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
     
     #internal_graphics=function(df,group,blocks,names,plot.centroid,x0,y0,col.per.group,main,X.label,Y.label,lim.X,xlim,lim.Y,ylim,class.object,
     #col,display.names,add.legend,abline.line,pch.legend,cex,plot.star,x,y,plot.ellipse,df.ellipse,layout,rep.space,missing.col,...)
-    if(style=="graphics")
+    if (style=="graphics")
     {
         #-- Start: graphics
         
-        opar <- par(c("mai","mar","usr","cxy","xaxp","yaxp"))
+        opar = par(c("mai","mar","usr","cxy","xaxp","yaxp"))
         
-        reset.mfrow=FALSE # if set to TRUE, the algorithm ends up with  par(mfrow=reset.mfrow)
+        reset.mfrow = FALSE # if set to TRUE, the algorithm ends up with  par(mfrow=reset.mfrow)
         
-        nResp=nlevels(df$Block)
+        #-- Define layout
+        nResp = nlevels(df$Block)
         if (is.null(layout))
         {
             # check if there are enough plots in mfrow
-            omfrow=par("mfrow")
-            available.plots=prod(omfrow)
-            if(available.plots<nResp) # if not enough plots available, we create our new plot
+            omfrow = par("mfrow")
+            available.plots = prod(omfrow)
+            if (available.plots<nResp) # if not enough plots available, we create our new plot
             {
                 nRows = min(c(3, ceiling(nResp/2)))
-                nCols=min(c(3,ceiling(nResp/nRows)))
+                nCols = min(c(3, ceiling(nResp/nRows)))
                 layout = c(nRows, nCols)
-                par(mfrow=layout)
-                if (nRows * nCols < nResp) devAskNewPage(TRUE)
+                par(mfrow = layout)
+                
+                if (nRows * nCols < nResp)
+                devAskNewPage(TRUE)
                 
                 reset.mfrow=TRUE # we changed mfrow to suits our needs, so we reset it at the end
-
             }
-        }else{
+        } else {
             if (length(layout) != 2 || !is.numeric(layout) || any(is.na(layout)))
             stop("'layout' must be a numeric vector of length 2.")
+            
             nRows = layout[1]
             nCols = layout[2]
-            par(mfrow=layout)
-            if (nRows * nCols < nResp) devAskNewPage(TRUE)
-
+            par(mfrow = layout)
+            
+            if (nRows * nCols < nResp)
+            devAskNewPage(TRUE)
         }
-        
-        #print(layout)
-        #print(reset.mfrow)
-        
-        #opar=par("mfrow") # save the current mfrow to load it at the end of the function
-        #print(layout)
-        
-        
-        
-        #par(mfrow=c(1,length(blocks)))
-        #-- Define layout
-        
+
+
         for (k in 1 : nlevels(df$Block))
         {
             if (add.legend)
-            {
-                par(mai=c( 1.360000, 1.093333, 1.093333,(max(strwidth(levels(df$group),"inches")))+0.6),xpd=TRUE)
-            }#else{}
-            
-            
-            other=df$Block %in% levels(df$Block)[k]
+            par(mai=c(1.360000, 1.093333, 1.093333, (max(strwidth(levels(df$group),"inches"))) + 0.6), xpd=TRUE)
 
-            plot(df[other, "x" ],
-            df[other, "y" ],
+            other = df$Block %in% levels(df$Block)[k]
+
+            plot(df[other, "x" ], df[other, "y" ],
             type = "n", xlab = X.label, ylab = Y.label,
-            xlim = c(xlim[[k]][1], xlim[[k]][2]), ylim = c(ylim[[k]][1], ylim[[k]][2]),cex.axis=size.axis,cex.lab=size.xlabel,lwd=point.lwd)#,...)
+            xlim = c(xlim[[k]][1], xlim[[k]][2]), ylim = c(ylim[[k]][1], ylim[[k]][2]),
+            cex.axis = size.axis, cex.lab = size.xlabel, lwd = point.lwd)#,...)
             
-
             #-- initialise plot
-            if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda")) & nlevels(df$Block)==1 & !any(class.object%in%object.mint) ) # avoid double title
+            if (any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda")) & nlevels(df$Block) == 1 & !any(class.object%in%object.mint)) # avoid double title when only one block is plotted
             {
-                titlemain=NULL
-                if(plot.ellipse)
-                other.ellipse=TRUE
+                titlemain = NULL
+                if (plot.ellipse)
+                other.ellipse = TRUE
+                
             }else{
-                titlemain=levels(df$Block)[k]
-                if(plot.ellipse)
-                other.ellipse=df.ellipse$Block %in% levels(df$Block)[k]
+                titlemain = levels(df$Block)[k]
+                if (plot.ellipse)
+                other.ellipse = df.ellipse$Block %in% levels(df$Block)[k]
             }
+            
             #add title of the 'blocks'
-            title(main=titlemain,line=1,cex.main=size.subtitle)
+            title(main = titlemain, line = 1, cex.main = size.subtitle)
 
             #-- Display sample or row.names
             for (i in 1 : nlevels(df$group))
@@ -515,23 +528,25 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
                 }
             }
             
-            pch.legend=NULL
-            if(missing.col)
+            pch.legend = NULL
+            if (missing.col)
             {
                 
-                for (i in 1:nlevels(factor(df$col))){
-                    pch.legend=c(pch.legend,df[df$col == levels(factor(df$col))[i], ]$pch)}
-            }else{
-                for (i in 1:nlevels(df$group)){
-                    pch.legend=c(pch.legend,df[df$group == levels(df$group)[i], ]$pch)}}
+                for (i in 1:nlevels(factor(df$col)))
+                pch.legend = c(pch.legend, df[df$col == levels(factor(df$col))[i], ]$pch)
+            } else {
+                for (i in 1:nlevels(df$group))
+                pch.legend = c(pch.legend, df[df$group == levels(df$group)[i], ]$pch)
+            }
             
             if (add.legend)
             {
-                legend(par()$usr[2]+0.1,par()$usr[4] - (par()$usr[4]-par()$usr[3])/2, col = col.per.group, legend = levels(df$group), pch = if(display.names) {16} else unique(df$pch.legend), title = 'Legend', cex = legend.text.size,lty=0,lwd=point.lwd)
+                legend(par()$usr[2]+0.1, par()$usr[4] - (par()$usr[4]-par()$usr[3])/2, col = col.per.group, legend = levels(df$group), pch = if(display.names) {16} else unique(df$pch.legend), title = 'Legend', cex = legend.text.size, lty = 0,lwd = point.lwd)
                 
             }
-            if(add.legend)
+            if (add.legend)
             par(xpd=FALSE) # so the abline does not go outside the plot
+            
             #-- Abline
             if (abline.line)
             abline(v = 0, h = 0, lty = 2,lwd=point.lwd)#,...)
@@ -541,12 +556,12 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
             {
                 for (i in 1 : nlevels(df$group))
                 {
-                    x0=mean(df[df$group == levels(df$group)[i] & other, "x"])
-                    y0=mean(df[df$group == levels(df$group)[i] & other, "y"])
+                    x0 = mean(df[df$group == levels(df$group)[i] & other, "x"])
+                    y0 = mean(df[df$group == levels(df$group)[i] & other, "y"])
                     for (q in 1: length(df[df$group == levels(df$group)[i] & other, "x"]))
                     {
-                        segments(x0,y0,df[df$group == levels(df$group)[i] & other, "x"][q],df[df$group == levels(df$group)[i] & other, "y"][q],
-                        cex=df$df[df$group == levels(df$group)[i] & other, "cex"],col=df[df$group == levels(df$group)[i] & other, "col"],lwd=point.lwd)#,...)
+                        segments(x0, y0, df[df$group == levels(df$group)[i] & other, "x"][q], df[df$group == levels(df$group)[i] & other, "y"][q],
+                        cex = df$df[df$group == levels(df$group)[i] & other, "cex"], col = df[df$group == levels(df$group)[i] & other, "col"], lwd = point.lwd)#,...)
                     }
                 }
             }
@@ -556,10 +571,10 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
             {
                 for (i in 1 : nlevels(df$group))
                 {
-                    x0=mean(df[df$group == levels(df$group)[i] & other, "x"])
-                    y0=mean(df[df$group == levels(df$group)[i] & other, "y"])
-                    points(cbind(x0,y0),pch=8,
-                    cex=df$df[df$group == levels(df$group)[i] & other, "cex"],col=unique(col.per.group)[i],lwd=point.lwd)#,...)
+                    x0 = mean(df[df$group == levels(df$group)[i] & other, "x"])
+                    y0 = mean(df[df$group == levels(df$group)[i] & other, "y"])
+                    points(cbind(x0,y0), pch = 8, cex = df$df[df$group == levels(df$group)[i] & other, "cex"],
+                    col = unique(col.per.group)[i], lwd = point.lwd)#,...)
                 }
             }
             
@@ -575,10 +590,10 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
                 }
             }
             
-            if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda")) & nlevels(df$Block)==1 & !any(class.object%in%object.mint) )
+            if (any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda")) & nlevels(df$Block)==1 & !any(class.object %in% object.mint) )
             {
-                title(main,line=1,cex.main=size.title)#,...)
-            }else{
+                title(main, line = 1, cex.main = size.title)#,...)
+            } else {
                 title(main, outer=TRUE, line = -2,cex.main=size.title)#,...)
             }
         }
@@ -589,9 +604,9 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
         #par(xaxp=opar["xaxp"])
         #par(yaxp=opar["yaxp"])
 
-#par(mai=opar["mai"])
-        if(reset.mfrow)
-        par(mfrow=omfrow)
+        #par(mai=opar["mai"])
+        if (reset.mfrow)
+        par(mfrow = omfrow)
         
         #par(mar=opar["mar"])
         
@@ -601,19 +616,21 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
     
     #internal_3d=function(df,group,blocks,names,plot.centroid,x0,y0,col.per.group,main,X.label,Y.label,lim.X,xlim,lim.Y,ylim,class.object,
     #col,display.names,add.legend,abline.line,pch.legend,cex,plot.star,x,y,plot.ellipse,df.ellipse,axes.box,Z.label,z)
-    if(style=="3d")
+    if (style=="3d")
     {
         
         #-- Start: 3d
         
         for (k in 1 : nlevels(df$Block))
         {
-            if(nlevels(df$group)>1) open3d() # removing the popping up window when there's only one block (for shiny)
+            #if (nlevels(df$Block)>1) # removing the popping up window when there's only one block (for shiny)
+            open3d()
             
             par3d(windowRect = c(500, 30, 1100, 630))
             Sys.sleep(0.1)
             
-            if (!is.null(main)) {
+            if (!is.null(main))
+            {
                 mat = matrix(1:2, 2)
                 layout3d(mat, heights = c(1, 10), model = "inherit")
                 next3d()
@@ -621,28 +638,27 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
                 next3d()
             }
             
-            if(any(class.object %in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")))
+            if(any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda", "mlsplsda")))
             {
-                other=TRUE
-                if(plot.ellipse)
-                other.ellipse=TRUE
-            }else
-            {
-                other=df$Block %in% levels(df$Block)[k]
-                if(plot.ellipse)
-                other.ellipse=df.ellipse$Block %in% levels(df$Block)[k]
+                other = TRUE
+                if (plot.ellipse)
+                other.ellipse = TRUE
+            } else {
+                other = df$Block %in% levels(df$Block)[k]
+                if (plot.ellipse)
+                other.ellipse = df.ellipse$Block %in% levels(df$Block)[k]
             }
             
             par3d(userMatrix = rotationMatrix(pi/80, 1, -1/(100*pi), 0))
             
             if (add.legend)
             {
-                legend3d(x="right",
+                legend3d(x = "right",
                 legend = levels(df$group),
                 col = col.per.group,
                 pch = rep(16,length(unique(df$pch))),
                 pt.cex = unique(df$cex),
-                bty="n")
+                bty = "n")
             }
             
             #-- Display sample or row.names
@@ -687,30 +703,25 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
             }
             
             #-- Ellipse
-            if(plot.ellipse)
+            if (plot.ellipse)
             {
-                coords=matrix(cbind(df[other, "x"],
+                coords = matrix(cbind(df[other, "x"],
                 df[other, "y"],
-                df[other,"z"]),ncol=3)
-                centr.coords <- apply(coords, 2, function(x) tapply(x, df$group, mean))
-                if(length(unique(df$group)) == 1)
-                centr.coords <- matrix(centr.coords, nrow=1)
+                df[other,"z"]),ncol = 3)
+                centr.coords = apply(coords, 2, function(x) tapply(x, df$group, mean))
+                if (length(unique(df$group)) == 1)
+                centr.coords = matrix(centr.coords, nrow=1)
                 
-                
-                rownames(centr.coords) <- levels(df$group)
-                lg <- levels(df$group)
-                for(i in 1:length(lg)) {
-                    
-                    g   <- lg[i]
-                    
-                    sel <- df$group == g
-                    
-                    s   <- cov(coords[sel,,drop=FALSE])
-                    cc  <- centr.coords[i,]
-                    
-                    
+                rownames(centr.coords) = levels(df$group)
+                lg = levels(df$group)
+                for(i in 1:length(lg))
+                {
+                    g   = lg[i]
+                    sel = df$group == g
+                    s   = cov(coords[sel, , drop = FALSE])
+                    cc  = centr.coords[i,]
                     # lines(ellipse(s, centre=cc), col=unique(col.per.group)[i])
-                    shade3d(ellipse3d(s, centre=cc, level=df.ellipse$ellipse.level[1]), col=unique(col.per.group)[i], alpha=alpha)
+                    shade3d(ellipse3d(s, centre = cc, level = df.ellipse$ellipse.level[1]), col = unique(col.per.group)[i], alpha = alpha)
                     
                 }
             }
@@ -720,11 +731,10 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
             {
                 for (i in 1 : nlevels(df$group))
                 {
-                    x0=mean(df[df$group == levels(df$group)[i] & other, "x"])
-                    y0=mean(df[df$group == levels(df$group)[i] & other, "y"])
-                    z0=mean(df[df$group == levels(df$group)[i] & other, "z"])
-                    points3d(x=x0,y=y0,z=z0,
-                    cex=df$df[df$group == levels(df$group)[i] & other, "cex"],col=unique(col.per.group)[i])
+                    x0 = mean(df[df$group == levels(df$group)[i] & other, "x"])
+                    y0 = mean(df[df$group == levels(df$group)[i] & other, "y"])
+                    z0 = mean(df[df$group == levels(df$group)[i] & other, "z"])
+                    points3d(x=x0, y=y0,z=z0, cex=df$df[df$group == levels(df$group)[i] & other, "cex"], col = unique(col.per.group)[i])
                 }
             }
             
@@ -733,14 +743,14 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
             {
                 for (i in 1 : nlevels(df$group))
                 {
-                    x0=mean(df[df$group == levels(df$group)[i] & other, "x"])
-                    y0=mean(df[df$group == levels(df$group)[i] & other, "y"])
-                    z0=mean(df[df$group == levels(df$group)[i] & other, "z"])
+                    x0 = mean(df[df$group == levels(df$group)[i] & other, "x"])
+                    y0 = mean(df[df$group == levels(df$group)[i] & other, "y"])
+                    z0 = mean(df[df$group == levels(df$group)[i] & other, "z"])
                     for (q in 1: length(df[df$group == levels(df$group)[i] & other, "x"]))
                     {
-                        segments3d(x=c(x0,df[df$group == levels(df$group)[i] & other, "x"][q]),y=c(y0,df[df$group == levels(df$group)[i] & other, "y"][q]),
-                        z=c(z0,df[df$group == levels(df$group)[i] & other, "z"][q]),
-                        cex=df$df[df$group == levels(df$group)[i] & other, "cex"],col=df[df$group == levels(df$group)[i] & other, "col"])
+                        segments3d(x=c(x0, df[df$group == levels(df$group)[i] & other, "x"][q]), y=c(y0,df[df$group == levels(df$group)[i] & other, "y"][q]),
+                        z=c(z0, df[df$group == levels(df$group)[i] & other, "z"][q]),
+                        cex=df$df[df$group == levels(df$group)[i] & other, "cex"], col=df[df$group == levels(df$group)[i] & other, "col"])
                     }
                 }
             }
@@ -767,17 +777,15 @@ display.names,add.legend,abline.line,plot.star,plot.ellipse,df.ellipse,style,lay
             mtext3d(X.label, "x-+", line = 1)
             mtext3d(Y.label, "y-+", line = 1.5)
             mtext3d(Z.label, "z+-", line = 1)
-            if( ! any(class.object%in% c("ipca","sipca","pca","spca","prcomp", "splsda","plsda","mlsplsda")))
-            title3d(main=levels(df$Block)[k])
+            if (! any(class.object%in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda", "mlsplsda")))
+            title3d(main = levels(df$Block)[k])
         }
         #-- output --#
         return(invisible(cbind(df$x, df$y, df$z)))
-        
     }
     
-    
-    if(style%in%c("graphics","3d"))
-    p=NULL
+    if (style%in%c("graphics","3d"))
+    p = NULL
     
     return(p)
 }

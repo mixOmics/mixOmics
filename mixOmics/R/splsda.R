@@ -69,6 +69,9 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
             stop("'Y' should be a factor or a class vector.")
         }
         
+        if (nlevels(Y) == 1)
+        stop("'Y' should be a factor with more than one level")
+
         Y.mat=unmap(Y)
         colnames(Y.mat) = levels(Y)#paste0("Y", 1:ncol(Y.mat))
     }else{

@@ -52,21 +52,27 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
     
     #-- validation des arguments --#
     # most of the checks are done in the wrapper.mint.spls.hybrid function
-    if(is.null(multilevel))
+    if (is.null(multilevel))
     {
         if (is.null(Y))
         stop("'Y' has to be something else than NULL.")
         
         if (is.null(dim(Y)))
         {
-            Y = as.factor(Y)
+            Y = factor(Y)
         }  else {
             stop("'Y' should be a factor or a class vector.")
         }
         
-        Y.mat=unmap(Y)
+        if (nlevels(Y) == 1)
+        stop("'Y' should be a factor with more than one level")
+        
+        Y.mat = unmap(Y)
         colnames(Y.mat) = levels(Y)#paste0("Y", 1:ncol(Y.mat))
-    }else{Y.mat=NULL}
+        
+    } else {
+        Y.mat = NULL
+    }
 
     
     result <- internal_wrapper.mint(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,

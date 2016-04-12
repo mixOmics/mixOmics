@@ -25,7 +25,6 @@ ncomp = rep(1, length(X)),
 keepX.constraint,
 keepX,
 scheme = "centroid",
-mode="canonical",
 scale = TRUE,
 bias = FALSE,
 init = "svd.single",
@@ -37,7 +36,7 @@ near.zero.var=FALSE)
 
 
     check=Check.entry.rgcca(X = X, design = design, tau = tau, ncomp = ncomp, scheme = scheme, scale = scale,
-    init = init, bias = bias, tol = tol, verbose = verbose, max.iter=max.iter, mode=mode,near.zero.var=near.zero.var,keepX=keepX,
+    init = init, bias = bias, tol = tol, verbose = verbose, max.iter=max.iter, near.zero.var=near.zero.var,keepX=keepX,
     keepX.constraint=keepX.constraint)
     X=check$A
     ncomp=check$ncomp

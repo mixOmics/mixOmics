@@ -65,24 +65,30 @@ near.zero.var = FALSE)
     {
         if (is.null(dim(Y)))
         {
-            Y = as.factor(Y)
+            Y = factor(Y)
         } else {
             stop("'Y' should be a factor or a class vector.")
         }
 
-    Y.input = Y
-    Y = unmap(Y)
-    colnames(Y) = levels(Y.input)
-    }else if (!missing(indY))
+        if (nlevels(Y) == 1)
+        stop("'Y' should be a factor with more than one level")
+
+        Y.input = Y
+        Y = unmap(Y)
+        colnames(Y) = levels(Y.input)
+    } else if (!missing(indY))
     {
         temp = X[[indY]] #not called Y to not be an input of the wrapper.sparse.mint.block
         if (is.null(dim(temp)))
         {
-            temp = as.factor(temp)
+            temp = factor(temp)
         } else {
             stop("'Y' should be a factor or a class vector.")
         }
         
+        if (nlevels(temp) == 1)
+        stop("'X[[indY]]' should be a factor with more than one level")
+
         Y.input = temp
         X[[indY]] = unmap(temp)
         colnames(X[[indY]]) = levels(Y.input)

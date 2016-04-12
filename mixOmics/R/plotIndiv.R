@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 16-03-2016
-# last modified: 11-04-2016
+# last modified: 12-04-2016
 #
 # Copyright (C) 2016
 #
@@ -21,6 +21,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #############################################################################################################
+
+
+plotIndiv <-
+function(object, ...) UseMethod("plotIndiv")
 
 
 # --------------------------------------------------------------------------------------
@@ -104,7 +108,7 @@ plot_parameters)
     stop("Invalid vector for 'comp'.")
     
     if (any(ncomp < max(comp)))
-    stop("Each element of 'comp' must be smaller or equal than ", max(object$ncomp), ".", call. = FALSE)
+    stop(paste0("The number of components of the object to be plotted (ncomp=",  max(object$ncomp), ") is smaller than 'comp' (", paste(comp,collapse=", "), "). Please increase ncomp  or decrease 'comp'"),  call. = FALSE)
     
     comp1 = round(comp[1]); comp2 = round(comp[2])
     if (style=="3d") {comp3 = round(comp[3])}else{comp3=NULL}

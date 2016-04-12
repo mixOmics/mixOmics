@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 16-03-2016
-# last modified: 11-04-2016
+# last modified: 12-04-2016
 #
 # Copyright (C) 2016
 #
@@ -21,10 +21,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #############################################################################################################
-
-
-plotIndiv <-
-function(object, ...) UseMethod("plotIndiv")
 
 
 #----------------------------------------------------------------------------------------------------------#
@@ -53,7 +49,6 @@ subtitle,
 add.legend=FALSE,
 X.label = NULL,
 Y.label = NULL,
-Z.label = NULL,
 abline.line = FALSE,
 xlim=NULL,
 ylim=NULL,
@@ -235,9 +230,13 @@ point.lwd=1,
         }
 
         #-- check inputs
+        # check style as we do not do 3d at the moment:
+        if (!style %in% c("ggplot2", "lattice", "graphics"))
+        stop("'style' must be one of 'ggplot2', 'lattice' or 'graphics'.", call. = FALSE)
+        
         check = check.input.plotIndiv(object=object,comp = comp,blocks = blocks, ind.names = ind.names,
         style=style, plot.ellipse = plot.ellipse, ellipse.level = ellipse.level, plot.centroid=plot.centroid,
-        plot.star=plot.star, add.legend=add.legend,X.label = X.label,Y.label = Y.label,Z.label = Z.label,abline.line = abline.line,
+        plot.star=plot.star, add.legend=add.legend,X.label = X.label,Y.label = Y.label,abline.line = abline.line,
         xlim = xlim,ylim = ylim,alpha=alpha,axes.box = axes.box,plot_parameters=plot_parameters)
         #-- retrieve outputs from the checks
         axes.box=check$axes.box
@@ -250,14 +249,13 @@ point.lwd=1,
 
         #-- get the variates
         variate=internal_getVariatesAndLabels(object,comp,blocks.init=blocks.init,blocks=blocks,rep.space=rep.space,style=style,X.label=X.label,
-            Y.label=Y.label,Z.label=Z.label)
+            Y.label=Y.label,Z.label=NULL)
         #-- retrieve outputs
         x=variate$x
         y=variate$y
         z=variate$z
         X.label=variate$X.label #only the last one of the loop is used
         Y.label=variate$Y.label #only the last one of the loop is used
-        Z.label=variate$Z.label #only the last one of the loop is used 
 
         n=nrow(object$X)
 

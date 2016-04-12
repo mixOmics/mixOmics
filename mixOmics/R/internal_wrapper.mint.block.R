@@ -28,8 +28,13 @@
 # mean centering with attach and without modify.na, need to look at how to remove some of means/sigma when nearZerVar is used
 # we can have a list of studies for Discriminant Analyses, not for pls/spls as they would be overlapping batch effects
 
+# ========================================================================================================
+# internal_wrapper.mint.block: this function is a particular setting of internal_mint.block,
+# the formatting of the input is checked in internal_wrapper.mint.block
+# ========================================================================================================
+# used in (mint).block approaches
 
-internal_wrapper.mint.block <- function(  X,
+internal_wrapper.mint.block <- function(X,
 Y,
 indY,
 study,
@@ -49,40 +54,52 @@ verbose,
 max.iter = 500,
 near.zero.var = FALSE)
 {
+    if (missing(scheme))
+    scheme= "centroid"
     
+    if (missing(bias))
+    bias= FALSE
     
-    if(missing(scheme)) scheme= "centroid"
-    if(missing(bias)) bias= FALSE
-    if(missing(verbose)) verbose= FALSE
-    if(missing(mode)) mode="regression"
-    #print("bla")
+    if (missing(verbose))
+    verbose= FALSE
     
-    #need to check if Y or indY is a factor, unmap it and then do the checks (no other factors etc)
-    #print(missing(ncomp))
+    if (missing(mode))
+    mode="regression"
+    
+    # checks (near.zero.var is done there)
+    check=Check.entry.wrapper.mint.block(X = X,
+    Y = Y,
+    indY = indY,
+    ncomp = ncomp,
+    keepX = keepX,
+    keepX.constraint = keepX.constraint,
+    keepY = keepY,
+    keepY.constraint = keepY.constraint,
+    study = study,
+    design = design,
+    init = init,
+    scheme = scheme,
+    scale = scale,
+    bias = bias,
+    near.zero.var = near.zero.var,
+    mode = mode,
+    tol = tol,
+    max.iter = max.iter,
+    verbose = verbose)
 
-    
-    check=Check.entry.wrapper.mint.block(X=X,Y=Y,indY=indY,ncomp=ncomp,keepX=keepX,
-    keepX.constraint=keepX.constraint,keepY=keepY,keepY.constraint=keepY.constraint,
-    study=study,design=design,init=init,scheme=scheme,
-    scale=scale,bias=bias,near.zero.var=near.zero.var,mode=mode,tol=tol,
-    max.iter=max.iter,verbose=verbose)
-    #   print("bla2")
-    
-    A=check$A
-    indY=check$indY
-    study=check$study
-    design=check$design
-    ncomp=check$ncomp
-    keepA=check$keepA
-    keepA.constraint=check$keepA.constraint
-    init=check$init
-    nzv.A=check$nzv.A
+    # get some values after checks
+    A = check$A
+    indY = check$indY
+    study = check$study
+    design = check$design
+    ncomp = check$ncomp
+    keepA = check$keepA
+    keepA.constraint = check$keepA.constraint
+    init = check$init
+    nzv.A = check$nzv.A
 
-    #print(missing(ncomp))
-
-    #  print(ncomp)
-    #print(length(A))
-    #message("A block analysis is being performed")
+#print(keepA)
+#print(keepA.constraint)
     
     # A: list of matrices
     # indY: integer, pointer to one of the matrices of A
@@ -101,17 +118,26 @@ near.zero.var = FALSE)
     # keepA.constraint: keepX.constraint, which variables are kept on the first num.comp-1 components. It is a list of characters
     # near.zero.var: do you want to remove variables with very small variance
     
+    result=internal_mint.block(A = A,
+    indY = indY,
+    design = design,
+    ncomp = ncomp,
+    scheme = scheme,
+    scale = scale,
+    bias = bias,
+    init = init,
+    tol = tol,
+    verbose = verbose,
+    tau = NULL,
+    mode = mode,
+    max.iter = max.iter,
+    study = study,
+    keepA = keepA,
+    keepA.constraint = keepA.constraint)
     
-    result=internal_mint.block(A=A,indY=indY,design=design,ncomp=ncomp,scheme = scheme,
-    scale =scale,  bias = bias,init = init, tol = tol, verbose = verbose,tau=NULL,
-    mode = mode, max.iter = max.iter,study = study, keepA = keepA,
-    keepA.constraint = keepA.constraint)#, near.zero.var = near.zero.var)
-    
-    
-    #result$names$blocks=result$names$blocks[-indY]
-    #result$ncomp = result$ncomp[-indY]
-    #result$names$colnames = result$names$colnames[-indY]
-    result$indY=indY
+    #result$indY=indY # ??
+    #print(indY)
+    #print(result$indY)
     
     if(near.zero.var)
     result$nzv=nzv.A

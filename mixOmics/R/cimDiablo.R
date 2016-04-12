@@ -4,7 +4,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: ?
-# last modified: 08-03-2016
+# last modified: 12-04-2016
 #
 # Copyright (C) 2015
 #
@@ -44,45 +44,46 @@ cex.legend=1.5)
     if (!any(class(object) == "block.splsda"))
     stop("heatmapDiablo is only available for 'block.splsda' objects")
 
-    if(length(object$X)<=1)
+    if (length(object$X) <= 1)
     stop("This function is only available when there are more than 3 blocks") # so 2 blocks in X + the outcome Y
 
-    if(ncomp>min(object$ncomp))
+    if(ncomp > min(object$ncomp))
     stop("'ncomp' needs to be higher than object$ncomp")
 
-    X <- object$X
-    Y <- object$Y
+    X = object$X
+    Y = object$Y
 
     #need to reorder variates and loadings to put 'Y' in last
-    indY=object$indY
-    object$variates=c(object$variates[-indY],object$variates[indY])
-    object$loadings=c(object$loadings[-indY],object$loadings[indY])
+    indY = object$indY
+    object$variates = c(object$variates[-indY], object$variates[indY])
+    object$loadings = c(object$loadings[-indY], object$loadings[indY])
     
     #reducing loadings for ncomp
-    object$loadings=lapply(object$loadings, function(x){x[,1:ncomp,drop=FALSE]})
+    object$loadings = lapply(object$loadings, function(x){x[, 1:ncomp, drop=FALSE]})
     
     keepA = lapply(object$loadings, function(i) apply(abs(i), 1, sum) > 0)
     XDatList <- mapply(function(x, y){
         x[, y]
-    }, x=X, y=keepA[-length(keepA)],SIMPLIFY=FALSE)
+    }, x=X, y=keepA[-length(keepA)], SIMPLIFY=FALSE)
     XDat <- do.call(cbind, XDatList)
-    XDat[which(XDat > 2)] <- 2
-    XDat[which(XDat < -2)] <- -2
+    XDat[which(XDat > 2)] = 2
+    XDat[which(XDat < -2)] = -2
     
-    dark <- brewer.pal(n = 12, name = 'Paired')[seq(2, 12, by = 2)]
-    VarLabels <- factor(rep(names(X), lapply(keepA[-length(keepA)], sum)), levels = names(X)[order(names(X))])
+    dark = brewer.pal(n = 12, name = 'Paired')[seq(2, 12, by = 2)]
+    VarLabels = factor(rep(names(X), lapply(keepA[-length(keepA)], sum)), levels = names(X)[order(names(X))])
     
     ## Plot heatmap
-    opar <- par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din", "page")]
+    opar = par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din", "page")]
     par(mfrow=c(1,1))
     cim(XDat, row.names = rep("", nrow(XDat)), col.names = rep("", ncol(XDat)),
     col.sideColors = dark[as.numeric(VarLabels)],
     row.sideColors = color.mixo(as.numeric(Y)), margins = margins)
     
-    legend(pos.legend,c("Rows",c(levels(Y)[order(levels(Y))],"",
-    "Columns",names(X))),col=c(1,color.mixo(1:nlevels(Y)),1,
-    1,dark[1:nlevels(VarLabels)][match(levels(VarLabels), names(X))]),
-    pch=c(NA,rep(19,nlevels(Y)),NA,NA,rep(19,nlevels(VarLabels))),bty="n",cex=cex.legend,text.font=c(2,rep(1,nlevels(Y)),NA,2,rep(1,nlevels(VarLabels))))
+    legend(pos.legend, c("Rows", c(levels(Y)[order(levels(Y))], "",
+    "Columns", names(X))), col = c(1, color.mixo(1:nlevels(Y)), 1,
+    1, dark[1:nlevels(VarLabels)][match(levels(VarLabels), names(X))]),
+    pch = c(NA, rep(19, nlevels(Y)), NA, NA, rep(19, nlevels(VarLabels))), bty="n", cex = cex.legend,
+    text.font = c(2, rep(1, nlevels(Y)), NA, 2, rep(1, nlevels(VarLabels))))
     
     par(opar)
 }

@@ -62,7 +62,7 @@ near.zero.var = FALSE)
     
     if (is.null(dim(Y)))
     {
-        Y = as.factor(Y)
+        Y = factor(Y)
     }  else {
         stop("'Y' should be a factor or a class vector.")
     }
