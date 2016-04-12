@@ -97,9 +97,6 @@ near.zero.var = FALSE)
     keepA.constraint = check$keepA.constraint
     init = check$init
     nzv.A = check$nzv.A
-
-#print(keepA)
-#print(keepA.constraint)
     
     # A: list of matrices
     # indY: integer, pointer to one of the matrices of A
@@ -134,11 +131,7 @@ near.zero.var = FALSE)
     study = study,
     keepA = keepA,
     keepA.constraint = keepA.constraint)
-    
-    #result$indY=indY # ??
-    #print(indY)
-    #print(result$indY)
-    
+       
     if(near.zero.var)
     result$nzv=nzv.A
 

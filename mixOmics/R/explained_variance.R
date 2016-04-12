@@ -27,7 +27,7 @@
 # ========================================================================================================
 
 
-explained_variance=function(data, variates, ncomp)
+explained_variance = function(data, variates, ncomp)
 {
     #check input data
     check = Check.entry.single(data,ncomp)
@@ -44,7 +44,7 @@ explained_variance=function(data, variates, ncomp)
 	exp.varX = NULL
 	for (h in 1:ncomp)
 	{
-		temp = variates[, h]/drop(t(variates[, h])%*%(variates[, h]))
+		temp = variates[, h] / drop(t(variates[, h]) %*% (variates[, h]))
 	    exp_var_new = as.numeric(t(variates[, h]) %*% data %*% t(data) %*% temp )/nor2x
 	    exp.varX = append(exp.varX, exp_var_new)
 	

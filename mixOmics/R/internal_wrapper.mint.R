@@ -24,7 +24,7 @@
 
 
 # ========================================================================================================
-# wrapper.mint.spls.hybrid: perform a vertical PLS on a combination of experiments, input as a matrix in X
+# internal_wrapper.mint: perform a vertical PLS on a combination of experiments, input as a matrix in X
 # this function is a particular setting of sparse.mint.block, the formatting of the input is checked in wrapper.sparse.mint.block
 # internal function. Do not export in NAMESPACE.
 # ========================================================================================================
@@ -46,88 +46,64 @@
 internal_wrapper.mint <- function(X,
 Y,
 study,
-ncomp=2,
+ncomp = 2,
 keepX.constraint,
 keepY.constraint,
 keepX,
 keepY,
 mode,
-scale=FALSE,
-near.zero.var=FALSE,
+scale = FALSE,
+near.zero.var = FALSE,
 max.iter = 500,
 tol = 1e-06,
-logratio="none",   # one of "none", "CLR"
-DA=FALSE,           # indicate whether it's a DA analysis, only used for the multilvel approach with withinVariation
-multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVariation. Y is ommited and shouldbe included in multilevel design
+logratio = "none",   # one of "none", "CLR"
+DA = FALSE,           # indicate whether it's a DA analysis, only used for the multilvel approach with withinVariation
+multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVariation. Y is ommited and should be included in multilevel design
 {
     
     if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0 || length(ncomp)>1)
     stop("invalid number of variates, 'ncomp'.")
     
-    
-    
     #-- validation des arguments --#
    
     #set the default study factor
-    if(missing(study))
+    if (missing(study))
     {
-        study=factor(rep(1,nrow(X)))
+        study = factor(rep(1,nrow(X)))
     }else{
-        study=as.factor(study)
+        study = as.factor(study)
     }
-    if(length(study)!=nrow(X)) stop(paste0("'study' must be a factor of length ",nrow(X),"."))
+    if (length(study) != nrow(X))
+    stop(paste0("'study' must be a factor of length ",nrow(X),"."))
     
-    if(any(table(study)<=1)) stop("At least one study has only one sample, please consider removing before calling the function again")
-    if(any(table(study)<5)) warning("At least one study has less than 5 samples, mean centering might not do as expected")
+    if (any(table(study) <= 1))
+    stop("At least one study has only one sample, please consider removing before calling the function again")
+    if (any(table(study) < 5))
+    warning("At least one study has less than 5 samples, mean centering might not do as expected")
     
     
     design = matrix(c(0,1,1,0), ncol = 2, nrow = 2, byrow = TRUE)
     
     
-    
-
-
-    # we need a vector of length ncomp for keepA
-    # update keepX and keepY
-    #keepX=c(unlist(lapply(keepX.constraint,length)),keepX) #of length ncomp, can contains 0
-    #keepY=c(unlist(lapply(keepY.constraint,length)),keepY) #of length ncomp, can contains 0
-    
-    # A: list of matrices
-    # indY: integer, pointer to one of the matrices of A
-    # design: design matrix, links between matrices. Diagonal must be 0
-    # ncomp: vector of ncomp, per matrix
-    # scheme: a function "g", refer to the article (thanks Benoit)
-    # scale: do you want to scale ? mean is done by default and cannot be changed (so far)
-    # bias: scale the data with n or n-1
-    # init: one of "svd" or "random", initialisation of the algorithm
-    # tol: nobody cares about this
-    # verbose: show the progress of the algorithm
-    # mode: canonical, classic, invariant, regression
-    # max.iter: nobody cares about this
-    # study: factor for each matrix of A, must be a vector
-    # keepA: keepX of spls for each matrix of A. must be a list. Each entry must be of the same length (max ncomp)
-    # keepA.constraint: keepX.constraint, which variables are kept on the first num.comp-1 components. It is a list of characters
-    # near.zero.var: do you want to remove variables with very small variance
-    
-    check=Check.entry.pls(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.constraint, mode=mode, scale=scale,
-        near.zero.var=near.zero.var, max.iter=max.iter ,tol=tol ,logratio=logratio ,DA=DA, multilevel=multilevel) # to have the warnings relative to X and Y, instead of blocks
-    X=check$X
-    Y=check$Y
-    ncomp=check$ncomp
-    mode=check$mode
-    keepX.constraint=check$keepX.constraint
-    keepY.constraint=check$keepY.constraint
-    keepX=check$keepX
-    keepY=check$keepY
-    nzv.A=check$nzv.A
+    check = Check.entry.pls(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.constraint, mode=mode, scale=scale,
+        near.zero.var=near.zero.var, max.iter=max.iter ,tol=tol ,logratio=logratio ,DA=DA, multilevel=multilevel)
+    X = check$X
+    Y = check$Y
+    ncomp = check$ncomp
+    mode = check$mode
+    keepX.constraint = check$keepX.constraint
+    keepY.constraint = check$keepY.constraint
+    keepX = check$keepX
+    keepY = check$keepY
+    nzv.A = check$nzv.A
     
     
     
     #-----------------------------#
     #-- logratio transformation --#
     
-    transfo=logratio.transfo(X=X,logratio=logratio)
-    X=transfo$X
+    transfo = logratio.transfo(X=X, logratio=logratio)
+    X = transfo$X
     
     #as X may have changed
     if (ncomp >= min(ncol(X), nrow(X)))
@@ -140,45 +116,42 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
     #---------------------------------------------------------------------------#
     #-- multilevel approach ----------------------------------------------------#
     
-    if(!is.null(multilevel))
+    if (!is.null(multilevel))
     {
-        if(!DA)
+        if (!DA)
         {
             Xw = withinVariation(X, design  = multilevel)
             Yw = withinVariation(Y, design = multilevel)
-            X=Xw
-            Y=Yw
+            X = Xw
+            Y = Yw
         }else{
-            Xw <- withinVariation(X, design = multilevel)
-            X=Xw
+            Xw = withinVariation(X, design = multilevel)
+            X = Xw
             
             #-- Need to set Y variable for 1 or 2 factors
             Y = multilevel[, -1,drop=FALSE]
             if (ncol(Y)>0)
-            {
-                Y = apply(Y, 1, paste, collapse = ".")  #  paste is to combine in the case we have 2 levels
-            }
+            Y = apply(Y, 1, paste, collapse = ".")  #  paste is to combine in the case we have 2 levels
             
             Y = as.factor(Y)
-            Y.factor=Y
-            Y=unmap(Y)
-            colnames(Y) = levels(Y)#paste0("Y", 1:ncol(Y))
-            rownames(Y)=rownames(X)
+            Y.factor = Y
+            Y = unmap(Y)
+            colnames(Y) = levels(Y)
+            rownames(Y) = rownames(X)
             # if DA keepY should be all the levels (which is not happening in the check because of multilevel
-            keepY=rep(ncol(Y),ncomp)
+            keepY = rep(ncol(Y),ncomp)
         
         }
     }
     #-- multilevel approach ----------------------------------------------------#
     #---------------------------------------------------------------------------#
-    save(list=ls(),file="temp.Rdata")
 
 
     #---------------------------------------------------------------------------#
     #-- pls approach ----------------------------------------------------#
 
     result <- internal_mint.block(A = list(X = X, Y = Y), indY = 2, mode = mode, ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
-    design = design, keepA = list(keepX,keepY),keepA.constraint = list(keepX.constraint,keepY.constraint),
+    design = design, keepA = list(keepX, keepY), keepA.constraint = list(keepX.constraint, keepY.constraint),
     scale = scale, scheme = "centroid",init="svd", study = study)#,near.zero.var=near.zero.var)
     
     #-- pls approach ----------------------------------------------------#
@@ -186,13 +159,13 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
 
     result$ncomp = ncomp
     if(near.zero.var)
-    result$nzv=nzv.A
+    result$nzv = nzv.A
     
     if(!is.null(multilevel) & DA)
-    result$Y.factor=Y.factor
+    result$Y.factor = Y.factor
     
     if(!is.null(multilevel))
-    result$Xw=Xw
+    result$Xw = Xw
 
 
     class(result) = c("mint.spls.hybrid")
