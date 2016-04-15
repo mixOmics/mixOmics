@@ -62,10 +62,10 @@ cex.legend=1.5)
     object$loadings = lapply(object$loadings, function(x){x[, 1:ncomp, drop=FALSE]})
     
     keepA = lapply(object$loadings, function(i) apply(abs(i), 1, sum) > 0)
-    XDatList <- mapply(function(x, y){
+    XDatList = mapply(function(x, y){
         x[, y]
     }, x=X, y=keepA[-length(keepA)], SIMPLIFY=FALSE)
-    XDat <- do.call(cbind, XDatList)
+    XDat = do.call(cbind, XDatList)
     XDat[which(XDat > 2)] = 2
     XDat[which(XDat < -2)] = -2
     

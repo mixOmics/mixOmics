@@ -20,7 +20,7 @@
 # --------------------------------------------
 # CIM for objects "pca","spca","ipca","sipca","mlsplsda","splsda","plsda","rcc","pls","spls","mlspls"
 # --------------------------------------------
-cim <-
+cim =
 function(mat,
 color = NULL,
 row.names = TRUE,
@@ -337,7 +337,7 @@ name.save = NULL)
         #          if (class.object[1] %in% object.pca)
         #            col.names = mat$names$var
         #          else if (class.object[1] %in% c(object.pls,object.rcc))
-        #            col.names = mat$names$Y
+        #            col.names = mat$names$colnames$Y
         #        }
         #        else {
         #          if (class.object[1] %in% object.pca)
@@ -380,7 +380,7 @@ name.save = NULL)
                 
                 if (is.logical(col.names)) {
                     if (isTRUE(col.names))
-                    col.names = mat$names$Y
+                    col.names = mat$names$colnames$Y
                     else
                     col.names = rep("", q)
                 }
@@ -462,7 +462,7 @@ name.save = NULL)
                 }
                 if (is.logical(col.names)) {
                     if (isTRUE(col.names))
-                    col.names = mat$names$Y
+                    col.names = mat$names$colnames$Y
                     else
                     col.names = rep("", q)
                 }
@@ -1232,7 +1232,7 @@ name.save = NULL)
         
     }
     #---------------------------------------------------------------------------#
-    opar <- par(no.readonly = TRUE)
+    opar = par(no.readonly = TRUE)
 
     imageMap(object,
     color = color,
@@ -1262,7 +1262,7 @@ name.save = NULL)
         if (is.null(legend$cex)) legend$cex = 0.8
         if(class.object[1] %in%  c("splsda","plsda"))
         {
-            if (is.null(legend$legend)) legend$legend = mat$names$Y
+            if (is.null(legend$legend)) legend$legend = mat$names$colnames$Y
             
             #-- col
             if (is.null(legend$col)) {

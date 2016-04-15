@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 11-04-2016
+# last modified: 13-04-2016
 #
 # Copyright (C) 2015
 #
@@ -34,7 +34,7 @@
 # ========================================================================================================
 # used in (mint).block approaches
 
-internal_wrapper.mint.block <- function(X,
+internal_wrapper.mint.block = function(X,
 Y,
 indY,
 study,
@@ -67,25 +67,12 @@ near.zero.var = FALSE)
     mode="regression"
     
     # checks (near.zero.var is done there)
-    check=Check.entry.wrapper.mint.block(X = X,
-    Y = Y,
-    indY = indY,
-    ncomp = ncomp,
-    keepX = keepX,
-    keepX.constraint = keepX.constraint,
-    keepY = keepY,
-    keepY.constraint = keepY.constraint,
-    study = study,
-    design = design,
-    init = init,
-    scheme = scheme,
-    scale = scale,
-    bias = bias,
-    near.zero.var = near.zero.var,
-    mode = mode,
-    tol = tol,
-    max.iter = max.iter,
-    verbose = verbose)
+    check=Check.entry.wrapper.mint.block(X = X, Y = Y, indY = indY, ncomp = ncomp,
+    keepX = keepX, keepX.constraint = keepX.constraint,
+    keepY = keepY, keepY.constraint = keepY.constraint,
+    study = study, design = design, init = init, scheme = scheme, scale = scale,
+    bias = bias, near.zero.var = near.zero.var, mode = mode, tol = tol,
+    max.iter = max.iter, verbose = verbose)
 
     # get some values after checks
     A = check$A

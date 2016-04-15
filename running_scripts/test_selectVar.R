@@ -46,7 +46,7 @@ data(nutrimouse)
 
 # ! need to unmap the Y factor
 Y = unmap(nutrimouse$diet)
-data = list(nutrimouse$gene, nutrimouse$lipid,Y)
+data = list(block1=nutrimouse$gene, block2=nutrimouse$lipid,Y=Y)
 # in this design, gene expression and lipids are connected to the diet factor
 # and gene expression and lipids are also connected
 design = matrix(c(0,1,1,

@@ -304,8 +304,7 @@ penalty=NULL)
         svd.M = lapply(M, function(x){svd(x, nu = 1, nv = 1)})
         loadings.A = lapply(c(1:(J-1)), function(x){svd.M[[x]]$u})
         loadings.A[[J]] = svd.M[[1]]$v
-    } else if (init=="svd.single")
-    {
+    } else if (init=="svd.single") {
         alpha =  lapply(1 : J, function(y){initsvd(lapply(y, function(x) {replace(A[[x]], is.na(A[[x]]), 0)})[[1]])})
         
         loadings.A = list()
@@ -544,8 +543,7 @@ verbose = FALSE, init = "svd.single", bias = FALSE, tol = .Machine$double.eps, k
                 if (!is.null(keepA))
                 {
                     loadings.A[[j]] = sparsity(loadings.A = loadings.A[[j]], keepA = keepA[[j]], penalty = NULL)
-                } else if (!is.null(penalty))
-                {
+                } else if (!is.null(penalty)) {
                     loadings.A[[j]] = sparsity(loadings.A = loadings.A[[j]], keepA = NULL, penalty = penalty[j])
                 }
                 loadings.A[[j]] = (loadings.A[[j]]/norm2(loadings.A[[j]]))*temp.norm

@@ -431,7 +431,7 @@ display.names)
     missing.group = FALSE
     if (missing(group) & any(class(object)=="DA"))
     {
-        group = object$Y#factor(map(object$ind.mat), labels = object$names$Y)
+        group = object$Y#factor(map(object$ind.mat), labels = object$names$colnames$Y)
         object$ind.mat = unmap(group) # added in v6 cause $ind.mat is the scaled (if scale=TRUE) version of ind.mat(=unmap(Y))
     } else if (!missing(group))
     {

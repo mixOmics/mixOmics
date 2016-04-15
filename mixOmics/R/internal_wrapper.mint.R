@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 01-03-2016
+# last modified: 13-04-2016
 #
 # Copyright (C) 2015
 #
@@ -25,9 +25,10 @@
 
 # ========================================================================================================
 # internal_wrapper.mint: perform a vertical PLS on a combination of experiments, input as a matrix in X
-# this function is a particular setting of sparse.mint.block, the formatting of the input is checked in wrapper.sparse.mint.block
+# this function is a particular setting of internal_mint.block, the formatting of the input is checked in Check.entry.pls
 # internal function. Do not export in NAMESPACE.
 # ========================================================================================================
+# used in (mint).(s)pls(da)
 
 # X: numeric matrix of predictors
 # Y: numeric vector or matrix of responses
@@ -37,13 +38,16 @@
 # keepY.constraint: A list containing which variables of Y are to be kept on each of the first PLS-components
 # keepX: number of \eqn{X} variables kept in the model on the last components (once all keepX.constraint[[i]] are used).
 # keepY: number of \eqn{Y} variables kept in the model on the last components.
+# mode: input mode, one of "canonical", "classic", "invariant" or "regression". Default to "regression"
 # scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
-# tol: Convergence stopping value.
-# max.iter: integer, the maximum number of iterations.
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
+# max.iter: integer, the maximum number of iterations.
+# tol: Convergence stopping value.
+# logratio: one of "none", "CLR"
+# DA: indicate whether it's a DA analysis, only used for the multilvel approach with withinVariation
+# multilevel: multilevel is passed to multilevel(design=) in withinVariation. Y is ommited and should be included in multilevel design
 
-
-internal_wrapper.mint <- function(X,
+internal_wrapper.mint = function(X,
 Y,
 study,
 ncomp = 2,
@@ -70,7 +74,7 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
     if (missing(study))
     {
         study = factor(rep(1,nrow(X)))
-    }else{
+    } else {
         study = as.factor(study)
     }
     if (length(study) != nrow(X))
@@ -81,10 +85,8 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
     if (any(table(study) < 5))
     warning("At least one study has less than 5 samples, mean centering might not do as expected")
     
-    
     design = matrix(c(0,1,1,0), ncol = 2, nrow = 2, byrow = TRUE)
-    
-    
+
     check = Check.entry.pls(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.constraint, mode=mode, scale=scale,
         near.zero.var=near.zero.var, max.iter=max.iter ,tol=tol ,logratio=logratio ,DA=DA, multilevel=multilevel)
     X = check$X
@@ -120,11 +122,11 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
     {
         if (!DA)
         {
-            Xw = withinVariation(X, design  = multilevel)
+            Xw = withinVariation(X, design = multilevel)
             Yw = withinVariation(Y, design = multilevel)
             X = Xw
             Y = Yw
-        }else{
+        } else {
             Xw = withinVariation(X, design = multilevel)
             X = Xw
             
@@ -140,7 +142,6 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
             rownames(Y) = rownames(X)
             # if DA keepY should be all the levels (which is not happening in the check because of multilevel
             keepY = rep(ncol(Y),ncomp)
-        
         }
     }
     #-- multilevel approach ----------------------------------------------------#
@@ -150,9 +151,9 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
     #---------------------------------------------------------------------------#
     #-- pls approach ----------------------------------------------------#
 
-    result <- internal_mint.block(A = list(X = X, Y = Y), indY = 2, mode = mode, ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
+    result = internal_mint.block(A = list(X = X, Y = Y), indY = 2, mode = mode, ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
     design = design, keepA = list(keepX, keepY), keepA.constraint = list(keepX.constraint, keepY.constraint),
-    scale = scale, scheme = "centroid",init="svd", study = study)#,near.zero.var=near.zero.var)
+    scale = scale, scheme = "centroid",init="svd", study = study)
     
     #-- pls approach ----------------------------------------------------#
     #---------------------------------------------------------------------------#

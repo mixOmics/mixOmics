@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 24-02-2016
+# last modified: 13-04-2016
 #
 # Copyright (C) 2015
 #
@@ -24,8 +24,9 @@
 
 
 # ========================================================================================================
-# mint.block.pls: perform a horizontal PLS on a combination of datasets, input as a list in X
-# this function is a particular setting of internal_mint.block, the formatting of the input is checked in internal_wrapper.mint.block
+# mint.block.plsda: perform a horizontal and vertical PLS-DA on a combination of datasets, input as a list in X
+# this function is a particular setting of internal_mint.block,
+# the formatting of the input is checked in internal_wrapper.mint.block, which then call 'internal_mint.block'
 # ========================================================================================================
 
 # X: a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets. \code{NA}s are not allowed.
@@ -46,11 +47,11 @@
 
 
 
-mint.block.plsda <- function(X,
+mint.block.plsda = function(X,
 Y,
 indY,
 study,
-ncomp=rep(2,length(X)),
+ncomp = rep(2,length(X)),
 design,
 scheme,
 mode,
@@ -62,9 +63,11 @@ verbose,
 max.iter = 500,
 near.zero.var = FALSE)
 {
+    # checking that the outcome, either in Y or X[indY] is a factor with more than 1 level
     if(!missing(Y))
     {
-        if (is.null(dim(Y))) {
+        if (is.null(dim(Y)))
+        {
             Y = as.factor(Y)
         }  else {
             stop("'Y' should be a factor or a class vector.")
@@ -77,10 +80,10 @@ near.zero.var = FALSE)
         Y=unmap(Y)
         colnames(Y) = paste0("Y", 1:ncol(Y))
 
-    }else if(!missing(indY))
-    {
+    }else if(!missing(indY)) {
         temp=X[[indY]] #not called Y to not be an input of the wrapper.sparse.mint.block
-        if (is.null(dim(temp))) {
+        if (is.null(dim(temp)))
+        {
             temp = as.factor(temp)
         }  else {
             stop("'Y' should be a factor or a class vector.")
@@ -90,26 +93,35 @@ near.zero.var = FALSE)
 
         Y.input=temp
         X[[indY]]=unmap(temp)
-    }else if(missing(indY))
-    {
+    }else if(missing(indY)) {
         stop("Either 'Y' or 'indY' is needed")
-        
     }
 
-
-    result <- internal_wrapper.mint.block(X=X,Y=Y,indY=indY,study=study,ncomp=ncomp,design=design,scheme=scheme,mode=mode,scale=scale,
-    bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=near.zero.var)
-
-
-
-    cl = match.call()
-    #cl[[1]] = as.name("mint.block.plsda")
+    # call to 'internal_wrapper.mint.block'
+    result = internal_wrapper.mint.block(X=X, Y=Y, indY=indY, study=study, ncomp=ncomp, design=design, scheme=scheme, mode=mode,
+    scale=scale, bias=bias, init=init, tol=tol, verbose=verbose, max.iter=max.iter, near.zero.var=near.zero.var)
     
-    
-    out=list(call=cl,X=result$X[-result$indY],Y=Y.input,ind.mat=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,study=result$study,
-    variates=result$variates,loadings=result$loadings,variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,
-    names=result$names,init=result$init,bias=result$bias,tol=result$tol,iter=result$iter,max.iter=result$max.iter,nzv=result$nzv,scale=scale)
-
+    # choose the desired output from 'result'
+    out = list(
+        call = match.call(),
+        X = result$X[-result$indY],
+        Y = Y.input,
+        ind.mat = result$Y[[1]],
+        ncomp = result$ncomp,
+        mode = result$mode,
+        study = result$study,
+        variates = result$variates,
+        loadings = result$loadings,
+        variates.partial = result$variates.partial,
+        loadings.partial = result$loadings.partial,
+        names = result$names,
+        init = result$init,
+        bias = result$bias,
+        tol = result$tol,
+        iter = result$iter,
+        max.iter = result$max.iter,
+        nzv = result$nzv,
+        scale = result$scale)
 
     class(out) = c("mint.block.plsda","mint.block.pls","block.pls","sgccda","sgcca","DA")
     return(invisible(out))

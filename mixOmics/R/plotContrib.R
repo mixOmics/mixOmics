@@ -110,7 +110,7 @@ plotContrib = function(object,
     if(!is.null(name.var))
     {
         if(length(name.var)!=ncol(X))
-        stop("name.var should be a vector or length ", ncol(X))
+        stop("name.var should be a vector of length ", ncol(X))
         colnames.X=as.character(name.var[ind.match]) # get the
     }else{
         colnames.X=as.character(colnames(X))[ind.match]
@@ -129,7 +129,7 @@ plotContrib = function(object,
 #{
 #       Y = object$Y
 #   }else{
-#       Y = factor(map(object$ind.mat), labels= object$names$Y)
+#       Y = factor(map(object$ind.mat), labels= object$names$colnamesY)
 #   }
     Y=object$Y
     

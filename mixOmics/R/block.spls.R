@@ -48,7 +48,7 @@
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
 
-block.spls <- function(X,
+block.spls = function(X,
 Y,
 indY,
 ncomp=rep(2,length(X)),
@@ -70,9 +70,10 @@ near.zero.var = FALSE)
     
     
     # call to 'internal_wrapper.mint.block'
-    result <- internal_wrapper.mint.block(X=X,Y=Y,indY=indY,ncomp=ncomp,keepX.constraint=keepX.constraint,
-    keepY.constraint=keepY.constraint,keepX=keepX,keepY=keepY,design=design,scheme=scheme,mode=mode,scale=scale,
-    bias=bias,init=init,tol=tol,verbose=verbose,max.iter=max.iter,near.zero.var=near.zero.var)
+    result = internal_wrapper.mint.block(X=X, Y=Y, indY=indY, ncomp=ncomp,
+    keepX.constraint=keepX.constraint, keepY.constraint=keepY.constraint, keepX=keepX, keepY=keepY,
+    design=design, scheme=scheme, mode=mode, scale=scale,
+    bias=bias, init=init, tol=tol, verbose=verbose, max.iter=max.iter, near.zero.var=near.zero.var)
     
     
     # choose the desired output from 'result'

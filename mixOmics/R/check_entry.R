@@ -346,7 +346,7 @@ Check.entry.single = function(X,  ncomp, q)
 Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.constraint, mode, scale,
      near.zero.var, max.iter, tol, logratio, DA, multilevel)
 {
-    
+
     if (missing(mode))
     mode = "regression"
     
@@ -372,10 +372,6 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.co
         # if it's DA analysis, Y is ignored and we look in 'multilevel' input parameter
         if(DA)
         {
-            if(!is.null(Y))
-            {
-                message("Multilevel Analysis will be performed based on 'multilevel' input, 'Y' is ignored")
-            }
             Y=multilevel
         }else{
             if ((nrow(X) != nrow(multilevel)))
@@ -734,9 +730,9 @@ verbose)
         if (missing(design))
         {
             design = 1 - diag(length(A)+1)
-        } else if (ncol(design) != nrow(design) || ncol(design) < length(X) || ncol(design) > (length(X) + 1) || any(!design %in% c(0,1))){
+        } else if (ncol(design) != nrow(design) || ncol(design) < length(X) || ncol(design) > (length(X) + 1) || any(!design %in% c(0,1))) {
             stop(paste0("'design' must be a square matrix with ", length(X), "columns."))
-        } else if (ncol(design) == length(X)){
+        } else if (ncol(design) == length(X)) {
             message("Design matrix has changed to include Y as a block")
             design = rbind(cbind(design, 1), 1)
             diag(design) = 0
@@ -767,7 +763,8 @@ verbose)
         if (missing(design))
         {
             design = 1 - diag(length(A))
-        } else if (ncol(design) != nrow(design) || ncol(design) < length(A) || ncol(design) > (length(A) + 1) || any( !design %in% c(0,1))){
+        } else if (ncol(design) != nrow(design) || ncol(design) < length(A) || ncol(design) > (length(A) + 1) || any( !design %in% c(0,1)))
+        {
             stop(paste0("'design' must be a square matrix with ", length(A), "columns."))
         }
         ### End check design matrix

@@ -65,6 +65,7 @@ Y <- liver.toxicity$clinic
 
 toxicity.spls <- spls(X, Y, ncomp = 2, keepX = c(50, 50),
 keepY = c(10, 10))
+plotIndiv(toxicity.spls)
 
 # splsda
 # ----
@@ -76,6 +77,7 @@ Y <- as.factor(breast.tumors$sample$treatment)
 
 res <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 
+tune= tune.splsda(X,Y,ncomp=1,nrepeat=10,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist",already.tested.X=NULL)
 
 # individual names appear
 plotIndiv(res, ind.names = Y, add.legend = TRUE, plot.ellipse =TRUE)

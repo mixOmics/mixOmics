@@ -9,7 +9,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 2009
-# last modified: 17-03-2016
+# last modified: 13-04-2016
 #
 # Copyright (C) 2009
 #
@@ -33,8 +33,7 @@
 # ========================================================================================================
 
 
-ipca <-
-function (X,
+ipca = function (X,
 ncomp = 2,
 mode = "deflation",
 fun = "logcosh",
@@ -63,10 +62,12 @@ tol = 1e-04)
     
     #-- put a names on the rows and columns of X --#
     X.names = colnames(X)
-    if (is.null(X.names)) X.names = paste("V", 1:nc, sep = "")
+    if (is.null(X.names))
+    X.names = paste("V", 1:nc, sep = "")
     
     ind.names = rownames(X)
-    if (is.null(ind.names)) ind.names = 1:nr
+    if (is.null(ind.names))
+    ind.names = 1:nr
     
     #-- ncomp
     if (is.null(ncomp) || !is.numeric(ncomp) || ncomp < 1 || !is.finite(ncomp))
@@ -78,7 +79,8 @@ tol = 1e-04)
     stop("use smaller 'ncomp'", call. = FALSE)
     
     #-- scale
-    if (!is.logical(scale)) {
+    if (!is.logical(scale))
+    {
         if (!is.numeric(scale) || (length(scale) != nc))
         stop("'scale' should be either a logical value or a numeric vector of length equal to the number of columns of 'X'.",
         call. = FALSE)
@@ -96,22 +98,20 @@ tol = 1e-04)
     mode = choices[pmatch(mode, choices)]
     
     if (is.na(mode))
-    stop("'mode' should be one of 'deflation' or 'parallel'.",
-    call. = FALSE)
+    stop("'mode' should be one of 'deflation' or 'parallel'.", call. = FALSE)
     
     #-- fun
     choices = c("logcosh", "exp")
     fun = choices[pmatch(fun, choices)]
     
     if (is.na(fun))
-    stop("'fun' should be one of 'logcosh' or 'exp'.",
-    call. = FALSE)
+    stop("'fun' should be one of 'logcosh' or 'exp'.", call. = FALSE)
     
     #-- w.init
     if (is.null(w.init))
     {
         w.init = matrix(1 / sqrt(ncomp), ncomp, ncomp)
-    }else{
+    } else {
         if(!is.matrix(w.init) || length(w.init) != (ncomp^2) || !is.numeric(w.init))
         stop("'w.init' is not a numeric matrix or is the wrong size", call. = FALSE)
     }
@@ -199,8 +199,6 @@ tol = 1e-04)
     names = list(var = X.names, sample = ind.names))
     
     class(result) = c("ipca", "pca")
-    
-    #calcul explained variance
     
     #calcul explained variance
     explX=explained_variance(X,result$variates$X,ncomp)

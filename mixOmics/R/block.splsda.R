@@ -48,7 +48,7 @@
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
 
-block.splsda <- wrapper.sgccda <- function(X,
+block.splsda = wrapper.sgccda = function(X,
 Y,
 indY,
 ncomp=rep(2,length(X)),
@@ -82,8 +82,7 @@ near.zero.var = FALSE)
         Y = unmap(Y)
         colnames(Y) = levels(Y.input)
 
-    } else if(!missing(indY))
-    {
+    } else if(!missing(indY)) {
         temp = X[[indY]] #not called Y to not be an input of the wrapper.sparse.mint.block
         if (is.null(dim(temp)))
         {
@@ -99,16 +98,15 @@ near.zero.var = FALSE)
         X[[indY]] = unmap(temp)
         colnames(X[[indY]]) = levels(Y.input)
 
-    } else if(missing(indY))
-    {
+    } else if(missing(indY)) {
         stop("Either 'Y' or 'indY' is needed")
         
     }
 
     
     # call to 'internal_wrapper.mint.block'
-    result <- internal_wrapper.mint.block(X=X, Y=Y, indY=indY, ncomp=ncomp, keepX.constraint=keepX.constraint,
-    keepX=keepX, design=design, scheme=scheme, mode=mode, scale=scale,
+    result = internal_wrapper.mint.block(X=X, Y=Y, indY=indY, ncomp=ncomp,
+    keepX.constraint=keepX.constraint, keepX=keepX, design=design, scheme=scheme, mode=mode, scale=scale,
     bias=bias, init=init, tol=tol, verbose=verbose, max.iter=max.iter, near.zero.var=near.zero.var)
     
 

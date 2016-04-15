@@ -23,7 +23,7 @@
 # ---------------------------------------------
 
 
-multilevel <-
+multilevel =
 function(X,
 Y = NULL,
 design,

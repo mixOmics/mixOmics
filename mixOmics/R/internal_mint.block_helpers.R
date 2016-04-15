@@ -136,12 +136,10 @@ sparsity=function(loadings.A, keepA, keepA.constraint=NULL, penalty=NULL)
     if (!is.null(keepA.constraint))
     {
         loadings.A[-keepA.constraint] = 0
-    } else if (!is.null(keepA))
-    {
+    } else if (!is.null(keepA)) {
         nx = length(loadings.A) - keepA
         loadings.A = soft_thresholding_L1(loadings.A, nx = nx)
-    } else if (!is.null(penalty))
-    {
+    } else if (!is.null(penalty)) {
         loadings.A = soft.threshold(loadings.A, penalty)
     }
 

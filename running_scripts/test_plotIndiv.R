@@ -12,6 +12,10 @@ nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 
 # default, only in the X space
 plotIndiv(nutri.res)
+plotIndiv(nutri.res,layout=c(2,1))
+plotIndiv(nutri.res,layout=c(2,1),style="graphics")
+
+par(opar)
 
 # ellipse with respect to genotype in the XY space,
 # names indicate genotype
@@ -149,7 +153,7 @@ nutrimouse.sgccda1 <- wrapper.sgccda(X = data,
 Y = Y,
 design = design1,
 ncomp = c(2, 2),
-keepX = list(c(10,10), c(15,15)),
+keepX = list(gene=c(10,10), lipid = c(15,15)),
 scheme = "centroid",mode="regression",
 verbose = FALSE,
 bias = TRUE,scale=TRUE,tol=1e-6)

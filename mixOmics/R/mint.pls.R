@@ -25,7 +25,8 @@
 
 # ========================================================================================================
 # mint.pls: perform a vertical PLS on a combination of experiments, input as a matrix in X
-# this function is a particular setting of internal_mint.block, the formatting of the input is checked in internal_wrapper.mint
+# this function is a particular setting of internal_mint.block,
+# the formatting of the input is checked in internal_wrapper.mint, which then call 'internal_mint.block'
 # ========================================================================================================
 
 # X: numeric matrix of predictors
@@ -38,7 +39,7 @@
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
 
-mint.pls <- function(X,
+mint.pls = function(X,
 Y,
 ncomp = 2,
 mode = c("regression", "canonical", "invariant", "classic"),
@@ -49,17 +50,30 @@ max.iter = 500,
 near.zero.var = FALSE)
 {
 
-    result <- internal_wrapper.mint(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,study=study,mode=mode,
-    max.iter=max.iter,tol=tol)
+    # call to 'internal_wrapper.mint'
+    result = internal_wrapper.mint(X = X, Y = Y, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var,study = study, mode = mode,
+    max.iter = max.iter, tol = tol)
     
-
-    cl = match.call()
-    #cl[[1]] = as.name("mint.pls")
-    
-
-    out=list(call=cl,X=result$X[-result$indY][[1]],Y=result$X[result$indY][[1]],ncomp=result$ncomp,study=result$study,mode=result$mode,variates=result$variates,loadings=result$loadings,
-    variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,names=result$names,
-        tol=result$tol,iter=result$iter,max.iter=result$max.iter,nzv=result$nzv,scale=scale)
+    # choose the desired output from 'result'
+    out = list(
+        call = match.call(),
+        X = result$X[-result$indY][[1]],
+        Y = result$X[result$indY][[1]],
+        ncomp = result$ncomp,
+        study = result$study,
+        mode = result$mode,
+        variates = result$variates,
+        loadings = result$loadings,
+        variates.partial = result$variates.partial,
+        loadings.partial = result$loadings.partial,
+        names = result$names[-which(names(result$names) == "blocks")], # remove the names for 'blocks', since this is not a block analysis
+        tol = result$tol,
+        iter = result$iter,
+        max.iter = result$max.iter,
+        nzv = result$nzv,
+        scale = result$scale,
+        explained_variance = result$explained_variance
+        )
     
     class(out) = c("mint.pls","pls")
     return(invisible(out))

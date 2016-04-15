@@ -132,7 +132,7 @@ design = design,
 ncomp = c(2, 2, 2),
 # for keep: each element of the list corresponds to a block
 # and is of length the # comp per block
-keepX = list(c(10,10), c(15,15), c(ncol(Y))),
+keepX = list(gene = c(10,10), lipid = c(15,15), Y = c(ncol(Y))),
 scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)
@@ -158,7 +158,7 @@ design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 nutrimouse.sgccda <- wrapper.sgccda(X = data,
 Y = Y,
 design = design,
-keepX = list(c(10,10), c(15,15)),
+keepX = list(gene = c(10,10), lipid = c(15,15)),
 ncomp = c(3, 3),
 scheme = "centroid",
 verbose = FALSE,

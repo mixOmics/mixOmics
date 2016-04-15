@@ -295,7 +295,7 @@ verbose=TRUE)
                 for (i in 1:length(test.keepX))
                 {
                     object.res = splsda(X.train, Y.train, ncomp=comp+length(already.tested.X), keepX=c(choice.keepX[1:(comp+length(already.tested.X)-1)], test.keepX[i]),logratio=logratio,near.zero.var=FALSE,mode="regression")
-                    test.predict.sw <- predict(object.res, X.test, method = dist)
+                    test.predict.sw <- predict(object.res, newdata=X.test, method = dist)
                     
                     #Prediction.sw <-
                     #error.sw[j, i] <- sum(as.character(Y.test) != Prediction.sw)

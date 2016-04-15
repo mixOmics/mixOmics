@@ -35,11 +35,11 @@ group = as.numeric(as.factor(multidrug$cell.line$Class)),main="bla")
 
 
 plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,
-group = as.numeric(as.factor(multidrug$cell.line$Class)),add.legend=TRUE)
+group = as.factor(multidrug$cell.line$Class),add.legend=TRUE)
 
 
 plotIndiv(pca.res, ind.names = F,#multidrug$cell.line$Class,
-group = as.numeric(as.factor(multidrug$cell.line$Class)),add.legend=TRUE)
+group = as.factor(multidrug$cell.line$Class),add.legend=TRUE)
 
 
 plotIndiv(pca.res, cex = 0.2,
@@ -66,26 +66,26 @@ if(additional.test==TRUE)
 
 
     plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,
-    group = as.numeric(as.factor(multidrug$cell.line$Class)),xlim=c(-10,10))
+    group = as.factor(multidrug$cell.line$Class),xlim=c(-10,10))
 
 
     plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,
-    group = as.numeric(as.factor(multidrug$cell.line$Class)),plot.centroid=TRUE)
+    group = as.factor(multidrug$cell.line$Class),plot.centroid=TRUE)
     
     plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,
-    group = as.numeric(as.factor(multidrug$cell.line$Class)),plot.ellipse=TRUE)
+    group = as.factor(multidrug$cell.line$Class),plot.ellipse=TRUE)
 
 
     plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,
-    group = as.numeric(as.factor(multidrug$cell.line$Class)),main="bla")
+    group = as.factor(multidrug$cell.line$Class),main="bla")
     
     
     plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,
-    group = as.numeric(as.factor(multidrug$cell.line$Class)),add.legend=TRUE)
+    group = as.factor(multidrug$cell.line$Class),add.legend=TRUE)
     
     
     plotIndiv(pca.res, ind.names = F,#multidrug$cell.line$Class,
-    group = as.numeric(as.factor(multidrug$cell.line$Class)),add.legend=TRUE)
+    group = as.factor(multidrug$cell.line$Class),add.legend=TRUE)
 
 }
 par(opar)

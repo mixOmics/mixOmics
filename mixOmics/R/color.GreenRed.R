@@ -17,7 +17,7 @@
 
 #-- green-black-red gradient colors --#
 #-------------------------------------#
-color.GreenRed <-
+color.GreenRed =
 function (n, alpha = 1)
 {
     #-- checking general input parameters --------------------------------------#

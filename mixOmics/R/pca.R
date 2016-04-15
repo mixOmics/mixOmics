@@ -9,7 +9,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 2009
-# last modified: 25-02-2016
+# last modified: 13-04-2016
 #
 # Copyright (C) 2009
 #
@@ -29,16 +29,15 @@
 #############################################################################################################
 
 
-pca <-
-function(   X,
+pca = function(   X,
 ncomp = 2,
 center = TRUE,
 scale = FALSE,
 max.iter = 500,
 tol = 1e-09,
 logratio = 'none',# one of ('none','CLR','ILR')
-V=NULL,
-multilevel=NULL)
+V = NULL,
+multilevel = NULL)
 {
     #-- checking general input parameters --------------------------------------#
     #---------------------------------------------------------------------------#
@@ -54,7 +53,8 @@ multilevel=NULL)
     stop(err[[1]], ".", call. = FALSE)
     
     #-- X matrix
-    if (is.data.frame(X)) X = as.matrix(X)
+    if (is.data.frame(X))
+    X = as.matrix(X)
     
     if (!is.matrix(X) || is.character(X))
     stop("'X' must be a numeric matrix.", call. = FALSE)
@@ -64,23 +64,24 @@ multilevel=NULL)
     
     #-- put a names on the rows and columns of X --#
     X.names = colnames(X)
-    if (is.null(X.names)) X.names = paste("V", 1:ncol(X), sep = "")
+    if (is.null(X.names))
+    X.names = paste("V", 1:ncol(X), sep = "")
     
     ind.names = rownames(X)
-    if (is.null(ind.names)) ind.names = 1:nrow(X)
+    if (is.null(ind.names))
+    ind.names = 1:nrow(X)
     
     #-- ncomp
-    if ( !is.numeric(ncomp) || ncomp < 1 || !is.finite(ncomp))
-    stop("invalid value for 'ncomp'.", call. = FALSE)
+    if (is.null(ncomp))
+    ncomp = min(nrow(X),ncol(X))
     
     ncomp = round(ncomp)
     
+    if ( !is.numeric(ncomp) || ncomp < 1 || !is.finite(ncomp))
+    stop("invalid value for 'ncomp'.", call. = FALSE)
+    
     if (ncomp > min(ncol(X), nrow(X)))
     stop("use smaller 'ncomp'", call. = FALSE)
-    
-    if (is.null(ncomp)) {
-        ncomp = min(nrow(X),ncol(X))
-    }
     
     #-- log.ratio
     choices = c('CLR', 'ILR','none')
@@ -91,13 +92,15 @@ multilevel=NULL)
     
     
     #-- cheking center and scale
-    if (!is.logical(center)) {
+    if (!is.logical(center))
+    {
         if (!is.numeric(center) || (length(center) != ncol(X)))
         stop("'center' should be either a logical value or a numeric vector of length equal to the number of columns of 'X'.",
         call. = FALSE)
     }
     
-    if (!is.logical(scale)) {
+    if (!is.logical(scale))
+    {
         if (!is.numeric(scale) || (length(scale) != ncol(X)))
         stop("'scale' should be either a logical value or a numeric vector of length equal to the number of columns of 'X'.",
         call. = FALSE)
@@ -120,9 +123,9 @@ multilevel=NULL)
     #-----------------------------#
     #-- logratio transformation --#
     
-    transfo=logratio.transfo(X=X,logratio=logratio,V=V)
-    X=transfo$X
-    V=transfo$V
+    transfo = logratio.transfo(X = X, logratio = logratio, V = V)
+    X = transfo$X
+    V = transfo$V
     
     #as X may have changed
     if (ncomp >= min(ncol(X), nrow(X)))
@@ -144,33 +147,35 @@ multilevel=NULL)
     na.X = FALSE
     if (any(is.na.X)) na.X = TRUE
     NA.X = any(is.na.X)
+    
     cl = match.call()
     cl[[1]] = as.name('pca')
     result = list(call = cl, X = X, ncomp = ncomp,NA.X = NA.X,
-    center = if (is.null(cen)) FALSE else cen,
-    scale = if (is.null(sc)) FALSE else sc,
+    center = if (is.null(cen)) {FALSE} else {cen},
+    scale = if (is.null(sc)) {FALSE} else {sc},
     names = list(var = X.names, sample = ind.names))
     
     
     #---------------------------------------------------------------------------#
     #-- multilevel approach ----------------------------------------------------#
     
-    if(!is.null(multilevel))
+    if (!is.null(multilevel))
     {
-        Xw <- withinVariation(X, design = multilevel)
-        X=Xw
+        Xw = withinVariation(X, design = multilevel)
+        X = Xw
     }
     #-- multilevel approach ----------------------------------------------------#
     #---------------------------------------------------------------------------#
-
-
+    
+    
     #-- pca approach -----------------------------------------------------------#
     #---------------------------------------------------------------------------#
-
+    
     if(logratio == 'CLR' | logratio=='none')
     {
         #-- if there are missing values use NIPALS agorithm
-        if (any(is.na.X)) {
+        if (any(is.na.X))
+        {
             res = nipals(X, ncomp = ncomp, reconst = TRUE, max.iter = max.iter, tol = tol)
             result$sdev = res$eig / sqrt(max(1, nrow(X) - 1))
             names(result$sdev) = paste("PC", 1:length(result$sdev), sep = "")
@@ -179,50 +184,40 @@ multilevel=NULL)
             X[is.na.X] = res$rec[is.na.X]
             result$x = X %*% res$p
             dimnames(result$x) = list(ind.names, paste("PC", 1:ncol(result$x), sep = ""))
-        }else{
+        } else {
             #-- if data is complete use singular value decomposition
-
+            
             #-- borrowed from 'prcomp' function
             res = svd(X, nu = 0)
             
             result$sdev = res$d[1:ncomp] / sqrt(max(1, nrow(X) - 1))
             result$rotation = res$v[, 1:ncomp, drop = FALSE]
             result$x = X %*% res$v[, 1:ncomp, drop = FALSE]
-            
         }
-    }else{
+    } else {
         # if 'ILR', transform data and then back transform in clr space (from RobCompositions package)
         # data have been transformed above
         res = svd(X, nu = max(1, nrow(X) - 1))
-        
-        if (ncomp < ncol(X)){
-            
+        if (ncomp < ncol(X))
+        {
             result$sdev = res$d[1:ncomp] / sqrt(max(1, nrow(X) - 1))  # Note: what differs with RobCompo is that they use: cumsum(eigen(cov(X))$values)/sum(eigen(cov(X))$values)
             # calculate loadings using back transformation to clr-space
             result$rotation = V %*% res$v[, 1:ncomp, drop = FALSE]
             # extract component score from the svd, multiply matrix by vector using diag, NB: this differ from our mixOmics PCA calculations
             # NB: this differ also from Filmoser paper, but ok from their code: scores are unchanged
             result$x = res$u[, 1:ncomp, drop = FALSE] %*% diag(res$d[1:ncomp, drop = FALSE])
-            
-        }else{
-            
+        } else {
             result$sdev = res$d / sqrt(max(1, nrow(X) - 1))
             result$rotation = V %*% res$v
             result$x = res$u%*% diag(res$d)
-            
         }
-        
-        #dimnames(result$rotation) = list(rownames(V), paste("PC", 1:ncol(result$rotation), sep = ""))
-        
     }
     
     names(result$sdev) = paste("PC", 1:length(result$sdev), sep = "")
     dimnames(result$rotation) = list(X.names, paste("PC", 1:ncol(result$rotation), sep = ""))
     dimnames(result$x) = list(ind.names, paste("PC", 1:ncol(result$x), sep = ""))
-
-
-    result$var.tot=sum(X^2 / max(1, nrow(X) - 1))# same as all res$d, or variance after nipals replacement of the missing values
     
+    result$var.tot=sum(X^2 / max(1, nrow(X) - 1))# same as all res$d, or variance after nipals replacement of the missing values
     
     # to be similar to other methods, add loadings and variates as outputs
     result$loadings = list(X=result$rotation)
@@ -231,16 +226,14 @@ multilevel=NULL)
     # output multilevel if needed
     if(!is.null(multilevel))
     result=c(result, list(Xw = Xw, design = multilevel))
-
-
+    
     class(result) = c("pca","prcomp")
     if(!is.null(multilevel))
     class(result)=c("mlpca",class(result))
     
-    #calcul explained variance    
-    result$explained_variance=result$sdev^2/result$var.tot
+    #calcul explained variance
+    result$explained_variance = result$sdev^2 / result$var.tot
     
-
     return(invisible(result))
 }
 

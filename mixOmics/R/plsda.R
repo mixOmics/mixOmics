@@ -71,7 +71,8 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
         colnames(Y.mat) = levels(Y)#paste0("Y", 1:ncol(Y.mat))
         
     } else {
-        Y.mat = NULL
+        if (!missing(Y))
+        stop("'Y' should be included in the 'multilevel' design matrix as a discriminant multilevel analysis is used")
     }
 
     
@@ -85,7 +86,6 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
     out=list(call=cl,X=result$X[-result$indY][[1]],Y=if(is.null(multilevel)){Y}else{result$Y.factor},ind.mat=result$X[result$indY][[1]],ncomp=result$ncomp,
     mode=result$mode,variates=result$variates,loadings=result$loadings,
     names=result$names,tol=result$tol,iter=result$iter,max.iter=result$max.iter,nzv=result$nzv,scale=scale,explained_variance=result$explained_variance[-result$indY])
-    out$names$Y = levels(out$Y)
     #row.names(out$variates$Y) = row.names(out$variates$X)
     #row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(out$Y)))
     

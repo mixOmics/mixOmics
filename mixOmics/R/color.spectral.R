@@ -17,7 +17,7 @@
 
 #-- spectral colors --#
 #---------------------#
-color.spectral <-
+color.spectral =
   function (n, alpha = 1) 
   {
     #-- checking general input parameters --------------------------------------#

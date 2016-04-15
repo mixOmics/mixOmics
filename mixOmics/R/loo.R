@@ -19,16 +19,16 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
-loo <-
-function (X, Y, lambda1, lambda2) 
+loo = function (X, Y, lambda1, lambda2) 
 {
 
     xscore = vector(mode = "numeric")
     yscore = vector(mode = "numeric")
     nr = nrow(X)
      
-    for (i in 1:nr) {
-        rcc.v = rcc(X[-i, ], Y[-i, ], 1, lambda1, lambda2,method="ridge")
+    for (i in 1:nr)
+    {
+        rcc.v = rcc(X[-i, ], Y[-i, ], 1, lambda1, lambda2, method="ridge")
         X[i, is.na(X[i, ])] = 0
         Y[i, is.na(Y[i, ])] = 0
         xscore[i] = crossprod(X[i, ], rcc.v$loadings$X[, 1])

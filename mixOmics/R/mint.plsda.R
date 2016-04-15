@@ -24,8 +24,9 @@
 
 
 # ========================================================================================================
-# mint.plsda: perform a vertical PLS on a combination of experiments, input as a matrix in X
-# this function is a particular setting of internal_mint.block, the formatting of the input is checked in internal_wrapper.mint
+# mint.plsda: perform a vertical PLS-DA on a combination of experiments, input as a matrix in X
+# this function is a particular setting of internal_mint.block,
+# the formatting of the input is checked in internal_wrapper.mint, which then call 'internal_mint.block'
 # ========================================================================================================
 
 # X: numeric matrix of predictors
@@ -38,7 +39,7 @@
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
 
-mint.plsda <- function(X,
+mint.plsda = function(X,
 Y,
 ncomp = 2,
 mode = c("regression", "canonical", "invariant", "classic"),
@@ -51,7 +52,7 @@ near.zero.var = FALSE)
     
     
     #-- validation des arguments --#
-    # most of the checks are done in the wrapper.mint.spls.hybrid function
+    # most of the checks are done in 'internal_wrapper.mint'
     
     if (is.null(Y))
     stop("'Y' has to be something else than NULL.")
@@ -62,32 +63,39 @@ near.zero.var = FALSE)
     }  else {
         stop("'Y' should be a factor or a class vector.")
     }
-    
     Y.mat=unmap(Y)
-    colnames(Y.mat) = levels(Y)#paste0("Y", 1:ncol(Y.mat))
+    colnames(Y.mat) = levels(Y)
 
 
-    result <- internal_wrapper.mint(X=X,Y=Y.mat,study=study,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
-    max.iter=max.iter,tol=tol)
-        
-    cl = match.call()
-    #cl[[1]] = as.name("mint.plsda")
-    
-    
+    # call to 'internal_wrapper.mint'
+    result = internal_wrapper.mint(X = X, Y = Y.mat, study = study, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
+    max.iter = max.iter, tol = tol)
 
-    out=list(call=cl,X=result$X[-result$indY][[1]],Y=Y,ind.mat=result$X[result$indY][[1]],ncomp=result$ncomp,study=result$study,mode=result$mode,variates=result$variates,loadings=result$loadings,
-        variates.partial=result$variates.partial,loadings.partial=result$loadings.partial,
-        names=result$names,tol=result$tol,iter=result$iter,max.iter=result$max.iter,nzv=result$nzv,scale=scale)
-    out$names$Y = levels(Y)
-    row.names(out$variates$Y) = row.names(out$variates$X)
-    row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(Y)))
 
-    
+    # choose the desired output from 'result'
+    out = list(
+        call = match.call(),
+        X = result$X[-result$indY][[1]],
+        Y = Y,
+        ind.mat = result$X[result$indY][[1]],
+        ncomp = result$ncomp,
+        study = result$study,
+        mode = result$mode,
+        variates = result$variates,
+        loadings = result$loadings,
+        variates.partial = result$variates.partial,
+        loadings.partial = result$loadings.partial,
+        names = result$names[-which(names(result$names) == "blocks")], # remove the names for 'blocks', since this is not a block analysis
+        tol = result$tol,
+        iter = result$iter,
+        max.iter = result$max.iter,
+        nzv = result$nzv,
+        scale = result$scale,
+        explained_variance = result$explained_variance
+        )
     
     class(out) = c("mint.plsda","mint.pls","pls","DA")
     return(invisible(out))
-    
-
 
 
 }

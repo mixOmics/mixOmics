@@ -17,7 +17,7 @@
 
 #-- jet colors --#
 #----------------#
-color.jet <-
+color.jet =
   function (n, alpha = 1) 
   {
     #-- checking general input parameters --------------------------------------#

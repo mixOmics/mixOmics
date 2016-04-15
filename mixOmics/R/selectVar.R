@@ -71,14 +71,14 @@ function(object, comp =1, block=NULL, ...)
         
         if(is.numeric(block))
         {
-            if(any(block>length(object$names$blocks)))
-            stop("'block' needs to be lower than the number of blocks in the fitted model, determined by length(object$names$blocks)")
+            if(any(block>length(object$names$colnames)))
+            stop("'block' needs to be lower than the number of blocks in the fitted model, determined by length(object$names$colnames)")
             
-        }else if(sum(!is.na(match(block,object$names$blocks)))==0)
+        }else if(sum(!is.na(match(block,object$names$colnames)))==0)
         {
             stop("No entry of 'block'  match the names of object$names$blocks")
             
-        }else if(sum(is.na(match(block,object$names$blocks)))>0)
+        }else if(sum(is.na(match(block,object$names$colnames)))>0)
         {
             warning("At least one entry of 'block' does not match the names of object$names$blocks")
         }

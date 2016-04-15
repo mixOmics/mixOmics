@@ -322,7 +322,15 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     # Y         # observation
     # newdata   #list of blocks for the prediction, same length as A, scaled
     
-    
+    # replace missing data by 0
+    concat.newdata = lapply(concat.newdata,function(x)
+    {
+        ind = which(is.na(x))
+        if (length(ind) > 0)
+        x[ind] = 0
+        x
+    })
+        
     # -----------------------
     #       prediction
     # -----------------------
