@@ -45,39 +45,6 @@
 # verbose: if TRUE, shows component and nrepeat being tested.
 
 
-get.confusion_matrix=function(Y.learn,Y.test,pred)
-{
-    ClassifResult=array(0,c(nlevels(factor(Y.learn)),nlevels(factor(Y.learn))))
-    rownames(ClassifResult)=levels(factor(Y.learn))
-    colnames(ClassifResult)=paste("predicted.as.",levels(factor(Y.learn)),sep="")
-    #--------record of the classification accuracy for each level of Y
-    for(i in 1:nlevels(factor(Y.learn)))
-    {
-        ind.i=which(Y.test==levels(factor(Y.learn))[i])
-        for(ij in 1:nlevels(factor(Y.learn)))
-        {
-            ClassifResult[i,ij]=sum(pred[ind.i]==levels(Y.learn)[ij])
-            
-        }
-    }
-    ClassifResult
-}
-
-get.BER=function(X)
-{
-    if(!is.numeric(X)| !is.matrix(X) | length(dim(X)) != 2 | nrow(X)!=ncol(X))
-    stop("'X' must be a square numeric matrix")
-    
-    nlev=nrow(X)
-    #calculation of the BER
-    ClassifResult.temp=X
-    diag(ClassifResult.temp)=0
-    BER=sum(apply(ClassifResult.temp,1,sum,na.rm=TRUE)/apply(X,1,sum,na.rm=TRUE),na.rm=TRUE)/nlev
-    return(BER)
-}
-
-
-
 tune.splsda <- function (X, Y, ncomp = 1, test.keepX = c(5, 10, 15),
 already.tested.X = NULL, validation = "Mfold",folds=10,
 dist ="max.dist",

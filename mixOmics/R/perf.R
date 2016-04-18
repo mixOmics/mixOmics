@@ -338,7 +338,10 @@ dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
 validation = c("Mfold", "loo"),
 folds = 10,
 progressBar = TRUE,
-near.zero.var = FALSE,...)
+measure=c("overall"), # one of c("overall","BER")
+near.zero.var = FALSE,
+logratio = c('none'),
+...)
 {
     
     #-- initialising arguments --#
@@ -350,7 +353,15 @@ near.zero.var = FALSE,...)
     Y = factor(Y,labels = level.Y)
     ncomp = object$ncomp
     n = nrow(X)
-    keepX = object$keepX # if plsda, object$keepX = NULL
+    
+    #-- tells which variables are selected in X and in Y --#
+    if (any(class(object) == "splsda"))
+    {
+        keepX = object$keepX
+    } else {
+        keepX = rep(ncol(X), ncomp)
+    }
+    
     
     tol = object$tol
     max.iter = object$max.iter
@@ -373,6 +384,12 @@ near.zero.var = FALSE,...)
         nmthdd = length(dist)
     }
     
+    if (length(logratio)>1)
+    stop("'logratio' must be either 'none' or 'CLR'")
+    
+    if (!(logratio %in% c("none", "CLR")))
+    stop("Choose one of the two following logratio transformation: none or CLR")
+    
     # -------------------------------------
     # added: first check for near zero var on the whole data set
     nzv = nearZeroVar(X)
@@ -384,6 +401,9 @@ near.zero.var = FALSE,...)
         if (ncol(X)==0)
         stop("No more predictors after Near Zero Var has been applied!")
         
+        if (keepX > ncol(X))
+        keepX = ncol(X)
+        
     }
     # and then we start from the X data set with the nzv removed
     
@@ -392,24 +412,32 @@ near.zero.var = FALSE,...)
 
     
     list.features = list()
-    mat.error = matrix(nrow = length(test.keepX), ncol = nrepeat,
-    dimnames = list(test.keepX,c(paste('repeat', 1:nrepeat))))
-    rownames(mat.error) = test.keepX
+    mat.error = matrix(nrow = ncomp, ncol = 1,
+    dimnames = list(1:ncomp,c(paste('repeat', 1:1))))
+    rownames(mat.error) = 1:ncomp
     
-    mat.error.rate = list()
+    mat.sd.error = mat.mean.error = error.per.class.keepX.opt = list()
     error.per.class = list()
     final=list()
     
-    mat.sd.error = matrix(0,nrow = ncomp, ncol = length(dist),
-    dimnames = list(c(paste('comp', 1 : ncomp)), dist))
-    mat.mean.error = matrix(0,nrow = ncomp, ncol = length(dist),
-    dimnames = list(c(paste('comp', 1 : ncomp)), dist))
+    for (measure_i in measure)
+    {
+        mat.sd.error[[measure_i]] = matrix(0,nrow = ncomp, ncol = length(dist),
+        dimnames = list(c(paste('comp', 1 : ncomp)), dist))
+        mat.mean.error[[measure_i]] = matrix(0,nrow = ncomp, ncol = length(dist),
+        dimnames = list(c(paste('comp', 1 : ncomp)), dist))
+        error.per.class.keepX.opt[[measure_i]] = list()
+        for(ijk in dist)
+        {
+            error.per.class.keepX.opt[[measure_i]][[ijk]] = matrix(nrow = nlevels(Y), ncol = ncomp,
+            dimnames = list(c(levels(Y)), c(paste('comp', 1 : ncomp))))
+        }
+    }
     
-    error.per.class.keepX.opt  = prediction.all = list()
+    
+    prediction.all = list()
     for(ijk in dist)
     {
-        error.per.class.keepX.opt[[ijk]] = matrix(nrow = nlevels(Y), ncol = ncomp,
-        dimnames = list(c(levels(Y)), c(paste('comp', 1 : ncomp))))
         prediction.all[[ijk]] = matrix(nrow = nrow(X), ncol = ncomp,
         dimnames = list(rownames(X), c(paste('comp', 1 : ncomp))))
     }
@@ -430,7 +458,7 @@ near.zero.var = FALSE,...)
         
         # estimate performance of the model for each component
         result = MCVfold.splsda (X, Y, validation = validation, folds = folds, nrepeat = 1, ncomp = comp, choice.keepX = choice.keepX,
-        test.keepX = test.keepX, measure = measure, dist = dist, logratio = logratio , near.zero.var = near.zero.var, progressBar = progressBar , class.object="splsda")
+        test.keepX = test.keepX, measure = measure, dist = dist, logratio = logratio , near.zero.var = near.zero.var, progressBar = progressBar , class.object=class(object))
         
         # ---- extract stability of features ----- # NEW
         if (any(class(object) == "splsda"))
@@ -440,26 +468,25 @@ near.zero.var = FALSE,...)
         
 
         save(list=ls(),file="temp.Rdata")
-        
+
         for (ijk in dist)
         {
-            if (!is.null(result[[measure]]$error.rate.sd))
-            mat.sd.error[comp, ijk]=result[[measure]]$error.rate.sd[[ijk]]
-            mat.mean.error[comp, ijk]=result[[measure]]$error.rate.mean[[ijk]]
+            for (measure_i in measure)
+            {
+                if (!is.null(result[[measure_i]]$error.rate.sd))
+                mat.sd.error[[measure_i]][comp, ijk]=result[[measure_i]]$error.rate.sd[[ijk]]
+                mat.mean.error[[measure_i]][comp, ijk]=result[[measure_i]]$error.rate.mean[[ijk]]
 
-            # confusion matrix for keepX.opt
-            error.per.class.keepX.opt[[ijk]][ ,comp]=result[[measure]]$confusion[[ijk]][,1]
-
+                # confusion matrix for keepX.opt
+                error.per.class.keepX.opt[[measure_i]][[ijk]][ ,comp]=result[[measure_i]]$confusion[[ijk]][,1]
+            }
+            
             #prediction of each samples for each fold and each repeat, on each comp
             prediction.all[[ijk]][,comp] = result$prediction.comp[[ijk]][,,1]
         }
-
     }
 
     result = list(error.rate = mat.mean.error,
-    # error per class for last keepX tested
-    #error.per.class.mean=error.per.class.mean,
-    #error.per.class.sd=error.per.class.sd,
     error.per.class = error.per.class.keepX.opt,
     prediction.all = prediction.all)
 

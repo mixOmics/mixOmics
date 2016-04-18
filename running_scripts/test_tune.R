@@ -23,8 +23,8 @@ Y <- as.factor(breast.tumors$sample$treatment)
 res <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 
 
-source("mixOmics/R/tune.splsda.R")
-source("mixOmics/R/MCVfold.R")
+#source("mixOmics/R/tune.splsda.R")
+#source("mixOmics/R/MCVfold.R")
 
 tune= tune.splsda(X,Y,ncomp=1,nrepeat=1,logratio="none",test.keepX = c(5),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = TRUE)
 
@@ -35,8 +35,8 @@ tune= tune.splsda(X,Y,ncomp=1,nrepeat=10,logratio="none",test.keepX = c(5, 10, 1
 
 tune= tune.splsda(X,Y,ncomp=3,nrepeat=10,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = TRUE)
 
-source("mixOmics/R/tune.splsda.R")
-source("mixOmics/R/MCVfold.R")
+#source("mixOmics/R/tune.splsda.R")
+#source("mixOmics/R/MCVfold.R")
 tune= tune.splsda(X,Y,ncomp=3,nrepeat=10,logratio="none",test.keepX = c(5,50,100),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = TRUE)
 
 

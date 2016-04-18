@@ -72,6 +72,41 @@ plot(model.spls.val, criterion="R2", type = 'l')
 plot(model.spls.val, criterion="Q2", type = 'l')
 
 
+## validation for objects of class 'plsda' (classification)
+# ----------------------------------------
+data(srbct)
+X <- srbct$gene
+Y <- srbct$class
+
+ncomp = 5
+
+srbct.plsda <- plsda(X, Y, ncomp = ncomp)
+
+# with Mfold
+# ---------
+set.seed(45)
+error <- perf(srbct.plsda, validation = "Mfold", folds = 8, dist = "all")
+
+plot(error, type = "l")
+
+
+
+
+#source("mixOmics/R/perf.R")
+#source("mixOmics/R/MCVfold.R")
+error.overall <- perf(srbct.plsda, validation = "Mfold", folds = 8, dist = "all", measure = "overall")
+error.BER <- perf(srbct.plsda, validation = "Mfold", folds = 8, dist = "all", measure = "BER")
+plot(error, type = "l")
+
+#source("mixOmics/R/perf.R")
+#source("mixOmics/R/MCVfold.R")
+error.both <- perf(srbct.plsda, validation = "Mfold", folds = 8, dist = "all", measure = c("BER", "overall"))
+
+plot(error.both, type = "l")
+plot(error.both, type = "l", measure = "BER")
+
+
+
 ## validation for objects of class 'splsda' (classification)
 # ----------------------------------------
 data(srbct)
@@ -85,18 +120,25 @@ srbct.splsda <- splsda(X, Y, ncomp = ncomp, keepX = rep(10, ncomp))
 # with Mfold
 # ---------
 set.seed(45)
-error <- perf(srbct.splsda, validation = "Mfold", folds = 8,
-method.predict = "all")
+error <- perf(srbct.splsda, validation = "Mfold", folds = 8, dist = "all")
 
 plot(error, type = "l")
 
 
 
 
-source("mixOmics/R/perf.R")
-source("mixOmics/R/MCVfold.R")
-error <- perf(srbct.splsda, validation = "Mfold", folds = 8,dist = "all")
+#source("mixOmics/R/perf.R")
+#source("mixOmics/R/MCVfold.R")
+error.overall <- perf(srbct.splsda, validation = "Mfold", folds = 8, dist = "all", measure = "overall")
+error.BER <- perf(srbct.splsda, validation = "Mfold", folds = 8, dist = "all", measure = "BER")
+plot(error, type = "l")
 
+#source("mixOmics/R/perf.R")
+#source("mixOmics/R/MCVfold.R")
+error.both <- perf(srbct.splsda, validation = "Mfold", folds = 8, dist = "all", measure = c("BER", "overall"))
+
+plot(error.both, type = "l")
+plot(error.both, type = "l", measure = "BER")
 
 
 

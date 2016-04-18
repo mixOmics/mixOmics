@@ -105,34 +105,34 @@ class.object = NULL
         pb = FALSE
     }
     
-   M = length(folds)
-   features = NULL
-   prediction.comp = list()
-   for(ijk in dist)
-   prediction.comp[[ijk]] = array(0, c(nrow(X), nrepeat, length(test.keepX)))# prediction of all samples for each test.keepX and  nrep at comp fixed
-   for(nrep in 1:nrepeat)
-   {
-       n = nrow(X)
-       #-- define the folds --#
-       if (validation == "Mfold")
-       {
-           
-           if (nrep > 1) # reinitialise the folds
-           folds = M
-           
-           if (is.null(folds) || !is.numeric(folds) || folds < 2 || folds > n)
-           {
-               stop("Invalid number of folds.")
-           } else {
-               M = round(folds)
-               folds = split(sample(1:n), rep(1:M, length = n))
-           }
-       }else{
-           folds = split(1:n, rep(1:n, length = n))
-           M = n
-       }
-
-
+    M = length(folds)
+    features = NULL
+    prediction.comp = list()
+    for(ijk in dist)
+    prediction.comp[[ijk]] = array(0, c(nrow(X), nrepeat, length(test.keepX)))# prediction of all samples for each test.keepX and  nrep at comp fixed
+    for(nrep in 1:nrepeat)
+    {
+        n = nrow(X)
+        #-- define the folds --#
+        if (validation == "Mfold")
+        {
+            
+            if (nrep > 1) # reinitialise the folds
+            folds = M
+            
+            if (is.null(folds) || !is.numeric(folds) || folds < 2 || folds > n)
+            {
+                stop("Invalid number of folds.")
+            } else {
+                M = round(folds)
+                folds = split(sample(1:n), rep(1:M, length = n))
+            }
+        }else{
+            folds = split(1:n, rep(1:n, length = n))
+            M = n
+        }
+        
+        
         error.sw = matrix(0,nrow = M, ncol = length(test.keepX))
         rownames(error.sw) = paste0("fold",1:M)
         colnames(error.sw) = test.keepX
@@ -196,7 +196,7 @@ class.object = NULL
                 
                 test.predict.sw <- predict(object.res, newdata=X.test, method = dist)
                 save(list=ls(),file="temp.Rdata")
-
+                
                 for(ijk in dist)
                 prediction.comp[[ijk]][omit,nrep,i]= levels(Y)[test.predict.sw$class[[ijk]][, ncomp]]
                 
@@ -204,125 +204,121 @@ class.object = NULL
             
         } # end j 1:M (M folds)
         
-                
-   } #end nrep 1:nrepeat
-   
-   # prediction.comp[[ijk]] is a matrix containing all prediction for test.keepX, all nrepeat and all distance, at comp fixed
-
-
-
+        
+    } #end nrep 1:nrepeat
+    
+    # prediction.comp[[ijk]] is a matrix containing all prediction for test.keepX, all nrepeat and all distance, at comp fixed
+    
+    
     result=list()
-
-
+    
+    
     error.mean = error.sd = error.per.class.keepX.opt.comp = keepX.opt = test.keepX.out = mat.error.final = choice.keepX = list()
-
-   for(ijk in dist)
-   {
-       rownames(prediction.comp[[ijk]]) = rownames(X)
-       colnames(prediction.comp[[ijk]]) = paste0("nrep.", 1:nrepeat)
-       dimnames(prediction.comp[[ijk]])[[3]] = paste0("test.keepX.",test.keepX)
-
-       #finding the best keepX depending on the error measure: overall or BER
-       if (any(measure=="overall"))
-       {
-           # classification error for each nrep and each test.keepX: summing over all samples
-           error = apply(prediction.comp[[ijk]],c(3,2),function(x)
-               {
-                   sum(as.character(Y) != x)
-               })
-           rownames(error) = test.keepX
-           colnames(error) = paste0("nrep.",1:nrepeat)
-           
-           # we want to average the error per keepX over nrepeat and choose the minimum error
-           error.mean[[ijk]] = apply(error,1,mean)/length(Y)
-           if (!nrepeat == 1)
-           error.sd[[ijk]] = apply(error,1,sd)/length(Y)
-           
-           mat.error.final[[ijk]] = error/length(Y)  # percentage of misclassification error for each test.keepX (rows) and each nrepeat (columns)
-           
-           keepX.opt[[ijk]] = which(error.mean[[ijk]] == min(error.mean[[ijk]]))[1] # chose the lowest keepX if several minimum
-       
-           # confusion matrix for keepX.opt
-           conf = apply(prediction.comp[[ijk]][, , keepX.opt[[ijk]], drop = FALSE], 2, function(x){
-               out = get.confusion_matrix(Y.learn = factor(Y), Y.test = factor(Y), pred = x)
-           })
-           
-           
-           error.per.class.keepX.opt.comp[[ijk]] = apply(prediction.comp[[ijk]][, , keepX.opt[[ijk]], drop = FALSE], 2, function(x)
-           {
-               conf = get.confusion_matrix(Y.learn = factor(Y), Y.test = factor(Y), pred = x)
-               out = (apply(conf, 1, sum) - diag(conf)) / summary(Y)
-           })
-           
-           rownames(error.per.class.keepX.opt.comp[[ijk]]) = levels(Y)
-           colnames(error.per.class.keepX.opt.comp[[ijk]]) = paste0("nrep.", 1:nrepeat)
-           
-           
-           test.keepX.out[[ijk]] = test.keepX[keepX.opt[[ijk]]]
-           choice.keepX[[ijk]] = c(choice.keepX[[ijk]], test.keepX.out)
-           
-           
-           result$"overall"$error.rate.mean = error.mean
-           if (!nrepeat == 1)
-           result$"overall"$error.rate.sd = error.sd
-           
-           result$"overall"$confusion = error.per.class.keepX.opt.comp
-           result$"overall"$mat.error.rate = mat.error.final
-           result$"overall"$keepX.opt = test.keepX.out
-       }
-       
-       if (any(measure == "BER"))
-       {
-           error = apply(prediction.comp[[ijk]],c(3,2),function(x)
-               {
-                   conf=get.confusion_matrix(Y.learn=factor(Y),Y.test=factor(Y),pred=x)
-                   get.BER(conf)
-               })
-           rownames(error) = test.keepX
-           colnames(error) = paste0("nrep.",1:nrepeat)
-           
-           # average BER over the nrepeat
-           error.mean[[ijk]] = apply(error,1,mean)
-           if (!nrepeat == 1)
-           error.sd[[ijk]] = apply(error,1,sd)
-           
-           mat.error.final[[ijk]] = error  # BER for each test.keepX (rows) and each nrepeat (columns)
-           
-           keepX.opt[[ijk]] = which(error.mean[[ijk]] == min(error.mean[[ijk]]))[1]
-          
-          # confusion matrix for keepX.opt
-          conf = apply(prediction.comp[[ijk]][, , keepX.opt[[ijk]], drop = FALSE], 2, function(x){
-              out = get.confusion_matrix(Y.learn = factor(Y), Y.test = factor(Y), pred = x)
-          })
-          
-          
-          error.per.class.keepX.opt.comp[[ijk]] = apply(prediction.comp[[ijk]][, , keepX.opt[[ijk]], drop = FALSE], 2, function(x)
-          {
-              conf = get.confusion_matrix(Y.learn = factor(Y), Y.test = factor(Y), pred = x)
-              out = (apply(conf, 1, sum) - diag(conf)) / summary(Y)
-          })
-          
-          rownames(error.per.class.keepX.opt.comp[[ijk]]) = levels(Y)
-          colnames(error.per.class.keepX.opt.comp[[ijk]]) = paste0("nrep.", 1:nrepeat)
-          
-          
-          test.keepX.out[[ijk]] = test.keepX[keepX.opt[[ijk]]]
-          choice.keepX[[ijk]] = c(choice.keepX[[ijk]], test.keepX.out)
-          
-          result$"BER"$error.rate.mean = error.mean
-          if (!nrepeat == 1)
-          result$"BER"$error.rate.sd = error.sd
-          
-          result$"BER"$confusion = error.per.class.keepX.opt.comp
-          result$"BER"$mat.error.rate = mat.error.final
-          result$"BER"$keepX.opt = test.keepX.out
-
-       }
-       
-
-   }
-   
-
+    
+    if (any(measure=="overall"))
+    {
+        for(ijk in dist)
+        {
+            rownames(prediction.comp[[ijk]]) = rownames(X)
+            colnames(prediction.comp[[ijk]]) = paste0("nrep.", 1:nrepeat)
+            dimnames(prediction.comp[[ijk]])[[3]] = paste0("test.keepX.",test.keepX)
+            
+            #finding the best keepX depending on the error measure: overall or BER
+            # classification error for each nrep and each test.keepX: summing over all samples
+            error = apply(prediction.comp[[ijk]],c(3,2),function(x)
+            {
+                sum(as.character(Y) != x)
+            })
+            rownames(error) = test.keepX
+            colnames(error) = paste0("nrep.",1:nrepeat)
+            
+            # we want to average the error per keepX over nrepeat and choose the minimum error
+            error.mean[[ijk]] = apply(error,1,mean)/length(Y)
+            if (!nrepeat == 1)
+            error.sd[[ijk]] = apply(error,1,sd)/length(Y)
+            
+            mat.error.final[[ijk]] = error/length(Y)  # percentage of misclassification error for each test.keepX (rows) and each nrepeat (columns)
+            
+            keepX.opt[[ijk]] = which(error.mean[[ijk]] == min(error.mean[[ijk]]))[1] # chose the lowest keepX if several minimum
+            
+            # confusion matrix for keepX.opt
+            error.per.class.keepX.opt.comp[[ijk]] = apply(prediction.comp[[ijk]][, , keepX.opt[[ijk]], drop = FALSE], 2, function(x)
+            {
+                conf = get.confusion_matrix(Y.learn = factor(Y), Y.test = factor(Y), pred = x)
+                out = (apply(conf, 1, sum) - diag(conf)) / summary(Y)
+            })
+            
+            rownames(error.per.class.keepX.opt.comp[[ijk]]) = levels(Y)
+            colnames(error.per.class.keepX.opt.comp[[ijk]]) = paste0("nrep.", 1:nrepeat)
+            
+            
+            test.keepX.out[[ijk]] = test.keepX[keepX.opt[[ijk]]]
+            choice.keepX[[ijk]] = c(choice.keepX[[ijk]], test.keepX.out)
+            
+            
+            result$"overall"$error.rate.mean = error.mean
+            if (!nrepeat == 1)
+            result$"overall"$error.rate.sd = error.sd
+            
+            result$"overall"$confusion = error.per.class.keepX.opt.comp
+            result$"overall"$mat.error.rate = mat.error.final
+            result$"overall"$keepX.opt = test.keepX.out
+        }
+    }
+    
+    if (any(measure == "BER"))
+    {
+        for(ijk in dist)
+        {
+            rownames(prediction.comp[[ijk]]) = rownames(X)
+            colnames(prediction.comp[[ijk]]) = paste0("nrep.", 1:nrepeat)
+            dimnames(prediction.comp[[ijk]])[[3]] = paste0("test.keepX.",test.keepX)
+            
+            error = apply(prediction.comp[[ijk]],c(3,2),function(x)
+            {
+                conf=get.confusion_matrix(Y.learn=factor(Y),Y.test=factor(Y),pred=x)
+                get.BER(conf)
+            })
+            rownames(error) = test.keepX
+            colnames(error) = paste0("nrep.",1:nrepeat)
+            
+            # average BER over the nrepeat
+            error.mean[[ijk]] = apply(error,1,mean)
+            if (!nrepeat == 1)
+            error.sd[[ijk]] = apply(error,1,sd)
+            
+            mat.error.final[[ijk]] = error  # BER for each test.keepX (rows) and each nrepeat (columns)
+            
+            keepX.opt[[ijk]] = which(error.mean[[ijk]] == min(error.mean[[ijk]]))[1]
+            
+            # confusion matrix for keepX.opt
+            error.per.class.keepX.opt.comp[[ijk]] = apply(prediction.comp[[ijk]][, , keepX.opt[[ijk]], drop = FALSE], 2, function(x)
+            {
+                conf = get.confusion_matrix(Y.learn = factor(Y), Y.test = factor(Y), pred = x)
+                out = (apply(conf, 1, sum) - diag(conf)) / summary(Y)
+            })
+            
+            rownames(error.per.class.keepX.opt.comp[[ijk]]) = levels(Y)
+            colnames(error.per.class.keepX.opt.comp[[ijk]]) = paste0("nrep.", 1:nrepeat)
+            
+            
+            test.keepX.out[[ijk]] = test.keepX[keepX.opt[[ijk]]]
+            choice.keepX[[ijk]] = c(choice.keepX[[ijk]], test.keepX.out)
+            
+            result$"BER"$error.rate.mean = error.mean
+            if (!nrepeat == 1)
+            result$"BER"$error.rate.sd = error.sd
+            
+            result$"BER"$confusion = error.per.class.keepX.opt.comp
+            result$"BER"$mat.error.rate = mat.error.final
+            result$"BER"$keepX.opt = test.keepX.out
+            
+        }
+        
+        
+    }
+    
+    
     result$prediction.comp = prediction.comp
     result$features$stable = sort(table(as.factor(features))/M/nrepeat, decreasing = TRUE)
     return(result)
