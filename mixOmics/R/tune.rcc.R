@@ -52,8 +52,13 @@ function(X,
     grid = expand.grid(grid1, grid2)
      
     if (validation == "loo") {
-        cv.score = apply(grid, 1, function(lambda) 
-                                    {loo(X, Y, lambda[1], lambda[2])})
+        M = nrow(X)
+        folds=split(1:M, 1:M)
+        #        cv.score = apply(grid, 1, function(lambda)
+        #                           {loo(X, Y, lambda[1], lambda[2])})
+        cv.score = apply(grid, 1, function(lambda)
+                                    {Mfold(X, Y, lambda[1], lambda[2], folds, M)})
+
     }
     else {
         nr = nrow(X)
@@ -79,4 +84,26 @@ function(X,
     class(out) = "tune.rcc"	
     return(invisible(out))
 }
+
+
+Mfold = function(X, Y, lambda1, lambda2, folds, M)
+{
+    
+    xscore = NULL
+    yscore = NULL
+    
+    for (m in 1:M)
+    {
+        omit = folds[[m]]
+        result = rcc(X[-omit, , drop = FALSE], Y[-omit, , drop = FALSE], 1, lambda1, lambda2,method="ridge")
+        X[omit, ][is.na(X[omit, ])] = 0
+        Y[omit, ][is.na(Y[omit, ])] = 0
+        xscore = c(xscore, X[omit, , drop = FALSE] %*% result$loadings$X[, 1])
+        yscore = c(yscore, Y[omit, , drop = FALSE] %*% result$loadings$Y[, 1])
+    }
+    
+    cv.score = cor(xscore, yscore, use = "pairwise")
+    return(invisible(cv.score))
+}
+
 
