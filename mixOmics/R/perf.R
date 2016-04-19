@@ -1,9 +1,15 @@
+#############################################################################################################
+# Author :
+#   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
+#   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Amrit Singh, University of British Columbia, Vancouver.
+#   Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
+#
+# created: 2015
+# last modified: 19-04-2016
+#
 # Copyright (C) 2015
-# Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-# Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-# Amrit Singh, University of British Columbia, Vancouver.
-# Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-# Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,6 +24,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
 
 
 # --------------------------
@@ -371,10 +378,11 @@ logratio = c('none'),
     for(k in 1:ncomp)
     features[[k]] = NA
     
+    # check input arguments
+    
     if (hasArg(method.predict))
-    {
-        stop("'method.predict' argument has been replaced by 'dist' to match the 'tune' function")
-    }
+    stop("'method.predict' argument has been replaced by 'dist' to match the 'tune' function")
+
     dist = match.arg(dist, choices = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), several.ok = TRUE)
     if (any(dist == "all"))
     {
@@ -384,11 +392,26 @@ logratio = c('none'),
         nmthdd = length(dist)
     }
     
+    if (length(validation) > 1 )
+    validation = validation [1]
+    if (!(validation %in% c("Mfold", "loo")))
+    stop("Choose 'validation' among the two following possibilities: 'Mfold' or 'loo'")
+    
+    if (!is.logical(progressBar))
+    stop("'progressBar' must be either TRUE or FALSE")
+    
+    if (!(measure %in% c("overall", "BER")))
+    stop("Choose 'measure' among the two following measures: 'overall' and/or 'BER'")
+    
+    if (!is.logical(near.zero.var))
+    stop("'near.zero.var' must be either TRUE or FALSE")
+    
     if (length(logratio)>1)
     stop("'logratio' must be either 'none' or 'CLR'")
-    
     if (!(logratio %in% c("none", "CLR")))
-    stop("Choose one of the two following logratio transformation: none or CLR")
+    stop("Choose one of the two following logratio transformation: 'none' or 'CLR'")
+    
+    #fold is checked in 'MCVfold'
     
     # -------------------------------------
     # added: first check for near zero var on the whole data set
@@ -407,8 +430,6 @@ logratio = c('none'),
     }
     # and then we start from the X data set with the nzv removed
     
-    if (length(validation) > 1 )
-    validation = validation [1]
 
     
     list.features = list()
@@ -435,10 +456,10 @@ logratio = c('none'),
     }
     
     
-    prediction.all = list()
+    prediction.all = class.all = list()
     for(ijk in dist)
     {
-        prediction.all[[ijk]] = matrix(nrow = nrow(X), ncol = ncomp,
+        class.all[[ijk]] = matrix(nrow = nrow(X), ncol = ncomp,
         dimnames = list(rownames(X), c(paste('comp', 1 : ncomp))))
     }
 
@@ -462,13 +483,8 @@ logratio = c('none'),
         
         # ---- extract stability of features ----- # NEW
         if (any(class(object) == "splsda"))
-        {
-            list.features[[comp]] = result$features$stable
-        }
-        
-
-        save(list=ls(),file="temp.Rdata")
-
+        list.features[[comp]] = result$features$stable
+       
         for (ijk in dist)
         {
             for (measure_i in measure)
@@ -482,13 +498,16 @@ logratio = c('none'),
             }
             
             #prediction of each samples for each fold and each repeat, on each comp
-            prediction.all[[ijk]][,comp] = result$prediction.comp[[ijk]][,,1]
+            class.all[[ijk]][,comp] = result$class.comp[[ijk]][,,1]
         }
+        prediction.all[[comp]] = result$prediction.comp[[1]][, , 1] #take only one component [[1]] and one of test.keepX [,,1]
     }
-
+    names(prediction.all) = paste('comp', 1:ncomp)
+    
     result = list(error.rate = mat.mean.error,
-    error.per.class = error.per.class.keepX.opt,
-    prediction.all = prediction.all)
+    error.rate.class = error.per.class.keepX.opt,
+    predict = prediction.all,
+    class = class.all)
 
     if (any(class(object) == "splsda"))
     {

@@ -43,7 +43,7 @@
 internal_predict.DA = function(object, out, q, method)
 {
     
-    if(length(grep("plsda",class(object)))==0) # a DA analysis (mint).(block).(s)plsda
+    if (length(grep("plsda",class(object)))==0) # a DA analysis (mint).(block).(s)plsda
     stop("'Object' is not from a Discriminant Analysis", call.=FALSE)
     
     out.DA = list()
@@ -154,7 +154,7 @@ internal_predict.DA = function(object, out, q, method)
     
     out.DA$class = cls
     
-    if(length(grep("block",class(object)))!=0 ) # a block
+    if (length(grep("block",class(object)))!=0 ) # a block
     {
         out.DA$centroids = G
     }else{ #not a block
@@ -181,7 +181,7 @@ internal_predict.DA = function(object, out, q, method)
                 
             }
             # look at the majority vote for all dataset of object$X (with table), if more than a unique max, we put NA
-            table.temp = apply(temp,c(1,2), function(x){a=table(x); if(length(which(a==max(a)))==1) {b=as.numeric(names(which.max(a)))}else{b=NA}; b})
+            table.temp = apply(temp,c(1,2), function(x){a=table(x); if (length(which(a==max(a)))==1) {b=as.numeric(names(which.max(a)))}else{b=NA}; b})
             colnames(table.temp) = colnames(out.DA$class[[ijk]][[i]])[1:min(ncomp)]
             rownames(table.temp) = rownames(out.DA$class[[ijk]][[i]])
             out.DA$vote[[ijk]] = table.temp

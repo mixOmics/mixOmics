@@ -27,18 +27,17 @@
 # ----------------------------------------------------------------------------------------------------------
 # perf.sgccda - Function to evaluate the performance of the fitted PLS (cross-validation)
 #   inputs: object - object obtain from running sgccda or splsda
-#           method.predict - to evaluate the classification performance
+#           dist - to evaluate the classification performance
 #           validation - type of validation
 #           folds - number of folds if validation = "Mfold"
 # ----------------------------------------------------------------------------------------------------------
 
 perf.sgccda = function (object,
-method.predict = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
+dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
 validation = c("Mfold"),
 folds,
 parallel = FALSE,
 cpus=2,
-max.iter=500,
 ...)
 {
     
@@ -48,21 +47,30 @@ max.iter=500,
     assign("J", NULL, pos = 1); J = length(X)
     Y = object$Y#ind.mat; Y = map(Y); Y = factor(Y, labels = level.Y)
     n = nrow(X[[1]]);
-    indY=object$indY
-    
-    if (any(method.predict == "all"))
+    indY = object$indY
+    max.iter = object$max.iter
+
+    if (any(dist == "all"))
     {
-        method.select = c("max.dist", "centroids.dist", "mahalanobis.dist")
+        dist.select = c("max.dist", "centroids.dist", "mahalanobis.dist")
     } else {
-        method.select = method.predict
+        dist.select = dist
     }
     ### End: Initialization parameters
     
-    method.predict = match.arg(method.predict, choices = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), several.ok = TRUE)
+    dist = match.arg(dist, choices = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), several.ok = TRUE)
     
     ### Start: Check parameter validation / set up sample
-    if (any(is.na(validation)) || length(validation) > 1)
-    stop("'validation' should be one of 'Mfold' or 'loo'.", call. = FALSE)
+    
+    if (!is.logical(parallel))
+    stop("'parallel' must be either TRUE or FALSE")
+    
+    if (length(validation) > 1 )
+    validation = validation [1]
+    
+    if (!(validation %in% c("Mfold", "loo")))
+    stop("Choose 'validation' among the two following possibilities: 'Mfold' or 'loo'")
+
     
     if (validation == "Mfold")
     {
@@ -218,16 +226,18 @@ max.iter=500,
             colnames(Y.all[[x]][[y]]) = levels(Y)
             return(Y.all[[x]][[y]])
         })
+        names(Y.all[[x]])=paste("comp", 1:object$ncomp[x])
+        return(Y.all[[x]])
     })
     ## End: retrieve score for each component
     
     ## Start: retrieve class for each component
-    # Reorganization input data / folds / method.select
+    # Reorganization input data / folds / dist.select
     Y.predict = lapply(1 : J, function(x)
     {
         lapply(1 : M, function(y)
         {
-            lapply(which(c("max.dist", "centroids.dist", "mahalanobis.dist") %in% method.select), function(z)
+            lapply(which(c("max.dist", "centroids.dist", "mahalanobis.dist") %in% dist.select), function(z)
             {
                 Y.predict[[y]][[z]][[x]]
             })
@@ -239,7 +249,7 @@ max.iter=500,
     {
         lapply(1 : M, function(y)
         {
-            lapply(1 : length(method.select), function(z)
+            lapply(1 : length(dist.select), function(z)
             {
                 if (!is.null(row.names(X[[x]])[folds[[y]]]))
                 {
@@ -252,10 +262,10 @@ max.iter=500,
         })
     })
     
-    # Reorgainzation list input / method.select / folds
+    # Reorgainzation list input / dist.select / folds
     Y.predict = lapply(1 : J, function(x)
     {
-        lapply(1 : length(method.select), function(y)
+        lapply(1 : length(dist.select), function(y)
         {
             lapply(1 : M, function(z)
             {
@@ -266,7 +276,7 @@ max.iter=500,
     # Merge Score
     Y.predict = lapply(1 : J, function(x)
     {
-        lapply(1 : length(method.select), function(y)
+        lapply(1 : length(dist.select), function(y)
         {
             do.call(rbind, Y.predict[[x]][[y]])
         })
@@ -275,7 +285,7 @@ max.iter=500,
     # Define names
     Y.predict = lapply(1 : J, function(x)
     {
-        names(Y.predict[[x]]) = method.select
+        names(Y.predict[[x]]) = dist.select
         return(Y.predict[[x]])
     })
     ## End: retrieve class for each component
@@ -286,7 +296,7 @@ max.iter=500,
     #Statistics overall error rate
     error.mat = lapply(1 : J, function(x)
     {
-        lapply(method.select , function(y)
+        lapply(dist.select , function(y)
         {
             apply(Y.predict[[x]][[y]], 2, function(z)
             {
@@ -295,7 +305,7 @@ max.iter=500,
         })
     })
     
-    # Merge error rate according to method.predict
+    # Merge error rate according to dist
     error.mat = lapply(1 : J, function(x)
     {
         do.call(cbind, error.mat[[x]])
@@ -304,7 +314,7 @@ max.iter=500,
     # Define name
     error.mat = lapply(1 : J, function(x)
     {
-        colnames(error.mat[[x]]) = method.select
+        colnames(error.mat[[x]]) = dist.select
         return(error.mat[[x]])
     })
     ## End: Estimation overall error rate
@@ -313,7 +323,7 @@ max.iter=500,
     # Statistics error rate per class
     error.mat.class = lapply(1 : J, function(x)
     {
-        lapply(method.select , function(y)
+        lapply(dist.select , function(y)
         {
             apply(Y.predict[[x]][[y]], 2, function(z)
             {
@@ -326,7 +336,7 @@ max.iter=500,
     # Transpose data
     error.mat.class = lapply(1 : J, function(x)
     {
-        lapply(1 : length(method.select), function(y)
+        lapply(1 : length(dist.select), function(y)
         {
             t(error.mat.class[[x]][[y]])
         })
@@ -335,7 +345,7 @@ max.iter=500,
     # Define colnames
     error.mat.class = lapply(1 : J, function(x)
     {
-        lapply(1 : length(method.select), function(y)
+        lapply(1 : length(dist.select), function(y)
         {
             colnames(error.mat.class[[x]][[y]])[nlevels(Y) + 1] = "Overall"
             return(error.mat.class[[x]][[y]])
@@ -345,7 +355,7 @@ max.iter=500,
     # Define names
     error.mat.class = lapply(1 : J, function(x)
     {
-        names(error.mat.class[[x]]) = method.select
+        names(error.mat.class[[x]]) = dist.select
         return(error.mat.class[[x]])
     })
     
@@ -417,7 +427,7 @@ max.iter=500,
         # if ncomp[[X]] < max(ncomp), copy the last prediction
         Y.vote = lapply(1 : J, function(x)
         {
-            lapply(method.select, function(y)
+            lapply(dist.select, function(y)
             {
                 if(ncol(Y.predict[[x]][[y]]) < max(object$ncomp[-indY]))
                 {
@@ -431,14 +441,14 @@ max.iter=500,
         # Sort matrix
         Y.vote = lapply(1 : J, function(x)
         {
-            lapply(1 : length(method.select), function(y)
+            lapply(1 : length(dist.select), function(y)
             {
                 Y.vote[[x]][[y]][sort(unlist(folds), index.return = TRUE)$ix, , drop = FALSE]
             })
         })
         
-        # Reorganization method.select / component / Data
-        Y.vote = lapply(1 : length(method.select), function(x)
+        # Reorganization dist.select / component / Data
+        Y.vote = lapply(1 : length(dist.select), function(x)
         {
             lapply(1 : max(object$ncomp[-indY]), function(y){
                 lapply(1 : J, function(z){
@@ -447,8 +457,8 @@ max.iter=500,
             })
         })
         
-        # Merge method.select
-        Y.vote = lapply(1 : length(method.select), function(x)
+        # Merge dist.select
+        Y.vote = lapply(1 : length(dist.select), function(x)
         {
             lapply(1 : max(object$ncomp[-indY]), function(y){
                 do.call(cbind, Y.vote[[x]][[y]])
@@ -456,7 +466,7 @@ max.iter=500,
         })
         
         # Estimation Majority Vote
-        Y.vote = lapply(1 : length(method.select), function(x)
+        Y.vote = lapply(1 : length(dist.select), function(x)
         {
             lapply(1 : max(object$ncomp[-indY]), function(y)
             {
@@ -473,14 +483,14 @@ max.iter=500,
             })
         })
         
-        Y.vote = lapply(1 : length(method.select), function(x)
+        Y.vote = lapply(1 : length(dist.select), function(x)
         {
             do.call(cbind, Y.vote[[x]])
         })
         
 
         ## subjects with NA are considered false
-        Y.vote.res = lapply(1 : length(method.select), function(x)
+        Y.vote.res = lapply(1 : length(dist.select), function(x)
         {
             apply(Y.vote[[x]], 2, function(y)
             {
@@ -492,19 +502,19 @@ max.iter=500,
             })
         })
         
-        Y.vote = lapply(1 : length(method.select), function(x)
+        Y.vote = lapply(1 : length(dist.select), function(x)
         {
             colnames(Y.vote[[x]]) = paste("comp", 1:max(object$ncomp[-(J + 1)]))
             return(Y.vote[[x]])
         })
         
-        Y.vote.res = lapply(1 : length(method.select), function(x)
+        Y.vote.res = lapply(1 : length(dist.select), function(x)
         {
             colnames(Y.vote.res[[x]]) = paste("comp", 1:max(object$ncomp[-(J + 1)]))
             row.names(Y.vote.res[[x]]) = c(levels(Y), "Overall.ER", "Overall.BER")
             return(t(Y.vote.res[[x]]))
         })
-        names(Y.vote) = method.select; names(Y.vote.res) = method.select
+        names(Y.vote) = dist.select; names(Y.vote.res) = dist.select
         
         ### End: Vote on the dataset
     }

@@ -90,7 +90,7 @@ near.zero.var = FALSE)
         loadings = result$loadings,
         variates.partial = result$variates.partial,
         loadings.partial = result$loadings.partial,
-        names  =  result$names[-which(names(result$names) == "blocks")], # remove the names for 'blocks', since this is not a block analysis
+        names  =  result$names,
         tol = result$tol,
         iter = result$iter,
         max.iter = result$max.iter,

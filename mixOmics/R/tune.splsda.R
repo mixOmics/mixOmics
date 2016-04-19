@@ -174,7 +174,7 @@ logratio = c('none','CLR')
     }
     
 
-    prediction.all=list()
+    prediction.all = class.all = list()
     error.per.class.keepX.opt=list()
     # successively tune the components until ncomp: comp1, then comp2, ...
     for(comp in 1:length(comp.real))
@@ -203,13 +203,14 @@ logratio = c('none','CLR')
         mat.error.rate[[comp]] = result[[measure]]$mat.error.rate[[1]]
         
         #prediction of each samples for each fold and each repeat, on each comp
-        prediction.all[[comp]] = result$prediction.comp[[1]]
+        class.all[[comp]] = result$class.comp[[1]]
+        prediction.all[[comp]] = result$prediction.comp
         
     } # end comp
 
     names(mat.error.rate)=c(paste('comp', comp.real))
     names(error.per.class.keepX.opt)=c(paste('comp', comp.real))
-    names(prediction.all)=c(paste('comp', comp.real))
+    names(class.all) = names(prediction.all) = c(paste('comp', comp.real))
     
     if (progressBar == TRUE)
     cat('\n')
@@ -223,6 +224,7 @@ logratio = c('none','CLR')
     #error.per.class.mean=error.per.class.mean,
     #error.per.class.sd=error.per.class.sd,
     error.per.class = error.per.class.keepX.opt,
-    prediction.all = prediction.all))
+    predict = prediction.all,
+    class = class.all))
     
 }

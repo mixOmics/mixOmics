@@ -19,7 +19,7 @@ nutrimouse.sgccda <- wrapper.sgccda(X=data,
 Y = Y,
 design = design,
 keepX = list(gene=c(10,10), lipid=c(15,15)),
-ncomp = c(2, 2),
+ncomp = c(2, 3),
 scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)
@@ -28,6 +28,9 @@ bias = FALSE)
 
 plotIndiv(nutrimouse.sgccda,style="graphics")
 plotIndiv(nutrimouse.sgccda,style="graphics",add.legend=FALSE,ind.names=FALSE,abline.line=TRUE)
+
+plotLoadings(nutrimouse.sgccda)
+plotLoadings(nutrimouse.sgccda,contrib="max")
 
 par(mfrow=c(1,1))
 circosPlot(nutrimouse.sgccda,corThreshold=0.7,ncol=2,cex.legend=1.1)

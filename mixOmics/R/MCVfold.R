@@ -35,7 +35,7 @@
 # test.keepX: grid of keepX among which to chose the optimal one
 # already.tested.X: a vector giving keepX on the components that were already tuned
 # validation: Mfold or loo cross validation
-# folds: if validation=Mfold, how many folds?
+# folds: if validation = Mfold, how many folds?
 # dist: distance to classify samples. see predict
 # measure: one of c("overall","BER"). Accuracy measure used in the cross validation processs
 # progressBar: show progress,
@@ -45,34 +45,34 @@
 # verbose: if TRUE, shows component and nrepeat being tested.
 
 
-get.confusion_matrix=function(Y.learn,Y.test,pred)
+get.confusion_matrix = function(Y.learn,Y.test,pred)
 {
-    ClassifResult=array(0,c(nlevels(factor(Y.learn)),nlevels(factor(Y.learn))))
-    rownames(ClassifResult)=levels(factor(Y.learn))
-    colnames(ClassifResult)=paste("predicted.as.",levels(factor(Y.learn)),sep="")
+    ClassifResult = array(0,c(nlevels(factor(Y.learn)),nlevels(factor(Y.learn))))
+    rownames(ClassifResult) = levels(factor(Y.learn))
+    colnames(ClassifResult) = paste("predicted.as.",levels(factor(Y.learn)),sep = "")
     #--------record of the classification accuracy for each level of Y
     for(i in 1:nlevels(factor(Y.learn)))
     {
-        ind.i=which(Y.test==levels(factor(Y.learn))[i])
+        ind.i = which(Y.test == levels(factor(Y.learn))[i])
         for(ij in 1:nlevels(factor(Y.learn)))
         {
-            ClassifResult[i,ij]=sum(pred[ind.i]==levels(Y.learn)[ij])
+            ClassifResult[i,ij] = sum(pred[ind.i] == levels(Y.learn)[ij])
             
         }
     }
     ClassifResult
 }
 
-get.BER=function(X)
+get.BER = function(X)
 {
     if(!is.numeric(X)| !is.matrix(X) | length(dim(X)) != 2 | nrow(X)!=ncol(X))
     stop("'X' must be a square numeric matrix")
     
-    nlev=nrow(X)
+    nlev = nrow(X)
     #calculation of the BER
-    ClassifResult.temp=X
-    diag(ClassifResult.temp)=0
-    BER=sum(apply(ClassifResult.temp,1,sum,na.rm=TRUE)/apply(X,1,sum,na.rm=TRUE),na.rm=TRUE)/nlev
+    ClassifResult.temp = X
+    diag(ClassifResult.temp) = 0
+    BER = sum(apply(ClassifResult.temp,1,sum,na.rm = TRUE)/apply(X,1,sum,na.rm = TRUE),na.rm = TRUE)/nlev
     return(BER)
 }
 
@@ -97,7 +97,7 @@ class.object = NULL
 {    #-- checking general input parameters --------------------------------------#
     #---------------------------------------------------------------------------#
     #-- set up a progress bar --#
-    if (progressBar == TRUE)
+    if (progressBar ==  TRUE)
     {
         pb = txtProgressBar(style = 3)
         nBar = 1
@@ -107,14 +107,17 @@ class.object = NULL
     
     M = length(folds)
     features = NULL
-    prediction.comp = list()
+    prediction.comp = class.comp = list()
     for(ijk in dist)
-    prediction.comp[[ijk]] = array(0, c(nrow(X), nrepeat, length(test.keepX)))# prediction of all samples for each test.keepX and  nrep at comp fixed
+    class.comp[[ijk]] = array(0, c(nrow(X), nrepeat, length(test.keepX)))# prediction of all samples for each test.keepX and  nrep at comp fixed
     for(nrep in 1:nrepeat)
     {
+        prediction.comp[[nrep]] = array(0, c(nrow(X), nlevels(Y), length(test.keepX)), dimnames = list(rownames(X), levels(Y), test.keepX))
+        rownames(prediction.comp[[nrep]]) = rownames(X)
+        colnames(prediction.comp[[nrep]]) = levels(Y)
         n = nrow(X)
         #-- define the folds --#
-        if (validation == "Mfold")
+        if (validation ==  "Mfold")
         {
             
             if (nrep > 1) # reinitialise the folds
@@ -127,7 +130,7 @@ class.object = NULL
                 M = round(folds)
                 folds = split(sample(1:n), rep(1:M, length = n))
             }
-        }else{
+        } else if (validation ==  "loo") {
             folds = split(1:n, rep(1:n, length = n))
             M = n
         }
@@ -143,7 +146,7 @@ class.object = NULL
         stop.user = FALSE
         for (j in 1:M)
         {
-            if (progressBar == TRUE)
+            if (progressBar ==  TRUE)
             setTxtProgressBar(pb, (M*(nrep-1)+j)/(M*nrepeat))
             
             #print(j)
@@ -151,7 +154,7 @@ class.object = NULL
             omit = folds[[j]]
             
             # see below, we stop the user if there is only one sample drawn on the test set using MFold
-            if(length(omit) == 1)
+            if(length(omit) ==  1)
             stop.user = TRUE
             
             # get training and test set
@@ -164,22 +167,22 @@ class.object = NULL
             #-- logratio transformation of X.test --#
             # done on X.learn in the splsda function
             
-            transfo=logratio.transfo(X=X.test,logratio=logratio)
-            X.test=transfo$X
+            transfo = logratio.transfo(X = X.test,logratio = logratio)
+            X.test = transfo$X
             
             #-- logratio transformation ------------#
             #---------------------------------------#
             
             #---------------------------------------#
             #-- near.zero.var ----------------------#
-            if(near.zero.var==TRUE)
+            if(near.zero.var == TRUE)
             {
                 remove.zero = nearZeroVar(X.train)$Position
                 
                 if (length(remove.zero) > 0)
                 {
-                    X.train = X.train[, -c(remove.zero),drop=FALSE]
-                    X.test = X.test[, -c(remove.zero),drop=FALSE]
+                    X.train = X.train[, -c(remove.zero),drop = FALSE]
+                    X.test = X.test[, -c(remove.zero),drop = FALSE]
                 }
             }
             #-- near.zero.var ----------------------#
@@ -190,42 +193,43 @@ class.object = NULL
                 object.res = splsda(X.train, Y.train, ncomp = ncomp, keepX = c(choice.keepX, test.keepX[i]), logratio = logratio, near.zero.var = FALSE, mode = "regression")
                 
                 # added: record selected features
-                if (any(class.object %in% c("splsda")) & length(test.keepX) == 1) # only done if splsda and if only one test.keepX as not used if more so far
+                if (any(class.object %in% c("splsda")) & length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
                 # note: if plsda, 'features' includes everything: to optimise computational time, we don't evaluate for plsda object
                 features = c(features, selectVar(object.res, comp = ncomp)$name)
                 
-                test.predict.sw <- predict(object.res, newdata=X.test, method = dist)
-                save(list=ls(),file="temp.Rdata")
+                test.predict.sw <- predict(object.res, newdata = X.test, method = dist)
+                save(list = ls(),file = "temp.Rdata")
+
+                prediction.comp[[nrep]][omit, , i] =  test.predict.sw$predict[, , ncomp]
                 
                 for(ijk in dist)
-                prediction.comp[[ijk]][omit,nrep,i]= levels(Y)[test.predict.sw$class[[ijk]][, ncomp]]
-                
+                class.comp[[ijk]][omit,nrep,i] =  levels(Y)[test.predict.sw$class[[ijk]][, ncomp]]
             } # end i
             
         } # end j 1:M (M folds)
         
         
     } #end nrep 1:nrepeat
+    names(prediction.comp) = paste0("nrep.", 1:nrepeat)
+    # class.comp[[ijk]] is a matrix containing all prediction for test.keepX, all nrepeat and all distance, at comp fixed
     
-    # prediction.comp[[ijk]] is a matrix containing all prediction for test.keepX, all nrepeat and all distance, at comp fixed
     
-    
-    result=list()
+    result = list()
     
     
     error.mean = error.sd = error.per.class.keepX.opt.comp = keepX.opt = test.keepX.out = mat.error.final = choice.keepX = list()
     
-    if (any(measure=="overall"))
+    if (any(measure == "overall"))
     {
         for(ijk in dist)
         {
-            rownames(prediction.comp[[ijk]]) = rownames(X)
-            colnames(prediction.comp[[ijk]]) = paste0("nrep.", 1:nrepeat)
-            dimnames(prediction.comp[[ijk]])[[3]] = paste0("test.keepX.",test.keepX)
+            rownames(class.comp[[ijk]]) = rownames(X)
+            colnames(class.comp[[ijk]]) = paste0("nrep.", 1:nrepeat)
+            dimnames(class.comp[[ijk]])[[3]] = paste0("test.keepX.",test.keepX)
             
             #finding the best keepX depending on the error measure: overall or BER
             # classification error for each nrep and each test.keepX: summing over all samples
-            error = apply(prediction.comp[[ijk]],c(3,2),function(x)
+            error = apply(class.comp[[ijk]],c(3,2),function(x)
             {
                 sum(as.character(Y) != x)
             })
@@ -234,15 +238,15 @@ class.object = NULL
             
             # we want to average the error per keepX over nrepeat and choose the minimum error
             error.mean[[ijk]] = apply(error,1,mean)/length(Y)
-            if (!nrepeat == 1)
+            if (!nrepeat ==  1)
             error.sd[[ijk]] = apply(error,1,sd)/length(Y)
             
             mat.error.final[[ijk]] = error/length(Y)  # percentage of misclassification error for each test.keepX (rows) and each nrepeat (columns)
             
-            keepX.opt[[ijk]] = which(error.mean[[ijk]] == min(error.mean[[ijk]]))[1] # chose the lowest keepX if several minimum
+            keepX.opt[[ijk]] = which(error.mean[[ijk]] ==  min(error.mean[[ijk]]))[1] # chose the lowest keepX if several minimum
             
             # confusion matrix for keepX.opt
-            error.per.class.keepX.opt.comp[[ijk]] = apply(prediction.comp[[ijk]][, , keepX.opt[[ijk]], drop = FALSE], 2, function(x)
+            error.per.class.keepX.opt.comp[[ijk]] = apply(class.comp[[ijk]][, , keepX.opt[[ijk]], drop = FALSE], 2, function(x)
             {
                 conf = get.confusion_matrix(Y.learn = factor(Y), Y.test = factor(Y), pred = x)
                 out = (apply(conf, 1, sum) - diag(conf)) / summary(Y)
@@ -257,7 +261,7 @@ class.object = NULL
             
             
             result$"overall"$error.rate.mean = error.mean
-            if (!nrepeat == 1)
+            if (!nrepeat ==  1)
             result$"overall"$error.rate.sd = error.sd
             
             result$"overall"$confusion = error.per.class.keepX.opt.comp
@@ -266,17 +270,17 @@ class.object = NULL
         }
     }
     
-    if (any(measure == "BER"))
+    if (any(measure ==  "BER"))
     {
         for(ijk in dist)
         {
-            rownames(prediction.comp[[ijk]]) = rownames(X)
-            colnames(prediction.comp[[ijk]]) = paste0("nrep.", 1:nrepeat)
-            dimnames(prediction.comp[[ijk]])[[3]] = paste0("test.keepX.",test.keepX)
+            rownames(class.comp[[ijk]]) = rownames(X)
+            colnames(class.comp[[ijk]]) = paste0("nrep.", 1:nrepeat)
+            dimnames(class.comp[[ijk]])[[3]] = paste0("test.keepX.",test.keepX)
             
-            error = apply(prediction.comp[[ijk]],c(3,2),function(x)
+            error = apply(class.comp[[ijk]],c(3,2),function(x)
             {
-                conf=get.confusion_matrix(Y.learn=factor(Y),Y.test=factor(Y),pred=x)
+                conf = get.confusion_matrix(Y.learn = factor(Y),Y.test = factor(Y),pred = x)
                 get.BER(conf)
             })
             rownames(error) = test.keepX
@@ -284,15 +288,15 @@ class.object = NULL
             
             # average BER over the nrepeat
             error.mean[[ijk]] = apply(error,1,mean)
-            if (!nrepeat == 1)
+            if (!nrepeat ==  1)
             error.sd[[ijk]] = apply(error,1,sd)
             
             mat.error.final[[ijk]] = error  # BER for each test.keepX (rows) and each nrepeat (columns)
             
-            keepX.opt[[ijk]] = which(error.mean[[ijk]] == min(error.mean[[ijk]]))[1]
+            keepX.opt[[ijk]] = which(error.mean[[ijk]] ==  min(error.mean[[ijk]]))[1]
             
             # confusion matrix for keepX.opt
-            error.per.class.keepX.opt.comp[[ijk]] = apply(prediction.comp[[ijk]][, , keepX.opt[[ijk]], drop = FALSE], 2, function(x)
+            error.per.class.keepX.opt.comp[[ijk]] = apply(class.comp[[ijk]][, , keepX.opt[[ijk]], drop = FALSE], 2, function(x)
             {
                 conf = get.confusion_matrix(Y.learn = factor(Y), Y.test = factor(Y), pred = x)
                 out = (apply(conf, 1, sum) - diag(conf)) / summary(Y)
@@ -306,7 +310,7 @@ class.object = NULL
             choice.keepX[[ijk]] = c(choice.keepX[[ijk]], test.keepX.out)
             
             result$"BER"$error.rate.mean = error.mean
-            if (!nrepeat == 1)
+            if (!nrepeat ==  1)
             result$"BER"$error.rate.sd = error.sd
             
             result$"BER"$confusion = error.per.class.keepX.opt.comp
@@ -320,6 +324,7 @@ class.object = NULL
     
     
     result$prediction.comp = prediction.comp
+    result$class.comp = class.comp
     result$features$stable = sort(table(as.factor(features))/M/nrepeat, decreasing = TRUE)
     return(result)
 }

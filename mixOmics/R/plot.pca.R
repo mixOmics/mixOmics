@@ -6,7 +6,7 @@
 # Leigh Coonan, Queensland Faculty for Advanced Bioinformatics, Australia
 #
 # created: 2010?
-# last modified: 24-02-2016
+# last modified: 19-04-2016
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@
 #############################################################################################################
 
 
-plot.pca  <- #plot.spca <- plot.ipca <- plot.sipca <-
+plot.pca  = #plot.spca <- plot.ipca <- plot.sipca <-
 function(   x,
             ncomp = min(10, length(x$sdev)),
             type = "barplot", # either barplot or any other type available in plot, as "l","b","p",..
@@ -56,10 +56,9 @@ function(   x,
     variances=variances/x$var.tot #explained variances
     
     if (type == "barplot")
-    barplot(variances, names.arg = seq(1, ncomp),
-    xlab = "Principal Components",
-    ylab = "Variances",...)
-    else {
+    {
+        barplot(variances, names.arg = seq(1, ncomp), xlab = "Principal Components", ylab = "Variances",...)
+    } else {
         plot(variances, type = type, axes = FALSE,
         xlab = "Principal Components",
         ylab = "Variances",... )

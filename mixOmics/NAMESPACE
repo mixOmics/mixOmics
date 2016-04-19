@@ -122,6 +122,7 @@ S3method(plot, rcc)
 S3method(plot, pca)
 S3method(plot, sgccda)
 
+
 S3method(plotIndiv, pls)
 S3method(plotIndiv, spls)
 S3method(plotIndiv, rcc)
@@ -132,6 +133,18 @@ S3method(plotIndiv, mint.pls)
 S3method(plotIndiv, mint.spls)
 S3method(plotIndiv, mint.plsda)
 S3method(plotIndiv, mint.splsda)
+
+S3method(plotLoadings, pls)
+S3method(plotLoadings, spls)
+S3method(plotLoadings, rcc)
+S3method(plotLoadings, spls)
+S3method(plotLoadings, pca)
+S3method(plotLoadings, sgcca)
+S3method(plotLoadings, rgcca)
+S3method(plotLoadings, plsda)
+S3method(plotLoadings, splsda)
+S3method(plotLoadings, sgccda)
+
 
 S3method(predict, pls)
 S3method(predict, spls)

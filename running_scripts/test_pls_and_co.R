@@ -69,6 +69,7 @@ plotIndiv(toxicity.spls)
 
 # splsda
 # ----
+library(mixOmicsv6)
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 # Y will be transformed as a factor in the function,
@@ -76,6 +77,10 @@ X <- breast.tumors$gene.exp
 Y <- as.factor(breast.tumors$sample$treatment)
 
 res <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
+
+plotLoadings(res)
+plotLoadings(res, contrib = "min")
+plotLoadings(res, contrib = "max")
 
 tune= tune.splsda(X,Y,ncomp=1,nrepeat=10,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist",already.tested.X=NULL)
 

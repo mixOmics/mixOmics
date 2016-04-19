@@ -1,9 +1,14 @@
+#############################################################################################################
 # Copyright (C) 2009
-# Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-# Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-# Kim-Anh Le Cao, French National Institute for Agricultural Research and
-# Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia
-# Pierre Monget, Ecole d'Ingenieur du CESI, Angouleme, France
+#   Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+#   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
+#   Kim-Anh Le Cao, French National Institute for Agricultural Research and
+#   Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia
+#   Pierre Monget, Ecole d'Ingenieur du CESI, Angouleme, France
+# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#
+# created: 2010?
+# last modified: 19-04-2016
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -18,6 +23,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
+
 
 
 plot.perf <-
@@ -95,14 +102,16 @@ layout = NULL,
     {
         
         if (hasArg(pred.method))
-        {
-            stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
-        }
-        if (any(dist == "all")) dist = colnames(x$error.rate[[measure]])
+        stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
         
+        if (any(dist == "all"))
+        dist = colnames(x$error.rate[[measure]])
         
+        if (is.null(dist))
+        stop("'measure' should be among the ones used in your call to 'perf': ", paste(names(x$error.rate),collapse = ", "),".")
+
         if (!any(dist %in% colnames(x$error.rate[[measure]])))
-        stop("Choose the prediction methods.")
+        stop("'dist'should be among the ones used in your call to 'perf': ", paste(colnames(x$error.rate[[measure]]), collapse = ", "),".")
         
         # KA changed
         #x = matrix(x[, pred.method], ncol = length(pred.method))

@@ -133,8 +133,8 @@ error.overall <- perf(srbct.splsda, validation = "Mfold", folds = 8, dist = "all
 error.BER <- perf(srbct.splsda, validation = "Mfold", folds = 8, dist = "all", measure = "BER")
 plot(error, type = "l")
 
-#source("mixOmics/R/perf.R")
-#source("mixOmics/R/MCVfold.R")
+source("mixOmics/R/perf.R")
+source("mixOmics/R/MCVfold.R")
 error.both <- perf(srbct.splsda, validation = "Mfold", folds = 8, dist = "all", measure = c("BER", "overall"))
 
 plot(error.both, type = "l")
