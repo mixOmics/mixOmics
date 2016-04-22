@@ -25,32 +25,23 @@
 
 
 #----------------------------------------------------------------------------------------------------------#
-#-- Includes plotLoadings for mint.plsda and mint.splsda --#
+#-- Includes plotLoadings for mint.pls and mint.spls --#
 #----------------------------------------------------------------------------------------------------------#
 
 
-#plotLoadings.mint.pls      =
-#plotLoadings.mint.spls     =
-plotLoadings.mint.plsda    =
-plotLoadings.mint.splsda   =
+plotLoadings.mint.pls    =
+plotLoadings.mint.spls   =
 
-function(object,
-contrib = NULL,  # choose between 'max" or "min", NULL does not color the barplot
-method = "mean", # choose between 'mean" or "median"
+function(object, block, 
 study = "all",
 comp = 1,
-show.ties = TRUE,
-col.ties = "white",
+col = NULL,
 ndisplay = NULL,
 cex.name = 0.7,
-cex.legend = 0.8,
 name.var = NULL,
 complete.name.var = FALSE,
-legend = TRUE,
-legend.color = NULL,
 main = NULL,
 subtitle,
-legend.title = 'Outcome',
 plot = TRUE,
 layout = NULL,
 size.title = rel(1.8),
@@ -58,23 +49,19 @@ size.subtitle = rel(1.4),
 border = NA,
 ...
 ) {
-
+    
     # what I want is to modify the input and call plotLoadings.pls and plotLoadings.splsda where blocks are now studies
     # do not forget to change object$names$block in levels(object$study) and it should work, see you tomorrow
     
     if(any(study == "all"))
     {
-        plotLoadings.plsda(object = object, contrib = contrib, method = method, block = "X", comp = comp, ndisplay = ndisplay,
+        # if study == "all" then we plot the results on the concatenated data, thus direct call to plotLoadings.plsda
+        plotLoadings.pls(object = object, contrib = contrib, method = method, block = "X", comp = comp, ndisplay = ndisplay,
         cex.name = cex.name,
-        cex.legend = cex.legend,
         name.var = name.var,
         complete.name.var = complete.name.var,
-        legend = legend,
-        legend.color = legend.color,
-        main = if(!is.null(main)){main}else{paste0('Contribution on comp ', comp, "\n All studies")},
+        main = main,
         subtitle = subtitle,
-        legend.title = legend.title,
-        plot = plot,
         xlim = xlim,
         layout = layout,
         size.title = size.title,
@@ -83,27 +70,25 @@ border = NA,
         col = "white")
         
     } else {
-        
+        # if study != "all" then we plot the results on each study
+
         # -- input checks
-        check = check.input.plotLoadings(object = object, block = "X", subtitle = subtitle, cex.name = cex.name, cex.legend = cex.legend,
-        main = main, col = col)
+        check = check.input.plotLoadings(object = object, block = "X", subtitle = subtitle, main = main, col = col, cex.name = cex.name)
         
         col = check$col
         cex.name = check$cex.name
-        cex.legend = check$cex.legend
         block = check$block # "X"
         
         # swap block for study
         block = study
         
         # -- layout
-        res = layout.plotLoadings(layout = layout, plot = plot, legend = legend, block = block)
+        res = layout.plotLoadings(layout = layout, plot = TRUE, legend = FALSE, block = block)
         reset.mfrow = res$reset.mfrow
         opar = res$opar
         omar = par("mar") #reset mar at the end
         
         # method
-        # ----
         if (length(method) !=1 || !method %in% c("mean","median"))
         {
             method = "median"
@@ -123,49 +108,12 @@ border = NA,
         object$loadings = object$loadings.partial$X
         object$names$block = levels(object$study)
         
-        X.study = study_split(X, study = object$study)
-        Y = object$Y #v6: all $Y are factors for DA methods
-        Y.study = study_split(Y, study = object$study)
-        
-        df.final = list()
         for (i in 1 : length(block))
         {
-            
-            value.selected.var =  object$loadings.partial$X [[block[i]]][, comp] [name.selected.var]
+            value.selected.var = object$loadings.partial$X [[block[i]]][, comp] [name.selected.var]
 
-
-            #legend.color
-            #-----
-            if (!is.null(legend.color) & (length(legend.color) != nlevels(Y)))
-            {
-                warning('legend.color must be the same length than the number of group, by default set to default colors')
-                legend.color = color.mixo(1:10)  # by default set to the colors in color.mixo (10 colors)
-            }
-            if (is.null(legend.color))
-            legend.color = color.mixo(1:10)[1:nlevels(Y)] # by default set to the colors in color.mixo (10 colors)
-            
-            if (col.ties%in%legend.color[1:nlevels(Y)])
-            stop("'col.ties' should not be in 'legend.color'")
-            
-            if(!is.null(contrib))
-            {
-                df = get.contrib.df(Y = factor(Y.study[[block[i]]]), X = X.study[[block[i]]], method = method, contrib = contrib, value.selected.var = value.selected.var, colnames.X = colnames.X, name.selected.var = name.selected.var, legend.color = legend.color, col.ties = col.ties)#data.frame(method.group, which.contrib, importance = value.selected.var)
-                # when working with sparse counts in particular and using the median to measure contribution
-                # ties to determine the contribution of a variable may happen, in that case remove them, otherwise they are showns as blank
-                if (show.ties == FALSE)
-                {
-                    df = df[!df$color %in% col.ties, ]
-                    colnames.X = rownames(df)
-                }
-            
-            } else {
-                # if contrib is NULL, then we plot the loadings without colors
-                df = data.frame(importance = value.selected.var, color = "white", stringsAsFactors = FALSE) # contribution of the loading
-                border = TRUE
-            }
-            #  determine the colors/groups matching max contribution
-            
-
+            df = data.frame(importance = value.selected.var, color = col, stringsAsFactors = FALSE) # contribution of the loading
+           
             #display barplot with names of variables
             #added condition if all we need is the contribution stats
             if (!is.null(main) & length(block) > 1)
@@ -180,7 +128,7 @@ border = NA,
             
             if ( length(block) == 1 & is.null(main) )
             {
-                title(paste0('Contribution on comp ', comp, "\nStudy '", block[i],"'"), line=1, cex.main = size.subtitle)
+                title(paste0('Contribution on comp ', comp), line=1, cex.main = size.subtitle)
             } else if (length(block) == 1) {
                 title(paste(main), line=1, cex.main = size.subtitle)
             } else if ((length(block) > 1 & missing(subtitle))) {
@@ -189,20 +137,8 @@ border = NA,
                 title(paste(subtitle[i]), line=1, cex.main = size.subtitle)
             }
             
-            if (legend)
-            {
-                par(mar = c(5, 0, 4, 3) + 0.1)
-                plot(1,1, type = "n", axes = FALSE, ann = FALSE)
-                legend(0.8, 1, col = legend.color[1:nlevels(Y)], legend = levels(Y), pch = 19,
-                title = paste(legend.title),
-                cex = cex.legend)
-            }
-        
-            df.final[[i]] = df
         }
-        names(df.final) = block
-
-        # legend
+        
         if (length(block) > 1 & !is.null(main))
         title(main, outer=TRUE, line = -2, cex.main = size.title)
         
@@ -211,8 +147,6 @@ border = NA,
         
         par(mar = omar) #reset mar
         
-        return(invisible(list(contrib = df.final)))
-
+        
     }
-
 }

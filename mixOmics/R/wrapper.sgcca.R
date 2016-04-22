@@ -32,90 +32,75 @@ ncomp = rep(1, length(X)),
 keepX.constraint,
 keepX,
 scheme = "centroid",
-mode="canonical",
+mode = "canonical",
 scale = TRUE,
 bias = TRUE,
 init = "svd",
 tol = .Machine$double.eps,
 verbose = FALSE,
-max.iter=1000,
+max.iter = 1000,
 near.zero.var = FALSE
 ){
-  
-  # call function
-  #rgcca <- function(A, C = 1-diag(length(A)), tau = rep(1, length(A)), ncomp = rep(1, length(A)), scheme = "centroid", scale = TRUE , init="svd", bias = TRUE, tol = .Machine$double.eps, verbose=TRUE)
-  
-  
-  check=Check.entry.sgcca(X=X, design=design ,ncomp=ncomp , scheme=scheme , scale=scale ,  bias=bias,
-  init=init , tol=tol , verbose=verbose,mode=mode, max.iter=max.iter,near.zero.var=near.zero.var,keepX=keepX,keepX.constraint=keepX.constraint)
-  
-
-  A=check$A
-  design=check$design
-  ncomp=check$ncomp
-  init=check$init
-  scheme=check$scheme
-  verbose=check$verbose
-  bias=check$bias
-  near.zero.var=check$near.zero.var
-  keepA.constraint=check$keepA.constraint
-  keepA=check$keepA
-  nzv.A=check$nzv.A
-  
-  
-  result.sgcca = internal_mint.block(A = A, design = design, tau = NULL,
-                       ncomp = ncomp,
-                       scheme = scheme, scale = scale,
-                       init = init, bias = bias, tol = tol, verbose = verbose,
-                       keepA.constraint=keepA.constraint,
-                       keepA=keepA,
-                       max.iter=max.iter,
-                       study=factor(rep(1,nrow(A[[1]]))),#mint.rgcca not coded yet
-                       mode=mode,penalty=penalty
-                       )
-
-  # outputs
-#   out <- list(Y = shave.matlist(Y, ncomp),
-#               a = shave.matlist(a, ncomp), 
-#               astar = shave.matlist(astar, ncomp),
-#               C = C, tau = tau_mat, scheme = scheme,
-#               ncomp=ncomp, crit = crit,
-#               mode = mode,
-#               AVE=list(AVE_X=AVE_X,
-#                        AVE_outer=AVE_outer,
-#                        AVE_inner=AVE_inner),
-#               #KA added names of rows and cols for plotIndiv and plotVar
-#               names = list(indiv = rownames(A[[1]]))
-#   )
-#   class(out) <- "rgcca"
-#   return(out)
-
-  cl = match.call()
-  cl[[1]] = as.name('sgcca')
-  
-  out = list(
+    
+    
+    check=Check.entry.sgcca(X = X, design = design ,ncomp = ncomp , scheme = scheme , scale = scale ,  bias = bias,
+    init = init , tol = tol , verbose = verbose,mode = mode, max.iter = max.iter,near.zero.var = near.zero.var,keepX = keepX,keepX.constraint = keepX.constraint)
+    
+    
+    A = check$A
+    design = check$design
+    ncomp = check$ncomp
+    init = check$init
+    scheme = check$scheme
+    verbose = check$verbose
+    bias = check$bias
+    near.zero.var = check$near.zero.var
+    keepA.constraint = check$keepA.constraint
+    keepA = check$keepA
+    nzv.A = check$nzv.A
+    
+    
+    result.sgcca = internal_mint.block(A = A, design = design, tau = NULL,
+    ncomp = ncomp,
+    scheme = scheme, scale = scale,
+    init = init, bias = bias, tol = tol, verbose = verbose,
+    keepA.constraint = keepA.constraint,
+    keepA = keepA,
+    max.iter = max.iter,
+    study = factor(rep(1,nrow(A[[1]]))),#mint.sgcca not coded yet
+    mode = mode,penalty = penalty
+    )
+    
+    
+    cl = match.call()
+    cl[[1]] = as.name('sgcca')
+    
+    out = list(
     class = cl,
     X = result.sgcca$X,
     variates = result.sgcca$variates,
     loadings = result.sgcca$loadings,
     loadings.star = result.sgcca$loadings.star,
     design = result.sgcca$design,
-    penalty=penalty,
+    penalty = penalty,
     scheme = result.sgcca$scheme,
     ncomp = result.sgcca$ncomp,
     crit = result.sgcca$crit,
     AVE = list(AVE.X = result.sgcca$AVE$AVE_X, result.sgcca$AVE$AVE_outer, result.sgcca$AVE$AVE_inner), #rename?
-    names=result.sgcca$names,#names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames)),
-    nzv=result.sgcca$nzv,
-    explained_variance=result.sgcca$explained_variance
-  )
-
-    #calcul explained variance
-    #explX=lapply(1:length(out$X),function(x){explained_variance(out$X[[x]],variates=out$variates[[x]],ncomp=out$ncomp[[x]])})
-    #out$explained_variance=explX
-    #names(out$explained_variance)=names(out$X)
-
-  class(out) = 'sgcca'
-  return(invisible(out))
-  
+    names = result.sgcca$names,#names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames)),
+    init = result$init,
+    bias = result$bias,
+    tol = result$tol,
+    iter = result$iter,
+    max.iter = result$max.iter,
+    nzv = result$nzv,
+    scale = result$scale,
+    design = result$design,
+    scheme = result$scheme,
+    explained_variance = result$explained_variance
+    )
+    
+    class(out) = 'sgcca'
+    return(invisible(out))
 }
+

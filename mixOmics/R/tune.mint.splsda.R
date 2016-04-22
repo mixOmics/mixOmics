@@ -45,19 +45,19 @@
 # verbose: if TRUE, shows component and nrepeat being tested.
 
 
-tune.splsda = function (X, Y,
+tune.mint.splsda = function (X, Y,
 ncomp = 1,
+study,
 test.keepX = c(5, 10, 15),
-already.tested.X = NULL,
+already.tested.X,
 validation = "Mfold",
 folds = 10,
 dist = "max.dist",
-measure = c("overall"), # one of c("overall","BER")
+measure = c("BER"), # one of c("overall","BER")
 progressBar = TRUE,
+scale = TRUE,
 near.zero.var = FALSE,
-nrepeat = 1,
 logratio = c('none','CLR'),
-multilevel = NULL,
 light.output = TRUE # if FALSE, output the prediction and classification of each sample during each folds, on each comp, for each repeat
 )
 {    #-- checking general input parameters --------------------------------------#
@@ -72,32 +72,19 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     
     
     # Testing the input Y
-    if (is.null(multilevel))
+    if (is.null(Y))
+    stop("'Y' has to be something else than NULL.")
+    
+    if (is.null(dim(Y)))
     {
-        if (is.null(Y))
-        stop("'Y' has to be something else than NULL.")
-        
-        if (is.null(dim(Y)))
-        {
-            Y = factor(Y)
-        }  else {
-            stop("'Y' should be a factor or a class vector.")
-        }
-        
-        if (nlevels(Y) == 1)
-        stop("'Y' should be a factor with more than one level")
-        
-    } else {
-        if (!missing(Y))
-        stop("'Y' should be included in the 'multilevel' design matrix as a discriminant multilevel analysis is used")
-        
-        if ((nrow(X) != nrow(multilevel)))
-        stop("unequal number of rows in 'X' and 'multilevel'.")
-        
-        if (ncol(multilevel) < 2)
-        stop("'multilevel' should have at least two columns: one for the repeated measurements and at least one for the outcome.")
-
+        Y = factor(Y)
+    }  else {
+        stop("'Y' should be a factor or a class vector.")
     }
+    
+    if (nlevels(Y) == 1)
+    stop("'Y' should be a factor with more than one level")
+    
     
     
     #-- progressBar
@@ -115,27 +102,36 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     if (is.na(validation))
     stop("'validation' must be either 'Mfold' or 'loo'")
     
-    if (validation == 'loo')
-    nrepeat = 1
     
     #-- logratio
     if (length(logratio) > 1)
     logratio = logratio[1]
     
-    if (!logratio %in% c("none","CLR"))
+    if (!logratio %in% c("none", "CLR"))
     stop("'logratio must be one of 'none' or 'CLR'")
+    
+    
+    #-- measure
+    if (length(measure) > 1)
+    measure = measure[1]
+    
+    if (!measure %in% c("overall", "BER"))
+    stop("'measure must be one of 'overall' or 'BER'")
     
     #if ((!is.null(already.tested.X)) && (length(already.tested.X) != (ncomp - 1)) )
     #stop("The number of already tested parameters should be NULL or ", ncomp - 1, " since you set ncomp = ", ncomp)
     
+    if (missing(already.tested.X))
+    already.tested.X = list()
+    
     if(length(already.tested.X) >= ncomp)
     stop("'ncomp' needs to be higher than the number of components already tuned ('length(already.tested.X)')", call. = FALSE)
-
-    if ((!is.null(already.tested.X)) && (!is.numeric(already.tested.X)))
-    stop("Expecting a numerical value in already.tested.X", call. = FALSE)
     
-    if (!is.null(already.tested.X))
-    cat("Number of variables selected on the first ", length(already.tested.X), "component(s) was ", already.tested.X,"\n")
+    #if ((!is.null(already.tested.X)) && (!is.numeric(already.tested.X)))
+    #stop("Expecting a numerical value in already.tested.X", call. = FALSE)
+    
+    #if (!is.null(already.tested.X))
+    #cat("Number of variables selected on the first ", length(already.tested.X), "component(s) was ", already.tested.X,"\n")
     
     
     if (any(is.na(validation)) || length(validation) > 1)
@@ -144,63 +140,48 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     #-- end checking --#
     #------------------#
     
-   
-    #---------------------------------------------------------------------------#
-    #-- multilevel approach ----------------------------------------------------#
+
     
-    if (!is.null(multilevel))
-    {
-
-        Xw = withinVariation(X, design = multilevel)
-        X = Xw
-
-        #-- Need to set Y variable for 1 or 2 factors
-        Y = multilevel[, -1, drop=FALSE]
-        if (ncol(Y) >= 1)
-        Y = apply(Y, 1, paste, collapse = ".")  #  paste is to combine in the case we have 2 levels
-        
-        Y = as.factor(Y)
-    }
-    #-- multilevel approach ----------------------------------------------------#
-    #---------------------------------------------------------------------------#
-
-
     #-- cross-validation approach  ---------------------------------------------#
     #---------------------------------------------------------------------------#
     
     
     test.keepX = sort(test.keepX) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
-    
+
     # if some components have already been tuned (eg comp1 and comp2), we're only tuning the following ones (comp3 comp4 .. ncomp)
     if ((!is.null(already.tested.X)))
     {
         comp.real = (length(already.tested.X) + 1):ncomp
+        #check and match already.tested.X to X
+        already.tested.X = get.keepA.and.keepA.constraint (X = list(X=X), keepX.constraint = list(X=already.tested.X), ncomp = length(already.tested.X))$keepA.constraint$X
+        #transform already.tested.X to characters
+        already.tested.X = relist(colnames(X), skeleton = already.tested.X)
+        
     } else {
         comp.real = 1:ncomp
     }
     
+    choices = c("max.dist", "centroids.dist", "mahalanobis.dist")
+    dist = match.arg(dist, choices, several.ok = FALSE)
     
-    choices = c("all", "max.dist", "centroids.dist", "mahalanobis.dist")
-    dist = match.arg(dist, choices, several.ok = TRUE)
-    
-    mat.error = matrix(nrow = length(test.keepX), ncol = nrepeat,
-    dimnames = list(test.keepX,c(paste('repeat', 1:nrepeat))))
+    mat.error = matrix(nrow = length(test.keepX), ncol = 1,
+    dimnames = list(test.keepX,1))
     rownames(mat.error) = test.keepX
     
-    mat.error.rate = list()
     error.per.class = list()
-
+    
     mat.sd.error = matrix(0,nrow = length(test.keepX), ncol = ncomp-length(already.tested.X),
     dimnames = list(c(test.keepX), c(paste('comp', comp.real))))
     mat.mean.error = matrix(nrow = length(test.keepX), ncol = ncomp-length(already.tested.X),
     dimnames = list(c(test.keepX), c(paste('comp', comp.real))))
-
+    
     error.per.class.mean = matrix(nrow = nlevels(Y), ncol = ncomp-length(already.tested.X),
-        dimnames = list(c(levels(Y)), c(paste('comp', comp.real))))
+    dimnames = list(c(levels(Y)), c(paste('comp', comp.real))))
     error.per.class.sd = matrix(0,nrow = nlevels(Y), ncol = ncomp-length(already.tested.X),
-        dimnames = list(c(levels(Y)), c(paste('comp', comp.real))))
-        
-   
+    dimnames = list(c(levels(Y)), c(paste('comp', comp.real))))
+    
+
+    
     # first: near zero var on the whole data set
     if(near.zero.var == TRUE)
     {
@@ -216,8 +197,6 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         }
     }
 
-    if (is.null(multilevel) | (!is.null(multilevel) && ncol(multilevel) == 2))
-    {
         if(light.output == FALSE)
         prediction.all = class.all = list()
         
@@ -225,14 +204,14 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         # successively tune the components until ncomp: comp1, then comp2, ...
         for(comp in 1:length(comp.real))
         {
-
+            
             if (progressBar == TRUE)
             cat("\ncomp",comp.real[comp], "\n")
             
 
-            result = MCVfold.splsda (X, Y, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = 1 + length(already.tested.X),
-            choice.keepX = already.tested.X, test.keepX = test.keepX, measure = measure, dist = dist, logratio = logratio,
-            near.zero.var = near.zero.var, progressBar = progressBar, class.object = "splsda")
+            result = LOGOCV (X, Y, ncomp = 1 + length(already.tested.X), study = study,
+            keepX.constraint = already.tested.X, test.keepX = test.keepX, measure = measure, dist = dist,
+            near.zero.var = near.zero.var, progressBar = progressBar, scale = scale)
             
             # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
             mat.mean.error[, comp]=result[[measure]]$error.rate.mean[[1]]
@@ -241,11 +220,12 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             
             # confusion matrix for keepX.opt
             error.per.class.keepX.opt[[comp]]=result[[measure]]$confusion[[1]]
-
-            # best keepX
-            already.tested.X = c(already.tested.X, result[[measure]]$keepX.opt[[1]])
             
-            mat.error.rate[[comp]] = result[[measure]]$mat.error.rate[[1]]
+            # best keepX
+            fit = mint.splsda(X, Y, ncomp = 1 + length(already.tested.X), study = study,
+            keepX.constraint = already.tested.X, keepX = result[[measure]]$keepX.opt[[1]], near.zero.var = near.zero.var, scale = scale)
+            
+            already.tested.X[[comp.real[comp]]] = selectVar(fit, comp = 1 + length(already.tested.X))$name
             
             if(light.output == FALSE)
             {
@@ -253,9 +233,8 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
                 class.all[[comp]] = result$class.comp[[1]]
                 prediction.all[[comp]] = result$prediction.comp
             }
-            
+
         } # end comp
-        names(mat.error.rate)=c(paste('comp', comp.real))
         names(error.per.class.keepX.opt)=c(paste('comp', comp.real))
         
         if (progressBar == TRUE)
@@ -263,8 +242,6 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         
         result = list(
         mat.mean.error = mat.mean.error,
-        mat.sd.error = mat.sd.error,
-        mat.error.rate = mat.error.rate,
         choice.keepX = already.tested.X ,
         error.per.class = error.per.class.keepX.opt)
         
@@ -276,23 +253,4 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         }
         
         return(result)
-    } else {
-        # if multilevel with 2 factors, we can not do as before because withinvariation depends on the factors, we maximase a correlation
-        message("For a two-factor analysis, the tuning criterion is based on the maximisation of the correlation between the components on the whole data set")
-
-        cor.value = vector(length = length(test.keepX))
-        names(cor.value) = test.keepX
-
-        for (i in 1:length(test.keepX))
-        {
-            spls.train = splsda(X, Y, ncomp = ncomp, keepX = c(already.tested.X, test.keepX[i]), logratio = logratio, near.zero.var = FALSE, mode = "regression")
-            
-            # Note: this is performed on the full data set
-            # (could be done with resampling (bootstrap) (option 1) and/or prediction (option 2))
-            cor.value[i] = cor(spls.train$variates$X[, ncomp], spls.train$variates$Y[, ncomp])
-            #
-        }
-        return(list(cor.value = cor.value))
-
     }
-}

@@ -153,15 +153,15 @@ sparsity=function(loadings.A, keepA, keepA.constraint=NULL, penalty=NULL)
 # --------------------------------------
 scale.function=function(temp, scale = TRUE, bias = FALSE)
 {
-    meanX = colMeans(temp)
+    meanX = colMeans(temp, na.rm = TRUE)
     data.list.study.scale_i = t(t(temp) - meanX)
     if (scale)
     {
         if (bias)
         {
-            sqrt.sdX = sqrt(colSums(data.list.study.scale_i^2) / (nrow(temp)))
+            sqrt.sdX = sqrt(colSums(data.list.study.scale_i^2, na.rm = TRUE) / (nrow(temp)))
         } else {
-            sqrt.sdX = sqrt(colSums(data.list.study.scale_i^2) / (nrow(temp) - 1))
+            sqrt.sdX = sqrt(colSums(data.list.study.scale_i^2, na.rm = TRUE) / (nrow(temp) - 1))
         }
         data.list.study.scale_i = t(t(data.list.study.scale_i) / sqrt.sdX)
     } else {
@@ -169,8 +169,8 @@ scale.function=function(temp, scale = TRUE, bias = FALSE)
     }
     
     is.na.data = is.na(data.list.study.scale_i)
-    if (sum(is.na.data) > 0)
-    data.list.study.scale_i[is.na.data] = 0
+    #if (sum(is.na.data) > 0)
+    #data.list.study.scale_i[is.na.data] = 0
     
     out = list(data_scale=data.list.study.scale_i, meanX=meanX, sqrt.sdX=sqrt.sdX)
     return(out)
@@ -317,8 +317,23 @@ miscrossprod = function (x, y) {
 deflation = function(X, y){
     # Computation of the residual matrix R
     # Computation of the vector p.
-    if (any(is.na(X)) || any(is.na(y))) {
-        p = apply(t(X),1,miscrossprod,y)/as.vector(crossprod(y))
+    is.na.tX = is.na(t(X))
+    if (any(is.na.tX))
+    {
+        #p = apply(t(X),1,miscrossprod,y)/as.vector(crossprod(y))
+        
+        #variates.A[, q] =  apply(A[[q]], 1, miscrossprod, loadings.A[[q]])
+        A.temp = replace(t(X), is.na.tX, 0) # replace NA in A[[q]] by 0
+        variates.A.temp = A.temp %*% y
+        temp = drop(y) %o% rep(1, nrow(A.temp))
+        temp[(t(is.na.tX))] = 0
+        loadings.A.norm = crossprod(temp)
+        p = variates.A.temp / diag(loadings.A.norm)
+        # we can have 0/0, so we put 0
+        a = is.na(p)
+        if (any(a))
+        p[a] = 0
+        
     } else {
         p = t(X)%*%y/as.vector(crossprod(y))
     }

@@ -69,7 +69,6 @@ point.lwd = 1,
     size.axis = size.axis, legend.text.size = legend.text.size, legend.title.size = legend.title.size, legend.position = legend.position, 
     point.lwd = point.lwd)
 
-    
     blocks = "X"
     rep.space = "X-variate"
     
@@ -98,10 +97,10 @@ point.lwd = 1,
 
     if (style ==  "3d")
     {
-        inf = object$explained_variance[c(comp[1], comp[2], comp[3])]#c((object$sdev[comp[1]])^2/object$var.tot, (object$sdev[comp[2]])^2/object$var.tot, (object$sdev[comp[3]]^2)/object$var.tot)
+        inf = object$explained_variance[c(comp[1], comp[2], comp[3])]
         inf = round(inf, 2)
     } else {
-        inf = object$explained_variance[c(comp[1], comp[2])]#c((object$sdev[comp[1]])^2/object$var.tot, (object$sdev[comp[2]])^2/object$var.tot)
+        inf = object$explained_variance[c(comp[1], comp[2])]
         inf = round(inf, 2)}
     
 
@@ -153,5 +152,5 @@ point.lwd = 1,
     axes.box = axes.box, plot_parameters = plot_parameters)
     
     return(invisible(list(df = df, df.ellipse = df.ellipse, graph = res)))
-
 }
+

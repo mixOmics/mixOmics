@@ -30,24 +30,24 @@ bias = FALSE,
 init = "svd.single",
 tol = .Machine$double.eps,
 verbose = FALSE,
-max.iter=1000,
-near.zero.var=FALSE)
+max.iter = 1000,
+near.zero.var = FALSE)
 {
 
 
-    check=Check.entry.rgcca(X = X, design = design, tau = tau, ncomp = ncomp, scheme = scheme, scale = scale,
-    init = init, bias = bias, tol = tol, verbose = verbose, max.iter=max.iter, near.zero.var=near.zero.var,keepX=keepX,
-    keepX.constraint=keepX.constraint)
-    X=check$A
-    ncomp=check$ncomp
-    design=check$design
-    init=check$init
-    scheme=check$scheme
-    verbose=check$verbose
-    bias=check$bias
-    nzv.A=check$nzv.A
-    keepA.constraint=check$keepA.constraint
-    keepA=check$keepA
+    check = Check.entry.rgcca(X = X, design = design, tau = tau, ncomp = ncomp, scheme = scheme, scale = scale,
+    init = init, bias = bias, tol = tol, verbose = verbose, max.iter = max.iter, near.zero.var = near.zero.var,keepX = keepX,
+    keepX.constraint = keepX.constraint)
+    X = check$A
+    ncomp = check$ncomp
+    design = check$design
+    init = check$init
+    scheme = check$scheme
+    verbose = check$verbose
+    bias = check$bias
+    nzv.A = check$nzv.A
+    keepA.constraint = check$keepA.constraint
+    keepA = check$keepA
 
 
 
@@ -55,30 +55,13 @@ near.zero.var=FALSE)
     ncomp = ncomp,
     scheme = scheme, scale = scale,
     init = init, bias = bias, tol = tol, verbose = verbose,
-    keepA.constraint=keepA.constraint,keepA=keepA,
-    max.iter=max.iter,
-    study=factor(rep(1,nrow(X[[1]]))),#mint.rgcca not coded yet
-    mode="canonical"
+    keepA.constraint = keepA.constraint, keepA = keepA,
+    max.iter = max.iter,
+    study = factor(rep(1,nrow(X[[1]]))),#mint.rgcca not coded yet
+    mode = "canonical"
     )
     
-    #print("bla")
-    
-    # outputs
-    #   out <- list(Y = shave.matlist(Y, ncomp),
-    #               a = shave.matlist(a, ncomp),
-    #               astar = shave.matlist(astar, ncomp),
-    #               C = C, tau = tau_mat, scheme = scheme,
-    #               ncomp=ncomp, crit = crit,
-    #               mode = mode,
-    #               AVE=list(AVE_X=AVE_X,
-    #                        AVE_outer=AVE_outer,
-    #                        AVE_inner=AVE_inner),
-    #               #KA added names of rows and cols for plotIndiv and plotVar
-    #               names = list(indiv = rownames(A[[1]]))
-    #   )
-    #   class(out) <- "rgcca"
-    #   return(out)
-    
+
     cl = match.call()
     cl[[1]] = as.name('sparse.rgcca')
     
@@ -88,25 +71,27 @@ near.zero.var=FALSE)
     variates = result.rgcca$variates,
     loadings = result.rgcca$loadings,
     loadings.star = result.rgcca$loadings.star,
-    keepX=result.rgcca$keepA,keepX.constraint=result.rgcca$keepA.constraint,
+    keepX=result.rgcca$keepA,keepX.constraint = result.rgcca$keepA.constraint,
     design = result.rgcca$design,
     tau = result.rgcca$tau,
     scheme = result.rgcca$scheme,
     ncomp = result.rgcca$ncomp,
     crit = result.rgcca$crit,
     AVE = list(AVE.X = result.rgcca$AVE$AVE_X, result.rgcca$AVE$AVE_outer, result.rgcca$AVE$AVE_inner), #rename?
-    names=result.rgcca$names,#names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames)),
-    nzv=result.rgcca$nzv,
-    explained_variance=result.rgcca$explained_variance
+    names = result.rgcca$names,#names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames)),
+    init = result$init,
+    bias = result$bias,
+    tol = result$tol,
+    iter = result$iter,
+    max.iter = result$max.iter,
+    nzv = result$nzv,
+    scale = result$scale,
+    design = result$design,
+    scheme = result$scheme,
+    explained_variance = result$explained_variance
     )
     
-    #calcul explained variance
-    #explX=lapply(1:length(out$X),function(x){explained_variance(out$X[[x]],variates=out$variates[[x]],ncomp=out$ncomp[[x]])})
-    #out$explained_variance=explX
-    #names(out$explained_variance)=names(out$X)
-
-
     class(out) = c("sparse.rgcca","rgcca")
     return(invisible(out))
-    
 }
+

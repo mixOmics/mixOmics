@@ -24,7 +24,7 @@
 
 
 #----------------------------------------------------------------------------------------------------------#
-#-- Includes plotIndiv for PLS, sPLS, PLS-DA, SPLS-DA, rCC, PCA, sPCA, IPCA, sIPCA, rGCCA, sGCCA, sGCCDA --#
+#-- Includes plotIndiv for the MINT module --#
 #----------------------------------------------------------------------------------------------------------#
 
 plotIndiv.mint.pls      =
@@ -35,7 +35,6 @@ plotIndiv.mint.splsda   =
 function(object, 
 comp = NULL, 
 rep.space = NULL, 
-blocks = NULL, # to choose which block data to plot, when using GCCA module
 group, # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
 col.per.group, 
 style="ggplot2", # can choose between graphics, 3d, lattice or ggplot2
@@ -96,6 +95,15 @@ point.lwd = 1,
     
     if (length(study)!=length(unique(study)))
     stop("Duplicate in 'study' not allowed")
+    
+    if (length(study) > 1 & any(study != "all"))
+    {
+        if (plot.ellipse == TRUE)
+        stop("'plot.ellipse' must be FALSE when study is different from 'all'")
+
+        if (plot.star == TRUE)
+        stop("'plot.star' must be FALSE when study is different from 'all'")
+    }
 
     if (!missing(subtitle))
     {
@@ -313,9 +321,5 @@ point.lwd = 1,
     study.levels = study.levels, plot_parameters = plot_parameters
     )
 
-
-
     return(invisible(list(df = df, graph = res)))
-
-
 }

@@ -147,15 +147,12 @@ class.object = NULL
         for (j in 1:M)
         {
             if (progressBar ==  TRUE)
-            setTxtProgressBar(pb, (M*(nrep-1)+j)/(M*nrepeat))
+            setTxtProgressBar(pb, (M*(nrep-1)+j-1)/(M*nrepeat))
             
             #print(j)
             #set up leave out samples.
             omit = folds[[j]]
             
-            # see below, we stop the user if there is only one sample drawn on the test set using MFold
-            if(length(omit) ==  1)
-            stop.user = TRUE
             
             # get training and test set
             X.train = X[-omit, ]
@@ -187,24 +184,28 @@ class.object = NULL
             }
             #-- near.zero.var ----------------------#
             #---------------------------------------#
-            
             for (i in 1:length(test.keepX))
             {
-                object.res = splsda(X.train, Y.train, ncomp = ncomp, keepX = c(choice.keepX, test.keepX[i]), logratio = logratio, near.zero.var = FALSE, mode = "regression")
+                if (progressBar ==  TRUE)
+                setTxtProgressBar(pb, (M*(nrep-1)+j-1)/(M*nrepeat) + (i-1)/length(test.keepX)/(M*nrepeat))
                 
+                object.res = splsda(X.train, Y.train, ncomp = ncomp, keepX = c(choice.keepX, test.keepX[i]), logratio = logratio, near.zero.var = FALSE, mode = "regression")
+                  
                 # added: record selected features
                 if (any(class.object %in% c("splsda")) & length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
                 # note: if plsda, 'features' includes everything: to optimise computational time, we don't evaluate for plsda object
                 features = c(features, selectVar(object.res, comp = ncomp)$name)
                 
                 test.predict.sw <- predict(object.res, newdata = X.test, method = dist)
-                save(list = ls(),file = "temp.Rdata")
 
                 prediction.comp[[nrep]][omit, , i] =  test.predict.sw$predict[, , ncomp]
                 
                 for(ijk in dist)
                 class.comp[[ijk]][omit,nrep,i] =  levels(Y)[test.predict.sw$class[[ijk]][, ncomp]]
             } # end i
+            
+            if (progressBar ==  TRUE)
+            setTxtProgressBar(pb, (M*nrep)/(M*nrepeat))
             
         } # end j 1:M (M folds)
         
@@ -217,7 +218,7 @@ class.object = NULL
     result = list()
     
     
-    error.mean = error.sd = error.per.class.keepX.opt.comp = keepX.opt = test.keepX.out = mat.error.final = choice.keepX = list()
+    error.mean = error.sd = error.per.class.keepX.opt.comp = keepX.opt = test.keepX.out = mat.error.final = choice.keepX.out = list()
     
     if (any(measure == "overall"))
     {
@@ -257,7 +258,7 @@ class.object = NULL
             
             
             test.keepX.out[[ijk]] = test.keepX[keepX.opt[[ijk]]]
-            choice.keepX[[ijk]] = c(choice.keepX[[ijk]], test.keepX.out)
+            choice.keepX.out[[ijk]] = c(choice.keepX, test.keepX.out)
             
             
             result$"overall"$error.rate.mean = error.mean
@@ -307,7 +308,7 @@ class.object = NULL
             
             
             test.keepX.out[[ijk]] = test.keepX[keepX.opt[[ijk]]]
-            choice.keepX[[ijk]] = c(choice.keepX[[ijk]], test.keepX.out)
+            choice.keepX.out[[ijk]] = c(choice.keepX, test.keepX.out)
             
             result$"BER"$error.rate.mean = error.mean
             if (!nrepeat ==  1)

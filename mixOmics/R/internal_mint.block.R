@@ -55,19 +55,16 @@ keepA.constraint = NULL, penalty = NULL)
     # keepA.constraint: keepX.constraint, which variables are kept on the first num.comp-1 components. It is a list of characters
     # near.zero.var: do you want to remove variables with very small variance
     
-    
     names(ncomp) = names(A)
     
     # keepA is updated to be of length length(A) now, the first entries correspond to the keepA.constraint if it was provided
     for (q in 1:length(A))
     keepA[[q]] = c(unlist(lapply(keepA.constraint[[q]], length)), keepA[[q]]) #of length ncomp, can contains 0
 
-    
     # center the data per study, per matrix of A, scale if scale=TRUE, option bias
     mean_centered = lapply(A, function(x){mean_centering_per_study(x, study, scale, bias)})
     A = lapply(mean_centered, function(x){as.matrix(x$concat.data)})
     ni = table(study) #number of samples per study
-    
     
     ### Start: Initialization parameters
     pjs = sapply(A, NCOL)
@@ -212,10 +209,10 @@ keepA.constraint = NULL, penalty = NULL)
     expl.A=lapply(1:length(A),function(x){
         if (nlevels(study) == 1)
         {
-            temp = explained_variance(A[[x]], variates = variates.A[[x]], ncomp = ncomp[[x]])
+            temp = suppressWarnings(explained_variance(A[[x]], variates = variates.A[[x]], ncomp = ncomp[[x]]))
         }else{
             temp = lapply(1:nlevels(study), function(y){
-                explained_variance(A_split[[x]][[y]], variates = variates.partial.A[[x]][[y]], ncomp = ncomp[[x]])})
+                suppressWarnings(explained_variance(A_split[[x]][[y]], variates = variates.partial.A[[x]][[y]], ncomp = ncomp[[x]]))})
             temp[[length(temp)+1]] = explained_variance(A[[x]], variates = variates.A[[x]], ncomp = ncomp[[x]])
             names(temp) = c(levels(study), "all data")
         }
@@ -282,11 +279,18 @@ penalty=NULL)
     converg = crit = numeric()
     variates.A = Z = matrix(0, NROW(A[[1]]), J)
     misdata = any(sapply(A, function(x){any(is.na(x))})) # Detection of missing data
+    
+    if (misdata)
+    is.na.A = lapply(A, is.na)
+    
     g = function(x) switch(scheme, horst = x, factorial = x^2, centroid = abs(x))
     
     
     # study split
     A_split = lapply(A, study_split, study)
+    if (misdata)
+    is.na.A_split = lapply(is.na.A, study_split, study)
+    
     nlevels_study = nlevels(study)
     ### End: Initialization parameters
     
@@ -332,7 +336,17 @@ penalty=NULL)
     {
         if(misdata)
         {
-            variates.A[, q] = apply(A[[q]], 1, miscrossprod, loadings.A[[q]])
+            #variates.A[, q] =  apply(A[[q]], 1, miscrossprod, loadings.A[[q]])
+            A.temp = replace(A[[q]], is.na.A[[q]], 0) # replace NA in A[[q]] by 0
+            variates.A.temp = A.temp %*% loadings.A[[q]]
+            temp = drop(loadings.A[[q]]) %o% rep(1, nrow(A[[q]]))
+            temp[(t(is.na.A[[q]]))] = 0
+            loadings.A.norm = crossprod(temp)
+            variates.A[, q] = variates.A.temp / diag(loadings.A.norm)
+            # we can have 0/0, so we put 0
+            a = is.na(variates.A[, q])
+            if (any(a))
+            variates.A[a, q] = 0
         }else{
             variates.A[, q] = A[[q]]%*%loadings.A[[q]]
         }
@@ -394,10 +408,22 @@ penalty=NULL)
             ### Step B end: Computer the outer weight ###
             if(misdata)
             {
-                variates.A[, q] =  apply(A[[q]], 1, miscrossprod, loadings.A[[q]])
+                #variates.A[, q] =  apply(A[[q]], 1, miscrossprod, loadings.A[[q]])
+                A.temp = replace(A[[q]], is.na.A[[q]], 0) # replace NA in A[[q]] by 0
+                variates.A.temp = A.temp %*% loadings.A[[q]]
+                temp = drop(loadings.A[[q]]) %o% rep(1, nrow(A[[q]]))
+                temp[(t(is.na.A[[q]]))] = 0
+                loadings.A.norm = crossprod(temp)
+                variates.A[, q] = variates.A.temp / diag(loadings.A.norm)
+                # we can have 0/0, so we put 0
+                a = is.na(variates.A[, q])
+                if (any(a))
+                variates.A[a, q] = 0
+                
             }else{
                 variates.A[, q] =  A[[q]]%*%loadings.A[[q]]
             }
+            
         }
         
         crit[iter] = sum(design * g(cov2(variates.A, bias = bias)))
@@ -422,7 +448,19 @@ penalty=NULL)
         lapply(1 : nlevels_study, function(y){
             if(misdata)
             {
-                apply(A_split[[x]][[y]], 1, miscrossprod, loadings.A[[x]])
+                #apply(A_split[[x]][[y]], 1, miscrossprod, loadings.A[[x]])
+                A.temp = replace(A_split[[x]][[y]], is.na.A_split[[x]][[y]], 0) # replace NA in A_split[[x]][[y]] by 0
+                variates.part.A.temp = A.temp %*% loadings.A[[x]]
+                temp = drop(loadings.A[[x]]) %o% rep(1, nrow(A_split[[x]][[y]]))
+                temp[(t(is.na.A[[x]][[y]]))] = 0
+                loadings.A.norm = crossprod(temp)
+                variates.part.A = variates.part.A.temp / diag(loadings.A.norm)
+                # we can have 0/0, so we put 0
+                a = is.na(variates.part.A)
+                if (any(a))
+                variates.part.A[a] = 0
+                
+                return(variates.part.A)
             }else{
                 A_split[[x]][[y]] %*% loadings.A[[x]]
             }

@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 15-04-2016
-# last modified: 19-04-2016
+# last modified: 20-04-2016
 #
 # Copyright (C) 2016
 #
@@ -27,43 +27,13 @@ plotLoadings  =
 function(object, ...) UseMethod("plotLoadings")
 
 
-#----------------------------------------------------------------------------------------------------------#
-#-- Includes plotIndiv for PLS, sPLS, rCC, PCA, sPCA, IPCA, sIPCA, rGCCA, sGCCA --#
-#----------------------------------------------------------------------------------------------------------#
+# --------------------------------------------------------------------------------------
+# Internal helpers functions to run "plotLoadings" functions
+# --------------------------------------------------------------------------------------
 
 
-#plotLoadings =
-
-plotLoadings.pls =
-#plotLoadings.mlpls =      # because pls too
-plotLoadings.spls =
-#plotLoadings.mlspls =     # because spls too
-plotLoadings.rcc =
-plotLoadings.pca =
-plotLoadings.sgcca =
-plotLoadings.rgcca =
-
-
-function(object, block, #single value
-comp = 1,
-show.ties = TRUE,
-col = NULL,
-ndisplay = NULL,
-cex.name = 0.7,
-cex.legend = 0.8,
-name.var = NULL,
-complete.name.var = FALSE,
-main = NULL,
-subtitle,
-layout = NULL,
-size.title = rel(2),
-size.subtitle = rel(1.5),
-...)
+check.input.plotLoadings = function(object, block, study, subtitle, cex.name, cex.legend, main, col, contrib)
 {
-    
-    # -------------------
-    # input checks
-    # ------------------
     
     if (is.null(object$loadings))
     stop("'plotLoadings' should be used on object for which object$loadings is present.")
@@ -71,80 +41,80 @@ size.subtitle = rel(1.5),
     # block
     # --
     if (missing(block))
-    block = object$names$blocks
-    
-    if(is.numeric(block))
     {
-        if(any(block>length(object$names$blocks)))
-        stop("'block' needs to be lower than the number of blocks in the fitted model, which is length(object$names$blocks)")
-        
-    }else if(is.character(block) & any(is.na(match(block,object$names$blocks)))) {
-        stop("Incorrect value for 'block', 'block' should be among the blocks used in your object: ", paste(object$names$blocks,collapse=", "), call. = FALSE)
+        if (all(class(object) != "DA"))
+        {
+            block = object$names$blocks
+        } else  if (any(class(object) %in% c("plsda", "splsda"))) {
+            block = "X"
+        } else {
+            block = object$names$blocks[-object$indY]
+        }
     }
     
+    if (any(class(object) %in% c("plsda", "splsda")) & (!all(block %in% c(1,"X")) | length(block) > 1 ))
+    stop("'block' can only be 'X' or '1' for plsda and splsda object")
+    
+    if (any(class(object) %in% c("plsda", "splsda")))
+    {
+        object$indY = 2
+    } else if (any(class(object) %in% c("pls", "spls"))) {
+        object$indY = 3 # we don't want to remove anything in that case, and 3 is higher than the number of blocks which is 2
+    }
+
+    if(is.numeric(block))
+    {
+        if(any(block>length(object$names$blocks[-object$indY])))
+        stop("'block' needs to be lower than the number of blocks in the fitted model, which is ",length(object$names$blocks)-1)
+        
+    }else if(is.character(block) & any(is.na(match(block,object$names$blocks[-object$indY])))) {
+        stop("Incorrect value for 'block', 'block' should be among the blocks used in your object: ", paste(object$names$blocks[-object$indY],collapse=", "), call. = FALSE)
+    }
+
+
     if (!missing(subtitle))
     {
         if (length(subtitle)!=length(block))
         stop("'subtitle' indicates the subtitle of the plot for each block and it needs to be the same length as 'block'.")
     }
 
-
-
-    # layout
-    # --
-    opar = par(no.readonly = TRUE)
-    reset.mfrow = FALSE # if set to TRUE, the algorithm ends up with  par(mfrow=reset.mfrow)
-    nResp = length(block)#length(names(object$names$colnames)) #number of blocks
-    if (is.null(layout))
+    if(!missing(study))
     {
-        # check if there are enough plots in mfrow
-        omfrow = par("mfrow")
-        available.plots = prod(omfrow)
-        if (available.plots<nResp) # if not enough plots available, we create our new plot
-        {
-            nRows = min(c(3, ceiling(nResp/2)))
-            nCols = min(c(3, ceiling(nResp/nRows)))
-            layout = c(nRows, nCols)
-            par(mfrow = layout)
-            
-            if (nRows * nCols < nResp)
-            devAskNewPage(TRUE)
-            
-            reset.mfrow=TRUE # we changed mfrow to suits our needs, so we reset it at the end
-        }
-    } else {
-        if (length(layout) != 2 || !is.numeric(layout) || any(is.na(layout)))
-        stop("'layout' must be a numeric vector of length 2.")
-        
-        nRows = layout[1]
-        nCols = layout[2]
-        par(mfrow = layout)
-        
-        if (nRows * nCols < nResp)
-        devAskNewPage(TRUE)
+    #study needs to be either: from levels(object$study), numbers from 1:nlevels(study) or "all"
+        if (any(!study%in%c(levels(object$study), "all")))
+        stop("'study' must be one of 'object$study' or 'all'.")
+
+        if (length(study)!=length(unique(study)))
+        stop("Duplicate in 'study' not allowed")
     }
-
-
 
     # cex
     # --
     if (cex.name <= 0)
     cex.name = 0.7
     
-    if (cex.legend <= 0)
-    cex.name = 0.8
+    if (!missing(cex.legend))
+    {
+        if(cex.legend <= 0)
+        cex.legend = 0.8
+    } else {
+        cex.legend = NULL
+    }
     
-    ncomp = object$ncomp
+    # contrib
+    # --
+    if(!missing(contrib))
+    {
+        if(length(contrib) > 1 | !all(contrib %in% c("min", "max")))
+        stop("'contrib' must be either 'min' or 'max'")
+        
+    }
     
-    #col
-    #-----
-
-
     #title
     #-----
     if (!is.null(main) & !is.character(main))
     warning('main needs to be of type character')
-    
+
     #col
     #-----
     if (!is.null(col) & (length(col) !=  1))
@@ -154,105 +124,172 @@ size.subtitle = rel(1.5),
     }
     if (is.null(col))
     col = color.mixo(1) # by default set to the colors in color.mixo (10 colors)
-    
-    
-    for (i in 1 : length(block))
+
+
+    return(list(col = col, cex.name = cex.name, cex.legend = cex.legend, block = block))
+}
+
+layout.plotLoadings = function(layout, plot, legend, block)
+{
+    # layout
+    # --
+    if(plot == TRUE)
     {
-        ##selectvar
-        selected.var = selectVar(object, comp = comp, block = block[i]) # gives name and values of the blocks in 'block'
-        name.selected.var = selected.var[[1]]$name
-        value.selected.var = selected.var[[1]]$value
+        opar = par(no.readonly = TRUE)
+        reset.mfrow = FALSE # if set to TRUE, the algorithm ends up with  par(mfrow=reset.mfrow)
+        nResp = length(block) + length(block) * legend  #number of blocks *2 if legend is plotted
 
-        # ndisplay
-        # ------
-        # if null set by default to all variables from selectVar
-        if (is.null(ndisplay))
+        if (is.null(layout))
         {
-            ndisplay.temp = length(name.selected.var)
-        } else if(ndisplay > length(name.selected.var)) {
-            message("'ndisplay' value is larger than the number of selected variables! It has been reseted to ", length(name.selected.var))
-            ndisplay.temp = length(name.selected.var)
+            # check if there are enough plots in mfrow
+            omfrow = par("mfrow")
+            available.plots = prod(omfrow)
+            if (available.plots<nResp) # if not enough plots available, we create our new plot
+            {
+                nCols = min(c(3 + legend, ceiling(nResp)))
+                nRows = min(c(3 + legend, ceiling(nResp/nCols)))
+                layout = c(nRows, nCols)
+                
+                if (legend)
+                {
+                    layout(matrix(1 : (nCols * nRows), nRows, nCols, byrow=TRUE),rep(c(0.7,0.7 -0.4*legend),nCols/(1+legend)))
+                } else {
+                    layout(matrix(1 : (nCols * nRows), nRows, nCols, byrow=TRUE))
+
+                }
+                if (nRows * nCols < nResp)
+                devAskNewPage(TRUE)
+                
+                reset.mfrow=TRUE # we changed mfrow to suits our needs, so we reset it at the end
+            }
         } else {
-            ndisplay.temp = ndisplay
-        }
-        
-        name.selected.var = name.selected.var[1:ndisplay.temp]
-        value.selected.var = value.selected.var[1:ndisplay.temp,]
-        
-        #comp
-        # ----
-        if (any(class(object) %in% c("pls","spls", "rcc")))# cause pls methods just have 1 ncomp, block approaches have different ncomp per block
-        {
-            ncomp = object$ncomp
-            object$X = list(X = object$X, Y = object$Y) # so that the data is in object$X, either it's a pls or block approach
-        } else {
-            ncomp = object$ncomp[block[i]]
-        }
-        
-        if (any(max(comp) > ncomp))
-        stop(paste("Argument 'comp' should be less or equal to ", ncomp))
-        
-        names.block = as.character(names(selected.var)[1]) #it should be one block and ncomp, so we take the first one
-        
-        X = object$X[names.block][[1]]
-        
-        #name.var
-        ind.match = match(name.selected.var, colnames(X)) # look at the position of the selected variables in the original data X
-        if(!is.null(name.var))
-        {
-            if(length(name.var)!= ncol(X))
-            stop("name.var should be a vector of length ", ncol(X))
+            if (length(layout) != 2 || !is.numeric(layout) || any(is.na(layout)))
+            stop("'layout' must be a numeric vector of length 2.")
             
-            colnames.X = as.character(name.var[ind.match]) # get the
-        }else{
-            colnames.X = as.character(colnames(X))[ind.match]
-        }
-        X = X[, name.selected.var] #reduce the problem to ndisplay
-        
-        #completing colnames.X by the original names of the variables when missing
-        if (complete.name.var == TRUE)
-        {
-            ind = which(colnames.X == "")
-            if (length(ind) > 0)
-            colnames.X[ind] = colnames(X)[ind]
+            nRows = layout[1]
+            nCols = layout[2]
+            par(mfrow = layout)
+            
+            if (nRows * nCols < nResp)
+            devAskNewPage(TRUE)
         }
         
-        # --------------------
-        # end check inputs
-        # ---------------------
+    } else {
+        reset.mfrow = FALSE
+        opar = NULL
+    }
 
-        contrib = data.frame( importance = value.selected.var) # contribution of the loading
-        
-        # barplot with contributions
-        #layout(matrix(c(1, 2), 1, 2, byrow = TRUE), c(0.7, 0.1), TRUE)
-        if (!is.null(main) & length(block) > 1)
-        {
-            par(mar = c(4, max(6, max(sapply(colnames.X, nchar))/2), 6, 2))
-        } else {
-            par(mar = c(4, max(6, max(sapply(colnames.X, nchar))/2), 4, 2))
-        }
+    return(list(reset.mfrow = reset.mfrow, opar = opar))
 
-        mp = barplot(contrib$importance, horiz = T, las = 1, col = col, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(contrib),
-        cex.names = cex.name, cex.axis = 0.7, beside = TRUE,border = NA)
-        
-        if ( (length(block) == 1 & is.null(main)) | (length(block) > 1 & missing(subtitle)))
-        {
-            title(paste0('Loadings on comp ', comp, "\nBlock '", names.block,"'"), line=1, cex.main = size.subtitle)
-        } else if (length(block) == 1) {
-            title(paste(main), line=1, cex.main = size.subtitle)
-        } else if (length(block) > 1 & !missing(subtitle)) {
-            title(paste(subtitle[i]), line=1, cex.main = size.subtitle)
-        }
+}
+
+
+get.loadings.ndisplay = function(object, comp, block, name.var, complete.name.var, ndisplay)
+{
+    ##selectvar
+    selected.var = selectVar(object, comp = comp, block = block) # gives name and values of the blocks in 'block'
+    name.selected.var = selected.var[[1]]$name
+    value.selected.var = selected.var[[1]]$value
+    
+    # ndisplay
+    # ------
+    # if null set by default to all variables from selectVar
+    if (is.null(ndisplay))
+    {
+        ndisplay.temp = length(name.selected.var)
+    } else if (ndisplay > length(name.selected.var)) {
+        message("'ndisplay' value is larger than the number of selected variables! It has been reseted to ", length(name.selected.var), " for block ", block)
+        ndisplay.temp = length(name.selected.var)
+    } else {
+        ndisplay.temp = ndisplay
     }
     
-    if (length(block) > 1 & !is.null(main))
-    title(main, outer=TRUE, line = -2, cex.main = size.title)
+    name.selected.var = name.selected.var[1:ndisplay.temp]
+    value.selected.var = value.selected.var[1:ndisplay.temp,]
     
-    if (reset.mfrow)
-    par(opar)#par(mfrow = omfrow)
+    #comp
+    # ----
+    if (any(class(object) %in% c("pls","spls", "rcc")))# cause pls methods just have 1 ncomp, block approaches have different ncomp per block
+    {
+        ncomp = object$ncomp
+        object$X = list(X = object$X, Y = object$Y) # so that the data is in object$X, either it's a pls or block approach
+    } else {
+        ncomp = object$ncomp[block]
+    }
     
-    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  =
-    # return the contribution matrix
-    # = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =  =
-    return(invisible(list(contrib = contrib)))
+    if (any(max(comp) > ncomp))
+    stop(paste("Argument 'comp' should be less or equal to ", ncomp))
+    
+    names.block = as.character(names(selected.var)[1]) #it should be one block and ncomp, so we take the first one
+    
+    X = object$X[names.block][[1]]
+    
+    #name.var
+    ind.match = match(name.selected.var, colnames(X)) # look at the position of the selected variables in the original data X
+    if(!is.null(name.var))
+    {
+        if(length(name.var)!= ncol(X))
+        stop("name.var should be a vector of length ", ncol(X))
+        
+        colnames.X = as.character(name.var[ind.match]) # get the
+    }else{
+        colnames.X = as.character(colnames(X))[ind.match]
+    }
+    X = X[, name.selected.var] #reduce the problem to ndisplay
+    
+    #completing colnames.X by the original names of the variables when missing
+    if (complete.name.var == TRUE)
+    {
+        ind = which(colnames.X == "")
+        if (length(ind) > 0)
+        colnames.X[ind] = colnames(X)[ind]
+    }
+    
+    
+    return(list(X = X, names.block = names.block, colnames.X = colnames.X, name.selected.var = name.selected.var, value.selected.var = value.selected.var))
+}
+
+
+
+get.contrib.df = function(Y, X, method, contrib, value.selected.var, colnames.X, name.selected.var, legend.color, col.ties)
+{
+    # Start: Initialisation
+    which.comp = method.group = list()
+    which.contrib = data.frame(matrix(FALSE, ncol = nlevels(Y) + 2, nrow = length(colnames.X),
+    dimnames = list(name.selected.var, c(paste0("Contrib.", levels(Y)), "Contrib", "GroupContrib"))))
+    # End: Initialisation
+    
+    # calculate the max.method per group for each variable, and identifies which group has the max max.method
+    for(k in 1:ncol(X))
+    {
+        method.group[[k]] = tapply(X[, k], Y, method, na.rm=TRUE) #method is either mean or median
+        # determine which group has the highest mean/median
+        which.contrib[k, 1:nlevels(Y)] = (method.group[[k]]) == get(contrib)((method.group[[k]])) # contrib is either min or max
+    }
+    
+    # we also add an output column indicating the group that is max
+    # if ties, we set the color to white
+    which.contrib$color = apply(which.contrib, 1, function(x)
+    {
+        if (length(which(x)) > 1)
+        {
+            return(col.ties)
+        } else { # otherwise we use legend color provided
+            return(legend.color[1 : nlevels(Y)][which(x)])
+        }
+    })
+    
+    which.contrib$GroupContrib = apply(which.contrib[, 1:(nlevels(Y))], 1, function(x)
+    {
+        if (length(which(x)) > 1)
+        {
+            return("tie")
+        } else {
+            return(levels(Y)[which(x)])
+        }
+    })
+    
+    method.group = do.call(rbind, method.group)
+    df = data.frame(method.group, which.contrib, importance = value.selected.var)
+    return(df)
 }

@@ -53,42 +53,40 @@ function(object, comp =1, block=NULL, ...)
 
     # check arguments
     # -----------------
-    if(length(comp) > 1)
+    if (length(comp) > 1)
         stop("Expecting one single value for 'comp'")
         
-    if(is.null(block))
+    if (is.null(block))
     {
-        if(any(comp > object$ncomp))
+        if (any(comp > object$ncomp))
         stop("'comp' is greater than the number of components in the fitted model")
         null.block=TRUE
         block=1:length(object$loadings)
 
     }else{
-        if(any(class(object)%in%c("pca")))
-        {
-            object$names$blocks="X"
-        }
+        if (any(class(object)%in%c("pca")))
+        object$names$blocks="X"
         
-        if(is.numeric(block))
+        if (is.numeric(block))
         {
-            if(any(block>length(object$names$blocks)))
+            if (any(block>length(object$names$blocks)))
             stop("'block' needs to be lower than the number of blocks in the fitted model, which is length(object$names$blocks)")
             
-        }else if(is.character(block) & sum(!is.na(match(block,object$names$blocks)))==0) {
+        }else if (is.character(block) & sum(!is.na(match(block,object$names$blocks)))==0) {
             stop("No entry of 'block'  match object$names$blocks")
             
-        }else if(is.character(block) & sum(is.na(match(block,object$names$blocks)))>0) {
+        }else if (is.character(block) & sum(is.na(match(block,object$names$blocks)))>0) {
             warning("At least one entry of 'block' does not match object$names$blocks")
         }
 
-        if(length(object$ncomp)>1)
+        if (length(object$ncomp)>1)
         {
-            if(any(comp > object$ncomp[block]))
+            if (any(comp > object$ncomp[block]))
             stop("'comp' is greater than the number of components in the fitted model for the block you specified. See object$ncomp")
 
         }else{
-            if(any(comp > object$ncomp))
-                stop("'comp' is greater than the number of components in the fitted model")
+            if (any(comp > object$ncomp))
+            stop("'comp' is greater than the number of components in the fitted model")
         }
         
         null.block=FALSE
@@ -96,29 +94,26 @@ function(object, comp =1, block=NULL, ...)
     
     # main function: get the names and values of the non zero loadings
     # -----------------
-    out=lapply(object$loadings[block],get.name.and.value,comp=comp)
+    out = lapply(object$loadings[block],get.name.and.value,comp=comp)
     
     
     # outputs
     # ----------
     #if all blocks are considered by default (null.block=TRUE) and it's a DA analysis, then we don't show Y
-    if(null.block)
+    if (null.block)
     {
-        if(any(class(object)%in%c("block.plsda","block.splsda")))# the position of Y is in indY
+        if (any(class(object)%in%c("block.plsda","block.splsda")))# the position of Y is in indY
         {
             out=out[-object$indY] #remove Y
-        }else if(any(class(object)%in%c("mint.plsda","mint.splsda","plsda","splsda"))) # Y is always in second position
-        {
-            #out=out[-2] #remove Y
+        }else if (any(class(object)%in%c("mint.plsda","mint.splsda","plsda","splsda"))) {
+            # Y is always in second position
             out=out[[1]]
         }
 
     }
     
-    if(length(grep("pca",class(object)))>0)
-    {
-        out=out[[1]]
-    }
+    if (length(grep("pca",class(object)))>0)
+    out=out[[1]]
     
     #we add comp as an output
     out$comp=comp

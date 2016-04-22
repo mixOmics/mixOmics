@@ -41,7 +41,7 @@
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
 
-spls <- function(X,
+spls = function(X,
 Y,
 ncomp = 2,
 mode = c("regression", "canonical", "invariant", "classic"),
@@ -53,40 +53,48 @@ scale = TRUE,
 tol = 1e-06,
 max.iter = 500,
 near.zero.var = FALSE,
-logratio="none",   # one of "none", "CLR"
-multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVariation. Y is ommited and shouldbe included in multilevel design
+logratio = "none",   # one of "none", "CLR"
+multilevel = NULL)    # multilevel is passed to multilevel(design = ) in withinVariation. Y is ommited and shouldbe included in multilevel design
 {
 
-
-    result <- internal_wrapper.mint(X=X,Y=Y,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
-    keepX=keepX,keepY=keepY,keepX.constraint=keepX.constraint,keepY.constraint=keepY.constraint,max.iter=max.iter,tol=tol,logratio=logratio,
-    multilevel=multilevel,DA=FALSE)
+    # call to 'internal_wrapper.mint'
+    result = internal_wrapper.mint(X = X, Y = Y, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
+    keepX = keepX, keepY = keepY, keepX.constraint = keepX.constraint, keepY.constraint = keepY.constraint, max.iter = max.iter,
+    tol = tol, logratio = logratio,
+    multilevel = multilevel, DA = FALSE)
     
-    
-    cl = match.call()
-    #cl[[1]] = as.name("spls")
-    
-    out=list(call=cl,X=result$X[-result$indY][[1]],Y=result$X[result$indY][[1]],ncomp=result$ncomp,mode=result$mode,keepX=result$keepA[[1]],keepY=result$keepA[[2]],
-    keepX.constraint=result$keepA.constraint[[1]],keepY.constraint=result$keepA.constraint[[2]],
-    variates=result$variates,loadings=result$loadings,names=result$names,
-    tol=result$tol,iter=result$iter,max.iter=result$max.iter,nzv=result$nzv,scale=scale,explained_variance=result$explained_variance)
+    # choose the desired output from 'result'
+    out = list(
+        call = match.call(),
+        X = result$X[-result$indY][[1]],
+        Y = result$X[result$indY][[1]],
+        ncomp = result$ncomp,
+        mode = result$mode,
+        keepX = result$keepA[[1]],
+        keepY = result$keepA[[2]],
+        keepX.constraint = result$keepA.constraint[[1]],
+        keepY.constraint = result$keepA.constraint[[2]],
+        variates = result$variates,
+        loadings = result$loadings,
+        names = result$names,
+        tol = result$tol,iter = result$iter,
+        max.iter = result$max.iter,
+        nzv = result$nzv,
+        scale = scale,
+        explained_variance = result$explained_variance
+        )
     
    
     class(out) = c("spls")
-    
-    if(!is.null(multilevel))
+    # output if multilevel analysis
+    if (!is.null(multilevel))
     {
-        out$Xw=result$Xw
-        out$multilevel=multilevel
-        class(out)=c("mlspls",class(out))
+        out$Xw = result$Xw
+        out$multilevel = multilevel
+        class(out) = c("mlspls",class(out))
     }
-    
-    #calcul explained variance
-    #explX=explained_variance(out$X,out$variates$X,ncomp)
-    #explY=explained_variance(out$Y,out$variates$Y,ncomp)
-    #out$explained_variance=list(X=explX,Y=explY)
-    
+
     return(invisible(out))
- 
 }
+
 

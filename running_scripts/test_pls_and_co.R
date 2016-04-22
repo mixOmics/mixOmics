@@ -41,12 +41,15 @@ plotIndiv(toxicity.pls, group=rep(1:4,16),plot.star=TRUE,plot.centroid=TRUE,styl
 
 # plsda
 # ----
+library(mixOmicsv6)
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
 plsda.breast <- plsda(X, Y, ncomp = 2)
 plotIndiv(plsda.breast, ind.names = TRUE, plot.ellipse = TRUE, add.legend = TRUE)
+
+plotLoadings(plsda.breast)
 
 
 data(liver.toxicity)

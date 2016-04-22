@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
-vip <-
+vip =
 function(object)
 {
 
@@ -35,13 +35,15 @@ function(object)
      
     VIP[, 1] = W[, 1]^2
      
-    if (H > 1) {
-        for (h in 2:H) {
-            if (q == 1) {
+    if (H > 1)
+    {
+        for (h in 2:H)
+        {
+            if (q == 1)
+            {
                 Rd = cor2[, 1:h] 
                 VIP[, h] = Rd %*% t(W[, 1:h]^2) / sum(Rd)
-            }
-            else {
+            } else {
                 Rd = apply(cor2[, 1:h], 2, sum)
                 VIP[, h] = Rd %*% t(W[, 1:h]^2) / sum(Rd)
             }

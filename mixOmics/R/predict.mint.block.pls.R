@@ -330,7 +330,16 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         x[ind] = 0
         x
     })
-        
+    
+    # replace missing data by 0
+    X = lapply(X,function(x)
+    {
+        ind = which(is.na(x))
+        if (length(ind) > 0)
+        x[ind] = 0
+        x
+    })
+    
     # -----------------------
     #       prediction
     # -----------------------

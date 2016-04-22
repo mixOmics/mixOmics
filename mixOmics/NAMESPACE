@@ -94,10 +94,9 @@ spls,
 splsda,
 study_split,
 tau.estimate,
+tune.mint.splsda,
 tune.splsda,
 tune.multilevel,
-tune.splsdalevel1,
-tune.splsdalevel2,
 tune.splslevel,
 tune.pca,
 tune.rcc,
@@ -137,13 +136,16 @@ S3method(plotIndiv, mint.splsda)
 S3method(plotLoadings, pls)
 S3method(plotLoadings, spls)
 S3method(plotLoadings, rcc)
-S3method(plotLoadings, spls)
 S3method(plotLoadings, pca)
 S3method(plotLoadings, sgcca)
 S3method(plotLoadings, rgcca)
 S3method(plotLoadings, plsda)
 S3method(plotLoadings, splsda)
 S3method(plotLoadings, sgccda)
+S3method(plotLoadings, mint.pls)
+S3method(plotLoadings, mint.spls)
+S3method(plotLoadings, mint.plsda)
+S3method(plotLoadings, mint.splsda)
 
 
 S3method(predict, pls)

@@ -40,7 +40,7 @@
 
 
 
-splsda <- function(X,
+splsda = function(X,
 Y,
 ncomp = 2,
 mode = c("regression", "canonical", "invariant", "classic"),
@@ -50,8 +50,8 @@ scale = TRUE,
 tol = 1e-06,
 max.iter = 500,
 near.zero.var = FALSE,
-logratio="none",   # one of "none", "CLR"
-multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVariation. Y is ommited and shouldbe included in multilevel design
+logratio = "none",   # one of "none", "CLR"
+multilevel = NULL)    # multilevel is passed to multilevel(design = ) in withinVariation. Y is ommited and shouldbe included in multilevel design
 {
     
     
@@ -72,44 +72,56 @@ multilevel=NULL)    # multilevel is passed to multilevel(design=) in withinVaria
         if (nlevels(Y) == 1)
         stop("'Y' should be a factor with more than one level")
 
-        Y.mat=unmap(Y)
+        Y.mat = unmap(Y)
         colnames(Y.mat) = levels(Y)#paste0("Y", 1:ncol(Y.mat))
     }else{
         if (!missing(Y))
         stop("'Y' should be included in the 'multilevel' design matrix as a discriminant multilevel analysis is used")
     }
     
-    result <- internal_wrapper.mint(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
-    keepX=keepX,keepX.constraint=keepX.constraint,max.iter=max.iter,tol=tol,logratio=logratio,
-    multilevel=multilevel,DA=TRUE)
+    # call to 'internal_wrapper.mint'
+    result = internal_wrapper.mint(X = X, Y = Y.mat, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
+    keepX = keepX, keepX.constraint = keepX.constraint, max.iter = max.iter, tol = tol, logratio = logratio,
+    multilevel = multilevel, DA = TRUE)
     
-    
-    cl = match.call()
-    #cl[[1]] = as.name("splsda")
-    
-    out=list(call=cl,X=result$X[-result$indY][[1]],Y=if(is.null(multilevel)){Y}else{result$Y.factor},ind.mat=result$X[result$indY][[1]],ncomp=result$ncomp,mode=result$mode,keepX=result$keepA[[1]],keepY=result$keepA[[2]],
-    keepX.constraint=result$keepA.constraint[[1]],keepY.constraint=result$keepA.constraint[[2]],
-    variates=result$variates,loadings=result$loadings,
-    names=result$names,tol=result$tol,iter=result$iter,max.iter=result$max.iter,nzv=result$nzv,scale=scale,explained_variance=result$explained_variance[-result$indY])
-    #row.names(out$variates$Y) = row.names(out$variates$X)
-    #row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(out$Y)))
+
+    # choose the desired output from 'result'
+    out = list(
+        call = match.call(),
+        X = result$X[-result$indY][[1]],
+        Y = if (is.null(multilevel))
+            {
+                Y
+            } else {
+                result$Y.factor
+            },
+        ind.mat = result$X[result$indY][[1]],
+        ncomp = result$ncomp,
+        mode = result$mode,
+        keepX = result$keepA[[1]],
+        keepY = result$keepA[[2]],
+        keepX.constraint = result$keepA.constraint[[1]],
+        keepY.constraint = result$keepA.constraint[[2]],
+        variates = result$variates,
+        loadings = result$loadings,
+        names = result$names,
+        tol = result$tol,
+        iter = result$iter,
+        max.iter = result$max.iter,
+        nzv = result$nzv,
+        scale = scale,
+        explained_variance = result$explained_variance[-result$indY]
+        )
     
     class(out) = c("splsda","spls","DA")
-    
-    if(!is.null(multilevel))
+    # output if multilevel analysis
+    if (!is.null(multilevel))
     {
-        out$Xw=result$Xw
-        out$multilevel=multilevel
-        class(out)=c("mlsplsda",class(out))
+        out$Xw = result$Xw
+        out$multilevel = multilevel
+        class(out) = c("mlsplsda",class(out))
     }
-    
-    #calcul explained variance
-    #explX=explained_variance(out$X,out$variates$X,ncomp)
-    #out$explained_variance=list(X=explX)
-    
+
     return(invisible(out))
-    
-    
-    
-    
 }
+
