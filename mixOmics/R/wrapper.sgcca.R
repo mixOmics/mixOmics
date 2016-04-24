@@ -71,12 +71,9 @@ near.zero.var = FALSE
     mode = mode,penalty = penalty
     )
     
-    
-    cl = match.call()
-    cl[[1]] = as.name('sgcca')
-    
+   
     out = list(
-    class = cl,
+    class = match.call(),
     X = result.sgcca$X,
     variates = result.sgcca$variates,
     loadings = result.sgcca$loadings,
@@ -88,16 +85,16 @@ near.zero.var = FALSE
     crit = result.sgcca$crit,
     AVE = list(AVE.X = result.sgcca$AVE$AVE_X, result.sgcca$AVE$AVE_outer, result.sgcca$AVE$AVE_inner), #rename?
     names = result.sgcca$names,#names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames)),
-    init = result$init,
-    bias = result$bias,
-    tol = result$tol,
-    iter = result$iter,
-    max.iter = result$max.iter,
-    nzv = result$nzv,
-    scale = result$scale,
-    design = result$design,
-    scheme = result$scheme,
-    explained_variance = result$explained_variance
+    init = result.sgcca$init,
+    bias = result.sgcca$bias,
+    tol = result.sgcca$tol,
+    iter = result.sgcca$iter,
+    max.iter = result.sgcca$max.iter,
+    nzv = result.sgcca$nzv,
+    scale = result.sgcca$scale,
+    design = result.sgcca$design,
+    scheme = result.sgcca$scheme,
+    explained_variance = result.sgcca$explained_variance
     )
     
     class(out) = 'sgcca'

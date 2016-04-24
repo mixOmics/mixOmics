@@ -63,7 +63,7 @@ border = NA,
     
     # -- input checks
     check = check.input.plotLoadings(object = object, block = block, subtitle = subtitle, cex.name = cex.name, cex.legend = cex.legend,
-    main = main, col = col, contrib = contrib)
+    main = main, col = col, contrib = contrib, name.var = name.var)
     
     col = check$col
     cex.name = check$cex.name
@@ -112,9 +112,12 @@ border = NA,
             warning("'method' should be either 'mean' or 'median', set to 'median' by default")
         }
         
+        if (length(block) == 1 & !is.null(name.var))
+        name.var = list(name.var = name.var)
+        
         for (i in 1 : length(block))
         {
-            res = get.loadings.ndisplay(object = object, comp = comp, block = block[i], name.var = name.var, complete.name.var = complete.name.var, ndisplay = ndisplay)
+            res = get.loadings.ndisplay(object = object, comp = comp, block = block[i], name.var = name.var[[i]], complete.name.var = complete.name.var, ndisplay = ndisplay)
             X = res$X
             names.block = res$names.block
             colnames.X = res$colnames.X
@@ -152,9 +155,9 @@ border = NA,
             {
                 if (!is.null(main) & length(block) > 1)
                 {
-                    par(mar = c(4, max(6, max(sapply(colnames.X, nchar))/2), 6, 2))
+                    par(mar = c(4, max(6, max(sapply(colnames.X, nchar))/3), 6, 2))
                 } else {
-                    par(mar = c(4, max(6, max(sapply(colnames.X, nchar))/2), 4, 2))
+                    par(mar = c(4, max(6, max(sapply(colnames.X, nchar))/3), 4, 2))
                 }
                 
                 mp = barplot(df$importance, horiz = T, las = 1, col = df$color, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(df),

@@ -86,7 +86,7 @@ border = NA,
         
         # -- input checks
         check = check.input.plotLoadings(object = object, block = "X", subtitle = subtitle, cex.name = cex.name, cex.legend = cex.legend,
-        main = main, col = col)
+        main = main, col = col, name.var = name.var)
         
         col = check$col
         cex.name = check$cex.name

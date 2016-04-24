@@ -126,11 +126,6 @@ A.light=list(X=data.light,Y=Y.mat.light)
 
 res=mint.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
- tt=tune.mint.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=exp,test.keepX=seq(1,20,1))
-
-
-tt=tune.mint.splsda(X=data.learn,Y=type.id.learn,ncomp=3,near.zero.var=FALSE,study=experiment.id.learn,test.keepX=seq(1,20,1))
-
 
 
 plotLoadings(res,contrib="min")

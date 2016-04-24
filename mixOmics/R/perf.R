@@ -400,7 +400,7 @@ logratio = c('none'),
     if (!is.logical(progressBar))
     stop("'progressBar' must be either TRUE or FALSE")
     
-    if (!(measure %in% c("overall", "BER")))
+    if (!(all(measure %in% c("overall", "BER"))))
     stop("Choose 'measure' among the two following measures: 'overall' and/or 'BER'")
     
     if (!is.logical(near.zero.var))

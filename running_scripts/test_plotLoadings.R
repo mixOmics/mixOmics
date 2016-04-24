@@ -257,7 +257,9 @@ if(additional.test==TRUE)
     scheme = "centroid",
     verbose = FALSE,
     bias = FALSE)
-    
+
+    plotLoadings(nutrimouse.sgccda,block=1, legend = FALSE)
+    plotLoadings(nutrimouse.sgccda,block=2, legend = FALSE)
     plotLoadings(nutrimouse.sgccda,block=1:2, legend = FALSE)
     plotLoadings(nutrimouse.sgccda,block=1:2, legend = FALSE, main = "YAY")
     plotLoadings(nutrimouse.sgccda,block=1:2, legend = FALSE, main = "YAY", subtitle = c("a","Flo"))
@@ -294,8 +296,10 @@ if(additional.test==TRUE)
     plotLoadings(nutrimouse.sgccda,cex.legend=1, contrib = "max")
     
     #test name.var
-    plotLoadings(nutrimouse.sgccda,name.var=liver.toxicity$gene.ID[1:ncol(nutrimouse$gene), 'gene.title'], contrib = "max")
-    plotLoadings(nutrimouse.sgccda,name.var=1:ncol(nutrimouse$gene), contrib = "max")
+    plotLoadings(nutrimouse.sgccda,name.var=liver.toxicity$gene.ID[1:ncol(nutrimouse$gene), 'gene.title'], contrib = "max",block=1)
+    plotLoadings(nutrimouse.sgccda,name.var=liver.toxicity$gene.ID[1:ncol(nutrimouse$gene), 'gene.title'], contrib = "max",block=1)
+
+    plotLoadings(nutrimouse.sgccda,name.var=1:ncol(nutrimouse$gene), contrib = "max",block=1)
     
     #test legend
     plotLoadings(nutrimouse.sgccda,legend=TRUE, contrib = "max")

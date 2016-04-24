@@ -19,7 +19,7 @@ nutrimouse.sgccda <- wrapper.sgccda(X=data,
 Y = Y,
 design = design,
 keepX = list(gene=c(10,10), lipid=c(15,15)),
-ncomp = c(2, 3),
+ncomp = c(3, 3),
 scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)

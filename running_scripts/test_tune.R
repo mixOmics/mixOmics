@@ -22,22 +22,17 @@ Y <- as.factor(breast.tumors$sample$treatment)
 
 res <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 
-
-source("mixOmics/R/tune.splsda.R")
-source("mixOmics/R/MCVfold.R")
-
-tune= tune.splsda(X,Y,ncomp=1,nrepeat=1,logratio="none",test.keepX = c(5),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = TRUE)
+tune= tune.splsda(X,Y,ncomp=1,nrepeat=1,logratio="none",test.keepX = c(5),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = FALSE)
 
 
 
-tune= tune.splsda(X,Y,ncomp=1,nrepeat=10,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = TRUE)
+tune= tune.splsda(X,Y,ncomp=1,nrepeat=10,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = FALSE)
 
 
-tune= tune.splsda(X,Y,ncomp=3,nrepeat=10,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = TRUE)
+tune= tune.splsda(X,Y,ncomp=3,nrepeat=10,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = FALSE)
 
 #source("mixOmics/R/tune.splsda.R")
 #source("mixOmics/R/MCVfold.R")
-tune= tune.splsda(X,Y,ncomp=3,nrepeat=10,logratio="none",test.keepX = c(5,50,100),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = TRUE)
 
 
 
@@ -52,7 +47,7 @@ stimul = vac18$stimulation)
 res.1level = splsda(X, ncomp = 3, multilevel = design,
 keepX = c(30, 137, 123))
 
-tune= tune.splsda(X,ncomp=3,nrepeat=10,logratio="none",test.keepX = c(5,50,100),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = TRUE, multilevel = design)
+tune= tune.splsda(X,ncomp=3,nrepeat=10,logratio="none",test.keepX = c(5,50,100),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = FALSE, multilevel = design)
 
 
 
@@ -76,12 +71,13 @@ A.light=list(X=data.light,Y=Y.mat.light)
 
 res=mint.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
-tt=tune.mint.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=exp,test.keepX=seq(1,20,1))
+tt=tune.mint.splsda(X=data,Y=type.id,ncomp=2,near.zero.var=FALSE,study=exp,test.keepX=seq(1,20,1))
+
+
+tt=tune(method="mint.splsda",X=data,Y=type.id,ncomp=2,near.zero.var=FALSE,study=exp,test.keepX=seq(1,20,1))
 
 # with the full data, to check that we get the same results: 2+15
 #tt=tune.mint.splsda(X=data.learn,Y=type.id.learn,ncomp=3,near.zero.var=FALSE,study=experiment.id.learn,test.keepX=seq(1,20,1))
-
-
 
 
 par(opar)

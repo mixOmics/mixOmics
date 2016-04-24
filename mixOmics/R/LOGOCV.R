@@ -84,11 +84,11 @@ scale)
     names.study = levels(study)
     features = NULL
     prediction.comp = array(0, c(nrow(X), nlevels(Y), length(test.keepX)), dimnames = list(rownames(X), levels(Y), test.keepX))
-
+    
     class.comp = list()
     for(ijk in dist)
     class.comp[[ijk]] = matrix(0, nrow = nrow(X), ncol = length(test.keepX))# prediction of all samples for each test.keepX and  nrep at comp fixed
-
+    
     PRED=INDICE = matrix(0, nrow = length(test.keepX), ncol = M)
     rownames(PRED) = rownames(INDICE) = test.keepX
     nbr.temp = matrix(0, nrow = length(test.keepX), ncol = nlevels(Y))
@@ -122,40 +122,34 @@ scale)
         #-- near.zero.var ----------------------#
         #---------------------------------------#
         
-
-#save(list=ls(),file="temp2.Rdata")
         for (i in 1:length(test.keepX))
         {
             if (progressBar ==  TRUE)
             setTxtProgressBar(pb, (study_i-1)/M + (i-1)/length(test.keepX)/M)
-
+            
             object.res = mint.splsda(X.train, Y.train, study = study.learn.CV, ncomp = ncomp, keepX = test.keepX[i],
             keepX.constraint = keepX.constraint, scale = scale, mode = "regression")
             
-            # added: record selected features
-            if (length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
-            # note: if plsda, 'features' includes everything: to optimise computational time, we don't evaluate for plsda object
+            # record selected features
+            if (length(test.keepX) ==  1) # only done if only one test.keepX as not used if more so far
             features = c(features, selectVar(object.res, comp = ncomp)$name)
             
             test.predict.sw <- predict(object.res, newdata = X.test, method = dist, study.test = study.test.CV)
-            
             prediction.comp[omit, , i] =  test.predict.sw$predict[, , ncomp]
             
             for(ijk in dist)
             class.comp[[ijk]][omit,i] =  levels(Y)[test.predict.sw$class[[ijk]][, ncomp]]
-
-
         }#end test.keepX
         
         if (progressBar ==  TRUE)
         setTxtProgressBar(pb, (study_i)/M)
         
     } # end study_i 1:M (M folds)
-
+    
     result = list()
     
     error.mean = error.sd = error.per.class.keepX.opt.comp = keepX.opt = test.keepX.out = choice.keepX.out = list()
-
+    
     if (any(measure == "overall"))
     {
         for(ijk in dist)
@@ -170,9 +164,8 @@ scale)
                 sum(as.character(Y) != x)
             })
             
-            # we want to average the error per keepX over nrepeat and choose the minimum error
+            # we average the error per keepX over nrepeat and choose the minimum error
             error.mean[[ijk]] = error/length(Y)
-            
             keepX.opt[[ijk]] = which(error.mean[[ijk]] ==  min(error.mean[[ijk]]))[1] # chose the lowest keepX if several minimum
             
             # confusion matrix for keepX.opt
@@ -215,8 +208,6 @@ scale)
             
             # average BER over the study
             error.mean[[ijk]] = apply(error, 2, mean)
-            
-            
             keepX.opt[[ijk]] = which(error.mean[[ijk]] ==  min(error.mean[[ijk]]))[1]
             
             # confusion matrix for keepX.opt

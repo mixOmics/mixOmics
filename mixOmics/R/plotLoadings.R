@@ -32,7 +32,7 @@ function(object, ...) UseMethod("plotLoadings")
 # --------------------------------------------------------------------------------------
 
 
-check.input.plotLoadings = function(object, block, study, subtitle, cex.name, cex.legend, main, col, contrib)
+check.input.plotLoadings = function(object, block, study, subtitle, cex.name, cex.legend, main, col, contrib, name.var)
 {
     
     if (is.null(object$loadings))
@@ -110,6 +110,26 @@ check.input.plotLoadings = function(object, block, study, subtitle, cex.name, ce
         
     }
     
+    #names.var
+    #-----
+    if(!is.null(name.var))
+    {
+        if (length(block) >1 && length(block) != length(name.var))
+        stop("'names' has to be a list of length the number of block to plot: ", length(block))
+        
+        if (length(block) > 1)
+        {
+            for (block_i in block)
+            {
+                if(length(name.var[[block_i]])!= nrow(object$loadings[[block_i]]))
+                stop("For block '", block_i,"', 'name.var' should be a vector of length ", nrow(object$loadings[[block_i]]))
+            }
+        } else {
+            if(length(name.var)!= nrow(object$loadings[[block]]))
+            stop("For block '", block,"', 'name.var' should be a vector of length ", nrow(object$loadings[[block]]))
+
+        }
+    }
     #title
     #-----
     if (!is.null(main) & !is.character(main))
@@ -229,7 +249,7 @@ get.loadings.ndisplay = function(object, comp, block, name.var, complete.name.va
     if(!is.null(name.var))
     {
         if(length(name.var)!= ncol(X))
-        stop("name.var should be a vector of length ", ncol(X))
+        stop("For block '", names.block,"', 'name.var' should be a vector of length ", ncol(X))
         
         colnames.X = as.character(name.var[ind.match]) # get the
     }else{

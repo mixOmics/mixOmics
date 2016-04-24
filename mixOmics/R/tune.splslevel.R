@@ -25,7 +25,7 @@
 #############################################################################################################
 
 tune.splslevel <- function (X, Y,
-design,
+multilevel,
 ncomp = NULL,
 mode="regression",
 test.keepX = rep(ncol(X), ncomp),
@@ -64,8 +64,8 @@ already.tested.Y = NULL)
     if ((!is.null(already.tested.Y)) && (!is.numeric(already.tested.Y)))
     stop("Expecting a numerical value in already.tested.X", call. = FALSE)
     
-    Xw <- suppressMessages(withinVariation(X = X, design = design))
-    Yw <- suppressMessages(withinVariation(X = Y, design = design))
+    Xw <- suppressMessages(withinVariation(X = X, multilevel = multilevel))
+    Yw <- suppressMessages(withinVariation(X = Y, multilevel = multilevel))
     
     cor.value = matrix(nrow = length(test.keepX), ncol = length(test.keepY))
     rownames(cor.value) = paste("varX ", test.keepX, sep = "")

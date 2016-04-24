@@ -73,7 +73,7 @@ border = NA,
         # if study != "all" then we plot the results on each study
 
         # -- input checks
-        check = check.input.plotLoadings(object = object, block = "X", subtitle = subtitle, main = main, col = col, cex.name = cex.name)
+        check = check.input.plotLoadings(object = object, block = "X", subtitle = subtitle, main = main, col = col, cex.name = cex.name, namenames.var.var = name.var)
         
         col = check$col
         cex.name = check$cex.name
@@ -128,11 +128,11 @@ border = NA,
             
             if ( length(block) == 1 & is.null(main) )
             {
-                title(paste0('Contribution on comp ', comp), line=1, cex.main = size.subtitle)
+                title(paste0('Loadings on comp ', comp), line=1, cex.main = size.subtitle)
             } else if (length(block) == 1) {
                 title(paste(main), line=1, cex.main = size.subtitle)
             } else if ((length(block) > 1 & missing(subtitle))) {
-                title(paste0('Contribution on comp ', comp, "\nStudy '", block[i],"'"), line=1, cex.main = size.subtitle)
+                title(paste0('Loadings on comp ', comp, "\nStudy '", block[i],"'"), line=1, cex.main = size.subtitle)
             } else if (length(block) > 1 & !missing(subtitle)) {
                 title(paste(subtitle[i]), line=1, cex.main = size.subtitle)
             }

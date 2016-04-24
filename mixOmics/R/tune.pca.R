@@ -38,9 +38,8 @@ tol = 1e-09)
     X = as.matrix(X)
     X = scale(X, center = center, scale = scale)
     sc = attr(X, "scaled:scale")
-    if (any(sc == 0)) {
-        stop("cannot rescale a constant/zero column to unit variance.")###???? is this where this should be?
-    }
+    if (any(sc == 0))
+    stop("cannot rescale a constant/zero column to unit variance.")###???? is this where this should be?
     
     ## added value for ncomp if NULL
     if (is.null(ncomp))

@@ -31,7 +31,7 @@ function(X,
          validation = c("loo", "Mfold"), 
          folds, 
          M = 10, 
-         plt = TRUE) 
+         plot = TRUE)
 {
 
     # validation des arguments #
@@ -74,7 +74,7 @@ function(X,
     cv.score.grid = cbind(grid, cv.score)
     mat = matrix(cv.score, nrow = length(grid1), ncol = length(grid2))
      
-    if (isTRUE(plt))
+    if (isTRUE(plot))
     image.tune.rcc(list(grid1 = grid1, grid2 = grid2, mat = mat))
     
     opt = cv.score.grid[cv.score.grid[, 3] == max(cv.score.grid[, 3]), ]

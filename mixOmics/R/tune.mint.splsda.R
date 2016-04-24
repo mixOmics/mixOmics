@@ -140,14 +140,14 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     #-- end checking --#
     #------------------#
     
-
+    
     
     #-- cross-validation approach  ---------------------------------------------#
     #---------------------------------------------------------------------------#
     
     
     test.keepX = sort(test.keepX) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
-
+    
     # if some components have already been tuned (eg comp1 and comp2), we're only tuning the following ones (comp3 comp4 .. ncomp)
     if ((!is.null(already.tested.X)))
     {
@@ -180,7 +180,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     error.per.class.sd = matrix(0,nrow = nlevels(Y), ncol = ncomp-length(already.tested.X),
     dimnames = list(c(levels(Y)), c(paste('comp', comp.real))))
     
-
+    
     
     # first: near zero var on the whole data set
     if(near.zero.var == TRUE)
@@ -196,61 +196,61 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             
         }
     }
-
-        if(light.output == FALSE)
-        prediction.all = class.all = list()
-        
-        error.per.class.keepX.opt=list()
-        # successively tune the components until ncomp: comp1, then comp2, ...
-        for(comp in 1:length(comp.real))
-        {
-            
-            if (progressBar == TRUE)
-            cat("\ncomp",comp.real[comp], "\n")
-            
-
-            result = LOGOCV (X, Y, ncomp = 1 + length(already.tested.X), study = study,
-            keepX.constraint = already.tested.X, test.keepX = test.keepX, measure = measure, dist = dist,
-            near.zero.var = near.zero.var, progressBar = progressBar, scale = scale)
-            
-            # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
-            mat.mean.error[, comp]=result[[measure]]$error.rate.mean[[1]]
-            if (!is.null(result[[measure]]$error.rate.sd[[1]]))
-            mat.sd.error[, comp]=result[[measure]]$error.rate.sd[[1]]
-            
-            # confusion matrix for keepX.opt
-            error.per.class.keepX.opt[[comp]]=result[[measure]]$confusion[[1]]
-            
-            # best keepX
-            fit = mint.splsda(X, Y, ncomp = 1 + length(already.tested.X), study = study,
-            keepX.constraint = already.tested.X, keepX = result[[measure]]$keepX.opt[[1]], near.zero.var = near.zero.var, scale = scale)
-            
-            already.tested.X[[comp.real[comp]]] = selectVar(fit, comp = 1 + length(already.tested.X))$name
-            
-            if(light.output == FALSE)
-            {
-                #prediction of each samples for each fold and each repeat, on each comp
-                class.all[[comp]] = result$class.comp[[1]]
-                prediction.all[[comp]] = result$prediction.comp
-            }
-
-        } # end comp
-        names(error.per.class.keepX.opt)=c(paste('comp', comp.real))
+    
+    if(light.output == FALSE)
+    prediction.all = class.all = list()
+    
+    error.per.class.keepX.opt=list()
+    # successively tune the components until ncomp: comp1, then comp2, ...
+    for(comp in 1:length(comp.real))
+    {
         
         if (progressBar == TRUE)
-        cat('\n')
+        cat("\ncomp",comp.real[comp], "\n")
         
-        result = list(
-        mat.mean.error = mat.mean.error,
-        choice.keepX = already.tested.X ,
-        error.per.class = error.per.class.keepX.opt)
+        
+        result = LOGOCV (X, Y, ncomp = 1 + length(already.tested.X), study = study,
+        keepX.constraint = already.tested.X, test.keepX = test.keepX, measure = measure, dist = dist,
+        near.zero.var = near.zero.var, progressBar = progressBar, scale = scale)
+        
+        # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
+        mat.mean.error[, comp]=result[[measure]]$error.rate.mean[[1]]
+        if (!is.null(result[[measure]]$error.rate.sd[[1]]))
+        mat.sd.error[, comp]=result[[measure]]$error.rate.sd[[1]]
+        
+        # confusion matrix for keepX.opt
+        error.per.class.keepX.opt[[comp]]=result[[measure]]$confusion[[1]]
+        
+        # best keepX
+        fit = mint.splsda(X, Y, ncomp = 1 + length(already.tested.X), study = study,
+        keepX.constraint = already.tested.X, keepX = result[[measure]]$keepX.opt[[1]], near.zero.var = near.zero.var, scale = scale)
+        
+        already.tested.X[[comp.real[comp]]] = selectVar(fit, comp = 1 + length(already.tested.X))$name
         
         if(light.output == FALSE)
         {
-            names(class.all) = names(prediction.all) = c(paste('comp', comp.real))
-            result$predict = prediction.all
-            result$class = class.all
+            #prediction of each samples for each fold and each repeat, on each comp
+            class.all[[comp]] = result$class.comp[[1]]
+            prediction.all[[comp]] = result$prediction.comp
         }
         
-        return(result)
+    } # end comp
+    names(error.per.class.keepX.opt)=c(paste('comp', comp.real))
+    
+    if (progressBar == TRUE)
+    cat('\n')
+    
+    result = list(
+    mat.mean.error = mat.mean.error,
+    choice.keepX = already.tested.X ,
+    error.per.class = error.per.class.keepX.opt)
+    
+    if(light.output == FALSE)
+    {
+        names(class.all) = names(prediction.all) = c(paste('comp', comp.real))
+        result$predict = prediction.all
+        result$class = class.all
     }
+    
+    return(result)
+}

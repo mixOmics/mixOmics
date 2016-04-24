@@ -204,10 +204,10 @@ class.object = NULL
                 class.comp[[ijk]][omit,nrep,i] =  levels(Y)[test.predict.sw$class[[ijk]][, ncomp]]
             } # end i
             
-            if (progressBar ==  TRUE)
-            setTxtProgressBar(pb, (M*nrep)/(M*nrepeat))
-            
         } # end j 1:M (M folds)
+        
+        if (progressBar ==  TRUE)
+        setTxtProgressBar(pb, (M*nrep)/(M*nrepeat))
         
         
     } #end nrep 1:nrepeat

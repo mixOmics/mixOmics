@@ -55,6 +55,32 @@ function(x, ...)
     cat(" variable names: see object$names \n")
 }
 
+#------------------ print method for mint.pls ------------------#
+print.mint.pls <-
+function(x, ...)
+{
+    
+    mode = paste("'", x$mode, "'", sep = "")
+    
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    
+    cat(" PLS with a", mode, "mode with", x$ncomp, "PLS components. \n")
+    cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
+    cat(" You entered data Y of dimensions:", nrow(x$Y), ncol(x$Y), "\n\n")
+    cat(" You entered a grouping factor with", nlevels(x$study), "studies. \n")
+
+    cat(" No variable selection. \n\n")
+    
+    cat(" Available components: \n",
+    "-------------------- \n")
+    
+    cat(" loading vectors: see object$loadings \n")
+    cat(" loading vectors per study: see object$loadings.partial \n")
+    cat(" variates: see object$variates \n")
+    cat(" variates per study: see object$variates.partial \n")
+    cat(" variable names: see object$names \n")
+}
+
 #------------------ print method for plsda ------------------#
 print.plsda <-
 function(x, ...) 
@@ -76,6 +102,29 @@ function(x, ...)
     cat(" variable names: see object$names \n")
 }
 
+#------------------ print method for mint.plsda ------------------#
+print.mint.plsda <-
+function(x, ...)
+{
+    
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    
+    cat(" PLS-DA (regression mode) with", x$ncomp, "PLS-DA components. \n")
+    cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
+    cat(" You entered data Y with", ncol(x$ind.mat) , "classes. \n\n")
+    cat(" You entered a grouping factor with", nlevels(x$study), "studies. \n")
+
+    cat(" No variable selection. \n\n")
+    
+    cat(" Available components: \n",
+    "-------------------- \n")
+    
+    cat(" loading vectors: see object$loadings \n")
+    cat(" loading vectors per study: see object$loadings.partial \n")
+    cat(" variates: see object$variates \n")
+    cat(" variates per study: see object$variates.partial \n")
+    cat(" variable names: see object$names \n")
+}
 
 #----------------- print method for spls ------------------#
 print.spls <-
@@ -100,6 +149,35 @@ function(x, ...)
 	
 	cat(" loading vectors: see object$loadings \n")
     cat(" variates: see object$variates \n")
+    cat(" variable names: see object$names \n")
+}
+
+#----------------- print method for mint.spls ------------------#
+print.mint.spls <-
+function(x, ...)
+{
+    
+    mode = paste("'", x$mode, "'", sep = "")
+    keepX = paste("[", x$keepX, "]", sep = "")
+    keepY = paste("[", x$keepY, "]", sep = "")
+    
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    
+    cat(" sPLS with a", mode, "mode with", x$ncomp, "sPLS components. \n")
+    cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
+    cat(" You entered data Y of dimensions:", nrow(x$Y), ncol(x$Y), "\n\n")
+    cat(" You entered a grouping factor with", nlevels(x$study), "studies. \n")
+
+    cat(" Selection of", keepX, "variables on each of the sPLS components on the X data set. \n")
+    cat(" Selection of", keepY, "variables on each of the sPLS components on the Y data set. \n\n")
+    
+    cat(" Available components: \n",
+    "-------------------- \n")
+    
+    cat(" loading vectors: see object$loadings \n")
+    cat(" loading vectors per study: see object$loadings.partial \n")
+    cat(" variates: see object$variates \n")
+    cat(" variates per study: see object$variates.partial \n")
     cat(" variable names: see object$names \n")
 }
 
@@ -128,6 +206,32 @@ function(x, ...)
     cat(" variable names: see object$names \n")
 }
 
+#----------------- print method for mint.splsda ------------------#
+print.mint.splsda <-
+function(x, ...)
+{
+    
+    keepX = paste("[", x$keepX, "]", sep = "")
+    keepY = paste("[", x$keepY, "]", sep = "")
+    
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    cat(" MINT sPLS-DA (regression mode) with", x$ncomp, "sPLS-DA components. \n")
+    cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
+    cat(" You entered data Y with", ncol(x$ind.mat) , "classes. \n\n")
+    cat(" You entered a grouping factor with", nlevels(x$study), "studies. \n")
+    
+    cat(" Selection of", keepX, "variables on each of the sPLS-DA components on the X data set. \n")
+    cat(" No Y variables can be selected. \n\n")
+    
+    cat(" Available components: \n",
+    "-------------------- \n")
+    
+    cat(" loading vectors: see object$loadings \n")
+    cat(" loading vectors per study: see object$loadings.partial \n")
+    cat(" variates: see object$variates \n")
+    cat(" variates per study: see object$variates.partial \n")
+    cat(" variable names: see object$names \n")
+}
 
 #------------------ print method for rcc ------------------#
 print.rcc <-
@@ -160,13 +264,13 @@ function(x, ...)
     digits = x$digits
 
 	#--------------------- output pls/spls ---------------------#
-    if(x$method == "pls" | x$method == "spls"){
+    if(any(class(x) %in% c("pls", "spls"))){
 
-        if (x$method == "pls") {
+        if (any(class(x) == "pls"))
+        {
             cat(" PLS mode:", x$mode)
 			cat("\n Number of variates considered:", x$ncomp, "\n")
-        }	
-        else {
+        } else {
             cat(" sPLS mode:", x$mode)
 			cat("\n Number of variates considered:", x$ncomp)
 			cat("\n Number of X-variables selected on each of the sPLS components:", x$keepX)
@@ -174,7 +278,8 @@ function(x, ...)
         }			
 
         #---------- affichage communaute ----------#
-        if (any(what == "all") || any(what == "communalities")) { 
+        if (any(what == "all") || any(what == "communalities"))
+        {
             cat("\n\n Communalities Analysis:\n",
                 "----------------------")
 				
@@ -185,7 +290,8 @@ function(x, ...)
         }
 
         #--------- affichage redondance -----------#
-        if (any(what == "all") || any(what == "redundancy")) {
+        if (any(what == "all") || any(what == "redundancy"))
+        {
             cat("\n\n Redundancy Analysis:\n",
                 "-------------------\n")
 				
@@ -196,7 +302,8 @@ function(x, ...)
         }
 
         #---------- tableau VIP ---------#
-        if (any(what == "all") || any(what == "VIP")) {
+        if (any(what == "all") || any(what == "VIP"))
+        {
             cat("\n\n", "Variable Importance in the Projection (VIP): see object$VIP \n",
                         "------------------------------------------- \n\n")
         }
@@ -204,9 +311,11 @@ function(x, ...)
     }  #end if pls
 
     # ---------------------- output rcc ------------------------#
-    if(x$method == "rcc" ){
+    if(any(class(x) == "rcc"))
+    {
         print.gap = 4
-        if (any(what == "all")) {
+        if (any(what == "all"))
+        {
             cat(" Number of canonical variates considered:", x$ncomp, "\n")
             cat("\n Canonical correlations:",
                 "\n ----------------------\n")
@@ -214,7 +323,8 @@ function(x, ...)
         }
 
         #-- affichage communaute --#
-        if (any(what == "all") || any(what == "communalities")) { 
+        if (any(what == "all") || any(what == "communalities"))
+        {
             cat("\n\n Canonical Communalities Analysis:\n",
                 "--------------------------------")
 
@@ -225,7 +335,8 @@ function(x, ...)
         }
 
         #--------- affichage redondance -----------#
-        if (any(what == "all") || any(what == "redundancy")) {
+        if (any(what == "all") || any(what == "redundancy"))
+        {
             cat("\n\n Redundancy Analysis:\n",
                 "-------------------\n")
 				

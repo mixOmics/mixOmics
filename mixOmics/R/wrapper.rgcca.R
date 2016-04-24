@@ -62,11 +62,8 @@ near.zero.var = FALSE)
     )
     
 
-    cl = match.call()
-    cl[[1]] = as.name('sparse.rgcca')
-    
     out = list(
-    class = cl,
+    class = match.call(),
     X = result.rgcca$X,
     variates = result.rgcca$variates,
     loadings = result.rgcca$loadings,
@@ -79,16 +76,16 @@ near.zero.var = FALSE)
     crit = result.rgcca$crit,
     AVE = list(AVE.X = result.rgcca$AVE$AVE_X, result.rgcca$AVE$AVE_outer, result.rgcca$AVE$AVE_inner), #rename?
     names = result.rgcca$names,#names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames)),
-    init = result$init,
-    bias = result$bias,
-    tol = result$tol,
-    iter = result$iter,
-    max.iter = result$max.iter,
-    nzv = result$nzv,
-    scale = result$scale,
-    design = result$design,
-    scheme = result$scheme,
-    explained_variance = result$explained_variance
+    init = result.rgcca$init,
+    bias = result.rgcca$bias,
+    tol = result.rgcca$tol,
+    iter = result.rgcca$iter,
+    max.iter = result.rgcca$max.iter,
+    nzv = result.rgcca$nzv,
+    scale = result.rgcca$scale,
+    design = result.rgcca$design,
+    scheme = result.rgcca$scheme,
+    explained_variance = result.rgcca$explained_variance
     )
     
     class(out) = c("sparse.rgcca","rgcca")
