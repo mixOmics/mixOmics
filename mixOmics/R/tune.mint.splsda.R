@@ -1,11 +1,9 @@
 #############################################################################################################
 # Author :
-#   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-#   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
-# created: 2015
-# last modified: 11-04-2016
+# created: 22-04-2016
+# last modified: 26-04-2016
 #
 # Copyright (C) 2015
 #
@@ -26,23 +24,25 @@
 
 
 # ========================================================================================================
-# tune.splsda: chose the optimal number of parameters per component on a splsda method
+# tune.mint.splsda: chose the optimal number of parameters per component on a mint.splsda method
 # ========================================================================================================
 
 # X: numeric matrix of predictors
 # Y: a factor or a class vector for the discrete outcome
 # ncomp: the number of components to include in the model. Default to 1.
+# study: grouping factor indicating which samples are from the same study
 # test.keepX: grid of keepX among which to chose the optimal one
 # already.tested.X: a vector giving keepX on the components that were already tuned
-# validation: Mfold or loo cross validation
-# folds: if validation=Mfold, how many folds?
 # dist: distance to classify samples. see predict
 # measure: one of c("overall","BER"). Accuracy measure used in the cross validation processs
 # progressBar: show progress,
+# scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
+# tol: Convergence stopping value.
+# max.iter: integer, the maximum number of iterations.
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 # nrepeat: number of replication of the Mfold process
 # logratio = c('none','CLR'). see splsda
-# verbose: if TRUE, shows component and nrepeat being tested.
+# light.output: if TRUE, only the most important outputs are given (and calculated)
 
 
 tune.mint.splsda = function (X, Y,
@@ -50,12 +50,12 @@ ncomp = 1,
 study,
 test.keepX = c(5, 10, 15),
 already.tested.X,
-validation = "Mfold",
-folds = 10,
 dist = "max.dist",
 measure = c("BER"), # one of c("overall","BER")
 progressBar = TRUE,
 scale = TRUE,
+tol = 1e-06,
+max.iter = 500,
 near.zero.var = FALSE,
 logratio = c('none','CLR'),
 light.output = TRUE # if FALSE, output the prediction and classification of each sample during each folds, on each comp, for each repeat
@@ -65,25 +65,30 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     
     #------------------#
     #-- check entries --#
+    if(missing(X))
+    stop("'X'is missing", call. = FALSE)
+
     X = as.matrix(X)
-    
+
     if (length(dim(X)) != 2 || !is.numeric(X))
-    stop("'X' must be a numeric matrix.")
+    stop("'X' must be a numeric matrix.", call. = FALSE)
     
     
     # Testing the input Y
+    if(missing(Y))
+    stop("'Y'is missing", call. = FALSE)
     if (is.null(Y))
-    stop("'Y' has to be something else than NULL.")
+    stop("'Y' has to be something else than NULL.", call. = FALSE)
     
     if (is.null(dim(Y)))
     {
         Y = factor(Y)
     }  else {
-        stop("'Y' should be a factor or a class vector.")
+        stop("'Y' should be a factor or a class vector.", call. = FALSE)
     }
     
     if (nlevels(Y) == 1)
-    stop("'Y' should be a factor with more than one level")
+    stop("'Y' should be a factor with more than one level", call. = FALSE)
     
     
     
@@ -96,19 +101,9 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     stop("invalid number of variates, 'ncomp'.")
     
     
-    #-- validation
-    choices = c("Mfold", "loo")
-    validation = choices[pmatch(validation, choices)]
-    if (is.na(validation))
-    stop("'validation' must be either 'Mfold' or 'loo'")
-    
-    
     #-- logratio
     if (length(logratio) > 1)
     logratio = logratio[1]
-    
-    if (!logratio %in% c("none", "CLR"))
-    stop("'logratio must be one of 'none' or 'CLR'")
     
     
     #-- measure
@@ -116,7 +111,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     measure = measure[1]
     
     if (!measure %in% c("overall", "BER"))
-    stop("'measure must be one of 'overall' or 'BER'")
+    stop("'measure must be one of 'overall' or 'BER'", call. = FALSE)
     
     #if ((!is.null(already.tested.X)) && (length(already.tested.X) != (ncomp - 1)) )
     #stop("The number of already tested parameters should be NULL or ", ncomp - 1, " since you set ncomp = ", ncomp)
@@ -125,18 +120,45 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     already.tested.X = list()
     
     if(length(already.tested.X) >= ncomp)
-    stop("'ncomp' needs to be higher than the number of components already tuned ('length(already.tested.X)')", call. = FALSE)
+    stop("'ncomp' needs to be higher than the number of components already tuned, which is length(already.tested.X)=",length(already.tested.X) , call. = FALSE)
     
-    #if ((!is.null(already.tested.X)) && (!is.numeric(already.tested.X)))
-    #stop("Expecting a numerical value in already.tested.X", call. = FALSE)
+
+    # -- check using the check of mint.splsda
+    Y.mat = unmap(Y)
+    colnames(Y.mat) = levels(Y)
     
-    #if (!is.null(already.tested.X))
-    #cat("Number of variables selected on the first ", length(already.tested.X), "component(s) was ", already.tested.X,"\n")
+    check = Check.entry.pls(X, Y = Y.mat, ncomp = ncomp, mode="regression", scale=scale,
+    near.zero.var=near.zero.var, max.iter=max.iter ,tol=tol ,logratio=logratio ,DA=TRUE, multilevel=NULL)
+    X = check$X
+    ncomp = check$ncomp
     
     
-    if (any(is.na(validation)) || length(validation) > 1)
-    stop("'validation' should be one of 'Mfold' or 'loo'.", call. = FALSE)
+    # -- study
+    #set the default study factor
+    if (missing(study))
+    stop("'study' is missing", call. = FALSE)
+
+    if (length(study) != nrow(X))
+    stop(paste0("'study' must be a factor of length ",nrow(X),"."))
     
+    if (any(table(study) <= 1))
+    stop("At least one study has only one sample, please consider removing before calling the function again", call. = FALSE)
+    if (any(table(study) < 5))
+    warning("At least one study has less than 5 samples, mean centering might not do as expected")
+    
+    #-- dist
+    
+    choices = c("max.dist", "centroids.dist", "mahalanobis.dist")
+    dist = match.arg(dist, choices, several.ok = FALSE)
+    
+    #-- light.output
+    if (!is.logical(light.output))
+    stop("'light.output' must be either TRUE or FALSE", call. = FALSE)
+    
+    #-- test.keepX
+    if (is.null(test.keepX) | length(test.keepX) == 1 | !is.numeric(test.keepX))
+    stop("'test.keepX' must be a numeric vector with more than two entries", call. = FALSE)
+
     #-- end checking --#
     #------------------#
     
@@ -160,10 +182,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     } else {
         comp.real = 1:ncomp
     }
-    
-    choices = c("max.dist", "centroids.dist", "mahalanobis.dist")
-    dist = match.arg(dist, choices, several.ok = FALSE)
-    
+
     mat.error = matrix(nrow = length(test.keepX), ncol = 1,
     dimnames = list(test.keepX,1))
     rownames(mat.error) = test.keepX
@@ -180,22 +199,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     error.per.class.sd = matrix(0,nrow = nlevels(Y), ncol = ncomp-length(already.tested.X),
     dimnames = list(c(levels(Y)), c(paste('comp', comp.real))))
     
-    
-    
-    # first: near zero var on the whole data set
-    if(near.zero.var == TRUE)
-    {
-        nzv = nearZeroVar(X)
-        if (length(nzv$Position > 0))
-        {
-            warning("Zero- or near-zero variance predictors.\nReset predictors matrix to not near-zero variance predictors.\nSee $nzv for problematic predictors.")
-            X = X[, -nzv$Position, drop=TRUE]
-            
-            if(ncol(X)==0)
-            stop("No more predictors after Near Zero Var has been applied!")
-            
-        }
-    }
+
     
     if(light.output == FALSE)
     prediction.all = class.all = list()
@@ -235,7 +239,8 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         }
         
     } # end comp
-    names(error.per.class.keepX.opt)=c(paste('comp', comp.real))
+    names(error.per.class.keepX.opt) = c(paste('comp', comp.real))
+    names(already.tested.X) = c(paste('comp', 1:ncomp))
     
     if (progressBar == TRUE)
     cat('\n')

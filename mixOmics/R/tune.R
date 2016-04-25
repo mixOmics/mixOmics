@@ -1,6 +1,14 @@
-# Copyright (C) 2015
-# Kim-Anh Le Cao, University of Queensland, Brisbane, Australia
-# Benoit Gautier, University of Queensland, Brisbane, Australia
+#############################################################################################################
+# Author :
+#   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#
+# created: 22-04-2016
+# last modified: 26-04-2016
+#
+# Copyright (C) 2016
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -14,10 +22,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
 
 
-## note: this should probably be set up as an S3 function.
-tune <- function (method,
+# ========================================================================================================
+# tun: chose the optimal number of parameters per component on a "method"
+# ========================================================================================================
+
+
+tune = function (method,
 X,
 Y,
 multilevel,

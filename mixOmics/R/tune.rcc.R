@@ -20,10 +20,6 @@
 
 
 tune.rcc =
-function(...) UseMethod("tune.rcc")
-
-
-tune.rcc =
 function(X, 
          Y, 
          grid1 = seq(0.001, 1, length = 5), 

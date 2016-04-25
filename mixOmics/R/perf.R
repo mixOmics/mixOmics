@@ -355,9 +355,7 @@ logratio = c('none'),
     # these data are the centered and scaled X output or the unmapped(Y) scaled and centered
     X = object$X
     level.Y = object$names$colnames$Y  #to make sure the levels are ordered
-    Y = object$ind.mat
-    Y = map(Y)
-    Y = factor(Y,labels = level.Y)
+    Y = object$Y
     ncomp = object$ncomp
     n = nrow(X)
     
