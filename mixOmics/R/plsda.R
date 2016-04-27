@@ -70,8 +70,21 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
         colnames(Y.mat) = levels(Y)
         
     } else {
-        if (!missing(Y))
-        stop("'Y' should be included in the 'multilevel' design matrix as a discriminant multilevel analysis is used")
+        # we expect a vector or a 2-columns matrix in 'Y' and the repeated measurements in 'multilevel'
+        multilevel = data.frame(multilevel)
+        
+        if ((nrow(X) != nrow(multilevel)))
+        stop("unequal number of rows in 'X' and 'multilevel'.")
+        
+        if (ncol(multilevel) != 1)
+        stop("'multilevel' should have a single column for the repeated measurements, other factors should be included in 'Y'.")
+        
+        if (!is.null(ncol(Y)) && !ncol(Y) %in% c(0,1,2))# multilevel 1 or 2 factors
+        stop("'Y' should either be a factor, a single column data.frame containing a factor, or a 2-columns data.frame containing 2 factors.")
+        multilevel = data.frame(multilevel, Y)
+        multilevel[, 1] = as.numeric(factor(multilevel[, 1])) # we want numbers for the repeated measurements
+        
+        Y.mat = NULL
     }
 
     

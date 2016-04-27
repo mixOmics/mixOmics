@@ -62,8 +62,6 @@ cex.labels=1)
     stop("'corThreshold' is missing", call.=FALSE) # so 2 blocks in X + the outcome Y
 
 
-#par(mfrow  = c(1,1), mar = rep(1, 4))
-    
     X = object$X
     Y = object$Y
     
@@ -72,9 +70,13 @@ cex.labels=1)
     object$variates = c(object$variates[-indY], object$variates[indY])
     object$loadings = c(object$loadings[-indY], object$loadings[indY])
     
+    if (min(object$ncomp) != max(object$ncomp))
+    warning("unequal number of component per block: we use the minimum")
+    ncomp.min = min(object$ncomp)
+    
     keepA = lapply(object$loadings, function(i) apply(abs(i), 1, sum) > 0)
     cord = mapply(function(x, y, keep){
-        cor(x[, keep], y, use = "pairwise")
+        cor(x[, keep], y[, 1:ncomp.min], use = "pairwise")
     }, x=object$X, y=object$variates[-length(object$variates)], keep = keepA[-length(keepA)])
     
     simMatList = vector("list", length(X))

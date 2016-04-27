@@ -97,7 +97,7 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
                        stimu = vac18.simulated$stimulation)
   
     result.ex1 = tune.multilevel(vac18.simulated$genes,
-                               design = design,
+                               multilevel = design,
                                ncomp=2,
                                test.keepX=c(5, 10, 15), 
                                already.tested.X = c(50),
@@ -131,7 +131,7 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
                        time = time)
   
   result.ex2 = tune.multilevel(liver.toxicity$gene,
-                                design = design, 
+                                multilevel = design,
                                 ncomp=2,
                                 test.keepX=c(5, 10, 15), 
                                 already.tested.X = c(50),
@@ -154,7 +154,7 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
   design <- data.frame(sample = repeat.indiv)
   
   result.ex3 = tune.multilevel(X = liver.toxicity$gene, Y = liver.toxicity$clinic, 
-                                design = design,
+                                multilevel = design,
                                 mode = 'canonical',
                                 ncomp=2,
                                 test.keepX=c(5, 10, 15), 

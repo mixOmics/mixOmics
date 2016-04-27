@@ -55,6 +55,7 @@ internal_predict.DA = function(object, out, q, method)
     variatesX = object$variates[-(J + 1)];
     ncomp = object$ncomp
     
+    Y = object$Y
     Y.prim = unmap(object$Y)
     G = cls = list()
     for (i in 1 : J)
@@ -74,7 +75,9 @@ internal_predict.DA = function(object, out, q, method)
     {
         cls$max.dist = lapply(1:J, function(x){matrix(sapply(1:ncomp[x], ### List level
             function(y){apply(Y.hat[[x]][, , y, drop = FALSE], 1,  ### component level
-                function(z){which(z == max(z))}) ### matrix level
+                function(z){
+                    paste(levels(Y)[which(z == max(z))], collapse = "/")
+                }) ### matrix level
             }), nrow = nrow(newdata[[x]]), ncol = ncomp[x])
         })
         cls$max.dist = lapply(1:J, function(x){colnames(cls$max.dist[[x]]) = paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
@@ -97,7 +100,7 @@ internal_predict.DA = function(object, out, q, method)
             else {
                 d = (x - G[[i]][, 1])^2
             }
-            cl.id = which.min(d)
+            cl.id = paste(levels(Y)[which(d == min(d))], collapse = "/")
         }
         
         for (i in 1 : J)
@@ -135,7 +138,7 @@ internal_predict.DA = function(object, out, q, method)
             } else {
                 d = drop(Sr.inv) * (x - G[[i]][, 1])^2
             }
-            cl.id = which.min(d)
+            cl.id = paste(levels(Y)[which(d == min(d))], collapse = "/")
         }
         
         for (i in 1 : J){
@@ -181,7 +184,7 @@ internal_predict.DA = function(object, out, q, method)
                 
             }
             # look at the majority vote for all dataset of object$X (with table), if more than a unique max, we put NA
-            table.temp = apply(temp,c(1,2), function(x){a=table(x); if (length(which(a==max(a)))==1) {b=as.numeric(names(which.max(a)))}else{b=NA}; b})
+            table.temp = apply(temp,c(1,2), function(x){a=table(x); if (length(which(a==max(a)))==1) {b=names(which.max(a))}else{b=NA}; b})
             colnames(table.temp) = colnames(out.DA$class[[ijk]][[i]])[1:min(ncomp)]
             rownames(table.temp) = rownames(out.DA$class[[ijk]][[i]])
             out.DA$vote[[ijk]] = table.temp

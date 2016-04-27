@@ -34,7 +34,8 @@ measure = c("BER"), # one of c("overall","BER")
 progressBar = TRUE,
 near.zero.var = FALSE,
 nrepeat=1,
-logratio = "none"
+logratio = "none",
+light.output = TRUE
 )
 {
     
@@ -45,15 +46,15 @@ logratio = "none"
     if (missing(multilevel) | is.null(multilevel))
     stop("the 'multilevel' design matrix is missing.", call. = FALSE)
     
+    multilevel = as.data.frame(multilevel)
+
     if ((nrow(multilevel) != nrow(X)))
-    stop("unequal number of rows in 'X' and 'design'.", call. = FALSE)
+    stop("unequal number of rows in 'X' and 'multilevel'.", call. = FALSE)
     
     # added condition for the spls case (no need to have the 2n and 3rd column in design)
-    if ((ncol(multilevel) < 2) & (method == 'splsda'))
-    stop("'design' must be a matrix or data frame with at least 2 columns for method = splsda.",
+    if ((ncol(multilevel) != 1) & (method == 'splsda'))
+    stop("'multilevel' should have a single column for the repeated measurements, other factors should be included in 'Y'.",
     call. = FALSE)
-    
-    multilevel = as.data.frame(multilevel)
     
    
     if (is.factor(multilevel[, 1]))
@@ -65,9 +66,9 @@ logratio = "none"
     if (length(summary(as.factor(multilevel[, 1]))) == nrow(X))
     stop("Check that the vector sample reflects the repeated measurements")
     
-    if (!any(names(summary(as.factor(multilevel[, 1]))) == "1"))
+    if (any(table(as.factor(multilevel[, 1])) == "1"))
     {
-        cat("The vector sample includes the values: ", as.vector(names(summary(as.factor(sample)))), "\n")
+        cat("The vector sample includes the values: ", as.vector(summary(as.factor(multilevel[, 1]))), "\n")
         stop("sample vector", call. = FALSE)
     }
     
@@ -82,19 +83,19 @@ logratio = "none"
     
     if (method == "splsda")
     {
-        result = tune.splsda(X = X,
+        result = tune.splsda(X = X, Y = Y,
         multilevel = multilevel,
         ncomp = ncomp, test.keepX = test.keepX, dist = dist,
         already.tested.X = already.tested.X, validation = validation, folds = folds,
         measure = measure, progressBar = progressBar, near.zero.var = near.zero.var,
-        logratio = logratio, nrepeat = nrepeat)
+        logratio = logratio, nrepeat = nrepeat, light.output = light.output)
         
     } else {
         if(missing(test.keepY))
         test.keepY = rep(ncol(Y), ncomp)
         
         result = tune.splslevel(X = X, Y = Y,
-        design = multilevel,
+        multilevel = multilevel,
         mode = mode,
         ncomp = ncomp, test.keepX = test.keepX, test.keepY = test.keepY,
         already.tested.X = already.tested.X, already.tested.Y = already.tested.Y)

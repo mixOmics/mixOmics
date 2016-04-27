@@ -91,7 +91,7 @@ that contains the following components:
 data(nutrimouse)
 # need to unmap the Y factor diet
 Y = unmap(nutrimouse$diet)
-data = list(nutrimouse$gene, nutrimouse$lipid,Y)
+data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 # with this design, gene expression and lipids are connected to the diet factor
 # design = matrix(c(0,0,1,
 #                   0,0,1,

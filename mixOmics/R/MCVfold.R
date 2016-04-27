@@ -81,6 +81,7 @@ get.BER = function(X)
 MCVfold.splsda = function(
 X,
 Y,
+multilevel = NULL, # repeated measurement only
 validation,
 folds,
 nrepeat = 1,
@@ -115,7 +116,16 @@ class.object = NULL
         prediction.comp[[nrep]] = array(0, c(nrow(X), nlevels(Y), length(test.keepX)), dimnames = list(rownames(X), levels(Y), test.keepX))
         rownames(prediction.comp[[nrep]]) = rownames(X)
         colnames(prediction.comp[[nrep]]) = levels(Y)
+        
         n = nrow(X)
+        repeated.measure = 1:n
+        if (!is.null(multilevel))
+        {
+            repeated.measure = multilevel[,1]
+            n = length(unique(repeated.measure)) # unique observation: we put every observation of the same "sample" in the either the training or test set
+        }
+       
+        
         #-- define the folds --#
         if (validation ==  "Mfold")
         {
@@ -151,7 +161,7 @@ class.object = NULL
             
             #print(j)
             #set up leave out samples.
-            omit = folds[[j]]
+            omit = which(repeated.measure %in% folds[[j]] == TRUE)
             
             
             # get training and test set
@@ -160,18 +170,55 @@ class.object = NULL
             X.test = X[omit, , drop = FALSE]#matrix(X[omit, ], nrow = length(omit)) #removed to keep the colnames in X.test
             Y.test = Y[omit]
             
-            #---------------------------------------#
-            #-- logratio transformation of X.test --#
-            # done on X.learn in the splsda function
             
+            #---------------------------------------#
+            #-- logratio transformation of X.train --#
+            
+            # X.train
+            transfo = logratio.transfo(X = X.train, logratio = logratio)
+            X.train = transfo$X
+            
+            # X.test
             transfo = logratio.transfo(X = X.test,logratio = logratio)
             X.test = transfo$X
             
             #-- logratio transformation ------------#
             #---------------------------------------#
             
+            #---------------------------------------------------------------------------#
+            #-- multilevel approach ----------------------------------------------------#
+            
+            if (!is.null(multilevel) & logratio != "none") # if no logratio, we can do multilevel on the whole data; otherwise it needs to be done after each logratio inside the CV
+            {
+                Xw = withinVariation(X, design = multilevel)
+                #                Xw = suppressMessages(withinVariation(X, design = multilevel))
+
+                X.train = X[-omit, ]
+                X.test = X[omit, , drop = FALSE]
+                
+                #Xw = withinVariation(X.train, design = multilevel[-omit,])
+                #X.train = Xw
+
+                #Xw = withinVariation(X.test, design = multilevel[omit,])
+                #X.test = Xw
+            }
+            #-- multilevel approach ----------------------------------------------------#
+            #---------------------------------------------------------------------------#
+
+
             #---------------------------------------#
             #-- near.zero.var ----------------------#
+            
+            # first remove variables with no variance
+            var.train = apply(X.train, 2, var)
+            ind.var = which(var.train == 0)
+            if (length(ind.var) > 0)
+            {
+                X.train = X.train[, -c(ind.var),drop = FALSE]
+                X.test = X.test[, -c(ind.var),drop = FALSE]
+            }
+            
+            
             if(near.zero.var == TRUE)
             {
                 remove.zero = nearZeroVar(X.train)$Position
@@ -189,7 +236,7 @@ class.object = NULL
                 if (progressBar ==  TRUE)
                 setTxtProgressBar(pb, (M*(nrep-1)+j-1)/(M*nrepeat) + (i-1)/length(test.keepX)/(M*nrepeat))
                 
-                object.res = splsda(X.train, Y.train, ncomp = ncomp, keepX = c(choice.keepX, test.keepX[i]), logratio = logratio, near.zero.var = FALSE, mode = "regression")
+                object.res = splsda(X.train, Y.train, ncomp = ncomp, keepX = c(choice.keepX, test.keepX[i]), logratio = "none", near.zero.var = FALSE, mode = "regression")
                   
                 # added: record selected features
                 if (any(class.object %in% c("splsda")) & length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
@@ -197,11 +244,13 @@ class.object = NULL
                 features = c(features, selectVar(object.res, comp = ncomp)$name)
                 
                 test.predict.sw <- predict(object.res, newdata = X.test, method = dist)
-
+                
+                save(list=ls(),file="temp.Rdata")
+                
                 prediction.comp[[nrep]][omit, , i] =  test.predict.sw$predict[, , ncomp]
                 
                 for(ijk in dist)
-                class.comp[[ijk]][omit,nrep,i] =  levels(Y)[test.predict.sw$class[[ijk]][, ncomp]]
+                class.comp[[ijk]][omit,nrep,i] =  test.predict.sw$class[[ijk]][, ncomp] #levels(Y)[test.predict.sw$class[[ijk]][, ncomp]]
             } # end i
             
         } # end j 1:M (M folds)

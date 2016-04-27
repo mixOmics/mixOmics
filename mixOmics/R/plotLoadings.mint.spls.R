@@ -56,7 +56,7 @@ border = NA,
     if(any(study == "all"))
     {
         # if study == "all" then we plot the results on the concatenated data, thus direct call to plotLoadings.plsda
-        plotLoadings.pls(object = object, contrib = contrib, method = method, block = "X", comp = comp, ndisplay = ndisplay,
+        plotLoadings.pls(object = object, method = method, block = "X", comp = comp, ndisplay = ndisplay,
         cex.name = cex.name,
         name.var = name.var,
         complete.name.var = complete.name.var,
@@ -73,7 +73,7 @@ border = NA,
         # if study != "all" then we plot the results on each study
 
         # -- input checks
-        check = check.input.plotLoadings(object = object, block = "X", subtitle = subtitle, main = main, col = col, cex.name = cex.name, namenames.var.var = name.var)
+        check = check.input.plotLoadings(object = object, block = "X", subtitle = subtitle, main = main, col = col, cex.name = cex.name, name.var = name.var)
         
         col = check$col
         cex.name = check$cex.name
@@ -118,9 +118,9 @@ border = NA,
             #added condition if all we need is the contribution stats
             if (!is.null(main) & length(block) > 1)
             {
-                par(mar = c(4, max(6, max(sapply(colnames.X, nchar))/2), 6, 2))
+                par(mar = c(4, max(7, max(sapply(colnames.X, nchar))/2), 6, 2))
             } else {
-                par(mar = c(4, max(6, max(sapply(colnames.X, nchar))/2), 4, 2))
+                par(mar = c(4, max(7, max(sapply(colnames.X, nchar))/2), 4, 2))
             }
 
             mp = barplot(df$importance, horiz = T, las = 1, col = df$color, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(df),
@@ -128,9 +128,9 @@ border = NA,
             
             if ( length(block) == 1 & is.null(main) )
             {
-                title(paste0('Loadings on comp ', comp), line=1, cex.main = size.subtitle)
+                title(paste0('Loadings on comp ', comp), line=1, cex.main = size.title)
             } else if (length(block) == 1) {
-                title(paste(main), line=1, cex.main = size.subtitle)
+                title(paste(main), line=1, cex.main = size.title)
             } else if ((length(block) > 1 & missing(subtitle))) {
                 title(paste0('Loadings on comp ', comp, "\nStudy '", block[i],"'"), line=1, cex.main = size.subtitle)
             } else if (length(block) > 1 & !missing(subtitle)) {

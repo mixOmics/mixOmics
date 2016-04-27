@@ -138,7 +138,7 @@ scale)
             prediction.comp[omit, , i] =  test.predict.sw$predict[, , ncomp]
             
             for(ijk in dist)
-            class.comp[[ijk]][omit,i] =  levels(Y)[test.predict.sw$class[[ijk]][, ncomp]]
+            class.comp[[ijk]][omit,i] =  test.predict.sw$class[[ijk]][, ncomp] #levels(Y)[test.predict.sw$class[[ijk]][, ncomp]]
         }#end test.keepX
         
         if (progressBar ==  TRUE)

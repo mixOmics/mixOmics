@@ -193,7 +193,7 @@ design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 nutrimouse.sgccda <- wrapper.sgccda(blocks = data,
 Y = Y,
 design = design,
-keep = list(c(10,10), c(15,15)),
+keep = list(gene = c(10,10), lipid = c(15,15)),
 ncomp = c(2, 2, 1),
 scheme = "centroid",
 verbose = FALSE,

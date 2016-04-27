@@ -25,8 +25,7 @@ function(X,
          grid1 = seq(0.001, 1, length = 5), 
          grid2 = seq(0.001, 1, length = 5), 
          validation = c("loo", "Mfold"), 
-         folds, 
-         M = 10, 
+         folds = 10,
          plot = TRUE)
 {
 
@@ -50,20 +49,25 @@ function(X,
     if (validation == "loo")
     {
         M = nrow(X)
-        folds=split(1:M, 1:M)
+        folds = split(1:M, 1:M)
         cv.score = apply(grid, 1, function(lambda)
                                     {
-                                        Mfold(X, Y, lambda[1], lambda[2], folds, M)
+                                        Mfold(X, Y, lambda[1], lambda[2], folds)
                                     })
 
     } else {
         nr = nrow(X)
-        if (missing(folds))
-        folds = split(sample(1:nr), rep(1:M, length = nr))
-        
+        M = length(folds)
+        if (is.null(folds) || !is.numeric(folds) || folds < 2 || folds > nr)
+        {
+            stop("Invalid number of folds.")
+        } else {
+            M = round(folds)
+            folds = split(sample(1:nr), rep(1:M, length = nr))
+        }
         cv.score = apply(grid, 1, function(lambda) 
                                     {
-                                        Mfold(X, Y, lambda[1], lambda[2], folds, M)
+                                        Mfold(X, Y, lambda[1], lambda[2], folds)
                                     })
     }
      
@@ -85,16 +89,17 @@ function(X,
 }
 
 
-Mfold = function(X, Y, lambda1, lambda2, folds, M)
+Mfold = function(X, Y, lambda1, lambda2, folds)
 {
     
     xscore = NULL
     yscore = NULL
+    M = length(folds)
     
     for (m in 1:M)
     {
         omit = folds[[m]]
-        result = rcc(X[-omit, , drop = FALSE], Y[-omit, , drop = FALSE], 1, lambda1, lambda2, method = "ridge")
+        result = rcc(X[-omit, , drop = FALSE], Y[-omit, , drop = FALSE], ncomp = 1, lambda1, lambda2, method = "ridge")
         X[omit, ][is.na(X[omit, ])] = 0
         Y[omit, ][is.na(Y[omit, ])] = 0
         xscore = c(xscore, X[omit, , drop = FALSE] %*% result$loadings$X[, 1])

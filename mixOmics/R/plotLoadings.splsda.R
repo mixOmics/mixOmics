@@ -63,9 +63,8 @@ border = NA,
     
     # -- input checks
     check = check.input.plotLoadings(object = object, block = block, subtitle = subtitle, cex.name = cex.name, cex.legend = cex.legend,
-    main = main, col = col, contrib = contrib, name.var = name.var)
+    main = main, col = NULL, contrib = contrib, name.var = name.var)
     
-    col = check$col
     cex.name = check$cex.name
     cex.legend = check$cex.legend
     block = check$block
@@ -155,9 +154,9 @@ border = NA,
             {
                 if (!is.null(main) & length(block) > 1)
                 {
-                    par(mar = c(4, max(6, max(sapply(colnames.X, nchar))/3), 6, 2))
+                    par(mar = c(4, max(7, max(sapply(colnames.X, nchar))/3), 6, 2))
                 } else {
-                    par(mar = c(4, max(6, max(sapply(colnames.X, nchar))/3), 4, 2))
+                    par(mar = c(4, max(7, max(sapply(colnames.X, nchar))/3), 4, 2))
                 }
                 
                 mp = barplot(df$importance, horiz = T, las = 1, col = df$color, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(df),
@@ -165,9 +164,9 @@ border = NA,
                 
                 if ( length(block) == 1 & is.null(main) )
                 {
-                    title(paste0('Contribution on comp ', comp), line=1, cex.main = size.subtitle)
+                    title(paste0('Contribution on comp ', comp), line=1, cex.main = size.title)
                 } else if (length(block) == 1) {
-                    title(paste(main), line=1, cex.main = size.subtitle)
+                    title(paste(main), line=1, cex.main = size.title)
                 } else if ((length(block) > 1 & missing(subtitle))) {
                     title(paste0('Contribution on comp ', comp, "\nBlock '", names.block,"'"), line=1, cex.main = size.subtitle)
                 } else if (length(block) > 1 & !missing(subtitle)) {

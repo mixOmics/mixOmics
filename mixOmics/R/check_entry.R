@@ -369,13 +369,10 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.co
     if(!is.null(multilevel))
     {
         #multilevel analysis: withinVariation and then pls-like
-        # if it's DA analysis, Y is ignored and we look in 'multilevel' input parameter
+        # if it's DA analysis, Y and 'multilevel' are combined
         if(DA)
         {
             Y = multilevel
-            if (ncol(multilevel) < 2)
-            stop("'multilevel' should have at least two columns: one for the repeated measurements and at least one for the outcome.")
-
         }else{
             if ((nrow(X) != nrow(multilevel)))
             stop("unequal number of rows in 'X' and 'multilevel'.")

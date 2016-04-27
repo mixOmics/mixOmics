@@ -71,7 +71,7 @@ plot_parameters)
     #class.object=class(object)
     
     # to satisfy R CMD check that doesn't recognise x, y and group as variable (in aes)
-    x = y = group = NULL
+    x = y = group = pch = NULL
     
     size.title = plot_parameters$size.title
     size.subtitle = plot_parameters$size.subtitle
@@ -126,18 +126,7 @@ plot_parameters)
         
         
         #-- Modify scale colour - Change X/Ylabel - split plots into Blocks
-        if (!any(class.object %in% object.mint))
-        {
-            
-            p = p + scale_colour_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = "Legend", breaks = levels(df$group))
-        } else {
-            p = p + scale_colour_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = "Outcome", breaks = levels(df$group)) +
-            labs(shape = "Study", values= c("a","b"))#levels(object$study)[study.ind])
-            
-            #+scale_colour_manual(values = c(unique(col.per.group)[match(levels(factor(as.character(group))), levels(group))],rep("black",length(study))), name = "Legend", labels = c(levels(group),levels(object$study)[study.ind]))+
-            #scale_fill_manual(values = c(unique(col.per.group)[match(levels(factor(as.character(group))), levels(group))],rep("black",length(study))), name = "Legend", labels = c(levels(group),levels(object$study)[study.ind]))+
-            #scale_shape_manual(values=c(rep(16,length(col.per.group)),NA,as.numeric(levels(object$study))[study.ind]),labels=c(levels(group),levels(object$study)[study.ind]))
-        }
+        p = p + scale_colour_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = "Legend", breaks = levels(df$group))
         
         p = p + labs(list(title = main, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = nCols, scales = "free", as.table = TRUE) #as.table to plot in the same order as the factor
         p = p + theme(plot.title=element_text(size=size.title),axis.title.x=element_text(size=size.xlabel),axis.title.y=element_text(size=size.ylabel),axis.text=element_text(size=size.axis))# bigger title

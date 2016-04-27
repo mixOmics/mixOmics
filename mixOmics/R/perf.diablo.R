@@ -300,7 +300,7 @@ cpus=2,
         {
             apply(Y.predict[[x]][[y]], 2, function(z)
             {
-                1 - sum(diag(table(factor(z, levels = 1 : nlevels(Y)), Y[unlist(folds)])))/length(Y)
+                1 - sum(diag(table(factor(z, levels = levels(Y)), Y[unlist(folds)])))/length(Y)
             })
         })
     })
@@ -327,7 +327,7 @@ cpus=2,
         {
             apply(Y.predict[[x]][[y]], 2, function(z)
             {
-                temp = diag(table(factor(z, levels = 1 : nlevels(Y)), Y[unlist(folds)]))
+                temp = diag(table(factor(z, levels = levels(Y)), Y[unlist(folds)]))
                 1 - c(temp/summary(Y), sum(temp)/length(Y))
             })
         })
@@ -401,7 +401,10 @@ cpus=2,
         # Determine index of the max
         Y.mean = sapply(1 : max(object$ncomp[-indY]), function(x)
         {
-            apply(Y.mean[[x]], 1, which.max)
+            apply(Y.mean[[x]], 1, function(y)
+            {
+                levels(Y)[which.max(y)]
+            })
         })
         
         # Define colnames
@@ -412,7 +415,7 @@ cpus=2,
         #                                                              c(temp/summary(Y), sum(temp)/length(Y))})
         Y.mean.res = sapply(1:max(object$ncomp[-indY]), function(x)
         {
-            mat = table(factor(Y.mean[, x], levels = c(1:nlevels(Y))), Y)
+            mat = table(factor(Y.mean[, x], levels = levels(Y)), Y)
             mat2 <- mat
             diag(mat2) <- 0
             err = c(c(colSums(mat2)/summary(Y), sum(mat2)/length(Y)), mean(colSums(mat2)/colSums(mat)))
@@ -477,7 +480,7 @@ cpus=2,
                     {
                         NA
                     } else {
-                        as.numeric(names(temp)[temp == max(temp)])
+                        names(temp)[temp == max(temp)]
                     }
                 })
             })
@@ -495,7 +498,7 @@ cpus=2,
             apply(Y.vote[[x]], 2, function(y)
             {
                 y[is.na(y)] <- nlevels(Y)+5   ## adding a new level for unsure subjects (replacing NA with this level)
-                temp=table(factor(y, levels = c(1:nlevels(Y), nlevels(Y)+1)), Y)
+                temp=table(factor(y, levels = c(levels(Y), nlevels(Y)+5)), Y)
                 diag(temp) <- 0
                 err = c(colSums(temp)/summary(Y), sum(temp)/length(Y), mean(colSums(temp)/summary(Y)))
                 return(err=err)

@@ -155,7 +155,7 @@ data(nutrimouse)
 # need to unmap the Y factor diet
 Y = unmap(nutrimouse$diet)
 # set up the data as list
-data = list(nutrimouse$gene, nutrimouse$lipid,Y)
+data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 
 # set up the design matrix:
 # with this design, gene expression and lipids are connected to the diet factor

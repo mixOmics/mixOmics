@@ -52,7 +52,7 @@ already.tested.X = NULL,
 validation = "Mfold",
 folds = 10,
 dist = "max.dist",
-measure = c("overall"), # one of c("overall","BER")
+measure = c("BER"), # one of c("overall","BER")
 progressBar = TRUE,
 near.zero.var = FALSE,
 nrepeat = 1,
@@ -88,15 +88,21 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         stop("'Y' should be a factor with more than one level")
         
     } else {
-        if (!missing(Y))
-        stop("'Y' should be included in the 'multilevel' design matrix as a discriminant multilevel analysis is used")
+        # we expect a vector or a 2-columns matrix in 'Y' and the repeated measurements in 'multilevel'
+        multilevel = data.frame(multilevel)
         
         if ((nrow(X) != nrow(multilevel)))
         stop("unequal number of rows in 'X' and 'multilevel'.")
         
-        if (ncol(multilevel) < 2)
-        stop("'multilevel' should have at least two columns: one for the repeated measurements and at least one for the outcome.")
-
+        if (ncol(multilevel) != 1)
+        stop("'multilevel' should have a single column for the repeated measurements, other factors should be included in 'Y'.")
+        
+        if (!is.null(ncol(Y)) && !ncol(Y) %in% c(0,1,2))# multilevel 1 or 2 factors
+        stop("'Y' should either be a factor, a single column data.frame containing a factor, or a 2-columns data.frame containing 2 factors.")
+        
+        multilevel = data.frame(multilevel, Y)
+        multilevel[, 1] = as.numeric(factor(multilevel[, 1])) # we want numbers for the repeated measurements
+        
     }
     
     
@@ -148,7 +154,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     #---------------------------------------------------------------------------#
     #-- multilevel approach ----------------------------------------------------#
     
-    if (!is.null(multilevel))
+    if (!is.null(multilevel) & logratio == "none") # if no logratio, we can do multilevel on the whole data; otherwise it needs to be done after each logratio inside the CV
     {
 
         Xw = withinVariation(X, design = multilevel)
@@ -229,8 +235,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             if (progressBar == TRUE)
             cat("\ncomp",comp.real[comp], "\n")
             
-
-            result = MCVfold.splsda (X, Y, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = 1 + length(already.tested.X),
+            result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = 1 + length(already.tested.X),
             choice.keepX = already.tested.X, test.keepX = test.keepX, measure = measure, dist = dist, logratio = logratio,
             near.zero.var = near.zero.var, progressBar = progressBar, class.object = "splsda")
             

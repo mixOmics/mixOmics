@@ -84,9 +84,9 @@ border = NA,
         # barplot with contributions
         if (!is.null(main) & length(block) > 1)
         {
-            par(mar = c(4, max(6, max(sapply(colnames.X, nchar))/3), 6, 2))
+            par(mar = c(4, max(7, max(sapply(colnames.X, nchar))/3), 6, 2))
         } else {
-            par(mar = c(4, max(6, max(sapply(colnames.X, nchar))/3), 4, 2))
+            par(mar = c(4, max(7, max(sapply(colnames.X, nchar))/3), 4, 2))
         }
 
         mp = barplot(df$importance, horiz = T, las = 1, col = col, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(df),
@@ -94,9 +94,9 @@ border = NA,
         
         if ( (length(block) == 1 & is.null(main)) | (length(block) > 1 & missing(subtitle)))
         {
-            title(paste0('Loadings on comp ', comp, "\nBlock '", names.block,"'"), line=1, cex.main = size.subtitle)
+            title(paste0('Loadings on comp ', comp, "\nBlock '", names.block,"'"), line=1, cex.main = size.title)
         } else if (length(block) == 1) {
-            title(paste(main), line=1, cex.main = size.subtitle)
+            title(paste(main), line=1, cex.main = size.title)
         } else if (length(block) > 1 & !missing(subtitle)) {
             title(paste(subtitle[i]), line=1, cex.main = size.subtitle)
         }

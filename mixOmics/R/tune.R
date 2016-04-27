@@ -71,12 +71,12 @@ tol = 1e-09) #pca
         study = study,
         test.keepX = test.keepX,
         already.tested.X = already.tested.X,
-        validation = validation,
-        folds = folds,
         dist = dist,
         measure = measure,
         progressBar = progressBar,
         scale = scale,
+        tol = tol,
+        max.iter = max.iter,
         near.zero.var = near.zero.var,
         logratio = logratio,
         light.output = light.output)
@@ -90,7 +90,6 @@ tol = 1e-09) #pca
         grid2 = grid2,
         validation = validation,
         folds = folds,
-        M = M,
         plot = plot)
         
     } else if (method == "pca") {
