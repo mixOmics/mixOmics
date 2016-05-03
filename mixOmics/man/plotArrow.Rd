@@ -10,14 +10,14 @@
 \usage{
 plotArrow(  object,
             comp = NULL,
-            abline.line = FALSE,
+            abline = FALSE,
             xlim = NULL,
             ylim = NULL,
             group=NULL,
             col,
             cex,
             pch,
-            main=NULL,
+            title=NULL,
             plot.arrows=TRUE,
             add.legend=FALSE,
             X.label = NULL,
@@ -32,7 +32,7 @@ plotArrow(  object,
 \item{object}{object of class inheriting from \pkg{mixOmics}:  \code{PLS, sPLS, rCC, rGCCA, sGCCA, sGCCDA}},
 \item{comp}{integer vector of length two indicating the components represented on the horizontal
 and the vertical axis to project the individuals.}
-\item{abline.line}{should the vertical and horizontal line through the center be plotted? Default set to \code{FALSE}}
+\item{abline}{should the vertical and horizontal line through the center be plotted? Default set to \code{FALSE}}
 \item{xlim}{the ranges to be encompassed by the \eqn{x} axis, if \code{NULL} they are computed.}
 \item{ylim}{the ranges to be encompassed by the \eqn{y} axis, if \code{NULL} they are computed.}
 \item{group}{factor indicating the group membership for each sample. Coded as default for the supervised method \code{sGCCDA, sPLSDA}, but needs to be input for the unsupervised methods \code{PLS, sPLS, rCC, rGCCA, sGCCA}}
@@ -40,7 +40,7 @@ and the vertical axis to project the individuals.}
 \item{cex}{numeric character (or symbol) expansion, , color vector also possible.}
 \item{pch}{plot character. A character string or a vector of single characters
 or integers. See \code{\link{points}} for all alternatives.}
-\item{main}{set of characters for the title plot.}
+\item{title}{set of characters for the title plot.}
 \item{plot.arrows}{boolean. Whether arrows should be added or not. Default is \code{TRUE}.}
 \item{add.legend}{boolean. Whether the legend should be added. Only for the supervised methods and if group!=NULL. Default is \code{FALSE}.}
 \item{X.label}{x axis titles.}
@@ -130,30 +130,30 @@ plotArrow(nutrimouse.sgcca)
 
 \dontrun{
 plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
-main = 'my plot')
+title = 'my plot')
 
 # ind.names to visualise the unique individuals
 plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
-main = 'my plot', ind.names = TRUE)
+title = 'my plot', ind.names = TRUE)
 
 # ind.names to visualise the unique individuals
 plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
-main = 'my plot', ind.names = TRUE,position.names   = 'start')
+title = 'my plot', ind.names = TRUE,position.names   = 'start')
 
 plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
-main = 'my plot', ind.names = TRUE,position.names   = 'end')
+title = 'my plot', ind.names = TRUE,position.names   = 'end')
 
 # ind.names indicates the diet
 plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
-main = 'my plot', ind.names = nutrimouse$diet, position.names= 'start')
+title = 'my plot', ind.names = nutrimouse$diet, position.names= 'start')
 
 # ind.names to visualise the unique individuals, start position
 plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
-main = 'my plot', ind.names = TRUE, position.names   = 'start')
+title = 'my plot', ind.names = TRUE, position.names   = 'start')
 
 # end position
 plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
-main = 'my plot', ind.names = TRUE, position.names   = 'end')
+title = 'my plot', ind.names = TRUE, position.names   = 'end')
 }
 
 ## variable representation for objects of class 'sgccda'
@@ -179,7 +179,7 @@ plotArrow(nutrimouse.sgccda1)
 
 \dontrun{
 # with legend and title and indiv ID
-plotArrow(nutrimouse.sgccda1,  add.legend = TRUE, main = 'my sample plot',
+plotArrow(nutrimouse.sgccda1,  add.legend = TRUE, title = 'my sample plot',
 ind.names = TRUE, position.names = 'start')
 }
 }

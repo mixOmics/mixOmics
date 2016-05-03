@@ -345,9 +345,8 @@ dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
 validation = c("Mfold", "loo"),
 folds = 10,
 progressBar = TRUE,
-measure=c("overall"), # one of c("overall","BER")
+measure=c("overall","BER"), # one of c("overall","BER")
 near.zero.var = FALSE,
-logratio = c('none'),
 ...)
 {
     
@@ -358,6 +357,10 @@ logratio = c('none'),
     Y = object$Y
     ncomp = object$ncomp
     n = nrow(X)
+    
+    logratio = object$logratio
+    if (is.null(logratio))
+    logratio = "none"
     
     #-- tells which variables are selected in X and in Y --#
     if (any(class(object) == "splsda"))
@@ -380,6 +383,7 @@ logratio = c('none'),
     
     if (hasArg(method.predict))
     stop("'method.predict' argument has been replaced by 'dist' to match the 'tune' function")
+    method.predict = NULL # to pass R CMD check
 
     dist = match.arg(dist, choices = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), several.ok = TRUE)
     if (any(dist == "all"))
@@ -404,8 +408,6 @@ logratio = c('none'),
     if (!is.logical(near.zero.var))
     stop("'near.zero.var' must be either TRUE or FALSE")
     
-    if (length(logratio)>1)
-    stop("'logratio' must be either 'none' or 'CLR'")
     if (!(logratio %in% c("none", "CLR")))
     stop("Choose one of the two following logratio transformation: 'none' or 'CLR'")
     

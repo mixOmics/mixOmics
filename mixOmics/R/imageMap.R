@@ -39,7 +39,7 @@ transpose = FALSE,
 symkey = TRUE,
 keysize = c(1, 1),
 zoom = FALSE,
-main = NULL,
+title = NULL,
 xlab = NULL,
 ylab = NULL,
 margins = c(5, 5),
@@ -156,7 +156,7 @@ lwid = NULL)
     title("Color key", font.main = 1)
     
     #-- layout 2 --#
-    par(mar = c(ifelse(cut.tree[2] != 0, 0.5, 0), 0, ifelse(!is.null(main), 5, 0), margins[2]))
+    par(mar = c(ifelse(cut.tree[2] != 0, 0.5, 0), 0, ifelse(!is.null(title), 5, 0), margins[2]))
     if ((cluster == "both") || (!transpose && cluster == "column") || (transpose && cluster == "row" )) {
         h = attr(ddc, "height")
         plot(ddc, axes = FALSE, xaxs = "i", leaflab = "none",
@@ -166,8 +166,8 @@ lwid = NULL)
         plot(0, 0, axes = FALSE, type = "n", xlab = "", ylab = "")
     }
     
-    if (!is.null(main))
-    title(main, cex.main = 1.5 * op[["cex.main"]])
+    if (!is.null(title))
+    title(title, cex.main = 1.5 * op[["cex.main"]])
     
     #-- layout 3 --#
     if (isTRUE(csc)) {
@@ -317,7 +317,7 @@ lwid = NULL)
                 title("Color key", font.main = 1)
                 
                 #-- layout 2 --#
-                par(mar = c(ifelse(cut.tree[2] != 0, 0.5, 0), 0, ifelse(!is.null(main), 5, 0), margins[2]))
+                par(mar = c(ifelse(cut.tree[2] != 0, 0.5, 0), 0, ifelse(!is.null(title), 5, 0), margins[2]))
                 if ((cluster == "both") || (cluster == "column" & !transpose) || (cluster == "row" & transpose)) {
                     plot(ddc, axes = FALSE, xaxs = "i", leaflab = "none", xlim = c(xleft - 0.5, xright + 0.5))
                 }
@@ -325,8 +325,8 @@ lwid = NULL)
                     plot(0, 0, axes = FALSE, type = "n", xlab = "", ylab = "")
                 }
                 
-                if (!is.null(main))
-                title(main, cex.main = 1.5 * op[["cex.main"]])
+                if (!is.null(title))
+                title(title, cex.main = 1.5 * op[["cex.main"]])
                 
                 # layout 3
                 if (isTRUE(csc)) {

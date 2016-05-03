@@ -55,39 +55,40 @@ to zero means and unit variances (default: TRUE)}
 
 
 \details{
-\code{block.spls} function fit PLS models with \eqn{1, \ldots ,}\code{ncomp} components.
-Multi-response models are fully supported. The \code{X} and \code{Y} datasets
-can contain missing values.
-
+\code{block.spls} function fits a horizontal sPLS models with a specific number of component per block (\eqn{1, \ldots ,}\code{ncomp[i]} components for each block \code{X[i]}).
+A factor needs to be given, either by \code{Y} or by its position \code{indY} in the list of blocks \code{X}.
+Multi-response models are fully supported. \code{X} can contain missing values. Missing values are handled by casewise deletion in the \code{block.spls} function without having to delete the rows with missing data.
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis
 \code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS
 algorithm \code{("classic")} (see References).
 
-The estimation of the missing values can be performed
-by the reconstitution of the data matrix using the \code{nipals} function. Otherwise, missing
-values are handled by casewise deletion in the \code{pls} function without having to
-delete the rows with missing data.
+Variable selection is performed on each component for each block of \code{X} via both input parameter \code{keepX.constraint} and \code{keepX}. \code{keepX.constraint$'blocki'[[j]]} is a vector of variables names that indicates which variables to keep on component \code{j}  of block \code{X$'blocki'}; similarly, \code{keepX[[i]][k]} is a single positive value that indicates the number of variables to keep on component \code{j+k} of block \code{X[[i]]}.
+if \code{Y} is given, variable selection is performed on block \code{Y} via both input parameter \code{keepY.constraint} and \code{keepY}. \code{keepY.constraint[[j]]} is a vector of variables names that indicates which variables to keep on component \code{j}  of block \code{Y}; similarly, \code{keepY[k]} is a single positive value that indicates the number of variables to keep on component \code{j+k} of block \code{Y}.
+Note that if \code{Y} is missing and \code{indY} is provided, then variable selection on Y is performed via both input parameter \code{keepX.constraint} and \code{keepX}.
 }
 
 \value{
-\code{pls} returns an object of class \code{"pls"}, a list
+\code{block.spls} returns an object of class \code{"block.pls"}, a list
 that contains the following components:
 
 \item{X}{the centered and standardized original predictor matrix.}
-\item{Y}{the centered and standardized original response vector or matrix.}
+\item{indY}{the position of the outcome Y in the output list X.}
 \item{ncomp}{the number of components included in the model.}
 \item{mode}{the algorithm used to fit the model.}
-\item{mat.c}{matrix of coefficients to be used internally by \code{predict}.}
-\item{variates}{list containing the \eqn{X} and \eqn{Y} variates.}
+\item{keepX}{Number of variables used to build each component of each block}
+\item{keepY}{Number of variables used to build each component of Y}
+\item{keepX.constraint}{list indicating which variables where constrained to be used to build the first component for each block}
+\item{keepY.constraint}{list indicating which variables where constrained to be used to build the first component for Y}
+\item{variates}{list containing the variates of each block of X.}
 \item{loadings}{list containing the estimated loadings for the variates.}
 \item{names}{list containing the names to be used for individuals and variables.}
 \item{nzv}{list containing the zero- or near-zero predictors information.}
-\item{tol}{the tolerance used in the iterative algorithm, used for subsequent S3 methods}
-\item{max.iter}{the maximum number of iterations, used for subsequent S3 methods}
 \item{iter}{Number of iterations of the algorthm for each component}
+\item{explained_variance}{Percentage of explained variance for each component and each block}
 
 }
+
 
 \references{
 Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.
@@ -96,7 +97,7 @@ Wold H. (1966). Estimation of principal components and related models by iterati
 In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N.Y., 391-420.
 }
 
-\author{Florian Rohart}
+\author{Florian Rohart, etc}
 
 \seealso{\code{\link{spls}}, \code{\link{summary}},
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org for more details.}
@@ -111,8 +112,8 @@ data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3,
 byrow = TRUE, dimnames = list(names(data), names(data)))
 
-res=block.spls(X=data,indY=3,keepX=list(gene=c(10,5,15),lipid=c(3,2)),ncomp=c(3,3,3)) # indY indicates where the outcome Y is in the list X
-
+# indY indicates where the outcome Y is in the list X
+res=block.spls(X=data,indY=3,keepX=list(gene=c(10,5,15),lipid=c(3,2)),ncomp=c(3,3,3))
 res$keepX
 selectVar(res,comp=1)
 plotIndiv(res)

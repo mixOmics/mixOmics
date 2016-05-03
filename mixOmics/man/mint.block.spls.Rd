@@ -104,9 +104,6 @@ In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N
 \seealso{\code{\link{spls}}, \code{\link{summary}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org for more details.}
 
-\examples{
-
-}
 
 \keyword{regression}
 \keyword{multivariate}

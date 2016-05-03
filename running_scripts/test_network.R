@@ -16,7 +16,7 @@ network(nutri.res, comp = 1:3, threshold = 0.6)
 
 ## Changing the attributes of the network
 
-network(nutri.res, comp = 1:3, threshold = 0.45,
+network(nutri.res, comp = 1:3, threshold = 0.7,
 color.node = c("mistyrose", "lightcyan"),
 shape.node = c("circle", "rectangle"),
 color.edge = color.jet(100),

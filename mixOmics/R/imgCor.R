@@ -35,7 +35,7 @@ function(X,
          Y.var.names = TRUE,  	 
          sideColors = TRUE,
          interactive.dev = TRUE,
-         main = TRUE,
+         title = TRUE,
          color, row.cex, col.cex,symkey, keysize, 
          xlab, ylab, margins, lhei, lwid) 
 {
@@ -126,9 +126,9 @@ function(X,
     stop("'interactive.dev' must be a logical constant (TRUE or FALSE).",
          call. = FALSE)
   
-  #-- main
-  if (!is.logical(main))
-    stop("'main' must be a logical constant (TRUE or FALSE).",
+  #-- title
+  if (!is.logical(title))
+    stop("'title' must be a logical constant (TRUE or FALSE).",
          call. = FALSE)
   
   #-- end checking --#
@@ -163,7 +163,7 @@ function(X,
         }
         
         cim(matcor, cluster = "none", 
-            main = if(main) "[X,Y] correlation matrix" else NULL,
+            title = if(title) "[X,Y] correlation matrix" else NULL,
             col.sideColors = col.sideColors,
             row.sideColors = row.sideColors,
             row.names = TRUE, col.names = TRUE)
@@ -183,16 +183,16 @@ function(X,
 		
         if (interactive.dev) {   
           cim(Xcor, cluster = "none",
-              main = if(main) "X correlation matrix" else NULL,
+              title = if(title) "X correlation matrix" else NULL,
               row.names = X.var.names, col.names = X.var.names)
           
           devAskNewPage(TRUE)
           cim(Ycor, cluster = "none", 
-              main = if(main) "Y correlation matrix" else NULL,
+              title = if(title) "Y correlation matrix" else NULL,
               row.names = Y.var.names, col.names = Y.var.names)
           
           cim(XYcor, cluster = "none",
-              main = if(main) "XY correlation matrix" else NULL,			
+              title = if(title) "XY correlation matrix" else NULL,			
               row.names = X.var.names, col.names = Y.var.names)
         }
 		else {
@@ -205,17 +205,17 @@ function(X,
 		  
 		  if (isTRUE(GD)) getOption("device")()
 		  cim(Xcor, cluster = "none",
-		      main = if(main) "X correlation matrix" else NULL,
+		      title = if(title) "X correlation matrix" else NULL,
 		      row.names = X.var.names, col.names = X.var.names)
 		  
 		  if (isTRUE(GD)) getOption("device")()
 		  cim(Ycor, cluster = "none", 
-		      main = if(main) "Y correlation matrix" else NULL,
+		      title = if(title) "Y correlation matrix" else NULL,
 		      row.names = Y.var.names, col.names = Y.var.names)
 		  
 		  if (isTRUE(GD)) getOption("device")()
 		  cim(XYcor, cluster = "none",
-		      main = if(main) "XY correlation matrix" else NULL,
+		      title = if(title) "XY correlation matrix" else NULL,
 		      row.names = X.var.names, col.names = Y.var.names)
 		}
     }	

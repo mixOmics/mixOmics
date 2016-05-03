@@ -29,7 +29,7 @@ multilevel=NULL)
 \arguments{
   \item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
   \item{Y}{numeric vector or matrix of responses (for multi-response models). 
-    \code{NA}s are allowed.}
+    \code{NA}s are allowed. For multilevel analysis, a data frame of up to two columns is accepted.}
   \item{ncomp}{the number of components to include in the model (see Details). 
     Default is set to from one to the rank of \code{X}.}
 \item{mode}{character string. What type of algorithm to use, (partially) matching
@@ -47,8 +47,7 @@ to zero means and unit variances (default: TRUE)}
 \item{max.iter}{integer, the maximum number of iterations.}
 \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations. Default value is FALSE}
 \item{logratio}{one of ('none','CLR'). Default to 'none'}
-\item{multilevel}{Design matrix for multilevel anaylis (for repeated measurements). A numeric matrix or data frame. The first column
-indicates the repeated measures on each individual, i.e. the individuals ID. If \code{  method = 'splsda'}, the 2nd and 3rd columns are factors. If \code{method = 'spls'} then you can choose to only input the repeated measures (column 1) or the 2nd AND 3rd columns to split the variation for a 2 level factor. See Details.}
+\item{multilevel}{Design matrix for multilevel anaylis (for repeated measurements) that indicates the repeated measures on each individual, i.e. the individuals ID. See Details.}
 }
 
 \details{

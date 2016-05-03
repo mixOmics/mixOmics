@@ -84,7 +84,7 @@ name.save = NULL)
     }
     
     #-- check blocks
-    if(length(blocks)>2)
+    if(length(blocks) != 2)
     stop("We can only display 2 blocks",call.=FALSE)
     
     #-- save
@@ -125,8 +125,8 @@ name.save = NULL)
     object.rcc="rcc"
     object.blocks=c("sgcca","rgcca", "sgccda")
     
-    if (! any(class.object %in% c(object.pls,object.rcc,object.blocks)))
-    stop( " 'network' is only implemented for the following objects: pls, spls, mlspls, rcc, sgcca, rgcca, sgccda", call.=FALSE)
+    if (! any(class.object %in% c(object.pls,object.rcc,object.blocks, "matrix")))
+    stop( " 'network' is only implemented for the following objects: matrix, pls, plsda, spls, splsda, rcc, sgcca, rgcca, sgccda", call.=FALSE)
     
     
     if(any(class.object %in% c(object.rcc,object.pls)))

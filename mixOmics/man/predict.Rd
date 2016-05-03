@@ -24,7 +24,8 @@ variates are predicted using a fitted model and a new matrix of observations.
 }
 
 \usage{
-\method{predict}{pls}(object, newdata,study.test,method = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),\ldots)
+\method{predict}{pls}(object, newdata,study.test,
+method = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), \ldots)
 }
 
 \arguments{

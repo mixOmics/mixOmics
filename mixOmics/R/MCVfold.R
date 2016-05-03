@@ -244,9 +244,7 @@ class.object = NULL
                 features = c(features, selectVar(object.res, comp = ncomp)$name)
                 
                 test.predict.sw <- predict(object.res, newdata = X.test, method = dist)
-                
-                save(list=ls(),file="temp.Rdata")
-                
+                                
                 prediction.comp[[nrep]][omit, , i] =  test.predict.sw$predict[, , ncomp]
                 
                 for(ijk in dist)

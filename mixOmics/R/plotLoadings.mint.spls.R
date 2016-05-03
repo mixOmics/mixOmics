@@ -32,20 +32,19 @@
 plotLoadings.mint.pls    =
 plotLoadings.mint.spls   =
 
-function(object, block, 
+function(object, 
 study = "all",
 comp = 1,
 col = NULL,
 ndisplay = NULL,
 cex.name = 0.7,
 name.var = NULL,
-complete.name.var = FALSE,
-main = NULL,
+name.var.complete = FALSE,
+title = NULL,
 subtitle,
-plot = TRUE,
-layout = NULL,
 size.title = rel(1.8),
 size.subtitle = rel(1.4),
+layout = NULL,
 border = NA,
 ...
 ) {
@@ -56,29 +55,35 @@ border = NA,
     if(any(study == "all"))
     {
         # if study == "all" then we plot the results on the concatenated data, thus direct call to plotLoadings.plsda
-        plotLoadings.pls(object = object, method = method, block = "X", comp = comp, ndisplay = ndisplay,
+        plotLoadings.pls(object = object, block = "X", comp = comp, ndisplay = ndisplay,
         cex.name = cex.name,
         name.var = name.var,
-        complete.name.var = complete.name.var,
-        main = main,
+        name.var.complete = name.var.complete,
+        title = title,
         subtitle = subtitle,
         xlim = xlim,
         layout = layout,
         size.title = size.title,
         size.subtitle = size.subtitle,
         border = border,
-        col = "white")
+        col = col)
         
     } else {
         # if study != "all" then we plot the results on each study
 
         # -- input checks
-        check = check.input.plotLoadings(object = object, block = "X", subtitle = subtitle, main = main, col = col, cex.name = cex.name, name.var = name.var)
-        
+        check = check.input.plotLoadings(object = object, block = "X", title = title, col = col, cex.name = cex.name, name.var = name.var)
+
         col = check$col
         cex.name = check$cex.name
         block = check$block # "X"
-        
+
+        if (!missing(subtitle))
+        {
+            if (length(subtitle)!=length(study))
+            stop("'subtitle' indicates the subtitle of the plot for each study and it needs to be the same length as 'study'.")
+        }
+
         # swap block for study
         block = study
         
@@ -88,15 +93,8 @@ border = NA,
         opar = res$opar
         omar = par("mar") #reset mar at the end
         
-        # method
-        if (length(method) !=1 || !method %in% c("mean","median"))
-        {
-            method = "median"
-            warning("'method' should be either 'mean' or 'median', set to 'median' by default")
-        }
-        
         # get the selected variables on the concatenated data
-        res = get.loadings.ndisplay(object = object, comp = comp, block = "X", name.var = name.var, complete.name.var = complete.name.var, ndisplay = ndisplay)
+        res = get.loadings.ndisplay(object = object, comp = comp, block = "X", name.var = name.var, name.var.complete = name.var.complete, ndisplay = ndisplay)
         X = res$X
         colnames.X = res$colnames.X
         name.selected.var = res$name.selected.var
@@ -116,7 +114,7 @@ border = NA,
            
             #display barplot with names of variables
             #added condition if all we need is the contribution stats
-            if (!is.null(main) & length(block) > 1)
+            if (!is.null(title) & length(block) > 1)
             {
                 par(mar = c(4, max(7, max(sapply(colnames.X, nchar))/2), 6, 2))
             } else {
@@ -126,21 +124,21 @@ border = NA,
             mp = barplot(df$importance, horiz = T, las = 1, col = df$color, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(df),
             cex.names = cex.name, cex.axis = 0.7, beside = TRUE, border = border)
             
-            if ( length(block) == 1 & is.null(main) )
+            if ( length(block) == 1 & is.null(title) )
             {
                 title(paste0('Loadings on comp ', comp), line=1, cex.main = size.title)
             } else if (length(block) == 1) {
-                title(paste(main), line=1, cex.main = size.title)
+                title(paste(title), line=0, cex.main = size.title)
             } else if ((length(block) > 1 & missing(subtitle))) {
-                title(paste0('Loadings on comp ', comp, "\nStudy '", block[i],"'"), line=1, cex.main = size.subtitle)
+                title(paste0('Loadings on comp ', comp, "\nStudy '", block[i],"'"), line=0, cex.main = size.subtitle)
             } else if (length(block) > 1 & !missing(subtitle)) {
-                title(paste(subtitle[i]), line=1, cex.main = size.subtitle)
+                title(paste(subtitle[i]), line=0, cex.main = size.subtitle)
             }
             
         }
         
-        if (length(block) > 1 & !is.null(main))
-        title(main, outer=TRUE, line = -2, cex.main = size.title)
+        if (length(block) > 1 & !is.null(title))
+        title(title, outer=TRUE, line = -2, cex.main = size.title)
         
         if (reset.mfrow)
         par(opar)#par(mfrow = omfrow)

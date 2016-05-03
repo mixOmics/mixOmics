@@ -32,7 +32,7 @@ function(object, ...) UseMethod("plotLoadings")
 # --------------------------------------------------------------------------------------
 
 
-check.input.plotLoadings = function(object, block, study, subtitle, cex.name, cex.legend, main, col, contrib, name.var)
+check.input.plotLoadings = function(object, block, study, subtitle, cex.name, cex.legend, title, col, contrib, name.var)
 {
     
     if (is.null(object$loadings))
@@ -48,7 +48,12 @@ check.input.plotLoadings = function(object, block, study, subtitle, cex.name, ce
         } else  if (any(class(object) %in% c("plsda", "splsda"))) {
             block = "X"
         } else {
-            block = object$names$blocks[-object$indY]
+            if (!is.null(object$indY))
+            {
+                block = object$names$blocks[-object$indY]
+            } else {
+                block = object$names$blocks
+            }
         }
     }
     
@@ -61,7 +66,10 @@ check.input.plotLoadings = function(object, block, study, subtitle, cex.name, ce
     } else if (any(class(object) %in% c("pls", "spls"))) {
         object$indY = 3 # we don't want to remove anything in that case, and 3 is higher than the number of blocks which is 2
     }
-
+    
+    if(all(class(object) != "DA"))
+    object$indY = length(object$names$blocks)+1  # we don't want to remove anything in that case, and 3 is higher than the number of blocks which is 2
+    
     if(is.numeric(block))
     {
         if(any(block>length(object$names$blocks[-object$indY])))
@@ -132,8 +140,8 @@ check.input.plotLoadings = function(object, block, study, subtitle, cex.name, ce
     }
     #title
     #-----
-    if (!is.null(main) & !is.character(main))
-    warning('main needs to be of type character')
+    if (!is.null(title) & !is.character(title))
+    warning('title needs to be of type character')
 
     #col
     #-----
@@ -204,7 +212,7 @@ layout.plotLoadings = function(layout, plot, legend, block)
 }
 
 
-get.loadings.ndisplay = function(object, comp, block, name.var, complete.name.var, ndisplay)
+get.loadings.ndisplay = function(object, comp, block, name.var, name.var.complete, ndisplay)
 {
     ##selectvar
     selected.var = selectVar(object, comp = comp, block = block) # gives name and values of the blocks in 'block'
@@ -258,7 +266,7 @@ get.loadings.ndisplay = function(object, comp, block, name.var, complete.name.va
     X = X[, name.selected.var] #reduce the problem to ndisplay
     
     #completing colnames.X by the original names of the variables when missing
-    if (complete.name.var == TRUE)
+    if (name.var.complete == TRUE)
     {
         ind = which(colnames.X == "")
         if (length(ind) > 0)

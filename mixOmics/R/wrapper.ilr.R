@@ -28,17 +28,12 @@
 
 # logratio.transfo
 logratio.transfo = function(X,
-logratio = "none", # one of ('none','CLR','ILR')
-V = NULL)
+logratio = "none" # one of ('none','CLR','ILR')
+)
 {
     
     if (logratio == 'ILR')
     {
-        if (is.null(V))
-        {
-            # back-transformation to clr-space, will be used later to recalculate loadings etc
-            V = clr.backtransfo(X)
-        }
         if (any(class(X) != 'ilr'))
         {   # data are ilr transformed, then the data loose 1 variable, but we'll use V to reconstruct the matrix
             X = ilr.transfo(X)
@@ -48,7 +43,7 @@ V = NULL)
     }
     #if logratio = "none", do nothing
     
-    return(list(X = X, V = V))
+    return(list(X = X))
 }
 
 

@@ -73,7 +73,7 @@ near.zero.var = FALSE
     
    
     out = list(
-    class = match.call(),
+    call = match.call(),
     X = result.sgcca$X,
     variates = result.sgcca$variates,
     loadings = result.sgcca$loadings,

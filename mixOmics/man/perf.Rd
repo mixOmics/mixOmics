@@ -22,26 +22,29 @@ PLS-DA and sparse PLS-DA models using various criteria.
           folds = 10, progressBar = TRUE, \ldots)
 
 \method{perf}{plsda}(object,
-          method.predict = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
+          dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
           validation = c("Mfold", "loo"), 
-          folds = 10, progressBar = TRUE, near.zero.var = FALSE, \ldots)	
+          folds = 10, progressBar = TRUE, measure = c("overall", "BER"),
+          near.zero.var = FALSE, \ldots)
 
 \method{perf}{splsda}(object, 
-          method.predict = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
+          dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
           validation = c("Mfold", "loo"),  
-          folds = 10, progressBar = TRUE, near.zero.var = FALSE, \ldots)		  
+          folds = 10, progressBar = TRUE, measure = c("overall", "BER"),
+          near.zero.var = FALSE, \ldots)
 }
 
 \arguments{
   \item{object}{object of class inheriting from \code{"pls"}, \code{"plsda"}, 
     \code{"spls"} or \code{"splsda"}. The function will retrieve some key parameters stored in that object.}
-  \item{method.predict}{only applies to an object inheriting from \code{"plsda"} or \code{"splsda"} to evaluate the classification performance of the model. Should be a subset of \code{"max.dist"}, \code{"centroids.dist"}, \code{"mahalanobis.dist"}. Default is \code{"all"}. See \code{\link{predict}}.}
+  \item{dist}{only applies to an object inheriting from \code{"plsda"} or \code{"splsda"} to evaluate the classification performance of the model. Should be a subset of \code{"max.dist"}, \code{"centroids.dist"}, \code{"mahalanobis.dist"}. Default is \code{"all"}. See \code{\link{predict}}.}
   \item{validation}{character.  What kind of (internal) validation to use, matching one of \code{"Mfold"} or 
     \code{"loo"} (see below). Default is \code{"Mfold"}.}
   \item{folds}{the folds in the Mfold cross-validation. See Details.}
   \item{progressBar}{by default set to \code{TRUE} to output the progress bar of the computation.}
-  \item{near.zero.var}{default is set to \code{FALSE)} in perf.plsda and perf.splsda. However, the nearZeroVar function is still applied by default on the whole data set at the start of the function. When set to \code{TRUE}, nearZeroVar is also applied on each cross-validation fold.}
-  \item{...}{other arguments to pass to the s/PLS/DA functions.}
+\item{measure}{Two misclassification measure are available: overall misclassification error \code{overall} or the Balanced Error Rate \code{BER}}
+\item{near.zero.var}{default is set to \code{FALSE)} in perf.plsda and perf.splsda. However, the nearZeroVar function is still applied by default on the whole data set at the start of the function. When set to \code{TRUE}, nearZeroVar is also applied on each cross-validation fold.}
+\item{...}{other arguments to pass to the s/PLS/DA functions.}
 }
 
 \details{
@@ -175,7 +178,7 @@ Regression (PCR) and Partial Least Squares Regression (PLSR). \emph{Journal of C
   # ---------
   set.seed(45)
   error <- perf(srbct.splsda, validation = "Mfold", folds = 8, 
-                method.predict = "all")
+                dist = "all")
   
   plot(error, type = "l")
 }

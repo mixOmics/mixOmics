@@ -41,7 +41,6 @@
 # max.iter: integer, the maximum number of iterations.
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 # nrepeat: number of replication of the Mfold process
-# logratio = c('none','CLR'). see splsda
 # light.output: if TRUE, only the most important outputs are given (and calculated)
 
 
@@ -57,7 +56,6 @@ scale = TRUE,
 tol = 1e-06,
 max.iter = 500,
 near.zero.var = FALSE,
-logratio = c('none','CLR'),
 light.output = TRUE # if FALSE, output the prediction and classification of each sample during each folds, on each comp, for each repeat
 )
 {    #-- checking general input parameters --------------------------------------#
@@ -101,11 +99,6 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     stop("invalid number of variates, 'ncomp'.")
     
     
-    #-- logratio
-    if (length(logratio) > 1)
-    logratio = logratio[1]
-    
-    
     #-- measure
     if (length(measure) > 1)
     measure = measure[1]
@@ -128,7 +121,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     colnames(Y.mat) = levels(Y)
     
     check = Check.entry.pls(X, Y = Y.mat, ncomp = ncomp, mode="regression", scale=scale,
-    near.zero.var=near.zero.var, max.iter=max.iter ,tol=tol ,logratio=logratio ,DA=TRUE, multilevel=NULL)
+    near.zero.var=near.zero.var, max.iter=max.iter ,tol=tol ,logratio="none" ,DA=TRUE, multilevel=NULL)
     X = check$X
     ncomp = check$ncomp
     

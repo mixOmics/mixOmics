@@ -22,16 +22,16 @@ plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,
 group = as.numeric(as.factor(multidrug$cell.line$Class)))
 
 
-plotIndiv(pca.res, ind.names = multidrug$cell.line$Class, group = as.numeric(as.factor(multidrug$cell.line$Class)),plot.ellipse=T)
+plotIndiv(pca.res, ind.names = multidrug$cell.line$Class, group = as.numeric(as.factor(multidrug$cell.line$Class)),ellipse=T)
 
 plotIndiv(pca.res, ind.names = multidrug$cell.line$Class, col = as.numeric(as.factor(multidrug$cell.line$Class)))
 
 plotIndiv(pca.res, ind.names = multidrug$cell.line$Class, col = rep(1:2,30))
-plotIndiv(pca.res, ind.names = multidrug$cell.line$Class, group = as.numeric(as.factor(multidrug$cell.line$Class)),col = rep(1:10,6),plot.ellipse=TRUE)
+plotIndiv(pca.res, ind.names = multidrug$cell.line$Class, group = as.numeric(as.factor(multidrug$cell.line$Class)),col = rep(1:10,6),ellipse=TRUE)
 
 
 plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,
-group = as.numeric(as.factor(multidrug$cell.line$Class)),main="bla")
+group = as.numeric(as.factor(multidrug$cell.line$Class)),title="bla")
 
 
 plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,
@@ -59,7 +59,7 @@ plotVar(pca.res, rad.in = 0.5, cex = 0.5,style="3d")
 if(additional.test==TRUE)
 {
     
-    plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,    group = as.numeric(as.factor(multidrug$cell.line$Class)),style="lattice",plot.centroid=TRUE,plot.ellipse=TRUE)
+    plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,    group = as.numeric(as.factor(multidrug$cell.line$Class)),style="lattice",centroid=TRUE,ellipse=TRUE)
     
     plotIndiv(pca.res, style="graphics")
     plotIndiv(pca.res, style="ggplot2")
@@ -70,14 +70,14 @@ if(additional.test==TRUE)
 
 
     plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,
-    group = as.factor(multidrug$cell.line$Class),plot.centroid=TRUE)
+    group = as.factor(multidrug$cell.line$Class),centroid=TRUE)
     
     plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,
-    group = as.factor(multidrug$cell.line$Class),plot.ellipse=TRUE)
+    group = as.factor(multidrug$cell.line$Class),ellipse=TRUE)
 
 
     plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,
-    group = as.factor(multidrug$cell.line$Class),main="bla")
+    group = as.factor(multidrug$cell.line$Class),title="bla")
     
     
     plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,

@@ -28,22 +28,22 @@
 
 # df: data frame with all the information needed: coordinates (x,y,z), grouping factor 'group', 'Block' that indicates the block, names (ind.names), 'pch', 'cex' or each point, 'col.per.group' that gives the color of each point, 'pch.legend' that gives the pch of each point for the legend (same as pch?)
 # as well as: x0 and y0 if plot centroid==TRUE
-# plot.centroid
-# plot.star
-# plot.ellipse
+# centroid
+# star
+# ellipse
 # df.ellipse
 # xlim
 # ylim
-# main
+# title
 # X.label
 # Y.label
 # add.legend
 # display.names
 
 internal_graphicModule=function(df,
-plot.centroid,
+centroid,
 col.per.group,
-main,
+title,
 X.label,
 Y.label,
 Z.label,
@@ -53,16 +53,17 @@ zlim,
 class.object,
 display.names,
 add.legend,
-abline.line,
-plot.star,
-plot.ellipse,
+abline,
+star,
+ellipse,
 df.ellipse,
 style,
 layout=NULL,
 missing.col,
 axes.box,
 study.levels,
-plot_parameters)
+plot_parameters,
+alpha)
 {
     object.pls = c("pls", "spls", "mlspls", "rcc")
     object.pca = c("ipca", "sipca", "pca", "spca", "prcomp")
@@ -78,8 +79,8 @@ plot_parameters)
     size.xlabel = plot_parameters$size.xlabel
     size.ylabel = plot_parameters$size.ylabel
     size.axis = plot_parameters$size.axis
-    legend.text.size = plot_parameters$legend.text.size
-    legend.title.size = plot_parameters$legend.title.size
+    size.legend = plot_parameters$size.legend
+    size.legend.title = plot_parameters$size.legend.title
     legend.position = plot_parameters$legend.position
     point.lwd = plot_parameters$point.lwd
     
@@ -103,7 +104,7 @@ plot_parameters)
         
         #-- Initialise ggplot2
         p = ggplot(df, aes(x = x, y = y, color = group),
-        main = main, xlab = X.label, ylab = Y.label) +
+        main = title, xlab = X.label, ylab = Y.label) +
         theme_bw() + theme(strip.text = element_text(size = size.subtitle, face = "bold"))
         
 
@@ -118,7 +119,7 @@ plot_parameters)
             } else {
                 p = p + geom_point(data = subset(df, df$group == i), size = 0, shape = 0)
             }
-            if (plot.centroid == TRUE)
+            if (centroid == TRUE)
             {
                 p = p + geom_point(data = subset(df[, c("col", "x0", "y0", "Block", "cex", "pch", "group")], df$group == i), aes(x=x0,y=y0), size = 0, shape = 0)
             }
@@ -128,7 +129,7 @@ plot_parameters)
         #-- Modify scale colour - Change X/Ylabel - split plots into Blocks
         p = p + scale_colour_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = "Legend", breaks = levels(df$group))
         
-        p = p + labs(list(title = main, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = nCols, scales = "free", as.table = TRUE) #as.table to plot in the same order as the factor
+        p = p + labs(list(title = title, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = nCols, scales = "free", as.table = TRUE) #as.table to plot in the same order as the factor
         p = p + theme(plot.title=element_text(size=size.title),axis.title.x=element_text(size=size.xlabel),axis.title.y=element_text(size=size.ylabel),axis.text=element_text(size=size.axis))# bigger title
         
         #-- xlim, ylim
@@ -152,7 +153,7 @@ plot_parameters)
                 size = unique(df[df$col == i & df$Block == levels(df$Block)[1], ]$cex),
                 shape = df[df$col == i, ]$pch,stroke = point.lwd)# unique(df[df$col == i & df$Block == paste0("Block: ", blocks[1]), ]$pch))
             }
-            if (plot.centroid == TRUE)
+            if (centroid == TRUE)
             {
                 p = p + geom_point(data = subset(df[, c("col", "x0", "y0", "Block", "cex", "pch", "group")], col == i), aes(x = x0, y = y0),
                 color = unique(df[df$col == i & df$Block == levels(df$Block)[1], ]$col),
@@ -171,16 +172,16 @@ plot_parameters)
             p = p + theme(legend.position="none")
         } else {
             p = p + guides(colour = guide_legend(override.aes = list(shape = if(display.names | any(class.object%in%object.mint) ) {19} else unique(df$pch.legend), size = unique(df$cex),stroke=point.lwd)))    +
-            theme(legend.title=element_text(size=legend.title.size),legend.text=element_text(size=legend.text.size)) +
+            theme(legend.title=element_text(size=size.legend.title),legend.text=element_text(size=size.legend)) +
             theme(legend.position=legend.position)
         }
         
         #-- abline
-        if (abline.line)
+        if (abline)
         p = p + geom_vline(aes(xintercept = 0), linetype = 2, colour = "darkgrey") + geom_hline(aes(yintercept = 0), linetype = 2, colour = "darkgrey")
         
         #-- star
-        if (plot.star == TRUE)
+        if (star == TRUE)
         {
             for (i in 1 : nlevels(df$group))
             {
@@ -191,7 +192,7 @@ plot_parameters)
         }
         
         #-- ellipse
-        if (plot.ellipse == TRUE)
+        if (ellipse == TRUE)
         {
             for (i in 1 : nlevels(df$group))
             {
@@ -227,7 +228,7 @@ plot_parameters)
         
         #-- Initialise ggplot2
         p = ggplot(df, aes(x = x, y = y, color = group, shape = factor(pch, labels = study.levels)),
-        main = main, xlab = X.label, ylab = Y.label) +
+        main = title, xlab = X.label, ylab = Y.label) +
         theme_bw() + theme(strip.text = element_text(size = size.subtitle, face = "bold"))
         
         #-- Display sample or row.names
@@ -242,7 +243,7 @@ plot_parameters)
 
         p = p + scale_shape_manual(values = as.numeric(levels(factor(df$pch)))) # replace the shape/pch by the input, it's converted by default to 1,2,3.. by ggplots
 
-        p = p + labs(list(title = main, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = nCols, scales = "free", as.table = TRUE) #as.table to plot in the same order as the factor
+        p = p + labs(list(title = title, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = nCols, scales = "free", as.table = TRUE) #as.table to plot in the same order as the factor
         p = p + theme(plot.title = element_text(size=size.title), axis.title.x = element_text(size=size.xlabel), axis.title.y = element_text(size = size.ylabel), axis.text = element_text(size = size.axis))# bigger title
         
         #-- xlim, ylim
@@ -254,25 +255,61 @@ plot_parameters)
             p = p + theme(legend.position="none")
         }else{
             p = p + guides(colour = guide_legend(override.aes = list(size = unique(df$cex)))) +
-            theme(legend.title = element_text(size = legend.title.size),legend.text = element_text(size = legend.text.size))+
+            theme(legend.title = element_text(size = size.legend.title),legend.text = element_text(size = size.legend))+
             theme(legend.position = legend.position)#,legend.direction="vertical")
         }
         
         #-- abline
-        if (abline.line)
+        if (abline)
         p = p + geom_vline(aes(xintercept = 0), linetype = 2, colour = "darkgrey") + geom_hline(aes(yintercept = 0),linetype = 2,colour = "darkgrey")
+
+
+        #-- centroid
+        if (centroid == TRUE) #only when one block
+        {
+            for (i in levels(df$group))
+            {
+                p = p + geom_point(data = subset(df,  df$group == i), aes(x = x0, y = y0),
+                color = subset(df, df$group == i)$col[1],
+                size = subset(df, df$group == i)$cex[1],
+                shape = 8, stroke = point.lwd)
+            }
+        }
+
+
+        #-- star
+        if (star == TRUE) #only when one block
+        {
+            for (i in 1 : nlevels(df$group))
+            {
+                p = p + geom_segment(data = subset(df, group == levels(df$group)[i]),
+                aes(x = x0, y = y0, xend = x, yend = y,
+                label = "Block"), color = unique(col.per.group)[i],size = point.lwd)
+            }
+        }
+
+        #-- ellipse
+        if (ellipse == TRUE) #only when one block
+        {
+            for (i in 1 : nlevels(df$group))
+            {
+                p = p + geom_path(data = df.ellipse,
+                aes_string(x = paste0("Col", 2*(i - 1) + 1), y = paste0("Col", 2 * i),
+                label = "Block", group = NULL, shape = NULL), color = unique(col.per.group)[i], size = point.lwd)
+            }
+        }
 
         plot(p)
     }
     #-- End: ggplot2
     
-    #internal_lattice=function(df,group,blocks,names,plot.centroid,x0,y0,col.per.group,main,X.label,Y.label,lim.X,xlim,lim.Y,ylim,class.object,
-    #col,display.names,add.legend,abline.line,pch.legend,cex,plot.star,x,y,plot.ellipse,df.ellipse)
+    #internal_lattice=function(df,group,blocks,names,centroid,x0,y0,col.per.group,title,X.label,Y.label,lim.X,xlim,lim.Y,ylim,class.object,
+    #col,display.names,add.legend,abline,pch.legend,cex,star,x,y,ellipse,df.ellipse)
     if (style=="lattice")
     {
         #-- Start: Lattice
         p = xyplot(y ~ x | Block, data = df, xlab = list(label=X.label,cex=size.xlabel), ylab = list(label=X.label,cex=size.ylabel),
-        main = list(label = main, cex = size.title), as.table = TRUE, #as.table plot in order
+        main = list(label = title, cex = size.title), as.table = TRUE, #as.table plot in order
         groups = if (display.names) {names} else {group},
         scales= list(x = list(relation = "free", limits = xlim,cex=size.axis),
         y = list(relation = "free", limits = ylim,cex=size.axis)),
@@ -282,13 +319,13 @@ plot_parameters)
         {
             if (!any(class.object%in%object.mint))
             {
-                list(space = legend.position, title = "Legend", cex.title = legend.title.size,
-                point = list(col =  col.per.group),cex=legend.text.size, pch = if(display.names | any(class.object%in%object.mint)) {16} else unique(df$pch.legend),text = list(levels(df$group)))
+                list(space = legend.position, title = "Legend", cex.title = size.legend.title,
+                point = list(col =  col.per.group),cex=size.legend, pch = if(display.names | any(class.object%in%object.mint)) {16} else unique(df$pch.legend),text = list(levels(df$group)))
             } else {#we add the shape legend
-                list(space = legend.position, cex.title = legend.title.size,
+                list(space = legend.position, cex.title = size.legend.title,
                 point = list(
                 col =  c(NA, col.per.group, NA, NA, rep("black", length(study.levels)))),
-                cex = c(legend.title.size, rep(legend.text.size, length(col.per.group)), legend.text.size, legend.title.size, rep(legend.text.size,nlevels(factor(df$pch)))),
+                cex = c(size.legend.title, rep(size.legend, length(col.per.group)), size.legend, size.legend.title, rep(size.legend,nlevels(factor(df$pch)))),
                 pch = c(NA, rep(16, length(col.per.group)), NA, NA, as.numeric(levels(factor(df$pch)))),
                 text = list(outcome = c("Outcome", levels(df$group), "", "Study", study.levels))
                 )
@@ -300,7 +337,7 @@ plot_parameters)
         panel = function(x, y, subscripts, groups, display = display.names,...)
         {
             #-- Abline
-            if (abline.line)
+            if (abline)
             {
                 panel.abline(v = 0, lty = 2, col = "darkgrey")
                 panel.abline(h = 0, lty = 2, col = "darkgrey")
@@ -338,7 +375,7 @@ plot_parameters)
         print(p) #-- the lattice plot needs to be printed in order to display the ellipse(s)
         
         #-- centroid
-        if (plot.centroid)
+        if (centroid)
         {
             panels = trellis.currentLayout(which = "panel")
             for (k in 1 : nlevels(df$Block))
@@ -362,7 +399,7 @@ plot_parameters)
         
         
         #-- star
-        if (plot.star)
+        if (star)
         {
             panels = trellis.currentLayout(which = "panel")
             for (k in 1 : nlevels(df$Block))
@@ -393,7 +430,7 @@ plot_parameters)
         
         
         #-- ellipse
-        if (plot.ellipse)
+        if (ellipse)
         {
             panels = trellis.currentLayout(which = "panel")
             for (k in 1 : nlevels(df$Block))
@@ -415,8 +452,8 @@ plot_parameters)
     }
     #-- End: Lattice
     
-    #internal_graphics=function(df,group,blocks,names,plot.centroid,x0,y0,col.per.group,main,X.label,Y.label,lim.X,xlim,lim.Y,ylim,class.object,
-    #col,display.names,add.legend,abline.line,pch.legend,cex,plot.star,x,y,plot.ellipse,df.ellipse,layout,rep.space,missing.col,...)
+    #internal_graphics=function(df,group,blocks,names,centroid,x0,y0,col.per.group,title,X.label,Y.label,lim.X,xlim,lim.Y,ylim,class.object,
+    #col,display.names,add.legend,abline,pch.legend,cex,star,x,y,ellipse,df.ellipse,layout,rep.space,missing.col,...)
     if (style=="graphics")
     {
         #-- Start: graphics
@@ -473,17 +510,17 @@ plot_parameters)
             if (any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda")) & nlevels(df$Block) == 1 & !any(class.object%in%object.mint)) # avoid double title when only one block is plotted
             {
                 titlemain = NULL
-                if (plot.ellipse)
+                if (ellipse)
                 other.ellipse = TRUE
                 
             }else{
                 titlemain = levels(df$Block)[k]
-                if (plot.ellipse)
+                if (ellipse)
                 other.ellipse = df.ellipse$Block %in% levels(df$Block)[k]
             }
             
             #add title of the 'blocks'
-            title(main = titlemain, line = 1, cex.main = size.subtitle)
+            title(title = titlemain, line = 1, cex.main = size.subtitle)
 
             #-- Display sample or row.names
             for (i in 1 : nlevels(df$group))
@@ -530,18 +567,18 @@ plot_parameters)
             
             if (add.legend)
             {
-                legend(par()$usr[2]+0.1, par()$usr[4] - (par()$usr[4]-par()$usr[3])/2, col = col.per.group, legend = levels(df$group), pch = if(display.names) {16} else unique(df$pch.legend), title = 'Legend', cex = legend.text.size, lty = 0,lwd = point.lwd)
+                legend(par()$usr[2]+0.1, par()$usr[4] - (par()$usr[4]-par()$usr[3])/2, col = col.per.group, legend = levels(df$group), pch = if(display.names) {16} else unique(df$pch.legend), title = 'Legend', cex = size.legend, lty = 0,lwd = point.lwd)
                 
             }
             if (add.legend)
             par(xpd=FALSE) # so the abline does not go outside the plot
             
             #-- Abline
-            if (abline.line)
+            if (abline)
             abline(v = 0, h = 0, lty = 2,lwd=point.lwd)#,...)
             
             #-- Star
-            if (plot.star == TRUE)
+            if (star == TRUE)
             {
                 for (i in 1 : nlevels(df$group))
                 {
@@ -556,7 +593,7 @@ plot_parameters)
             }
             
             #-- Centroid
-            if (plot.centroid == TRUE)
+            if (centroid == TRUE)
             {
                 for (i in 1 : nlevels(df$group))
                 {
@@ -569,7 +606,7 @@ plot_parameters)
             
             
             #-- Ellipse
-            if (plot.ellipse == TRUE)
+            if (ellipse == TRUE)
             {
                 for (i in 1 : nlevels(df$group))
                 {
@@ -581,9 +618,9 @@ plot_parameters)
             
             if (any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda")) & nlevels(df$Block)==1 & !any(class.object %in% object.mint) )
             {
-                title(main, line = 1, cex.main = size.title)#,...)
+                title(title, line = 1, cex.main = size.title)#,...)
             } else {
-                title(main, outer=TRUE, line = -2,cex.main=size.title)#,...)
+                title(title, outer=TRUE, line = -2,cex.main = size.title)#,...)
             }
         }
         
@@ -603,8 +640,8 @@ plot_parameters)
     #-- End: graphics
     
     
-    #internal_3d=function(df,group,blocks,names,plot.centroid,x0,y0,col.per.group,main,X.label,Y.label,lim.X,xlim,lim.Y,ylim,class.object,
-    #col,display.names,add.legend,abline.line,pch.legend,cex,plot.star,x,y,plot.ellipse,df.ellipse,axes.box,Z.label,z)
+    #internal_3d=function(df,group,blocks,names,centroid,x0,y0,col.per.group,title,X.label,Y.label,lim.X,xlim,lim.Y,ylim,class.object,
+    #col,display.names,add.legend,abline,pch.legend,cex,star,x,y,ellipse,df.ellipse,axes.box,Z.label,z)
     if (style=="3d")
     {
         
@@ -618,23 +655,23 @@ plot_parameters)
             par3d(windowRect = c(500, 30, 1100, 630))
             Sys.sleep(0.1)
             
-            if (!is.null(main))
+            if (!is.null(title))
             {
                 mat = matrix(1:2, 2)
                 layout3d(mat, heights = c(1, 10), model = "inherit")
                 next3d()
-                text3d(0, 0, 0, main)
+                text3d(0, 0, 0, title)
                 next3d()
             }
             
             if(any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda", "mlsplsda")))
             {
                 other = TRUE
-                if (plot.ellipse)
+                if (ellipse)
                 other.ellipse = TRUE
             } else {
                 other = df$Block %in% levels(df$Block)[k]
-                if (plot.ellipse)
+                if (ellipse)
                 other.ellipse = df.ellipse$Block %in% levels(df$Block)[k]
             }
             
@@ -692,7 +729,7 @@ plot_parameters)
             }
             
             #-- Ellipse
-            if (plot.ellipse)
+            if (ellipse)
             {
                 coords = matrix(cbind(df[other, "x"],
                 df[other, "y"],
@@ -716,7 +753,7 @@ plot_parameters)
             }
             
             #-- Centroid
-            if (plot.centroid == TRUE)
+            if (centroid == TRUE)
             {
                 for (i in 1 : nlevels(df$group))
                 {
@@ -728,7 +765,7 @@ plot_parameters)
             }
             
             #-- Star
-            if (plot.star == TRUE)
+            if (star == TRUE)
             {
                 for (i in 1 : nlevels(df$group))
                 {

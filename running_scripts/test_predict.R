@@ -20,7 +20,7 @@ newdata
 
 pred <- predict(linn.pls, newdata)
 
-plotIndiv(linn.pls, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,main="Prediction PLS")
+plotIndiv(linn.pls, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction PLS")
 points(pred$variates[, 1], pred$variates[, 2], pch = 19, cex = 1.2)
 text(pred$variates[, 1], pred$variates[, 2],
 c("new ind.1", "new ind.2"), pos = 3)
@@ -42,7 +42,7 @@ test.predict <- predict(plsda.train, X[test, ], method = "max.dist")
 Prediction <- levels(Y)[test.predict$class$max.dist[, 2]]
 cbind(Y = as.character(Y[test]), Prediction)
 
-plotIndiv(plsda.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,main="Prediction PLS-DA")
+plotIndiv(plsda.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction PLS-DA")
 
 points(test.predict$variates[, 1], test.predict$variates[, 2], pch = 19, cex = 1.2,col=color.mixo(as.numeric(factor(Prediction,levels=levels(Y)))))
 text(test.predict$variates[, 1], test.predict$variates[, 2],
@@ -58,7 +58,7 @@ Prediction <- levels(Y)[test.predict$class$max.dist[, 2]]
 cbind(Y = as.character(Y[test]), Prediction)
 
 
-plotIndiv(splsda.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,main="Prediction sPLS-DA")
+plotIndiv(splsda.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction sPLS-DA")
 
 points(test.predict$variates[, 1], test.predict$variates[, 2], pch = 19, cex = 1.2,col=color.mixo(as.numeric(factor(Prediction,levels=levels(Y)))))
 text(test.predict$variates[, 1], test.predict$variates[, 2],
@@ -105,7 +105,7 @@ res.train=block.pls(X=data.train,indY=3,ncomp=c(3,3,3))
 test.predict <- predict(res.train, newdata=data.test, method = "max.dist")
 
 par(mfrow=c(1,2))
-plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,main="Prediction block.PLS",blocks="gene")
+plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction block.PLS",blocks="gene")
 points(test.predict$variates[["gene"]][, 1], test.predict$variates[["gene"]][, 2], pch = 19, cex = 1.2)
 text(test.predict$variates[["gene"]][, 1], test.predict$variates[["gene"]][, 2],
 c(paste0("new ind",1:length(test))), pos = 3)
@@ -122,7 +122,7 @@ res.train=block.spls(X=data.train,indY=3,ncomp=c(3,3,3),keepX=list(gene=c(10,10,
 test.predict <- predict(res.train, newdata=data.test, method = "max.dist")
 
 par(mfrow=c(1,2))
-plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,main="Prediction block.sPLS",blocks="gene")
+plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction block.sPLS",blocks="gene")
 points(test.predict$variates[["gene"]][, 1], test.predict$variates[["gene"]][, 2], pch = 19, cex = 1.2)
 text(test.predict$variates[["gene"]][, 1], test.predict$variates[["gene"]][, 2],
 c(paste0("new ind",1:length(test))), pos = 3)
@@ -143,7 +143,7 @@ color.test=color.mixo(as.numeric(factor(Prediction,levels=levels(Y.train))))
 color.test[is.na(color.test)]=1
 
 par(mfrow=c(1,2))
-plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,main="Prediction block.sPLS-DA",blocks="gene")
+plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction block.sPLS-DA",blocks="gene")
 points(test.predict$variates[["gene"]][, 1], test.predict$variates[["gene"]][, 2], pch = 19, cex = 1.2,col=color.test)
 text(test.predict$variates[["gene"]][, 1], test.predict$variates[["gene"]][, 2],
 c(paste0("new ind",1:length(test))), pos = 3)
@@ -170,7 +170,7 @@ color.test=color.mixo(as.numeric(factor(Prediction,levels=levels(Y.train))))
 color.test[is.na(color.test)]=1
 
 par(mfrow=c(1,2))
-plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,main="Prediction block.sPLS-DA",blocks="gene")
+plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction block.sPLS-DA",blocks="gene")
 points(test.predict$variates[["gene"]][, 1], test.predict$variates[["gene"]][, 2], pch = 19, cex = 1.2,col=color.test)
 text(test.predict$variates[["gene"]][, 1], test.predict$variates[["gene"]][, 2],
 c(paste0("new ind",1:length(test))), pos = 3)
@@ -217,7 +217,7 @@ mint.train=mint.pls(X=gene.train,Y=Y.mat.train,ncomp=3,near.zero.var=FALSE,study
 
 test.predict <- predict(mint.train, gene.test, method = "max.dist",study.test=study.test)
 
-plotIndiv(mint.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,main="Prediction mint.PLS",xlim=c(-20,50))
+plotIndiv(mint.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction mint.PLS",xlim=c(-20,50))
 points(test.predict$variates[, 1], test.predict$variates[, 2], pch = 19, cex = 1.2)
 text(test.predict$variates[, 1], test.predict$variates[, 2],
 c(paste0("new ind",1:length(study.test))), pos = 3)
@@ -229,7 +229,7 @@ mint.train=mint.spls(X=gene.train,Y=Y.mat.train,ncomp=3,near.zero.var=FALSE,stud
 
 test.predict <- predict(mint.train, gene.test, method = "max.dist",study.test=study.test)
 
-plotIndiv(mint.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,main="Prediction mint.sPLS",xlim=c(-3,6))
+plotIndiv(mint.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction mint.sPLS",xlim=c(-3,6))
 points(test.predict$variates[, 1], test.predict$variates[, 2], pch = 19, cex = 1.2)
 text(test.predict$variates[, 1], test.predict$variates[, 2],
 c(paste0("new ind",1:length(study.test))), pos = 3)
@@ -244,7 +244,7 @@ test.predict <- predict(mint.train, gene.test, method = "max.dist",study.test=st
 Prediction <- levels(celltype)[test.predict$class$max.dist[, 2]]
 cbind(Y = as.character(celltype.test), Prediction)
 
-plotIndiv(mint.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,main="Prediction mint.PLS-DA")
+plotIndiv(mint.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction mint.PLS-DA")
 points(test.predict$variates[, 1], test.predict$variates[, 2], pch = 19, cex = 1.2,col=color.mixo(as.numeric(factor(Prediction,levels=levels(celltype)))))
 #text(test.predict$variates[, 1], test.predict$variates[, 2],
 #c(paste0("new ind",1:length(study.test))), pos = 3)
@@ -259,7 +259,7 @@ test.predict <- predict(mint.train, gene.test, method = "max.dist",study.test=st
 Prediction <- levels(celltype)[test.predict$class$max.dist[, 2]]
 cbind(Y = as.character(celltype.test), Prediction)
 
-plotIndiv(mint.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,main="Prediction mint.sPLS-DA")
+plotIndiv(mint.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction mint.sPLS-DA")
 points(test.predict$variates[, 1], test.predict$variates[, 2], pch = 19, cex = 1.2,col=color.mixo(as.numeric(factor(Prediction,levels=levels(celltype)))))
 #text(test.predict$variates[, 1], test.predict$variates[, 2],
 #c(paste0("new ind",1:length(study.test))), pos = 3)

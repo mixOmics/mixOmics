@@ -30,11 +30,11 @@ mode = "regression",
 validation = "Mfold",
 folds = 10,
 dist = "max.dist",
-measure = c("BER"), # one of c("overall","BER")
+measure = "BER", # one of c("overall","BER")
 progressBar = TRUE,
 near.zero.var = FALSE,
-nrepeat=1,
 logratio = "none",
+nrepeat=1,
 light.output = TRUE
 )
 {

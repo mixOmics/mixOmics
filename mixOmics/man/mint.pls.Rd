@@ -79,7 +79,7 @@ Wold H. (1966). Estimation of principal components and related models by iterati
 In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N.Y., 391-420.
 }
 
-\author{Sebastien Dejean and Ignacio Gonzalez and Kim-Anh Le Cao.}
+\author{Florian Rohart}
 
 \seealso{\code{\link{spls}}, \code{\link{summary}},
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org for more details.}
@@ -90,10 +90,12 @@ data(stemcells)
 Y = unmap(stemcells$celltype)
 res=mint.pls(X=stemcells$gene,Y=Y,ncomp=3,near.zero.var=FALSE,study=stemcells$study)
 
-plotIndiv(res,ind.names=FALSE)
-plotIndiv(res,ind.names=FALSE,study=levels(stemcells$study),col=as.numeric(stemcells$celltype)) #plot study-specific outputs for all studies
-plotIndiv(res,ind.names=TRUE,study=levels(stemcells$study),col=as.numeric(stemcells$celltype))
-plotIndiv(res,ind.names=FALSE,study="2",col=as.numeric(stemcells$celltype)) #plot study-specific outputs for study "2"
+plotIndiv(res)
+#plot study-specific outputs for all studies
+plotIndiv(res,study=levels(stemcells$study),col=as.numeric(stemcells$celltype))
+
+#plot study-specific outputs for study "2"
+plotIndiv(res,study="2",col=as.numeric(stemcells$celltype))
 
 }
 

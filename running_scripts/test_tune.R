@@ -26,7 +26,7 @@ tune= tune.splsda(X,Y,ncomp=1,nrepeat=1,logratio="none",test.keepX = c(5),folds=
 
 
 
-tune= tune.splsda(X,Y,ncomp=1,nrepeat=10,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = FALSE)
+tune= tune.splsda(X,Y,ncomp=1,nrepeat=10,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = TRUE, light.output=FALSE)
 
 
 tune= tune.splsda(X,Y,ncomp=3,nrepeat=10,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = FALSE)
@@ -71,13 +71,29 @@ A.light=list(X=data.light,Y=Y.mat.light)
 
 res=mint.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
-tt=tune.mint.splsda(X=data,Y=type.id,ncomp=2,near.zero.var=FALSE,study=exp,test.keepX=seq(1,20,1))
+tt=tune.mint.splsda(X=data,Y=type.id,ncomp=2,near.zero.var=FALSE,study=exp,test.keepX=seq(1,10,1))
 
 
-tt=tune(method="mint.splsda",X=data,Y=type.id,ncomp=2,near.zero.var=FALSE,study=exp,test.keepX=seq(1,20,1))
+tt=tune(method="mint.splsda",X=data,Y=type.id,ncomp=2,near.zero.var=FALSE,study=exp,test.keepX=seq(1,10,1))
 
 # with the full data, to check that we get the same results: 2+15
 #tt=tune.mint.splsda(X=data.learn,Y=type.id.learn,ncomp=3,near.zero.var=FALSE,study=experiment.id.learn,test.keepX=seq(1,20,1))
 
+
+# rcc
+# ----
+data(linnerud)
+X <- linnerud$exercise
+Y <- linnerud$physiological
+linn.res <- rcc(X, Y)
+
+## Regularized CCA
+data(nutrimouse)
+X <- nutrimouse$lipid
+Y <- nutrimouse$gene
+nutri.res1 <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
+
+
+tt=tune.rcc(X, Y)
 
 par(opar)

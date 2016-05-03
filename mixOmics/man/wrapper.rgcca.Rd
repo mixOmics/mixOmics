@@ -15,7 +15,6 @@ wrapper.rgcca(X,
     keepX.constraint,
     keepX,
     scheme = "centroid",
-    mode="canonical",
     scale = TRUE,
     bias = FALSE,
     init = "svd.single",
@@ -36,9 +35,6 @@ wrapper.rgcca(X,
 \item{keepX}{ A vector of same length as X.  Each entry keepX[i] is the number of X[[i]]-variables kept in the model on the last components (once all keepX.constraint[[i]] are used).}
   \item{scheme}{Either "horst", "factorial" or "centroid"
   (Default: "centroid").}
-\item{mode}{character string. What type of algorithm to use, (partially) matching
-one of \code{"regression"}, \code{"canonical"}, \code{"invariant"} or \code{"classic"}.
-See Details.}
 \item{scale}{boleean. If scale = TRUE, each block is standardized
 to zero means and unit variances (default: TRUE)}
 \item{bias}{boleean. A logical value for biaised or unbiaised estimator of the var/cov (defaults to FALSE).}

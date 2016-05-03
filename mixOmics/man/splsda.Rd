@@ -24,8 +24,7 @@ multilevel=NULL)
 
 \arguments{
 \item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
-\item{Y}{numeric vector or matrix of responses (for multi-response models).
-\code{NA}s are allowed.}
+\item{Y}{a factor or a class vector for the discrete outcome.}
 \item{ncomp}{the number of components to include in the model (see Details).
 Default is set to from one to the rank of \code{X}.}
 \item{mode}{character string. What type of algorithm to use, (partially) matching
@@ -101,11 +100,11 @@ data(vac18)
 X <- vac18$genes
 Y <- vac18$stimulation
 # sample indicates the repeated measurements
-design <- data.frame(sample = vac18$sample,
-stimul = vac18$stimulation)
+design <- data.frame(sample = vac18$sample)
+Y = data.frame(stimul = vac18$stimulation)
 
 # multilevel sPLS-DA model
-res.1level <- splsda(X, ncomp = 3, multilevel = design,
+res.1level <- splsda(X, Y = Y, ncomp = 3, multilevel = design,
     keepX = c(30, 137, 123))
 
 # set up colors for plotIndiv
@@ -119,14 +118,14 @@ plotIndiv(res.1level, ind.names = Y, col.per.group = col.stim)
 data(vac18.simulated) # simulated data
 
 X <- vac18.simulated$genes
-design <- data.frame(sample = vac18.simulated$sample,
-stimu = vac18.simulated$stimulation,
-time = vac18.simulated$time)
+design <- data.frame(sample = vac18.simulated$sample)
+Y = data.frame( stimu = vac18.simulated$stimulation,
+                time = vac18.simulated$time)
 
-res.2level <- splsda(X, ncomp = 2, multilevel = design,
+res.2level <- splsda(X, Y = Y, ncomp = 2, multilevel = design,
 keepX = c(200, 200))
 
-plotIndiv(res.2level, group = design$stimu, ind.names = vac18.simulated$time,
+plotIndiv(res.2level, group = Y$stimu, ind.names = vac18.simulated$time,
 add.legend = TRUE, style = 'lattice')
 }
 

@@ -26,14 +26,11 @@
 
 circosPlot = function(object,
 corThreshold,
-figSize = 800,
-segmentWidth = 25,
-linePlotWidth = 90,
 showIntraLinks = FALSE,
 line=TRUE,
-cex.legend=0.8,
+size.legend=0.8,
 ncol.legend=1,
-cex.labels=1)
+size.labels=1)
 {
     # to satisfy R CMD check that doesn't recognise x, y and group as variable (in aes)
     Features = Exp = Dataset = Mean = linkColors = chrom = po = NULL
@@ -41,6 +38,9 @@ cex.labels=1)
 
     options(stringsAsFactors = FALSE)
     set.seed(1234)
+    figSize = 800
+    segmentWidth = 25
+    linePlotWidth = 90
     
     ##############################
     ###   networkDiagram_core.R
@@ -133,7 +133,7 @@ cex.labels=1)
     plot(c(1,figSize), c(1,figSize), type="n", axes=FALSE, xlab="", ylab="", main="")
     
     # Plot ideogram
-    drawIdeogram(R=circleR, cir=db, W=segmentWidth,  show.band.labels=TRUE, show.chr.labels=TRUE, chr.labels.R= chrLabelsR, chrData=chr,cex.labels=cex.labels)
+    drawIdeogram(R=circleR, cir=db, W=segmentWidth,  show.band.labels=TRUE, show.chr.labels=TRUE, chr.labels.R= chrLabelsR, chrData=chr,size.labels=size.labels)
     
     # Plot links
     drawLinks(R=linksR, cir=db,   mapping=links,   col=linkColors, drawIntraChr=showIntraLinks)
@@ -171,23 +171,24 @@ cex.labels=1)
     # Plot legend
     # First legeng bottom left corner
     legend(x=5, y = (circleR/4), title="Correlations", c("Positive Correlation", "Negative Correlation"),
-    col = c(colors()[134], colors()[128]), pch = 19, cex=cex.legend, bty = "n")
+    col = c(colors()[134], colors()[128]), pch = 19, cex=size.legend, bty = "n")
     # Second legend bottom righ corner
     if(line==TRUE)
     legend(x=figSize-(circleR/3), y = (circleR/3), title="Expression", legend=levels(Y),  ## changed PAM50 to Y
-    col = lineCols, pch = 19, cex=cex.legend, bty = "n",ncol=ncol.legend)
+    col = lineCols, pch = 19, cex=size.legend, bty = "n",ncol=ncol.legend)
     # third legend top left corner
     legend(x=figSize-(circleR/2), y = figSize, title="Correlation cut-off", legend=paste("r", corThreshold, sep = "="),
-    col = "black", cex=cex.legend, bty = "n")
+    col = "black", cex=size.legend, bty = "n")
     
     par(xpd=opar,mar=opar1)# put the previous defaut parameter for xpd
+    return()
 }
 
 drawIdeogram = function(R, xc=400, yc=400, cir, W,
 show.band.labels = FALSE,
 show.chr.labels = FALSE, chr.labels.R = 0,
 chrData,
-cex.labels)
+size.labels)
 {
     # Draw the main circular plot: segments, bands and labels
     chr.po    = cir 
@@ -232,7 +233,7 @@ cex.labels)
         if (show.chr.labels){
             w.m = (v1+v2)/2 
             chr.t = gsub("chr", "", chr.s) 
-            draw.text.rt(xc, yc, chr.labels.R, w.m, chr.t, cex=cex.labels, segmentWidth = W, parallel=TRUE) 
+            draw.text.rt(xc, yc, chr.labels.R, w.m, chr.t, cex=size.labels, segmentWidth = W, parallel=TRUE) 
         }
     } #End for
 }

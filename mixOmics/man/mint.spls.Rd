@@ -34,53 +34,62 @@ one of \code{"regression"} or \code{"canonical"}. See Details.}
 \item{study}{grouping factor indicating which samples are from the same study}
 \item{keepX.constraint}{A list containing which variables of X are to be kept on each of the first PLS-components}
 \item{keepY.constraint}{A list containing which variables of Y are to be kept on each of the first PLS-components}
-\item{keepX}{numeric vector of length \code{ncomp}, the number of variables
+\item{keepX}{numeric vector of length \code{ncomp -length(keepX.constraint)}, the number of variables
 to keep in \eqn{X}-loadings. By default all variables are kept in the model.}
-\item{keepY}{numeric vector of length \code{ncomp}, the number of variables
+\item{keepY}{numeric vector of length \code{ncomp-length(keepY.constraint)}, the number of variables
 to keep in \eqn{Y}-loadings. By default all variables are kept in the model.}
 \item{scale}{boleean. If scale = TRUE, each block is standardized
 to zero means and unit variances (default: TRUE)}
 \item{tol}{Convergence stopping value.}
 \item{max.iter}{integer, the maximum number of iterations.}
-\item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations. Default value is FALSE}
+\item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Default value is FALSE}
 
 }
 
 
 \details{
-\code{pls} function fit PLS models with \eqn{1, \ldots ,}\code{ncomp} components.
-Multi-response models are fully supported. The \code{X} and \code{Y} datasets
-can contain missing values.
+\code{mint.spls} function fits a vertical PLS models with (\eqn{1, \ldots ,}\code{ncomp} components.
 
-The type of algorithm to use is specified with the \code{mode} argument. Four PLS 
-algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis 
-\code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS 
-algorithm \code{("classic")} (see References).
+Multi-response models are fully supported. \code{X} and \code{Y} can contain missing values. Missing values are handled by casewise deletion in the \code{block.pls} function without having to delete the rows with missing data.
 
-The estimation of the missing values can be performed 
-by the reconstitution of the data matrix using the \code{nipals} function. Otherwise, missing 
-values are handled by casewise deletion in the \code{pls} function without having to 
-delete the rows with missing data.  
+
+The type of algorithm to use is specified with the \code{mode} argument. Two PLS
+algorithms are available: PLS regression \code{("regression")} and PLS canonical analysis
+\code{("canonical")}.
+
+
+Variable selection is performed on each component of \code{X} via both input parameter \code{keepX.constraint} and \code{keepX}. \code{keepX.constraint[[j]]} is a vector of variable names that indicates which variables to keep on component \code{j}; similarly, \code{keepX[k]} is a single positive value that indicates the number of variables to keep on component \code{j+k}.
+Variable selection is performed on \code{Y} via both input parameter \code{keepY.constraint} and \code{keepY}. \code{keepY.constraint[[j]]} is a vector of variables names that indicates which variables to keep on component \code{j}  of block \code{Y}; similarly, \code{keepY[k]} is a single positive value that indicates the number of variables to keep on component \code{j+k} of \code{Y}.
+
 }
+
 
 \value{
-\code{pls} returns an object of class \code{"pls"}, a list 
+\code{mint.spls} returns an object of class \code{"mint.spls","spls"}, a list
 that contains the following components:
 
-  \item{X}{the centered and standardized original predictor matrix.}
-  \item{Y}{the centered and standardized original response vector or matrix.}
-  \item{ncomp}{the number of components included in the model.}
-  \item{mode}{the algorithm used to fit the model.}
-  \item{mat.c}{matrix of coefficients to be used internally by \code{predict}.}
-  \item{variates}{list containing the \eqn{X} and \eqn{Y} variates.}
-  \item{loadings}{list containing the estimated loadings for the variates.}
-  \item{names}{list containing the names to be used for individuals and variables.}
-  \item{nzv}{list containing the zero- or near-zero predictors information.}
-   \item{tol}{the tolerance used in the iterative algorithm, used for subsequent S3 methods}
-  \item{max.iter}{the maximum number of iterations, used for subsequent S3 methods}
-    \item{iter}{Number of iterations of the algorthm for each component}
+\item{X}{the centered and standardized original predictor matrix.}
+\item{indY}{the position of the outcome Y in the output list X.}
+\item{Y}{the centered and standardized original response vector or matrix.}
+\item{ncomp}{the number of components included in the model.}
+\item{study}{The study grouping factor}
+\item{mode}{the algorithm used to fit the model.}
+\item{keepX}{Number of variables used to build each component of X}
+\item{keepY}{Number of variables used to build each component of Y}
+\item{keepX.constraint}{list indicating which variables where constrained to be used to build the first component of X}
+\item{keepY.constraint}{list indicating which variables where constrained to be used to build the first component of Y}
+\item{variates}{list containing the variates of X.}
+\item{loadings}{list containing the estimated loadings for the variates.}
+\item{variates.partial}{list containing the variates of X relative to each study.}
+\item{loadings.partial}{list containing the estimated loadings for the partial variates.}
+\item{names}{list containing the names to be used for individuals and variables.}
+\item{nzv}{list containing the zero- or near-zero predictors information.}
+\item{iter}{Number of iterations of the algorthm for each component}
+\item{explained_variance}{Percentage of explained variance for each component and each study}
 
 }
+
+
 
 \references{
 Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.
@@ -89,7 +98,7 @@ Wold H. (1966). Estimation of principal components and related models by iterati
 In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N.Y., 391-420.
 }
 
-\author{Sebastien Dejean and Ignacio Gonzalez and Kim-Anh Le Cao.}
+\author{Florian Rohart}
 
 \seealso{\code{\link{spls}}, \code{\link{summary}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org for more details.}
@@ -98,13 +107,15 @@ In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N
 data(stemcells)
 # need to unmap Y for an unsupervised analysis
 Y = unmap(stemcells$celltype)
-res=mint.spls(X=stemcells$gene,Y=Y,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=stemcells$study)
+res=mint.spls(X=stemcells$gene,Y=Y,ncomp=3,near.zero.var=FALSE,
+    keepX=c(10,5,15),study=stemcells$study)
 
-plotIndiv(res,ind.names=FALSE)
-plotIndiv(res,ind.names=FALSE,study=levels(stemcells$study),col=as.numeric(stemcells$celltype)) #plot study-specific outputs for all studies
-plotIndiv(res,ind.names=TRUE,study=levels(stemcells$study),col=as.numeric(stemcells$celltype))
-plotIndiv(res,ind.names=FALSE,study="2",col=as.numeric(stemcells$celltype)) #plot study-specific outputs for study "2"
+plotIndiv(res)
+#plot study-specific outputs for all studies
+plotIndiv(res,study=levels(stemcells$study),col=as.numeric(stemcells$celltype))
 
+#plot study-specific outputs for study "2"
+plotIndiv(res,study="2",col=as.numeric(stemcells$celltype))
 }
 
 \keyword{regression}

@@ -53,16 +53,16 @@ near.zero.var = FALSE, # all but pca, rcc
 logratio = "none", # all but pca, rcc
 center = TRUE, # pca
 scale = TRUE, # mint, splsda
-light.output = TRUE, # mint, splsda
 max.iter = 500, #pca
-tol = 1e-09) #pca
-
+tol = 1e-09, #pca
+light.output = TRUE # mint, splsda
+)
 {
     choice.method = c("spls", "splsda", "mint.splsda", "rcc", "pca")
     method = match.arg(method, choice.method)
     
     if (method == "mint.splsda") {
-        message("Calling 'tune.mint.splsda'")
+        message("Calling 'tune.mint.splsda' with Leave-One-Group-Out Cross Validation")
 
         if (missing(ncomp))
         ncomp = 1
@@ -78,7 +78,6 @@ tol = 1e-09) #pca
         tol = tol,
         max.iter = max.iter,
         near.zero.var = near.zero.var,
-        logratio = logratio,
         light.output = light.output)
         
     } else if (method == "rcc") {

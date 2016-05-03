@@ -31,7 +31,7 @@ data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- as.factor(liver.toxicity$treatment[, 4])
 
-ncomp <- 2
+ncomp <- 3
 keepX <- rep(20, ncomp)
 
 splsda.liver <- splsda(X, Y, ncomp = ncomp, keepX = keepX)
@@ -45,7 +45,7 @@ data(nutrimouse)
 # need to unmap the Y factor diet
 Y = unmap(nutrimouse$diet)
 # set up the data as list
-data = list(nutrimouse$gene, nutrimouse$lipid,Y)
+data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 
 # set up the design matrix:
 # with this design, gene expression and lipids are connected to the diet factor
@@ -62,23 +62,23 @@ design = matrix(c(0,1,1,
 
 #note: the penalty parameters will need to be tuned
 wrap.result.sgcca = wrapper.sgcca(X = data, design = design, penalty = c(.3,.3, 1),
-ncomp = c(2, 2, 1),
+ncomp = c(2, 2, 2),
 scheme = "centroid", verbose = FALSE)
 wrap.result.sgcca
 
 #variables selected on component 1 for each block
-selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'block1'$name
-selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'block2'$name
+selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'gene'$name
+selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'lipid'$name
 
 #variables selected on component 2 for each block
-selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'block1'$name
-selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'block2'$name
+selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'gene'$name
+selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'lipid'$name
 
-plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), comp.select = c(1,1),main = c('Variables selected on component 1 only'))
-plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), comp.select = c(2,2),main = c('Variables selected on component 2 only'))
+plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), comp.select = c(1,1),title = c('Variables selected on component 1 only'))
+plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), comp.select = c(2,2),title = c('Variables selected on component 2 only'))
 
 # -> this one shows the variables selected on both components
-plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), main = c('Variables selected on components 1 and 2'))
+plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), title = c('Variables selected on components 1 and 2'))
 
 ## variable representation for objects of class 'rgcca'
 # ----------------------------------------------------
@@ -103,7 +103,7 @@ plotVar(nutrimouse.rgcca, comp = c(1,2), block = c(1,2))
 
 
 # set up the data as list
-data = list(nutrimouse$gene, nutrimouse$lipid,Y)
+data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid,Y = Y)
 # with this design, gene expression and lipids are connected to the diet factor
 # design = matrix(c(0,0,1,
 #                   0,0,1,

@@ -103,7 +103,8 @@ layout = NULL,
         
         if (hasArg(pred.method))
         stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
-        
+        pred.method = NULL # to pass R CMD check
+
         if (any(dist == "all"))
         dist = colnames(x$error.rate[[measure]])
         

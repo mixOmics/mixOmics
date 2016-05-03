@@ -38,7 +38,7 @@ transpose = FALSE,
 symkey = TRUE,
 keysize = c(1, 1),
 zoom = FALSE,
-main = NULL,
+title = NULL,
 xlab = NULL,
 ylab = NULL,
 margins = c(5, 5),
@@ -232,8 +232,8 @@ name.save = NULL)
     #-- ylab
     ylab = as.graphicsAnnot(ylab)
     
-    #-- main
-    main = as.graphicsAnnot(main)
+    #-- title
+    title = as.graphicsAnnot(title)
     
     #-- threshold correlation
     if (!is.numeric(threshold) | (threshold > 1) | (threshold < 0))
@@ -279,9 +279,17 @@ name.save = NULL)
     object.pls=c("pls","spls","mlspls")
     object.list=c("pca","spca","ipca","sipca","mlsplsda","splsda","plsda","rcc","pls","spls","mlspls")
     
-    if(class.object[1] %in%  object.list)
-    
-    {p = ncol(mat$X)
+    if (any(class.object == "block.splsda"))
+    stop("Please call the 'cimDiablo' function on your 'block.splsda' object", call. = FALSE)
+
+
+    if (!any(class.object %in% c(object.list,"matrix")))
+    stop("'mat' has to be a matrix or one of the following object: ", paste(object.list, collapse =", "), ".", call. = FALSE)
+
+
+    if(any(class.object  %in%  object.list))
+    {
+        p = ncol(mat$X)
         q = ncol(mat$Y)
         n = nrow(mat$X)
         ncomp = mat$ncomp
@@ -305,57 +313,7 @@ name.save = NULL)
         
         comp = round(comp)
         
-        #      #-- row.names
-        #      if (is.logical(row.names)) {
-        #        if (isTRUE(row.names)) {
-        #          if (class.object[1] %in% object.pca)
-        #            row.names = mat$names$sample
-        #          else if (class.object[1] %in% c(object.pls,object.rcc))
-        #            row.names = mat$names$X
-        #          else if (class.object[1] %in% "matrix")
-        #            row.names = rownames(mat)
-        #        }
-        #        else {
-        #          if (class.object[1] %in% object.pca)
-        #            row.names = rep("", n)
-        #          else if (class.object[1] %in% c(object.pls,object.rcc))
-        #            row.names = rep("", p)
-        #        }
-        #      }
-        #      else {
-        #        if ((class.object[1] %in% object.pca) & length(row.names) != n)
-        #          stop("'row.names' must be a character vector of length ", n, ".",
-        #               call. = FALSE)
-        #        else if ((class.object[1] %in% c(object.pls,object.rcc)) & length(row.names) != p)
-        #          stop("'row.names' must be a character vector of length ", p, ".",
-        #               call. = FALSE)
-        #      }
-        #
-        #      #-- col.names
-        #      if (is.logical(col.names)) {
-        #        if (isTRUE(col.names)) {
-        #          if (class.object[1] %in% object.pca)
-        #            col.names = mat$names$var
-        #          else if (class.object[1] %in% c(object.pls,object.rcc))
-        #            col.names = mat$names$colnames$Y
-        #        }
-        #        else {
-        #          if (class.object[1] %in% object.pca)
-        #            col.names = rep("", p)
-        #          else if (class.object[1] %in% c(object.pls,object.rcc))
-        #            col.names = rep("", q)
-        #        }
-        #      }
-        #      else {
-        #        if ((class.object[1] %in% object.pca) & length(col.names) != p)
-        #          stop("'col.names' must be a character vector of length ", p, ".",
-        #               call. = FALSE)
-        #        else if ((class.object[1] %in% c(object.pls,object.rcc)) & length(col.names) != q)
-        #          stop("'col.names' must be a character vector of length ", q, ".",
-        #               call. = FALSE)
-        #      }
-        
-        if( ! class.object[1] %in%  object.pca)
+        if( ! any(class.object  %in%  object.pca))
         {
             
             #-- mapping
@@ -365,38 +323,41 @@ name.save = NULL)
             if (is.na(mapping))
             stop("'mapping' should be one of 'XY', 'X' or 'Y'.", call. = FALSE)
             
-            if (mapping == "XY") {
-                if (is.logical(row.names)) {
+            if (mapping == "XY")
+            {
+                if (is.logical(row.names))
+                {
                     if (isTRUE(row.names))
-                    row.names = mat$names$X
+                    row.names = mat$names$colnames$X
                     else
                     row.names = rep("", p)
-                }
-                else {
+                } else {
                     if (length(row.names) != p)
                     stop("'row.names' must be a character vector of length ", p, ".",
                     call. = FALSE)
                 }
                 
-                if (is.logical(col.names)) {
+                if (is.logical(col.names))
+                {
                     if (isTRUE(col.names))
                     col.names = mat$names$colnames$Y
                     else
                     col.names = rep("", q)
-                }
-                else {
+                } else {
                     if (length(col.names) != q)
                     stop("'col.names' must be a character vector of length ", q, ".",
                     call. = FALSE)
                 }
                 
-                if (!is.null(row.sideColors)) {
+                if (!is.null(row.sideColors))
+                {
                     row.sideColors = as.matrix(row.sideColors)
                     if (nrow(row.sideColors) != p)
                     stop("'row.sideColors' must be a colors character vector (matrix) of length (nrow) ", p, ".",
                     call. = FALSE)
                 }
-                if (!is.null(col.sideColors)) {
+                if (!is.null(col.sideColors))
+                {
                     col.sideColors = as.matrix(col.sideColors)
                     if (nrow(col.sideColors) != q)
                     stop("'col.sideColors' must be a colors character vector (matrix) of length (nrow) ", q, ".",
@@ -405,39 +366,42 @@ name.save = NULL)
             }
             
             
-            if (mapping == "X") {
-                if (is.logical(row.names)) {
+            if (mapping == "X")
+            {
+                if (is.logical(row.names))
+                {
                     if (isTRUE(row.names)) {
-                        if (class.object[1] %in% object.rcc) row.names = mat$names$sample
+                        if (any(class.object %in% object.rcc)) row.names = mat$names$sample
                         else row.names = mat$names$sample
                     }
                     else
                     row.names = rep("", n)
-                }
-                else {
+                } else {
                     if (length(row.names) != n)
                     stop("'row.names' must be a character vector of length ", n, ".",
                     call. = FALSE)
                 }
-                if (is.logical(col.names)) {
+                if (is.logical(col.names))
+                {
                     if (isTRUE(col.names))
-                    col.names = mat$names$X
+                    col.names = mat$names$colnames$X
                     else
                     col.names = rep("", p)
-                }
-                else {
+                } else {
                     if (length(col.names) != p)
                     stop("'col.names' must be a character vector of length ", p, ".",
                     call. = FALSE)
                 }
                 
-                if (!is.null(row.sideColors)) {
+                if (!is.null(row.sideColors))
+                {
                     row.sideColors = as.matrix(row.sideColors)
                     if (nrow(row.sideColors) != n)
                     stop("'row.sideColors' must be a colors character vector (matrix) of length (nrow) ", n, ".",
                     call. = FALSE)
                 }
-                if (!is.null(col.sideColors)) {
+                if (!is.null(col.sideColors))
+                {
                     col.sideColors = as.matrix(col.sideColors)
                     if (nrow(col.sideColors) != p)
                     stop("'col.sideColors' must be a colors character vector (matrix) of length (nrow) ", p, ".",
@@ -445,40 +409,43 @@ name.save = NULL)
                 }
             }
             
-            if (mapping == "Y") {
-                if (is.logical(row.names)) {
+            if (mapping == "Y")
+            {
+                if (is.logical(row.names))
+                {
                     if (isTRUE(row.names))
                     {
-                        if (class.object[1] %in% object.rcc) row.names = mat$names$sample
+                        if (any(class.object %in% object.rcc)) row.names = mat$names$sample
                         else row.names = mat$names$sample
                     }
                     else
                     row.names = rep("", n)
-                }
-                else {
+                } else {
                     if (length(row.names) != n)
                     stop("'row.names' must be a character vector of length ", n, ".",
                     call. = FALSE)
                 }
-                if (is.logical(col.names)) {
+                if (is.logical(col.names))
+                {
                     if (isTRUE(col.names))
                     col.names = mat$names$colnames$Y
                     else
                     col.names = rep("", q)
-                }
-                else {
+                } else {
                     if (length(col.names) != q)
                     stop("'col.names' must be a character vector of length ", q, ".",
                     call. = FALSE)
                 }
                 
-                if (!is.null(row.sideColors)) {
+                if (!is.null(row.sideColors))
+                {
                     row.sideColors = as.matrix(row.sideColors)
                     if (nrow(row.sideColors) != n)
                     stop("'row.sideColors' must be a colors character vector (matrix) of length (nrow) ", n, ".",
                     call. = FALSE)
                 }
-                if (!is.null(col.sideColors)) {
+                if (!is.null(col.sideColors))
+                {
                     col.sideColors = as.matrix(col.sideColors)
                     if (nrow(col.sideColors) != q)
                     stop("'col.sideColors' must be a colors character vector (matrix) of length (nrow) ", q, ".",
@@ -487,12 +454,13 @@ name.save = NULL)
             }
         }
         
-        if(class.object[1] %in%  object.pca)
+        if(any(class.object %in%  object.pca))
         {
             
             
             #-- row.sideColors
-            if (!is.null(row.sideColors)) {
+            if (!is.null(row.sideColors))
+            {
                 row.sideColors = as.matrix(row.sideColors)
                 if (nrow(row.sideColors) != n)
                 stop("'row.sideColors' must be a colors character vector (matrix) of length (nrow) ", n, ".",
@@ -500,7 +468,8 @@ name.save = NULL)
             }
             
             #-- col.sideColors
-            if (!is.null(col.sideColors)) {
+            if (!is.null(col.sideColors))
+            {
                 col.sideColors = as.matrix(col.sideColors)
                 if (nrow(col.sideColors) != p)
                 stop("'col.sideColors' must be a colors character vector (matrix) of length (nrow) ", p, ".",
@@ -510,19 +479,21 @@ name.save = NULL)
             
             #-- clustering -------------------------------------------------------------#
             #---------------------------------------------------------------------------#
-            if(class.object[1] %in%  c("splsda","plsda",'mlsplsda'))
+            if(any(class.object %in%  c("splsda","plsda",'mlsplsda')))
             {
                 #-- row.names
-                if (is.logical(row.names)) {
+                if (is.logical(row.names))
+                {
                     if (isTRUE(row.names))
                     row.names = mat$names$sample
                 }
                 #-- col.names
-                if (is.logical(col.names)) {
+                if (is.logical(col.names))
+                {
                     if (isTRUE(col.names))
-                    col.names = mat$names$X
+                    col.names = mat$names$colnames$X
                 }
-                if(class.object[1] %in%  c("splsda",'mlsplsda'))
+                if(any(class.object %in%  c("splsda",'mlsplsda')))
                 keep.X = apply(abs(mat$loadings$X[,comp]), 1, sum) > 0
                 else
                 keep.X = apply(abs(mat$loadings$X), 1, sum) > 0
@@ -531,16 +502,18 @@ name.save = NULL)
             }
             else{
                 #-- row.names
-                if (is.logical(row.names)) {
+                if (is.logical(row.names))
+                {
                     if (isTRUE(row.names))
                     row.names = mat$names$sample
                 }
                 #-- col.names
-                if (is.logical(col.names)) {
+                if (is.logical(col.names))
+                {
                     if (isTRUE(col.names))
-                    col.names = mat$names$var
+                    col.names = mat$names$X
                 }
-                if(class.object[1] %in%  c("spca","sipca"))
+                if(any(class.object %in%  c("spca","sipca")))
                 keep.X = apply(abs(mat$rotation[,comp]), 1, sum) > 0
                 else
                 keep.X = apply(abs(mat$rotation), 1, sum) > 0
@@ -627,7 +600,7 @@ name.save = NULL)
             class(res) = paste("cim",class.object[1],sep="_")
             
         }
-        else if(class.object[1] %in%  object.rcc)
+        else if(any(class.object %in%  object.rcc))
         {
             
             bisect = mat$variates$X[, comp] + mat$variates$Y[, comp]
@@ -854,9 +827,9 @@ name.save = NULL)
             class(res) = "cim_rcc"
             
         }
-        else if(class.object[1] %in%  object.pls)
+        else if(any(class.object %in%  object.pls))
         {
-            if(class.object[1] %in% c("spls","mlspls"))
+            if(any(class.object %in% c("spls","mlspls")))
             {
                 keep.X = apply(abs(mat$loadings$X[,comp]), 1, sum) > 0
                 keep.Y = apply(abs(mat$loadings$Y[,comp]), 1, sum) > 0}
@@ -1250,7 +1223,7 @@ name.save = NULL)
     symkey = symkey, 
     keysize = keysize,            
     zoom = zoom, 
-    main = main,
+    title = title,
     xlab = xlab,
     ylab = ylab,
     margins = margins,
@@ -1260,7 +1233,7 @@ name.save = NULL)
     {if(is.null(legend$x)) legend$x = "topright"
         if(is.null(legend$bty)) legend$bty = "n"
         if (is.null(legend$cex)) legend$cex = 0.8
-        if(class.object[1] %in%  c("splsda","plsda"))
+        if(any(class.object %in%  c("splsda","plsda")))
         {
             if (is.null(legend$legend)) legend$legend = mat$names$colnames$Y
             
@@ -1271,7 +1244,7 @@ name.save = NULL)
             }
             
         }
-        else if(class.object[1] %in%  c("mlsplsda"))
+        else if(any(class.object %in%  c("mlsplsda")))
         {
             if (is.null(legend$legend) && is.null(legend$col)) {
                 if (ncol(mat$multilevel) >= 2) {
@@ -1288,7 +1261,7 @@ name.save = NULL)
                 }
             }
         }
-        else if(class.object[1] %in%  c("mlspls"))
+        else if(any(class.object %in%  c("mlspls")))
         {
             if (mapping != "XY") {
                 if (is.null(legend$legend) && is.null(legend$col)) {
@@ -1328,7 +1301,7 @@ name.save = NULL)
         
         
     }
-    if (class.object[1] %in% object.list & !class.object[1] %in% object.pca & mapping =="XY") 
+    if (any(class.object %in% object.list) & !any(class.object %in% object.pca) & mapping =="XY")
     res$mat.cor=object
     
     par(opar)

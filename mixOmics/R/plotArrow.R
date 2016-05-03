@@ -26,20 +26,20 @@
 plotArrow <-
 function(object,
 comp = NULL,
-abline.line = FALSE,
+abline = FALSE,
 xlim = NULL,
 ylim = NULL,
-group=NULL,
+group = NULL,
 col,
 cex,
 pch,
-main=NULL,
-plot.arrows=TRUE,
-add.legend=FALSE,
+title = NULL,
+plot.arrows = TRUE,
+add.legend = FALSE,
 X.label = NULL,
 Y.label = NULL,
-ind.names=FALSE,
-position.names='centroid'
+ind.names = FALSE,
+position.names = 'centroid'
 )
 {
     
@@ -306,7 +306,7 @@ position.names='centroid'
     }
     
     plot(df[, "x" ], df[, "y" ],
-    type = "n", xlab = X.label, ylab = Y.label, main = main,
+    type = "n", xlab = X.label, ylab = Y.label, main = title,
     xlim = xlim, ylim = ylim)
     
     #-- arrows --#
@@ -400,7 +400,7 @@ position.names='centroid'
     
     
     #-- Abline
-    if (abline.line)
+    if (abline)
     abline(v = 0, h = 0, lty = 1,xpd=FALSE)
     
     

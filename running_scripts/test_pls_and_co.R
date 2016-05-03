@@ -28,15 +28,15 @@ plotIndiv(toxicity.pls, group=rep(1:4,16))
 plotIndiv(toxicity.pls, group=factor(rep(1:4,16),labels=c("a","b","c","d")),add.legend=TRUE)
 plotIndiv(toxicity.pls, group=rep(1:4,16),ind.names=FALSE)
 plotIndiv(toxicity.pls, group=rep(1:4,16),ind.names=FALSE,add.legend=TRUE)
-plotIndiv(toxicity.pls, group=rep(1:4,16),plot.ellipse=TRUE,add.legend=TRUE)
+plotIndiv(toxicity.pls, group=rep(1:4,16),ellipse=TRUE,add.legend=TRUE)
 
 
 plotIndiv(toxicity.pls, group=rep(1:4,16),style="lattice")
 plotIndiv(toxicity.pls, group=factor(rep(1:4,16),labels=c("a","b","c","d")),add.legend=TRUE,style="lattice")
 plotIndiv(toxicity.pls, group=rep(1:4,16),ind.names=FALSE,style="lattice")
 plotIndiv(toxicity.pls, group=rep(1:4,16),ind.names=FALSE,add.legend=TRUE,style="lattice")
-plotIndiv(toxicity.pls, group=rep(1:4,16),plot.ellipse=TRUE,add.legend=TRUE,style="lattice")
-plotIndiv(toxicity.pls, group=rep(1:4,16),plot.star=TRUE,plot.centroid=TRUE,style="lattice")
+plotIndiv(toxicity.pls, group=rep(1:4,16),ellipse=TRUE,add.legend=TRUE,style="lattice")
+plotIndiv(toxicity.pls, group=rep(1:4,16),star=TRUE,centroid=TRUE,style="lattice")
 
 
 # plsda
@@ -47,7 +47,7 @@ X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
 plsda.breast <- plsda(X, Y, ncomp = 2)
-plotIndiv(plsda.breast, ind.names = TRUE, plot.ellipse = TRUE, add.legend = TRUE)
+plotIndiv(plsda.breast, ind.names = TRUE, ellipse = TRUE, add.legend = TRUE)
 
 plotLoadings(plsda.breast)
 
@@ -57,7 +57,7 @@ X <- liver.toxicity$gene
 Y <- liver.toxicity$treatment[, 4]
 
 plsda.liver <- plsda(X, Y, ncomp = 2)
-plotIndiv(plsda.liver, ind.names = Y, plot.ellipse = TRUE, add.legend =TRUE)
+plotIndiv(plsda.liver, ind.names = Y, ellipse = TRUE, add.legend =TRUE)
 
 
 # spls
@@ -88,7 +88,7 @@ plotLoadings(res, contrib = "max")
 tune= tune.splsda(X,Y,ncomp=1,nrepeat=10,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist",already.tested.X=NULL)
 
 # individual names appear
-plotIndiv(res, ind.names = Y, add.legend = TRUE, plot.ellipse =TRUE)
+plotIndiv(res, ind.names = Y, add.legend = TRUE, ellipse =TRUE)
 
 
 data(liver.toxicity)
@@ -100,7 +100,7 @@ Y <- as.factor(liver.toxicity$treatment[, 4])
 splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
 
 # individual name is set to the treatment
-plotIndiv(splsda.liver, ind.names = Y, plot.ellipse = TRUE, add.legend = TRUE)
+plotIndiv(splsda.liver, ind.names = Y, ellipse = TRUE, add.legend = TRUE)
 
 #######################################################################################################
 #######################################################################################################

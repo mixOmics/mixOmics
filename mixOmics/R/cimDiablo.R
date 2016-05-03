@@ -27,7 +27,7 @@
 
 ################################################
 #
-## 2) heatmap_diablo
+## 2) cim_diablo
 #
 ################################################
 
@@ -36,13 +36,13 @@
 cimDiablo = function(object,
 ncomp=1,
 margins = c(2, 15),
-pos.legend="topright",
-cex.legend=1.5)
+legend.position="topright",
+size.legend=1.5)
 {
     
     # check input object
     if (!any(class(object) == "block.splsda"))
-    stop("heatmapDiablo is only available for 'block.splsda' objects")
+    stop("cimDiablo is only available for 'block.splsda' objects")
 
     if (length(object$X) <= 1)
     stop("This function is only available when there are more than 3 blocks") # so 2 blocks in X + the outcome Y
@@ -79,10 +79,10 @@ cex.legend=1.5)
     col.sideColors = dark[as.numeric(VarLabels)],
     row.sideColors = color.mixo(as.numeric(Y)), margins = margins)
     
-    legend(pos.legend, c("Rows", c(levels(Y)[order(levels(Y))], "",
+    legend(legend.position, c("Rows", c(levels(Y)[order(levels(Y))], "",
     "Columns", names(X))), col = c(1, color.mixo(1:nlevels(Y)), 1,
     1, dark[1:nlevels(VarLabels)][match(levels(VarLabels), names(X))]),
-    pch = c(NA, rep(19, nlevels(Y)), NA, NA, rep(19, nlevels(VarLabels))), bty="n", cex = cex.legend,
+    pch = c(NA, rep(19, nlevels(Y)), NA, NA, rep(19, nlevels(VarLabels))), bty="n", cex = size.legend,
     text.font = c(2, rep(1, nlevels(Y)), NA, 2, rep(1, nlevels(VarLabels))))
     
     par(opar)

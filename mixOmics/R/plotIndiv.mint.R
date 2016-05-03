@@ -34,43 +34,41 @@ plotIndiv.mint.splsda   =
 
 function(object, 
 comp = NULL, 
-rep.space = NULL, 
+study = "all",
+rep.space = NULL,
 group, # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
 col.per.group, 
-style="ggplot2", # can choose between graphics, 3d, lattice or ggplot2
-study="all", 
-plot.ellipse = FALSE, 
+style = "ggplot2", # can choose between graphics, lattice or ggplot2
+ellipse = FALSE,
 ellipse.level = 0.95, 
-plot.centroid=FALSE, 
-plot.star=FALSE, 
-main=NULL, 
+centroid = FALSE,
+star = FALSE,
+title = NULL,
 subtitle, 
-add.legend=FALSE, 
+add.legend = FALSE,
 X.label = NULL, 
 Y.label = NULL, 
-abline.line = FALSE, 
+abline = FALSE, 
 xlim = NULL, 
 ylim = NULL, 
 col, 
 cex, 
 pch, 
-alpha = 0.2, 
-axes.box = "box", 
 layout = NULL, 
 size.title = rel(2), 
 size.subtitle = rel(1.5), 
 size.xlabel = rel(1), 
 size.ylabel = rel(1), 
 size.axis = rel(0.8), 
-legend.text.size = rel(1), 
-legend.title.size = rel(1.1), 
+size.legend = rel(1), 
+size.legend.title = rel(1.1), 
 legend.position = "right", 
 point.lwd = 1, 
 ...
 )
 {
     plot_parameters = list(size.title = size.title, size.subtitle = size.subtitle, size.xlabel = size.xlabel, size.ylabel = size.ylabel, size.axis = size.axis, 
-    legend.text.size = legend.text.size, legend.title.size = legend.title.size, legend.position = legend.position, point.lwd = point.lwd)
+    size.legend = size.legend, size.legend.title = size.legend.title, legend.position = legend.position, point.lwd = point.lwd)
 
 
     if (any(class(object)%in%c("mint.block.pls", "mint.block.spls", "mint.block.plsda", "mint.block.splsda")))
@@ -98,11 +96,11 @@ point.lwd = 1,
     
     if (length(study) > 1 & any(study != "all"))
     {
-        if (plot.ellipse == TRUE)
-        stop("'plot.ellipse' must be FALSE when study is different from 'all'")
+        if (ellipse == TRUE)
+        stop("'ellipse' must be FALSE when study is different from 'all'")
 
-        if (plot.star == TRUE)
-        stop("'plot.star' must be FALSE when study is different from 'all'")
+        if (star == TRUE)
+        stop("'star' must be FALSE when study is different from 'all'")
     }
 
     if (!missing(subtitle))
@@ -242,9 +240,9 @@ point.lwd = 1,
             # blocks becomes study, so each study is plotted
             blocks = study
             object$names$sample = lapply(object$variates, rownames)
-            plot.ellipse = FALSE
-            plot.star = FALSE
-            plot.centroid = FALSE
+            ellipse = FALSE
+            star = FALSE
+            centroid = FALSE
         }
 
         #-- check inputs
@@ -253,11 +251,10 @@ point.lwd = 1,
         stop("'style' must be one of 'ggplot2', 'lattice' or 'graphics'.", call. = FALSE)
         
         check = check.input.plotIndiv(object = object, comp = comp, blocks = blocks, ind.names = ind.names, 
-        style = style, plot.ellipse = plot.ellipse, ellipse.level = ellipse.level, plot.centroid = plot.centroid, 
-        plot.star = plot.star, add.legend = add.legend, X.label = X.label, Y.label = Y.label, abline.line = abline.line, 
-        xlim = xlim, ylim = ylim, alpha = alpha, axes.box = axes.box, plot_parameters = plot_parameters)
+        style = style, ellipse = ellipse, ellipse.level = ellipse.level, centroid = centroid, 
+        star = star, add.legend = add.legend, X.label = X.label, Y.label = Y.label, abline = abline, 
+        xlim = xlim, ylim = ylim, plot_parameters = plot_parameters)
         #-- retrieve some outputs from the checks
-        axes.box = check$axes.box
         comp = check$comp
         xlim = check$xlim
         ylim = check$ylim
@@ -279,14 +276,14 @@ point.lwd = 1,
 
         # create data frame df that contains (almost) all the ploting information
         out = shape.input.plotIndiv(object = object, n = n, blocks = blocks, x = x, y = y, z = z, ind.names = ind.names, group = group,
-        col.per.group = col.per.group, style = style, study = study, plot.ellipse = plot.ellipse, ellipse.level = ellipse.level,
-        plot.centroid = plot.centroid, plot.star = plot.star, main = main, xlim = xlim, ylim = ylim, 
+        col.per.group = col.per.group, style = style, study = study, ellipse = ellipse, ellipse.level = ellipse.level,
+        centroid = centroid, star = star, title = title, xlim = xlim, ylim = ylim, 
         col = col, cex = cex, pch = pch, display.names = display.names)
         #-- retrieve outputs
         df = out$df
         df.ellipse = out$df.ellipse
         col.per.group = out$col.per.group
-        main = out$main
+        title = out$title
         display.names = out$display.names
         xlim = out$xlim
         ylim = out$ylim
@@ -308,14 +305,16 @@ point.lwd = 1,
 
     df = df.final
     
+    save(list=ls(),file="temp.Rdata")
+    
     if (style == "ggplot2")
     style = "ggplot2-MINT"
 
     #call plot module (ggplot2, lattice, graphics, 3d)
-    res = internal_graphicModule(df = df, plot.centroid = plot.centroid, col.per.group = col.per.group, main = main,
+    res = internal_graphicModule(df = df, centroid = centroid, col.per.group = col.per.group, title = title,
     X.label = X.label, Y.label = Y.label, xlim = xlim, ylim = ylim, class.object = class(object),
-    display.names = display.names, add.legend = add.legend, abline.line = abline.line,
-    plot.star = plot.star, plot.ellipse = plot.ellipse, df.ellipse = df.ellipse, style = style, layout = layout,
+    display.names = display.names, add.legend = add.legend, abline = abline,
+    star = star, ellipse = ellipse, df.ellipse = df.ellipse, style = style, layout = layout,
     missing.col = missing.col,
     #for ggplot2-MINT
     study.levels = study.levels, plot_parameters = plot_parameters

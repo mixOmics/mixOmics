@@ -31,19 +31,19 @@ plotContrib = function(object,
                         method = "mean", # choose between 'mean" or "median"
                         block = 1, #single value
                         comp = 1,
+                        plot = TRUE,
                         show.ties = TRUE,
                         col.ties = "white",
                         ndisplay = NULL,
                         cex.name = 0.7,
                         cex.legend = 0.8,
                         name.var = NULL,
-                        complete.name.var = FALSE,
+                        name.var.complete = FALSE, # name.var.complete
+                        title = NULL,
                         legend = TRUE,
                         legend.color = NULL,
-                        main = NULL,
-                        legend.title = 'Outcome',
-                        plot = TRUE
-) {
+                        legend.title = 'Outcome'
+                        ) {
     
     # -------------------
     # input checks
@@ -123,7 +123,7 @@ plotContrib = function(object,
     X = X[, name.selected.var] #reduce the problem to ndisplay
     
     #completing colnames.X by the original names of the variables when missing
-    if (complete.name.var == TRUE)
+    if (name.var.complete == TRUE)
     {
         ind = which(colnames.X == "")
         if (length(ind)>0)
@@ -134,8 +134,8 @@ plotContrib = function(object,
     
     #title
     #-----
-    if (!is.null(main) & !is.character(main))
-    warning('main needs to be of type character')
+    if (!is.null(title) & !is.character(title))
+    warning('title needs to be of type character')
     
     #legend.color
     #-----
@@ -232,7 +232,7 @@ plotContrib = function(object,
         par(mar = c(5, min(9, max(sapply(colnames.X, nchar))), 4, 0))
         mp = barplot(contrib$importance, horiz = T, las = 1, col = contrib$Contrib, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(contrib),
         cex.names = cex.name, cex.axis = 0.7, beside = TRUE, border = NA)
-        if (is.null(main))
+        if (is.null(title))
         {
             if (class.object[1] %in% c("sgcca","sgccda"))
             {
@@ -241,7 +241,7 @@ plotContrib = function(object,
                 title(paste('Contribution on comp', comp))
             }
         } else {
-            title(paste(main))
+            title(paste(title))
         }
         
         # legend

@@ -7,7 +7,7 @@ opar <- par(no.readonly = TRUE)
 
 ## sGCC-DA
 # -------------
-#library(mixOmicsv6)
+library(mixOmicsv6)
 #source("mixOmics/R/plotIndiv.R")
 data(nutrimouse)
 Y = nutrimouse$diet
@@ -19,7 +19,7 @@ nutrimouse.sgccda <- wrapper.sgccda(X=data,
 Y = Y,
 design = design,
 keepX = list(gene=c(10,10), lipid=c(15,15)),
-ncomp = c(3, 3),
+ncomp = c(2, 2),
 scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)
@@ -27,7 +27,7 @@ bias = FALSE)
 
 
 plotIndiv(nutrimouse.sgccda,style="graphics")
-plotIndiv(nutrimouse.sgccda,style="graphics",add.legend=FALSE,ind.names=FALSE,abline.line=TRUE)
+plotIndiv(nutrimouse.sgccda,style="graphics",add.legend=FALSE,ind.names=FALSE,abline=TRUE)
 
 plotLoadings(nutrimouse.sgccda)
 plotLoadings(nutrimouse.sgccda,contrib="max")
@@ -61,7 +61,7 @@ cimDiablo(nutrimouse.sgccda,pos.legend="right",cex.legend=0.3)
 
 plotIndiv(nutrimouse.sgccda)
 #plotIndiv(nutrimouse.sgccda, blocks = c(1,2), group = nutrimouse$diet,
-#plot.ellipse = TRUE)
+#ellipse = TRUE)
 
 # which variables are selected on a given component?
 selectVar(nutrimouse.sgccda)

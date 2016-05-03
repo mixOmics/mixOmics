@@ -26,24 +26,24 @@ verbose = FALSE)
 # blocks should specify the block data set where the sample plot can be performed
 # (ideally when there are >= 2 components!)
 # we indicate the diet variable colors.
-plotIndiv(nutrimouse.rgcca, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE)
+plotIndiv(nutrimouse.rgcca, blocks = c(1,2), group = nutrimouse$diet, ellipse = TRUE)
 
-plotIndiv(nutrimouse.rgcca, blocks = c(1), group = nutrimouse$diet, plot.ellipse = TRUE)
-plotIndiv(nutrimouse.rgcca, blocks = c(1), group = nutrimouse$diet, plot.ellipse = TRUE,plot.star=TRUE,plot.centroid=TRUE)
+plotIndiv(nutrimouse.rgcca, blocks = c(1), group = nutrimouse$diet, ellipse = TRUE)
+plotIndiv(nutrimouse.rgcca, blocks = c(1), group = nutrimouse$diet, ellipse = TRUE,star=TRUE,centroid=TRUE)
 
 
-plotIndiv(nutrimouse.rgcca, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE)
-plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, plot.ellipse = TRUE)
+plotIndiv(nutrimouse.rgcca, blocks = c(1,2), group = nutrimouse$diet, ellipse = TRUE)
+plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, ellipse = TRUE)
 
 #without layout, mfrow is reset
-plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, plot.ellipse = TRUE,style="graphics")
+plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, ellipse = TRUE,style="graphics")
 plot(1:10,1:10)
 
 #with layout, we can combine
-plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, plot.ellipse = TRUE,style="graphics",layout=c(2,2))
+plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, ellipse = TRUE,style="graphics",layout=c(2,2))
 plot(1:10,1:10)
 
-plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, plot.ellipse = TRUE,style="graphics",add.legend=TRUE)
+plotIndiv(nutrimouse.rgcca, group = nutrimouse$diet, ellipse = TRUE,style="graphics",add.legend=TRUE)
 
 # have a look at the looadings
 head(nutrimouse.rgcca$loadings[[1]])
@@ -73,7 +73,7 @@ verbose = FALSE)
 # blocks should specify the block data set where the sample plot can be performed
 # (ideally when there are >= 2 components!)
 # we indicate the diet variable colors.
-#plotIndiv(nutrimouse.srgcca, blocks = c(1,2), group = nutrimouse$diet, plot.ellipse = TRUE)
+#plotIndiv(nutrimouse.srgcca, blocks = c(1,2), group = nutrimouse$diet, ellipse = TRUE)
 
 # have a look at the looadings
 head(nutrimouse.srgcca$loadings[[1]])
@@ -113,7 +113,7 @@ bias = FALSE)
 # In plotIndiv we indicate the diet variable colors and the blocks to be plotted
 # (only blocks with comp  >=2!)
 plotIndiv(nutrimouse.sgcca, blocks = c(1,2), group = nutrimouse$diet,
-plot.ellipse = TRUE)
+ellipse = TRUE)
 
 # which variables are selected on a given component?
 selectVar(nutrimouse.sgcca, comp = 1, block = 1)
@@ -141,7 +141,7 @@ bias = FALSE)
 # In plotIndiv we indicate the diet variable colors and the blocks to be plotted
 # (only blocks with comp  >=2!)
 plotIndiv(nutrimouse.sgcca, blocks = c(1,2), group = nutrimouse$diet,
-plot.ellipse = TRUE)
+ellipse = TRUE)
 
 # which variables are selected on a given component?
 selectVar(nutrimouse.sgcca, comp = 1, block = 1)
@@ -169,7 +169,7 @@ bias = FALSE)
 plotIndiv(nutrimouse.sgccda,style="lattice") # Amrit function
 plotIndiv(nutrimouse.sgccda) # Amrit function
 #plotIndiv(nutrimouse.sgccda, blocks = c(1,2), group = nutrimouse$diet,
-#plot.ellipse = TRUE)
+#ellipse = TRUE)
 
 # which variables are selected on a given component?
 selectVar(nutrimouse.sgccda, comp = 1, block = 1)

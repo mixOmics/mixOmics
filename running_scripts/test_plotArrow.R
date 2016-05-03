@@ -62,30 +62,30 @@ nutrimouse.sgcca <- wrapper.sgcca(X = data,
 plotArrow(nutrimouse.sgcca)
 
 plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
-          main = 'my plot')
+          title = 'my plot')
 
 # ind.names to visualise the unique individuals
 plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
-          main = 'my plot', ind.names = TRUE)
+          title = 'my plot', ind.names = TRUE)
 
 # ind.names to visualise the unique individuals
 plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
-          main = 'my plot', ind.names = TRUE,position.names   = 'start')
+          title = 'my plot', ind.names = TRUE,position.names   = 'start')
 
 plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
-          main = 'my plot', ind.names = TRUE,position.names   = 'end')
+          title = 'my plot', ind.names = TRUE,position.names   = 'end')
 
 # ind.names indicates the diet
 plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
-          main = 'my plot', ind.names = nutrimouse$diet, position.names= 'start')
+          title = 'my plot', ind.names = nutrimouse$diet, position.names= 'start')
 
 # ind.names to visualise the unique individuals, start position
 plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
-          main = 'my plot', ind.names = TRUE, position.names   = 'start')
+          title = 'my plot', ind.names = TRUE, position.names   = 'start')
 
 # end position
 plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
-          main = 'my plot', ind.names = TRUE, position.names   = 'end')
+          title = 'my plot', ind.names = TRUE, position.names   = 'end')
 
 
 ## variable representation for objects of class 'sgccda'
@@ -100,7 +100,7 @@ nutrimouse.sgccda1 <- wrapper.sgccda(X = data,
 Y = Y,
 design = design1,
 ncomp = c(2, 2),
-keepX = list(c(10,10), c(15,15)),
+keepX = list(gene = c(10,10), lipid = c(15,15)),
 scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)
@@ -110,7 +110,7 @@ bias = FALSE)
 plotArrow(nutrimouse.sgccda1)
 
 # with legend and title and indiv ID
-plotArrow(nutrimouse.sgccda1,  add.legend = TRUE, main = 'my sample plot', ind.names = TRUE, position.names = 'start')
+plotArrow(nutrimouse.sgccda1,  add.legend = TRUE, title = 'my sample plot', ind.names = TRUE, position.names = 'start')
 
 
 #######################################################################################################
@@ -142,7 +142,7 @@ if(additional.test==TRUE)
     
     ###test spls with vector ind.names and abline
     
-    plotArrow(toxicity.spls, comp = c(1,2), ind.names  = rep(c("a","b","c","d"),each=16),abline.line=TRUE)
+    plotArrow(toxicity.spls, comp = c(1,2), ind.names  = rep(c("a","b","c","d"),each=16),abline=TRUE)
     
     ###test spls with ind.names=T,ind.names start arrows, pch and group
     
@@ -163,7 +163,7 @@ if(additional.test==TRUE)
     
     group=rep(c("group 1","group 2","group 3","group 4"),each = 16)
     
-    plotArrow(toxicity.spls,add.legend=TRUE,abline.line=TRUE,group=group)
+    plotArrow(toxicity.spls,add.legend=TRUE,abline=TRUE,group=group)
     
     plotArrow(toxicity.spls,add.legend=TRUE,ind.names =TRUE,col=col,group=group)
     
@@ -173,7 +173,7 @@ if(additional.test==TRUE)
     
     ###test group with add.legend and position start
     
-    plotArrow(toxicity.spls,ind.names=T,position.names='start',group=group,abline.line = TRUE)
+    plotArrow(toxicity.spls,ind.names=T,position.names='start',group=group,abline = TRUE)
     abline(0,0)
     points(5,2)
     
@@ -203,7 +203,7 @@ if(additional.test==TRUE)
     group=rep(c("group 1", "group 2"),each=20))
     
     nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 10, lambda2 = 0.008)
-    plotArrow(nutri.res,main="plot",comp=c(2,3))
+    plotArrow(nutri.res,title="plot",comp=c(2,3))
     
     ###test add after plot
     
@@ -233,8 +233,8 @@ if(additional.test==TRUE)
     ###test ind.names  with TRUE and vector, position start, unique col , add.legend and abline
     
     plotArrow(nutri.sgcca, ind.names=T,position.names  ='start',add.legend=TRUE)
-    plotArrow(nutri.sgcca, ind.names= 1:40,col="blue",abline.line=TRUE)
-    plotArrow(nutri.sgcca, col="blue",abline.line=TRUE,add.legend=TRUE)
+    plotArrow(nutri.sgcca, ind.names= 1:40,col="blue",abline=TRUE)
+    plotArrow(nutri.sgcca, col="blue",abline=TRUE,add.legend=TRUE)
     
     
     ###test all with xlim and ylim

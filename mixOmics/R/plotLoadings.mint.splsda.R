@@ -39,22 +39,22 @@ contrib = NULL,  # choose between 'max" or "min", NULL does not color the barplo
 method = "mean", # choose between 'mean" or "median"
 study = "all",
 comp = 1,
+plot = TRUE,
 show.ties = TRUE,
 col.ties = "white",
 ndisplay = NULL,
 cex.name = 0.7,
 cex.legend = 0.8,
 name.var = NULL,
-complete.name.var = FALSE,
-legend = TRUE,
-legend.color = NULL,
-main = NULL,
+name.var.complete = FALSE,
+title = NULL,
 subtitle,
-legend.title = 'Outcome',
-plot = TRUE,
-layout = NULL,
 size.title = rel(1.8),
 size.subtitle = rel(1.4),
+legend = TRUE,
+legend.color = NULL,
+legend.title = 'Outcome',
+layout = NULL,
 border = NA,
 ...
 ) {
@@ -68,10 +68,10 @@ border = NA,
         cex.name = cex.name,
         cex.legend = cex.legend,
         name.var = name.var,
-        complete.name.var = complete.name.var,
+        name.var.complete = name.var.complete,
         legend = legend,
         legend.color = legend.color,
-        main = if(!is.null(main)){main}else{paste0('Contribution on comp ', comp, "\n All studies")},
+        title = if(!is.null(title)){title}else{paste0('Contribution on comp ', comp, "\n All studies")},
         subtitle = subtitle,
         legend.title = legend.title,
         plot = plot,
@@ -85,12 +85,18 @@ border = NA,
     } else {
         
         # -- input checks
-        check = check.input.plotLoadings(object = object, block = "X", subtitle = subtitle, cex.name = cex.name, cex.legend = cex.legend,
-        main = main, col = NULL, name.var = name.var)
-        
+        check = check.input.plotLoadings(object = object, block = "X", cex.name = cex.name, cex.legend = cex.legend,
+        title = title, col = NULL, name.var = name.var)
+
         cex.name = check$cex.name
         cex.legend = check$cex.legend
         block = check$block # "X"
+        
+        if (!missing(subtitle))
+        {
+            if (length(subtitle)!=length(study))
+            stop("'subtitle' indicates the subtitle of the plot for each study and it needs to be the same length as 'study'.")
+        }
         
         # swap block for study
         block = study
@@ -110,7 +116,7 @@ border = NA,
         }
         
         # get the selected variables on the concatenated data
-        res = get.loadings.ndisplay(object = object, comp = comp, block = "X", name.var = name.var, complete.name.var = complete.name.var, ndisplay = ndisplay)
+        res = get.loadings.ndisplay(object = object, comp = comp, block = "X", name.var = name.var, name.var.complete = name.var.complete, ndisplay = ndisplay)
         X = res$X
         colnames.X = res$colnames.X
         name.selected.var = res$name.selected.var
@@ -167,7 +173,7 @@ border = NA,
 
             #display barplot with names of variables
             #added condition if all we need is the contribution stats
-            if (!is.null(main) & length(block) > 1)
+            if (!is.null(title) & length(block) > 1)
             {
                 par(mar = c(4, max(7, max(sapply(colnames.X, nchar))/2), 6, 2))
             } else {
@@ -177,15 +183,15 @@ border = NA,
             mp = barplot(df$importance, horiz = T, las = 1, col = df$color, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(df),
             cex.names = cex.name, cex.axis = 0.7, beside = TRUE, border = border)
             
-            if ( length(block) == 1 & is.null(main) )
+            if ( length(block) == 1 & is.null(title) )
             {
-                title(paste0('Contribution on comp ', comp, "\nStudy '", block[i],"'"), line=1, cex.main = size.title)
+                title(paste0('Contribution on comp ', comp, "\nStudy '", block[i],"'"), line=0, cex.main = size.title)
             } else if (length(block) == 1) {
-                title(paste(main), line=1, cex.main = size.title)
+                title(paste(title), line=0, cex.main= size.title)
             } else if ((length(block) > 1 & missing(subtitle))) {
-                title(paste0('Contribution on comp ', comp, "\nStudy '", block[i],"'"), line=1, cex.main = size.subtitle)
+                title(paste0('Contribution on comp ', comp, "\nStudy '", block[i],"'"), line=0, cex.main = size.subtitle)
             } else if (length(block) > 1 & !missing(subtitle)) {
-                title(paste(subtitle[i]), line=1, cex.main = size.subtitle)
+                title(paste(subtitle[i]), line=0, cex.main = size.subtitle)
             }
             
             if (legend)
@@ -202,8 +208,8 @@ border = NA,
         names(df.final) = block
 
         # legend
-        if (length(block) > 1 & !is.null(main))
-        title(main, outer=TRUE, line = -2, cex.main = size.title)
+        if (length(block) > 1 & !is.null(title))
+        title(title, outer=TRUE, line = -2, cex.main = size.title)
         
         if (reset.mfrow)
         par(opar)#par(mfrow = omfrow)

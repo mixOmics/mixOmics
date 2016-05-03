@@ -38,15 +38,15 @@ blocks = NULL, # to choose which block data to plot, when using GCCA module
 ind.names = TRUE,
 style = "ggplot2", # can choose between graphics, 3d, lattice or ggplot2
 #study = "all",
-plot.ellipse = FALSE,
+ellipse = FALSE,
 ellipse.level = 0.95,
-plot.centroid = FALSE,
-plot.star = FALSE,
+centroid = FALSE,
+star = FALSE,
 add.legend = FALSE,
 X.label = NULL,
 Y.label = NULL,
 Z.label = NULL,
-abline.line = FALSE,
+abline = FALSE,
 xlim = NULL,
 ylim = NULL,
 alpha = 0.2,
@@ -119,25 +119,25 @@ plot_parameters)
     }
     
     
-    #plot.ellipse
-    if (!is.logical(plot.ellipse))
-    stop("'plot.ellipse' must be either TRUE or FALSE", call. = FALSE)
+    #ellipse
+    if (!is.logical(ellipse))
+    stop("'ellipse' must be either TRUE or FALSE", call. = FALSE)
     
-    #plot.centroid
-    if (!is.logical(plot.centroid))
-    stop("'plot.centroid' must be either TRUE or FALSE", call. = FALSE)
+    #centroid
+    if (!is.logical(centroid))
+    stop("'centroid' must be either TRUE or FALSE", call. = FALSE)
     
-    #plot.star
-    if (!is.logical(plot.star))
-    stop("'plot.star' must be either TRUE or FALSE", call. = FALSE)
+    #star
+    if (!is.logical(star))
+    stop("'star' must be either TRUE or FALSE", call. = FALSE)
     
     #add.legend
     if (!is.logical(add.legend))
     stop("'add.legend' must be either TRUE or FALSE", call. = FALSE)
     
-    # abline.line
-    if (!is.logical(abline.line))
-    stop("'abline.line' must be either TRUE or FALSE", call. = FALSE)
+    # abline
+    if (!is.logical(abline))
+    stop("'abline' must be either TRUE or FALSE", call. = FALSE)
     
     #X.label, Y.label, Z.label
     if (!is.null(X.label))
@@ -162,14 +162,14 @@ plot_parameters)
     
     # plot_parameters
     #plot_parameters = list(size.title = size.title, size.subtitle = size.subtitle, size.xlabel = size.xlabel, size.ylabel = size.ylabel, size.axis = size.axis,
-    #legend.text.size = legend.text.size, legend.title.size = legend.title.size, legend.position = legend.position)
+    #size.legend = size.legend, size.legend.title = size.legend.title, legend.position = legend.position)
     size.title = plot_parameters$size.title
     size.subtitle = plot_parameters$size.subtitle
     size.xlabel = plot_parameters$size.xlabel
     size.ylabel = plot_parameters$size.ylabel
     size.axis = plot_parameters$size.axis
-    legend.text.size = plot_parameters$legend.text.size
-    legend.title.size = plot_parameters$legend.title.size
+    size.legend = plot_parameters$size.legend
+    size.legend.title = plot_parameters$size.legend.title
     legend.position = plot_parameters$legend.position
     point.lwd = plot_parameters$point.lwd
     
@@ -188,11 +188,11 @@ plot_parameters)
     if (!is.numeric(size.axis) || length(size.axis)>1 || size.axis<0)
     stop("'size.axis' needs to be a non negative number")
     
-    if (!is.numeric(legend.text.size) || length(legend.text.size)>1 || legend.text.size<0)
-    stop("'legend.text.size' needs to be a non negative number")
+    if (!is.numeric(size.legend) || length(size.legend)>1 || size.legend<0)
+    stop("'size.legend' needs to be a non negative number")
     
-    if (!is.numeric(legend.title.size) || length(legend.title.size)>1 || legend.title.size<0)
-    stop("'legend.title.size' needs to be a non negative number")
+    if (!is.numeric(size.legend.title) || length(size.legend.title)>1 || size.legend.title<0)
+    stop("'size.legend.title' needs to be a non negative number")
     
     if (length(legend.position)>1 || !legend.position%in%c("bottom", "left", "right", "top"))
     stop('"legend.position" needs to be one of "bottom", "left", "right" or "top"')
@@ -400,11 +400,11 @@ group, # factor indicating the group membership for each sample, useful for elli
 col.per.group,
 style = "ggplot2", # can choose between graphics, 3d, lattice or ggplot2
 study = "all",
-plot.ellipse = FALSE,
+ellipse = FALSE,
 ellipse.level = 0.95,
-plot.centroid = FALSE,
-plot.star = FALSE,
-main = NULL,
+centroid = FALSE,
+star = FALSE,
+title = NULL,
 xlim = NULL,
 ylim = NULL,
 col,
@@ -436,9 +436,9 @@ display.names)
         if (length(group) !=  n)
         stop("Length of 'group' should be of length ", n, ", the sample size of your data")
     } else {
-        if (plot.star || plot.centroid || plot.ellipse)
-        warning('plot.star , plot.ellipse and plot.centroid work only if !group == NULL')
-        plot.star = plot.centroid = plot.ellipse = FALSE
+        if (star || centroid || ellipse)
+        warning('star , ellipse and centroid work only if !group == NULL')
+        star = centroid = ellipse = FALSE
         group = factor(rep("No group", n))
         object$ind.mat = unmap(group)
     }
@@ -525,7 +525,7 @@ display.names)
         }
     }
     
-    if (plot.ellipse)
+    if (ellipse)
     {
         #-- Start: Computation ellipse
         min.ellipse = max.ellipse = xlim.min = xlim.max = ylim.min = ylim.max = list()
@@ -624,19 +624,19 @@ display.names)
             df[[i]] = data.frame(x = x[[i]], y = y[[i]], group = group)
         }
         
-        main.save = main # to use for plot.ellipse
+        title.save = title # to use for ellipse
         if (any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda")) & length(blocks) == 1 & !any(class(object)%in%object.mint)) # add blocks == 1 to allow "multi" with plsda
         {
-            if (is.null(main))
+            if (is.null(title))
             {
                 df = data.frame(do.call(rbind, df), "Block" = "PlotIndiv")
                 if (style %in%c("graphics"))
-                main = "PlotIndiv" # to add title to graphics
+                title = "PlotIndiv" # to add title to graphics
                 
             } else {
-                df = data.frame(do.call(rbind, df), "Block" = main)
+                df = data.frame(do.call(rbind, df), "Block" = title)
                 if (style %in%c("ggplot2", "lattice"))
-                main = NULL # to avoid double title
+                title = NULL # to avoid double title
             }
             df$Block = as.factor(df$Block)
         } else {
@@ -659,7 +659,7 @@ display.names)
         df$col = as.character(col)
         
         
-        if (plot.centroid == TRUE || plot.star == TRUE)
+        if (centroid == TRUE || star == TRUE)
         {
             df = cbind(df, rep(0, nrow(df)))
             n = ncol(df)
@@ -687,7 +687,7 @@ display.names)
             }
         }
         
-        if (plot.ellipse == TRUE)
+        if (ellipse == TRUE)
         {
             df.ellipse = data.frame(do.call("rbind", lapply(1 : length(x), function(k){do.call("cbind", coord.ellipse[[k]])})), "Block" = paste0("Block: ", rep(blocks, each = 100)))
             
@@ -698,13 +698,13 @@ display.names)
             df.ellipse = NULL
         }
         
-        if (plot.ellipse == TRUE && any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda"))& length(blocks) == 1& !any(class(object)%in%object.mint))
+        if (ellipse == TRUE && any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda"))& length(blocks) == 1& !any(class(object)%in%object.mint))
         {
-            if (is.null(main.save))
+            if (is.null(title.save))
             {
                 df.ellipse$Block = "PlotIndiv"
             } else {
-                df.ellipse$Block = main.save
+                df.ellipse$Block = title.save
             }
         }
         
@@ -796,7 +796,7 @@ display.names)
     
     #print(df)
     
-    out = list(df = df, study.ind = study.ind, df.ellipse = df.ellipse, col.per.group = col.per.group, main = main, display.names = display.names, xlim = xlim, ylim = ylim, missing.col = missing.col, plot.ellipse = plot.ellipse, plot.centroid = plot.centroid, plot.star = plot.star)
+    out = list(df = df, study.ind = study.ind, df.ellipse = df.ellipse, col.per.group = col.per.group, title = title, display.names = display.names, xlim = xlim, ylim = ylim, missing.col = missing.col, ellipse = ellipse, centroid = centroid, star = star)
 }
 
 

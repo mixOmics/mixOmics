@@ -123,9 +123,11 @@ multilevel = NULL)
     #-----------------------------#
     #-- logratio transformation --#
     
-    transfo = logratio.transfo(X = X, logratio = logratio, V = V)
+    if (is.null(V)) # back-transformation to clr-space, will be used later to recalculate loadings etc
+    V = clr.backtransfo(X)
+
+    transfo = logratio.transfo(X = X, logratio = logratio)
     X = transfo$X
-    V = transfo$V
     
     #as X may have changed
     if (ncomp >= min(ncol(X), nrow(X)))
@@ -153,7 +155,7 @@ multilevel = NULL)
     result = list(call = cl, X = X, ncomp = ncomp,NA.X = NA.X,
     center = if (is.null(cen)) {FALSE} else {cen},
     scale = if (is.null(sc)) {FALSE} else {sc},
-    names = list(var = X.names, sample = ind.names))
+    names = list(X = X.names, sample = ind.names))
     
     
     #---------------------------------------------------------------------------#

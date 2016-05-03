@@ -30,7 +30,7 @@ plotLoadings(splsda.liver, comp = 2, method = 'median', contrib = 'min')
 # this is to make sure we can match the name of the selected variables to the contribution plot.
 name.var = liver.toxicity$gene.ID[, 'geneBank']
 length(name.var)
-plotLoadings(splsda.liver, comp = 2, method = 'median', name.var = name.var, main = "Liver data", contrib = "max")
+plotLoadings(splsda.liver, comp = 2, method = 'median', name.var = name.var, title = "Liver data", contrib = "max")
 
 # if names are provided: ok, even when NAs
 name.var = liver.toxicity$gene.ID[, 'geneBank']
@@ -47,7 +47,7 @@ plot.contrib = plotLoadings(splsda.liver, comp = 2, method = 'median', plot = FA
 head(plot.contrib$contrib)
 # change the title of the legend and title name
 plotLoadings(splsda.liver, comp = 2, method = 'median', legend.title = 'Time',
-main = 'Contribution plot', contrib = "max")
+title = 'Contribution plot', contrib = "max")
 
 # no legend
 plotLoadings(splsda.liver, comp = 2, method = 'median', legend = FALSE, contrib = "max")
@@ -101,7 +101,7 @@ X <- liver.toxicity$gene
 Y <- liver.toxicity$treatment[, 4]
 
 plsda.liver <- plsda(X, Y, ncomp = 2)
-plotIndiv(plsda.liver, ind.names = Y, plot.ellipse = TRUE)
+plotIndiv(plsda.liver, ind.names = Y, ellipse = TRUE)
 
 
 name.var = liver.toxicity$gene.ID[, 'geneBank']
@@ -171,11 +171,11 @@ if(additional.test==TRUE)
     plotLoadings(splsda.liver,legend.title="legend", contrib = "max")
     plotLoadings(splsda.liver,legend.title="legend",legend=FALSE, contrib = "max")
     
-    #test main
-    plotLoadings(splsda.liver,main="Plot", contrib = "max")
+    #test title
+    plotLoadings(splsda.liver,title="Plot", contrib = "max")
     
     #test plot
-    plotLoadings(splsda.liver,plot=FALSE,main="plot", contrib = "max")
+    plotLoadings(splsda.liver,plot=FALSE,title="plot", contrib = "max")
     
     
     
@@ -235,11 +235,11 @@ if(additional.test==TRUE)
     plotLoadings(res.1level,legend.title="legend", contrib = "max")
     plotLoadings(res.1level,legend.title="legend",legend=FALSE, contrib = "max")
     
-    #test main
-    plotLoadings(res.1level,main="Plot", contrib = "max")
+    #test title
+    plotLoadings(res.1level,title="Plot", contrib = "max")
     
     #test plot
-    a=plotLoadings(res.1level,plot=FALSE,main="plot", contrib = "max")
+    a=plotLoadings(res.1level,plot=FALSE,title="plot", contrib = "max")
     head(a)
     
     
@@ -261,8 +261,8 @@ if(additional.test==TRUE)
     plotLoadings(nutrimouse.sgccda,block=1, legend = FALSE)
     plotLoadings(nutrimouse.sgccda,block=2, legend = FALSE)
     plotLoadings(nutrimouse.sgccda,block=1:2, legend = FALSE)
-    plotLoadings(nutrimouse.sgccda,block=1:2, legend = FALSE, main = "YAY")
-    plotLoadings(nutrimouse.sgccda,block=1:2, legend = FALSE, main = "YAY", subtitle = c("a","Flo"))
+    plotLoadings(nutrimouse.sgccda,block=1:2, legend = FALSE, title = "YAY")
+    plotLoadings(nutrimouse.sgccda,block=1:2, legend = FALSE, title = "YAY", subtitle = c("a","Flo"))
     plotLoadings(nutrimouse.sgccda,block=1:2, contrib = "max", legend = FALSE)
     plotLoadings(nutrimouse.sgccda,block=1:2, contrib = "max")
     plotLoadings(nutrimouse.sgccda,block=2, contrib = "max")
@@ -313,11 +313,11 @@ if(additional.test==TRUE)
     plotLoadings(nutrimouse.sgccda,legend.title="legend", contrib = "max")
     plotLoadings(nutrimouse.sgccda,legend.title="legend",legend=FALSE, contrib = "max")
     
-    #test main
-    plotLoadings(nutrimouse.sgccda,main="Plot", contrib = "max")
+    #test title
+    plotLoadings(nutrimouse.sgccda,title="Plot", contrib = "max")
     
     #test plot
-    plotLoadings(nutrimouse.sgccda,plot=FALSE,main="plot", contrib = "max")
+    plotLoadings(nutrimouse.sgccda,plot=FALSE,title="plot", contrib = "max")
     
 }
 par(opar)

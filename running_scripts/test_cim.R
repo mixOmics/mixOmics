@@ -114,26 +114,26 @@ cim(liver.splsda, row.sideColors = dose.col, row.names = Y)
 #------------------------------------------------------------------
 data(vac18.simulated)
 X <- vac18.simulated$genes
-design <- data.frame(samp = vac18.simulated$sample,
-time = vac18.simulated$time,
+design <- data.frame(samp = vac18.simulated$sample)
+Y = data.frame(time = vac18.simulated$time,
 stim = vac18.simulated$stimulation)
 
-res.2level <- splsda(X, ncomp = 2, multilevel = design,
+res.2level <- splsda(X, Y = Y, ncomp = 2, multilevel = design,
 keepX = c(120, 10))
 
 #define colors for the levels: stimulation and time
 stim.col <- c("darkblue", "purple", "green4","red3")
-stim.col <- stim.col[as.numeric(design$stim)]
-time.col <- c("orange", "cyan")[as.numeric(design$time)]
+stim.col <- stim.col[as.numeric(Y$stim)]
+time.col <- c("orange", "cyan")[as.numeric(Y$time)]
 
 
 # The row side bar indicates the two levels of the facteor, stimulation and time.
 # the sample names have been motified on the plot.
 cim(res.2level, row.sideColors = cbind(stim.col, time.col),
-row.names = paste(design$time, design$stim, sep = "_"),
+row.names = paste(Y$time, Y$stim, sep = "_"),
 col.names = FALSE,
 #setting up legend:
-legend=list(legend = c(levels(design$time), levels(design$stim)),
+legend=list(legend = c(levels(Y$time), levels(Y$stim)),
 col = c("orange", "cyan", "darkblue", "purple", "green4","red3"),
 title = "Condition", cex = 0.7)
 )
@@ -278,12 +278,12 @@ if(additional.test==TRUE)
     cim(mat,lwid=c(1,2))
     
     
-    #test main, xlab, ylab
-    cim(mat,main="plot",xlab="row",ylab="gene")
+    #test title, xlab, ylab
+    cim(mat,title="plot",xlab="row",ylab="gene")
     
     #test margins
-    cim(mat,main="plot",xlab="row",ylab="gene",margins=c(7,7))
-    cim(mat,main="Cim.test",xlab="row",ylab="gene",margins=c(5.5,5))
+    cim(mat,title="plot",xlab="row",ylab="gene",margins=c(7,7))
+    cim(mat,title="Cim.test",xlab="row",ylab="gene",margins=c(5.5,5))
     
     
     
@@ -375,24 +375,24 @@ if(additional.test==TRUE)
     
     data(vac18.simulated)
     X <- vac18.simulated$genes
-    design <- data.frame(samp = vac18.simulated$sample,
-    stim = vac18.simulated$stimulation,
+    design <- data.frame(samp = vac18.simulated$sample)
+    Y = data.frame(stim = vac18.simulated$stimulation,
     time = vac18.simulated$time)
     
-    res.2level <- splsda(X, ncomp = 2, multilevel = design,
+    res.2level <- splsda(X, Y = Y, ncomp = 2, multilevel = design,
     keepX = c(120, 10))
     
     stim.col <- c("darkblue", "purple", "green4","red3")
-    stim.col <- stim.col[as.numeric(design$stim)]
-    time.col <- c("orange", "cyan")[as.numeric(design$time)]
+    stim.col <- stim.col[as.numeric(Y$stim)]
+    time.col <- c("orange", "cyan")[as.numeric(Y$time)]
     
     cim(res.2level, row.sideColors = cbind(stim.col, time.col),
-    row.names = paste(design$time, design$stim, sep = "_"),
+    row.names = paste(Y$time, Y$stim, sep = "_"),
     col.names = FALSE,
-    legend=list(legend=unique(design$stim),col=unique(stim.col),title="Stimulations"))
+    legend=list(legend=unique(Y$stim),col=unique(stim.col),title="Stimulations"))
     
     cim(res.2level, row.sideColors = cbind(stim.col, time.col),
-    row.names = paste(design$time, design$stim, sep = "_"),
+    row.names = paste(Y$time, Y$stim, sep = "_"),
     col.names = FALSE,
     legend=list(title="Stimulations"))
     

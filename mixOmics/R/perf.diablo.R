@@ -35,7 +35,7 @@
 perf.sgccda = function (object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
 validation = c("Mfold"),
-folds,
+folds = 10,
 parallel = FALSE,
 cpus=2,
 ...)
@@ -75,8 +75,6 @@ cpus=2,
     if (validation == "Mfold")
     {
         
-        if(missing(folds)) folds=10
-        
         if (!(abs(folds - round(folds)) < .Machine$double.eps) || is.null(folds) || folds < 2 || folds > n)
         {
             stop(paste("Invalid number of folds.", "folds must be an integer contained between", 2, "and", n))
@@ -86,8 +84,6 @@ cpus=2,
             folds = lapply(folds, sort)
         }
     } else if (validation == "loo") {
-        if (!missing(folds))
-        warning("validation='loo' is applied and 'folds' is ignored")
         M = n
         folds = split(1:n, rep(1:n, length = n))
     } else {

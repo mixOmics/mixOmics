@@ -47,12 +47,19 @@ function(x, ...)
 
     cat(" No variable selection. \n\n")
 	
-    cat(" Available components: \n", 
+    cat(" Main numerical outputs: \n",
         "-------------------- \n")
-	
 	cat(" loading vectors: see object$loadings \n")
     cat(" variates: see object$variates \n")
     cat(" variable names: see object$names \n")
+    
+    cat("\n")
+    cat(" Functions to visualise samples: \n", "-------------------- \n")
+    cat(" plotIndiv, plotArrow \n")
+    cat("\n")
+    cat(" Functions to visualise variables: \n", "-------------------- \n")
+    cat(" plotVar, plotLoadings, network, cim \n")
+
 }
 
 #------------------ print method for mint.pls ------------------#
@@ -64,14 +71,14 @@ function(x, ...)
     
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
     
-    cat(" PLS with a", mode, "mode with", x$ncomp, "PLS components. \n")
+    cat(" MINT PLS with a", mode, "mode with", x$ncomp, "PLS components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
     cat(" You entered data Y of dimensions:", nrow(x$Y), ncol(x$Y), "\n\n")
     cat(" You entered a grouping factor with", nlevels(x$study), "studies. \n")
 
     cat(" No variable selection. \n\n")
     
-    cat(" Available components: \n",
+    cat(" Main numerical outputs: \n",
     "-------------------- \n")
     
     cat(" loading vectors: see object$loadings \n")
@@ -79,6 +86,13 @@ function(x, ...)
     cat(" variates: see object$variates \n")
     cat(" variates per study: see object$variates.partial \n")
     cat(" variable names: see object$names \n")
+    
+    cat("\n")
+    cat(" Functions to visualise samples: \n", "-------------------- \n")
+    cat(" plotIndiv, plotArrow \n")
+    cat("\n")
+    cat(" Functions to visualise variables: \n", "-------------------- \n")
+    cat(" plotVar, plotLoadings, network, cim \n")
 }
 
 #------------------ print method for plsda ------------------#
@@ -94,12 +108,20 @@ function(x, ...)
 
     cat(" No variable selection. \n\n")
 	
-    cat(" Available components: \n", 
+    cat(" Main numerical outputs: \n", 
         "-------------------- \n")
 	
     cat(" loading vectors: see object$loadings \n")
     cat(" variates: see object$variates \n")
     cat(" variable names: see object$names \n")
+    
+    cat("\n")
+    cat(" Functions to visualise samples: \n", "-------------------- \n")
+    cat(" plotIndiv, plotArrow, cim \n")
+    cat("\n")
+    cat(" Functions to visualise variables: \n", "-------------------- \n")
+    cat(" plotVar, plotLoadings, network, cim \n")
+    
 }
 
 #------------------ print method for mint.plsda ------------------#
@@ -109,14 +131,14 @@ function(x, ...)
     
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
     
-    cat(" PLS-DA (regression mode) with", x$ncomp, "PLS-DA components. \n")
+    cat(" MINT PLS-DA (regression mode) with", x$ncomp, "PLS-DA components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
     cat(" You entered data Y with", ncol(x$ind.mat) , "classes. \n\n")
     cat(" You entered a grouping factor with", nlevels(x$study), "studies. \n")
 
     cat(" No variable selection. \n\n")
     
-    cat(" Available components: \n",
+    cat(" Main numerical outputs: \n",
     "-------------------- \n")
     
     cat(" loading vectors: see object$loadings \n")
@@ -124,6 +146,13 @@ function(x, ...)
     cat(" variates: see object$variates \n")
     cat(" variates per study: see object$variates.partial \n")
     cat(" variable names: see object$names \n")
+    
+    cat("\n")
+    cat(" Functions to visualise samples: \n", "-------------------- \n")
+    cat(" plotIndiv, plotArrow, cim \n")
+    cat("\n")
+    cat(" Functions to visualise variables: \n", "-------------------- \n")
+    cat(" plotVar, plotLoadings, network, cim \n")
 }
 
 #----------------- print method for spls ------------------#
@@ -144,12 +173,19 @@ function(x, ...)
     cat(" Selection of", keepX, "variables on each of the sPLS components on the X data set. \n")
     cat(" Selection of", keepY, "variables on each of the sPLS components on the Y data set. \n\n")
 
-    cat(" Available components: \n", 
+    cat(" Main numerical outputs: \n", 
         "-------------------- \n")
 	
 	cat(" loading vectors: see object$loadings \n")
     cat(" variates: see object$variates \n")
     cat(" variable names: see object$names \n")
+    
+    cat("\n")
+    cat(" Functions to visualise samples: \n", "-------------------- \n")
+    cat(" plotIndiv, plotArrow \n")
+    cat("\n")
+    cat(" Functions to visualise variables: \n", "-------------------- \n")
+    cat(" plotVar, plotLoadings, network, cim \n")
 }
 
 #----------------- print method for mint.spls ------------------#
@@ -163,7 +199,7 @@ function(x, ...)
     
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
     
-    cat(" sPLS with a", mode, "mode with", x$ncomp, "sPLS components. \n")
+    cat(" MINT sPLS with a", mode, "mode with", x$ncomp, "sPLS components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
     cat(" You entered data Y of dimensions:", nrow(x$Y), ncol(x$Y), "\n\n")
     cat(" You entered a grouping factor with", nlevels(x$study), "studies. \n")
@@ -171,7 +207,7 @@ function(x, ...)
     cat(" Selection of", keepX, "variables on each of the sPLS components on the X data set. \n")
     cat(" Selection of", keepY, "variables on each of the sPLS components on the Y data set. \n\n")
     
-    cat(" Available components: \n",
+    cat(" Main numerical outputs: \n",
     "-------------------- \n")
     
     cat(" loading vectors: see object$loadings \n")
@@ -179,6 +215,13 @@ function(x, ...)
     cat(" variates: see object$variates \n")
     cat(" variates per study: see object$variates.partial \n")
     cat(" variable names: see object$names \n")
+    
+    cat("\n")
+    cat(" Functions to visualise samples: \n", "-------------------- \n")
+    cat(" plotIndiv, plotArrow \n")
+    cat("\n")
+    cat(" Functions to visualise variables: \n", "-------------------- \n")
+    cat(" plotVar, plotLoadings, network, cim \n")
 }
 
 
@@ -198,12 +241,19 @@ function(x, ...)
     cat(" Selection of", keepX, "variables on each of the sPLS-DA components on the X data set. \n")
     cat(" No Y variables can be selected. \n\n")
 
-    cat(" Available components: \n", 
+    cat(" Main numerical outputs: \n", 
         "-------------------- \n")
 	
     cat(" loading vectors: see object$loadings \n")
     cat(" variates: see object$variates \n")
     cat(" variable names: see object$names \n")
+    
+    cat("\n")
+    cat(" Functions to visualise samples: \n", "-------------------- \n")
+    cat(" plotIndiv, plotArrow, cim \n")
+    cat("\n")
+    cat(" Functions to visualise variables: \n", "-------------------- \n")
+    cat(" plotVar, plotLoadings, network, cim \n")
 }
 
 #----------------- print method for mint.splsda ------------------#
@@ -223,7 +273,7 @@ function(x, ...)
     cat(" Selection of", keepX, "variables on each of the sPLS-DA components on the X data set. \n")
     cat(" No Y variables can be selected. \n\n")
     
-    cat(" Available components: \n",
+    cat(" Main numerical outputs: \n",
     "-------------------- \n")
     
     cat(" loading vectors: see object$loadings \n")
@@ -231,6 +281,14 @@ function(x, ...)
     cat(" variates: see object$variates \n")
     cat(" variates per study: see object$variates.partial \n")
     cat(" variable names: see object$names \n")
+    
+    cat("\n")
+    cat(" Functions to visualise samples: \n", "-------------------- \n")
+    cat(" plotIndiv, plotArrow, cim \n")
+    cat("\n")
+    cat(" Functions to visualise variables: \n", "-------------------- \n")
+    cat(" plotVar, plotLoadings, network, cim \n")
+
 }
 
 #------------------ print method for rcc ------------------#
@@ -244,7 +302,7 @@ function(x, ...)
     cat(" You entered data X of dimensions :", nrow(x$X), ncol(x$X), "\n")
     cat(" You entered data Y of dimensions :", nrow(x$Y), ncol(x$Y), "\n\n")
 	
-    cat(" Available components: \n", 
+    cat(" Main numerical outputs: \n", 
         "-------------------- \n")
 	
 	cat(" canonical correlations: see object$cor \n")
@@ -389,7 +447,7 @@ function(x, ...)
 
     cat(" Selection of", x$keepX, "variables on each of the principal components on the X data set. \n")
 
-    cat(" Available components: \n", 
+    cat(" Main numerical outputs: \n", 
         "-------------------- \n")
 	
     cat(" loading vectors: see object$rotation \n")
@@ -409,7 +467,7 @@ function(x, ...)
     cat(" IPCA with", x$ncomp, "independent components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
 
-    cat(" Available components: \n", 
+    cat(" Main numerical outputs: \n", 
         "-------------------- \n")
 	
     cat(" unmixing matrix: see object$unmixing \n")
@@ -432,7 +490,7 @@ function(x, ...)
 	
 	cat(" Selection of", x$keepX, "variables on each of the principal components on the X data set. \n")
 
-    cat(" Available components: \n", 
+    cat(" Main numerical outputs: \n", 
         "-------------------- \n")
 	
     cat(" unmixing matrix: see object$unmixing \n")
@@ -447,11 +505,11 @@ function(x, ...)
 # ------------------------ print for rgcca -------------------------
 print.rgcca <- function(x, ...) {
     
-    cat("\nCall:\n", deparse(x$class, width.cutoff = 500), "\n\n")
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
     
     # components
     for(k in 1:length(x$blocks)){
-        cat(" rGCCA with", x$ncomp[[k]], "components on block", k, "named", x$names$blocks[k], "\n")
+        cat(" rGCCA with", x$ncomp[k], "components on block", k, "named", x$names$blocks[k], "\n")
     }
     cat("\n")
     
@@ -460,18 +518,26 @@ print.rgcca <- function(x, ...) {
         cat(" Dimension of block", k, 'is ', dim(x$blocks[[k]]), "\n")
     }
     cat("\n")
-    cat(" Available components: \n", "-------------------- \n")
+    cat(" Main numerical outputs: \n", "-------------------- \n")
     
     cat(" loading vectors: see object$loadings \n")
     cat(" variates: see object$variates \n")
     cat(" variable names: see object$names \n")
+    
+    cat("\n")
+    cat(" Functions to visualise samples: \n", "-------------------- \n")
+    cat(" plotIndiv, plotArrow \n")
+    cat("\n")
+    cat(" Functions to visualise variables: \n", "-------------------- \n")
+    cat(" plotVar, plotLoadings, network \n")
+    
 }
 
 
 # ------------------------ print for sgcca -------------------------
 print.sgcca<- function(x, ...){
     
-    cat("\nCall:\n", deparse(x$class, width.cutoff = 500), "\n\n")
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
     
     # components
     for(k in 1 : length(x$X)){
@@ -492,10 +558,18 @@ print.sgcca<- function(x, ...){
         cat(" Selection of", list.select[[k]], "variables on each of the sGCCA components on the block", k, "\n")
     }
     cat("\n")
-    cat(" Available components: \n", "-------------------- \n")
-    
+    cat(" Main numerical outputs: \n", "-------------------- \n")
     cat(" loading vectors: see object$loadings \n")
     cat(" variates: see object$variates \n")
     cat(" variable names: see object$names \n")
+    
+   
+    cat("\n")
+    cat(" Functions to visualise samples: \n", "-------------------- \n")
+    cat(" plotIndiv, plotArrow, cimDiablo, plotDiablo \n")
+    cat("\n")
+    cat(" Functions to visualise variables: \n", "-------------------- \n")
+    cat(" plotVar, plotLoadings, network, plotDiablo \n")
+    
 }
 

@@ -82,7 +82,6 @@ near.zero.var = FALSE)
         scale = result$scale,
         design = result$design,
         scheme = result$scheme,
-        indY = result$indY,
         explained_variance = result$explained_variance)
     
     # give a class

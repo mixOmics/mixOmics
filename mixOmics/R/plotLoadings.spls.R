@@ -44,18 +44,18 @@ col = NULL,
 ndisplay = NULL,
 cex.name = 0.7,
 name.var = NULL,
-complete.name.var = FALSE,
-main = NULL,
+name.var.complete = FALSE, #name.var.complete
+title = NULL,
 subtitle,
-layout = NULL,
 size.title = rel(2),
 size.subtitle = rel(1.5),
+layout = NULL,
 border = NA,
 ...)
 {
     
     # -- input checks
-    check = check.input.plotLoadings(object = object, block = block, subtitle = subtitle, cex.name = cex.name, main = main, col = col, name.var = name.var)
+    check = check.input.plotLoadings(object = object, block = block, subtitle = subtitle, cex.name = cex.name, title = title, col = col, name.var = name.var)
     
     col = check$col
     cex.name = check$cex.name
@@ -73,7 +73,7 @@ border = NA,
     
     for (i in 1 : length(block))
     {
-        res = get.loadings.ndisplay(object = object, comp = comp, block = block[i], name.var = name.var[[i]], complete.name.var = complete.name.var, ndisplay = ndisplay)
+        res = get.loadings.ndisplay(object = object, comp = comp, block = block[i], name.var = name.var[[i]], name.var.complete = name.var.complete, ndisplay = ndisplay)
         X = res$X
         names.block = res$names.block
         colnames.X = res$colnames.X
@@ -82,7 +82,7 @@ border = NA,
         df = data.frame(importance = value.selected.var) # contribution of the loading
         
         # barplot with contributions
-        if (!is.null(main) & length(block) > 1)
+        if (!is.null(title) & length(block) > 1)
         {
             par(mar = c(4, max(7, max(sapply(colnames.X, nchar))/3), 6, 2))
         } else {
@@ -92,18 +92,18 @@ border = NA,
         mp = barplot(df$importance, horiz = T, las = 1, col = col, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(df),
         cex.names = cex.name, cex.axis = 0.7, beside = TRUE, border = border)
         
-        if ( (length(block) == 1 & is.null(main)) | (length(block) > 1 & missing(subtitle)))
+        if ( (length(block) == 1 & is.null(title)) | (length(block) > 1 & missing(subtitle)))
         {
-            title(paste0('Loadings on comp ', comp, "\nBlock '", names.block,"'"), line=1, cex.main = size.title)
+            title(paste0('Loadings on comp ', comp, "\nBlock '", names.block,"'"), line=0, cex.main = size.title)
         } else if (length(block) == 1) {
-            title(paste(main), line=1, cex.main = size.title)
+            title(paste(title), line=0, cex.main = size.title)
         } else if (length(block) > 1 & !missing(subtitle)) {
-            title(paste(subtitle[i]), line=1, cex.main = size.subtitle)
+            title(paste(subtitle[i]), line=0, cex.main = size.subtitle)
         }
     }
     
-    if (length(block) > 1 & !is.null(main))
-    title(main, outer=TRUE, line = -2, cex.main = size.title)
+    if (length(block) > 1 & !is.null(title))
+    title(title, outer=TRUE, line = -2, cex.main = size.title)
     
     if (reset.mfrow)
     par(opar)#par(mfrow = c(1,1))

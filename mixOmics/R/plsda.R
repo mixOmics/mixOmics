@@ -113,6 +113,7 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
         max.iter = result$max.iter,
         nzv = result$nzv,
         scale = scale,
+        logratio = logratio,
         explained_variance = result$explained_variance[-result$indY]
         )
     

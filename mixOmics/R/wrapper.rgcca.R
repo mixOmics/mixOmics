@@ -63,7 +63,7 @@ near.zero.var = FALSE)
     
 
     out = list(
-    class = match.call(),
+    call = match.call(),
     X = result.rgcca$X,
     variates = result.rgcca$variates,
     loadings = result.rgcca$loadings,
