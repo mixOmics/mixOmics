@@ -20,18 +20,19 @@
 # ---------------------------------------------
 # withinVariation function 
 # ---------------------------------------------
-withinVariation <- function(X, design){ 
+withinVariation = function(X, design){ 
 	
     # need a matrix for matrix calculations
     X = as.matrix(X)
-    rep.measures = design[, 1]
+    rep.measures = factor(design[, 1])
     factors = design[, -1, drop = FALSE] 
     
     # calculate the variation
     # ---------------------------
     # added condition for the spls case where the condition is not needed
     # all we need is the rep.measures
-    if ((ncol(factors) == 0) | (ncol(factors) == 1)) {
+    if ((ncol(factors) == 0) | (ncol(factors) == 1))
+    {
       message("Splitting the variation for 1 level factor.")
       
       # save sample names for the output

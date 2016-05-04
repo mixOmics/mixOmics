@@ -9,16 +9,34 @@ to classify samples.
 }
 
 \usage{
-plsda(X, Y, ncomp = 2, max.iter = 500, tol = 1e-06, near.zero.var = TRUE)
-}	
+plsda(X,
+Y,
+ncomp = 2,
+scale = TRUE,
+mode = c("regression", "canonical", "invariant", "classic"),
+tol = 1e-06,
+max.iter = 500,
+near.zero.var = FALSE,
+logratio="none",  
+multilevel=NULL)
+}
 
 \arguments{
   \item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
   \item{Y}{a factor or a class vector for the discrete outcome.}
   \item{ncomp}{the number of components to include in the model. Default to 2.}
-  \item{max.iter}{integer, the maximum number of iterations.}  
-  \item{tol}{a not negative real, the tolerance used in the iterative algorithm.}
-    \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations.}
+\item{scale}{boleean. If scale = TRUE, each block is standardized
+to zero means and unit variances (default: TRUE)}
+\item{mode}{character string. What type of algorithm to use, (partially) matching
+one of \code{"regression"}, \code{"canonical"}, \code{"invariant"} or \code{"classic"}.
+See Details.}
+\item{tol}{Convergence stopping value.}
+\item{max.iter}{integer, the maximum number of iterations.}
+\item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations. Default value is FALSE}
+\item{logratio}{one of ('none','CLR'). Default to 'none'}
+\item{multilevel}{Design matrix for multilevel anaylis (for repeated measurements). A numeric matrix or data frame. The first column
+indicates the repeated measures on each individual, i.e. the individuals ID. If \code{  method = 'splsda'}, the 2nd and 3rd columns are factors. If \code{method = 'spls'} then you can choose to only input the repeated measures (column 1) or the 2nd AND 3rd columns to split the variation for a 2 level factor. See Details.}
+
 }
 
 \details{
@@ -55,14 +73,14 @@ Nguyen, D. V. and Rocke, D. M. (2002). Tumor classification by partial
 least squares using microarray gene expression data. \emph{Bioinformatics}
 \bold{18}, 39-50.
 
-Tenenhaus, M. (1998). \emph{La régression PLS: theorie et pratique}. Paris: Editions Technic.
+Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.
 }
 
 \author{Ignacio Gonzalez, Kim-Anh Le Cao and Pierre Monget.}
 
 \seealso{\code{\link{splsda}}, \code{\link{summary}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, 
-\code{\link{plot3dIndiv}}, \code{\link{plot3dVar}}, \code{\link{predict}}, \code{\link{perf}} and http://mixOmics.org for more details.}
+\code{\link{predict}}, \code{\link{perf}} and http://mixOmics.org for more details.}
 
 \examples{
 ## First example
@@ -71,13 +89,7 @@ X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
 plsda.breast <- plsda(X, Y, ncomp = 2)
-palette(c("red", "blue"))
-col.breast <- as.numeric(as.factor(Y))
-plotIndiv(plsda.breast, ind.names = TRUE, col = col.breast)
-legend('bottomleft', c("After", "Before"), pch = c(16, 16), 
-       col = unique(col.breast), cex = 1, pt.cex = c(1.2, 1.2), 
-       title = "Treatment")
-palette("default")
+plotIndiv(plsda.breast, ind.names = TRUE, plot.ellipse = TRUE, add.legend = TRUE)
 
 \dontrun{
 ## Second example
@@ -86,8 +98,8 @@ X <- liver.toxicity$gene
 Y <- liver.toxicity$treatment[, 4]
 
 plsda.liver <- plsda(X, Y, ncomp = 2)
-col.rat <- as.numeric(as.factor(Y))
-plotIndiv(plsda.liver, col = col.rat, ind.names = Y)
+plotIndiv(plsda.liver, ind.names = Y, plot.ellipse = TRUE, add.legend =TRUE)
+
 }
 }
 

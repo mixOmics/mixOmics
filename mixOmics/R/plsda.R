@@ -1,52 +1,131 @@
-# Author : F.Rohart
-# created 22-04-2015
-# last modified 22-04-2015
+#############################################################################################################
+# Author :
+#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
-# perform the meta.pls on a subset of variables on one only dimension, deflate the intial matrices X and Y (already center by study)
+# created: 22-04-2015
+# last modified: 25-02-2016
+#
+# Copyright (C) 2015
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
 
-# mean centering with attach and without modify.na, need to look at how to remove some of means/sigma when nearZerVar is used
-# we can have a list of studies for Discriminant Analyses, not for pls/spls as they would be overlapping batch effects
+
+# ========================================================================================================
+# plsda: perform a PLS-DA
+# this function is a particular setting of internal_mint.block, the formatting of the input is checked in internal_wrapper.mint
+# ========================================================================================================
+
+# X: numeric matrix of predictors
+# Y: a factor or a class vector for the discrete outcome
+# ncomp: the number of components to include in the model. Default to 2.
+# scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
+# tol: Convergence stopping value.
+# max.iter: integer, the maximum number of iterations.
+# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
 
-wrapper.plsda <- function(X, Y, ncomp = 2, mode = c("regression", "canonical", "invariant", "classic"),
-max.iter = 500, tol = 1e-06, near.zero.var = FALSE,scale = TRUE)
+plsda = function(X,
+Y,
+ncomp = 2,
+scale = TRUE,
+mode = c("regression", "canonical", "invariant", "classic"),
+tol = 1e-06,
+max.iter = 500,
+near.zero.var = FALSE,
+logratio = "none",   # one of "none", "CLR"
+multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVariation. Y is ommited and shouldbe included in multilevel design
 {
     
-    
     #-- validation des arguments --#
-    # most of the checks are done in the wrapper.meta.spls.hybrid function
-    
-    if (is.null(Y))
-    stop("'Y' has to be something else than NULL.")
-    
-    if (is.null(dim(Y)))
+    # most of the checks are done in the wrapper.mint.spls.hybrid function
+    if (is.null(multilevel))
     {
-        Y = as.factor(Y)
-    }  else {
-        stop("'Y' should be a factor or a class vector.")
-    }
-    
-    Y.mat=unmap(Y)
-    colnames(Y.mat) = paste0("Y", 1:ncol(Y.mat))
-
-#X = as.matrix(X)
-
-    result <- wrapper.meta.spls.hybrid(X=X,Y=Y.mat,ncomp=ncomp,scale=scale,near.zero.var=near.zero.var,mode=mode,
-    max.iter=max.iter,tol=tol)
+        if (is.null(Y))
+        stop("'Y' has to be something else than NULL.")
         
-    cl = match.call()
-    cl[[1]] = as.name("plsda")
+        if (is.null(dim(Y)))
+        {
+            Y = factor(Y)
+        } else {
+            stop("'Y' should be a factor or a class vector.")
+        }
+        
+        if (nlevels(Y) == 1)
+        stop("'Y' should be a factor with more than one level")
+        
+        Y.mat = unmap(Y)
+        colnames(Y.mat) = levels(Y)
+        
+    } else {
+        # we expect a vector or a 2-columns matrix in 'Y' and the repeated measurements in 'multilevel'
+        multilevel = data.frame(multilevel)
+        
+        if ((nrow(X) != nrow(multilevel)))
+        stop("unequal number of rows in 'X' and 'multilevel'.")
+        
+        if (ncol(multilevel) != 1)
+        stop("'multilevel' should have a single column for the repeated measurements, other factors should be included in 'Y'.")
+        
+        if (!is.null(ncol(Y)) && !ncol(Y) %in% c(0,1,2))# multilevel 1 or 2 factors
+        stop("'Y' should either be a factor, a single column data.frame containing a factor, or a 2-columns data.frame containing 2 factors.")
+        multilevel = data.frame(multilevel, Y)
+        multilevel[, 1] = as.numeric(factor(multilevel[, 1])) # we want numbers for the repeated measurements
+        
+        Y.mat = NULL
+    }
 
-    out=list(call=cl,X=result$X[[1]],Y=Y,ind.mat=result$Y[[1]],ncomp=result$ncomp,mode=result$mode,variates=result$variates,loadings=result$loadings,
-        names=result$names,tol=result$tol,iter=result$iter,nzv=result$nzv,scale=scale)
-        out$names$Y = levels(Y)
-        row.names(out$variates$Y) = row.names(out$variates$X)
-        row.names(out$loadings$Y) = paste0("Y", c(1 : nlevels(Y)))
-   
-    class(out) = "plsda"
-    return(invisible(out))
     
+    # call to 'internal_wrapper.mint'
+    result = internal_wrapper.mint(X = X, Y = Y.mat, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
+    max.iter = max.iter, tol = tol, logratio = logratio, multilevel = multilevel, DA = TRUE)
 
+    # choose the desired output from 'result'
+    out = list(
+        call = match.call(),
+        X = result$X[-result$indY][[1]],
+        Y = if (is.null(multilevel))
+            {
+                Y
+            } else {
+                result$Y.factor
+            },
+        ind.mat = result$X[result$indY][[1]],
+        ncomp = result$ncomp,
+        mode = result$mode,
+        variates = result$variates,
+        loadings = result$loadings,
+        names = result$names,
+        tol = result$tol,
+        iter = result$iter,
+        max.iter = result$max.iter,
+        nzv = result$nzv,
+        scale = scale,
+        logratio = logratio,
+        explained_variance = result$explained_variance[-result$indY]
+        )
+    
+    class(out) = c("plsda","pls","DA")
+    # output if multilevel analysis
+    if (!is.null(multilevel))
+    {
+        out$Xw = result$Xw
+        out$multilevel = multilevel
+        class(out) = c("mlplsda",class(out))
+    }
 
-
+    return(invisible(out))
 }
+

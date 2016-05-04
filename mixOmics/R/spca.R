@@ -70,6 +70,8 @@ function(X,
     if (any(keepX > p)) 
             stop("each component of 'keepX' must be lower or equal than ", p, ".")
 
+    if (ncomp > min(ncol(X), nrow(X)))
+    stop("use smaller 'ncomp'", call. = FALSE)
 
     vect.varX=vector(length=ncomp)
     names(vect.varX) = c(1:ncomp)
@@ -172,9 +174,17 @@ function(X,
                    iter = vect.iter,
                    rotation = mat.v,
                    x = mat.u,
-                   names = list(X = X.names, indiv = ind.names)
+                   names = list(X = X.names, sample = ind.names),
+                   loadings=list(X=mat.v),
+                   variates=list(X=mat.u)
               ))
 			  
     class(result) = c("spca", "prcomp", "pca")
+    
+    #calcul explained variance
+    explX=explained_variance(X,result$variates$X,ncomp)
+    result$explained_variance=explX
+    
+    
     return(invisible(result))
 }

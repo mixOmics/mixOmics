@@ -1,5 +1,8 @@
-# Copyright (C) 2013
-# Kim-Anh Le Cao, University of Queensland, Brisbane, Australia
+# Copyright (C) 2015
+# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+# created: 22-04-2015
+# last modified: 04-03-2016
+
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -19,81 +22,73 @@ X,
 design = 1 - diag(length(X)),
 tau = rep(1, length(X)),
 ncomp = rep(1, length(X)),
+keepX.constraint,
+keepX,
 scheme = "centroid",
-mode="canonical",
 scale = TRUE,
-init = "svd.single",
 bias = FALSE,
-tol = 1e-6,
+init = "svd.single",
+tol = .Machine$double.eps,
 verbose = FALSE,
-max.iter=500,
-near.zero.var)
+max.iter = 1000,
+near.zero.var = FALSE)
 {
-    
-    # call function
-    #rgcca <- function(A, C = 1-diag(length(A)), tau = rep(1, length(A)), ncomp = rep(1, length(A)), scheme = "centroid", scale = TRUE , init="svd", bias = TRUE, tol = .Machine$double.eps, verbose=TRUE)
-    
-    
-    
-    # check needed
-    check=Check.entry.rgcca(X = X, design = design, tau = tau, ncomp = ncomp, scheme = scheme, scale = scale,
-    init = init, bias = bias, tol = tol, verbose = verbose, max.iter=max.iter, mode=mode,near.zero.var=near.zero.var)
-    X=check$A
-    ncomp=check$ncomp
-    design=check$design
-    init=check$init
-    scheme=check$scheme
-    verbose=check$verbose
-    bias=check$bias
-    near.zero.var=check$near.zero.var
 
 
-    
-    result.rgcca = sparse.meta.block(A = X, design = design, tau = tau,
+    check = Check.entry.rgcca(X = X, design = design, tau = tau, ncomp = ncomp, scheme = scheme, scale = scale,
+    init = init, bias = bias, tol = tol, verbose = verbose, max.iter = max.iter, near.zero.var = near.zero.var,keepX = keepX,
+    keepX.constraint = keepX.constraint)
+    X = check$A
+    ncomp = check$ncomp
+    design = check$design
+    init = check$init
+    scheme = check$scheme
+    verbose = check$verbose
+    bias = check$bias
+    nzv.A = check$nzv.A
+    keepA.constraint = check$keepA.constraint
+    keepA = check$keepA
+
+
+
+    result.rgcca = internal_mint.block(A = X, design = design, tau = tau,
     ncomp = ncomp,
     scheme = scheme, scale = scale,
     init = init, bias = bias, tol = tol, verbose = verbose,
-    max.iter=max.iter,
-    study=factor(rep(1,nrow(A[[1]]))),#meta.rgcca not coded yet
-    mode="canonical"
+    keepA.constraint = keepA.constraint, keepA = keepA,
+    max.iter = max.iter,
+    study = factor(rep(1,nrow(X[[1]]))),#mint.rgcca not coded yet
+    mode = "canonical"
     )
     
-    # outputs
-    #   out <- list(Y = shave.matlist(Y, ncomp),
-    #               a = shave.matlist(a, ncomp),
-    #               astar = shave.matlist(astar, ncomp),
-    #               C = C, tau = tau_mat, scheme = scheme,
-    #               ncomp=ncomp, crit = crit,
-    #               mode = mode,
-    #               AVE=list(AVE_X=AVE_X,
-    #                        AVE_outer=AVE_outer,
-    #                        AVE_inner=AVE_inner),
-    #               #KA added names of rows and cols for plotIndiv and plotVar
-    #               names = list(indiv = rownames(A[[1]]))
-    #   )
-    #   class(out) <- "rgcca"
-    #   return(out)
-    
-    cl = match.call()
-    cl[[1]] = as.name('rgcca')
-    
-    output = list(
-    class = cl,
-    X = X,
+
+    out = list(
+    call = match.call(),
+    X = result.rgcca$X,
     variates = result.rgcca$variates,
     loadings = result.rgcca$loadings,
     loadings.star = result.rgcca$loadings.star,
-    design = design,
+    keepX=result.rgcca$keepA,keepX.constraint = result.rgcca$keepA.constraint,
+    design = result.rgcca$design,
     tau = result.rgcca$tau,
-    scheme = scheme,
-    ncomp = ncomp,
+    scheme = result.rgcca$scheme,
+    ncomp = result.rgcca$ncomp,
     crit = result.rgcca$crit,
     AVE = list(AVE.X = result.rgcca$AVE$AVE_X, result.rgcca$AVE$AVE_outer, result.rgcca$AVE$AVE_inner), #rename?
-    names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames))
-    
+    names = result.rgcca$names,#names = list(indiv = rownames(X[[1]]), var = sapply(X, colnames)),
+    init = result.rgcca$init,
+    bias = result.rgcca$bias,
+    tol = result.rgcca$tol,
+    iter = result.rgcca$iter,
+    max.iter = result.rgcca$max.iter,
+    nzv = result.rgcca$nzv,
+    scale = result.rgcca$scale,
+    design = result.rgcca$design,
+    scheme = result.rgcca$scheme,
+    explained_variance = result.rgcca$explained_variance
     )
     
-    class(output) = 'rgcca'
-    return(invisible(output))
-    
+    class(out) = c("sparse.rgcca","rgcca")
+    return(invisible(out))
 }
+

@@ -19,7 +19,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
-bin.color <-
+bin.color =
 function(mat, threshold, breaks, col, symkey) 
 {
     if (isTRUE(symkey)) {
@@ -88,12 +88,7 @@ function(mat, threshold, breaks, col, symkey)
     mat[mat < min.breaks] = min.breaks
     mat[mat > max.breaks] = max.breaks
     
-    bin <- .bincode(as.double(mat), as.double(breaks), TRUE, TRUE)
-           
-	
-    #bin <- .C("bincode", as.double(mat), length(mat), as.double(breaks), 
-    #        length(breaks), code = integer(length(mat)), (TRUE), 
-    #        (TRUE), nok = TRUE, NAOK = TRUE, DUP = FALSE, PACKAGE = "base")$code
+    bin = .bincode(as.double(mat), as.double(breaks), TRUE, TRUE)
 
     return(invisible(list(bin = bin, col = col, breaks = breaks, lim = c(min.mat, max.mat))))		
 }

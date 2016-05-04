@@ -1,22 +1,70 @@
 
-import(MASS, lattice, RGCCA, igraph, rgl, pheatmap)
+import(MASS, lattice, igraph, rgl, ggplot2,corpcor,parallel,jpeg, RColorBrewer, plyr)
+
+importFrom("grDevices", "as.graphicsAnnot", "chull", "col2rgb",
+             "colorRamp", "colorRampPalette", "colors", "dev.cur",
+             "dev.new", "dev.off", "dev.prev", "dev.set",
+             "devAskNewPage", "graphics.off", "gray", "gray.colors",
+             "heat.colors", "rgb","jpeg", "pdf", "tiff", "x11")
+
+importFrom("graphics", "abline", "arrows", "axis", "barplot", "box",
+             "image", "layout", "legend", "lines", "locator", "mtext",
+             "par", "plot", "plot.default", "points", "polygon", "rect",
+             "segments", "strheight", "strwidth", "symbols", "text",
+             "title")
+
+importFrom("stats", "as.dendrogram", "as.dist", "coefficients", "cor",
+             "cov", "dist", "hclust", "lm", "lsfit", "median", "na.omit",
+             "order.dendrogram", "predict", "quantile", "reorder", "var")
+
+importFrom("utils", "setTxtProgressBar", "txtProgressBar","packageDescription")
+
+importFrom("ellipse","ellipse")
+
+importFrom("dplyr","group_by")
+
+importFrom("tidyr","gather")
+
+
+importFrom("reshape2","melt","dcast")
 
 export(
-bin.color, 
+bin.color,
+block.pls,
+block.plsda,
+block.spls,
+block.splsda, 
+cim, 
+cimDiablo,
+circosPlot,
 color.jet,
 color.GreenRed,
 color.spectral,
 color.mixo,
-cim,  
+cov2,
+deflation,
+defl.select,
+explained_variance,
 ica.par,
 ica.def,
 image.tune.rcc, 
 imgCor,
+initsvd,
 ipca,
-loo,
+logratio.transfo,
+l2.norm,
 mat.rank, 
 map,
-Mfold,
+mint.block.pls,
+mint.block.plsda,
+mint.block.spls,
+mint.block.splsda,
+mint.pls,
+mint.plsda,
+mint.spls,
+mint.splsda,
+miscrossprod,
+mixOmics,
 multilevel,
 nearZeroVar,
 network,
@@ -24,10 +72,11 @@ nipals,
 pca,
 pcasvd,
 perf,
-pheatmap.multilevel,
-plot3dIndiv, 
-plot3dVar,
-plotIndiv, 
+plotArrow,
+plotContrib,
+plotDiablo,
+plotIndiv,
+plotLoadings, 
 plotVar, 
 pls,
 plsda, 
@@ -35,70 +84,75 @@ rcc,
 scatterutil.base, 
 scatterutil.eti, 
 scatterutil.grid, 
-select.var,
+selectVar,
 sipca,
-s.match,
+soft_thresholding_L1,
+soft.threshold,
+sparsity,
 spca,
 spls,
 splsda,
+study_split,
+tau.estimate,
+tune,
+tune.mint.splsda,
+tune.splsda,
 tune.multilevel,
-tune.splsdalevel1,
-tune.splsdalevel2,
 tune.splslevel,
 tune.pca,
 tune.rcc,
 unmap,
-valid,
 vip,
 withinVariation,
+which.function.should.I.use,
 wrapper.rgcca,
-wrapper.sgcca)
-
-
-S3method(cim, default)
-S3method(cim, rcc)
-S3method(cim, spls)
-S3method(cim, pls)
+wrapper.sgcca,
+wrapper.sgccda)
 
 S3method(perf, pls)
 S3method(perf, spls)
 S3method(perf, plsda)
 S3method(perf, splsda)
-
+S3method(perf, sgccda)
 
 S3method(image, tune.rcc)
 
 S3method(plot, perf)
 S3method(plot, rcc)
 S3method(plot, pca)
+S3method(plot, sgccda)
+
 
 S3method(plotIndiv, pls)
 S3method(plotIndiv, spls)
-S3method(plotIndiv, plsda)
-S3method(plotIndiv, splsda)
 S3method(plotIndiv, rcc)
 S3method(plotIndiv, pca)
-S3method(plotIndiv, ipca)
-S3method(plotIndiv, sipca)
-S3method(plotIndiv, rgcca)
 S3method(plotIndiv, sgcca)
+S3method(plotIndiv, rgcca)
+S3method(plotIndiv, mint.pls)
+S3method(plotIndiv, mint.spls)
+S3method(plotIndiv, mint.plsda)
+S3method(plotIndiv, mint.splsda)
 
-S3method(plotVar, pls)
-S3method(plotVar, spls)
-S3method(plotVar, plsda)
-S3method(plotVar, splsda)
-S3method(plotVar, rcc)
-S3method(plotVar, pca)
-S3method(plotVar, spca)
-S3method(plotVar, ipca)
-S3method(plotVar, sipca)
-S3method(plotVar, sgcca)
-S3method(plotVar, rgcca)
+S3method(plotLoadings, pls)
+S3method(plotLoadings, spls)
+S3method(plotLoadings, rcc)
+S3method(plotLoadings, pca)
+S3method(plotLoadings, sgcca)
+S3method(plotLoadings, rgcca)
+S3method(plotLoadings, plsda)
+S3method(plotLoadings, splsda)
+S3method(plotLoadings, sgccda)
+S3method(plotLoadings, mint.pls)
+S3method(plotLoadings, mint.spls)
+S3method(plotLoadings, mint.plsda)
+S3method(plotLoadings, mint.splsda)
+
 
 S3method(predict, pls)
 S3method(predict, spls)
-S3method(predict, plsda)
-S3method(predict, splsda)
+S3method(predict, block.pls)
+S3method(predict, block.spls)
 
 S3method(summary, pls)
 S3method(summary, spls)
@@ -108,6 +162,11 @@ S3method(print, pls)
 S3method(print, spls)
 S3method(print, plsda)
 S3method(print, splsda)
+S3method(print, mint.pls)
+S3method(print, mint.spls)
+S3method(print, mint.plsda)
+S3method(print, mint.splsda)
+
 S3method(print, rcc)
 S3method(print, summary)
 S3method(print, pca)
@@ -117,36 +176,10 @@ S3method(print, sipca)
 S3method(print, sgcca)
 S3method(print, rgcca)
 
-S3method(plot3dIndiv, pls)
-S3method(plot3dIndiv, spls)
-S3method(plot3dIndiv, plsda)
-S3method(plot3dIndiv, splsda)
-S3method(plot3dIndiv, rcc)
-S3method(plot3dIndiv, pca)
-S3method(plot3dIndiv, ipca)
-S3method(plot3dIndiv, sipca)
 
-S3method(plot3dVar, pls)
-S3method(plot3dVar, spls)
-S3method(plot3dVar, rcc)
-S3method(plot3dVar, pca)
-S3method(plot3dVar, plsda)
-S3method(plot3dVar, splsda)
-S3method(plot3dVar, spca)
-S3method(plot3dVar, ipca)
-S3method(plot3dVar, sipca)
-
-S3method(select.var, spls)
-S3method(select.var, splsda)
-S3method(select.var, spca)
-S3method(select.var, sipca)
-S3method(select.var, sgcca)
-
-S3method(network, default)
-S3method(network, rcc)
-S3method(network, pls)
-S3method(network, spls)
-
-S3method(pheatmap.multilevel, splsda1fact)
-S3method(pheatmap.multilevel, splsda2fact)
+S3method(selectVar, spls)
+S3method(selectVar, pls)
+S3method(selectVar, pca)
+S3method(selectVar, rgcca)
+S3method(selectVar, sgcca)
 
