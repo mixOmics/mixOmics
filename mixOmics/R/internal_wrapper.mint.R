@@ -104,8 +104,7 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
     #-----------------------------#
     #-- logratio transformation --#
     
-    transfo = logratio.transfo(X=X, logratio=logratio)
-    X = transfo$X
+    X = logratio.transfo(X=X, logratio=logratio)
     
     #as X may have changed
     if (ncomp >= min(ncol(X), nrow(X)))

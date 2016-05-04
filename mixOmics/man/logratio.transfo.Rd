@@ -24,7 +24,7 @@ logratio.transfo(X, logratio = "none")
 }
 
 \value{
-\code{explained_variance} simply returns the log-ratio transform data.
+\code{logratio.transfo} simply returns the log-ratio transformed data.
 }
 
 

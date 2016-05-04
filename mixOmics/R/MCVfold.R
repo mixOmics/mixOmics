@@ -175,12 +175,10 @@ class.object = NULL
             #-- logratio transformation of X.train --#
             
             # X.train
-            transfo = logratio.transfo(X = X.train, logratio = logratio)
-            X.train = transfo$X
+            X.train = logratio.transfo(X = X.train, logratio = logratio)
             
             # X.test
-            transfo = logratio.transfo(X = X.test,logratio = logratio)
-            X.test = transfo$X
+            X.test = logratio.transfo(X = X.test,logratio = logratio)
             
             #-- logratio transformation ------------#
             #---------------------------------------#

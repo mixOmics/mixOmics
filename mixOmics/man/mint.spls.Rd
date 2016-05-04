@@ -58,9 +58,9 @@ algorithms are available: PLS regression \code{("regression")} and PLS canonical
 \code{("canonical")}.
 
 
-Variable selection is performed on each component of \code{X} via both input parameter \code{keepX.constraint} and \code{keepX}. \code{keepX.constraint[[j]]} is a vector of variable names that indicates which variables to keep on component \code{j}; similarly, \code{keepX[k]} is a single positive value that indicates the number of variables to keep on component \code{j+k}.
-Variable selection is performed on \code{Y} via both input parameter \code{keepY.constraint} and \code{keepY}. \code{keepY.constraint[[j]]} is a vector of variables names that indicates which variables to keep on component \code{j}  of block \code{Y}; similarly, \code{keepY[k]} is a single positive value that indicates the number of variables to keep on component \code{j+k} of \code{Y}.
-
+Variable selection is performed on each component of \code{X} via both input parameter \code{keepX.constraint} and \code{keepX}. \code{keepX.constraint[[j]]} is a vector of variable names that indicates which variables to keep on component \code{j}; similarly, \code{keepX[k]} is a single positive value that indicates the number of variables to keep on component \code{length(keepX.constraint)+k}.
+Variable selection is performed on \code{Y} via both input parameter \code{keepY.constraint} and \code{keepY}. \code{keepY.constraint[[j]]} is a vector of variables names that indicates which variables to keep on component \code{j}  of block \code{Y}; similarly, \code{keepY[k]} is a single positive value that indicates the number of variables to keep on component \code{length(keepY.constraint)+k} of \code{Y}.
+Note that both \code{keepX.constraint} and \code{keepY.constraint} must have same length.
 }
 
 

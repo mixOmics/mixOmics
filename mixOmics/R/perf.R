@@ -505,7 +505,7 @@ near.zero.var = FALSE,
     names(prediction.all) = paste('comp', 1:ncomp)
     
     result = list(error.rate = mat.mean.error,
-    error.rate.class = error.per.class.keepX.opt,
+    error.rate.class = error.per.class.keepX.opt[[1]],
     predict = prediction.all,
     class = class.all)
 

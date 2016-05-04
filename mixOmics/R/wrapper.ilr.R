@@ -43,7 +43,7 @@ logratio = "none" # one of ('none','CLR','ILR')
     }
     #if logratio = "none", do nothing
     
-    return(list(X = X))
+    return(X)
 }
 
 

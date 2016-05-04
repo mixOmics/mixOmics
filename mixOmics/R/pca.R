@@ -126,8 +126,7 @@ multilevel = NULL)
     if (is.null(V)) # back-transformation to clr-space, will be used later to recalculate loadings etc
     V = clr.backtransfo(X)
 
-    transfo = logratio.transfo(X = X, logratio = logratio)
-    X = transfo$X
+    X = logratio.transfo(X = X, logratio = logratio)
     
     #as X may have changed
     if (ncomp >= min(ncol(X), nrow(X)))
