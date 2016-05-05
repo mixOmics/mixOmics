@@ -42,7 +42,7 @@ function(object, block, #single value
 comp = 1,
 col = NULL,
 ndisplay = NULL,
-cex.name = 0.7,
+size.name = 0.7,
 name.var = NULL,
 name.var.complete = FALSE, #name.var.complete
 title = NULL,
@@ -55,10 +55,10 @@ border = NA,
 {
     
     # -- input checks
-    check = check.input.plotLoadings(object = object, block = block, subtitle = subtitle, cex.name = cex.name, title = title, col = col, name.var = name.var)
+    check = check.input.plotLoadings(object = object, block = block, subtitle = subtitle, size.name = size.name, title = title, col = col, name.var = name.var)
     
     col = check$col
-    cex.name = check$cex.name
+    size.name = check$size.name
     block = check$block
 
 
@@ -90,7 +90,7 @@ border = NA,
         }
 
         mp = barplot(df$importance, horiz = T, las = 1, col = col, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(df),
-        cex.names = cex.name, cex.axis = 0.7, beside = TRUE, border = border)
+        cex.names = size.name, cex.axis = 0.7, beside = TRUE, border = border)
         
         if ( (length(block) == 1 & is.null(title)) | (length(block) > 1 & missing(subtitle)))
         {

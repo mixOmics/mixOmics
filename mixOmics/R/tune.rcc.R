@@ -83,8 +83,10 @@ function(X,
      
     out = list(opt.lambda1 = opt[[1]], opt.lambda2 = opt[[2]], 
 	opt.score = opt[[3]], grid1 = grid1, grid2 = grid2, mat = mat)
-     
-    class(out) = "tune.rcc"	
+    
+    out$call = match.call()
+
+    class(out) = "tune.rcc"
     return(invisible(out))
 }
 

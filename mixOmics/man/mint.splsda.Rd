@@ -25,7 +25,7 @@ near.zero.var = FALSE)
 
 \arguments{
 \item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
-\item{Y}{Outcome. Numeric vector or matrix of responses (for multi-response models)}
+\item{Y}{a factor or a class vector for the discrete outcome.}
 \item{ncomp}{Number of components to include in the model (see Details). Default to 2}
 \item{mode}{character string. What type of algorithm to use, (partially) matching
 one of \code{"regression"} or \code{"canonical"}. See Details.}
@@ -43,65 +43,78 @@ to zero means and unit variances (default: TRUE)}
 
 
 \details{
-\code{pls} function fit PLS models with \eqn{1, \ldots ,}\code{ncomp} components.
-Multi-response models are fully supported. The \code{X} and \code{Y} datasets
-can contain missing values.
+\code{mint.splsda} function fits a vertical sPLS-DA models with \eqn{1, \ldots ,}\code{ncomp} components. The grouping factor is specified with \code{study}. We advise more than 3 samples per study where all outcome categories are represented.
+
+\code{X} can contain missing values. Missing values are handled by casewise deletion in the \code{mint.splsda} function without having to delete the rows with missing data.
+
 
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis
 \code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS
 algorithm \code{("classic")} (see References).
 
-The estimation of the missing values can be performed
-by the reconstitution of the data matrix using the \code{nipals} function. Otherwise, missing
-values are handled by casewise deletion in the \code{pls} function without having to
-delete the rows with missing data.
+
+Variable selection is performed on each component of \code{X} via both input parameter \code{keepX.constraint} and \code{keepX} as follows. \code{keepX.constraint[[j]]} is a vector of variable names that indicates which variables to keep on component \code{j}; similarly, \code{keepX[k]} is a single positive value that indicates the number of variables to keep on component \code{length(keepX.constraint)+k}. See examples below.
+
+Useful graphical outputs are available, e.g. \code{\link{plotIndiv}}, \code{\link{plotLoadings}}, \code{\link{plotVar}}.
 }
 
+
 \value{
-\code{pls} returns an object of class \code{"pls"}, a list
+\code{mint.splsda} returns an object of class \code{"mint.splsda", "splsda"}, a list
 that contains the following components:
 
 \item{X}{the centered and standardized original predictor matrix.}
 \item{Y}{the centered and standardized original response vector or matrix.}
+\item{ind.mat}{the centered and standardized original response vector or matrix.}
 \item{ncomp}{the number of components included in the model.}
+\item{study}{The study grouping factor}
 \item{mode}{the algorithm used to fit the model.}
-\item{mat.c}{matrix of coefficients to be used internally by \code{predict}.}
-\item{variates}{list containing the \eqn{X} and \eqn{Y} variates.}
-\item{loadings}{list containing the estimated loadings for the variates.}
+\item{keepX}{Number of variables used to build each component of X}
+\item{keepX.constraint}{list indicating which variables where constrained to be used to build the first component of X}
+\item{variates}{list containing the variates of X - global variates.}
+\item{loadings}{list containing the estimated loadings for the variates - global loadings.}
+\item{variates.partial}{list containing the variates of X relative to each study - partial variates.}
+\item{loadings.partial}{list containing the estimated loadings for the partial variates - partial loadings.}
 \item{names}{list containing the names to be used for individuals and variables.}
 \item{nzv}{list containing the zero- or near-zero predictors information.}
-\item{tol}{the tolerance used in the iterative algorithm, used for subsequent S3 methods}
-\item{max.iter}{the maximum number of iterations, used for subsequent S3 methods}
 \item{iter}{Number of iterations of the algorthm for each component}
+\item{explained_variance}{Percentage of explained variance for each component and each study}
 
 }
 
 \references{
-Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.
-
-Wold H. (1966). Estimation of principal components and related models by iterative least squares.
-In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N.Y., 391-420.
+Rohart F. et al (2016, in prep). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms.
 }
 
-\author{Sebastien Dejean and Ignacio Gonzalez and Kim-Anh Le Cao.}
+\author{Florian Rohart}
 
-\seealso{\code{\link{spls}}, \code{\link{summary}},
-\code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org for more details.}
+\seealso{\code{\link{spls}},
+\code{\link{plotIndiv}}, \code{\link{plotLoadings}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{tune.mint.splsda}} and http://www.mixOmics.org for more details.}
+
 
 \examples{
 data(stemcells)
 
-res=mint.splsda(X=stemcells$gene,Y=stemcells$celltype,ncomp=3,
-    near.zero.var=FALSE,keepX=c(10,5,15),study=stemcells$study)
+# -- feature selection with keepX
+res = mint.splsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3, keepX = c(10, 5, 15),
+study = stemcells$study)
 
 plotIndiv(res)
-
 #plot study-specific outputs for all studies
-plotIndiv(res,study=levels(stemcells$study))
+plotIndiv(res, study = "all.partial")
 
 #plot study-specific outputs for study "2"
-plotIndiv(res,study="2",col=as.numeric(stemcells$celltype))
+plotIndiv(res, study = "2")
+
+# -- feature selection with keepX.constraint and keepX
+# we force mint.spls to build the PLS-component 1 and 2 with only specific genes
+keepX.constraint = list(comp1 = c("ENSG00000138756", "ENSG00000101470"),
+comp2 = c("ENSG00000120049", "ENSG00000138685", "ENSG00000204248", "ENSG00000103260"))
+
+# we select 10 and 15 variables on component 3 and 4
+res = mint.splsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 4, study = stemcells$study,
+keepX.constraint = keepX.constraint, keepX = c(10,15))
 
 }
 

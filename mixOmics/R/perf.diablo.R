@@ -36,8 +36,7 @@ perf.sgccda = function (object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
 validation = c("Mfold"),
 folds = 10,
-parallel = FALSE,
-cpus=2,
+cpus = 1,
 ...)
 {
     
@@ -62,8 +61,6 @@ cpus=2,
     
     ### Start: Check parameter validation / set up sample
     
-    if (!is.logical(parallel))
-    stop("'parallel' must be either TRUE or FALSE")
     
     if (length(validation) > 1 )
     validation = validation [1]
@@ -100,11 +97,11 @@ cpus=2,
     Y.test = lapply(folds, function(x) {Y[x]})
     ### End: Training samples (X.training and Y.training) and Test samples (X.test / Y.test)
     
-    if (!is.logical(parallel) || is.na(parallel))
-    stop("parallel must be a logical type")
+    if (!is.numeric(cpus) | cpus<=0)
+    stop("'cpus' needs to be a numeric value higher than 1")
     
     ### Estimation models
-    if (parallel == TRUE)
+    if (cpus > 1)
     {
         cl <- makeCluster(cpus, type = "SOCK")
         #clusterExport(cl, c("internal_wrapper.mint.block", "unmap","Check.entry.wrapper.sparse.mint.block", "internal_mint.block", "block.splsda",
@@ -536,8 +533,10 @@ cpus=2,
         result$MajorityClass.error.rate = Y.vote.res
     }
     
-    method = "plsda.mthd"
-    result$meth = "splsda.mthd"
-    class(result) = c("perf", method)
+    method = "sgccda.mthd"
+    result$meth = "sgccda.mthd"
+    class(result) = "perf.sgccda.mthd"
+    result$call = match.call()
+
     return(invisible(result))
 }

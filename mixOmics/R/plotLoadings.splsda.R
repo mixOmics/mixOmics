@@ -45,8 +45,8 @@ plot = TRUE,
 show.ties = TRUE,
 col.ties = "white",
 ndisplay = NULL,
-cex.name = 0.7,
-cex.legend = 0.8,
+size.name = 0.7,
+size.legend = 0.8,
 name.var = NULL,
 name.var.complete = FALSE,
 title = NULL,
@@ -62,11 +62,11 @@ border = NA,
 ) {
     
     # -- input checks
-    check = check.input.plotLoadings(object = object, block = block, subtitle = subtitle, cex.name = cex.name, cex.legend = cex.legend,
+    check = check.input.plotLoadings(object = object, block = block, subtitle = subtitle, size.name = size.name, size.legend = size.legend,
     title = title, col = NULL, contrib = contrib, name.var = name.var)
     
-    cex.name = check$cex.name
-    cex.legend = check$cex.legend
+    size.name = check$size.name
+    size.legend = check$size.legend
     block = check$block
     
     # contrib
@@ -78,7 +78,7 @@ border = NA,
         if(plot)
         {
             plotLoadings.pls(object = object, block = block, comp = comp, ndisplay = ndisplay,
-            cex.name = cex.name,
+            size.name = size.name,
             name.var = name.var,
             name.var.complete = name.var.complete,
             title = title,
@@ -160,7 +160,7 @@ border = NA,
                 }
                 
                 mp = barplot(df$importance, horiz = T, las = 1, col = df$color, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(df),
-                cex.names = cex.name, cex.axis = 0.7, beside = TRUE, border = border)
+                cex.names = size.name, cex.axis = 0.7, beside = TRUE, border = border)
                 
                 if ( length(block) == 1 & is.null(title) )
                 {
@@ -179,7 +179,7 @@ border = NA,
                     plot(1,1, type = "n", axes = FALSE, ann = FALSE)
                     legend(0.8, 1, col = legend.color[1:nlevels(Y)], legend = levels(Y), pch = 19,
                     title = paste(legend.title),
-                    cex = cex.legend)
+                    cex = size.legend)
                 }
             } # end if plot
         }

@@ -40,7 +40,7 @@ ellipse.level = 0.95,
 centroid = FALSE, 
 star = FALSE, 
 title = NULL, 
-add.legend = FALSE, 
+legend = FALSE, 
 X.label = NULL, 
 Y.label = NULL, 
 Z.label = NULL, 
@@ -74,7 +74,7 @@ point.lwd = 1,
     
     check = check.input.plotIndiv(object = object, comp = comp, blocks = blocks, ind.names = ind.names, 
     style = style, ellipse = ellipse, ellipse.level = ellipse.level, centroid = centroid, 
-    star = star, add.legend = add.legend, X.label = X.label, Y.label = Y.label, Z.label = Z.label, abline = abline, 
+    star = star, legend = legend, X.label = X.label, Y.label = Y.label, Z.label = Z.label, abline = abline, 
     xlim = xlim, ylim = ylim, alpha = alpha, axes.box = axes.box, plot_parameters = plot_parameters)
     
     # retrieve outputs from the checks
@@ -128,7 +128,7 @@ point.lwd = 1,
 
     # create data frame df that contains (almost) all the ploting information
     out = shape.input.plotIndiv(object = object, n = n, blocks = blocks, x = x, y = y, z = z, ind.names = ind.names, group = group,
-    col.per.group = col.per.group, style = style, study = "all", ellipse = ellipse, ellipse.level = ellipse.level,
+    col.per.group = col.per.group, style = style, study = "global", ellipse = ellipse, ellipse.level = ellipse.level,
     centroid = centroid, star = star, title = title, xlim = xlim, ylim = ylim, 
     col = col, cex = cex, pch = pch, display.names = display.names)
     #-- retrieve outputs
@@ -147,7 +147,7 @@ point.lwd = 1,
     #call plot module (ggplot2, lattice, graphics, 3d)
     res = internal_graphicModule(df = df, centroid = centroid, col.per.group = col.per.group, title = title,
     X.label = X.label, Y.label = Y.label, Z.label = Z.label, xlim = xlim, ylim = ylim, class.object = class(object),
-    display.names = display.names, add.legend = add.legend, abline = abline,
+    display.names = display.names, legend = legend, abline = abline,
     star = star, ellipse = ellipse, df.ellipse = df.ellipse, style = style, layout = layout, missing.col = missing.col,
     axes.box = axes.box, plot_parameters = plot_parameters, alpha = alpha)
     

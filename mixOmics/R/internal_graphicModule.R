@@ -37,7 +37,7 @@
 # title
 # X.label
 # Y.label
-# add.legend
+# legend
 # display.names
 
 internal_graphicModule=function(df,
@@ -52,7 +52,7 @@ ylim,
 zlim,
 class.object,
 display.names,
-add.legend,
+legend,
 abline,
 star,
 ellipse,
@@ -167,7 +167,7 @@ alpha)
         
         
         #-- Legend
-        if (!add.legend)
+        if (!legend)
         {
             p = p + theme(legend.position="none")
         } else {
@@ -250,7 +250,7 @@ alpha)
         p = p + coord_cartesian(xlim = xlim, ylim = ylim)
         
         #-- Legend
-        if (!add.legend)
+        if (!legend)
         {
             p = p + theme(legend.position="none")
         }else{
@@ -304,7 +304,7 @@ alpha)
     #-- End: ggplot2
     
     #internal_lattice=function(df,group,blocks,names,centroid,x0,y0,col.per.group,title,X.label,Y.label,lim.X,xlim,lim.Y,ylim,class.object,
-    #col,display.names,add.legend,abline,pch.legend,cex,star,x,y,ellipse,df.ellipse)
+    #col,display.names,legend,abline,pch.legend,cex,star,x,y,ellipse,df.ellipse)
     if (style=="lattice")
     {
         #-- Start: Lattice
@@ -315,7 +315,7 @@ alpha)
         y = list(relation = "free", limits = ylim,cex=size.axis)),
         
         #-- Legend
-        key = if(add.legend == TRUE)
+        key = if(legend == TRUE)
         {
             if (!any(class.object%in%object.mint))
             {
@@ -453,7 +453,7 @@ alpha)
     #-- End: Lattice
     
     #internal_graphics=function(df,group,blocks,names,centroid,x0,y0,col.per.group,title,X.label,Y.label,lim.X,xlim,lim.Y,ylim,class.object,
-    #col,display.names,add.legend,abline,pch.legend,cex,star,x,y,ellipse,df.ellipse,layout,rep.space,missing.col,...)
+    #col,display.names,legend,abline,pch.legend,cex,star,x,y,ellipse,df.ellipse,layout,rep.space,missing.col,...)
     if (style=="graphics")
     {
         #-- Start: graphics
@@ -496,7 +496,7 @@ alpha)
 
         for (k in 1 : nlevels(df$Block))
         {
-            if (add.legend)
+            if (legend)
             par(mai=c(1.360000, 1.093333, 1.093333, (max(strwidth(levels(df$group),"inches"))) + 0.6), xpd=TRUE)
 
             other = df$Block %in% levels(df$Block)[k]
@@ -565,12 +565,12 @@ alpha)
                 pch.legend = c(pch.legend, df[df$group == levels(df$group)[i], ]$pch)
             }
             
-            if (add.legend)
+            if (legend)
             {
                 legend(par()$usr[2]+0.1, par()$usr[4] - (par()$usr[4]-par()$usr[3])/2, col = col.per.group, legend = levels(df$group), pch = if(display.names) {16} else unique(df$pch.legend), title = 'Legend', cex = size.legend, lty = 0,lwd = point.lwd)
                 
             }
-            if (add.legend)
+            if (legend)
             par(xpd=FALSE) # so the abline does not go outside the plot
             
             #-- Abline
@@ -641,7 +641,7 @@ alpha)
     
     
     #internal_3d=function(df,group,blocks,names,centroid,x0,y0,col.per.group,title,X.label,Y.label,lim.X,xlim,lim.Y,ylim,class.object,
-    #col,display.names,add.legend,abline,pch.legend,cex,star,x,y,ellipse,df.ellipse,axes.box,Z.label,z)
+    #col,display.names,legend,abline,pch.legend,cex,star,x,y,ellipse,df.ellipse,axes.box,Z.label,z)
     if (style=="3d")
     {
         
@@ -677,7 +677,7 @@ alpha)
             
             par3d(userMatrix = rotationMatrix(pi/80, 1, -1/(100*pi), 0))
             
-            if (add.legend)
+            if (legend)
             {
                 legend3d(x = "right",
                 legend = levels(df$group),

@@ -37,14 +37,14 @@ plotLoadings.mint.splsda   =
 function(object,
 contrib = NULL,  # choose between 'max" or "min", NULL does not color the barplot
 method = "mean", # choose between 'mean" or "median"
-study = "all",
+study = "global",
 comp = 1,
 plot = TRUE,
 show.ties = TRUE,
 col.ties = "white",
 ndisplay = NULL,
-cex.name = 0.7,
-cex.legend = 0.8,
+size.name = 0.7,
+size.legend = 0.8,
 name.var = NULL,
 name.var.complete = FALSE,
 title = NULL,
@@ -62,11 +62,11 @@ border = NA,
     # what I want is to modify the input and call plotLoadings.pls and plotLoadings.splsda where blocks are now studies
     # do not forget to change object$names$block in levels(object$study) and it should work, see you tomorrow
     
-    if(any(study == "all"))
+    if(any(study == "global"))
     {
         plotLoadings.plsda(object = object, contrib = contrib, method = method, block = "X", comp = comp, ndisplay = ndisplay,
-        cex.name = cex.name,
-        cex.legend = cex.legend,
+        size.name = size.name,
+        size.legend = size.legend,
         name.var = name.var,
         name.var.complete = name.var.complete,
         legend = legend,
@@ -85,19 +85,42 @@ border = NA,
     } else {
         
         # -- input checks
-        check = check.input.plotLoadings(object = object, block = "X", cex.name = cex.name, cex.legend = cex.legend,
+        check = check.input.plotLoadings(object = object, block = "X", size.name = size.name, size.legend = size.legend,
         title = title, col = NULL, name.var = name.var)
 
-        cex.name = check$cex.name
-        cex.legend = check$cex.legend
+        size.name = check$size.name
+        size.legend = check$size.legend
         block = check$block # "X"
+
+        study.init = unique(study)
+        # replace "all.partial" by all levels of object$study
+        ind.all.partial = which(study.init == "all.partial")
+        if (length(ind.all.partial) > 0)
+        {
+            if (ind.all.partial > 1 & ind.all.partial < length(study.init))
+            {
+                # there are things before and after "all.partial"
+                study.init = c(study.init[1:(ind.all.partial-1)], levels(object$study), study.init[(ind.all.partial+1) : length(study.init)])
+            } else if (ind.all.partial == 1 & ind.all.partial < length(study.init)) {
+                # there are only things after "all.partial"
+                study.init = c(levels(object$study), study.init[(ind.all.partial+1) : length(study.init)])
+            } else if (ind.all.partial > 1 & ind.all.partial == length(study.init)) {
+                # there are things only before "all.partial"
+                study.init = c(study.init[1:(ind.all.partial-1)], levels(object$study))
+            } else if (ind.all.partial == 1 & ind.all.partial == length(study.init)) {
+                # there's only "all.partial"
+                study.init = levels(object$study)
+            }
+        }
+        study.init = unique(study.init) #once again cause we added studies if "all.partial"
+        study = study.init
         
         if (!missing(subtitle))
         {
             if (length(subtitle)!=length(study))
-            stop("'subtitle' indicates the subtitle of the plot for each study and it needs to be the same length as 'study'.")
+            stop("'subtitle' indicates the subtitle of the plot for each study and it needs to be the same length as 'study' (", length(study),"), which includes: ", paste(study, collapse = ", "))
         }
-        
+
         # swap block for study
         block = study
         
@@ -181,7 +204,7 @@ border = NA,
             }
 
             mp = barplot(df$importance, horiz = T, las = 1, col = df$color, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(df),
-            cex.names = cex.name, cex.axis = 0.7, beside = TRUE, border = border)
+            cex.names = size.name, cex.axis = 0.7, beside = TRUE, border = border)
             
             if ( length(block) == 1 & is.null(title) )
             {
@@ -200,7 +223,7 @@ border = NA,
                 plot(1,1, type = "n", axes = FALSE, ann = FALSE)
                 legend(0.8, 1, col = legend.color[1:nlevels(Y)], legend = levels(Y), pch = 19,
                 title = paste(legend.title),
-                cex = cex.legend)
+                cex = size.legend)
             }
         
             df.final[[i]] = df

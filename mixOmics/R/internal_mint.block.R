@@ -429,7 +429,7 @@ penalty=NULL)
         crit[iter] = sum(design * g(cov2(variates.A, bias = bias)))
         
         if (iter > max.iter)
-        warning("The SGCCA algorithm did not converge")#cat("The SGCCA algorithm did not converge after", max.iter ,"iterations."))
+        warning("The SGCCA algorithm did not converge", call. = FALSE)#cat("The SGCCA algorithm did not converge after", max.iter ,"iterations."))
         
         ### Start: Match algorithm with mixOmics algo (stopping point)
         ### if ((converg[iter] < tol & sum(stationnary_point) == J) | iter > max.iter)

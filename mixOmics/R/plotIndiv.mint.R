@@ -34,7 +34,7 @@ plotIndiv.mint.splsda   =
 
 function(object, 
 comp = NULL, 
-study = "all",
+study = "global",
 rep.space = NULL,
 group, # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
 col.per.group, 
@@ -45,7 +45,7 @@ centroid = FALSE,
 star = FALSE,
 title = NULL,
 subtitle, 
-add.legend = FALSE,
+legend = FALSE,
 X.label = NULL, 
 Y.label = NULL, 
 abline = FALSE, 
@@ -87,20 +87,20 @@ point.lwd = 1,
     # --------------------------------------------------------------------------------------
     
     # check study
-    #study needs to be either: from levels(object$study), numbers from 1:nlevels(study) or "all"
-    if (any(!study%in%c(levels(object$study), "all")))
-    stop("'study' must be one of 'object$study' or 'all'.")
+    #study needs to be either: from levels(object$study), numbers from 1:nlevels(study) or "global"
+    if (any(!study%in%c(levels(object$study), "global" , "all.partial")))
+    stop("'study' must be one of 'object$study', 'global' or 'all.partial', see help file.")
     
     if (length(study)!=length(unique(study)))
     stop("Duplicate in 'study' not allowed")
     
-    if (length(study) > 1 & any(study != "all"))
+    if (length(study) > 1 & any(study != "global"))
     {
         if (ellipse == TRUE)
-        stop("'ellipse' must be FALSE when study is different from 'all'")
+        stop("'ellipse' must be FALSE when study is different from 'global'")
 
         if (star == TRUE)
-        stop("'star' must be FALSE when study is different from 'all'")
+        stop("'star' must be FALSE when study is different from 'global'")
     }
 
     if (!missing(subtitle))
@@ -110,14 +110,36 @@ point.lwd = 1,
     }
 
 
-    #LOOP ON STUDY, to get a plot with every single one, could be a mixed of numbers and "all", only if there is both "all" and something else.
+    #LOOP ON STUDY, to get a plot with every single one, could be a mixed of numbers and "global", only if there is both "global" and something else.
     
     object.init = object
     study.init = unique(study)
     
+    # replace "all.partial" by all levels of object$study
+    ind.all.partial = which(study.init == "all.partial")
+    if (length(ind.all.partial) > 0)
+    {
+        if (ind.all.partial > 1 & ind.all.partial < length(study.init))
+        {
+            # there are things before and after "all.partial"
+            study.init = c(study.init[1:(ind.all.partial-1)], levels(object$study), study.init[(ind.all.partial+1) : length(study.init)])
+        } else if (ind.all.partial == 1 & ind.all.partial < length(study.init)) {
+            # there are only things after "all.partial"
+            study.init = c(levels(object$study), study.init[(ind.all.partial+1) : length(study.init)])
+        } else if (ind.all.partial > 1 & ind.all.partial == length(study.init)) {
+            # there are things only before "all.partial"
+            study.init = c(study.init[1:(ind.all.partial-1)], levels(object$study))
+        } else if (ind.all.partial == 1 & ind.all.partial == length(study.init)) {
+            # there's only "all.partial"
+            study.init = levels(object$study)
+        }
+    }
+    
+    study.init = unique(study.init) #once again cause we added studies if "all.partial"
+
     df.final = data.frame()
     
-    indice.all = grep("all", study.init) # can go faster before and after "all"
+    indice.all = grep("global", study.init) # can go faster before and after "global"
     if (length(indice.all)>0)
     {
         study.list = list()
@@ -137,16 +159,16 @@ point.lwd = 1,
     }
     
 
-    # the following loop consider subset of studies all together, up until "all", and subset of studies after "all"
+    # the following loop consider subset of studies all together, up until "global", and subset of studies after "global"
     for (length.study in 1 : length(study.list))
     {
         object = object.init #reinitialise $variates
         study = study.list[[length.study]]
         
         #-- define 'blocks'
-        if (any(study == "all"))
+        if (any(study == "global"))
         {
-            # can plot both X and Y when one study or when study="all"
+            # can plot both X and Y when one study or when study="global"
             # same as class.object==pls
             
             if (rep.space == "multi")
@@ -176,7 +198,7 @@ point.lwd = 1,
             
         } else if (length(study) == 1) {
             # can plot only X, Y or XY variate when more than one study
-            # can plot both X and Y when one study or when study="all"
+            # can plot both X and Y when one study or when study="global"
             
             blocks = c("X", "Y")
             
@@ -252,7 +274,7 @@ point.lwd = 1,
         
         check = check.input.plotIndiv(object = object, comp = comp, blocks = blocks, ind.names = ind.names, 
         style = style, ellipse = ellipse, ellipse.level = ellipse.level, centroid = centroid, 
-        star = star, add.legend = add.legend, X.label = X.label, Y.label = Y.label, abline = abline, 
+        star = star, legend = legend, X.label = X.label, Y.label = Y.label, abline = abline, 
         xlim = xlim, ylim = ylim, plot_parameters = plot_parameters)
         #-- retrieve some outputs from the checks
         comp = check$comp
@@ -294,8 +316,8 @@ point.lwd = 1,
         df.final = rbind(df.final, df)
     }
     # add study information on df.final, for pch legend
-    study.levels = study.init[which(!study.init == "all")]
-    if (any(study.init == "all"))
+    study.levels = study.init[which(!study.init == "global")]
+    if (any(study.init == "global"))
     study.levels = levels(object$study)
     
     
@@ -313,7 +335,7 @@ point.lwd = 1,
     #call plot module (ggplot2, lattice, graphics, 3d)
     res = internal_graphicModule(df = df, centroid = centroid, col.per.group = col.per.group, title = title,
     X.label = X.label, Y.label = Y.label, xlim = xlim, ylim = ylim, class.object = class(object),
-    display.names = display.names, add.legend = add.legend, abline = abline,
+    display.names = display.names, legend = legend, abline = abline,
     star = star, ellipse = ellipse, df.ellipse = df.ellipse, style = style, layout = layout,
     missing.col = missing.col,
     #for ggplot2-MINT

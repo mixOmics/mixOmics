@@ -181,7 +181,7 @@ size.labels=1)
     col = "black", cex=size.legend, bty = "n")
     
     par(xpd=opar,mar=opar1)# put the previous defaut parameter for xpd
-    return()
+    return(invisible())
 }
 
 drawIdeogram = function(R, xc=400, yc=400, cir, W,

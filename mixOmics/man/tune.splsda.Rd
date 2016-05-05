@@ -40,6 +40,9 @@ should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \cod
 }
 
 \details{
+
+mention stratified subsamplings
+
 This tuning function should be used to tune the parameters in the \code{multilevel} function.
 
 For a sPLS-DA one-factor analysis, M-fold cross-validation is performed, internally the training data is decomposed into within-subject variation.
