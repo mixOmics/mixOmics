@@ -168,6 +168,7 @@ S3method(print, mint.plsda)
 S3method(print, mint.splsda)
 
 S3method(print, tune.splsda)
+S3method(print, tune.mint.splsda)
 S3method(print, tune.rcc)
 S3method(print, tune.pca)
 
