@@ -90,6 +90,9 @@ multilevel = NULL)
     if (any(is.na(logratio)) || length(logratio) > 1)
     stop("'logratio' should be one of 'CLR' ,'ILR'or 'none'.", call. = FALSE)
     
+    if (logratio != "none" && any(X < 0))
+    stop("'X' contains negative values, you can not log-transform your data")
+    
     
     #-- cheking center and scale
     if (!is.logical(center))
@@ -125,7 +128,7 @@ multilevel = NULL)
     
     if (is.null(V)) # back-transformation to clr-space, will be used later to recalculate loadings etc
     V = clr.backtransfo(X)
-
+    
     X = logratio.transfo(X = X, logratio = logratio)
     
     #as X may have changed

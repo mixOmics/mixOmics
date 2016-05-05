@@ -37,12 +37,12 @@ comp = NULL,
 blocks = NULL, # to choose which block data to plot, when using GCCA module
 ind.names = TRUE,
 style = "ggplot2", # can choose between graphics, 3d, lattice or ggplot2
-#study = "all",
+#study = "global",
 ellipse = FALSE,
 ellipse.level = 0.95,
 centroid = FALSE,
 star = FALSE,
-add.legend = FALSE,
+legend = FALSE,
 X.label = NULL,
 Y.label = NULL,
 Z.label = NULL,
@@ -77,9 +77,9 @@ plot_parameters)
     if ((ellipse.level > 1) | (ellipse.level < 0))
     stop("The value taken by 'ellipse.level' must be between 0 and 1")
     
-    #-- add.legend
-    if (length(add.legend) !=  1 || !is.logical(add.legend))
-    stop("'add.legend' must be a logical value.", call. = FALSE)
+    #-- legend
+    if (length(legend) !=  1 || !is.logical(legend))
+    stop("'legend' must be a logical value.", call. = FALSE)
     
     #-- alpha correlation
     if (!is.numeric(alpha) | (alpha > 1) | (alpha < 0))
@@ -131,9 +131,9 @@ plot_parameters)
     if (!is.logical(star))
     stop("'star' must be either TRUE or FALSE", call. = FALSE)
     
-    #add.legend
-    if (!is.logical(add.legend))
-    stop("'add.legend' must be either TRUE or FALSE", call. = FALSE)
+    #legend
+    if (!is.logical(legend))
+    stop("'legend' must be either TRUE or FALSE", call. = FALSE)
     
     # abline
     if (!is.logical(abline))
@@ -290,7 +290,7 @@ internal_getVariatesAndLabels = function(object, comp, blocks.init, blocks, rep.
             } else {
                 if (any(class.object%in%object.mint))
                 {
-                    if (blocks%in%c("X", "Y")) # means that study == "all"
+                    if (blocks%in%c("X", "Y")) # means that study == "global"
                     {
                         inf = round(object$explained_variance[[blocks]]$"all data"[c(comp[1], comp[2])], 2)
                     } else {
@@ -399,7 +399,7 @@ ind.names = TRUE,
 group, # factor indicating the group membership for each sample, useful for ellipse plots. Coded as default for the -da methods, but needs to be input for the unsupervised methods (PCA, IPCA...)
 col.per.group,
 style = "ggplot2", # can choose between graphics, 3d, lattice or ggplot2
-study = "all",
+study = "global",
 ellipse = FALSE,
 ellipse.level = 0.95,
 centroid = FALSE,
@@ -611,7 +611,7 @@ display.names)
     
     
     # constructing data.frame df
-    if (any(study == "all"))# | length(study) == 1)
+    if (any(study == "global"))# | length(study) == 1)
     {
         #-- Start: data set
         df = list()
@@ -788,7 +788,7 @@ display.names)
         df.ellipse = NULL # no ellipse so far
     }
     
-    if (any(study == "all"))
+    if (any(study == "global"))
     study = levels(object$study)
     
     # match study with names of the study

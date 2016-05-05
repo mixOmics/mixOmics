@@ -50,7 +50,7 @@ study,
 test.keepX = c(5, 10, 15),
 already.tested.X,
 dist = "max.dist",
-measure = c("BER"), # one of c("overall","BER")
+measure = "BER", # one of c("overall","BER")
 progressBar = TRUE,
 scale = TRUE,
 tol = 1e-06,
@@ -249,6 +249,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         result$predict = prediction.all
         result$class = class.all
     }
-    
+    class(result) = "tune.mint.splsda"
+
     return(result)
 }

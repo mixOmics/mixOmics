@@ -132,6 +132,9 @@ tol = 1e-09)
         ylab = "Estimated Proportion of Explained Variance")
     }
     
-    r = list(var = result$sdev, prop.var = prop.var, cum.var = cum.var)
-    return(invisible(r))
+    result = list(var = result$sdev, prop.var = prop.var, cum.var = cum.var)
+    result$call = match.call()
+
+    class(result) = "tune.pca"
+    return(invisible(result))
 }

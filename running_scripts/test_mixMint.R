@@ -34,45 +34,55 @@ colnames(data.near.zero)=c(colnames(stemcells$gene),paste0("nearzero",1:10))
 
 res=mint.spls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 plotLoadings(res,study=1:6,subtitle=1:6)
+plotLoadings(res,study="all.partial",subtitle=1:6)
+plotLoadings(res,study=c("global","all.partial"))
 
 #source("/Users/florian/Work/git/package-mixomics/mixOmics/R/plotIndiv.mint.R")
 #source("/Users/florian/Work/git/package-mixomics/mixOmics/R/check.plotIndiv.R")
 #source("/Users/florian/Work/git/package-mixomics/mixOmics/R/internal_graphicModule.R")
 
-plotIndiv(res,study="all",group=type.id)
-plotIndiv(res,study="all",group=type.id,ellipse=TRUE)
-plotIndiv(res,study="all",group=type.id,centroid=TRUE)
-plotIndiv(res,study="all",group=type.id,star=TRUE)
+plotIndiv(res,study="global",group=type.id)
+plotIndiv(res,study="global",group=type.id,ellipse=TRUE)
+plotIndiv(res,study="global",group=type.id,centroid=TRUE)
+plotIndiv(res,study="global",group=type.id,star=TRUE)
 
-plotIndiv(res,study=c(1:2,"all",6:5),group=type.id)
+plotIndiv(res,study=c(1:2,"global",6:5),group=type.id)
 plotIndiv(res,study=c(1),group=type.id,rep.space="XY")
 plotIndiv(res,study=c(1:2),group=type.id,rep.space="XY")
 
-plotIndiv(res,study=c(1:2,"all",6:5),group=type.id,add.legend=T)
-plotIndiv(res,study=c(1:2,"all",6:5),group=type.id,add.legend=T,point.lwd=3)
-plotIndiv(res,study=c(1:2,"all",6:5),group=type.id,add.legend=T,point.lwd=3,size.legend=rel(2))
-plotIndiv(res,study=c(1:2,"all",6:5),group=type.id,add.legend=T,point.lwd=3,size.legend=rel(2),size.legend.title=rel(2))
+plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,add.legend=T)
+plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,add.legend=T,point.lwd=3)
+plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,add.legend=T,point.lwd=3,size.legend=rel(2))
+plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,add.legend=T,point.lwd=3,size.legend=rel(2),size.legend.title=rel(2))
+
+
+plotIndiv(res,study="all.partial",group=type.id)
+plotIndiv(res,study=c(1,"all.partial"),group=type.id)
+plotIndiv(res,study=c("global","all.partial",2,3),group=type.id)
+plotIndiv(res,study=c("global",5,3,"all.partial",2),group=type.id)
+plotIndiv(res,study=c("global",5,3,"all.partial"),group=type.id)
+
 
 # to change the levels, need to change the input factor study
 exp.temp=factor(exp,labels=paste0("studyname",1:6))
 res=mint.spls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp.temp)
-plotIndiv(res,study=c(levels(res$study)[1:2],"all",levels(res$study)[6:5]),group=type.id,add.legend=T)
+plotIndiv(res,study=c(levels(res$study)[1:2],"global",levels(res$study)[6:5]),group=type.id,add.legend=T)
 
-plotIndiv(res,study=c(levels(res$study)[1:2],"all",levels(res$study)[6:5]),group=type.id,add.legend=T,subtitle=letters[seq( from = 1, to = 5 )])
+plotIndiv(res,study=c(levels(res$study)[1:2],"global",levels(res$study)[6:5]),group=type.id,add.legend=T,subtitle=letters[seq( from = 1, to = 5 )])
 
-plotIndiv(res,study=c(levels(res$study),"all"),group=type.id,add.legend=T,subtitle=letters[seq( from = 1, to = 7 )])
+plotIndiv(res,study=c(levels(res$study),"global"),group=type.id,add.legend=T,subtitle=letters[seq( from = 1, to = 7 )])
 
 #change the layout
-plotIndiv(res,study=c(levels(res$study),"all"),group=type.id,add.legend=T,subtitle=letters[seq( from = 1, to = 7 )],layout=c(3,2))
+plotIndiv(res,study=c(levels(res$study),"global"),group=type.id,add.legend=T,subtitle=letters[seq( from = 1, to = 7 )],layout=c(3,2))
 
 # the following can't run on Rstudio (margin too small)
-#plotIndiv(res,study=c(levels(res$study),"all"),group=type.id,add.legend=T,subtitle=letters[seq( from = 1, to = 7 )],layout=c(3,2),style="graphics")
+#plotIndiv(res,study=c(levels(res$study),"global"),group=type.id,add.legend=T,subtitle=letters[seq( from = 1, to = 7 )],layout=c(3,2),style="graphics")
 
 
 #back to normal
 res=mint.spls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
-plotIndiv(res,study=c("all"),group=type.id,add.legend=T)
+plotIndiv(res,study=c("global"),group=type.id,add.legend=T)
 plotIndiv(res,study=c("1"),group=type.id,add.legend=T)
 plotIndiv(res,study=c(1,2),group=type.id,add.legend=T,title="bla")
 
@@ -82,20 +92,20 @@ plotIndiv(res,study=c(1:2),group=type.id,add.legend=T,legend.position="bottom",s
 
 plotIndiv(res,study=c(1,2),group=type.id,add.legend=T,style="lattice")
 
-plotIndiv(res,study=c(1:2,"all",6:5),group=type.id,add.legend=T,pch=14+as.numeric(factor(exp)))
+plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,add.legend=T,pch=14+as.numeric(factor(exp)))
 
 
-plotIndiv(res,study=c(1:2,"all",6:5),group=type.id,subtitle=paste0("study:",letters[seq( from = 1, to = 5 )]))
-plotIndiv(res,study=c(1:2,"all",6:5),group=type.id,subtitle=letters[seq( from = 1, to = 5 )],title="MINT")
-plotIndiv(res,study=c(1:2,"all",6:5),group=type.id,subtitle=letters[seq( from = 1, to = 5 )],title="MINT",add.legend=TRUE)
+plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,subtitle=paste0("study:",letters[seq( from = 1, to = 5 )]))
+plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,subtitle=letters[seq( from = 1, to = 5 )],title="MINT")
+plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,subtitle=letters[seq( from = 1, to = 5 )],title="MINT",add.legend=TRUE)
 
-plotIndiv(res,study=c(1:2,"all"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",add.legend=TRUE,style="graphics")
-plotIndiv(res,study=c(1:2,"all"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",add.legend=TRUE,style="graphics",point.lwd=3)
+plotIndiv(res,study=c(1:2,"global"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",add.legend=TRUE,style="graphics")
+plotIndiv(res,study=c(1:2,"global"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",add.legend=TRUE,style="graphics",point.lwd=3)
 
-plotIndiv(res,study=c(1:2,"all"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",add.legend=TRUE,style="graphics",point.lwd=3,layout=c(1,3))
+plotIndiv(res,study=c(1:2,"global"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",add.legend=TRUE,style="graphics",point.lwd=3,layout=c(1,3))
 
 # not compiling in Rstudio cause window too small
-#plotIndiv(res,study=c(1:2,"all"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",add.legend=TRUE,style="graphics",point.lwd=3,layout=c(3,1))
+#plotIndiv(res,study=c(1:2,"global"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",add.legend=TRUE,style="graphics",point.lwd=3,layout=c(3,1))
 
 par(opar)
 

@@ -21,16 +21,16 @@ representation in (sparse)(I)PCA, (regularized)CCA, (sparse)PLS(DA) and (sparse)
 \usage{
 \method{plotIndiv}{pls}(object, comp = NULL, rep.space = NULL, ind.names = TRUE, group, col.per.group,
 style = "ggplot2", ellipse = FALSE, ellipse.level = 0.95, centroid = FALSE, star = FALSE,
-title = NULL, subtitle, add.legend = FALSE,
+title = NULL, subtitle, legend = FALSE,
 X.label = NULL, Y.label = NULL, Z.label = NULL, abline = FALSE,
 xlim = NULL, ylim = NULL, col, cex, pch, alpha = 0.2, axes.box = "box", layout = NULL,
 size.title = rel(2), size.subtitle = rel(1.5), size.xlabel = rel(1),
 size.ylabel = rel(1), size.axis = rel(0.8), size.legend = rel(1),
 size.legend.title = rel(1.1), legend.position = "right", point.lwd = 1, ... )
 
-\method{plotIndiv}{mint.spls}(object, comp = NULL, study = "all", rep.space = NULL, group, col.per.group,
+\method{plotIndiv}{mint.spls}(object, comp = NULL, study = "global", rep.space = NULL, group, col.per.group,
 style = "ggplot2", ellipse = FALSE, ellipse.level = 0.95, centroid = FALSE, star = FALSE,
-title = NULL, subtitle, add.legend=FALSE,
+title = NULL, subtitle, legend=FALSE,
 X.label = NULL, Y.label = NULL, abline = FALSE,
 xlim = NULL, ylim = NULL, col, cex, pch, layout = NULL,
 size.title = rel(2), size.subtitle = rel(1.5), size.xlabel = rel(1),
@@ -39,7 +39,7 @@ size.legend.title = rel(1.1), legend.position = "right", point.lwd = 1, ... )
 
 \method{plotIndiv}{sgcca}(object, comp = NULL, blocks = NULL, ind.names = TRUE, group, col.per.group,
 style = "ggplot2", ellipse = FALSE, ellipse.level = 0.95, centroid = FALSE, star = FALSE,
-title = NULL, subtitle, add.legend = FALSE,
+title = NULL, subtitle, legend = FALSE,
 X.label = NULL, Y.label = NULL, Z.label = NULL, abline = FALSE,
 xlim = NULL, ylim = NULL, col, cex, pch, alpha = 0.2, axes.box = "box", layout = NULL,
 size.title = rel(2), size.subtitle = rel(1.5), size.xlabel = rel(1),
@@ -56,7 +56,7 @@ and the vertical axis respectively to project the individuals.}
 \item{rep.space}{For objects of class \code{"rcc"}, \code{"pls"}, \code{"spls"}, character string, (partially) matching one of \code{"X-variate"}, \code{"Y-variate"} ,or \code{"XY-variate"}, determining the subspace to project the individuals. Defaults to \code{"X-variate"} \code{"pca"} object and for \code{"plsda"} objects. For objects of class \code{"pls"} and \code{"rcc"},defaults, the tree subspaces  represent the individuals. For objects of class \code{"rgcca"} and \code{"sgcca"}, numerical value indicating the block data set form which to represent the individuals.}
 
 \item{blocks}{integer value of name of a block to be plotted using the GCCA module. See examples.}
-\item{study}{Indicates which study-specific outputs to plot. A character vector containing some levels of \code{object$study} or "all" is expected. Default to "all".}
+\item{study}{Indicates which study-specific outputs to plot. A character vector containing some levels of \code{object$study}, "all.partial" to plot all studies or "global" is expected. Default to "global".}
 \item{ind.names}{either a character vector of names for the individuals to be plotted,
 or \code{FALSE} for no names. If \code{TRUE}, the row names of the first (or second)
 data matrix is used as names (see Details).}
@@ -70,7 +70,7 @@ data matrix is used as names (see Details).}
 \code{centroid}, and ending for each sample belonging to each group or outcome. In the non supervised objects \code{PCA, sPCA, IPCA, sIPCA, PLS, sPLS, rCC, rGCCA, sGCCA} star plot is only be plotted if the argument \code{group} is provided. In the supervised objects \code{PLS-DA, SPLS-DA,sGCCDA} the star plot is plotted according to the outcome \code{Y}.}
 \item{title}{set of characters indicating the title plot.}
 \item{subtitle}{subtitle for each plot, only used when several \code{block} or \code{study} are plotted.}
-\item{add.legend}{boolean. Whether the legend should be added. Default is FALSE.}
+\item{legend}{boolean. Whether the legend should be added. Default is FALSE.}
 \item{X.label}{x axis titles.}
 \item{Y.label}{y axis titles.}
 \item{Z.label}{z axis titles (when style = '3d').}
@@ -82,7 +82,7 @@ data matrix is used as names (see Details).}
 or integers. See \code{\link{points}} for all alternatives.}
 \item{alpha}{Semi-transparent colors (0 < \code{'alpha'} < 1) }
 \item{axes.box}{for style '3d', argument to be set to either \code{'axes'}, \code{'box'}, \code{'bbox'} or \code{'all'}, defining the shape of the box.}
-\item{layout}{layout parameter passed to mfrow. Only used when \code{study} is not "all"}
+\item{layout}{layout parameter passed to mfrow. Only used when \code{study} is not "global"}
 \item{size.title}{size of the title}
 \item{size.subtitle}{size of the subtitle}
 \item{size.xlabel}{size of xlabel}
@@ -138,16 +138,16 @@ plotIndiv(nutri.res)
 
     # ellipse with respect to genotype in the XY space, with legend
     plotIndiv(nutri.res, rep.space= 'XY-variate', group = nutrimouse$genotype,
-    add.legend = TRUE)
+    legend = TRUE)
 
 
     # lattice style
     plotIndiv(nutri.res, rep.space= 'XY-variate', group = nutrimouse$genotype,
-    add.legend = TRUE, style = 'lattice')
+    legend = TRUE, style = 'lattice')
 
     # classic style, in the Y space
     plotIndiv(nutri.res, rep.space= 'Y-variate', group = nutrimouse$genotype,
-    add.legend = TRUE, style = 'graphics')
+    legend = TRUE, style = 'graphics')
 }
 
 ## plot of individuals for objects of class 'pls' or 'spls'
@@ -183,7 +183,7 @@ plotIndiv(toxicity.spls, rep.space= 'X-variate', ind.names = FALSE,
     plotIndiv(toxicity.spls, rep.space= 'Y-variate',
     group = liver.toxicity$treatment[, 'Time.Group'],
     ind.names = liver.toxicity$treatment[, 'Dose.Group'],
-    add.legend = TRUE)
+    legend = TRUE)
 }
 
 ## plot of individuals for objects of class 'plsda' or 'splsda'
@@ -202,7 +202,7 @@ plotIndiv(splsda.breast)
     plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2))
 
     # default option with no ind name: pch and color are set automatically, with legend
-    plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2), add.legend = TRUE)
+    plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2), legend = TRUE)
 
     # trying the different styles
     plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2),
@@ -230,13 +230,13 @@ plotIndiv(nutrimouse.sgcca)
 
 \dontrun{
     # for the block 'lipid' with ellipse plots and legend, different styles
-    plotIndiv(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
+    plotIndiv(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
     ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", title = 'my plot')
     plotIndiv(nutrimouse.sgcca, style = "lattice", group = nutrimouse$diet,
-    add.legend = TRUE, ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid",
+    legend = TRUE, ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid",
     title = 'my plot')
     plotIndiv(nutrimouse.sgcca, style = "graphics", group = nutrimouse$diet,
-    add.legend = TRUE, ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid",
+    legend = TRUE, ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid",
     title = 'my plot')
 }
 
@@ -269,7 +269,7 @@ plotIndiv(nutrimouse.sgccda1)
 
     # with some ellipse, legend and title
     plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet,
-    ellipse = TRUE, add.legend = TRUE, title = 'my sample plot')
+    ellipse = TRUE, legend = TRUE, title = 'my sample plot')
 }
 }
 

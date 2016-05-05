@@ -311,105 +311,9 @@ function(x, ...)
     cat(" variable names: see object$names \n")
 }
 
-
-#------- print for summary with (s)PLS object or rcc ---------#
-print.summary <-
-function(x, ...)
-{
-
-    print.gap = 4
-    what = x$what
-    digits = x$digits
-
-	#--------------------- output pls/spls ---------------------#
-    if(any(class(x) %in% c("pls", "spls"))){
-
-        if (any(class(x) == "pls"))
-        {
-            cat(" PLS mode:", x$mode)
-			cat("\n Number of variates considered:", x$ncomp, "\n")
-        } else {
-            cat(" sPLS mode:", x$mode)
-			cat("\n Number of variates considered:", x$ncomp)
-			cat("\n Number of X-variables selected on each of the sPLS components:", x$keepX)
-			cat("\n Number of Y-variables selected on each of the sPLS components:", x$keepY, "\n")
-        }			
-
-        #---------- affichage communaute ----------#
-        if (any(what == "all") || any(what == "communalities"))
-        {
-            cat("\n\n Communalities Analysis:\n",
-                "----------------------")
-				
-            cat("\n X-Variables vs their own Variates: see object$CM.X$own \n")
-            cat("\n X-Variables vs the opposite Variates: see object$CM.X$opp \n")
-            cat("\n Y-Variables vs their own Variates: see object$CM.Y$opp \n")
-            cat("\n Y-Variables vs the opposite Variates: see object$CM.Y$opp \n")
-        }
-
-        #--------- affichage redondance -----------#
-        if (any(what == "all") || any(what == "redundancy"))
-        {
-            cat("\n\n Redundancy Analysis:\n",
-                "-------------------\n")
-				
-            cat("\n X-Variables vs their own Variates: see object$Rd.X$own \n")
-            cat("\n X-Variables vs the opposite Variates: see object$Rd.X$opp \n")
-            cat("\n Y-Variables vs their own Variates: see object$Rd.Y$opp \n")
-            cat("\n Y-Variables vs the opposite Variates: see object$Rd.Y$opp \n")
-        }
-
-        #---------- tableau VIP ---------#
-        if (any(what == "all") || any(what == "VIP"))
-        {
-            cat("\n\n", "Variable Importance in the Projection (VIP): see object$VIP \n",
-                        "------------------------------------------- \n\n")
-        }
-
-    }  #end if pls
-
-    # ---------------------- output rcc ------------------------#
-    if(any(class(x) == "rcc"))
-    {
-        print.gap = 4
-        if (any(what == "all"))
-        {
-            cat(" Number of canonical variates considered:", x$ncomp, "\n")
-            cat("\n Canonical correlations:",
-                "\n ----------------------\n")
-            print(round(x$can.cor, digits = digits), print.gap = print.gap)
-        }
-
-        #-- affichage communaute --#
-        if (any(what == "all") || any(what == "communalities"))
-        {
-            cat("\n\n Canonical Communalities Analysis:\n",
-                "--------------------------------")
-
-            cat("\n X-Variables vs their own Canonical Variates: see object$Cm.X$own \n")
-            cat("\n X-Variables vs the opposite Canonical Variates: see object$Cm.X$opp \n")
-            cat("\n Y-Variables vs their own Canonical Variates: see object$Cm.Y$own \n")
-            cat("\n Y-Variables vs the opposite Canonical Variates: see object$Cm.Y$opp \n")
-        }
-
-        #--------- affichage redondance -----------#
-        if (any(what == "all") || any(what == "redundancy"))
-        {
-            cat("\n\n Redundancy Analysis:\n",
-                "-------------------\n")
-				
-            cat("\n X-Variables vs their own Variates: see object$Rd.X$own \n")
-            cat("\n X-Variables vs the opposite Variates: see object$Rd.X$opp \n")
-            cat("\n Y-Variables vs their own Variates: see object$Rd.Y$opp \n")
-            cat("\n Y-Variables vs the opposite Variates: see object$Rd.Y$opp \n")
-        }
-
-    }  #end rcc
-}
-
-
 # ------------------------ print for pca --------------------------------
-print.pca <- function(x, ...) {
+print.pca <- function(x, ...)
+{
     
     
     cat("Eigenvalues for the first ", x$ncomp, "principal components:", "\n")
@@ -503,7 +407,8 @@ function(x, ...)
 }
 
 # ------------------------ print for rgcca -------------------------
-print.rgcca <- function(x, ...) {
+print.rgcca <- function(x, ...)
+{
     
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
     
@@ -535,7 +440,8 @@ print.rgcca <- function(x, ...) {
 
 
 # ------------------------ print for sgcca -------------------------
-print.sgcca<- function(x, ...){
+print.sgcca<- function(x, ...)
+{
     
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
     
@@ -566,10 +472,240 @@ print.sgcca<- function(x, ...){
    
     cat("\n")
     cat(" Functions to visualise samples: \n", "-------------------- \n")
+    cat(" plotIndiv, plotArrow \n")
+    cat("\n")
+    cat(" Functions to visualise variables: \n", "-------------------- \n")
+    cat(" plotVar, plotLoadings, network\n")
+    
+}
+
+
+# ------------------------ print for sgcca -------------------------
+print.sgccda<- function(x, ...)
+{
+    
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    
+    # components
+    for(k in 1 : length(x$X)){
+        cat(" sGCCA with", x$ncomp[[k]], "components on block", k, "named", x$names$blocks[k], "\n")
+    }
+    cat(" sGCCA with", x$ncomp[x$indY], "components on the outcome Y\n")
+    cat("\n")
+
+
+    # dimension
+    for(k in 1 : length(x$X)){
+        cat(" Dimension of block", k, 'is ', dim(x$X[[k]]), "\n")
+    }
+    cat(" Outcome Y has", nlevels(x$Y), "levels \n")
+    cat("\n")
+
+    # selected variables
+    list.select = list()
+    for(k in 1:length(x$X)){
+        list.select[[k]] = apply(x$loadings[[k]], 2, function(x){sum(x!=0)})
+        cat(" Selection of", list.select[[k]], "variables on each of the sGCCA components on the block", k, "\n")
+    }
+    cat("\n")
+    cat(" Main numerical outputs: \n", "-------------------- \n")
+    cat(" loading vectors: see object$loadings \n")
+    cat(" variates: see object$variates \n")
+    cat(" variable names: see object$names \n")
+    
+    
+    cat("\n")
+    cat(" Functions to visualise samples: \n", "-------------------- \n")
     cat(" plotIndiv, plotArrow, cimDiablo, plotDiablo \n")
     cat("\n")
     cat(" Functions to visualise variables: \n", "-------------------- \n")
-    cat(" plotVar, plotLoadings, network, plotDiablo \n")
+    cat(" plotVar, plotLoadings, network \n")
     
 }
+
+
+#------- print for summary with (s)PLS object or rcc ---------#
+print.summary <-
+function(x, ...)
+{
+    
+    print.gap = 4
+    what = x$what
+    digits = x$digits
+    
+    #--------------------- output pls/spls ---------------------#
+    if(any(class(x) %in% c("pls", "spls"))){
+        
+        if (any(class(x) == "pls"))
+        {
+            cat(" PLS mode:", x$mode)
+            cat("\n Number of variates considered:", x$ncomp, "\n")
+        } else {
+            cat(" sPLS mode:", x$mode)
+            cat("\n Number of variates considered:", x$ncomp)
+            cat("\n Number of X-variables selected on each of the sPLS components:", x$keepX)
+            cat("\n Number of Y-variables selected on each of the sPLS components:", x$keepY, "\n")
+        }
+        
+        #---------- affichage communaute ----------#
+        if (any(what == "all") || any(what == "communalities"))
+        {
+            cat("\n\n Communalities Analysis:\n",
+            "----------------------")
+            
+            cat("\n X-Variables vs their own Variates: see object$CM.X$own \n")
+            cat("\n X-Variables vs the opposite Variates: see object$CM.X$opp \n")
+            cat("\n Y-Variables vs their own Variates: see object$CM.Y$opp \n")
+            cat("\n Y-Variables vs the opposite Variates: see object$CM.Y$opp \n")
+        }
+        
+        #--------- affichage redondance -----------#
+        if (any(what == "all") || any(what == "redundancy"))
+        {
+            cat("\n\n Redundancy Analysis:\n",
+            "-------------------\n")
+            
+            cat("\n X-Variables vs their own Variates: see object$Rd.X$own \n")
+            cat("\n X-Variables vs the opposite Variates: see object$Rd.X$opp \n")
+            cat("\n Y-Variables vs their own Variates: see object$Rd.Y$opp \n")
+            cat("\n Y-Variables vs the opposite Variates: see object$Rd.Y$opp \n")
+        }
+        
+        #---------- tableau VIP ---------#
+        if (any(what == "all") || any(what == "VIP"))
+        {
+            cat("\n\n", "Variable Importance in the Projection (VIP): see object$VIP \n",
+            "------------------------------------------- \n\n")
+        }
+        
+    }  #end if pls
+    
+    # ---------------------- output rcc ------------------------#
+    if(any(class(x) == "rcc"))
+    {
+        print.gap = 4
+        if (any(what == "all"))
+        {
+            cat(" Number of canonical variates considered:", x$ncomp, "\n")
+            cat("\n Canonical correlations:",
+            "\n ----------------------\n")
+            print(round(x$can.cor, digits = digits), print.gap = print.gap)
+        }
+        
+        #-- affichage communaute --#
+        if (any(what == "all") || any(what == "communalities"))
+        {
+            cat("\n\n Canonical Communalities Analysis:\n",
+            "--------------------------------")
+            
+            cat("\n X-Variables vs their own Canonical Variates: see object$Cm.X$own \n")
+            cat("\n X-Variables vs the opposite Canonical Variates: see object$Cm.X$opp \n")
+            cat("\n Y-Variables vs their own Canonical Variates: see object$Cm.Y$own \n")
+            cat("\n Y-Variables vs the opposite Canonical Variates: see object$Cm.Y$opp \n")
+        }
+        
+        #--------- affichage redondance -----------#
+        if (any(what == "all") || any(what == "redundancy"))
+        {
+            cat("\n\n Redundancy Analysis:\n",
+            "-------------------\n")
+            
+            cat("\n X-Variables vs their own Variates: see object$Rd.X$own \n")
+            cat("\n X-Variables vs the opposite Variates: see object$Rd.X$opp \n")
+            cat("\n Y-Variables vs their own Variates: see object$Rd.Y$opp \n")
+            cat("\n Y-Variables vs the opposite Variates: see object$Rd.Y$opp \n")
+        }
+        
+    }  #end rcc
+}
+
+
+# perf.diablo / sgccda.mthd
+# perf.splsda = perf.plsda / splsda.mthd plsda.mthd
+# perf.spls  = perf.pls / spls.mthd pls.mthd
+
+print.perf.pls.mthd = function(x, ...)
+{
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    cat(" MSEP, R2, Q2, Q2.total, RSS, PRESS. See the help file ?perf \n")
+}
+
+print.perf.spls.mthd = function(x, ...)
+{
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    cat(" MSEP, R2, Q2, Q2.total, RSS, PRESS. See the help file ?perf \n")
+    cat(" Stable features of X on each component: see object$features$stable.X \n")
+    cat(" Stable features of Y on each component: see object$features$stable.Y \n")
+}
+
+
+print.perf.plsda.mthd = function(x, ...)
+{
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    cat(" Error rate (overall or BER) for each component and for each distance: see object$error.rate \n")
+    cat(" Error rate per class, for each component and for each distance: see object$error.rate.class \n")
+    cat(" Prediction values for each component: see object$predict \n")
+    cat(" Prediction of the class of each sample, for each component and for each distance: see object$class \n")
+}
+
+print.perf.splsda.mthd = function(x, ...)
+{
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    cat(" Error rate (overall or BER) for each component and for each distance: see object$error.rate \n")
+    cat(" Error rate per class, for each component and for each distance: see object$error.rate.class \n")
+    cat(" Prediction values for each component: see object$predict \n")
+    cat(" Prediction of the class of each sample, for each component and for each distance: see object$class \n")
+    cat(" Stable features on each component: see object$features$stable \n")
+}
+
+
+# tune: "spls", "splsda", "mint.splsda", "rcc", "pca"
+print.tune.pca = function(x, ...)
+{
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    cat(" for all principal components, see object$var, object$prop.var and object$cum.var\n")
+}
+
+print.tune.rcc = function(x, ...)
+{
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    cat("  lambda1 = ", x$opt.lambda1, ", see object$opt.lambda1\n", " lambda2 = ", x$opt.lambda2, ",  see object$opt.lambda2\n",
+    "CV-score = ", x$opt.score, ", see object$opt.score\n")
+}
+
+print.tune.splsda = function(x, ...)
+{
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    cat(" Optimal keepX for each component: see object$choice.keepX \n")
+    cat(" Error rate for each tested keepX and for each component (averaged over the nrepeat): see object$mat.mean.error \n")
+    cat(" Error rate for each tested keepX, for each component and for each repeat: see object$mat.error.rate \n")
+    cat(" Error rate per class obtained with the optimal keepX, for each component and for each nrepeat: see object$error.rate.class \n\n")
+    
+    cat(" Other outputs available, see ?tune.splsda \n")
+}
+
+print.tune.mint.splsda = function(x, ...)
+{
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    cat(" Optimal keepX.constraint for each component: see object$choice.keepX \n")
+    cat(" Error rate for each tested keepX and for each component: see object$mat.mean.error \n")
+    cat(" Error rate per class obtained with the optimal keepX.constraint, for each component: see object$error.rate.class \n\n")
+    
+    cat(" Other outputs available, see ?tune.mint.splsda \n")
+}
+
+
+
 

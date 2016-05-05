@@ -33,11 +33,11 @@ plotLoadings.mint.pls    =
 plotLoadings.mint.spls   =
 
 function(object, 
-study = "all",
+study = "global",
 comp = 1,
 col = NULL,
 ndisplay = NULL,
-cex.name = 0.7,
+size.name = 0.7,
 name.var = NULL,
 name.var.complete = FALSE,
 title = NULL,
@@ -52,11 +52,11 @@ border = NA,
     # what I want is to modify the input and call plotLoadings.pls and plotLoadings.splsda where blocks are now studies
     # do not forget to change object$names$block in levels(object$study) and it should work, see you tomorrow
     
-    if(any(study == "all"))
+    if(any(study == "global"))
     {
-        # if study == "all" then we plot the results on the concatenated data, thus direct call to plotLoadings.plsda
+        # if study == "global" then we plot the results on the concatenated data, thus direct call to plotLoadings.plsda
         plotLoadings.pls(object = object, block = "X", comp = comp, ndisplay = ndisplay,
-        cex.name = cex.name,
+        size.name = size.name,
         name.var = name.var,
         name.var.complete = name.var.complete,
         title = title,
@@ -69,20 +69,44 @@ border = NA,
         col = col)
         
     } else {
-        # if study != "all" then we plot the results on each study
+        # if study != "global" then we plot the results on each study
 
         # -- input checks
-        check = check.input.plotLoadings(object = object, block = "X", title = title, col = col, cex.name = cex.name, name.var = name.var)
+        check = check.input.plotLoadings(object = object, block = "X", title = title, col = col, size.name = size.name, name.var = name.var)
 
         col = check$col
-        cex.name = check$cex.name
+        size.name = check$size.name
         block = check$block # "X"
+
+        study.init = unique(study)
+        # replace "all.partial" by all levels of object$study
+        ind.all.partial = which(study.init == "all.partial")
+        if (length(ind.all.partial) > 0)
+        {
+            if (ind.all.partial > 1 & ind.all.partial < length(study.init))
+            {
+                # there are things before and after "all.partial"
+                study.init = c(study.init[1:(ind.all.partial-1)], levels(object$study), study.init[(ind.all.partial+1) : length(study.init)])
+            } else if (ind.all.partial == 1 & ind.all.partial < length(study.init)) {
+                # there are only things after "all.partial"
+                study.init = c(levels(object$study), study.init[(ind.all.partial+1) : length(study.init)])
+            } else if (ind.all.partial > 1 & ind.all.partial == length(study.init)) {
+                # there are things only before "all.partial"
+                study.init = c(study.init[1:(ind.all.partial-1)], levels(object$study))
+            } else if (ind.all.partial == 1 & ind.all.partial == length(study.init)) {
+                # there's only "all.partial"
+                study.init = levels(object$study)
+            }
+        }
+        study.init = unique(study.init) #once again cause we added studies if "all.partial"
+        study = study.init
 
         if (!missing(subtitle))
         {
             if (length(subtitle)!=length(study))
-            stop("'subtitle' indicates the subtitle of the plot for each study and it needs to be the same length as 'study'.")
+            stop("'subtitle' indicates the subtitle of the plot for each study and it needs to be the same length as 'study' (", length(study),"), which includes: ", paste(study, collapse = ", "))
         }
+
 
         # swap block for study
         block = study
@@ -122,7 +146,7 @@ border = NA,
             }
 
             mp = barplot(df$importance, horiz = T, las = 1, col = df$color, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(df),
-            cex.names = cex.name, cex.axis = 0.7, beside = TRUE, border = border)
+            cex.names = size.name, cex.axis = 0.7, beside = TRUE, border = border)
             
             if ( length(block) == 1 & is.null(title) )
             {

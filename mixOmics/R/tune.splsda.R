@@ -279,7 +279,10 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             result$predict = prediction.all
             result$class = class.all
         }
-        
+        result$call = match.call()
+
+        class(result) = "tune.splsda"
+
         return(result)
     } else {
         # if multilevel with 2 factors, we can not do as before because withinvariation depends on the factors, we maximase a correlation

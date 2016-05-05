@@ -5,7 +5,7 @@ Version: 6.0.0
 Date: 2015-11-06
 Depends: R (>= 2.10), MASS, lattice, ggplot2
 Imports: igraph, rgl, ellipse, corpcor, jpeg, RColorBrewer, plyr,parallel, dplyr, tidyr, reshape2
-Author: Kim-Anh Le Cao,  Ignacio Gonzalez, Sebastien Dejean with key contributors Florian Rohart, Benoit Gautier
+Author: Kim-Anh Le Cao, Florian Rohart, Ignacio Gonzalez, Sebastien Dejean with key contributors Benoit Gautier
         and contributions from Pierre Monget, Jeff Coquery, FangZou Yao, Benoit Liquet. 
 Maintainer: Kim-Anh Le Cao <k.lecao@uq.edu.au>
 Description: We provide statistical integrative techniques and

@@ -154,5 +154,6 @@ light.output = TRUE # mint, splsda
         already.tested.X = already.tested.X, already.tested.Y = already.tested.Y)
     }
     
+    result$call = match.call()
     return(result)
 }

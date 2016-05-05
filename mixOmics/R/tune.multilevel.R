@@ -78,6 +78,10 @@ light.output = TRUE
     if (is.null(method))
     stop("Input method missing, should be set to 'splsda' or 'spls'", call. = FALSE)
     
+    if (!method %in% c("splsda", "spls"))
+    stop("'method' should be set to 'splsda' or 'spls'", call. = FALSE)
+
+
     if ((method == "splsda") && (!is.null(already.tested.Y)))
     warning("Unecessary already.tested.Y parameter")
     
@@ -100,5 +104,7 @@ light.output = TRUE
         ncomp = ncomp, test.keepX = test.keepX, test.keepY = test.keepY,
         already.tested.X = already.tested.X, already.tested.Y = already.tested.Y)
     }
+    class(result) = paste("tune",method,sep=".")
+
     return(result)
 }

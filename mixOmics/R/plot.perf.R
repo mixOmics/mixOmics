@@ -42,7 +42,7 @@ layout = NULL,
 {
     
     #-- plot for pls and spls ----------------------------------------#
-    if (any(class(x) == "pls.mthd") | any(class(x) == "spls.mthd"))
+    if (any(class(x) == "perf.pls.mthd") | any(class(x) == "perf.spls.mthd"))
     {
         
         if (!any(criterion %in% c("MSEP", "RMSEP", "R2", "Q2")) || missing(criterion))
@@ -98,7 +98,7 @@ layout = NULL,
     } # end plot for pls and spls
     
     #-- plot for plsda and splsda ----------------------------------------#
-    if (any(class(x) == "plsda.mthd") | any(class(x) == "splsda.mthd"))
+    if (any(class(x) == "perf.plsda.mthd") | any(class(x) == "perf.splsda.mthd"))
     {
         
         if (hasArg(pred.method))

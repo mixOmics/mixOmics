@@ -77,6 +77,34 @@ get.BER = function(X)
 }
 
 
+stratified.subsampling = function(Y, folds = 10)
+{
+    for(i in 1:nlevels(Y))
+    {
+        ai=sample(which(Y==levels(Y)[i]),replace=FALSE) # random sampling of the samples from level i
+        aai=suppressWarnings(split(ai,factor(1:min(folds,length(ai)))))                       # split of the samples in k-folds
+        if(length(ai)<folds)                                                # if one level doesn't have at least k samples, the list is completed with "integer(0)"
+        {
+            for(j in (length(ai)+1):folds)
+            aai[[j]]=integer(0)
+        }
+        assign(paste("aa",i,sep="_"),sample(aai,replace=FALSE))         # the `sample(aai)' is to avoid the first group to have a lot more data than the rest
+    }
+    
+    # combination of the different split aa_i into SAMPLE
+    SAMPLE=list()
+    for(j in 1:folds)
+    {
+        SAMPLE[[j]]=integer(0)
+        for(i in 1:nlevels(Y))
+        {
+            SAMPLE[[j]]=c(SAMPLE[[j]],get(paste("aa",i,sep="_"))[[j]])
+        }
+    }# SAMPLE is a list of k splits
+    
+    return(SAMPLE)
+}
+
 
 MCVfold.splsda = function(
 X,
@@ -138,7 +166,7 @@ class.object = NULL
                 stop("Invalid number of folds.")
             } else {
                 M = round(folds)
-                folds = split(sample(1:n), rep(1:M, length = n))
+                folds = stratified.subsampling(Y, folds = M)#split(sample(1:n), rep(1:M, length = n))
             }
         } else if (validation ==  "loo") {
             folds = split(1:n, rep(1:n, length = n))
@@ -162,7 +190,6 @@ class.object = NULL
             #print(j)
             #set up leave out samples.
             omit = which(repeated.measure %in% folds[[j]] == TRUE)
-            
             
             # get training and test set
             X.train = X[-omit, ]
@@ -188,8 +215,7 @@ class.object = NULL
             
             if (!is.null(multilevel) & logratio != "none") # if no logratio, we can do multilevel on the whole data; otherwise it needs to be done after each logratio inside the CV
             {
-                Xw = withinVariation(X, design = multilevel)
-                #                Xw = suppressMessages(withinVariation(X, design = multilevel))
+                Xw = suppressMessages(withinVariation(X, design = multilevel))
 
                 X.train = X[-omit, ]
                 X.test = X[omit, , drop = FALSE]

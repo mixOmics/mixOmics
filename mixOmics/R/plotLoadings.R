@@ -32,7 +32,7 @@ function(object, ...) UseMethod("plotLoadings")
 # --------------------------------------------------------------------------------------
 
 
-check.input.plotLoadings = function(object, block, study, subtitle, cex.name, cex.legend, title, col, contrib, name.var)
+check.input.plotLoadings = function(object, block, study, subtitle, size.name, size.legend, title, col, contrib, name.var)
 {
     
     if (is.null(object$loadings))
@@ -88,8 +88,8 @@ check.input.plotLoadings = function(object, block, study, subtitle, cex.name, ce
 
     if(!missing(study))
     {
-    #study needs to be either: from levels(object$study), numbers from 1:nlevels(study) or "all"
-        if (any(!study%in%c(levels(object$study), "all")))
+    #study needs to be either: from levels(object$study), numbers from 1:nlevels(study) or "global"
+        if (any(!study%in%c(levels(object$study), "global")))
         stop("'study' must be one of 'object$study' or 'all'.")
 
         if (length(study)!=length(unique(study)))
@@ -98,15 +98,15 @@ check.input.plotLoadings = function(object, block, study, subtitle, cex.name, ce
 
     # cex
     # --
-    if (cex.name <= 0)
-    cex.name = 0.7
+    if (size.name <= 0)
+    size.name = 0.7
     
-    if (!missing(cex.legend))
+    if (!missing(size.legend))
     {
-        if(cex.legend <= 0)
-        cex.legend = 0.8
+        if(size.legend <= 0)
+        size.legend = 0.8
     } else {
-        cex.legend = NULL
+        size.legend = NULL
     }
     
     # contrib
@@ -154,7 +154,7 @@ check.input.plotLoadings = function(object, block, study, subtitle, cex.name, ce
     col = color.mixo(1) # by default set to the colors in color.mixo (10 colors)
 
 
-    return(list(col = col, cex.name = cex.name, cex.legend = cex.legend, block = block))
+    return(list(col = col, size.name = size.name, size.legend = size.legend, block = block))
 }
 
 layout.plotLoadings = function(layout, plot, legend, block)
@@ -174,7 +174,7 @@ layout.plotLoadings = function(layout, plot, legend, block)
             available.plots = prod(omfrow)
             if (available.plots<nResp) # if not enough plots available, we create our new plot
             {
-                nCols = min(c(3 + legend, ceiling(nResp)))
+                nCols = min(c(3 + legend, ceiling(nResp/2)))
                 nRows = min(c(3 + legend, ceiling(nResp/nCols)))
                 layout = c(nRows, nCols)
                 

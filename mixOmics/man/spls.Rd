@@ -55,9 +55,10 @@ to zero means and unit variances (default: TRUE)}
 Multi-response models are fully supported. The \code{X} and \code{Y} datasets
 can contain missing values.
 
-The type of algorithm to use is specified with the \code{mode} argument. Two sPLS 
-algorithms are available: sPLS regression \code{("regression")} and sPLS canonical analysis 
-\code{("canonical")} (see References). 
+The type of algorithm to use is specified with the \code{mode} argument. Four PLS
+algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis
+\code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS
+algorithm \code{("classic")} (see References).
 
 The estimation of the missing values can be performed 
 by the reconstitution of the data matrix using the \code{nipals} function. Otherwise, missing 

@@ -29,22 +29,22 @@ This function provides a horizontal bar plot to visualise loading vectors. For d
 
 \usage{
 \S3method{plotLoadings}{pls}(object, block, comp = 1, col = NULL, ndisplay = NULL,
-cex.name = 0.7, name.var = NULL, name.var.complete = FALSE, title = NULL,
+size.name = 0.7, name.var = NULL, name.var.complete = FALSE, title = NULL,
 subtitle, size.title = rel(2), size.subtitle = rel(1.5), layout = NULL, border = NA, ... )
 
-\method{plotLoadings}{mint.pls}(object, study = "all", comp = 1, col = NULL, ndisplay = NULL,
-cex.name = 0.7, name.var = NULL, name.var.complete = FALSE, title = NULL, subtitle,
+\method{plotLoadings}{mint.pls}(object, study = "global", comp = 1, col = NULL, ndisplay = NULL,
+size.name = 0.7, name.var = NULL, name.var.complete = FALSE, title = NULL, subtitle,
 size.title = rel(1.8), size.subtitle = rel(1.4), layout = NULL, border = NA, ... )
 
 \method{plotLoadings}{plsda}(object, contrib, method = "mean", block, comp = 1,
-plot = TRUE, show.ties = TRUE, col.ties="white", ndisplay = NULL, cex.name = 0.7,
-cex.legend = 0.8, name.var=NULL, name.var.complete=FALSE, title = NULL,
+plot = TRUE, show.ties = TRUE, col.ties="white", ndisplay = NULL, size.name = 0.7,
+size.legend = 0.8, name.var=NULL, name.var.complete=FALSE, title = NULL,
 subtitle, size.title = rel(1.8), size.subtitle = rel(1.4),
 legend = TRUE, legend.color = NULL, legend.title = 'Outcome', layout = NULL, border = NA, ... )
 
 \method{plotLoadings}{mint.plsda}(object, contrib = NULL, method = "mean",
-study = "all", comp = 1, plot = TRUE, show.ties = TRUE, col.ties = "white",
-ndisplay = NULL, cex.name = 0.7, cex.legend = 0.8, name.var = NULL,
+study = "global", comp = 1, plot = TRUE, show.ties = TRUE, col.ties = "white",
+ndisplay = NULL, size.name = 0.7, size.legend = 0.8, name.var = NULL,
 name.var.complete = FALSE, title = NULL, subtitle, size.title = rel(1.8), size.subtitle = rel(1.4),
 legend = TRUE, legend.color = NULL, legend.title = 'Outcome', layout = NULL, border = NA, ... )
 
@@ -56,7 +56,7 @@ legend = TRUE, legend.color = NULL, legend.title = 'Outcome', layout = NULL, bor
 \item{object}{object},
 \item{contrib}{a character set to 'max' or 'min' indicating if the color of the bar should correspond to the group with the maximal or minimal expression levels / abundance.}
 \item{method}{a character set to 'mean' or 'median' indicating the criterion to assess the contribution. We recommend using median in the case of count or skewed data.}
-\item{study}{Indicates which study are to be plotted. A character vector containing some levels of \code{object$study} or "all" is expected.}
+\item{study}{Indicates which study are to be plotted.  A character vector containing some levels of \code{object$study}, "all.partial" to plot all studies or "global" is expected.}
 \item{block}{A single value indicating which block to consider in a \code{sgccda} object.}
 \item{comp}{integer value indicating the component of interest from the object.}
 \item{col}{color used in the barplot, only for object from non Discriminant analysis}
@@ -64,8 +64,8 @@ legend = TRUE, legend.color = NULL, legend.title = 'Outcome', layout = NULL, bor
 \item{show.ties}{Boolean. If TRUE then tie groups appear in the color set by \code{col.ties}, which will appear in the legend. Ties can happen when dealing with count data type. By default set to TRUE.}
 \item{col.ties}{Color corresponding to ties, only used if \code{show.ties=TRUE} and ties are present.}
 \item{ndisplay}{integer indicating how many of the most important variables are to be plotted (ranked by decreasing weights in each PLS-component). Useful to lighten a graph.}
-  \item{cex.name}{A numerical value giving the amount by which plotting the variable name text should be magnified or reduced relative to the default.}
-  \item{cex.legend}{A numerical value giving the amount by which plotting the legend text should be magnified or reduced relative to the default.}
+  \item{size.name}{A numerical value giving the amount by which plotting the variable name text should be magnified or reduced relative to the default.}
+  \item{size.legend}{A numerical value giving the amount by which plotting the legend text should be magnified or reduced relative to the default.}
   \item{name.var}{A character vector indicating the names of the variables. The names of the vector should match the names of the input data, see example.}
 \item{name.var.complete}{Boolean. If \code{name.var} is supplied with some empty names, \code{name.var.complete} allows you to use the initial variable names to complete the graph (from colnames(X)). Defaut to FALSE. }
 \item{title}{A set of characters to indicate the title of the plot. Default value is NULL.}
@@ -87,7 +87,7 @@ The contribution of each variable for each component (depending on the object) i
 For discriminant analysis, the color corresponds to the group in which the feature is most 'abundant'.  Note that this type of graphical output is particularly insightful for count microbial data - in that latter case using the \code{method = 'median'} is advised.
 Note also that if the parameter \code{contrib} is not provided, plots are white.
 
-For MINT analysis, \code{study="all"} plots the global loadings while partial loadings are plotted when \code{study} is a level of \code{object$study}. Importantly, the legend accounts for one subplot in the layout design.
+For MINT analysis, \code{study="global"} plots the global loadings while partial loadings are plotted when \code{study} is a level of \code{object$study}. Importantly, the legend accounts for one subplot in the layout design.
 }
 
 \author{Kim-Anh Le Cao, Benoit Gautier, Florian Rohart, Francois Bartolo}
@@ -141,11 +141,11 @@ plotLoadings(splsda.liver, comp = 2, method = 'median', name.var = name.var, tit
 name.var = liver.toxicity$gene.ID[, 'geneBank']
 names(name.var) = rownames(liver.toxicity$gene.ID)
 plotLoadings(splsda.liver, comp = 2, method = 'median',
-name.var = name.var, cex.name = 0.5, contrib = "max")
+name.var = name.var, size.name = 0.5, contrib = "max")
 
 #missing names of some genes? complete with the original names
 plotLoadings(splsda.liver, comp = 2, method = 'median',
-name.var = name.var, cex.name = 0.5,complete.name.var=TRUE, contrib = "max")
+name.var = name.var, size.name = 0.5,complete.name.var=TRUE, contrib = "max")
 
 # look at the contribution (median) for each variable
 plot.contrib = plotLoadings(splsda.liver, comp = 2, method = 'median', plot = FALSE, contrib = "max")
@@ -181,11 +181,11 @@ name.var = vac18$tab.prob.gene[, 'Gene']
 names(name.var) = colnames(X)
 
 plotLoadings(res.1level, comp = 2, method = 'median', legend.title = 'Stimu',
-name.var = name.var, cex.name = 0.2, contrib = "max")
+name.var = name.var, size.name = 0.2, contrib = "max")
 
 # too many transcripts? only output the top ones
 plotLoadings(res.1level, comp = 2, method = 'median', legend.title = 'Stimu',
-name.var = name.var, cex.name = 0.5, ndisplay = 60, contrib = "max")
+name.var = name.var, size.name = 0.5, ndisplay = 60, contrib = "max")
 
 }
 
@@ -207,7 +207,7 @@ names(name.var) = colnames(X)
 plotLoadings(plsda.breast, contrib = 'max', comp = 1, method = 'median', 
             ndisplay = 60, 
             name.var = name.var,
-            cex.name = 0.6,
+            size.name = 0.6,
             legend.color = color.mixo(1:2))
 }
 
@@ -226,7 +226,7 @@ name.var = liver.toxicity$gene.ID[, 'geneBank']
 names(name.var) = rownames(liver.toxicity$gene.ID)
 
 plotLoadings(plsda.liver, contrib = 'max', comp = 1, method = 'median', ndisplay = 100, 
-            name.var = name.var, cex.name = 0.4,
+            name.var = name.var, size.name = 0.4,
             legend.color = color.mixo(1:4))
 }
 
@@ -263,11 +263,11 @@ res = mint.splsda(X = data, Y = type.id, ncomp = 3, keepX = c(10,5,15), study = 
 
 plotLoadings(res)
 plotLoadings(res, contrib = "max")
-plotLoadings(res,contrib="min",study=1:6,comp=2)
+plotLoadings(res, contrib = "min", study = 1:6,comp=2)
 
 #combining different plots by setting a layout of 2 rows and 4columns. Note that the legend accounts for a subplot so 4columns instead of 2.
 plotLoadings(res,contrib="min",study=c(1,2,3),comp=2, layout = c(2,4))
-plotLoadings(res,contrib="min",study="all",comp=2)
+plotLoadings(res,contrib="min",study="global",comp=2)
 
 
 }

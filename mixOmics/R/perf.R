@@ -332,7 +332,9 @@ progressBar = TRUE,
     } else {
         warnings("Something that should not happen happened. Please contact us.")
     }
-    class(result) = c("perf", method)
+    class(result) = paste(c("perf", method), collapse =".")
+    result$call = match.call()
+
     return(invisible(result))
 }
 
@@ -529,7 +531,8 @@ near.zero.var = FALSE,
     } else {
         warnings("Something that should not happen happened. Please contact us.")
     }
-    class(result) = c("perf", method)
+    class(result) = paste(c("perf", method), collapse =".")
+    result$call = match.call()
 
 
     #updated outputs
