@@ -30,7 +30,7 @@
 # ========================================================================================================
 
 
-tune = function (method,
+tune = function (method, # choice of "spls", "splsda", "mint.splsda", "rcc", "pca"
 X,
 Y,
 multilevel,
@@ -62,7 +62,7 @@ light.output = TRUE # mint, splsda
     method = match.arg(method, choice.method)
     
     if (method == "mint.splsda") {
-        message("Calling 'tune.mint.splsda' with Leave-One-Group-Out Cross Validation")
+        message("Calling 'tune.mint.splsda' with Leave-One-Group-Out Cross Validation (nrepeat = 1)")
 
         if (missing(ncomp))
         ncomp = 1

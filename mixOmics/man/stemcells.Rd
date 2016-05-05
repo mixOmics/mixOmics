@@ -23,7 +23,7 @@ A list containing the following components:
 }
 
 \details{
-This data set contains the expression of a random subset of 1,000 genes in 167 samples from 6 independent studies and 3 cell types.
+This data set contains the expression of a random subset of 1,000 genes in 167 samples from 6 independent studies and 3 cell types. Those studies can be combined and analysed using the MINT procedure.
 }
 
 \source{
@@ -34,15 +34,7 @@ Cancer Consortium Portal
 }
 
 \references{
-Perez-Enciso, M. and Tenenhaus, M. (2003). Prediction of clinical outcome with microarray data: 
-a partial least squares discriminant analysis (PLS-DA) approach. \emph{Human Genetics} 
-\bold{112}, 581-592.
-
-Perou, C. M., Sorlie, T., Eisen, M. B., van de Rijn, M., Jeffrey, S. S., Rees, C. A., 
-Pollack, J. R., Ross, D. T., Johnsen, H., Akslen, L. A., Fluge, O.,
-Pergamenschikov, A., Williams, C., Zhu, S. X., Lonning, P. E., Borresen-Dale, A. L., 
-Brown, P. O. and Botstein, D. (2000). Molecular portraits
-of human breast tumours. \emph{Nature} \bold{406}, 747-752.
+Rohart F.,  Eslami A., Bougeard S and Lê Cao, K. A. MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. \emph{Submitted}.
 }
 
 \keyword{datasets}

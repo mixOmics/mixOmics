@@ -153,6 +153,9 @@ function(x, ...)
     cat("\n")
     cat(" Functions to visualise variables: \n", "-------------------- \n")
     cat(" plotVar, plotLoadings, network, cim \n")
+    cat("\n")
+    cat(" Other functions: \n", "-------------------- \n")
+    cat(" perf\n")
 }
 
 #----------------- print method for spls ------------------#
@@ -222,6 +225,9 @@ function(x, ...)
     cat("\n")
     cat(" Functions to visualise variables: \n", "-------------------- \n")
     cat(" plotVar, plotLoadings, network, cim \n")
+    cat("\n")
+    cat(" Other functions: \n", "-------------------- \n")
+    cat(" selectVar\n")
 }
 
 
@@ -254,6 +260,9 @@ function(x, ...)
     cat("\n")
     cat(" Functions to visualise variables: \n", "-------------------- \n")
     cat(" plotVar, plotLoadings, network, cim \n")
+	  cat("\n")
+	  cat(" Other functions: \n", "-------------------- \n")
+	  cat(" selectVar, tune, perf \n")
 }
 
 #----------------- print method for mint.splsda ------------------#
@@ -288,6 +297,9 @@ function(x, ...)
     cat("\n")
     cat(" Functions to visualise variables: \n", "-------------------- \n")
     cat(" plotVar, plotLoadings, network, cim \n")
+    cat("\n")
+    cat(" Other functions: \n", "-------------------- \n")
+    cat(" selectVar, tune, perf \n")
 
 }
 
@@ -358,6 +370,9 @@ function(x, ...)
     cat(" principal components: see object$x \n")
     cat(" cumulative explained variance: see object$varX \n")
     cat(" variable names: see object$names \n")
+    cat("\n")
+    cat(" Other functions: \n", "-------------------- \n")
+    cat(" selectVar, tune\n")
 
 }
 
@@ -435,6 +450,9 @@ print.rgcca <- function(x, ...)
     cat("\n")
     cat(" Functions to visualise variables: \n", "-------------------- \n")
     cat(" plotVar, plotLoadings, network \n")
+    cat("\n")
+    cat(" Other functions: \n", "-------------------- \n")
+    cat(" selectVar\n")
     
 }
 
@@ -476,6 +494,9 @@ print.sgcca<- function(x, ...)
     cat("\n")
     cat(" Functions to visualise variables: \n", "-------------------- \n")
     cat(" plotVar, plotLoadings, network\n")
+    cat("\n")
+    cat(" Other functions: \n", "-------------------- \n")
+    cat(" selectVar \n")
     
 }
 
@@ -520,6 +541,9 @@ print.sgccda<- function(x, ...)
     cat("\n")
     cat(" Functions to visualise variables: \n", "-------------------- \n")
     cat(" plotVar, plotLoadings, network \n")
+    cat("\n")
+    cat(" Other functions: \n", "-------------------- \n")
+    cat(" selectVar, perf \n")
     
 }
 
