@@ -263,7 +263,7 @@ get.loadings.ndisplay = function(object, comp, block, name.var, name.var.complet
     }else{
         colnames.X = as.character(colnames(X))[ind.match]
     }
-    X = X[, name.selected.var] #reduce the problem to ndisplay
+    X = X[, name.selected.var, drop = FALSE] #reduce the problem to ndisplay
     
     #completing colnames.X by the original names of the variables when missing
     if (name.var.complete == TRUE)
