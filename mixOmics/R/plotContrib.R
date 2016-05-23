@@ -261,5 +261,5 @@ plotContrib = function(object,
     # ===================================
     # return the contribution matrix
     # ===================================
-    return(invisible(list(contrib = contrib)))
+    return(invisible(contrib))
 }

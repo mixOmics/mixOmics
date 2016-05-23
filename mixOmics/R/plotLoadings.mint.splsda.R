@@ -239,7 +239,7 @@ border = NA,
         
         par(mar = omar) #reset mar
         
-        return(invisible(list(contrib = df.final)))
+        return(invisible(df.final))
 
     }
 

@@ -174,14 +174,16 @@ layout.plotLoadings = function(layout, plot, legend, block)
             available.plots = prod(omfrow)
             if (available.plots<nResp) # if not enough plots available, we create our new plot
             {
-                nCols = min(c(3 + legend, ceiling(nResp/2)))
-                nRows = min(c(3 + legend, ceiling(nResp/nCols)))
-                layout = c(nRows, nCols)
-                
+
                 if (legend)
                 {
+                    nRows = min(c(4, ceiling(nResp / 4)))
+                    nCols = min(c(4, ceiling(nResp / nRows)))
                     layout(matrix(1 : (nCols * nRows), nRows, nCols, byrow=TRUE),rep(c(0.7,0.7 -0.4*legend),nCols/(1+legend)))
                 } else {
+                    nRows = min(c(3, ceiling(nResp/3)))
+                    nCols = min(c(3, ceiling(nResp / nRows)))
+                    
                     layout(matrix(1 : (nCols * nRows), nRows, nCols, byrow=TRUE))
 
                 }
