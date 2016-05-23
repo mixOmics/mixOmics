@@ -130,6 +130,7 @@ border = NA,
         object$loadings = object$loadings.partial$X
         object$names$block = levels(object$study)
         
+        df.final = list()
         for (i in 1 : length(block))
         {
             value.selected.var = object$loadings.partial$X [[block[i]]][, comp] [name.selected.var]
@@ -159,7 +160,9 @@ border = NA,
                 title(paste(subtitle[i]), line=0, cex.main = size.subtitle)
             }
             
+            df.final[[i]] = df
         }
+        names(df.final) = block
         
         if (length(block) > 1 & !is.null(title))
         title(title, outer=TRUE, line = -2, cex.main = size.title)
@@ -169,6 +172,7 @@ border = NA,
         
         par(mar = omar) #reset mar
         
-        
+        return(invisible(df.final))
+
     }
 }

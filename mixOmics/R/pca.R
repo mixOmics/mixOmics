@@ -165,6 +165,17 @@ multilevel = NULL)
     
     if (!is.null(multilevel))
     {
+        # we expect a vector or a 2-columns matrix in 'Y' and the repeated measurements in 'multilevel'
+        multilevel = data.frame(multilevel)
+        
+        if ((nrow(X) != nrow(multilevel)))
+        stop("unequal number of rows in 'X' and 'multilevel'.")
+        
+        if (ncol(multilevel) != 1)
+        stop("'multilevel' should have a single column for the repeated measurements.")
+        
+        multilevel[, 1] = as.numeric(factor(multilevel[, 1])) # we want numbers for the repeated measurements
+        
         Xw = withinVariation(X, design = multilevel)
         X = Xw
     }

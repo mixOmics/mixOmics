@@ -197,6 +197,6 @@ border = NA,
         }
         
         # return the contribution matrix
-        return(invisible(list(contrib = df)))
+        return(invisible(df))
     }# end contrib missing
 }

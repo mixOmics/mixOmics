@@ -111,5 +111,5 @@ border = NA,
     par(mar = omar) #reset mar
 
     # return the contribution matrix
-    return(invisible(list(contrib = df)))
+    return(invisible(df))
 }
