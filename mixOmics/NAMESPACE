@@ -114,6 +114,10 @@ S3method(perf, spls)
 S3method(perf, plsda)
 S3method(perf, splsda)
 S3method(perf, sgccda)
+S3method(perf, mint.pls)
+S3method(perf, mint.spls)
+S3method(perf, mint.plsda)
+S3method(perf, mint.splsda)
 
 S3method(image, tune.rcc)
 
@@ -184,6 +188,7 @@ S3method(print, spca)
 S3method(print, ipca)
 S3method(print, sipca)
 S3method(print, sgcca)
+S3method(print, sgccda)
 S3method(print, rgcca)
 
 

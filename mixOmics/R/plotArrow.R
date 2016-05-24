@@ -1,9 +1,15 @@
-# Copyright (C) 2015
-# Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-# Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-# Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-
-
+#############################################################################################################
+# Author :
+#   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+#   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
+#   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#
+# created: 2015
+# last modified: 24-05-2016
+#
+# Copyright (C) 2016
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
@@ -17,6 +23,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
 
 
 #----------------------------------------------------------------------------------------------------------#
@@ -35,7 +42,7 @@ cex,
 pch,
 title = NULL,
 plot.arrows = TRUE,
-add.legend = FALSE,
+legend = FALSE,
 X.label = NULL,
 Y.label = NULL,
 ind.names = FALSE,
@@ -44,11 +51,11 @@ position.names = 'centroid'
 {
     
     class.object = class(object)
-    object.pls=c("pls","spls","rcc")
-    object.blocks=c("sgcca","rgcca")
+    object.pls=c("pls", "plsda", "spls", "splsda", "rcc")
+    object.blocks=c("sgcca", "sgccda", "rgcca")
     
     if (! any(class.object %in% c(object.pls,object.blocks)))
-    stop( " 'plotArrow' is only implemented for the following objects: pls, spls, rcc, sgcca, rgcca", call.=FALSE)
+    stop( " 'plotArrow' is only implemented for the following objects: pls, plsda, spls, splsda, rcc, sgcca, sgccda, rgcca", call.=FALSE)
     
     
     ### Start: Validation of arguments
@@ -170,10 +177,10 @@ position.names = 'centroid'
     
     #-- Define group
     missing.group = FALSE
-    if (missing(group) & any(class.object %in% c("DA")))
+    if (is.null(group) & any(class.object %in% c("DA")))
     {
         group = object$Y#factor(map(object$ind.mat), labels = object$names$colnames$Y)
-    } else if (!missing(group)) {
+    } else if (!is.null(group)) {
         missing.group = TRUE
         if (!is.factor(group))
         group = as.factor(group)
@@ -292,13 +299,13 @@ position.names = 'centroid'
     if (display.names.start ||display.names.end || display.centroid)
     df$names = rep(ind.names, length(x))
     
-    df$pch = pch; df$cex = cex; df$col.per.group = levels.color[group]; df$col = as.character(col)
+    df$pch = pch; df$cex = cex; df$col = as.character(col)
     
     
     
     opar <- par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din", "page")]
     #-- Define layout
-    if (add.legend)
+    if (legend)
     {
         par(mai=c( 1.360000, 1.093333, 1.093333,(max(strwidth(levels(group),"inches")))+0.6),xpd=TRUE)
     } else {
@@ -352,9 +359,9 @@ position.names = 'centroid'
             
             if (display.centroid)
             {
-                text(x0, y0, df[df$Block %in% paste0("Block: ", blocks[i]), "names"][j],col = df[df$Block %in% paste0("Block: ", blocks[i]), "col"][j], cex = df$cex[j],xpd=FALSE)
+                text(x0, y0, df[df$Block %in% paste0("Block: ", blocks[1]), "names"][j],col = df[df$Block %in% paste0("Block: ", blocks[1]), "col"][j], cex = df$cex[j],xpd=FALSE)
             } else{
-                points(cbind(x0,y0),pch=8,cex=df$cex[j],col=df[df$Block %in% paste0("Block: ", blocks[i]), "col"],xpd=FALSE)
+                points(cbind(x0,y0),pch=8,cex=df$cex[j],col=df[df$Block %in% paste0("Block: ", blocks[1]), "col"][j],xpd=FALSE)
             }
             if (plot.arrows)
             {
@@ -414,13 +421,13 @@ position.names = 'centroid'
         pch.legend=c(pch.legend,df[df$group == levels(group)[i], ]$pch)
     }
     
-    if (add.legend && (any(class.object %in% c("sgccda"))||missing.group))
+    if (legend && (any(class.object %in% c("sgccda", "DA"))||missing.group))
         legend(par()$usr[2]+0.1,par()$usr[4] - (par()$usr[4]-par()$usr[3])/2, col = col.per.group, legend = levels(group), pch = if (display.names.end || display.names.start) {16} else {unique(pch.legend)}, title = 'Legend', cex = 0.8)
     
     opar["usr"]=par()["usr"]
     
     par(opar)
     
-    
+    return(invisible(df))
     
 }

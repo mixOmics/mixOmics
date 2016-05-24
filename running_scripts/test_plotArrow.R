@@ -19,7 +19,7 @@ plotArrow(nutri.res,
 group = nutrimouse$genotype, ind.names  =   nutrimouse$genotype)
 
 plotArrow(nutri.res, group = nutrimouse$genotype,
-add.legend = TRUE)
+legend = TRUE)
 
 
 
@@ -37,12 +37,12 @@ plotArrow(toxicity.spls)
 # colors indicate time of necropsy, text is the dose
 plotArrow(toxicity.spls,  group = liver.toxicity$treatment[, 'Time.Group'],
 ind.names  = liver.toxicity$treatment[, 'Dose.Group'],
-add.legend = TRUE)
+legend = TRUE)
 
 # colors indicate time of necropsy, text is the dose, label at start of arrow
 
 plotArrow(toxicity.spls,  group = liver.toxicity$treatment[, 'Time.Group'], ind.names  = liver.toxicity$treatment[, 'Dose.Group'],
-add.legend = TRUE, position.names = 'start')
+legend = TRUE, position.names = 'start')
 
 ## variable representation for objects of class 'sgcca' (or 'rgcca')
 # ----------------------------------------------------
@@ -61,30 +61,30 @@ nutrimouse.sgcca <- wrapper.sgcca(X = data,
 # default style: same color for all samples
 plotArrow(nutrimouse.sgcca)
 
-plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
+plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
           title = 'my plot')
 
 # ind.names to visualise the unique individuals
-plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
+plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
           title = 'my plot', ind.names = TRUE)
 
 # ind.names to visualise the unique individuals
-plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
+plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
           title = 'my plot', ind.names = TRUE,position.names   = 'start')
 
-plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
+plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
           title = 'my plot', ind.names = TRUE,position.names   = 'end')
 
 # ind.names indicates the diet
-plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
+plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
           title = 'my plot', ind.names = nutrimouse$diet, position.names= 'start')
 
 # ind.names to visualise the unique individuals, start position
-plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
+plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
           title = 'my plot', ind.names = TRUE, position.names   = 'start')
 
 # end position
-plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
+plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
           title = 'my plot', ind.names = TRUE, position.names   = 'end')
 
 
@@ -110,7 +110,7 @@ bias = FALSE)
 plotArrow(nutrimouse.sgccda1)
 
 # with legend and title and indiv ID
-plotArrow(nutrimouse.sgccda1,  add.legend = TRUE, title = 'my sample plot', ind.names = TRUE, position.names = 'start')
+plotArrow(nutrimouse.sgccda1,  legend = TRUE, title = 'my sample plot', ind.names = TRUE, position.names = 'start')
 
 
 #######################################################################################################
@@ -159,19 +159,19 @@ if(additional.test==TRUE)
     
     plotArrow(toxicity.spls, comp = c(1,3))
     
-    ###test group and col with add.legend
+    ###test group and col with legend
     
     group=rep(c("group 1","group 2","group 3","group 4"),each = 16)
     
-    plotArrow(toxicity.spls,add.legend=TRUE,abline=TRUE,group=group)
+    plotArrow(toxicity.spls,legend=TRUE,abline=TRUE,group=group)
     
-    plotArrow(toxicity.spls,add.legend=TRUE,ind.names =TRUE,col=col,group=group)
+    plotArrow(toxicity.spls,legend=TRUE,ind.names =TRUE,col=col,group=group)
     
-    ###test group with add.legend and position end
+    ###test group with legend and position end
     
-    plotArrow(toxicity.spls,add.legend=TRUE,ind.names=TRUE,position.names='end',group=group)
+    plotArrow(toxicity.spls,legend=TRUE,ind.names=TRUE,position.names='end',group=group)
     
-    ###test group with add.legend and position start
+    ###test group with legend and position start
     
     plotArrow(toxicity.spls,ind.names=T,position.names='start',group=group,abline = TRUE)
     abline(0,0)
@@ -196,10 +196,10 @@ if(additional.test==TRUE)
     plotArrow(nutri.res,col=col,group=rep(c("group 1", "group 2"),each=20))
     plotArrow(nutri.res,col=col,group=rep(c("group 1", "group 2"),each=20),ind.names   = T)
     
-    ###test with group, col and add.legend
+    ###test with group, col and legend
     
     nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 10)
-    plotArrow(nutri.res,col=col,add.legend=TRUE,
+    plotArrow(nutri.res,col=col,legend=TRUE,
     group=rep(c("group 1", "group 2"),each=20))
     
     nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 10, lambda2 = 0.008)
@@ -209,7 +209,7 @@ if(additional.test==TRUE)
     
     plotArrow(nutri.res)
     abline(0,0)
-    plotArrow(nutri.res,add.legend=T)
+    plotArrow(nutri.res,legend=T)
     points(0,0)
     
     
@@ -228,13 +228,13 @@ if(additional.test==TRUE)
     ###test blocks with ind.names vector and group
     
     plotArrow(nutri.sgcca, ind.names= nutrimouse$diet,
-    group=nutrimouse$diet,add.legend=TRUE)
+    group=nutrimouse$diet,legend=TRUE)
     
-    ###test ind.names  with TRUE and vector, position start, unique col , add.legend and abline
+    ###test ind.names  with TRUE and vector, position start, unique col , legend and abline
     
-    plotArrow(nutri.sgcca, ind.names=T,position.names  ='start',add.legend=TRUE)
+    plotArrow(nutri.sgcca, ind.names=T,position.names  ='start',legend=TRUE)
     plotArrow(nutri.sgcca, ind.names= 1:40,col="blue",abline=TRUE)
-    plotArrow(nutri.sgcca, col="blue",abline=TRUE,add.legend=TRUE)
+    plotArrow(nutri.sgcca, col="blue",abline=TRUE,legend=TRUE)
     
     
     ###test all with xlim and ylim

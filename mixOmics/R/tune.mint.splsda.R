@@ -240,7 +240,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     
     result = list(
     mat.mean.error = mat.mean.error,
-    choice.keepX = already.tested.X ,
+    choice.keepX.constraint = already.tested.X ,
     error.per.class = error.per.class.keepX.opt)
     
     if(light.output == FALSE)

@@ -12,7 +12,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 2009
-# last modified: 24-04-2016
+# last modified: 24-05-2016
 #
 # Copyright (C) 2009
 #
@@ -723,7 +723,7 @@ print.tune.mint.splsda = function(x, ...)
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
     cat(" Main numerical outputs: \n",
     "-------------------- \n")
-    cat(" Optimal keepX.constraint for each component: see object$choice.keepX \n")
+    cat(" Optimal keepX.constraint for each component: see object$choice.keepX.constraint \n")
     cat(" Error rate for each tested keepX and for each component: see object$mat.mean.error \n")
     cat(" Error rate per class obtained with the optimal keepX.constraint, for each component: see object$error.rate.class \n\n")
     

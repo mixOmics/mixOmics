@@ -7,7 +7,7 @@
 #   Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
 #
 # created: 2015
-# last modified: 19-04-2016
+# last modified: 24-05-2016
 #
 # Copyright (C) 2015
 #
@@ -332,7 +332,7 @@ progressBar = TRUE,
     } else {
         warnings("Something that should not happen happened. Please contact us.")
     }
-    class(result) = paste(c("perf", method), collapse =".")
+    class(result) = c("perf",paste(c("perf", method), collapse ="."))
     result$call = match.call()
 
     return(invisible(result))
@@ -354,7 +354,7 @@ near.zero.var = FALSE,
     
     #-- initialising arguments --#
     # these data are the centered and scaled X output or the unmapped(Y) scaled and centered
-    X = object$X
+    X = object$input.X
     level.Y = object$names$colnames$Y  #to make sure the levels are ordered
     Y = object$Y
     ncomp = object$ncomp
@@ -363,6 +363,8 @@ near.zero.var = FALSE,
     logratio = object$logratio
     if (is.null(logratio))
     logratio = "none"
+    
+    multilevel = object$multilevel # repeated measurement and Y
     
     #-- tells which variables are selected in X and in Y --#
     if (any(class(object) == "splsda"))
@@ -415,20 +417,37 @@ near.zero.var = FALSE,
     
     #fold is checked in 'MCVfold'
     
+    
+    #---------------------------------------------------------------------------#
+    #-- multilevel approach ----------------------------------------------------#
+    # if no logratio, we can do multilevel on the whole data; otherwise it needs to be done after each logratio inside the CV
+    if (!is.null(multilevel) & logratio == "none")
+    {
+        
+        Xw = withinVariation(X, design = multilevel)
+        X = Xw
+    }
+    #-- multilevel approach ----------------------------------------------------#
+    #---------------------------------------------------------------------------#
+
+
     # -------------------------------------
     # added: first check for near zero var on the whole data set
-    nzv = nearZeroVar(X)
-    if (length(nzv$Position > 0))
+    if (near.zero.var == TRUE)
     {
-        warning("Zero- or near-zero variance predictors.\nReset predictors matrix to not near-zero variance predictors.\nSee $nzv for problematic predictors.")
-        X = X[, -nzv$Position, drop=TRUE]
-        
-        if (ncol(X)==0)
-        stop("No more predictors after Near Zero Var has been applied!")
-        
-        if (keepX > ncol(X))
-        keepX = ncol(X)
-        
+        nzv = nearZeroVar(X)
+        if (length(nzv$Position > 0))
+        {
+            warning("Zero- or near-zero variance predictors.\nReset predictors matrix to not near-zero variance predictors.\nSee $nzv for problematic predictors.")
+            X = X[, -nzv$Position, drop=TRUE]
+            
+            if (ncol(X)==0)
+            stop("No more predictors after Near Zero Var has been applied!")
+            
+            if (any(keepX > ncol(X)))
+            keepX = ncol(X)
+            
+        }
     }
     # and then we start from the X data set with the nzv removed
     
@@ -481,7 +500,8 @@ near.zero.var = FALSE,
         
         # estimate performance of the model for each component
         result = MCVfold.splsda (X, Y, validation = validation, folds = folds, nrepeat = 1, ncomp = comp, choice.keepX = choice.keepX,
-        test.keepX = test.keepX, measure = measure, dist = dist, logratio = logratio , near.zero.var = near.zero.var, progressBar = progressBar , class.object=class(object))
+        test.keepX = test.keepX, measure = measure, dist = dist, logratio = logratio, multilevel = multilevel, near.zero.var = near.zero.var,
+        progressBar = progressBar, class.object=class(object))
         
         # ---- extract stability of features ----- # NEW
         if (any(class(object) == "splsda"))
@@ -521,6 +541,7 @@ near.zero.var = FALSE,
     cat('\n')
     
     # added
+    if (near.zero.var == TRUE)
     result$nzvX = nzv$Position
     
     if (any(class(object) == "splsda"))
@@ -531,10 +552,38 @@ near.zero.var = FALSE,
     } else {
         warnings("Something that should not happen happened. Please contact us.")
     }
-    class(result) = paste(c("perf", method), collapse =".")
+    class(result) = c("perf",paste(c("perf", method), collapse ="."))
     result$call = match.call()
 
 
     #updated outputs
     return(invisible(result))
+}
+
+
+#---------------------------------------------------
+# perf for mint.spls and mint.pls object
+#---------------------------------------------------
+perf.mint.spls  = perf.mint.pls = function(object,
+validation = c("Mfold", "loo"),
+folds = 10,
+progressBar = TRUE,
+...)
+{
+    stop("Yet to be implemented")
+}
+
+# ---------------------------------------------------
+# perf for mint.plsda and mint.splsda object
+# ---------------------------------------------------
+perf.mint.splsda = perf.mint.plsda = function(object,
+dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
+validation = c("Mfold", "loo"),
+folds = 10,
+progressBar = TRUE,
+measure=c("overall","BER"), # one of c("overall","BER")
+near.zero.var = FALSE,
+...)
+{
+    stop("Yet to be implemented")
 }
