@@ -418,16 +418,7 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.co
         dimnames(X)[[2]] = X.names
     }
     
-    if (dim(Y)[2] == 1) Y.names = "Y"
-    if (dim(Y)[2] > 1)
-    {
-        Y.names = dimnames(Y)[[2]]
-        if (is.null(Y.names))
-        {
-            Y.names = paste("Y", 1:Q, sep = "")
-            dimnames(Y)[[2]]=Y.names
-        }
-    }
+
     
     ind.names = dimnames(X)[[1]]
     if (is.null(ind.names))
@@ -443,6 +434,21 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.co
     }
     
     rownames(X) = rownames(Y) = ind.names
+    
+    
+    #if (dim(Y)[2] == 1) Y.names = "Y"
+    Y.names = dimnames(Y)[[2]]
+    if (is.null(Y.names))
+    {
+        if (dim(Y)[2] == 1)
+        {
+            Y.names = "Y"
+        } else {
+            Y.names = paste("Y", 1:Q, sep = "")
+        }
+        
+        dimnames(Y)[[2]]=Y.names
+    }
     
     if (length(unique(X.names)) != P)
     stop("Unique indentifier is needed for the columns of X")

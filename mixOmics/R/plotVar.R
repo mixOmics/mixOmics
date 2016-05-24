@@ -283,7 +283,7 @@ label.axes.box = "both"  )
                 sample.X = lapply(cord.X, function(x){1 : nrow(x)})
                 
             } else if (any(class.object %in%  c("splsda", "mlsplsda"))) {
-                cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(comp.select, function(x){selectVar(object, comp = x)$name})))],
+                cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(comp.select, function(x){selectVar(object, comp = x)$name}))), drop = FALSE],
                 object$variates$X[, unique(c(comp1, comp2))], use = "pairwise")
                 ind.var.sel[[1]] = sample.X[[1]] = 1 : length(colnames(object$X))
                 #if (!is.null(comp.select)) {
@@ -292,9 +292,9 @@ label.axes.box = "both"  )
                 ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[1]]))
                 
             } else if (any(class.object %in%  c("spls", "mlspls"))) {
-                cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(comp.select, function(x){selectVar(object, comp = x)$X$name})))],
+                cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(comp.select, function(x){selectVar(object, comp = x)$X$name}))), drop = FALSE],
                 object$variates$X[, c(comp1, comp2)], use = "pairwise")
-                cord.X[[2]] = cor(object$Y[, colnames(object$Y) %in% unique(unlist(lapply(comp.select, function(x){selectVar(object, comp = x)$Y$name})))],
+                cord.X[[2]] = cor(object$Y[, colnames(object$Y) %in% unique(unlist(lapply(comp.select, function(x){selectVar(object, comp = x)$Y$name}))), drop = FALSE],
                 if(object$mode ==  "canonical")
                 {
                     object$variates$Y[, c(comp1, comp2)]
@@ -325,7 +325,7 @@ label.axes.box = "both"  )
         } else if (any(class.object %in%  object.pca)) {
             if (any(class.object %in%  c("sipca", "spca"))){
                 
-                cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(comp.select, function(x){selectVar(object, comp = x)$name})))],
+                cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(comp.select, function(x){selectVar(object, comp = x)$name}))), drop = FALSE],
                 object$x[, c(comp1, comp2)], use = "pairwise")
                 ind.var.sel[[1]] = sample.X[[1]] = 1 : length(colnames(object$X))
                 #if (!is.null(comp.select)) {

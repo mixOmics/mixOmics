@@ -198,7 +198,7 @@ mean_centering_per_study=function(data, study, scale, bias=FALSE)
     
     #sort the samples as in the original X
     indice.match = match(rownames(data),rownames(concat.data))
-    concat.data = concat.data[indice.match, ]
+    concat.data = concat.data[indice.match, ,drop=FALSE]
     
     if (M > 1)
     {
