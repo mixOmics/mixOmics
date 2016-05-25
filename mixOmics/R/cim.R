@@ -313,6 +313,16 @@ name.save = NULL)
         
         comp = round(comp)
         
+        # if object is a pls or spls with a univariate Y, or multivariate but only 1 variable selected on all comp, we only plot a heatmap of X
+        if(any(class.object %in%  object.pls))
+        {
+            temp = apply(mat$loadings$Y,2,function(x){which(x!=0, arr.ind=T)}) # gives which variables are selected
+            num.variable.selected.Y = table(unlist(temp))
+            
+            if (length(num.variable.selected.Y) == 1) #only one variable in Y to plot, will raise trouble so we switch from (s)pls to (s)plsda
+            class.object = "splsda"
+        }
+        
         if( ! any(class.object  %in%  object.pca))
         {
             
@@ -494,7 +504,7 @@ name.save = NULL)
                     col.names = mat$names$colnames$X
                 }
                 if(any(class.object %in%  c("splsda",'mlsplsda')))
-                keep.X = apply(abs(mat$loadings$X[,comp]), 1, sum) > 0
+                keep.X = apply(abs(mat$loadings$X[,comp, drop = FALSE]), 1, sum) > 0
                 else
                 keep.X = apply(abs(mat$loadings$X), 1, sum) > 0
                 cord.X = cor(mat$X[, keep.X], mat$variates$X[, comp], use = "pairwise")
@@ -831,8 +841,8 @@ name.save = NULL)
         {
             if(any(class.object %in% c("spls","mlspls")))
             {
-                keep.X = apply(abs(mat$loadings$X[,comp]), 1, sum) > 0
-                keep.Y = apply(abs(mat$loadings$Y[,comp]), 1, sum) > 0}
+                keep.X = apply(abs(mat$loadings$X[,comp, drop = FALSE]), 1, sum) > 0
+                keep.Y = apply(abs(mat$loadings$Y[,comp, drop = FALSE]), 1, sum) > 0}
             else
             {
                 keep.X = apply(abs(mat$loadings$X), 1, sum) > 0
@@ -841,12 +851,12 @@ name.save = NULL)
             
             
             if (mat$mode == "canonical") {
-                cord.X = cor(mat$X[, keep.X], mat$variates$X[, comp], use = "pairwise")
-                cord.Y = cor(mat$Y[, keep.Y], mat$variates$Y[, comp], use = "pairwise")
+                cord.X = cor(mat$X[, keep.X, drop = FALSE], mat$variates$X[, comp], use = "pairwise")
+                cord.Y = cor(mat$Y[, keep.Y, drop = FALSE], mat$variates$Y[, comp], use = "pairwise")
             }
             else {
-                cord.X = cor(mat$X[, keep.X], mat$variates$X[, comp], use = "pairwise")
-                cord.Y = cor(mat$Y[, keep.Y], mat$variates$X[, comp], use = "pairwise")
+                cord.X = cor(mat$X[, keep.X, drop = FALSE], mat$variates$X[, comp], use = "pairwise")
+                cord.Y = cor(mat$Y[, keep.Y, drop = FALSE], mat$variates$X[, comp], use = "pairwise")
             }
             
             XY.mat = as.matrix(cord.X %*% t(cord.Y))
