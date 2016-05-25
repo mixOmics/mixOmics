@@ -740,7 +740,7 @@ verbose)
         } else if (ncol(design) != nrow(design) || ncol(design) < length(X) || ncol(design) > (length(X) + 1) || any(!design %in% c(0,1))) {
             stop(paste0("'design' must be a square matrix with ", length(X), "columns."))
         } else if (ncol(design) == length(X)) {
-            message("Design matrix has changed to include Y as a block")
+            message("Design matrix has changed to include Y; each block will be linked to Y.")
             design = rbind(cbind(design, 1), 1)
             diag(design) = 0
             rownames(design) = colnames(design) = c(names(A), "Y")
