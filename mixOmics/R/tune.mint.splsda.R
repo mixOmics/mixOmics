@@ -159,8 +159,6 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     
     #-- cross-validation approach  ---------------------------------------------#
     #---------------------------------------------------------------------------#
-    
-    
     test.keepX = sort(test.keepX) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
     
     # if some components have already been tuned (eg comp1 and comp2), we're only tuning the following ones (comp3 comp4 .. ncomp)
@@ -192,8 +190,6 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     error.per.class.sd = matrix(0,nrow = nlevels(Y), ncol = ncomp-length(already.tested.X),
     dimnames = list(c(levels(Y)), c(paste('comp', comp.real))))
     
-
-    
     if(light.output == FALSE)
     prediction.all = class.all = list()
     
@@ -204,7 +200,6 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         
         if (progressBar == TRUE)
         cat("\ncomp",comp.real[comp], "\n")
-        
         
         result = LOGOCV (X, Y, ncomp = 1 + length(already.tested.X), study = study,
         keepX.constraint = already.tested.X, test.keepX = test.keepX, measure = measure, dist = dist,
@@ -240,7 +235,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     
     result = list(
     mat.mean.error = mat.mean.error,
-    choice.keepX.constraint = already.tested.X ,
+    choice.keepX.constraint = already.tested.X,
     error.per.class = error.per.class.keepX.opt)
     
     if(light.output == FALSE)
