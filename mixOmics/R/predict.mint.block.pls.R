@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 27-05-2015
-# last modified: 24-03-2016
+# last modified: 27-05-2016
 #
 # Copyright (C) 2016
 #
@@ -34,6 +34,8 @@
 #predict.mint.pls <- predict.mint.spls <- predict.mint.plsda <- predict.mint.splsda <-
 #predict.block.pls <- predict.block.spls <- predict.block.plsda <- predict.block.splsda <-
 #predict.mint.block.pls <- predict.mint.block.spls <- predict.mint.block.plsda <- predict.mint.block.splsda <- #predict.sgcca <-
+
+# note FR: 27/05/16: the way I dealt with missing block to predict will probably not work for mint.block analysis
 
 predict.block.pls <-predict.block.spls <-
 predict.pls <-predict.spls <-
@@ -112,6 +114,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         newdata=list(newdata=newdata)
         
         object$indY=2
+        ind.match = 1
         
     }else{
 
@@ -128,18 +131,43 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         object$X=X
 
         p = lapply(X, ncol)
+        
+        #matching newdata and X
+        
+        # error if no names on keepX or not matching the names in X
+        if(length(unique(names(newdata)))!=length(newdata) | sum(is.na(match(names(newdata),names(X)))) > 0)
+        stop("Each entry of 'newdata' must have a unique name corresponding to a block of 'X'")
+        
+        # error if not same number of samples in each block of newdata
+        if (length(unique(sapply(newdata,nrow))) != 1)
+        stop("All entries of 'newdata' must have the same number of rows")
+        
+        # I want to match keepX to X by names
+        ind.match = match(names(X), names(newdata))
+        
+        newdataA = list()
+        for (q in 1:length(X))
+        {
+            
+            if (!is.na(ind.match[q])) # means there is a newdata with the same name as X[q] #(q <= length(newdata))
+            {
+                newdataA[[q]] = newdata[[ind.match[q]]]
+            }else{
+                newdataA[[q]] = matrix(0,nrow = unique(sapply(newdata,nrow)), ncol = ncol(X[[q]]), dimnames = list(rownames(newdata[[1]]), colnames(X[[q]]))) # if missing, replaced by a 0 matrix of correct size
+            }
+        }
+        names(newdataA) = names(X)
+        newdata = newdataA
 
         # deal with near.zero.var in object, to remove the same variable in newdata as in object$X (already removed in object$X)
         if(!is.null(object$nzv))
         {
             newdata = lapply(1:(length(object$nzv)-1),function(x){if(length(object$nzv[[x]]$Position>0)) {newdata[[x]][, -object$nzv[[x]]$Position,drop=FALSE]}else{newdata[[x]]}})
         }
-        names(newdata)=names(X)
-
         if(length(newdata)!=length(object$X)) stop("'newdata' must have as many blocks as 'object$X'")
 
+        names(newdata)=names(X)
 
-        
         if (any(lapply(newdata, function(x){length(dim(x))}) != 2)) {
             if (any(unlist(lapply(newdata, ncol)) != unlist(p)))
             stop("'newdata' must be a list with ", length(p), " numeric matrix and ncol respectively equal to ", paste(p, collapse = ", "), ".")
@@ -162,6 +190,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
             newdata[[q]]=check$X
         }
         names(newdata)=names(X)
+
         #check that newdata and X have the same variables
         if(all.equal(lapply(newdata,colnames),lapply(X,colnames))!=TRUE)
         stop("Each 'newdata[[i]]' must include all the variables of 'object$X[[i]]'")
@@ -194,9 +223,9 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
 
         # scale newdata if just one study
         if (!is.null(attr(X[[1]], "scaled:center")))
-        newdata = lapply(1:J, function(x){sweep(newdata[[x]], 2, STATS = attr(X[[x]], "scaled:center"))})
+        newdata[which(!is.na(ind.match))] = lapply(which(!is.na(ind.match)), function(x){sweep(newdata[[x]], 2, STATS = attr(X[[x]], "scaled:center"))})
         if (scale)
-        newdata = lapply(1:J, function(x){sweep(newdata[[x]], 2, FUN = "/", STATS = attr(X[[x]], "scaled:scale"))})
+        newdata[which(!is.na(ind.match))] = lapply(which(!is.na(ind.match)), function(x){sweep(newdata[[x]], 2, FUN = "/", STATS = attr(X[[x]], "scaled:scale"))})
 
         means.Y = matrix(attr(Y, "scaled:center"),nrow=nrow(newdata[[1]]),ncol=q,byrow=TRUE);
         if (scale)
@@ -389,7 +418,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     # basic prediction results
     if(length(grep("block",class(object)))!=0 )
     {
-        out=list(predict=Y.hat,variates=t.pred,B.hat=B.hat)
+        out=list(predict=Y.hat[which(!is.na(ind.match))],variates=t.pred[which(!is.na(ind.match))],B.hat=B.hat[which(!is.na(ind.match))])
         out$newdata=concat.newdata
     }else{# not a block (pls/spls/plsda/splsda/mint...)
         out=list(predict=Y.hat[[1]],variates=t.pred[[1]],B.hat=B.hat[[1]])
@@ -402,11 +431,14 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
     if(any(class(object)=="DA")) # a DA analysis (mint).(block).(s)plsda
     {
         # creating temporary 'blocks' outputs to pass into the internal_predict.DA function
-        out.temp=list(predict=Y.hat,variates=t.pred,B.hat=B.hat)
-        out.temp$newdata=concat.newdata
+        out.temp=list(predict=Y.hat[which(!is.na(ind.match))],variates=t.pred[which(!is.na(ind.match))],B.hat=B.hat[which(!is.na(ind.match))])
+        out.temp$newdata=concat.newdata[which(!is.na(ind.match))]
         
         # getting classification for each new sample
-        classif.DA=internal_predict.DA(object=object,q=q,out=out.temp,method=method)
+        object.temp = object
+        object.temp$X = object.temp$X[which(!is.na(ind.match))]
+        object.temp$variates = object.temp$variates[c(which(!is.na(ind.match)),J+1)] #J+1 is Y
+        classif.DA=internal_predict.DA(object=object.temp,q=q,out=out.temp,method=method)
         out=c(out,classif.DA)
         
     }

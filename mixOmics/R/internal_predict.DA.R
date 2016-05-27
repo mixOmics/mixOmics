@@ -157,7 +157,7 @@ internal_predict.DA = function(object, out, q, method)
     
     out.DA$class = cls
     
-    if (length(grep("block",class(object)))!=0 ) # a block
+    if (length(grep("block",class(object)))!=0 & J>1) # a block
     {
         out.DA$centroids = G
     }else{ #not a block
