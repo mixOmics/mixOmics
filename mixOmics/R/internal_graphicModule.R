@@ -520,7 +520,7 @@ alpha)
             }
             
             #add title of the 'blocks'
-            title(title = titlemain, line = 1, cex.main = size.subtitle)
+            title(main = titlemain, line = 1, cex.main = size.subtitle)
 
             #-- Display sample or row.names
             for (i in 1 : nlevels(df$group))
