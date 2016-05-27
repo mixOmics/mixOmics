@@ -454,10 +454,7 @@ near.zero.var = FALSE,
 
     
     list.features = list()
-    mat.error = matrix(nrow = ncomp, ncol = 1,
-    dimnames = list(1:ncomp,c(paste('repeat', 1:1))))
-    rownames(mat.error) = 1:ncomp
-    
+
     mat.sd.error = mat.mean.error = error.per.class.keepX.opt = list()
     error.per.class = list()
     final=list()
@@ -501,7 +498,7 @@ near.zero.var = FALSE,
         # estimate performance of the model for each component
         result = MCVfold.splsda (X, Y, validation = validation, folds = folds, nrepeat = 1, ncomp = comp, choice.keepX = choice.keepX,
         test.keepX = test.keepX, measure = measure, dist = dist, logratio = logratio, multilevel = multilevel, near.zero.var = near.zero.var,
-        progressBar = progressBar, class.object=class(object))
+        progressBar = progressBar, class.object = class(object))
         
         # ---- extract stability of features ----- # NEW
         if (any(class(object) == "splsda"))

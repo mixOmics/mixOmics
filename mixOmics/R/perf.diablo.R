@@ -321,12 +321,14 @@ cpus = 1,
             apply(Y.predict[[x]][[y]], 2, function(z)
             {
                 temp = diag(table(factor(z, levels = levels(Y)), Y[unlist(folds)]))
-                1 - c(temp/summary(Y), sum(temp)/length(Y))
+                1 - c(temp/summary(Y))#, sum(temp)/length(Y))
             })
         })
     })
     
-    # Transpose data
+    if(FALSE)
+    {
+     # Transpose data
     error.mat.class = lapply(1 : J, function(x)
     {
         lapply(1 : length(dist.select), function(y)
@@ -344,6 +346,7 @@ cpus = 1,
             return(error.mat.class[[x]][[y]])
         })
     })
+    }
     
     # Define names
     error.mat.class = lapply(1 : J, function(x)
@@ -414,9 +417,9 @@ cpus = 1,
             err = c(c(colSums(mat2)/summary(Y), sum(mat2)/length(Y)), mean(colSums(mat2)/colSums(mat)))
         })
         
-        Y.mean.res = t(Y.mean.res)
-        row.names(Y.mean.res) = paste("comp", 1:max(object$ncomp[-indY]))
-        colnames(Y.mean.res) = c(levels(Y), "Overall.ER", "Overall.BER")
+        #Y.mean.res = t(Y.mean.res)
+        colnames(Y.mean.res) = paste("comp", 1:max(object$ncomp[-indY]))
+        row.names(Y.mean.res) = c(levels(Y), "Overall.ER", "Overall.BER")
         ### End: Average prediction
         
         ### Start: Vote on the dataset
@@ -508,7 +511,7 @@ cpus = 1,
         {
             colnames(Y.vote.res[[x]]) = paste("comp", 1:max(object$ncomp[-(J + 1)]))
             row.names(Y.vote.res[[x]]) = c(levels(Y), "Overall.ER", "Overall.BER")
-            return(t(Y.vote.res[[x]]))
+            return((Y.vote.res[[x]]))
         })
         names(Y.vote) = dist.select; names(Y.vote.res) = dist.select
         
