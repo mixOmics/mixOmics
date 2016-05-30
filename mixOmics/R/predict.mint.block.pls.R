@@ -144,6 +144,8 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         
         # I want to match keepX to X by names
         ind.match = match(names(X), names(newdata))
+        if(any(is.na(ind.match)))
+        warning("Some blocks are missing in 'newdata'; the prediction is based on the following blocks only: ", paste(names(X)[!is.na(ind.match)],collapse=", "))
         
         newdataA = list()
         for (q in 1:length(X))
