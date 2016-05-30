@@ -26,6 +26,17 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #############################################################################################################
 
+#---------------------------------------------------
+# perf for mint.spls and mint.pls object
+#---------------------------------------------------
+perf.mint.spls  = perf.mint.pls = function(object,
+validation = c("Mfold", "loo"),
+folds = 10,
+progressBar = TRUE,
+...)
+{
+    stop("Yet to be implemented")
+}
 
 # ---------------------------------------------------
 # perf for mint.plsda and mint.splsda object

@@ -40,6 +40,7 @@ perf = function(object, ...) UseMethod("perf")
 #---------------------------------------------------
 # perf for spls and pls object
 #---------------------------------------------------
+
 perf.spls  = perf.pls = function(object,
 validation = c("Mfold", "loo"),
 folds = 10,
@@ -80,8 +81,8 @@ progressBar = TRUE,
         X = object$X
     }
     Y = object$Y
-
-
+    
+    
     tol = object$tol
     max.iter = object$max.iter
     mode = object$mode
@@ -156,7 +157,7 @@ progressBar = TRUE,
     # initialize new objects:= to record feature stability
     featuresX  = featuresY =  list()
     for(k in 1:ncomp)
-        featuresX[[k]] = featuresY[[k]] = NA
+    featuresX[[k]] = featuresY[[k]] = NA
     
     #-- loop on h = ncomp --#
     # the loop is only for the calculation of Q2 on each component
@@ -250,7 +251,7 @@ progressBar = TRUE,
             Y.hat.cv = (X.test %*% a.cv) %*% t(d.cv)
             press.mat[[h]][omit, ] = Y.test - Y.hat.cv
             
-
+            
         } # end i (cross validation)
         
         #-- compute the Q2 creterion --#
@@ -280,11 +281,11 @@ progressBar = TRUE,
     
     if (progressBar == TRUE) cat('\n')
     
-
+    
     #-- output -----------------------------------------------------------------#
     #---------------------------------------------------------------------------#
     Q2.total = matrix(1 - rowSums(PRESS.inside) / rowSums(RSS[-(ncomp+1), , drop = FALSE]), nrow = 1, ncol = ncomp,
-        dimnames = list("Q2.total", paste0(1:ncomp, " comp")))
+    dimnames = list("Q2.total", paste0(1:ncomp, " comp")))
     
     # set up dimnames
     rownames(MSEP) = rownames(R2) = rownames(Q2) = paste0(1:ncomp, " comp")
@@ -322,7 +323,7 @@ progressBar = TRUE,
         result$features$stable.X = list.features.X
         result$features$stable.Y = list.features.Y
     }
-
+    
     #--- class
     if (any(class(object) == "spls"))
     {
@@ -334,7 +335,7 @@ progressBar = TRUE,
     }
     class(result) = c("perf",paste(c("perf", method), collapse ="."))
     result$call = match.call()
-
+    
     return(invisible(result))
 }
 
@@ -347,8 +348,6 @@ dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
 validation = c("Mfold", "loo"),
 folds = 10,
 progressBar = TRUE,
-measure=c("overall","BER"), # one of c("overall","BER")
-near.zero.var = FALSE,
 ...)
 {
     
@@ -365,6 +364,7 @@ near.zero.var = FALSE,
     logratio = "none"
     
     multilevel = object$multilevel # repeated measurement and Y
+    near.zero.var = !is.null(object$nzv) # if near.zero.var was used, we set it to TRUE. if not used, object$nzv is NULL
     
     #-- tells which variables are selected in X and in Y --#
     if (any(class(object) == "splsda"))
@@ -406,11 +406,8 @@ near.zero.var = FALSE,
     if (!is.logical(progressBar))
     stop("'progressBar' must be either TRUE or FALSE")
     
-    if (!(all(measure %in% c("overall", "BER"))))
-    stop("Choose 'measure' among the two following measures: 'overall' and/or 'BER'")
+    measure = c("overall","BER") # one of c("overall","BER")
     
-    if (!is.logical(near.zero.var))
-    stop("'near.zero.var' must be either TRUE or FALSE")
     
     if (!(logratio %in% c("none", "CLR")))
     stop("Choose one of the two following logratio transformation: 'none' or 'CLR'")
@@ -558,29 +555,3 @@ near.zero.var = FALSE,
 }
 
 
-#---------------------------------------------------
-# perf for mint.spls and mint.pls object
-#---------------------------------------------------
-perf.mint.spls  = perf.mint.pls = function(object,
-validation = c("Mfold", "loo"),
-folds = 10,
-progressBar = TRUE,
-...)
-{
-    stop("Yet to be implemented")
-}
-
-# ---------------------------------------------------
-# perf for mint.plsda and mint.splsda object
-# ---------------------------------------------------
-perf.mint.splsda = perf.mint.plsda = function(object,
-dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
-validation = c("Mfold", "loo"),
-folds = 10,
-progressBar = TRUE,
-measure=c("overall","BER"), # one of c("overall","BER")
-near.zero.var = FALSE,
-...)
-{
-    stop("Yet to be implemented")
-}
