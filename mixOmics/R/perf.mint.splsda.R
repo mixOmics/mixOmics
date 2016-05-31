@@ -44,7 +44,6 @@ progressBar = TRUE,
 perf.mint.splsda = perf.mint.plsda = function (object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
 progressBar = TRUE,
-near.zero.var = FALSE,
 ...
 )
 {    #-- checking general input parameters --------------------------------------#
@@ -75,13 +74,12 @@ near.zero.var = FALSE,
     if (!is.logical(progressBar))
     stop("'progressBar' must be either TRUE or FALSE")
     
-   
-    if (!is.logical(near.zero.var))
-    stop("'near.zero.var' must be either TRUE or FALSE")
     #-- end checking --#
     #------------------#
     
-    
+    near.zero.var = !is.null(object$nzv) # if near.zero.var was used, we set it to TRUE. if not used, object$nzv is NULL
+
+
     # -------------------------------------
     # added: first check for near zero var on the whole data set
     if (near.zero.var == TRUE)
@@ -135,9 +133,7 @@ near.zero.var = FALSE,
         
         if (progressBar == TRUE)
         cat("\ncomp",comp, "\n")
-        
-        save(list=ls(),file="temp.Rdata")
-        
+               
         #-- set up a progress bar --#
         if (progressBar ==  TRUE)
         {
@@ -270,7 +266,8 @@ near.zero.var = FALSE,
     if (near.zero.var == TRUE)
     result$nzvX = nzv$Position
     
-    class(result) = c("perf","perf.mint.splsda")
-    
+    class(result) = c("perf","perf.mint.splsda.mthd")
+    result$call = match.call()
+
     return(invisible(result))
 }

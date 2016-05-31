@@ -72,7 +72,7 @@ alpha)
     #class.object=class(object)
     
     # to satisfy R CMD check that doesn't recognise x, y and group as variable (in aes)
-    x = y = group = pch = NULL
+    x = y = group = pch = studyname = NULL
     
     size.title = plot_parameters$size.title
     size.subtitle = plot_parameters$size.subtitle
@@ -151,7 +151,7 @@ alpha)
                 p = p + geom_point(data = subset(df, col == i),
                 color = unique(df[df$col == i & df$Block == levels(df$Block)[1], ]$col),
                 size = unique(df[df$col == i & df$Block == levels(df$Block)[1], ]$cex),
-                shape = df[df$col == i, ]$pch,stroke = point.lwd)# unique(df[df$col == i & df$Block == paste0("Block: ", blocks[1]), ]$pch))
+                shape = unique(df[df$col == i & df$Block == levels(df$Block)[1],  ]$pch), stroke = point.lwd)# unique(df[df$col == i & df$Block == paste0("Block: ", blocks[1]), ]$pch))
             }
             if (centroid == TRUE)
             {
@@ -222,12 +222,12 @@ alpha)
             nRows = layout[1]
             nCols = layout[2]
         }
-
         
         #note: at this present time, ggplot2 does not allow xlim to be changed per subplot, so cannot use xlim properly
+        df$studyname = factor(df$pch, labels = study.levels)
         
         #-- Initialise ggplot2
-        p = ggplot(df, aes(x = x, y = y, color = group, shape = factor(pch, labels = study.levels)),
+        p = ggplot(df, aes(x = x, y = y, color = group, shape = studyname),
         main = title, xlab = X.label, ylab = Y.label) +
         theme_bw() + theme(strip.text = element_text(size = size.subtitle, face = "bold"))
         

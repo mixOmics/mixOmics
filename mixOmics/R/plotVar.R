@@ -301,14 +301,16 @@ label.axes.box = "both"  )
                 } else {
                     object$variates$X[, c(comp1, comp2)]
                 }, use = "pairwise")
-                ind.var.sel[[1]] = sample.X[[1]] = 1 : length(colnames(object$X))
-                ind.var.sel[[2]] = sample.X[[2]] = 1 : length(colnames(object$Y))
+                #ind.var.sel[[1]] =
+                sample.X[[1]] = 1 : length(colnames(object$X))
+                #ind.var.sel[[2]] =
+                sample.X[[2]] = 1 : length(colnames(object$Y))
                 #if (!is.null(comp.select)) {
                 #   cord.X[[1]] = cord.X[[1]][row.names(cord.X[[1]]) %in% unique(unlist(lapply(comp.select, function(x) {selectVar(object, comp = x)$X$name}))), ,drop = FALSE]
                 #   cord.X[[2]] = cord.X[[2]][row.names(cord.X[[2]]) %in% unique(unlist(lapply(comp.select, function(x) {selectVar(object, comp = x)$Y$name}))), , drop = FALSE]
                 #}
-                #ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[1]]))
-                #ind.var.sel[[2]] = which(colnames(object$Y) %in% rownames(cord.X[[2]]))
+                ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[1]]))
+                ind.var.sel[[2]] = which(colnames(object$Y) %in% rownames(cord.X[[2]]))
                 
             } else { #block object
                 cord.X = lapply(blocks, function(x){cor(object$blocks[[x]], object$variates[[x]][, c(comp1, comp2)], use = "pairwise")})
@@ -327,7 +329,8 @@ label.axes.box = "both"  )
                 
                 cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(comp.select, function(x){selectVar(object, comp = x)$name}))), drop = FALSE],
                 object$x[, c(comp1, comp2)], use = "pairwise")
-                ind.var.sel[[1]] = sample.X[[1]] = 1 : length(colnames(object$X))
+                #ind.var.sel[[1]] =
+                sample.X[[1]] = 1 : length(colnames(object$X))
                 #if (!is.null(comp.select)) {
                 #    cord.X[[1]] = cord.X[[1]][row.names(cord.X[[1]]) %in% unique(unlist(lapply(comp.select, function(x) {selectVar(object, comp = x)$name}))), ,drop = FALSE]
                 #}
@@ -393,9 +396,7 @@ label.axes.box = "both"  )
     else {
         stop.message('pch', sample.X)
     }
-    
-    
-    
+        
     #-- col argument
     if (missing(col)) {
         if (length(cord.X) < 10) {
