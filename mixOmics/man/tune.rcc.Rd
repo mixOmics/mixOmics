@@ -63,7 +63,7 @@ The returned value is a list with components:
 
 \author{Sebastien Dejean and Ignacio Gonzalez.}
 
-\seealso{\code{\link{loo}}, \code{\link{Mfold}}, \code{\link{image.tune.rcc}} and http://www.mixOmics.org for more details.}
+\seealso{\code{\link{image.tune.rcc}} and http://www.mixOmics.org for more details.}
 
 \examples{
 data(nutrimouse)

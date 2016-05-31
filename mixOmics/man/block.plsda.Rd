@@ -49,7 +49,7 @@ to zero means and unit variances (default: TRUE)}
 \details{
 \code{block.plsda} function fits a horizontal PLS-DA models with a specific number of component per block (\eqn{1, \ldots ,}\code{ncomp[i]} components for each block \code{X[i]}).
 
-A factor needs to be given, either by \code{Y} or by its position \code{indY} in the list of blocks \code{X}.
+A factor needs to be provided, either by \code{Y} or by its position \code{indY} in the list of blocks \code{X}.
 
 Multi-response models are fully supported. \code{X} can contain missing values. Missing values are handled by casewise deletion in the \code{block.plsda} function without having to delete the rows with missing data.
 
@@ -98,7 +98,7 @@ design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3,
 byrow = TRUE, dimnames = list(names(data), names(data)))
 
 res=block.plsda(X=data,indY=3) # indY indicates where the outcome Y is in the list X
-plotIndiv(res,ind.names=FALSE,add.legend=TRUE)
+plotIndiv(res,ind.names=FALSE,legend=TRUE)
 plotVar(res)
 
 # Y is provided
