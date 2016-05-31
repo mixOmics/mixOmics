@@ -33,15 +33,15 @@ plotLoadings(nutrimouse.sgccda)
 plotLoadings(nutrimouse.sgccda,contrib="max")
 
 par(mfrow=c(1,1))
-circosPlot(nutrimouse.sgccda,corThreshold=0.7,ncol=2,cex.legend=1.1)
+circosPlot(nutrimouse.sgccda,corThreshold=0.7,ncol=2,size.legend=1.1)
 
-circosPlot(nutrimouse.sgccda,corThreshold=0.7,ncol=2,cex.legend=1.1,cex.labels=2)
+circosPlot(nutrimouse.sgccda,corThreshold=0.7,ncol=2,size.legend=1.1,size.labels=2)
 
 #compatibility with par(mfrow)
 par(mfrow=c(2,2))
-circosPlot(nutrimouse.sgccda,corThreshold=0.6,ncol=1,cex.legend=0.6)
-circosPlot(nutrimouse.sgccda,corThreshold=0.7,ncol=1,cex.legend=0.6)
-circosPlot(nutrimouse.sgccda,corThreshold=0.8,ncol=1,cex.legend=0.6,showIntraLinks=TRUE)
+circosPlot(nutrimouse.sgccda,corThreshold=0.6,ncol=1,size.legend=0.6)
+circosPlot(nutrimouse.sgccda,corThreshold=0.7,ncol=1,size.legend=0.6)
+circosPlot(nutrimouse.sgccda,corThreshold=0.8,ncol=1,size.legend=0.6,showIntraLinks=TRUE)
 plot(1:10)
 
 plotIndiv(nutrimouse.sgccda,style="graphics",add.legend=FALSE,layout=c(2,2)) # Amrit function
@@ -55,8 +55,7 @@ plotDiablo(nutrimouse.sgccda)
 # the problem doesn't appear all the time, so I'm not sure where it comes from
 #par(opar)
 cimDiablo(nutrimouse.sgccda)
-cimDiablo(nutrimouse.sgccda,pos.legend="right")
-cimDiablo(nutrimouse.sgccda,pos.legend="right",cex.legend=0.3)
+cimDiablo(nutrimouse.sgccda,size.legend=0.3)
 
 
 plotIndiv(nutrimouse.sgccda)
