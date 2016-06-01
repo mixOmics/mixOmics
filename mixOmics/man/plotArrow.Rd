@@ -19,7 +19,7 @@ plotArrow(  object,
             pch,
             title=NULL,
             plot.arrows=TRUE,
-            add.legend=FALSE,
+            legend=FALSE,
             X.label = NULL,
             Y.label = NULL,
             ind.names=FALSE,
@@ -42,7 +42,7 @@ and the vertical axis to project the individuals.}
 or integers. See \code{\link{points}} for all alternatives.}
 \item{title}{set of characters for the title plot.}
 \item{plot.arrows}{boolean. Whether arrows should be added or not. Default is \code{TRUE}.}
-\item{add.legend}{boolean. Whether the legend should be added. Only for the supervised methods and if group!=NULL. Default is \code{FALSE}.}
+\item{legend}{boolean. Whether the legend should be added. Only for the supervised methods and if group!=NULL. Default is \code{FALSE}.}
 \item{X.label}{x axis titles.}
 \item{Y.label}{y axis titles.}
 \item{ind.names}{If \code{TRUE}, the row names of the first (or second) data matrix are used as sample names (see Details). Can be a vector of length the sample size to display sample names.}
@@ -84,7 +84,7 @@ group = nutrimouse$genotype, ind.names = nutrimouse$genotype)
 
 \dontrun{
 plotArrow(nutri.res, group = nutrimouse$genotype,
-add.legend = TRUE)
+legend = TRUE)
 }
 
 
@@ -103,12 +103,12 @@ plotArrow(toxicity.spls)
 # colors indicate time of necropsy, text is the dose
 plotArrow(toxicity.spls,  group = liver.toxicity$treatment[, 'Time.Group'],
 ind.names  = liver.toxicity$treatment[, 'Dose.Group'],
-add.legend = TRUE)
+legend = TRUE)
 
 # colors indicate time of necropsy, text is the dose, label at start of arrow
 plotArrow(toxicity.spls,  group = liver.toxicity$treatment[, 'Time.Group'],
 ind.names  = liver.toxicity$treatment[, 'Dose.Group'],
-add.legend = TRUE, position.names = 'start')
+legend = TRUE, position.names = 'start')
 }
 
 ## variable representation for objects of class 'sgcca' (or 'rgcca')
@@ -129,30 +129,30 @@ bias = FALSE)
 plotArrow(nutrimouse.sgcca)
 
 \dontrun{
-plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
+plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
 title = 'my plot')
 
 # ind.names to visualise the unique individuals
-plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
+plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
 title = 'my plot', ind.names = TRUE)
 
 # ind.names to visualise the unique individuals
-plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
+plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
 title = 'my plot', ind.names = TRUE,position.names   = 'start')
 
-plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
+plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
 title = 'my plot', ind.names = TRUE,position.names   = 'end')
 
 # ind.names indicates the diet
-plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
+plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
 title = 'my plot', ind.names = nutrimouse$diet, position.names= 'start')
 
 # ind.names to visualise the unique individuals, start position
-plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
+plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
 title = 'my plot', ind.names = TRUE, position.names   = 'start')
 
 # end position
-plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE,
+plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
 title = 'my plot', ind.names = TRUE, position.names   = 'end')
 }
 
@@ -179,7 +179,7 @@ plotArrow(nutrimouse.sgccda1)
 
 \dontrun{
 # with legend and title and indiv ID
-plotArrow(nutrimouse.sgccda1,  add.legend = TRUE, title = 'my sample plot',
+plotArrow(nutrimouse.sgccda1,  legend = TRUE, title = 'my sample plot',
 ind.names = TRUE, position.names = 'start')
 }
 }

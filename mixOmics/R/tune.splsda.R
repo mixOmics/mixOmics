@@ -5,7 +5,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 2015
-# last modified: 11-04-2016
+# last modified: 24-05-2016
 #
 # Copyright (C) 2015
 #
@@ -122,7 +122,11 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     stop("'validation' must be either 'Mfold' or 'loo'")
     
     if (validation == 'loo')
-    nrepeat = 1
+    {
+        if (nrepeat != 1)
+        warnings("Leave-One-Out validation does not need to be repeated: 'nrepeat' is set to '1'.")
+        nrepeat = 1
+    }
     
     #-- logratio
     if (length(logratio) > 1)

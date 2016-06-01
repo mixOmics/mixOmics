@@ -18,11 +18,20 @@ X <- linnerud$exercise
 Y <- linnerud$physiological
 linn.pls <- pls(X, Y, mode = "classic")
 
+
+library(mixOmicsv6)
 data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
 
 toxicity.pls <- pls(X, Y, ncomp = 3)
+
+Y1=Y[,1]
+tox=spls(X,Y1)
+
+tox=spls(X,Y[,1,drop=FALSE])
+plotVar(tox)
+
 
 plotIndiv(toxicity.pls, group=rep(1:4,16))
 plotIndiv(toxicity.pls, group=factor(rep(1:4,16),labels=c("a","b","c","d")),add.legend=TRUE)
@@ -85,7 +94,7 @@ plotLoadings(res)
 plotLoadings(res, contrib = "min")
 plotLoadings(res, contrib = "max")
 
-tune= tune.splsda(X,Y,ncomp=1,nrepeat=10,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist",already.tested.X=NULL)
+tune= tune.splsda(X,Y,ncomp=1,nrepeat=5,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist",already.tested.X=NULL)
 
 # individual names appear
 plotIndiv(res, ind.names = Y, add.legend = TRUE, ellipse =TRUE)

@@ -49,7 +49,7 @@ to zero means and unit variances (default: TRUE)}
 \details{
 \code{block.pls} function fits a horizontal PLS models with a specific number of component per block (\eqn{1, \ldots ,}\code{ncomp[i]} components for each block \code{X[i]}).
 
-An outcome needs to be given, either by \code{Y} or by its position \code{indY} in the list of blocks \code{X}.
+An outcome needs to be provided, either by \code{Y} or by its position \code{indY} in the list of blocks \code{X}.
 
 Multi-response models are fully supported. \code{X} and \code{Y} can contain missing values. Missing values are handled by casewise deletion in the \code{block.pls} function without having to delete the rows with missing data.
 

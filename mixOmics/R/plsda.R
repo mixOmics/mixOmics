@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 25-02-2016
+# last modified: 24-05-2016
 #
 # Copyright (C) 2015
 #
@@ -114,14 +114,14 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
         nzv = result$nzv,
         scale = scale,
         logratio = logratio,
-        explained_variance = result$explained_variance[-result$indY]
+        explained_variance = result$explained_variance[-result$indY],
+        input.X = result$input.X
         )
     
     class(out) = c("plsda","pls","DA")
     # output if multilevel analysis
     if (!is.null(multilevel))
     {
-        out$Xw = result$Xw
         out$multilevel = multilevel
         class(out) = c("mlplsda",class(out))
     }

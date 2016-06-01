@@ -50,10 +50,10 @@ plotIndiv(res,study=c(1:2,"global",6:5),group=type.id)
 plotIndiv(res,study=c(1),group=type.id,rep.space="XY")
 plotIndiv(res,study=c(1:2),group=type.id,rep.space="XY")
 
-plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,add.legend=T)
-plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,add.legend=T,point.lwd=3)
-plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,add.legend=T,point.lwd=3,size.legend=rel(2))
-plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,add.legend=T,point.lwd=3,size.legend=rel(2),size.legend.title=rel(2))
+plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,legend=T)
+plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,legend=T,point.lwd=3)
+plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,legend=T,point.lwd=3,size.legend=rel(2))
+plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,legend=T,point.lwd=3,size.legend=rel(2),size.legend.title=rel(2))
 
 
 plotIndiv(res,study="all.partial",group=type.id)
@@ -66,46 +66,46 @@ plotIndiv(res,study=c("global",5,3,"all.partial"),group=type.id)
 # to change the levels, need to change the input factor study
 exp.temp=factor(exp,labels=paste0("studyname",1:6))
 res=mint.spls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp.temp)
-plotIndiv(res,study=c(levels(res$study)[1:2],"global",levels(res$study)[6:5]),group=type.id,add.legend=T)
+plotIndiv(res,study=c(levels(res$study)[1:2],"global",levels(res$study)[6:5]),group=type.id,legend=T)
 
-plotIndiv(res,study=c(levels(res$study)[1:2],"global",levels(res$study)[6:5]),group=type.id,add.legend=T,subtitle=letters[seq( from = 1, to = 5 )])
+plotIndiv(res,study=c(levels(res$study)[1:2],"global",levels(res$study)[6:5]),group=type.id,legend=T,subtitle=letters[seq( from = 1, to = 5 )])
 
-plotIndiv(res,study=c(levels(res$study),"global"),group=type.id,add.legend=T,subtitle=letters[seq( from = 1, to = 7 )])
+plotIndiv(res,study=c(levels(res$study),"global"),group=type.id,legend=T,subtitle=letters[seq( from = 1, to = 7 )])
 
 #change the layout
-plotIndiv(res,study=c(levels(res$study),"global"),group=type.id,add.legend=T,subtitle=letters[seq( from = 1, to = 7 )],layout=c(3,2))
+plotIndiv(res,study=c(levels(res$study),"global"),group=type.id,legend=T,subtitle=letters[seq( from = 1, to = 7 )],layout=c(3,2))
 
 # the following can't run on Rstudio (margin too small)
-#plotIndiv(res,study=c(levels(res$study),"global"),group=type.id,add.legend=T,subtitle=letters[seq( from = 1, to = 7 )],layout=c(3,2),style="graphics")
+#plotIndiv(res,study=c(levels(res$study),"global"),group=type.id,legend=T,subtitle=letters[seq( from = 1, to = 7 )],layout=c(3,2),style="graphics")
 
 
 #back to normal
 res=mint.spls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
-plotIndiv(res,study=c("global"),group=type.id,add.legend=T)
-plotIndiv(res,study=c("1"),group=type.id,add.legend=T)
-plotIndiv(res,study=c(1,2),group=type.id,add.legend=T,title="bla")
+plotIndiv(res,study=c("global"),group=type.id,legend=T)
+plotIndiv(res,study=c("1"),group=type.id,legend=T)
+plotIndiv(res,study=c(1,2),group=type.id,legend=T,title="bla")
 
-plotIndiv(res,study=c(1:2),group=type.id,add.legend=T,legend.position="right",size.legend.title=rel(2),size.legend=rel(1.7),size.xlabel=rel(1.2),size.ylabel=rel(1.2),size.axis=rel(1.2),size.subtitle=rel(3),size.title=rel(4),title="bla")
+plotIndiv(res,study=c(1:2),group=type.id,legend=T,legend.position="right",size.legend.title=rel(2),size.legend=rel(1.7),size.xlabel=rel(1.2),size.ylabel=rel(1.2),size.axis=rel(1.2),size.subtitle=rel(3),size.title=rel(4),title="bla")
 
-plotIndiv(res,study=c(1:2),group=type.id,add.legend=T,legend.position="bottom",size.legend.title=rel(2),size.legend=rel(1.7),size.xlabel=rel(1.2),size.ylabel=rel(1.2),size.axis=rel(1.2),size.subtitle=rel(3),size.title=rel(4),title="bla")
+plotIndiv(res,study=c(1:2),group=type.id,legend=T,legend.position="bottom",size.legend.title=rel(2),size.legend=rel(1.7),size.xlabel=rel(1.2),size.ylabel=rel(1.2),size.axis=rel(1.2),size.subtitle=rel(3),size.title=rel(4),title="bla")
 
-plotIndiv(res,study=c(1,2),group=type.id,add.legend=T,style="lattice")
+plotIndiv(res,study=c(1,2),group=type.id,legend=T,style="lattice")
 
-plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,add.legend=T,pch=14+as.numeric(factor(exp)))
+plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,legend=T,pch=14+as.numeric(factor(exp)))
 
 
 plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,subtitle=paste0("study:",letters[seq( from = 1, to = 5 )]))
 plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,subtitle=letters[seq( from = 1, to = 5 )],title="MINT")
-plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,subtitle=letters[seq( from = 1, to = 5 )],title="MINT",add.legend=TRUE)
+plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,subtitle=letters[seq( from = 1, to = 5 )],title="MINT",legend=TRUE)
 
-plotIndiv(res,study=c(1:2,"global"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",add.legend=TRUE,style="graphics")
-plotIndiv(res,study=c(1:2,"global"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",add.legend=TRUE,style="graphics",point.lwd=3)
+plotIndiv(res,study=c(1:2,"global"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",legend=TRUE,style="graphics")
+plotIndiv(res,study=c(1:2,"global"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",legend=TRUE,style="graphics",point.lwd=3)
 
-plotIndiv(res,study=c(1:2,"global"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",add.legend=TRUE,style="graphics",point.lwd=3,layout=c(1,3))
+plotIndiv(res,study=c(1:2,"global"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",legend=TRUE,style="graphics",point.lwd=3,layout=c(1,3))
 
 # not compiling in Rstudio cause window too small
-#plotIndiv(res,study=c(1:2,"global"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",add.legend=TRUE,style="graphics",point.lwd=3,layout=c(3,1))
+#plotIndiv(res,study=c(1:2,"global"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",legend=TRUE,style="graphics",point.lwd=3,layout=c(3,1))
 
 par(opar)
 
@@ -180,14 +180,14 @@ keepX.constraint=list(X=list(comp1=c(10,12))),keepY.constraint=list(Y=list(comp1
 
 
 res=block.spls(list(Y=data),Y=Y.mat,keepX=list(Y=c(10,5,15)),keepY=c(3,2),ncomp=3)# still working with two blocks Y
-res=block.spls(list(XX=data),Y=Y.mat,keepX=list(XX=c(1000,1000,1000)),keepY=c(3,3),ncomp=3)
+res=block.spls(list(XX=data),Y=Y.mat,keepX=list(XX=c(400,400,400)),keepY=c(3,3),ncomp=3)
 
 res=block.spls(list(X=data),Y=Y.mat,ncomp=3,keepX=list(c(100)),
-keepX.constraint=list(X=list(comp1=c("ENSG00000187243","ENSG00000175573"),comp2=c("ENSG00000133475"))),
+keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))),
 keepY=c(2),keepY.constraint=list(comp1=c(2,3),comp2=3))
 
 res=block.spls(list(block1=data),Y=Y.mat,ncomp=3,keepX=list(c(100)),
-keepX.constraint=list(block1=list(comp1=c("ENSG00000187243","ENSG00000175573"),comp2=c("ENSG00000133475"))),
+keepX.constraint=list(block1=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))),
 keepY=c(2),keepY.constraint=list(comp1=c(1),comp2=c(2)))
 
 
@@ -206,10 +206,10 @@ selectVar(res,block=2)
 res=block.splsda(X=list(X=data,Y=type.id),keepX=list(X=c(10,5)),indY=2,ncomp=c(3,2))
 res=block.splsda(X=list(X=data,Y=type.id),keepX=list(X=c(10,5)),indY=2,ncomp=c(2,2))
 res=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(c(100)),
-keepX.constraint=list(X=list(comp1=c("ENSG00000187243","ENSG00000175573"),comp2=c("ENSG00000133475"))))
+keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
 
 res=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(X=c(100)),
-keepX.constraint=list(X=list(comp1=c("ENSG00000187243","ENSG00000175573"),comp2=c("ENSG00000133475"))))
+keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
 
 
 res2=block.splsda(X=list(X2=data),Y=type.id,keepX=list(X2=c(10,5,10)),ncomp=3,mode="canonical")
@@ -351,7 +351,7 @@ sp1$iter;sp2$iter
 res=mixOmics(data,Y=Y.mat,ncomp=3,study=exp)
 
 #mint.spls
-res1=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000187243","ENSG00000175573")),keepX=c(100,50),ncomp=3)#with gene names in keepX.constraint
+res1=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000164930","ENSG00000044090")),keepX=c(100,50),ncomp=3)#with gene names in keepX.constraint
 res2=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c(120,179)),keepX=c(100,50),ncomp=3)#with numbers in keepX.constraint
 all.equal(res,res1)
 res=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c(120,179)),ncomp=3)#mint.spls missing keepX is completed by pls-like
@@ -361,8 +361,7 @@ res$keepX
 res=mixOmics(data,type.id,ncomp=3,study=exp)
 
 #mint.splsda
-res=mixOmics(X=data,Y=type.id,study=exp,keepX.constraint=list(c("ENSG00000187243","ENSG00000175573")),keepX=c(10,15),ncomp=3)
-
+res=mixOmics(X=data,Y=type.id,study=exp,keepX.constraint=list(c("ENSG00000164930","ENSG00000044090")),keepX=c(10,15),ncomp=3)
 
 
 

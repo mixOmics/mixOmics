@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 13-04-2016
+# last modified: 24-05-2016
 #
 # Copyright (C) 2015
 #
@@ -90,6 +90,7 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
     check = Check.entry.pls(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.constraint, mode=mode, scale=scale,
         near.zero.var=near.zero.var, max.iter=max.iter ,tol=tol ,logratio=logratio ,DA=DA, multilevel=multilevel)
     X = check$X
+    input.X = X # save the checked X, before logratio/multileve/scale
     Y = check$Y
     ncomp = check$ncomp
     mode = check$mode
@@ -163,11 +164,9 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
     
     if(!is.null(multilevel) & DA)
     result$Y.factor = Y.factor
+
+    result$input.X = input.X
     
-    if(!is.null(multilevel))
-    result$Xw = Xw
-
-
     class(result) = c("mint.spls.hybrid")
     return(invisible(result))
     

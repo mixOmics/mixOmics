@@ -5,6 +5,7 @@
 \alias{perf.spls}
 \alias{perf.plsda}
 \alias{perf.splsda}
+\alias{perf.mint.splsda}
 
 \title{Compute evaluation criteria for PLS, sPLS, PLS-DA and sPLS-DA}
 
@@ -24,26 +25,27 @@ PLS-DA and sparse PLS-DA models using various criteria.
 \method{perf}{plsda}(object,
           dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
           validation = c("Mfold", "loo"), 
-          folds = 10, progressBar = TRUE, measure = c("overall", "BER"),
-          near.zero.var = FALSE, \ldots)
+          folds = 10, progressBar = TRUE, \ldots)
 
 \method{perf}{splsda}(object, 
           dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
           validation = c("Mfold", "loo"),  
-          folds = 10, progressBar = TRUE, measure = c("overall", "BER"),
-          near.zero.var = FALSE, \ldots)
+          folds = 10, progressBar = TRUE, \ldots)
+
+\method{perf}{mint.splsda}(object,
+            dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
+            progressBar = TRUE, \ldots)
+
 }
 
 \arguments{
-  \item{object}{object of class inheriting from \code{"pls"}, \code{"plsda"}, 
+  \item{object}{object of class inheriting from \code{"pls"}, \code{"plsda"},
     \code{"spls"} or \code{"splsda"}. The function will retrieve some key parameters stored in that object.}
   \item{dist}{only applies to an object inheriting from \code{"plsda"} or \code{"splsda"} to evaluate the classification performance of the model. Should be a subset of \code{"max.dist"}, \code{"centroids.dist"}, \code{"mahalanobis.dist"}. Default is \code{"all"}. See \code{\link{predict}}.}
   \item{validation}{character.  What kind of (internal) validation to use, matching one of \code{"Mfold"} or 
     \code{"loo"} (see below). Default is \code{"Mfold"}.}
   \item{folds}{the folds in the Mfold cross-validation. See Details.}
   \item{progressBar}{by default set to \code{TRUE} to output the progress bar of the computation.}
-\item{measure}{Two misclassification measure are available: overall misclassification error \code{overall} or the Balanced Error Rate \code{BER}}
-\item{near.zero.var}{default is set to \code{FALSE)} in perf.plsda and perf.splsda. However, the nearZeroVar function is still applied by default on the whole data set at the start of the function. When set to \code{TRUE}, nearZeroVar is also applied on each cross-validation fold.}
 \item{...}{other arguments to pass to the s/PLS/DA functions.}
 }
 
@@ -64,7 +66,7 @@ using cross-validation.
 
 For the sparse approaches (sPLS and sLDA), note that the \code{perf} function will retrieve the \code{keepX} and \code{keepY} inputs from the previously run object. The sPLS or sPLS-DA functions will then be run again on several and different subsets of data (the cross-folds) and will certainly lead different subset of selected features. Those are summarised in the output \code{features$stable} (see output Value below) to assess how often the variables are selected on across all folds.
 
-For sPLS, the MSEP, \eqn{R^2}, and \eqn{Q^2} criteria are averaged across all folds. For sPLS-DA, the classification erro rate is averaged across all folds.
+For sPLS, the MSEP, \eqn{R^2}, and \eqn{Q^2} criteria are averaged across all folds. For sPLS-DA, the classification error rate is averaged across all folds.
 
 }
 

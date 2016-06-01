@@ -64,7 +64,7 @@ design <- data.frame(sample = vac18$sample,
 stimul = vac18$stimulation)
 
 # multilevel sPLS-DA model
-res.1level = splsda(X, ncomp = 3, multilevel = design,
+res.1level = splsda(X, Y = design[,2], ncomp = 3, multilevel = design[,1],
  keepX = c(30, 137, 123))
 
 
@@ -187,7 +187,7 @@ if(additional.test==TRUE)
     design <- data.frame(sample = vac18$sample,
     stimul = vac18$stimulation)
     
-    res.1level <- splsda(X, ncomp = 3, multilevel = design,
+    res.1level <- splsda(X, Y = design[,2], ncomp = 3, multilevel = design[,1],
         keepX = c(30, 137, 123))
     
     

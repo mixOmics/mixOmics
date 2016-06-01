@@ -12,7 +12,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 2009
-# last modified: 24-04-2016
+# last modified: 24-05-2016
 #
 # Copyright (C) 2009
 #
@@ -675,7 +675,7 @@ print.perf.plsda.mthd = function(x, ...)
     cat(" Error rate (overall or BER) for each component and for each distance: see object$error.rate \n")
     cat(" Error rate per class, for each component and for each distance: see object$error.rate.class \n")
     cat(" Prediction values for each component: see object$predict \n")
-    cat(" Prediction of the class of each sample, for each component and for each distance: see object$class \n")
+    cat(" Classification of each sample, for each component and for each distance: see object$class \n")
 }
 
 print.perf.splsda.mthd = function(x, ...)
@@ -686,10 +686,20 @@ print.perf.splsda.mthd = function(x, ...)
     cat(" Error rate (overall or BER) for each component and for each distance: see object$error.rate \n")
     cat(" Error rate per class, for each component and for each distance: see object$error.rate.class \n")
     cat(" Prediction values for each component: see object$predict \n")
-    cat(" Prediction of the class of each sample, for each component and for each distance: see object$class \n")
+    cat(" Classification of each sample, for each component and for each distance: see object$class \n")
     cat(" Stable features on each component: see object$features$stable \n")
 }
 
+print.perf.mint.splsda.mthd = function(x, ...)
+{
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    cat(" Study-specific error rate (overall, BER and error rate per class) for each component and for each distance: see object$study.specific.error \n")
+    cat(" Global error rate (overall, BER and error rate per class) for each component and for each distance: see object$global.error \n")
+    cat(" Prediction values for each component: see object$predict \n")
+    cat(" Classification of each sample, for each component and for each distance: see object$class \n")
+}
 
 # tune: "spls", "splsda", "mint.splsda", "rcc", "pca"
 print.tune.pca = function(x, ...)
@@ -723,7 +733,7 @@ print.tune.mint.splsda = function(x, ...)
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
     cat(" Main numerical outputs: \n",
     "-------------------- \n")
-    cat(" Optimal keepX.constraint for each component: see object$choice.keepX \n")
+    cat(" Optimal keepX.constraint for each component: see object$choice.keepX.constraint \n")
     cat(" Error rate for each tested keepX and for each component: see object$mat.mean.error \n")
     cat(" Error rate per class obtained with the optimal keepX.constraint, for each component: see object$error.rate.class \n\n")
     

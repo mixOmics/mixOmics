@@ -418,16 +418,7 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.co
         dimnames(X)[[2]] = X.names
     }
     
-    if (dim(Y)[2] == 1) Y.names = "Y"
-    if (dim(Y)[2] > 1)
-    {
-        Y.names = dimnames(Y)[[2]]
-        if (is.null(Y.names))
-        {
-            Y.names = paste("Y", 1:Q, sep = "")
-            dimnames(Y)[[2]]=Y.names
-        }
-    }
+
     
     ind.names = dimnames(X)[[1]]
     if (is.null(ind.names))
@@ -443,6 +434,21 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.co
     }
     
     rownames(X) = rownames(Y) = ind.names
+    
+    
+    #if (dim(Y)[2] == 1) Y.names = "Y"
+    Y.names = dimnames(Y)[[2]]
+    if (is.null(Y.names))
+    {
+        if (dim(Y)[2] == 1)
+        {
+            Y.names = "Y"
+        } else {
+            Y.names = paste("Y", 1:Q, sep = "")
+        }
+        
+        dimnames(Y)[[2]]=Y.names
+    }
     
     if (length(unique(X.names)) != P)
     stop("Unique indentifier is needed for the columns of X")
@@ -730,13 +736,16 @@ verbose)
         if (missing(design))
         {
             design = 1 - diag(length(A)+1)
+            rownames(design) = colnames(design) = c(names(A), "Y")
         } else if (ncol(design) != nrow(design) || ncol(design) < length(X) || ncol(design) > (length(X) + 1) || any(!design %in% c(0,1))) {
             stop(paste0("'design' must be a square matrix with ", length(X), "columns."))
         } else if (ncol(design) == length(X)) {
-            message("Design matrix has changed to include Y as a block")
+            message("Design matrix has changed to include Y; each block will be linked to Y.")
             design = rbind(cbind(design, 1), 1)
             diag(design) = 0
+            rownames(design) = colnames(design) = c(names(A), "Y")
         }
+        rownames(design) = colnames(design) = c(names(A), "Y")
         ### End check design matrix
 
         # build the list A by adding Y, and creating indY
@@ -767,6 +776,7 @@ verbose)
         {
             stop(paste0("'design' must be a square matrix with ", length(A), "columns."))
         }
+        rownames(design) = colnames(design) = names(A)
         ### End check design matrix
         
         # check indY

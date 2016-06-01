@@ -326,9 +326,7 @@ point.lwd = 1,
     df.final$Block = factor(df.final$Block, labels = subtitle)
 
     df = df.final
-    
-    save(list=ls(),file="temp.Rdata")
-    
+        
     if (style == "ggplot2")
     style = "ggplot2-MINT"
 

@@ -5,7 +5,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 2015
-# last modified: 11-04-2016
+# last modified: 24-05-2016
 #
 # Copyright (C) 2015
 #
@@ -166,7 +166,12 @@ class.object = NULL
                 stop("Invalid number of folds.")
             } else {
                 M = round(folds)
-                folds = stratified.subsampling(Y, folds = M)#split(sample(1:n), rep(1:M, length = n))
+                if (is.null(multilevel))
+                {
+                    folds = stratified.subsampling(Y, folds = M)
+                } else {
+                    folds = split(sample(1:n), rep(1:M, length = n)) # needs to have all repeated samples in the same fold
+                }
             }
         } else if (validation ==  "loo") {
             folds = split(1:n, rep(1:n, length = n))
@@ -212,19 +217,14 @@ class.object = NULL
             
             #---------------------------------------------------------------------------#
             #-- multilevel approach ----------------------------------------------------#
-            
-            if (!is.null(multilevel) & logratio != "none") # if no logratio, we can do multilevel on the whole data; otherwise it needs to be done after each logratio inside the CV
+
+            # if no logratio, we can do multilevel on the whole data; otherwise it needs to be done here (after each logratio inside the CV)
+            if (!is.null(multilevel) & logratio != "none")
             {
-                Xw = suppressMessages(withinVariation(X, design = multilevel))
+                Xw = suppressMessages(withinVariation(X = rbind(X.train, X.test), design = rbind(multilevel[-omit, ], multilevel[omit, ])))
 
-                X.train = X[-omit, ]
-                X.test = X[omit, , drop = FALSE]
-                
-                #Xw = withinVariation(X.train, design = multilevel[-omit,])
-                #X.train = Xw
-
-                #Xw = withinVariation(X.test, design = multilevel[omit,])
-                #X.test = Xw
+                X.train = Xw[-omit, ]
+                X.test = Xw[omit, , drop = FALSE]
             }
             #-- multilevel approach ----------------------------------------------------#
             #---------------------------------------------------------------------------#

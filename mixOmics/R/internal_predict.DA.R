@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 24-05-2015
-# last modified: 12-04-2016
+# last modified: 27-05-2016
 #
 # Copyright (C) 2016
 #
@@ -157,7 +157,7 @@ internal_predict.DA = function(object, out, q, method)
     
     out.DA$class = cls
     
-    if (length(grep("block",class(object)))!=0 ) # a block
+    if (length(grep("block",class(object)))!=0 & J>1) # a block
     {
         out.DA$centroids = G
     }else{ #not a block
