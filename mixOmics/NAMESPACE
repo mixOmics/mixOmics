@@ -11,20 +11,23 @@ importFrom("graphics", "abline", "arrows", "axis", "barplot", "box",
              "image", "layout", "legend", "lines", "locator", "mtext",
              "par", "plot", "plot.default", "points", "polygon", "rect",
              "segments", "strheight", "strwidth", "symbols", "text",
-             "title")
+             "title","Axis","boxplot","rasterImage")
 
 importFrom("stats", "as.dendrogram", "as.dist", "coefficients", "cor",
              "cov", "dist", "hclust", "lm", "lsfit", "median", "na.omit",
-             "order.dendrogram", "predict", "quantile", "reorder", "var")
+             "order.dendrogram", "predict", "quantile", "reorder", "var","sd")
 
-importFrom("utils", "setTxtProgressBar", "txtProgressBar","packageDescription")
+importFrom("utils", "setTxtProgressBar", "txtProgressBar","packageDescription","relist")
 
 importFrom("ellipse","ellipse")
+
+importFrom("grDevices","rainbow")
+
+importFrom("methods", "hasArg")
 
 importFrom("dplyr","group_by")
 
 importFrom("tidyr","gather")
-
 
 importFrom("reshape2","melt","dcast")
 
@@ -45,7 +48,6 @@ image.tune.rcc,
 imgCor,
 ipca,
 logratio.transfo,
-l2.norm,
 map,
 mat.rank, 
 mint.block.pls,
@@ -167,6 +169,7 @@ S3method(print, perf.pls.mthd)
 S3method(print, perf.spls.mthd)
 S3method(print, perf.plsda.mthd)
 S3method(print, perf.splsda.mthd)
+S3method(print, perf.sgccda.mthd)
 S3method(print, perf.mint.splsda.mthd)
 
 S3method(print, rcc)
