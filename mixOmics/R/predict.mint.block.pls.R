@@ -39,14 +39,14 @@
 
 predict.block.pls <-predict.block.spls <-
 predict.pls <-predict.spls <-
-function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),  ...)
+function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),  ...)
 {
     
     if(any(class(object)%in%c("rgcca","sparse.rgcca")))
     stop("no prediction for RGCCA methods")
     
-    #check on method
-    if (!any(method %in% c("all", "max.dist", "centroids.dist", "mahalanobis.dist")) & length(grep("plsda",class(object)))>0)
+    #check on dist
+    if (!any(dist %in% c("all", "max.dist", "centroids.dist", "mahalanobis.dist")) & length(grep("plsda",class(object)))>0)
     stop("ERROR : choose one of the four following modes: 'all', 'max.dist', 'centroids.dist' or 'mahalanobis.dist'")
     #end general checks
     
@@ -440,7 +440,7 @@ function(object, newdata,study.test,method = c("all", "max.dist", "centroids.dis
         object.temp = object
         object.temp$X = object.temp$X[which(!is.na(ind.match))]
         object.temp$variates = object.temp$variates[c(which(!is.na(ind.match)),J+1)] #J+1 is Y
-        classif.DA=internal_predict.DA(object=object.temp,q=q,out=out.temp,method=method)
+        classif.DA=internal_predict.DA(object=object.temp,q=q,out=out.temp,dist=dist)
         out=c(out,classif.DA)
         
     }

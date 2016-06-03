@@ -45,7 +45,7 @@ font,
 cutoff = 0,
 rad.in = 0.5,
 title = "Correlation Circle Plots",
-add.legend = FALSE,
+legend = FALSE,
 style="ggplot2", # can choose between graphics,3d, lattice or ggplot2,
 overlap = TRUE,
 axes.box = "all",
@@ -190,9 +190,9 @@ label.axes.box = "both"  )
         stop("'abline' must be logical.", call. = FALSE)
     }
     
-    #-- add.legend
-    if (length(add.legend) != 1 || !is.logical(add.legend))
-    stop("'add.legend' must be a logical value.", call. = FALSE)
+    #-- legend
+    if (length(legend) != 1 || !is.logical(legend))
+    stop("'legend' must be a logical value.", call. = FALSE)
     
     #-- Start: Retrieve variates from object
     cord.X = sample.X = ind.var.sel = list()
@@ -605,7 +605,7 @@ label.axes.box = "both"  )
             p = xyplot(y ~ x | Block, data = df, xlab = X.label, ylab = Y.label, main = title,
             scales = list(x = list(relation = "free", limits = c(-1, 1)),
             y = list(relation = "free", limits = c(-1, 1))),
-            key=if (add.legend) {legend} else {NULL},
+            key=if (legend) {legend} else {NULL},
             panel = function(x, y, ...) {
                 
                 #-- Abline
@@ -646,7 +646,7 @@ label.axes.box = "both"  )
             scales = list(x = list(relation = "free", limits = c(-1, 1)),
             y = list(relation = "free", limits = c(-1, 1))),
             col = "white",
-            key=if (add.legend) {legend} else {NULL},
+            key=if (legend) {legend} else {NULL},
             )
             print(p)
             
@@ -690,7 +690,7 @@ label.axes.box = "both"  )
         if (overlap)
         {
             
-            if(add.legend){
+            if(legend){
                 opar = par(no.readonly = TRUE)
                 par(mai=c( 1.360000, 1.093333, 1.093333,max(strwidth("Legend","inches"),max(strwidth(blocks,"inches"))+0.3)+0.2),xpd=TRUE)
             }
@@ -715,8 +715,8 @@ label.axes.box = "both"  )
                 }
             }
             
-            #-- add.legend
-            if (add.legend)
+            #-- legend
+            if (legend)
             legend(x = 1.09, y=0.2,
             legend = blocks,
             title="Legend",
@@ -736,13 +736,13 @@ label.axes.box = "both"  )
             
             title(title)#, outer = TRUE, line = -1)
             
-            if (add.legend) par(opar)
+            if (legend) par(opar)
             
         } else {
             opar <- par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din", "page")]
             #-- Define layout
             mat = matrix(1 : (ceiling(length(cord.X)/2) * 2), ceiling(length(cord.X)/2), min(length(cord.X), 2), byrow = TRUE)
-            if (add.legend){
+            if (legend){
                 mat = matrix(rep(mat,each=2),nrow=nrow(mat),byrow=T)
                 mat = cbind(mat,rep(max(mat) + 1, nrow(mat)))
             }
@@ -788,7 +788,7 @@ label.axes.box = "both"  )
                     plot(1,1, type = "n", axes = FALSE, ann = FALSE)
                 }
             }
-            if (add.legend)
+            if (legend)
             legend("center",
             legend = blocks,
             title="Legend",
@@ -824,7 +824,7 @@ label.axes.box = "both"  )
         
         
         
-        if (add.legend) {
+        if (legend) {
             legend3d(x="right",
             legend = blocks,
             col = unique(col),

@@ -701,6 +701,19 @@ print.perf.mint.splsda.mthd = function(x, ...)
     cat(" Classification of each sample, for each component and for each distance: see object$class \n")
 }
 
+print.perf.sgccda.mthd = function(x, ...)
+{
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    cat(" Error rate (overall or BER) for each component and for each distance: see object$error.rate \n")
+    cat(" Error rate per class, for each component and for each distance: see object$error.rate.class \n")
+    cat(" Prediction values for each component: see object$predict \n")
+    cat(" Classification of each sample, for each component and for each distance: see object$class \n")
+    cat(" Stable features on each component: see object$features$stable \n")
+}
+
+
 # tune: "spls", "splsda", "mint.splsda", "rcc", "pca"
 print.tune.pca = function(x, ...)
 {

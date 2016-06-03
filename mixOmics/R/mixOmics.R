@@ -96,7 +96,7 @@ near.zero.var = FALSE)
                         if (missing(scale))
                         scale = FALSE
                         
-                        message("a block Partial Least Squares - Discriminant Analysis is being performed (block PLS-DA)")
+                        message("a block Partial Least Squares - Discriminant Analysis is being performed (block.PLS-DA)")
                         res = block.plsda(X = X, Y = Y, indY = indY, ncomp = ncomp,design = design,scheme = scheme,
                         mode = mode,scale = scale,bias = bias,init = init,tol = tol,verbose = verbose,max.iter = max.iter,near.zero.var = near.zero.var)
                         
@@ -144,7 +144,7 @@ near.zero.var = FALSE)
                         if (missing(scale))
                         scale = FALSE
                         
-                        message("a block Partial Least Squares is being performed (block PLS)")
+                        message("a block Partial Least Squares is being performed (block.PLS)")
                         res = block.pls(X = X, Y = Y, indY = indY, ncomp = ncomp,design = design,scheme = scheme,
                         mode = mode,scale = scale,bias = bias,init = init,tol = tol,verbose = verbose,max.iter = max.iter,near.zero.var = near.zero.var)
                         
