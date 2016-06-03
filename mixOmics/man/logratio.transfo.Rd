@@ -14,13 +14,25 @@ logratio.transfo(X, logratio = "none")
 
 \arguments{
 \item{X}{numeric matrix of predictors}
-\item{logratio}{log-ratio transform to applied, one of "none", "CLR" or "ILR"}
+\item{logratio}{log-ratio transform to apply, one of "none", "CLR" or "ILR"}
 
 }
 
 \details{
 
-\code{logratio.transfo} applies a log transformation to the data, either CLR or ILR.
+\code{logratio.transfo} applies a log transformation to the data, either CLR (centered log ratio transformation) or ILR (Isometric Log Ratio transformation).
+}
+
+\references{
+Kim-Anh Le Cao, Mary-Ellen Costello, Vanessa Anne Lakis, Francois Bartolo, Xin-Yi Chua, Remi Brazeilles, Pascale Rondeau
+mixMC: a multivariate statistical framework to gain insight into Microbial Communities
+bioRxiv 044206; doi: http://dx.doi.org/10.1101/044206
+
+John Aitchison. The statistical analysis of compositional data. Journal of the Royal Statistical Society.
+Series B (Methodological), pages 139–177, 1982.
+
+Peter Filzmoser, Karel Hron, and Clemens Reimann. Principal component analysis for
+compositional data with outliers. Environmetrics, 20(6):621–632, 2009.
 }
 
 \value{

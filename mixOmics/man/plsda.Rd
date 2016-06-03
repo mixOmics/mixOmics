@@ -43,6 +43,8 @@ indicates the repeated measures on each individual, i.e. the individuals ID. If 
 \code{plsda} function fit PLS models with \eqn{1,...,}\code{ncomp} components
 to the factor or class vector \code{Y}. The appropriate indicator 
 matrix is created.
+
+logratio transform and multilevel analysis are performed sequentially as internal pre-processing step, through \code{\link{logratio.transfo}} and \code{\link{withinVariation}} respectively.
 }
 
 \value{

@@ -3,7 +3,7 @@
 \alias{tune}
 
 
-\title{Overall tuning function that can be used to tune several functions}
+\title{Overall tuning function that can be used to tune several methods}
 
 \description{
 Wrapper of all the tuning functions.
@@ -84,22 +84,7 @@ columns of \code{X} can be supplied. The value is passed to \code{\link{scale}}.
 }
 
 \details{
-This tuning function should be used to tune the parameters in the \code{multilevel} function.
-
-For a sPLS-DA one-factor analysis, M-fold cross-validation is performed, internally the training data is decomposed into within-subject variation.
-
-For a sPLS-DA two-factor analysis, the correlation between components from the within-subject variation of X and the \code{cond} matrix is computed on the whole data set. The reason why we cannot obtain a corss-validation error rate as for the spls-DA one-factor analysis is because of the dififculty to decompose and predict the within matrices within each fold.
-
-For a sPLS two-factor analysis a sPLS canonical mode is run, and the correlation between components from the within-subject variation of X and Y is computed on the whole data set.
-
-If \code{validation = "Mfold"}, M-fold cross-validation is performed. 
-How many folds to generate is selected by specifying the number of folds in \code{folds}.
-The folds also can be supplied as a list of vectors containing the indexes defining each 
-fold as produced by \code{split}.
-
-If \code{validation = "loo"}, leave-one-out cross-validation is performed. By default \code{folds} is set to the number of unique individuals.
-
-
+For more details, please see the help file corresponding to your method
 }
 
 \value{
@@ -113,7 +98,9 @@ Depending on the type of analysis performed, a list that contains:
 
 \author{Kim-Anh Le Cao, Benoit Gautier, Francois Bartolo, Florian Rohart.}
 
-\seealso{\code{\link{splsda}} and http://www.mixOmics.org for more details.}
+\seealso{\code{\link{tune.rcc}}, \code{\link{tune.mint.splsda}},
+\code{\link{tune.pca}}, \code{\link{tune.multilevel}},
+\code{\link{tune.splsda}}, \code{\link{tune.splsdalevel}} and http://www.mixOmics.org for more details.}
 
 \examples{
 ## sPLS-DA

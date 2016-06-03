@@ -2,12 +2,11 @@
 \encoding{latin1}
 \alias{tune.mint.splsda}
 
-\title{Estimate the parameters of regularization for Regularized CCA}
+\title{Estimate the parameters of mint.splsda method}
 
 \description{
-Computes leave-one-out or M-fold cross-validation scores on a two-dimensional 
-grid to determine optimal values for the parameters of regularization in 
-\code{rcc}.
+Computes Leave-One-Group-Out-Cross-Validation (LOGOCV) scores on a user-input
+grid to determine optimal values for the sparsity parameters in \code{mint.splsda}.
 }
 
 \usage{
@@ -37,9 +36,9 @@ to zero means and unit variances (default: TRUE)}
 
 \details{
 This function performs a Leave-One-Group-Out-Cross-Validation (LOGOCV), where each of \code{study} is left out once. It returns a list of variables of \code{X} that were selected on each of the \code{ncomp} components.
-Then, a \code{\link{mint.splsda}} can be performed with \code{keepX.constraint} set as the output \code{choice.keepX}.
+Then, a \code{\link{mint.splsda}} can be performed with \code{keepX.constraint} set as the output \code{choice.keepX.constraint}.
 
-All component \eqn{1:\code{ncomp}} are tuned, except the first one for which a \code{already.test.X} is provided. See examples below.
+All component \eqn{1:\code{ncomp}} are tuned, except the first ones for which a \code{already.tested.X} is provided. See examples below.
 
 
 }
@@ -47,7 +46,7 @@ All component \eqn{1:\code{ncomp}} are tuned, except the first one for which a \
 \value{
 The returned value is a list with components: 
 \item{mat.mean.error,}{returns the prediction error for each \code{test.keepX} on each component}
-\item{choice.keepX}{returns the variables selected with the optimal keepX on each component.}
+\item{choice.keepX.constraint}{returns the variables selected by the optimal keepX on each component.}
 \item{error.per.class}{returns the classification accuracy for each level of \code{Y} and for each component computed with the optimal keepX}
 
   \item{predict}{Prediction values for each sample, each \code{test.keepX} and each comp.}
@@ -68,7 +67,14 @@ res = mint.splsda(X=data,Y=type.id,ncomp=3,keepX=c(10,5,15),study=exp)
 \dontrun{
 out = tune.mint.splsda(X=data,Y=type.id,ncomp=2,near.zero.var=FALSE,
     study=exp,test.keepX=seq(1,10,1))
-out$choice.keepX
+out$choice.keepX.constraint
+
+## only tune component 2 and keeping "ENSG00000159199" "ENSG00000106012" "ENSG00000129317" on the first component
+out = tune.mint.splsda(X=data,Y=type.id,ncomp=2,
+    study=exp,already.tested.X = list(comp1 = c("ENSG00000159199", "ENSG00000106012", "ENSG00000129317")),
+    test.keepX=seq(1,10,1))
+out$choice.keepX.constraint
+
 }
 
 }

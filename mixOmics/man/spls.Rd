@@ -64,6 +64,8 @@ The estimation of the missing values can be performed
 by the reconstitution of the data matrix using the \code{nipals} function. Otherwise, missing 
 values are handled by casewise deletion in the \code{spls} function without having to 
 delete the rows with missing data.
+
+logratio transform and multilevel analysis are performed sequentially as internal pre-processing step, through \code{\link{logratio.transfo}} and \code{\link{withinVariation}} respectively.
 }
 
 \value{

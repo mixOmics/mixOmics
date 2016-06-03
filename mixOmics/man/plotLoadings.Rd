@@ -87,7 +87,7 @@ The contribution of each variable for each component (depending on the object) i
 For discriminant analysis, the color corresponds to the group in which the feature is most 'abundant'.  Note that this type of graphical output is particularly insightful for count microbial data - in that latter case using the \code{method = 'median'} is advised.
 Note also that if the parameter \code{contrib} is not provided, plots are white.
 
-For MINT analysis, \code{study="global"} plots the global loadings while partial loadings are plotted when \code{study} is a level of \code{object$study}. Importantly, the legend accounts for one subplot in the layout design.
+For MINT analysis, \code{study="global"} plots the global loadings while partial loadings are plotted when \code{study} is a level of \code{object$study}. Importantly for multi plots, the legend accounts for one subplot in the layout design.
 }
 
 \author{Kim-Anh Le Cao, Benoit Gautier, Florian Rohart, Francois Bartolo}

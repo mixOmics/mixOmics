@@ -35,10 +35,11 @@ size.labels = 1)
 
 
 \references{
-?
+Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
+DIABLO - multi omics integration for biomarker discovery.
 }
 
-\author{Amrith Singh}
+\author{Amrit Singh}
 
 \seealso{\code{\link{block.splsda}} and http://www.mixOmics.org for more details.}
 

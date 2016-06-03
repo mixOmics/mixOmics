@@ -5,7 +5,7 @@
 \title{Calculation of explained variance}
 
 \description{
-This function calculate the variance explained by some variates out of total variance of the data.
+This function calculates the variance explained by variates.
 }
 
 \usage{
