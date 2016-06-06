@@ -130,7 +130,7 @@ splotMatPlot = function(x, y, datNames, Y, ptype, groupOrder)
     if(names(ptype) == "bar")
     {
         Y2 = factor(as.character(Y), levels = groupOrder)
-        boxplot(x ~ Y2, horizontal=TRUE, axes = TRUE, ylim = c(min(x)-3, max(x)),
+        boxplot(x ~ Y2, horizontal=TRUE, axes = FALSE, ylim = c(min(x)-3, max(x)),
         col= color.mixo(match(levels(Y2), levels(Y))))
         axis(4, at=1:nlevels(Y2), labels=levels(Y2))
     }
