@@ -37,7 +37,7 @@
 
 # note FR: 27/05/16: the way I dealt with missing block to predict will probably not work for mint.block analysis
 
-predict.block.pls <-predict.block.spls <-
+predict.block.pls <-predict.block.spls <- predict.mint.splsda <-
 predict.pls <-predict.spls <-
 function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),  ...)
 {

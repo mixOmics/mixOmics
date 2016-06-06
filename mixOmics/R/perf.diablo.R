@@ -34,7 +34,7 @@
 
 perf.sgccda = function (object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
-validation = c("Mfold"),
+validation = c("Mfold", "loo"),
 folds = 10,
 cpus = 1,
 ...)

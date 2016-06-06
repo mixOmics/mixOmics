@@ -264,8 +264,9 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             }
             
         } # end comp
-        names(mat.error.rate)=c(paste('comp', comp.real))
-        names(error.per.class.keepX.opt)=c(paste('comp', comp.real))
+        names(mat.error.rate) = c(paste('comp', comp.real))
+        names(error.per.class.keepX.opt) = c(paste('comp', comp.real))
+        names(already.tested.X) = c(paste('comp', 1:ncomp))
         
         if (progressBar == TRUE)
         cat('\n')
