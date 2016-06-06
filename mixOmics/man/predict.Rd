@@ -31,7 +31,7 @@ dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), \ldots)
 \arguments{
   \item{object}{object of class inheriting from \code{"(mint).(block).(s)pls(da)"}.}
   \item{newdata}{data matrix in which to look for for explanatory variables to be used for prediction.}
-\item{study.test}{grouping factor indicating which samples of \code{newdata} are from the same study. Overlap with \code{object$study} are allowed.}
+\item{study.test}{For MINT objects, grouping factor indicating which samples of \code{newdata} are from the same study. Overlap with \code{object$study} are allowed.}
   \item{dist}{distance to be applied for discriminant methods to predict the class of new data,
     should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \code{"max.dist"} (see Details). 
 	Defaults to \code{"all"}.}
@@ -39,7 +39,7 @@ dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), \ldots)
 }
 
 \details{
-\code{predict} produces predicted values, obtained by evaluating the PLS -derived methods, returned by \code{(mint).(block).(s)pls(da)} in the frame \code{newdata}.
+\code{predict} produces predicted values, obtained by evaluating the PLS-derived methods, returned by \code{(mint).(block).(s)pls(da)} in the frame \code{newdata}.
 Variates for \code{newdata} are also returned.
 
 Different class prediction methods are proposed for discriminant analysis: \code{"max.dist"}
@@ -51,6 +51,9 @@ the classes calculated on the \eqn{X}-variates of the model. \code{"mahalanobis.
 \eqn{x} to the class of \eqn{Y} as in \code{"centroids.dist"} but by using the Mahalanobis metric 
 in the calculation of the distance.
 
+For MINT objects, the \code{study.test} argument is required and provides the grouping factor of \code{newdata}.
+
+For block objects, \code{newdata} is a list of matrices whose names are a subset of \code{names(object$X)}, i.e. missing blocks are allowed. Prediction is made for each block indepedently and a majority vote is performed to combine all blocks, where NA means that there is no consensus among the block.
 
 }
 
@@ -152,6 +155,27 @@ res.train = block.splsda(X=list(gene=gene.train,lipid=lipid.train),Y=Y.train,
 ncomp=c(3,3),keepX=list(gene=c(10,10,10),lipid=c(5,5,5)))
 test.predict = predict(res.train, newdata=data.test[2], method = "max.dist")
 
+
+## example with mint.splsda
+data(stemcells)
+
+#training set
+ind.test = which(stemcells$study == "5")
+gene.train = stemcells$gene[-ind.test,]
+Y.train = stemcells$celltype[-ind.test]
+study.train = factor(stemcells$study[-ind.test])
+
+#test set
+gene.test = stemcells$gene[ind.test,]
+Y.test = stemcells$celltype[ind.test]
+study.test = factor(stemcells$study[ind.test])
+
+res = mint.splsda(X = gene.train, Y = Y.train, ncomp = 3, keepX = c(10, 5, 15),
+study = study.train)
+
+pred = predict(res, newdata = gene.test, study.test = study.test)
+
+data.frame(Truth = Y.test, prediction = pred$class$max.dist)
 
 }
 }
