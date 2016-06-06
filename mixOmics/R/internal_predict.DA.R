@@ -31,7 +31,7 @@
 #out
 #object$X
 #class(objet)
-#method
+#dist
 #variatesX
 #ncomp
 #Y.hat
@@ -40,7 +40,7 @@
 #Y
 
 
-internal_predict.DA = function(object, out, q, method)
+internal_predict.DA = function(object, out, q, dist)
 {
     
     if (length(grep("plsda",class(object)))==0) # a DA analysis (mint).(block).(s)plsda
@@ -71,7 +71,7 @@ internal_predict.DA = function(object, out, q, method)
     names(G)=names(object$X)
     
     ### Start: Maximum distance
-    if (any(method == "all") || any(method == "max.dist"))
+    if (any(dist == "all") || any(dist == "max.dist"))
     {
         cls$max.dist = lapply(1:J, function(x){matrix(sapply(1:ncomp[x], ### List level
             function(y){apply(Y.hat[[x]][, , y, drop = FALSE], 1,  ### component level
@@ -87,7 +87,7 @@ internal_predict.DA = function(object, out, q, method)
     
     
     ### Start: Centroids distance
-    if (any(method == "all") || any(method == "centroids.dist"))
+    if (any(dist == "all") || any(dist == "centroids.dist"))
     {
         cl = list()
         centroids.fun = function(x, G, h, i) {
@@ -121,7 +121,7 @@ internal_predict.DA = function(object, out, q, method)
     
     
     ### Start: Mahalanobis distance
-    if (any(method == "all") || any(method == "mahalanobis.dist"))
+    if (any(dist == "all") || any(dist == "mahalanobis.dist"))
     {
         cl = list()
         Sr.fun = function(x, G, Yprim, h, i) {
@@ -164,17 +164,17 @@ internal_predict.DA = function(object, out, q, method)
         out.DA$centroids = G[[1]]
         out.DA$class = lapply(out.DA$class,function(x){x[[1]]})
     }
-    if (any(method == "all"))
-    method = "all"
+    if (any(dist == "all"))
+    dist = "all"
     
-    out.DA$method = method
+    out.DA$dist = dist
     ### End if discriminant analysis is performed
     
     # at this stage, we have the classification of each sample for each dataset of object$X
     # now we need to combine the classification by vote (majority wins), only when more than one block, otherwise 'vote' is classic classification
     if (length(object$X)>1)
     {
-        for (ijk in 1:length(out.DA$class))# loop on the method
+        for (ijk in 1:length(out.DA$class))# loop on the dist
         {
             # create a temporary array to make computation on the lists easier
             temp=array(, c(nrow(newdata[[1]]), min(ncomp), J))

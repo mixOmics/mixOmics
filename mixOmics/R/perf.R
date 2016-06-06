@@ -420,7 +420,6 @@ progressBar = TRUE,
     # if no logratio, we can do multilevel on the whole data; otherwise it needs to be done after each logratio inside the CV
     if (!is.null(multilevel) & logratio == "none")
     {
-        
         Xw = withinVariation(X, design = multilevel)
         X = Xw
     }

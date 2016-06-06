@@ -16,34 +16,33 @@
 \alias{predict.mint.block.splsda}
 
 
-\title{Predict Method for PLS, sPLS, PLS-DA or sPLS-DA}
+\title{Predict Method for (mint).(block).(s)pls(da) methods}
 
 \description{
-Predicted values based on PLS, sparse PLS, PLS-DA or sparse PLS-DA models. New responses and 
+Predicted values based on PLS models. New responses and
 variates are predicted using a fitted model and a new matrix of observations.
 }
 
 \usage{
-\method{predict}{pls}(object, newdata,study.test,
-method = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), \ldots)
+\method{predict}{mint.splsda}(object, newdata, study.test,
+dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), \ldots)
 }
 
 \arguments{
-  \item{object}{object of class inheriting from \code{"pls"}, \code{"spls"}, \code{"plsda"} or \code{"splsda"}.}
+  \item{object}{object of class inheriting from \code{"(mint).(block).(s)pls(da)"}.}
   \item{newdata}{data matrix in which to look for for explanatory variables to be used for prediction.}
 \item{study.test}{grouping factor indicating which samples of \code{newdata} are from the same study. Overlap with \code{object$study} are allowed.}
-  \item{method}{method to be applied for discriminant methods to predict the class of new data,
+  \item{dist}{distance to be applied for discriminant methods to predict the class of new data,
     should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \code{"max.dist"} (see Details). 
 	Defaults to \code{"all"}.}
   \item{...}{not used currently.}
 }
 
 \details{
-\code{predict} produces predicted values, obtained by evaluating the PLS, sparse PLS, PLSDA or sparse PLSDA  
-model returned by \code{pls}, \code{spls}, \code{plsda} or \code{splsda} in the frame \code{newdata}. 
-Variates for \code{newdata} are also returned. The prediction values are calculated based on the regression coefficients of \code{object$Y} onto \code{object$variates$X}.
+\code{predict} produces predicted values, obtained by evaluating the PLS -derived methods, returned by \code{(mint).(block).(s)pls(da)} in the frame \code{newdata}.
+Variates for \code{newdata} are also returned.
 
-Different class prediction methods are proposed for \code{plsda} or \code{splsda}: \code{"max.dist"} 
+Different class prediction methods are proposed for discriminant analysis: \code{"max.dist"}
 is the naive method to predict the class. It is based on the predicted matrix (\code{object$predict}) 
 which can be seen as a probability matrix to assign each test data to a class. The class with the largest 
 class value is the predicted class. \code{"centroids.dist"} allocates the individual \eqn{x} to the class of 
@@ -51,16 +50,17 @@ class value is the predicted class. \code{"centroids.dist"} allocates the indivi
 the classes calculated on the \eqn{X}-variates of the model. \code{"mahalanobis.dist"} allocates the individual 
 \eqn{x} to the class of \eqn{Y} as in \code{"centroids.dist"} but by using the Mahalanobis metric 
 in the calculation of the distance.
+
+
 }
 
 \value{
 \code{predict} produces a list with the following components: 
-  \item{predict}{a three dimensional array of predicted response values. The dimensions 
+  \item{predict}{predicted response values. The dimensions
 	correspond to the observations, the response variables and the model dimension, respectively.}
   \item{variates}{matrix of predicted variates.}
   \item{B.hat}{matrix of regression coefficients (without the intercept).}
-  \item{class}{vector or matrix of predicted class by using \eqn{1,...,}\code{ncomp} 
-    (sparse)PLS-DA components.}
+\item{class}{predicted class of \code{newdata} for each \eqn{1,...,}\code{ncomp} components.}
   \item{centroids}{matrix of coordinates for centroids.}
 }
 
@@ -68,10 +68,14 @@ in the calculation of the distance.
 Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.  
 }
 
-\author{Sebastien Dejean, Ignacio Gonzalez, Kim-Anh Le Cao and Pierre Monget}
+\author{Florian Rohart, Sebastien Dejean, Ignacio Gonzalez, Kim-Anh Le Cao, Pierre Monget}
 
 
-\seealso{\code{\link{pls}}, \code{\link{spls}}, \code{\link{plsda}}, \code{\link{splsda}} and http://www.mixOmics.org for more details.}
+\seealso{\code{\link{pls}}, \code{\link{spls}}, \code{\link{plsda}}, \code{\link{splsda}},
+\code{\link{mint.pls}}, \code{\link{mint.spls}}, \code{\link{mint.plsda}}, \code{\link{mint.splsda}},
+\code{\link{block.pls}}, \code{\link{block.spls}}, \code{\link{block.plsda}}, \code{\link{block.splsda}},
+\code{\link{mint.block.pls}}, \code{\link{mint.block.spls}}, \code{\link{mint.block.plsda}}, \code{\link{mint.block.splsda}}
+and http://www.mixOmics.org for more details.}
 
 \examples{
 data(linnerud)
@@ -103,16 +107,52 @@ test <- which(samp == 1)   # testing on the first fold
 train <- setdiff(1:nrow(X), test)
 
 plsda.train <- plsda(X[train, ], Y[train], ncomp = 2)
-test.predict <- predict(plsda.train, X[test, ], method = "max.dist")
+test.predict <- predict(plsda.train, X[test, ], dist = "max.dist")
 Prediction <- levels(Y)[test.predict$class$max.dist[, 2]]
 cbind(Y = as.character(Y[test]), Prediction)
 
 \dontrun{
 ## Second example with splsda
 splsda.train <- splsda(X[train, ], Y[train], ncomp = 2, keepX = c(30, 30))
-test.predict <- predict(splsda.train, X[test, ], method = "max.dist")
+test.predict <- predict(splsda.train, X[test, ], dist = "max.dist")
 Prediction <- levels(Y)[test.predict$class$max.dist[, 2]]
 cbind(Y = as.character(Y[test]), Prediction)
+
+
+## example with block.splsda=diablo=sgccda and a missing block
+data(nutrimouse)
+# need to unmap Y for an unsupervised analysis, where Y is included as a data block in data
+Y.mat = unmap(nutrimouse$diet)
+data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y.mat)
+# with this design, all blocks are connected
+design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3,
+byrow = TRUE, dimnames = list(names(data), names(data)))
+
+# train on 75% of the data
+ind.train=NULL
+for(i in 1:nlevels(nutrimouse$diet))
+ind.train=c(ind.train,which(nutrimouse$diet==levels(nutrimouse$diet)[i])[1:6])
+
+#training set
+gene.train=nutrimouse$gene[ind.train,]
+lipid.train=nutrimouse$lipid[ind.train,]
+Y.mat.train=Y.mat[ind.train,]
+Y.train=nutrimouse$diet[ind.train]
+data.train=list(gene=gene.train,lipid=lipid.train,Y=Y.mat.train)
+
+#test set
+gene.test=nutrimouse$gene[-ind.train,]
+lipid.test=nutrimouse$lipid[-ind.train,]
+Y.mat.test=Y.mat[-ind.train,]
+Y.test=nutrimouse$diet[-ind.train]
+data.test=list(gene=gene.test,lipid=lipid.test)
+
+# example with block.splsda=diablo=sgccda and a missing block
+res.train = block.splsda(X=list(gene=gene.train,lipid=lipid.train),Y=Y.train,
+ncomp=c(3,3),keepX=list(gene=c(10,10,10),lipid=c(5,5,5)))
+test.predict = predict(res.train, newdata=data.test[2], method = "max.dist")
+
+
 }
 }
 

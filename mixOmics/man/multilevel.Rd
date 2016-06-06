@@ -7,7 +7,7 @@
 \title{Multilevel analysis for repeated measurements (cross-over design)}
 
 \description{
-The analysis of repeated measurements is performed by combining a multilevel 
+Superseeded - The analysis of repeated measurements is performed by combining a multilevel
 approach with multivariate methods: sPLS-DA (Discriminant Analysis) or sPLS 
 (Integrative analysis). Both approaches enable variable selection.
 }
@@ -61,6 +61,8 @@ multilevel(X,
 }
 
 \details{
+This function is now obsolete as the multilevel analysis is now fully integrated in PCA, PLS, sPLS, PLS-DA and sPLS-DA methods, as of mixOmics 6.0.0.
+
 \code{multilevel} function first decomposes the variance in the data sets \eqn{X} 
 (and \eqn{Y}) and applies either sPLS-DA (\code{method = "splsda"}) or sPLS 
 (\code{method = "spls"}) on the within-subject deviation. 
@@ -143,15 +145,13 @@ Genetics and Molecular Biology} \bold{7}, article 35.
 
 \author{Benoit Liquet, Kim-Anh Le Cao, Benoit Gautier, Ignacio Gonzalez.}
 
-\seealso{\code{\link{spls}}, \code{\link{splsda}}, 
+\seealso{\code{\link{pca}},
+\code{\link{pls}}, \code{\link{spls}},
+\code{\link{spls}}, \code{\link{splsda}},
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, 
 \code{\link{cim}}, \code{\link{network}}.}
 
-\examples{
 
-
-
-}
 
 \keyword{regression}
 \keyword{multivariate}

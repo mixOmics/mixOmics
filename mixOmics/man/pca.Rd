@@ -18,8 +18,8 @@ scale = FALSE,
 max.iter = 500,
 tol = 1e-09,
 logratio = 'none',
-V=NULL,
-multilevel=NULL)
+V = NULL,
+multilevel = NULL)
 }
 
 \arguments{
@@ -40,8 +40,7 @@ multilevel=NULL)
 \item{tol}{a positive real, the tolerance used in the NIPALS algorithm.}
 \item{logratio}{one of ('none','CLR','ILR'). Default to 'none'}
 \item{V}{Matrix used in the logratio transformation id provided.}
-\item{multilevel}{Design matrix for multilevel anaylis (for repeated measurements). A numeric matrix or data frame. The first column
-indicates the repeated measures on each individual, i.e. the individuals ID. If \code{  method = 'splsda'}, the 2nd and 3rd columns are factors. If \code{method = 'spls'} then you can choose to only input the repeated measures (column 1) or the 2nd AND 3rd columns to split the variation for a 2 level factor. See Details.}
+\item{multilevel}{Design matrix for multilevel analysis (for repeated measurements).}
 }
 
 \details{
@@ -57,6 +56,8 @@ Components are omitted if their standard deviations are less than or equal to \c
 the standard deviation of the first component. With the default null setting, no components are omitted. 
 Other settings for \code{comp.tol} could be \code{comp.tol = sqrt(.Machine$double.eps)}, 
 which would omit essentially constant components, or \code{comp.tol = 0}.
+
+logratio transform and multilevel analysis are performed sequentially as internal pre-processing step, through \code{\link{logratio.transfo}} and \code{\link{withinVariation}} respectively.
 }    
 
 \value{
@@ -74,7 +75,7 @@ which would omit essentially constant components, or \code{comp.tol = 0}.
 
 
 
-\author{Ignacio Gonzalez.}
+\author{Ignacio Gonzalez, Florian Rohart}
 
 \seealso{\code{\link{nipals}}, \code{\link{prcomp}}, \code{\link{biplot}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}

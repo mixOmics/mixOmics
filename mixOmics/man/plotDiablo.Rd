@@ -2,7 +2,7 @@
 \encoding{latin1}
 \alias{plotDiablo}
 
-\title{Horizontal sparse Partial Least Squares - Discriminant Analysis (sPLS-DA) Regression}
+\title{Graphical output for the DIABLO framework}
 
 \description{Function to perform Horizontal sparse Partial Least Squares-  Discriminant Analysis (sPLS-DA) regression.
 
@@ -16,7 +16,7 @@ plotDiablo(x, ncomp = 1, groupOrder, ...)
 \arguments{
 \item{x}{object of class inheriting from \code{"block.splsda"}.}
 \item{ncomp}{Which component to plot. Has to be lower than the minimum of \code{object$ncomp}}
-\item{groupOrder}{Ordering of the Y-levels}
+\item{groupOrder}{Ordering of the Y-levels on the graphical outputs}
 \item{\dots}{not used}
 }
 
@@ -29,7 +29,8 @@ plotDiablo(x, ncomp = 1, groupOrder, ...)
 
 
 \references{
-?
+Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
+DIABLO - multi omics integration for biomarker discovery.
 }
 
 \author{Amrit Singh}

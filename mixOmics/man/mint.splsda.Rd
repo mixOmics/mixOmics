@@ -2,11 +2,9 @@
 \encoding{latin1}
 \alias{mint.splsda}
 
-\title{Partial Least Squares (PLS) Regression}
+\title{Vertical sparse Partial Least Squares - Discriminant Analysis (sPLS-DA) Regression}
 
-\description{Function to perform Partial Least Squares (PLS) regression.
-
-}
+\description{Integration of multilple data sets (or studies) matching on the same variables in the aim of classifying a discrete outcome, while selection features in each data set, ie. vertical sparse Partial Least Squares - Discriminant Analysis (sPLS-DA) regression.}
 
 \usage{
 mint.splsda(X,
@@ -14,8 +12,8 @@ Y,
 ncomp = 2,
 mode = c("regression", "canonical", "invariant", "classic"),
 study,
-keepX.constraint=NULL,
-keepX=rep(ncol(X), ncomp),
+keepX.constraint = NULL,
+keepX = rep(ncol(X), ncomp),
 scale = TRUE,
 tol = 1e-06,
 max.iter = 500,
@@ -24,28 +22,29 @@ near.zero.var = FALSE)
 }
 
 \arguments{
-\item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
+\item{X}{numeric matrix of predictors. \code{NA}s are allowed. Concatenation of multiple data sets matching on the same variables.}
 \item{Y}{a factor or a class vector for the discrete outcome.}
 \item{ncomp}{Number of components to include in the model (see Details). Default to 2}
 \item{mode}{character string. What type of algorithm to use, (partially) matching
 one of \code{"regression"} or \code{"canonical"}. See Details.}
-\item{study}{grouping factor indicating which samples are from the same study}
+\item{study}{grouping factor indicating which samples are from the same study (or data set)}
 \item{keepX.constraint}{A list containing which variables of X are to be kept on each of the first PLS-components}
 \item{keepX}{numeric vector of length \code{ncomp}, the number of variables
 to keep in \eqn{X}-loadings. By default all variables are kept in the model.}
 \item{scale}{boleean. If scale = TRUE, each block is standardized
-to zero means and unit variances (default: TRUE)}
+to zero means and unit variances. Default = \code{TRUE}.}
 \item{tol}{Convergence stopping value.}
 \item{max.iter}{integer, the maximum number of iterations.}
-\item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations. Default value is FALSE}
+\item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Default = \code{FALSE}.}
 
 }
 
 
-\details{
-\code{mint.splsda} function fits a vertical sPLS-DA models with \eqn{1, \ldots ,}\code{ncomp} components. The grouping factor is specified with \code{study}. We advise more than 3 samples per study where all outcome categories are represented.
 
-\code{X} can contain missing values. Missing values are handled by casewise deletion in the \code{mint.splsda} function without having to delete the rows with missing data.
+\details{
+\code{mint.splsda} function fits a vertical sPLS-DA models with \code{ncomp} components in which several studies matching on the same variables are integrated together in the aim of classifying a discrete outcome while selecting features. The grouping factor that indicates which samples are from which study is specified with \code{study}. We advise more than 3 samples per study where all outcome categories are represented.
+
+The concatenated data matrix \code{X} can contain missing values. Missing values are handled by casewise deletion in the \code{mint.splsda} function without having to delete the rows with missing data.
 
 
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
@@ -84,12 +83,15 @@ that contains the following components:
 }
 
 \references{
-Rohart F. et al (2016, in prep). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms.
+Rohart F. et al (2016, submitted). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms.
+
+Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2013). Multi-group PLS Regression: Application to Epidemiology.
+In New Perspectives in Partial Least Squares and Related Methods, pages 243-255. Springer.
 }
 
 \author{Florian Rohart}
 
-\seealso{\code{\link{spls}},
+\seealso{\code{\link{splsda}},
 \code{\link{plotIndiv}}, \code{\link{plotLoadings}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{tune.mint.splsda}} and http://www.mixOmics.org for more details.}
 
 
@@ -114,7 +116,11 @@ comp2 = c("ENSG00000120049", "ENSG00000138685", "ENSG00000204248", "ENSG00000103
 
 # we select 10 and 15 variables on component 3 and 4
 res = mint.splsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 4, study = stemcells$study,
-keepX.constraint = keepX.constraint, keepX = c(10,15))
+keepX.constraint = keepX.constraint, keepX = c(10, 15))
+
+#plot study-specific outputs for study "2", "3" and "4"
+plotIndiv(res, study = c(2, 3, 4))
+# bad results because the genes on comp 1 and 2 were randomly selected
 
 }
 

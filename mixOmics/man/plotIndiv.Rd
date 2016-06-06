@@ -211,6 +211,23 @@ plotIndiv(splsda.breast)
     ellipse = TRUE, style = "lattice", cex = c(1, 1))
 }
 
+
+## plot of individuals for objects of class 'mint.plsda' or 'mint.splsda'
+# ----------------------------------------------------
+data(stemcells)
+res = mint.splsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 2, keepX = c(10, 5),
+study = stemcells$study)
+
+plotIndiv(res)
+
+\dontrun{
+#plot study-specific outputs for all studies
+plotIndiv(res, study = "all.partial")
+
+#plot study-specific outputs for study "2"
+plotIndiv(res, study = "2")
+}
+
 ## variable representation for objects of class 'sgcca' (or 'rgcca')
 # ----------------------------------------------------
 data(nutrimouse)

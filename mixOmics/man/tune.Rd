@@ -3,7 +3,7 @@
 \alias{tune}
 
 
-\title{Overall tuning function that can be used to tune several functions}
+\title{Overall tuning function that can be used to tune several methods}
 
 \description{
 Wrapper of all the tuning functions.
@@ -42,7 +42,7 @@ light.output = TRUE # mint, splsda
 
 \arguments{
 \item{method}{This parameter is used to pass all other argument to the suitable function. \code{method} has to be one of the following:
-"spls", "splsda", "mint.splsda", "rcc", "pca"
+"spls", "splsda", "mint.splsda", "rcc", "pca".
 }
 \item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
 \item{Y}{Either a factor or a class vector for the discrete outcome, or a numeric vector or matrix of continuous responses (for multi-response models).}
@@ -84,36 +84,24 @@ columns of \code{X} can be supplied. The value is passed to \code{\link{scale}}.
 }
 
 \details{
-This tuning function should be used to tune the parameters in the \code{multilevel} function.
-
-For a sPLS-DA one-factor analysis, M-fold cross-validation is performed, internally the training data is decomposed into within-subject variation.
-
-For a sPLS-DA two-factor analysis, the correlation between components from the within-subject variation of X and the \code{cond} matrix is computed on the whole data set. The reason why we cannot obtain a corss-validation error rate as for the spls-DA one-factor analysis is because of the dififculty to decompose and predict the within matrices within each fold.
-
-For a sPLS two-factor analysis a sPLS canonical mode is run, and the correlation between components from the within-subject variation of X and Y is computed on the whole data set.
-
-If \code{validation = "Mfold"}, M-fold cross-validation is performed. 
-How many folds to generate is selected by specifying the number of folds in \code{folds}.
-The folds also can be supplied as a list of vectors containing the indexes defining each 
-fold as produced by \code{split}.
-
-If \code{validation = "loo"}, leave-one-out cross-validation is performed. By default \code{folds} is set to the number of unique individuals.
-
-
+For more details, please see the help file corresponding to your \code{method}.
+Note that only the arguments used in the tune function corresponding to \code{method} are passed on.
 }
 
 \value{
 Depending on the type of analysis performed, a list that contains:
   \item{error}{cross-validation overall error rate when one-factor sPLS-DA analysis is performed.}
-  \item{prediction.all}{cross-validation prediction for all samples and for the LAST keepX tested parameter when one-factor sPLS-DA analysis is performed.}
+  \item{predict}{cross-validation prediction for all samples and for the LAST keepX tested parameter when one-factor sPLS-DA analysis is performed.}
   \item{cor.value}{compute the correlation between latent variables for two-factor sPLS-DA analysis or sPLS.}
 
 }
 
 
-\author{Kim-Anh Le Cao, Benoit Gautier, Francois Bartolo, Florian Rohart.}
+\author{Florian Rohart}
 
-\seealso{\code{\link{splsda}} and http://www.mixOmics.org for more details.}
+\seealso{\code{\link{tune.rcc}}, \code{\link{tune.mint.splsda}},
+\code{\link{tune.pca}}, \code{\link{tune.multilevel}},
+\code{\link{tune.splsda}}, \code{\link{tune.splslevel}} and http://www.mixOmics.org for more details.}
 
 \examples{
 ## sPLS-DA

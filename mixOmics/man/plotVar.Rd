@@ -35,7 +35,7 @@ font,
 cutoff = 0,
 rad.in = 0.5,
 title="Correlation Circle Plots",
-add.legend = FALSE,
+legend = FALSE,
 style="ggplot2", # can choose between graphics,3d, lattice or ggplot2,
 overlap = TRUE,
 axes.box = "all",
@@ -66,7 +66,7 @@ or integers, can be of length 2 (one for each data set) or of length (p+q) (i.e.
 \item{cutoff}{numeric between 0 and 1. Variables with correlations below this cutoff in absolute value are not plotted (see Details).}
 \item{rad.in}{numeric between 0 and 1, the radius of the inner circle. Defaults to \code{0.5}.}
 \item{title}{character indicating the title plot.}
-\item{add.legend}{boolean. Whether the legend should be added. Default is TRUE.}
+\item{legend}{boolean. Whether the legend should be added. Default is TRUE.}
 \item{style}{argument to be set to either \code{'graphics'}, \code{'lattice'}, \code{'ggplot2'} or \code{'3d'} for a style of plotting.}
 \item{overlap}{boolean. Whether the variables should be plotted in one single figure. Default is TRUE.}
 \item{axes.box}{for style '3d', argument to be set to either \code{'axes'}, \code{'box'}, \code{'bbox'} or \code{'all'}, defining the shape of the box.}

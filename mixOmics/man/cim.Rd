@@ -202,7 +202,7 @@ paired 'omics' data sets. \emph{BioData Mining}; \bold{5}(1).
 \url{http://mixomics.org/graphics/} for more details on all options available.}
 
 \examples{
-## default method: shwos cross correlation between 2 data sets
+## default method: shows cross correlation between 2 data sets
 #------------------------------------------------------------------
 data(nutrimouse)
 X <- nutrimouse$lipid

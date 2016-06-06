@@ -36,6 +36,7 @@ plotContrib(object,
 \item{method}{a character set to 'mean' or 'median' indicating the criterion to assess the contribution. We recommend using median in the case of count or skewed data.}
 \item{block}{A single value indicating which block to consider in a \code{sgccda} object. Defaut is set to the first block.}
 \item{comp}{integer value indicating the component of interest from the object.}
+\item{plot}{Boolean indicating of the plot should be output. If set to FALSE the user can extract the contribution matrix, see example. Default value is TRUE.}
 \item{show.ties}{Boolean. If TRUE then tie groups appear in the color set by \code{col.ties}, which will appear in the legend. Ties can happen when dealing with count data type. By default set to TRUE.}
 \item{col.ties}{Color corresponding to ties, only used if \code{show.ties=TRUE} and ties are present.}
 \item{ndisplay}{integer indicating how many of the most important variables are to be plotted (ranked by decreasing weights in each PLS-component). Useful to lighten a graph.}
@@ -43,14 +44,14 @@ plotContrib(object,
   \item{cex.legend}{A numerical value giving the amount by which plotting the legend text should be magnified or reduced relative to the default.}
   \item{name.var}{A character vector indicating the names of the variables. The names of the vector should match the names of the input data, see example.}
 \item{name.var.complete}{Boolean. If \code{name.var} is supplied with some empty names, \code{name.var.complete} allows you to use the initial variable names to complete the graph (from colnames(X)). Defaut to FALSE. }
+\item{title}{A set of characters to indicate the title of the plot. Default value is NULL.}
 \item{legend}{Boolean indicating if the legend indicating the group outcomes should be added to the plot. Default value is TRUE.}
   \item{legend.color}{A color vector of length the number of group outcomes. See examples.}
-  \item{title}{A set of characters to indicate the title of the plot. Default value is NULL.}
   \item{legend.title}{A set of characters to indicate the title of the legend. Default value is NULL.}
-  \item{plot}{Boolean indicating of the plot should be output. If set to FALSE the user can extract the contribution matrix, see example. Default value is TRUE.}
 }
 
 \details{
+This function is a special case of \code{\link{plotLoadings}} and will be discarded in the next update. Please start making the transition to \code{\link{plotLoadings}}, which only requires you to change the name of the call from \code{plotContrib} to {plotLoadings}.
 
 The contribution of each variable is represented in a barplot where eachbar length corresponds to the loading weight (importance) of the feature in (sparse)PLSDA for each component. The loading weight can be  positive or negative. The color corresponds to the group in which the feature is most 'abundant'.  Note that this type of graphical output is particularly insightful for count microbial data - in that latter case using the \code{method = 'median'} is advised.
 }

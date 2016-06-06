@@ -2,11 +2,10 @@
 \encoding{latin1}
 \alias{mint.spls}
 
-\title{Partial Least Squares (PLS) Regression}
+\title{Vertical sparse Partial Least Squares (sPLS) Regression}
 
-\description{Function to perform Partial Least Squares (PLS) regression.
+\description{Integration of multilple data sets (or studies) matching on the same variables, while selection features in each data set, ie. vertical sparse Partial Least Squares (sPLS) regression.}
 
-}
 
 \usage{
 mint.spls(X,
@@ -39,17 +38,17 @@ See Details.}
 to keep in the \eqn{X}-loadings. By default all variables are kept in the model.}
 \item{keepY}{numeric vector of length \code{ncomp-length(keepY.constraint)}, the number of variables
 to keep in the \eqn{Y}-loadings. By default all variables are kept in the model.}
-\item{scale}{boleean. If scale = TRUE, \code{X} and \code{Y} are standardized
-to zero means and unit variances (default: TRUE)}
+\item{scale}{boleean. If scale = TRUE, each block is standardized
+to zero means and unit variances. Default = \code{TRUE}.}
 \item{tol}{Convergence stopping value.}
 \item{max.iter}{integer, the maximum number of iterations.}
-\item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Default value is FALSE}
+\item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Default = \code{FALSE}.}
 
 }
 
 
 \details{
-\code{mint.spls} function fits a vertical sPLS models with \eqn{1, \ldots ,}\code{ncomp} components. The grouping factor is specified with \code{study}. We advise more than 3 samples per study where all outcome categories are represented.
+\code{mint.spls} function fits a vertical sPLS models with \code{ncomp} components in which several studies matching on the same variables are integrated together while selecting features. The grouping factor that indicates which samples are from which study is specified with \code{study}.
 
 Multi-response models are fully supported. \code{X} and \code{Y} can contain missing values. Missing values are handled by casewise deletion in the \code{mint.spls} function without having to delete the rows with missing data.
 
@@ -97,7 +96,10 @@ that contains the following components:
 
 
 \references{
-Rohart F. et al (2016, in prep). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms.
+Rohart F. et al (2016, submitted). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms.
+
+Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2013). Multi-group PLS Regression: Application to Epidemiology.
+In New Perspectives in Partial Least Squares and Related Methods, pages 243-255. Springer.
 }
 
 \author{Florian Rohart}
@@ -124,7 +126,7 @@ plotIndiv(res, study = "2", col = as.numeric(stemcells$celltype))
 # -- feature selection with keepX.constraint and keepX
 # we force mint.spls to build the PLS-component 1 and 2 with only specific genes
 keepX.constraint = list(comp1 = c("ENSG00000138756", "ENSG00000101470"),
-                        comp2 = c("ENSG00000120049", "ENSG00000138685", "ENSG00000204248", "ENSG00000103260"))
+comp2 = c("ENSG00000120049", "ENSG00000138685", "ENSG00000204248", "ENSG00000103260"))
 
 # we select 10 and 15 variables on component 3 and 4
 res = mint.spls(X = stemcells$gene, Y = Y, ncomp = 4, study = stemcells$study,

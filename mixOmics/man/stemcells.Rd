@@ -7,7 +7,7 @@
 \title{Human Stem Cells Data}
 
 \description{
-This data set contains the expression of a random subset of 1,000 genes in 167 samples from 6 independent studies and 3 cell types.
+This data set contains the expression of a random subset of 400 genes in 167 samples from 6 independent studies and 3 cell types.
 }
 
 \usage{data(stemcells)}
@@ -15,7 +15,7 @@ This data set contains the expression of a random subset of 1,000 genes in 167 s
 \format{
 A list containing the following components:
   \describe{
-    \item{\code{gene}}{data matrix with 167 rows and 1000 columns. Each row represents
+    \item{\code{gene}}{data matrix with 167 rows and 400 columns. Each row represents
       an experimental sample, and each column a single gene.}
 	\item{\code{celltype}}{a factor indicating the cell type of each sample.}
     \item{\code{study}}{a factor indicating the study from which the sample was extracted.}
@@ -23,15 +23,9 @@ A list containing the following components:
 }
 
 \details{
-This data set contains the expression of a random subset of 1,000 genes in 167 samples from 6 independent studies and 3 cell types. Those studies can be combined and analysed using the MINT procedure.
+This data set contains the expression of a random subset of 400 genes in 167 samples from 6 independent studies and 3 cell types. Those studies can be combined and analysed using the MINT procedure.
 }
 
-\source{
-The Human Breast Tumors dataset is a companion resource for the paper of
-Perou \emph{et al.} (2000), and was downloaded from the Stanford Genomics Breast 
-Cancer Consortium Portal 
-\url{http://genome-www.stanford.edu/breast_cancer/molecularportraits/download.shtml}
-}
 
 \references{
 Rohart F.,  Eslami A., Bougeard S and Lê Cao, K. A. MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. \emph{Submitted}.

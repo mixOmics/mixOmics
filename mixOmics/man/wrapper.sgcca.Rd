@@ -52,6 +52,8 @@ to zero means and unit variances (default: TRUE)}
 	This wrapper function performs sGCCA (see \pkg{RGCCA}) with \eqn{1, \ldots ,}\code{ncomp} components on each block data set.
 	A supervised or unsupervised model can be run. For a supervised model, the \code{\link{unmap}} function should be used as an input data set.
 	More details can be found on the package \pkg{RGCCA}.
+
+Note that this function is the same as \code{\link{block.spls}} with different default arguments.
 }
 
 \value{

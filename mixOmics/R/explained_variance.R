@@ -30,7 +30,7 @@
 explained_variance = function(data, variates, ncomp)
 {
     #check input data
-    check = Check.entry.single(data,ncomp)
+    check = Check.entry.single(data, ncomp)
     data = check$X
     ncomp = check$ncomp
     

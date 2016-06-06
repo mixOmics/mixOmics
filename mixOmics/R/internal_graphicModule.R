@@ -145,13 +145,13 @@ alpha)
                 color = unique(df[df$col == i & df$Block == levels(df$Block)[1], ]$col))+
                 geom_text(data = subset(df, col == i),
                 aes(label = names),
-                color = unique(df[df$col == i & df$Block == levels(df$Block)[1], ]$col),
-                size = unique(df[df$col == i & df$Block == levels(df$Block)[1], ]$cex),show.legend  = F)
+                color = df[df$col == i & df$Block == levels(df$Block)[1], ]$col,
+                size = df[df$col == i & df$Block == levels(df$Block)[1], ]$cex,show.legend  = F)
             } else {
                 p = p + geom_point(data = subset(df, col == i),
                 color = unique(df[df$col == i & df$Block == levels(df$Block)[1], ]$col),
-                size = unique(df[df$col == i & df$Block == levels(df$Block)[1], ]$cex),
-                shape = unique(df[df$col == i & df$Block == levels(df$Block)[1],  ]$pch), stroke = point.lwd)# unique(df[df$col == i & df$Block == paste0("Block: ", blocks[1]), ]$pch))
+                size = df[df$col == i & df$Block == levels(df$Block)[1], ]$cex,
+                shape = df[df$col == i & df$Block == levels(df$Block)[1],  ]$pch, stroke = point.lwd)# unique(df[df$col == i & df$Block == paste0("Block: ", blocks[1]), ]$pch))
             }
             if (centroid == TRUE)
             {

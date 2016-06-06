@@ -40,13 +40,15 @@ size.title = rel(1.8), size.subtitle = rel(1.4), layout = NULL, border = NA, ...
 plot = TRUE, show.ties = TRUE, col.ties="white", ndisplay = NULL, size.name = 0.7,
 size.legend = 0.8, name.var=NULL, name.var.complete=FALSE, title = NULL,
 subtitle, size.title = rel(1.8), size.subtitle = rel(1.4),
-legend = TRUE, legend.color = NULL, legend.title = 'Outcome', layout = NULL, border = NA, ... )
+legend = TRUE, legend.color = NULL, legend.title = 'Outcome',
+layout = NULL, border = NA, ... )
 
 \method{plotLoadings}{mint.plsda}(object, contrib = NULL, method = "mean",
 study = "global", comp = 1, plot = TRUE, show.ties = TRUE, col.ties = "white",
 ndisplay = NULL, size.name = 0.7, size.legend = 0.8, name.var = NULL,
-name.var.complete = FALSE, title = NULL, subtitle, size.title = rel(1.8), size.subtitle = rel(1.4),
-legend = TRUE, legend.color = NULL, legend.title = 'Outcome', layout = NULL, border = NA, ... )
+name.var.complete = FALSE, title = NULL, subtitle, size.title = rel(1.8),
+size.subtitle = rel(1.4), legend = TRUE, legend.color = NULL,
+legend.title = 'Outcome', layout = NULL, border = NA, ... )
 
 }
 
@@ -82,27 +84,49 @@ legend = TRUE, legend.color = NULL, legend.title = 'Outcome', layout = NULL, bor
 
 \details{
 
-The contribution of each variable for each component (depending on the object) is represented in a barplot where each bar length corresponds to the loading weight (importance) of the feature. The loading weight can be  positive or negative.
+The contribution of each variable for each component (depending on the object) is represented in a barplot where each bar length corresponds to the loading weight (importance) of the feature. The loading weight can be positive or negative.
 
 For discriminant analysis, the color corresponds to the group in which the feature is most 'abundant'.  Note that this type of graphical output is particularly insightful for count microbial data - in that latter case using the \code{method = 'median'} is advised.
 Note also that if the parameter \code{contrib} is not provided, plots are white.
 
-For MINT analysis, \code{study="global"} plots the global loadings while partial loadings are plotted when \code{study} is a level of \code{object$study}. Importantly, the legend accounts for one subplot in the layout design.
+For MINT analysis, \code{study="global"} plots the global loadings while partial loadings are plotted when \code{study} is a level of \code{object$study}. Since variable selection in MINT is performed at the global level, only the selected variables are plotted for the partial loadings even if the partial loadings are not sparse. See references.
+Importantly for multi plots, the legend accounts for one subplot in the layout design.
 }
 
-\author{Kim-Anh Le Cao, Benoit Gautier, Florian Rohart, Francois Bartolo}
+\author{Florian Rohart, Kim-Anh Le Cao, Benoit Gautier}
 
-\seealso{\code{\link{plotVar}},  \code{\link{cim}}, for other variable plots and http://mixOmics.org/graphics for more details.}
+\seealso{\code{\link{pls}}, \code{\link{spls}}, \code{\link{plsda}}, \code{\link{splsda}},
+\code{\link{mint.pls}}, \code{\link{mint.spls}}, \code{\link{mint.plsda}}, \code{\link{mint.splsda}},
+\code{\link{block.pls}}, \code{\link{block.spls}}, \code{\link{block.plsda}}, \code{\link{block.splsda}},
+\code{\link{mint.block.pls}}, \code{\link{mint.block.spls}}, \code{\link{mint.block.plsda}}, \code{\link{mint.block.splsda}}}
 
+\references{
+Rohart F. et al (2016, submitted). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms.
+
+Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2013). Multi-group PLS Regression: Application to Epidemiology.
+In New Perspectives in Partial Least Squares and Related Methods, pages 243-255. Springer.
+
+Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
+DIABLO - multi omics integration for biomarker discovery.
+
+Le Cao, K.-A., Martin, P.G.P., Robert-Granie, C. and Besse, P. (2009). Sparse canonical methods
+for biological data integration: application to a cross-platform study. \emph{BMC Bioinformatics} \bold{10}:34.
+
+Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.
+
+Wold H. (1966). Estimation of principal components and related models by iterative least squares.
+In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N.Y., 391-420.
+
+}
 
 \examples{
 ## object of class 'spls'
 # --------------------------
 data(liver.toxicity)
-X <- liver.toxicity$gene
-Y <- liver.toxicity$clinic
+X = liver.toxicity$gene
+Y = liver.toxicity$clinic
 
-toxicity.spls <- spls(X, Y, ncomp = 2, keepX = c(50, 50),
+toxicity.spls = spls(X, Y, ncomp = 2, keepX = c(50, 50),
 keepY = c(10, 10))
 
 plotLoadings(toxicity.spls)
@@ -111,10 +135,10 @@ plotLoadings(toxicity.spls)
 ## object of class 'splsda'
 # --------------------------
 data(liver.toxicity)
-X <- as.matrix(liver.toxicity$gene)
-Y <- as.factor(liver.toxicity$treatment[, 4])
+X = as.matrix(liver.toxicity$gene)
+Y = as.factor(liver.toxicity$treatment[, 4])
 
-splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
+splsda.liver = splsda(X, Y, ncomp = 2, keepX = c(20, 20))
 
 # contribution on comp 1, based on the median. 
 # Colors indicate the group in which the median expression is maximal
@@ -135,7 +159,8 @@ plotLoadings(splsda.liver, comp = 2, method = 'median', contrib = 'min')
 # this is to make sure we can match the name of the selected variables to the contribution plot.
 name.var = liver.toxicity$gene.ID[, 'geneBank']
 length(name.var)
-plotLoadings(splsda.liver, comp = 2, method = 'median', name.var = name.var, title = "Liver data", contrib = "max")
+plotLoadings(splsda.liver, comp = 2, method = 'median', name.var = name.var,
+title = "Liver data", contrib = "max")
 
 # if names are provided: ok, even when NAs
 name.var = liver.toxicity$gene.ID[, 'geneBank']
@@ -148,7 +173,8 @@ plotLoadings(splsda.liver, comp = 2, method = 'median',
 name.var = name.var, size.name = 0.5,complete.name.var=TRUE, contrib = "max")
 
 # look at the contribution (median) for each variable
-plot.contrib = plotLoadings(splsda.liver, comp = 2, method = 'median', plot = FALSE, contrib = "max")
+plot.contrib = plotLoadings(splsda.liver, comp = 2, method = 'median', plot = FALSE,
+contrib = "max")
 head(plot.contrib$contrib)
 # change the title of the legend and title name
 plotLoadings(splsda.liver, comp = 2, method = 'median', legend.title = 'Time',
@@ -166,10 +192,10 @@ plotLoadings(splsda.liver, comp = 2, method = 'median', legend.color = c(1:4), c
 # -----------------
 \dontrun{
 data(vac18)
-X <- vac18$genes
-Y <- vac18$stimulation
+X = vac18$genes
+Y = vac18$stimulation
 # sample indicates the repeated measurements
-design <- data.frame(sample = vac18$sample,
+design = data.frame(sample = vac18$sample,
 stimul = vac18$stimulation)
 
 # multilevel sPLS-DA model
@@ -195,10 +221,10 @@ name.var = name.var, size.name = 0.5, ndisplay = 60, contrib = "max")
 # breast tumors
 # ---
 data(breast.tumors)
-X <- breast.tumors$gene.exp
-Y <- breast.tumors$sample$treatment
+X = breast.tumors$gene.exp
+Y = breast.tumors$sample$treatment
 
-plsda.breast <- plsda(X, Y, ncomp = 2)
+plsda.breast = plsda(X, Y, ncomp = 2)
 
 name.var = as.character(breast.tumors$genes$name)
 names(name.var) = colnames(X)
@@ -215,10 +241,10 @@ plotLoadings(plsda.breast, contrib = 'max', comp = 1, method = 'median',
 # ---
 \dontrun{
 data(liver.toxicity)
-X <- liver.toxicity$gene
-Y <- liver.toxicity$treatment[, 4]
+X = liver.toxicity$gene
+Y = liver.toxicity$treatment[, 4]
 
-plsda.liver <- plsda(X, Y, ncomp = 2)
+plsda.liver = plsda(X, Y, ncomp = 2)
 plotIndiv(plsda.liver, ind.names = Y, plot.ellipse = TRUE)
 
 
@@ -238,7 +264,7 @@ Y = nutrimouse$diet
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 
-nutrimouse.sgccda <- wrapper.sgccda(blocks = data,
+nutrimouse.sgccda = wrapper.sgccda(blocks = data,
 Y = Y,
 design = design,
 keep = list(gene = c(10,10), lipid = c(15,15)),
@@ -265,7 +291,8 @@ plotLoadings(res)
 plotLoadings(res, contrib = "max")
 plotLoadings(res, contrib = "min", study = 1:6,comp=2)
 
-#combining different plots by setting a layout of 2 rows and 4columns. Note that the legend accounts for a subplot so 4columns instead of 2.
+# combining different plots by setting a layout of 2 rows and 4columns.
+# Note that the legend accounts for a subplot so 4columns instead of 2.
 plotLoadings(res,contrib="min",study=c(1,2,3),comp=2, layout = c(2,4))
 plotLoadings(res,contrib="min",study="global",comp=2)
 
