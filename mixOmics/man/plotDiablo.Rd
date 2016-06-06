@@ -4,25 +4,22 @@
 
 \title{Graphical output for the DIABLO framework}
 
-\description{Function to perform Horizontal sparse Partial Least Squares-  Discriminant Analysis (sPLS-DA) regression.
-
-}
+\description{Function to visualise correlation between components from different data sets}
 
 \usage{
 plotDiablo(x, ncomp = 1, groupOrder, ...)
-
 }
 
 \arguments{
 \item{x}{object of class inheriting from \code{"block.splsda"}.}
-\item{ncomp}{Which component to plot. Has to be lower than the minimum of \code{object$ncomp}}
+\item{ncomp}{Which component to plot calculated from each data set. Has to be lower than the minimum of \code{object$ncomp}}
 \item{groupOrder}{Ordering of the Y-levels on the graphical outputs}
 \item{\dots}{not used}
 }
 
 
 \details{
-
+The function uses a plot.data.frame to plot the component \code{ncomp} calculated from each data set, to visualise whether DIABLO (block.splsda) was successful at maximising the correlation between each data sets' component. The lower triangular panel indicated the Pearson's correlation coefficient, the upper triangular panel the scatter plot. The last column shows boxplots or barplot of the component scores according to each class and from each data set.
 }
 
 
@@ -30,34 +27,33 @@ plotDiablo(x, ncomp = 1, groupOrder, ...)
 
 \references{
 Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
-DIABLO - multi omics integration for biomarker discovery.
+DIABLO - multi omics integration for biomarker discovery. Submitted.
 }
 
 \author{Amrit Singh}
 
-\seealso{\code{\link{block.splsda}} and http://www.mixOmics.org for more details.}
+\seealso{\code{\link{block.splsda}} and http://www.mixOmics.org/mixDIABLO for more details.}
 
 \examples{
 
-data(nutrimouse)
-Y = nutrimouse$diet
-data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
-design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+data('TCGA.breast.cancer')
+Y = data.train$Y
 
+data = list(mrna = data.train$mrna, mirna = data.train$mirna, prot = data.train$protein)
 
-nutrimouse.sgccda <- wrapper.sgccda(X=data,
-Y = Y,
-design = design,
-keepX = list(gene=c(10,10), lipid=c(15,15)),
-ncomp = c(2, 2),
-scheme = "centroid",
-verbose = FALSE,
-bias = FALSE)
+# set number of component per data set
+ncomp = c(3,3,3)
+# set number of variables to select, per component and per data set (arbitrarily set)
+list.keepX = list(mrna = rep(20, 3), mirna = rep(10,3), prot = rep(10,3))
 
-plotDiablo(nutrimouse.sgccda)
-plotDiablo(nutrimouse.sgccda, groupOrder = levels(Y)[nlevels(Y):1])
+# set up a full design where every block is connected 
+design = matrix(1, ncol = length(data), nrow = length(data), dimnames = list(names(data), names(data)))
+diag(design) =  0
+design  
 
-
+TCGA.diablo = block.splsda(X = data, Y = Y, ncomp = ncomp, keepX = list.keepX, design = design)
+plotDiablo(TCGA.diablo, ncomp = 1)
+plotDiablo(TCGA.diablo, groupOrder = levels(Y)[nlevels(Y):1])
 }
 
 \keyword{regression}
