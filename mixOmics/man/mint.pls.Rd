@@ -76,7 +76,7 @@ that contains the following components:
 Rohart F. et al (2016, submitted). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms.
 
 Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2013). Multi-group PLS Regression: Application to Epidemiology.
-In New Perspectives in Partial Least Squares and Related Methods, pages 243–255. Springer.
+In New Perspectives in Partial Least Squares and Related Methods, pages 243-255. Springer.
 }
 
 \author{Florian Rohart}

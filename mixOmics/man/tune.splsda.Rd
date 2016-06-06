@@ -3,10 +3,11 @@
 \alias{tune.splsda}
 
 
-\title{Tuning functions for multilevel analyses}
+\title{Tuning functions for sPLS-DA method}
 
 \description{
-These functions were implemented to help tuning the variable selection parameters in the multilevel analyses.
+Computes M-fold or Leave-One-Out Cross-Validation scores on a user-input
+grid to determine optimal values for the sparsity parameters in \code{splsda}.
 }
 
 \usage{
@@ -22,7 +23,7 @@ nrepeat = 1, logratio = c('none','CLR'), multilevel = NULL, light.output = TRUE)
   \item{Y}{\code{if(method = 'spls')} numeric vector or matrix of continuous responses (for multi-response models) \code{NA}s are allowed.}
   \item{ncomp}{the number of components to include in the model.}
   \item{test.keepX}{numeric vector for the different number of variables to test from the \eqn{X} data set}
-  \item{already.tested.X}{if \code{ncomp > 1} numeric vector indicating the number of variables to select rom the \eqn{X} data set on the previous ncomp-1 components}
+  \item{already.tested.X}{if \code{ncomp > 1} numeric vector indicating the number of variables to select from the \eqn{X} data set on the firsts components}
 \item{validation}{character.  What kind of (internal) validation to use, matching one of \code{"Mfold"} or
 \code{"loo"} (see below). Default is \code{"Mfold"}.}
 \item{folds}{the folds in the Mfold cross-validation. See Details.}
@@ -43,18 +44,18 @@ should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \cod
 
 mention stratified subsamplings
 
-This tuning function should be used to tune the parameters in the \code{multilevel} function.
+This tuning function should be used to tune the parameters in the \code{splsda} function.
 
-For a sPLS-DA one-factor analysis, M-fold cross-validation is performed, internally the training data is decomposed into within-subject variation.
+For a sPLS-DA, M-fold or LOO cross-validation is performed with stratified subsampling where all classes are represented in each fold.
 
-For a sPLS-DA two-factor analysis, the correlation between components from the within-subject variation of X and the \code{cond} matrix is computed on the whole data set. The reason why we cannot obtain a corss-validation error rate as for the spls-DA one-factor analysis is because of the dififculty to decompose and predict the within matrices within each fold.
+For sPLS-DA multilevel one-factor analysis, M-fold or LOO cross-validation is performed where all repeated measurements of one sample are in the same fold. Note that logratio transform and the multilevel analysis are performed internally and independently on the training and test set.
+
+For a sPLS-DA multilevel two-factor analysis, the correlation between components from the within-subject variation of X and the \code{cond} matrix is computed on the whole data set. The reason why we cannot obtain a cross-validation error rate as for the spls-DA one-factor analysis is because of the dififculty to decompose and predict the within matrices within each fold.
 
 For a sPLS two-factor analysis a sPLS canonical mode is run, and the correlation between components from the within-subject variation of X and Y is computed on the whole data set.
 
 If \code{validation = "Mfold"}, M-fold cross-validation is performed. 
 How many folds to generate is selected by specifying the number of folds in \code{folds}.
-The folds also can be supplied as a list of vectors containing the indexes defining each 
-fold as produced by \code{split}.
 
 If \code{validation = "loo"}, leave-one-out cross-validation is performed. By default \code{folds} is set to the number of unique individuals.
 
@@ -63,9 +64,14 @@ If \code{validation = "loo"}, leave-one-out cross-validation is performed. By de
 
 \value{
 Depending on the type of analysis performed, a list that contains:
-  \item{error}{cross-validation overall error rate when one-factor sPLS-DA analysis is performed.}
-  \item{prediction.all}{cross-validation prediction for all samples and for the LAST keepX tested parameter when one-factor sPLS-DA analysis is performed.}
-  \item{cor.value}{compute the correlation between latent variables for two-factor sPLS-DA analysis or sPLS.}
+\item{mat.mean.error,}{returns the prediction error for each \code{test.keepX} on each component}
+\item{choice.keepX.constraint}{returns the variables selected by the optimal keepX on each component.}
+\item{error.per.class}{returns the error rate for each level of \code{Y} and for each component computed with the optimal keepX}
+
+\item{predict}{Prediction values for each sample, each \code{test.keepX}, each comp and each repeat. Only if light.output=FALSE}
+\item{class}{Predicted class for each sample, each \code{test.keepX}, each comp and each repeat. Only if light.output=FALSE}
+
+\item{cor.value}{compute the correlation between latent variables for two-factor sPLS-DA analysis.}
 
 }
 
@@ -78,28 +84,39 @@ Depending on the type of analysis performed, a list that contains:
 ## First example: analysis with sPLS-DA
 \dontrun{
 data(breast.tumors)
-X <- breast.tumors$gene.exp
-Y <- as.factor(breast.tumors$sample$treatment)
-tune= tune.splsda(X,Y,ncomp=1,nrepeat=10,logratio="none",
-    test.keepX = c(5, 10, 15),folds=10,dist="max.dist",
-    already.tested.X=NULL, progressBar = TRUE)
+X = breast.tumors$gene.exp
+Y = as.factor(breast.tumors$sample$treatment)
+tune = tune.splsda(X, Y, ncomp = 1, nrepeat = 10, logratio = "none",
+    test.keepX = c(5, 10, 15), folds = 10, dist = "max.dist",
+    already.tested.X = NULL, progressBar = TRUE)
+}
 
+## only tune component 3 and 4
+# keeping 5 and 10 variables on the first two components respectively
+\dontrun{
+tune = tune.splsda(X = X,Y = Y, ncomp = 4,
+already.tested.X = c(5,10),
+test.keepX = seq(1,10,2), progressBar = TRUE)
 
 }
+
 
 
 ## Second example: multilevel one-factor analysis with sPLS-DA
 \dontrun{
 data(vac18)
-X <- vac18$genes
-Y <- vac18$stimulation
+X = vac18$genes
+Y = vac18$stimulation
 # sample indicates the repeated measurements
-design <- data.frame(sample = vac18$sample)
+design = data.frame(sample = vac18$sample)
 
-tune= tune.splsda(X, Y = Y, ncomp=3, nrepeat=10, logratio="none",
-    test.keepX = c(5,50,100),folds=10, dist="max.dist", multilevel = design)
+tune = tune.splsda(X, Y = Y, ncomp = 3, nrepeat = 10, logratio = "none",
+    test.keepX = c(5,50,100),folds = 10, dist = "max.dist", multilevel = design)
 
 }
+
+
+
 
 
 }

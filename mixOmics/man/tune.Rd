@@ -42,7 +42,7 @@ light.output = TRUE # mint, splsda
 
 \arguments{
 \item{method}{This parameter is used to pass all other argument to the suitable function. \code{method} has to be one of the following:
-"spls", "splsda", "mint.splsda", "rcc", "pca"
+"spls", "splsda", "mint.splsda", "rcc", "pca".
 }
 \item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
 \item{Y}{Either a factor or a class vector for the discrete outcome, or a numeric vector or matrix of continuous responses (for multi-response models).}
@@ -84,23 +84,24 @@ columns of \code{X} can be supplied. The value is passed to \code{\link{scale}}.
 }
 
 \details{
-For more details, please see the help file corresponding to your method
+For more details, please see the help file corresponding to your \code{method}.
+Note that only the arguments used in the tune function corresponding to \code{method} are passed on.
 }
 
 \value{
 Depending on the type of analysis performed, a list that contains:
   \item{error}{cross-validation overall error rate when one-factor sPLS-DA analysis is performed.}
-  \item{prediction.all}{cross-validation prediction for all samples and for the LAST keepX tested parameter when one-factor sPLS-DA analysis is performed.}
+  \item{predict}{cross-validation prediction for all samples and for the LAST keepX tested parameter when one-factor sPLS-DA analysis is performed.}
   \item{cor.value}{compute the correlation between latent variables for two-factor sPLS-DA analysis or sPLS.}
 
 }
 
 
-\author{Kim-Anh Le Cao, Benoit Gautier, Francois Bartolo, Florian Rohart.}
+\author{Florian Rohart}
 
 \seealso{\code{\link{tune.rcc}}, \code{\link{tune.mint.splsda}},
 \code{\link{tune.pca}}, \code{\link{tune.multilevel}},
-\code{\link{tune.splsda}}, \code{\link{tune.splsdalevel}} and http://www.mixOmics.org for more details.}
+\code{\link{tune.splsda}}, \code{\link{tune.splslevel}} and http://www.mixOmics.org for more details.}
 
 \examples{
 ## sPLS-DA

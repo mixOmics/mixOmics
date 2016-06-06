@@ -29,10 +29,10 @@ mixMC: a multivariate statistical framework to gain insight into Microbial Commu
 bioRxiv 044206; doi: http://dx.doi.org/10.1101/044206
 
 John Aitchison. The statistical analysis of compositional data. Journal of the Royal Statistical Society.
-Series B (Methodological), pages 139–177, 1982.
+Series B (Methodological), pages 139-177, 1982.
 
 Peter Filzmoser, Karel Hron, and Clemens Reimann. Principal component analysis for
-compositional data with outliers. Environmetrics, 20(6):621–632, 2009.
+compositional data with outliers. Environmetrics, 20(6):621-632, 2009.
 }
 
 \value{

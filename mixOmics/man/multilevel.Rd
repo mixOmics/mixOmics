@@ -146,7 +146,7 @@ Genetics and Molecular Biology} \bold{7}, article 35.
 \author{Benoit Liquet, Kim-Anh Le Cao, Benoit Gautier, Ignacio Gonzalez.}
 
 \seealso{\code{\link{pca}},
-\code{\link{pl}}, \code{\link{spls}},
+\code{\link{pls}}, \code{\link{spls}},
 \code{\link{spls}}, \code{\link{splsda}},
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, 
 \code{\link{cim}}, \code{\link{network}}.}

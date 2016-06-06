@@ -51,6 +51,7 @@ plotContrib(object,
 }
 
 \details{
+This function is a special case of \code{\link{plotLoadings}} and will be discarded in the next update. Please start making the transition to \code{\link{plotLoadings}}, which only requires you to change the name of the call from \code{plotContrib} to {plotLoadings}.
 
 The contribution of each variable is represented in a barplot where eachbar length corresponds to the loading weight (importance) of the feature in (sparse)PLSDA for each component. The loading weight can be  positive or negative. The color corresponds to the group in which the feature is most 'abundant'.  Note that this type of graphical output is particularly insightful for count microbial data - in that latter case using the \code{method = 'median'} is advised.
 }

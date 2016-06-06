@@ -6,6 +6,7 @@
 \alias{perf.plsda}
 \alias{perf.splsda}
 \alias{perf.mint.splsda}
+\alias{perf.sgccda}
 
 \title{Compute evaluation criteria for PLS, sPLS, PLS-DA, sPLS-DA, MINT and DIABLO}
 

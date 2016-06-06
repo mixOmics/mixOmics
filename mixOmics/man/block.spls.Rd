@@ -125,7 +125,8 @@ design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3,
 byrow = TRUE, dimnames = list(names(data), names(data)))
 
 # indY indicates where the outcome Y is in the list X
-res = block.spls(X = data, indY = 3, keepX = list(gene = c(10,5,15), lipid = c(3,2)), ncomp = c(3,3,3))
+res = block.spls(X = data, indY = 3, keepX = list(gene = c(10,5,15), lipid = c(3,2)),
+    ncomp = c(3,3,3))
 res$keepX
 selectVar(res, comp = 1)
 plotIndiv(res)
@@ -133,10 +134,12 @@ plotVar(res)
 
 
 # -- feature selection with keepX.constraint and keepX
-# we force the first PLS-component of X to be build with only the variables "ENSG00000164930" and "ENSG00000044090"
-# and the second PLS-component with only "ENSG00000109819"
+# we force the first PLS-component of X to be build with only the variables
+# "ENSG00000164930" and "ENSG00000044090" and the second PLS-component with only
+# "ENSG00000109819"
 # we decide to keep 100 variables on the third component
-# we force the first PLS-component of Y to be build with only the variables "1" and "3" and the second PLS_component with only "2"
+# we force the first PLS-component of Y to be build with only the variables "1" and "3" and
+# the second PLS_component with only "2"
 # we decide to keep 2 variables on the third component
 
 data(stemcells)
@@ -145,12 +148,14 @@ rownames(Y.mat)=rownames(stemcells$gene)
 
 res = block.spls(list(block1 = stemcells$gene), Y = Y.mat, ncomp = 3,
     keepX = list(block1 = c(100)),
-    keepX.constraint = list(block1 = list(comp1 = c("ENSG00000164930", "ENSG00000044090"), comp2 = c("ENSG00000109819"))),
+    keepX.constraint = list(block1 = list(comp1 = c("ENSG00000164930", "ENSG00000044090"),
+    comp2 = c("ENSG00000109819"))),
     keepY = c(2),
     keepY.constraint = list(comp1 = c(1, 3), comp2 = c(2)))
 
 res$keepX
-res$keepX.constraint # position of "ENSG00000164930", "ENSG00000044090" and "ENSG00000109819" in the matrix X
+# position of "ENSG00000164930", "ENSG00000044090" and "ENSG00000109819" in the matrix X
+res$keepX.constraint
 res$keepY
 res$keepY.constraint
 

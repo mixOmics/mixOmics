@@ -128,19 +128,20 @@ plotIndiv(res)
 plotVar(res)
 
 # -- feature selection with keepX.constraint and keepX
-# we force the first PLS-component of X to be build with only the variables "ENSG00000164930" and "ENSG00000044090",
+# we force the first PLS-component of X to be build with only the variables
+# "ENSG00000164930" and "ENSG00000044090",
 # and the second PLS-component with only "ENSG00000109819"
 # we decide to keep 100 variables on the third component
 data(stemcells)
 
 res = block.splsda(list(block1 = stemcells$gene), Y = stemcells$celltype, ncomp = 3,
 keepX = list(block1 = c(100)),
-keepX.constraint = list(block1 = list(comp1 = c("ENSG00000164930", "ENSG00000044090"), comp2 = c("ENSG00000109819"))))
+keepX.constraint = list(block1 = list(comp1 = c("ENSG00000164930", "ENSG00000044090"),
+    comp2 = c("ENSG00000109819"))))
 
 res$keepX
-res$keepX.constraint # position of "ENSG00000164930", "ENSG00000044090" and "ENSG00000109819" in the matrix X
-
-
+# position of "ENSG00000164930", "ENSG00000044090" and "ENSG00000109819" in the matrix X
+res$keepX.constraint
 }
 
 \keyword{regression}

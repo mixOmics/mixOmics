@@ -80,7 +80,7 @@ If your input data \code{X} is a list of matrices, then the algorithm is directe
 Rohart F. et al (2016, submitted). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms.
 
 Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2013). Multi-group PLS Regression: Application to Epidemiology.
-In New Perspectives in Partial Least Squares and Related Methods, pages 243–255. Springer.
+In New Perspectives in Partial Least Squares and Related Methods, pages 243-255. Springer.
 
 Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
 DIABLO - multi omics integration for biomarker discovery.
@@ -101,21 +101,21 @@ In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N
 ## -- directed towards PLS framework because X is a matrix and the study argument is missing
 # ----------------------------------------------------
 data(liver.toxicity)
-X <- liver.toxicity$gene
-Y <- liver.toxicity$clinic
-Y.factor <- as.factor(liver.toxicity$treatment[, 4])
+X = liver.toxicity$gene
+Y = liver.toxicity$clinic
+Y.factor = as.factor(liver.toxicity$treatment[, 4])
 
 # directed towards PLS
-out <- mixOmics(X, Y, ncomp = 2)
+out = mixOmics(X, Y, ncomp = 2)
 
 # directed towards sPLS because of keepX and/or keepY
-out <- mixOmics(X, Y, ncomp = 2, keepX = c(50, 50), keepY = c(10, 10))
+out = mixOmics(X, Y, ncomp = 2, keepX = c(50, 50), keepY = c(10, 10))
 
 # directed towards PLS-DA because Y is a factor
-out <- mixOmics(X, Y.factor, ncomp = 2)
+out = mixOmics(X, Y.factor, ncomp = 2)
 
 # directed towards sPLS-DA because Y is a factor and there is a keepX
-out <- mixOmics(X, Y.factor, ncomp = 2, keepX = c(20, 20))
+out = mixOmics(X, Y.factor, ncomp = 2, keepX = c(20, 20))
 
 
 ## -- directed towards block.pls framework because X is a list
@@ -125,16 +125,18 @@ Y = unmap(nutrimouse$diet)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 
 # directed towards block PLS
-out <- mixOmics(X = data, Y = Y,ncomp = c(3, 3, 3))
+out = mixOmics(X = data, Y = Y,ncomp = c(3, 3, 3))
 
 # directed towards block sPLS because of keepX and/or keepY
-out <- mixOmics(X = data, Y = Y,ncomp = c(3, 3, 3), keepX = list(gene = c(10,10), lipid = c(15,15)))
+out = mixOmics(X = data, Y = Y,ncomp = c(3, 3, 3),
+keepX = list(gene = c(10,10), lipid = c(15,15)))
 
 # directed towards block PLS-DA because Y is a factor
-out <- mixOmics(X = data, Y = nutrimouse$diet,ncomp = c(3, 3, 3))
+out = mixOmics(X = data, Y = nutrimouse$diet,ncomp = c(3, 3, 3))
 
 # directed towards block sPLS-DA because Y is a factor and there is a keepX
-out <- mixOmics(X = data, Y = nutrimouse$diet, ncomp = c(3, 3, 3), keepX = list(gene = c(10,10), lipid = c(15,15)))
+out = mixOmics(X = data, Y = nutrimouse$diet, ncomp = c(3, 3, 3),
+keepX = list(gene = c(10,10), lipid = c(15,15)))
 
 
 ## -- directed towards mint.pls framework because of the study factor
@@ -144,16 +146,20 @@ data(stemcells)
 out = mixOmics(X = stemcells$gene, Y = unmap(stemcells$celltype), ncomp = 2)
 
 # directed towards mint.PLS
-out = mixOmics(X = stemcells$gene, Y = unmap(stemcells$celltype), ncomp = 2, study = stemcells$study)
+out = mixOmics(X = stemcells$gene, Y = unmap(stemcells$celltype),
+ncomp = 2, study = stemcells$study)
 
 # directed towards mint.sPLS because of keepX and/or keepY
-out = mixOmics(X = stemcells$gene, Y = unmap(stemcells$celltype), ncomp = 2, study = stemcells$study, keepX = c(10, 5, 15))
+out = mixOmics(X = stemcells$gene, Y = unmap(stemcells$celltype),
+ncomp = 2, study = stemcells$study, keepX = c(10, 5, 15))
 
 # directed towards mint.PLS-DA because Y is a factor
-out = mixOmics(X = stemcells$gene, Y = stemcells$celltype, ncomp = 2, study = stemcells$study)
+out = mixOmics(X = stemcells$gene, Y = stemcells$celltype, ncomp = 2,
+study = stemcells$study)
 
 # directed towards mint.sPLS-DA because Y is a factor and there is a keepX
-out = mixOmics(X = stemcells$gene, Y = stemcells$celltype, ncomp = 2, study = stemcells$study, keepX = c(10, 5, 15))
+out = mixOmics(X = stemcells$gene, Y = stemcells$celltype, ncomp = 2,
+study = stemcells$study, keepX = c(10, 5, 15))
 }
 
 \keyword{multivariate}

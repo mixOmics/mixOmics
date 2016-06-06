@@ -99,7 +99,7 @@ that contains the following components:
 Rohart F. et al (2016, submitted). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms.
 
 Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2013). Multi-group PLS Regression: Application to Epidemiology.
-In New Perspectives in Partial Least Squares and Related Methods, pages 243–255. Springer.
+In New Perspectives in Partial Least Squares and Related Methods, pages 243-255. Springer.
 }
 
 \author{Florian Rohart}
@@ -126,7 +126,7 @@ plotIndiv(res, study = "2", col = as.numeric(stemcells$celltype))
 # -- feature selection with keepX.constraint and keepX
 # we force mint.spls to build the PLS-component 1 and 2 with only specific genes
 keepX.constraint = list(comp1 = c("ENSG00000138756", "ENSG00000101470"),
-                        comp2 = c("ENSG00000120049", "ENSG00000138685", "ENSG00000204248", "ENSG00000103260"))
+comp2 = c("ENSG00000120049", "ENSG00000138685", "ENSG00000204248", "ENSG00000103260"))
 
 # we select 10 and 15 variables on component 3 and 4
 res = mint.spls(X = stemcells$gene, Y = Y, ncomp = 4, study = stemcells$study,
