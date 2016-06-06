@@ -36,7 +36,8 @@ DIABLO - multi omics integration for biomarker discovery. Submitted.
 
 \examples{
 
-data('TCGA.breast.cancer')
+data('breast.cancer')
+data.train = breast.cancer$data.train
 Y = data.train$Y
 
 data = list(mrna = data.train$mrna, mirna = data.train$mirna, prot = data.train$protein)
@@ -51,9 +52,9 @@ design = matrix(1, ncol = length(data), nrow = length(data), dimnames = list(nam
 diag(design) =  0
 design  
 
-TCGA.diablo = block.splsda(X = data, Y = Y, ncomp = ncomp, keepX = list.keepX, design = design)
-plotDiablo(TCGA.diablo, ncomp = 1)
-plotDiablo(TCGA.diablo, groupOrder = levels(Y)[nlevels(Y):1])
+breast.cancer.diablo = block.splsda(X = data, Y = Y, ncomp = ncomp, keepX = list.keepX, design = design)
+plotDiablo(breast.cancer.diablo, ncomp = 1)
+plotDiablo(breast.cancer.diablo, groupOrder = levels(Y)[nlevels(Y):1])
 }
 
 \keyword{regression}
