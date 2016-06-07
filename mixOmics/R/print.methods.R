@@ -327,24 +327,25 @@ function(x, ...)
 print.pca <- function(x, ...)
 {
     
-    
-    cat("Eigenvalues for the first ", x$ncomp, "principal components:", "\n")
-    print(x$sdev[1:x$ncomp])
+    ind.show = min(10, x$ncomp)
+
+    cat("Eigenvalues for the first", ind.show, "principal components, see object$sdev^2:", "\n")
+    print((x$sdev[1:ind.show])^2)
     cat("\n")
     
-    per.var = as.vector(x$sdev^2/x$var.tot)
+    per.var = x$explained_variance
     cum.var=as.vector(cumsum(per.var))
     x$sdev=as.vector(x$sdev)
     names(x$sdev) = paste("PC", 1:length(x$sdev), sep = "")
     names(per.var) = paste("PC", 1:length(per.var), sep = "")
     names(cum.var) = paste("PC", 1:length(cum.var), sep = "")
     
-    cat("Proportion of explained variance for the first ", x$ncomp, "principal components:", "\n")
-    print(per.var[1:x$ncomp])
+    cat("Proportion of explained variance for the first", ind.show, "principal components, see object$explained_variance:", "\n")
+    print(per.var[1:ind.show])
     cat("\n")
     
-    cat("Cumulative proportion explained variance for the first ", x$ncomp, "principal components:", "\n")
-    print(cum.var[1:x$ncomp])
+    cat("Cumulative proportion explained variance for the first", ind.show, "principal components, see object$cum.var:", "\n")
+    print(cum.var[1:ind.show])
     cat("\n")
     
     cat(" Other available components: \n", "-------------------- \n")
@@ -718,7 +719,7 @@ print.perf.sgccda.mthd = function(x, ...)
 print.tune.pca = function(x, ...)
 {
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
-    cat(" for all principal components, see object$var, object$prop.var and object$cum.var\n")
+    cat(" for all principal components, see object$sdev, object$explained_variance and object$cum.var\n")
 }
 
 print.tune.rcc = function(x, ...)

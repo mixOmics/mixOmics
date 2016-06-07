@@ -248,6 +248,7 @@ multilevel = NULL)
     
     #calcul explained variance
     result$explained_variance = result$sdev^2 / result$var.tot
+    result$cum.var = cumsum(result$explained_variance)
     
     return(invisible(result))
 }
