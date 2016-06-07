@@ -19,7 +19,7 @@ plotDiablo(x, ncomp = 1, groupOrder, ...)
 
 
 \details{
-The function uses a plot.data.frame to plot the component \code{ncomp} calculated from each data set, to visualise whether DIABLO (block.splsda) was successful at maximising the correlation between each data sets' component. The lower triangular panel indicated the Pearson's correlation coefficient, the upper triangular panel the scatter plot.
+The function uses a plot.data.frame to plot the component \code{ncomp} calculated from each data set to visualise whether DIABLO (block.splsda) is successful at maximising the correlation between each data sets' component. The lower triangular panel indicated the Pearson's correlation coefficient, the upper triangular panel the scatter plot.
 }
 
 
@@ -37,10 +37,9 @@ DIABLO - multi omics integration for biomarker discovery. Submitted.
 \examples{
 
 data('breast.TCGA')
-data.train = breast.TCGA$data.train
-Y = data.train$Y
+Y = breast.TCGA$data.train$Y
 
-data = list(mrna = data.train$mrna, mirna = data.train$mirna, prot = data.train$protein)
+data = list(mrna =  breast.TCGA$data.train$mrna, mirna =  breast.TCGA$data.train$mirna, prot =  breast.TCGA$data.train$protein)
 
 # set number of component per data set
 ncomp = c(3,3,3)

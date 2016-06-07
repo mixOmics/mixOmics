@@ -28,7 +28,7 @@ A list containing two data sets, \code{data.train} and \code{data.test} which bo
 }
 
 \details{
-The data come from The Cancer Genome Atlas (TCGA, http://cancergenome.nih.gov/). We divided the data into a training (discovery) and test (validation) set. The protein dataset which had a limited number of subjects available was used to allocate subjects into the training  set only, while the tes set included all remaning subjecta. Each data set was normalised and pre-processed. For illustrative purposes we drastically filtered the data here. 
+The data come from The Cancer Genome Atlas (TCGA, http://cancergenome.nih.gov/). We divided the data into a training (discovery) and test (validation) set. The protein dataset which had a limited number of subjects available was used to allocate subjects into the training  set only, while the tes set included all remaining subject. Each data set was normalised and pre-processed. For illustrative purposes we drastically filtered the data here. 
 }
 
 \source{
