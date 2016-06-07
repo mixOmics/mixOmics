@@ -15,7 +15,7 @@ New features:
       Added methods: block.pls, block.plsda, block.spls, block.splsda; 
       S3 visualisations: circosPlot (new), cimDiablo (new), plotDiablo (new), plotIndiv, plotLoadings, plotVar;   
       Performance evaluation: perf, tune, predict (new with majority vote for DIABLO, $vote) 
-5 - new data sets: stemcell (for MINT), TCGA.breast.cancer (for DIABLO)
+5 - new data sets: stemcell (for MINT), breast.TCGA (for DIABLO), diverse.16S and Koren.16S (for mixMC)
 
 Enhancements:
 -------------
@@ -24,12 +24,13 @@ Enhancements:
 3 - WARNING: in all plots, homogeneous arguments call: 'main' changed to 'title', 'add.legend' -> 'legend', 'cex.xxx' -> 'size.xxx', 'plot.ellipse' -> 'ellipse'
 4 - print.method functions updated to show the range of graphics / other functions to use with the object
 5 - predict function now outputs class names in $class
-6 - data set vac18 reduced number of genes is now ??
-7 - plotContrib has been depracated for plotLoadings
+6 - data set vac18 reduced number of genes is now 1000 (memory issues with the package)
+7 - plotContrib has been deprecated for plotLoadings
+8 - tune.pca has been coded more efficiently
 
 Bug fixes:
 ----------
-1 - explained variance for NIPALS/PCA fixed
+1 - explained variance for NIPALS/PCA fixed in print.pca, tune.pca and pca
 2 - plot3d mistmatch legend color, double titles for plotIndiv ggplot2 and lattice, order of group for ggpot2 and lattice
 3 - retired: data set prostate
 
