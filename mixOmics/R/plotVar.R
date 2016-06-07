@@ -597,7 +597,7 @@ label.axes.box = "both"  )
     #-- Start: Lattice
     if(style == "lattice" )
     {
-        legend = list(space = "right", title = "Legend", cex.title = 1.25,
+        legend.lattice = list(space = "right", title = "Legend", cex.title = 1.25,
         points=list(col=unique(col),cex = unique(cex),pch = unique(pch)),
         text = list(blocks))
         
@@ -605,7 +605,7 @@ label.axes.box = "both"  )
             p = xyplot(y ~ x | Block, data = df, xlab = X.label, ylab = Y.label, main = title,
             scales = list(x = list(relation = "free", limits = c(-1, 1)),
             y = list(relation = "free", limits = c(-1, 1))),
-            key=if (legend) {legend} else {NULL},
+            key=if (legend) {legend.lattice} else {NULL},
             panel = function(x, y, ...) {
                 
                 #-- Abline
@@ -646,7 +646,7 @@ label.axes.box = "both"  )
             scales = list(x = list(relation = "free", limits = c(-1, 1)),
             y = list(relation = "free", limits = c(-1, 1))),
             col = "white",
-            key=if (legend) {legend} else {NULL},
+            key=if (legend) {legend.lattice} else {NULL},
             )
             print(p)
             

@@ -248,9 +248,7 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
             study.test=as.factor(study.test)
         }
         if (any(unlist(lapply(newdata, nrow)) != length(study.test)))
-        {
-            stop(paste0("'study' must be a factor of length ",nrow(X),"."))
-        }
+        stop(paste0("'study' must be a factor of length ",nrow(newdata[[1]]),"."))
         
         #scale newdata if more than one study. If some levels of study.test are included in study.learn, the means/sigmas of study.learn are used to scale
         M=nlevels(study.test)

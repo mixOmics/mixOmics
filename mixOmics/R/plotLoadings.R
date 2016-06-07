@@ -177,8 +177,8 @@ layout.plotLoadings = function(layout, plot, legend, block)
 
                 if (legend)
                 {
-                    nRows = min(c(4, ceiling(nResp / 4)))
-                    nCols = min(c(4, ceiling(nResp / nRows)))
+                    nRows = min(c(2, ceiling(nResp / 4)))
+                    nCols = min(c(4, nResp))
                     layout(matrix(1 : (nCols * nRows), nRows, nCols, byrow=TRUE),rep(c(0.7,0.7 -0.4*legend),nCols/(1+legend)))
                 } else {
                     nRows = min(c(3, ceiling(nResp/3)))

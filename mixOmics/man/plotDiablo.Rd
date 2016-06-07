@@ -19,7 +19,7 @@ plotDiablo(x, ncomp = 1, groupOrder, ...)
 
 
 \details{
-The function uses a plot.data.frame to plot the component \code{ncomp} calculated from each data set, to visualise whether DIABLO (block.splsda) was successful at maximising the correlation between each data sets' component. The lower triangular panel indicated the Pearson's correlation coefficient, the upper triangular panel the scatter plot. The last column shows boxplots or barplot of the component scores according to each class and from each data set.
+The function uses a plot.data.frame to plot the component \code{ncomp} calculated from each data set, to visualise whether DIABLO (block.splsda) was successful at maximising the correlation between each data sets' component. The lower triangular panel indicated the Pearson's correlation coefficient, the upper triangular panel the scatter plot.
 }
 
 

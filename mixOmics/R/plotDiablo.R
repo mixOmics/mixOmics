@@ -70,8 +70,8 @@ groupOrder,
     stop(paste0("'ncomp' must be a numeric value lower than ", min(object$ncomp),", which is min(object$ncomp)"))
     # end check parameters
     
-    numberOfCols = ncol(VarX)
-    numberOfRows = numberOfCols - 1
+    numberOfCols = ncol(VarX)-1
+    numberOfRows = numberOfCols #- 1
     
     mat = matrix(0, nrow = numberOfRows, ncol = numberOfRows)
     for(i in 1:nrow(mat))
@@ -80,9 +80,9 @@ groupOrder,
         mat[i,j] = paste(i,j, sep="_")
     }
     plotType = list(cor=mat[lower.tri(mat)], scatter=mat[upper.tri(mat)],
-    lab=diag(mat),
-    bar=paste(1:(numberOfRows-1), numberOfCols, sep="_"),
-    stackedbar=paste(numberOfRows, numberOfCols, sep="_"))
+    lab=diag(mat))#,
+    #bar=paste(1:(numberOfRows-1), numberOfCols, sep="_"),
+    #stackedbar=paste(numberOfRows, numberOfCols, sep="_"))
     
     par(mfrow = c(numberOfRows, numberOfCols), mar = rep.int(1/2, 4), oma = c(2,2,2,2))
     for(i in 1:numberOfRows)
@@ -125,6 +125,8 @@ splotMatPlot = function(x, y, datNames, Y, ptype, groupOrder)
         text(x=1, y=1, labels=datNames[ind], cex = 2)
         box()
     }
+    if(FALSE)
+    {
     if(names(ptype) == "bar")
     {
         Y2 = factor(as.character(Y), levels = groupOrder)
@@ -139,6 +141,7 @@ splotMatPlot = function(x, y, datNames, Y, ptype, groupOrder)
         barplot(bars, col= color.mixo(match(levels(Y2), levels(Y))),
         axes = FALSE)
         axis(4, at=seq(0,max(bars),length.out=5), labels=seq(0,max(bars),length.out=5))
+    }
     }
 }
 
