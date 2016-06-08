@@ -26,6 +26,8 @@ verbose = FALSE)
 # blocks should specify the block data set where the sample plot can be performed
 # (ideally when there are >= 2 components!)
 # we indicate the diet variable colors.
+plotIndiv(nutrimouse.rgcca)
+
 plotIndiv(nutrimouse.rgcca, blocks = c(1,2), group = nutrimouse$diet, ellipse = TRUE)
 
 plotIndiv(nutrimouse.rgcca, blocks = c(1), group = nutrimouse$diet, ellipse = TRUE)

@@ -44,7 +44,7 @@ name.var = name.var, cex.name = 0.5,complete.name.var=TRUE, contrib = "max")
 
 # look at the contribution (median) for each variable
 plot.contrib = plotLoadings(splsda.liver, comp = 2, method = 'median', plot = FALSE, contrib = "max")
-head(plot.contrib$contrib)
+head(plot.contrib)
 # change the title of the legend and title name
 plotLoadings(splsda.liver, comp = 2, method = 'median', legend.title = 'Time',
 title = 'Contribution plot', contrib = "max")
@@ -219,8 +219,8 @@ if(additional.test==TRUE)
     plotLoadings(res.1level,cex.legend=1, contrib = "max")
     
     #test name.var
-    plotLoadings(res.1level,name.var=liver.toxicity$gene.ID[1:ncol(X), 'gene.title'])
-    plotLoadings(res.1level,name.var=liver.toxicity$gene.ID[1:ncol(X), 'gene.title'], contrib = "max")
+    plotLoadings(res.1level,name.var=substr(liver.toxicity$gene.ID[1:ncol(X), 'gene.title'],1,20))
+    plotLoadings(res.1level,name.var=substr(liver.toxicity$gene.ID[1:ncol(X), 'gene.title'],1,20), contrib = "max")
     plotLoadings(res.1level,name.var=1:ncol(X), contrib = "max")
     
     #test legend
