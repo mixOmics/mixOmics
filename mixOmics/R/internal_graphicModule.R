@@ -102,6 +102,7 @@ alpha)
 
         #note: at this present time, ggplot2 does not allow xlim to be changed per subplot, so cannot use xlim properly
         
+        save(list=ls(),file="tempgg.Rdata")
         #-- Initialise ggplot2
         p = ggplot(df, aes(x = x, y = y, color = group),
         main = title, xlab = X.label, ylab = Y.label) +
@@ -145,7 +146,7 @@ alpha)
                 {
                     p = p +geom_point(data = subset(df, col == i & df$Block == levels(df$Block)[j]),size = 0, shape = 0,
                     color = unique(df[df$col == i & df$Block == levels(df$Block)[j], ]$col))+
-                    geom_text(data = subset(df, col == i),
+                    geom_text(data = subset(df, col == i & df$Block == levels(df$Block)[j]),
                     aes(label = names),
                     color = df[df$col == i & df$Block == levels(df$Block)[j], ]$col,
                     size = df[df$col == i & df$Block == levels(df$Block)[j], ]$cex,show.legend  = F)
