@@ -65,7 +65,7 @@ If \code{validation = "loo"}, leave-one-out cross-validation is performed. By de
 \value{
 Depending on the type of analysis performed, a list that contains:
 \item{mat.mean.error,}{returns the prediction error for each \code{test.keepX} on each component}
-\item{choice.keepX.constraint}{returns the variables selected by the optimal keepX on each component.}
+\item{choice.keepX}{returns the variables selected by the optimal keepX on each component.}
 \item{error.per.class}{returns the error rate for each level of \code{Y} and for each component computed with the optimal keepX}
 
 \item{predict}{Prediction values for each sample, each \code{test.keepX}, each comp and each repeat. Only if light.output=FALSE}

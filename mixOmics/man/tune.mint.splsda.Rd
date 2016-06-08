@@ -47,7 +47,7 @@ All component \eqn{1:\code{ncomp}} are tuned, except the first ones for which a 
 The returned value is a list with components: 
 \item{mat.mean.error,}{returns the prediction error for each \code{test.keepX} on each component}
 \item{choice.keepX.constraint}{returns the variables selected by the optimal keepX on each component.}
-\item{error.per.class}{returns the error rate for each level of \code{Y} and for each component computed with the optimal keepX}
+\item{error.per.class}{returns the error rate for each level of \code{Y} and for each component computed with the optimal keepX.constraint}
 
   \item{predict}{Prediction values for each sample, each \code{test.keepX} and each comp.}
   \item{class}{Predicted class for each sample, each \code{test.keepX} and each comp.}
