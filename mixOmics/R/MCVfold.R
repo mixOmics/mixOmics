@@ -79,6 +79,7 @@ get.BER = function(X)
 
 stratified.subsampling = function(Y, folds = 10)
 {
+    stop = 0
     for(i in 1:nlevels(Y))
     {
         ai=sample(which(Y==levels(Y)[i]),replace=FALSE) # random sampling of the samples from level i
@@ -87,6 +88,7 @@ stratified.subsampling = function(Y, folds = 10)
         {
             for(j in (length(ai)+1):folds)
             aai[[j]]=integer(0)
+            stop = stop +1
         }
         assign(paste("aa",i,sep="_"),sample(aai,replace=FALSE))         # the `sample(aai)' is to avoid the first group to have a lot more data than the rest
     }
@@ -102,7 +104,14 @@ stratified.subsampling = function(Y, folds = 10)
         }
     }# SAMPLE is a list of k splits
     
-    return(SAMPLE)
+    ind0 = sapply(SAMPLE, length)
+    if(any(ind0 == 0))
+    {
+        SAMPLE = SAMPLE [-which(ind0 == 0)]
+        message("Because of a too high number of 'folds' required, ",length(which(ind0 == 0))," folds were randomly assigned no data: the number of 'folds' is reduced to ", length(SAMPLE))
+    }
+    
+    return(list(SAMPLE = SAMPLE, stop = stop))
 }
 
 
@@ -139,6 +148,7 @@ class.object = NULL
     prediction.comp = class.comp = list()
     for(ijk in dist)
     class.comp[[ijk]] = array(0, c(nrow(X), nrepeat, length(test.keepX)))# prediction of all samples for each test.keepX and  nrep at comp fixed
+    folds.input = folds
     for(nrep in 1:nrepeat)
     {
         prediction.comp[[nrep]] = array(0, c(nrow(X), nlevels(Y), length(test.keepX)), dimnames = list(rownames(X), levels(Y), test.keepX))
@@ -159,7 +169,7 @@ class.object = NULL
         {
             
             if (nrep > 1) # reinitialise the folds
-            folds = M
+            folds = folds.input
             
             if (is.null(folds) || !is.numeric(folds) || folds < 2 || folds > n)
             {
@@ -168,7 +178,10 @@ class.object = NULL
                 M = round(folds)
                 if (is.null(multilevel))
                 {
-                    folds = stratified.subsampling(Y, folds = M)
+                    temp = stratified.subsampling(Y, folds = M)
+                    folds = temp$SAMPLE
+                    if(temp$stop > 0 & nrep == 1) # to show only once
+                    warning("At least one class is not represented in one fold, which may unbalance the error rate.\n  Consider a number of folds lower than the minimum in table(Y): ", min(table(Y)))
                 } else {
                     folds = split(sample(1:n), rep(1:M, length = n)) # needs to have all repeated samples in the same fold
                 }
@@ -178,6 +191,7 @@ class.object = NULL
             M = n
         }
         
+        M = length(folds)
         
         error.sw = matrix(0,nrow = M, ncol = length(test.keepX))
         rownames(error.sw) = paste0("fold",1:M)
