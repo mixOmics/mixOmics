@@ -102,7 +102,6 @@ alpha)
 
         #note: at this present time, ggplot2 does not allow xlim to be changed per subplot, so cannot use xlim properly
         
-        save(list=ls(),file="tempgg.Rdata")
         #-- Initialise ggplot2
         p = ggplot(df, aes(x = x, y = y, color = group),
         main = title, xlab = X.label, ylab = Y.label) +
