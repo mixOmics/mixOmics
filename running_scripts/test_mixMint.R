@@ -186,7 +186,7 @@ res=block.spls(list(X=data),Y=Y.mat,ncomp=3,keepX=list(c(100)),
 keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))),
 keepY=c(2),keepY.constraint=list(comp1=c(2,3),comp2=3))
 
-res=block.spls(list(block1=data),Y=Y.mat,ncomp=3,keepX=list(c(100)),
+res2=block.spls(list(block1=data),Y=Y.mat,ncomp=3,keepX=list(c(100)),
 keepX.constraint=list(block1=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))),
 keepY=c(2),keepY.constraint=list(comp1=c(1),comp2=c(2)))
 

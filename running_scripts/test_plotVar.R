@@ -192,9 +192,9 @@ if(additional.test==TRUE)
     plotVar(toxicity.spls,overlap = F)
     
     
-    # test add.legend ######
-    plotVar(toxicity.spls,add.legend=FALSE)
-    plotVar(toxicity.spls,add.legend=TRUE)
+    # test legend ######
+    plotVar(toxicity.spls,legend=FALSE)
+    plotVar(toxicity.spls,legend=TRUE)
     
     
     
@@ -243,9 +243,9 @@ if(additional.test==TRUE)
     plotVar(linn.res,rad.in=1)
     
     
-    # test add.legend
-    plotVar(linn.res,add.legend=FALSE)
-    plotVar(linn.res,add.legend=TRUE)
+    # test legend
+    plotVar(linn.res,legend=FALSE)
+    plotVar(linn.res,legend=TRUE)
     
     
     ######### SPCA
@@ -293,8 +293,8 @@ if(additional.test==TRUE)
     plotVar(nutri.sgcca,blocks=1:3,pch=15:17)
     plotVar(nutri.sgcca,blocks=1:3,pch=15:17,cex=c(3.5,4.5,6.5))
     
-    #test add.legend
-    plotVar(nutri.sgcca,add.legend=TRUE)
+    #test legend
+    plotVar(nutri.sgcca,legend=TRUE)
     
     
     
@@ -348,9 +348,9 @@ if(additional.test==TRUE)
     
     plotVar(toxicity.spls,overlap = FALSE, style = "lattice")
     
-    # test add.legend
-    plotVar(toxicity.spls,add.legend=FALSE, style = "lattice")
-    plotVar(toxicity.spls,add.legend=TRUE, style = "lattice")
+    # test legend
+    plotVar(toxicity.spls,legend=FALSE, style = "lattice")
+    plotVar(toxicity.spls,legend=TRUE, style = "lattice")
     
     
     ########### RCC
@@ -377,7 +377,7 @@ if(additional.test==TRUE)
     rat.spca <- spca(liver.toxicity$gene, ncomp = 3, keepX = rep(50, 3))
     
     plotVar(rat.spca, style = "lattice")
-    plotVar(rat.spca,add.legend = FALSE, style = "lattice")
+    plotVar(rat.spca,legend = FALSE, style = "lattice")
     plotVar(rat.spca,col=list(rep(c("green","red"),each=1558)),style="lattice")
     
     
@@ -452,9 +452,9 @@ if(additional.test==TRUE)
     
     plotVar(toxicity.spls,overlap = FALSE, style = "graphics")
     
-    # test add.legend
-    plotVar(toxicity.spls,add.legend=FALSE, style = "graphics")
-    plotVar(toxicity.spls,add.legend=TRUE, style = "graphics")
+    # test legend
+    plotVar(toxicity.spls,legend=FALSE, style = "graphics")
+    plotVar(toxicity.spls,legend=TRUE, style = "graphics")
     
     
     ########### RCC
@@ -508,7 +508,7 @@ if(additional.test==TRUE)
     plotVar(nutri.sgcca,var.names = c(TRUE,FALSE,FALSE), font= c(1,2,2), style = "graphics")
     plotVar(nutri.sgcca,var.names = c(TRUE,FALSE,TRUE), font= c(4,2,1), style = "graphics")
     
-    #test add.legend
-    plotVar(nutri.sgcca,add.legend=FALSE)
+    #test legend
+    plotVar(nutri.sgcca,legend=FALSE)
 }
 par(opar)

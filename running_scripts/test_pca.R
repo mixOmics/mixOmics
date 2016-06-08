@@ -21,8 +21,13 @@ biplot(pca.res, xlabs = multidrug$cell.line$Class, cex = 0.7)
 plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,
 group = as.numeric(as.factor(multidrug$cell.line$Class)))
 
+pch = sample(factor(multidrug$cell.line$Class,labels = 1:9))
+pch = sample(factor(multidrug$cell.line$Class))
+plotIndiv(pca.res, group = as.numeric(as.factor(multidrug$cell.line$Class)), pch = pch)
+plotIndiv(pca.res, group = as.factor(multidrug$cell.line$Class), pch = pch,legend=T)
 
-plotIndiv(pca.res, ind.names = multidrug$cell.line$Class, group = as.numeric(as.factor(multidrug$cell.line$Class)),ellipse=T)
+
+plotIndiv(pca.res, ind.names = multidrug$cell.line$Class, group = as.factor(multidrug$cell.line$Class),ellipse=T)
 
 plotIndiv(pca.res, ind.names = multidrug$cell.line$Class, col = as.numeric(as.factor(multidrug$cell.line$Class)))
 
