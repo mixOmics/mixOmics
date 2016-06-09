@@ -419,10 +419,10 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
     if(length(grep("block",class(object)))!=0 )
     {
         out=list(predict=Y.hat[which(!is.na(ind.match))],variates=t.pred[which(!is.na(ind.match))],B.hat=B.hat[which(!is.na(ind.match))])
-        out$newdata=concat.newdata
+        #out$newdata=concat.newdata
     }else{# not a block (pls/spls/plsda/splsda/mint...)
         out=list(predict=Y.hat[[1]],variates=t.pred[[1]],B.hat=B.hat[[1]])
-        out$newdata=concat.newdata[[1]]
+        #out$newdata=concat.newdata[[1]]
         
     }
 

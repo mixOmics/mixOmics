@@ -30,7 +30,7 @@ dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), \ldots)
 
 \arguments{
   \item{object}{object of class inheriting from \code{"(mint).(block).(s)pls(da)"}.}
-  \item{newdata}{data matrix in which to look for for explanatory variables to be used for prediction.}
+\item{newdata}{data matrix in which to look for for explanatory variables to be used for prediction. Please note that this method does not perform multilevel decomposition or log ratio transformations, which need to be processed beforehand.}
 \item{study.test}{For MINT objects, grouping factor indicating which samples of \code{newdata} are from the same study. Overlap with \code{object$study} are allowed.}
   \item{dist}{distance to be applied for discriminant methods to predict the class of new data,
     should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \code{"max.dist"} (see Details). 
@@ -40,7 +40,7 @@ dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), \ldots)
 
 \details{
 \code{predict} produces predicted values, obtained by evaluating the PLS-derived methods, returned by \code{(mint).(block).(s)pls(da)} in the frame \code{newdata}.
-Variates for \code{newdata} are also returned.
+Variates for \code{newdata} are also returned. Please note that this method does not perform multilevel decomposition or log ratio transformations, which need to be processed beforehand.
 
 Different class prediction methods are proposed for discriminant analysis: \code{"max.dist"}
 is the naive method to predict the class. It is based on the predicted matrix (\code{object$predict}) 
@@ -53,7 +53,7 @@ in the calculation of the distance.
 
 For MINT objects, the \code{study.test} argument is required and provides the grouping factor of \code{newdata}.
 
-For block objects, \code{newdata} is a list of matrices whose names are a subset of \code{names(object$X)}, i.e. missing blocks are allowed. Prediction is made for each block indepedently and a majority vote is performed to combine all blocks, where NA means that there is no consensus among the block.
+For multi block analysis (thus block objects), \code{newdata} is a list of matrices whose names are a subset of \code{names(object$X)} and missing blocks are allowed. Prediction is made for each block indepedently and a majority vote is performed to combine all blocks, where NA means that there is no consensus among the block.
 
 }
 
@@ -63,15 +63,17 @@ For block objects, \code{newdata} is a list of matrices whose names are a subset
 	correspond to the observations, the response variables and the model dimension, respectively.}
   \item{variates}{matrix of predicted variates.}
   \item{B.hat}{matrix of regression coefficients (without the intercept).}
-\item{class}{predicted class of \code{newdata} for each \eqn{1,...,}\code{ncomp} components.}
+  \item{class}{predicted class of \code{newdata} for each \eqn{1,...,}\code{ncomp} components.}
   \item{centroids}{matrix of coordinates for centroids.}
+  \item{dist}{type of distance requested.}
+  \item{vote}{majority vote result for multi block analysis (see details above).}
 }
 
 \references{
 Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.  
 }
 
-\author{Florian Rohart, Sebastien Dejean, Ignacio Gonzalez, Kim-Anh Le Cao, Pierre Monget}
+\author{Florian Rohart, Sebastien Dejean, Ignacio Gonzalez, Kim-Anh Le Cao}
 
 
 \seealso{\code{\link{pls}}, \code{\link{spls}}, \code{\link{plsda}}, \code{\link{splsda}},
