@@ -164,7 +164,7 @@ ncomp = 2,
 keepX =  c(10, 150),
 logratio= 'CLR')  # CLR log ratio transformation
 
-plotIndiv(splsda.16S, ind.names = F, pch = 16, ellipse = TRUE, legend = TRUE)
+plotIndiv(splsda.16S, ind.names = FALSE, pch = 16, ellipse = TRUE, legend = TRUE)
 #OTUs selected at the family level
 diverse.16S$taxonomy[selectVar(splsda.16S, comp = 1)$name,'Family']
 }
