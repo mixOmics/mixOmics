@@ -19,7 +19,7 @@ A list containing two data sets, \code{data.TSS} and \code{data.raw} and some me
     \item{\code{data.raw}}{data frame with 162 rows (samples) and 1674 columns (OTUs). The prefiltered raw count OTU data.}
     \item{\code{taxonomy}}{data frame with 1674 rows (OTUs) and 6 columns indicating the taxonomy of each OTU.}
     \item{\code{indiv}}{data frame with 162 rows indicating sample meta data.}
-    \item{\code{Y}}{factor of length 162 indicating the bodysite with levels "Antecubital_fossa", "Stool" and         "Subgingival_plaque".}
+    \item{\code{bodysite}}{factor of length 162 indicating the bodysite with levels "Antecubital_fossa", "Stool" and         "Subgingival_plaque".}
     \item{\code{sample}}{vector of length 162 indicating the unique individual ID, useful for a multilevel approach to taken into account the repeated measured on each individual.}
 }
 }

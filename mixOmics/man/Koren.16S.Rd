@@ -21,7 +21,7 @@ A list containing two data sets, \code{data.TSS} and \code{data.raw} and some me
     \item{\code{data.raw}}{data frame with 43 rows (samples) and 980 columns (OTUs). The prefiltered raw count OTU data.}
     \item{\code{taxonomy}}{data frame with 980 rows (OTUs) and 7 columns indicating the taxonomy of each OTU.}
     \item{\code{indiv}}{data frame with 43 rows indicating sample meta data.}
-    \item{\code{Y}}{factor of length 43 indicating the bodysite with levels arterial plaque, saliva and stool.}
+    \item{\code{bodysite}}{factor of length 43 indicating the bodysite with levels arterial plaque, saliva and stool.}
 }
 }
 

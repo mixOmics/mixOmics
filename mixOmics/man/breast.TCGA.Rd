@@ -23,7 +23,7 @@ A list containing two data sets, \code{data.train} and \code{data.test} which bo
   	The expression levels of 200 mRNA.}
     \item{\code{protein}}{data frame with 150 (70) rows and 142 columns in the training  data set only. 
   	The abundance of 142 proteins.}
-    \item{\code{Y}}{a factor indicating the brerast cancer subtypes in the training (length of 150) and test (length of 70) sets. }
+    \item{\code{subtype}}{a factor indicating the brerast cancer subtypes in the training (length of 150) and test (length of 70) sets. }
 }
 }
 
