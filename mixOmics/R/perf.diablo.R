@@ -36,7 +36,6 @@ perf.sgccda = function (object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
 validation = c("Mfold", "loo"),
 folds = 10,
-cpus = 1,
 ...)
 {
     
@@ -89,7 +88,6 @@ cpus = 1,
     ### Start: Check parameter validation / set up sample
     
     ### Start: Training samples (X.training and Y.training) and Test samples (X.test / Y.test)
-    assign("X.training", NULL, pos = 1); assign("Y.training", NULL, pos = 1)
     X.training = lapply(folds, function(x){out=lapply(1:J, function(y) {X[[y]][-x, ]}); names(out) = names(X); out}) #need to name the block for prediction
     Y.training = lapply(folds, function(x) {Y[-x]});
     
@@ -97,26 +95,10 @@ cpus = 1,
     Y.test = lapply(folds, function(x) {Y[x]})
     ### End: Training samples (X.training and Y.training) and Test samples (X.test / Y.test)
     
-    if (!is.numeric(cpus) | cpus<=0)
-    stop("'cpus' needs to be a numeric value higher than 1")
-    
     ### Estimation models
-    if (cpus > 1)
-    {
-        cl <- makeCluster(cpus, type = "SOCK")
-        #clusterExport(cl, c("internal_wrapper.mint.block", "unmap","Check.entry.wrapper.sparse.mint.block", "internal_mint.block", "block.splsda",
-        #"mean_centering_per_study", "sparse.mint.block_iteration", "defl.select", "study_split", "initsvd",
-        #"miscrossprod","cov2","sparsity"),envir=environment()) ## Later on mixOmics package
-        clusterExport(cl, c("X.training", "Y.training", "object", "J"))
-        model = parLapply(cl, 1 : M, function(x) {block.splsda(X = X.training[[x]], Y = Y.training[[x]], ncomp = object$ncomp[-indY], keepX = object$keepX,
+    model = lapply(1 : M, function(x) {block.splsda(X = X.training[[x]], Y = Y.training[[x]], ncomp = object$ncomp[-indY], keepX = object$keepX,
             design = object$design, max.iter = object$max.iter, tol = object$tol, init = object$init, scheme = object$scheme,
             bias = object$bias, mode = object$mode)})
-        stopCluster(cl)
-    } else {
-        model = lapply(1 : M, function(x) {block.splsda(X = X.training[[x]], Y = Y.training[[x]], ncomp = object$ncomp[-indY], keepX = object$keepX,
-            design = object$design, max.iter = object$max.iter, tol = object$tol, init = object$init, scheme = object$scheme,
-            bias = object$bias, mode = object$mode)})
-    }
     
     ### Retrieve selected variables per component
     features = lapply(1 : J, function(x)

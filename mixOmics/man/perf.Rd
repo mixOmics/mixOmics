@@ -40,7 +40,7 @@ PLS-DA, sparse PLS-DA, MINT (mint.splsda) and DIABLO (block.splsda) models using
 \method{perf}{sgccda}(object,
             dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
             validation = c("Mfold", "loo"),
-            folds = 10, cpus =1, \ldots)
+            folds = 10, \ldots)
 
 }
 
@@ -52,7 +52,6 @@ PLS-DA, sparse PLS-DA, MINT (mint.splsda) and DIABLO (block.splsda) models using
     \code{"loo"} (see below). Default is \code{"Mfold"}.}
   \item{folds}{the folds in the Mfold cross-validation. See Details.}
   \item{progressBar}{by default set to \code{TRUE} to output the progress bar of the computation.}
-\item{cpus}{Numeric value to explicit the number of cpus to be used. Has to be greater than 1.}
 \item{...}{not used}
 }
 
