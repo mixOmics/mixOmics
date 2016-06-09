@@ -40,9 +40,8 @@ folds = 10,
 {
     
     ### Start: Initialization parameters
-    assign("object", object, pos = 1);
     X = object$X; level.Y = object$names$colnames$Y;
-    assign("J", NULL, pos = 1); J = length(X)
+    J = length(X)
     Y = object$Y#ind.mat; Y = map(Y); Y = factor(Y, labels = level.Y)
     n = nrow(X[[1]]);
     indY = object$indY
