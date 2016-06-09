@@ -47,7 +47,7 @@
 block.plsda = function(X,
 Y,
 indY,
-ncomp = rep(2,length(X)),
+ncomp = 2,
 design,
 scheme,
 mode,

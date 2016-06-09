@@ -28,7 +28,7 @@ wrapper.sgcca = function(
 X,
 design = 1 - diag(length(X)),
 penalty = NULL,
-ncomp = rep(1, length(X)),
+ncomp = 1,
 keepX.constraint,
 keepX,
 scheme = "centroid",

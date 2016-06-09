@@ -21,7 +21,7 @@ wrapper.rgcca = function(
 X,
 design = 1 - diag(length(X)),
 tau = rep(1, length(X)),
-ncomp = rep(1, length(X)),
+ncomp = 1,
 keepX.constraint,
 keepX,
 scheme = "centroid",

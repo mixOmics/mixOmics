@@ -659,12 +659,15 @@ verbose)
     stop("Either 'Y' or 'indY' is needed")
     
     if (missing(ncomp))
-    ncomp = rep(1, length(X))
+    ncomp = 1
     
-    #check length(ncomp)=length(A)
-    if (length(ncomp) != length(X))
-    stop(paste0("'ncomp' must be a vector of length ", length(X),", the number of blocks in X"))
+    #check length(ncomp)=1
+    if (length(ncomp) != 1)
+    stop("'ncomp' must be a single value")
     
+    # transform ncomp to length(X)
+    ncomp = rep(ncomp, length(X))
+
     # check names on X are unique
     if (length(unique(names(X))) != length(X))
     stop("Each block of 'X' must have a unique name.")
@@ -945,8 +948,15 @@ keepX.constraint)
     #names(X)=paste0("block", 1:length(X)) #add names to the blocks if no names or not unique name for each block
 
     if (missing(ncomp))
-    ncomp = rep(1, length(X))
-    
+    ncomp = 1
+
+    #check length(ncomp)=1
+    if (length(ncomp) != 1)
+    stop("'ncomp' must be a single value")
+
+    # transform ncomp to length(X)
+    ncomp = rep(ncomp, length(X))
+
     #check dimnames and ncomp per block of A
     for (q in 1:length(X))
     {
@@ -954,11 +964,6 @@ keepX.constraint)
         X[[q]] = check$X
         ncomp[q] = check$ncomp
     }
-    
-    
-    #check length(ncomp)=length(A)
-    if (length(ncomp)!=length(X))
-    stop("'ncomp' must be a vector of length the number of blocks in X")
     
     #check ncomp[q]<ncol(X[[q]])
     for (q in 1:length(X))
@@ -1129,12 +1134,15 @@ keepX.constraint)
     stop("'tau' is needed")
     
     if (missing(ncomp))
-    ncomp = rep(1, length(X))
+    ncomp = 1
     
-    #check length(ncomp)=length(A)
-    if (length(ncomp)!=length(X))
-    stop("'ncomp' must be a vector of length the number of blocks in X")
-
+    #check length(ncomp)=1
+    if (length(ncomp) != 1)
+    stop("'ncomp' must be a single value")
+    
+    # transform ncomp to length(X)
+    ncomp = rep(ncomp, length(X))
+    
     #check dimnames and ncomp per block of A
     for (q in 1:length(X))
     {

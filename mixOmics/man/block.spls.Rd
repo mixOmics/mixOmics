@@ -11,7 +11,7 @@
 block.spls(X,
 Y,
 indY,
-ncomp = rep(2,length(X)),
+ncomp = 2,
 keepX.constraint,
 keepY.constraint,
 keepX,
@@ -32,7 +32,7 @@ near.zero.var = FALSE)
 \item{X}{A list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets.}
 \item{Y}{Outcome. Numeric vector or matrix of responses (for multi-response models)}
 \item{indY}{To supply if Y is missing, indicates the position of the outcome in the list \code{X}}
-\item{ncomp}{Numeric vector of length the number of blocks in \code{X}. The number of components to include in the model for each block (does not necessarily need to take the same value for each block). By default set to 2 per block.}
+\item{ncomp}{the number of components to include in the model. Default to 2.}
 \item{keepX.constraint}{A list of same length as X. Each entry keepX.constraint[[i]] is a list containing which variables of X[[i]] are to be kept on each of the first PLS-components}
 \item{keepY.constraint}{Only used if Y is provided, otherwise extracted from keepX.constraint. A list containing which variables of Y are to be kept on each of the first PLS-components}
 \item{keepX}{ A vector of same length as X.  Each entry keepX[i] is the number of X[[i]]-variables kept in the model on the last components (once all keepX.constraint[[i]] are used).}
@@ -76,7 +76,7 @@ that contains the following components:
 
 \item{X}{the centered and standardized original predictor matrix.}
 \item{indY}{the position of the outcome Y in the output list X.}
-\item{ncomp}{the number of components included in the model.}
+\item{ncomp}{the number of components included in the model for each block.}
 \item{mode}{the algorithm used to fit the model.}
 \item{keepX}{Number of variables used to build each component of each block}
 \item{keepY}{Number of variables used to build each component of Y}
@@ -126,7 +126,7 @@ byrow = TRUE, dimnames = list(names(data), names(data)))
 
 # indY indicates where the outcome Y is in the list X
 res = block.spls(X = data, indY = 3, keepX = list(gene = c(10,5,15), lipid = c(3,2)),
-    ncomp = c(3,3,3))
+    ncomp = 3)
 res$keepX
 selectVar(res, comp = 1)
 plotIndiv(res)

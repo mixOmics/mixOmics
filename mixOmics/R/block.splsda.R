@@ -51,7 +51,7 @@
 block.splsda = wrapper.sgccda = function(X,
 Y,
 indY,
-ncomp=rep(2,length(X)),
+ncomp = 2,
 keepX.constraint,
 keepX,
 design,
