@@ -37,7 +37,6 @@
 
 plot.sgccda = plotDiablo = function(x,
 ncomp = 1,
-groupOrder,
 ...)
 {
     
@@ -57,14 +56,6 @@ groupOrder,
     
     # check input parameters
     Y=object$Y
-    if(missing(groupOrder))
-    {
-        groupOrder = levels(Y)
-    } else {
-        if (length(groupOrder) != nlevels(Y) | sum(is.na(match(groupOrder,levels(Y)))) > 0)
-        stop("'groupOrder' must contains all the levels of 'Y'") # so 2 blocks + the outcome Y
-        
-    }
     
     if (length(ncomp) != 1 | ncomp > min(object$ncomp))
     stop(paste0("'ncomp' must be a numeric value lower than ", min(object$ncomp),", which is min(object$ncomp)"))
@@ -93,7 +84,7 @@ groupOrder,
             {
                 intersect(paste(i,j,sep="_"), x)
             }))
-            splotMatPlot(x=VarX[, i], y=VarX[, j], datNames, Y, ptype, groupOrder)
+            splotMatPlot(x=VarX[, i], y=VarX[, j], datNames, Y, ptype)
             
             if(i == 1 & j %in% seq(2, numberOfRows, 1))
             Axis(side = 3, x=VarX[, i])
@@ -106,7 +97,7 @@ groupOrder,
 }
 
 
-splotMatPlot = function(x, y, datNames, Y, ptype, groupOrder)
+splotMatPlot = function(x, y, datNames, Y, ptype)
 {
     if(names(ptype) == "cor")
     {
