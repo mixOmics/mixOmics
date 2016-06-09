@@ -101,7 +101,7 @@ data.test=list(gene=gene.test,lipid=lipid.test)
 
 # example with block.pls
 # ------------------
-res.train=block.pls(X=data.train,indY=3,ncomp=c(3,3,3))
+res.train=block.pls(X=data.train,indY=3,ncomp = 3)
 test.predict <- predict(res.train, newdata=data.test, method = "max.dist")
 
 par(mfrow=c(1,2))
@@ -118,7 +118,7 @@ c(paste0("new ind",1:length(test))), pos = 3)
 
 # example with block.spls
 # ------------------
-res.train=block.spls(X=data.train,indY=3,ncomp=c(3,3,3),keepX=list(gene=c(10,10,10),lipid=c(5,5,5)))
+res.train=block.spls(X=data.train,indY=3,ncomp = 3,keepX=list(gene=c(10,10,10),lipid=c(5,5,5)))
 test.predict <- predict(res.train, newdata=data.test, method = "max.dist")
 
 par(mfrow=c(1,2))
@@ -135,7 +135,7 @@ c(paste0("new ind",1:length(test))), pos = 3)
 
 # example with block.plsda
 # ------------------
-res.train=block.plsda(X=list(gene=gene.train,lipid=lipid.train),Y=Y.train,ncomp=c(3,3))
+res.train=block.plsda(X=list(gene=gene.train,lipid=lipid.train),Y=Y.train,ncomp = 3)
 test.predict <- predict(res.train, newdata=data.test, method = "max.dist")
 
 Prediction <- test.predict$vote$max.dist[, 3]
@@ -162,7 +162,7 @@ c(paste0("new ind",1:length(test))), pos = 3)
 
 # example with block.splsda=diablo=sgccda
 # ------------------
-res.train=block.splsda(X=list(gene=gene.train,lipid=lipid.train),Y=Y.train,ncomp=c(3,3),keepX=list(gene=c(10,10,10),lipid=c(5,5,5)))
+res.train=block.splsda(X=list(gene=gene.train,lipid=lipid.train),Y=Y.train,ncomp = 3,keepX=list(gene=c(10,10,10),lipid=c(5,5,5)))
 test.predict <- predict(res.train, newdata=data.test, method = "max.dist")
 
 Prediction <- test.predict$vote$max.dist[, 3]
@@ -183,7 +183,7 @@ c(paste0("new ind",1:length(test))), pos = 3)
 
 
 # example with block.splsda=diablo=sgccda and a missing block
-res.train=block.splsda(X=list(gene=gene.train,lipid=lipid.train),Y=Y.train,ncomp=c(3,3),keepX=list(gene=c(10,10,10),lipid=c(5,5,5)))
+res.train=block.splsda(X=list(gene=gene.train,lipid=lipid.train),Y=Y.train,ncomp = 3,keepX=list(gene=c(10,10,10),lipid=c(5,5,5)))
 test.predict <- predict(res.train, newdata=data.test[2], method = "max.dist")
 
 Prediction <- test.predict$vote$max.dist[, 3]

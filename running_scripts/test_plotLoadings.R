@@ -253,7 +253,7 @@ if(additional.test==TRUE)
     Y = Y,
     design = design,
     keepX = list(gene = c(10,10), lipid = c(15,15)),
-    ncomp = c(2, 2),
+    ncomp = 2,
     scheme = "centroid",
     verbose = FALSE,
     bias = FALSE)

@@ -19,7 +19,7 @@ Y <- linnerud$physiological
 linn.pls <- pls(X, Y, mode = "classic")
 
 
-library(mixOmicsv6)
+library(mixOmics)
 data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
@@ -50,7 +50,7 @@ plotIndiv(toxicity.pls, group=rep(1:4,16),star=TRUE,centroid=TRUE,style="lattice
 
 # plsda
 # ----
-library(mixOmicsv6)
+library(mixOmics)
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
@@ -81,7 +81,7 @@ plotIndiv(toxicity.spls)
 
 # splsda
 # ----
-library(mixOmicsv6)
+library(mixOmics)
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 # Y will be transformed as a factor in the function,
