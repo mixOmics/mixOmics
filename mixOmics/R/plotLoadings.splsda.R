@@ -148,15 +148,15 @@ border = NA,
                 df = df[!df$color %in% col.ties, ]
                 colnames.X = rownames(df)
             }
-            
+            save(list=ls(),file="temp.Rdata")
             # display barplot with names of variables
             if (plot) # condition if all we need is the contribution stats
             {
                 if (!is.null(title) & length(block) > 1)
                 {
-                    par(mar = c(4, max(7, max(sapply(colnames.X, nchar))/3), 6, 2))
+                    par(mar = c(4, max(7, max(sapply(colnames.X, nchar),na.rm = TRUE)/3), 6, 2))
                 } else {
-                    par(mar = c(4, max(7, max(sapply(colnames.X, nchar))/3), 4, 2))
+                    par(mar = c(4, max(7, max(sapply(colnames.X, nchar), na.rm = TRUE)/3), 4, 2))
                 }
                 
                 mp = barplot(df$importance, horiz = T, las = 1, col = df$color, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(df),

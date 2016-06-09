@@ -198,9 +198,9 @@ border = NA,
             #added condition if all we need is the contribution stats
             if (!is.null(title) & length(block) > 1)
             {
-                par(mar = c(4, max(7, max(sapply(colnames.X, nchar))/2), 6, 2))
+                par(mar = c(4, max(7, max(sapply(colnames.X, nchar),na.rm = TRUE)/2), 6, 2))
             } else {
-                par(mar = c(4, max(7, max(sapply(colnames.X, nchar))/2), 4, 2))
+                par(mar = c(4, max(7, max(sapply(colnames.X, nchar),na.rm = TRUE)/2), 4, 2))
             }
 
             mp = barplot(df$importance, horiz = T, las = 1, col = df$color, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(df),
