@@ -148,7 +148,7 @@ border = NA,
                 df = df[!df$color %in% col.ties, ]
                 colnames.X = rownames(df)
             }
-            save(list=ls(),file="temp.Rdata")
+
             # display barplot with names of variables
             if (plot) # condition if all we need is the contribution stats
             {
