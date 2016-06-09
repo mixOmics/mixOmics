@@ -172,7 +172,7 @@ design = matrix(c(0,1,1,
 
 #note: the penalty parameters will need to be tuned
 wrap.result.sgcca = wrapper.sgcca(X = data, design = design, penalty = c(.3,.3, 1),
-                                  ncomp = c(2, 2, 1),
+                                  ncomp = 2,
                                   scheme = "centroid", verbose = FALSE)
 wrap.result.sgcca
 
@@ -209,7 +209,7 @@ design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3,
 nutrimouse.rgcca <- wrapper.rgcca(X = data,
                                          design = design,
                                          tau = "optimal",
-                                         ncomp = c(2, 2, 1),
+                                         ncomp = 2,
                                          scheme = "centroid",
                                          verbose = FALSE)
 
@@ -233,7 +233,7 @@ plotVar(nutrimouse.rgcca, comp = c(1,2), block = c(1,2), cex = c(1.5, 1.5))
                       1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
     #note: the tau parameter is the regularization parameter
     wrap.result.rgcca = wrapper.rgcca(X = data, design = design, tau = c(1, 1, 0),
-                                      ncomp = c(2, 2, 1),
+                                      ncomp = 2,
                                       scheme = "centroid", verbose = FALSE)
     #wrap.result.rgcca
     plotVar(wrap.result.rgcca, comp = c(1,2), block = c(1,2))

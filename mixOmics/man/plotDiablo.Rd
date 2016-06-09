@@ -42,7 +42,7 @@ data = list(mrna =  breast.TCGA$data.train$mrna,
 mirna =  breast.TCGA$data.train$mirna, prot =  breast.TCGA$data.train$protein)
 
 # set number of component per data set
-ncomp = c(3,3,3)
+ncomp = 3
 # set number of variables to select, per component and per data set (arbitrarily set)
 list.keepX = list(mrna = rep(20, 3), mirna = rep(10,3), prot = rep(10,3))
 

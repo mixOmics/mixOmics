@@ -125,17 +125,17 @@ Y = unmap(nutrimouse$diet)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 
 # directed towards block PLS
-out = mixOmics(X = data, Y = Y,ncomp = c(3, 3, 3))
+out = mixOmics(X = data, Y = Y,ncomp = 3)
 
 # directed towards block sPLS because of keepX and/or keepY
-out = mixOmics(X = data, Y = Y,ncomp = c(3, 3, 3),
+out = mixOmics(X = data, Y = Y,ncomp = 3,
 keepX = list(gene = c(10,10), lipid = c(15,15)))
 
 # directed towards block PLS-DA because Y is a factor
-out = mixOmics(X = data, Y = nutrimouse$diet,ncomp = c(3, 3, 3))
+out = mixOmics(X = data, Y = nutrimouse$diet, ncomp = 3)
 
 # directed towards block sPLS-DA because Y is a factor and there is a keepX
-out = mixOmics(X = data, Y = nutrimouse$diet, ncomp = c(3, 3, 3),
+out = mixOmics(X = data, Y = nutrimouse$diet, ncomp = 3,
 keepX = list(gene = c(10,10), lipid = c(15,15)))
 
 
