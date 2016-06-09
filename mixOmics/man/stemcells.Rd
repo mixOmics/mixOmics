@@ -7,7 +7,7 @@
 \title{Human Stem Cells Data}
 
 \description{
-This data set contains the expression of a random subset of 400 genes in 167 samples from 6 independent studies and 3 cell types.
+This data set contains the expression of a random subset of 400 genes in 167 samples from 4 independent studies and 3 cell types.
 }
 
 \usage{data(stemcells)}
@@ -23,7 +23,7 @@ A list containing the following components:
 }
 
 \details{
-This data set contains the expression of a random subset of 400 genes in 167 samples from 6 independent studies and 3 cell types. Those studies can be combined and analysed using the MINT procedure.
+This data set contains the expression of a random subset of 400 genes in 167 samples from 4 independent studies and 3 cell types. Those studies can be combined and analysed using the MINT procedure.
 }
 
 

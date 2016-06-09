@@ -47,7 +47,8 @@ ncomp = c(3,3,3)
 list.keepX = list(mrna = rep(20, 3), mirna = rep(10,3), prot = rep(10,3))
 
 # set up a full design where every block is connected 
-design = matrix(1, ncol = length(data), nrow = length(data), dimnames = list(names(data), names(data)))
+design = matrix(1, ncol = length(data), nrow = length(data),
+dimnames = list(names(data), names(data)))
 diag(design) =  0
 design  
 
