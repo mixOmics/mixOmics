@@ -14,7 +14,7 @@ library(mixOmicsv6)
 # ------------------
 
 # normalised data set
-load('Data/mixDIABLO/trainTestDatasetsNormalized.RDATA')
+load('../Data/mixDIABLO/trainTestDatasetsNormalized.RDATA')
 
 #             training data
 # ----------------------------------
@@ -101,13 +101,13 @@ data.train = data.train.small
 data.test = data.test.small
 
 breast.TCGA= list(data.train=data.train,data.test=data.test)
-save(breast.TCGA, file="package-mixomics/mixOmics/data/breast.TCGA.rda",compress="xz")
+save(breast.TCGA, file="mixOmics/data/breast.TCGA.rda",compress="xz")
 
 
 # -----------------------------------------
 # erase then test
 rm(list = ls())
-load('package-mixomics/mixOmics/data/breast.TCGA.rda')  # 
+load('mixOmics/data/breast.TCGA.rda')  # 
 lapply(breast.TCGA$data.train, dim)
 lapply(breast.TCGA$data.test, dim)
 

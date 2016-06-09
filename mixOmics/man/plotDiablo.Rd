@@ -37,7 +37,7 @@ DIABLO - multi omics integration for biomarker discovery. Submitted.
 \examples{
 
 data('breast.TCGA')
-Y = breast.TCGA$data.train$Y
+Y = breast.TCGA$data.train$subtype
 
 data = list(mrna =  breast.TCGA$data.train$mrna,
 mirna =  breast.TCGA$data.train$mirna, prot =  breast.TCGA$data.train$protein)
