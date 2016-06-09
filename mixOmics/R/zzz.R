@@ -20,8 +20,8 @@
 
 .onAttach <- function(libname, pkgname){ packageStartupMessage("\nLoaded mixOmics ",as.character(packageDescription("mixOmics")[["Version"]]),
     
-    "\n\nVisit our website http://www.mixOmics.org for more details about our methods.",
-    "\nAny bug reports or comments? Send us an email at mixomics at math.univ-toulouse.fr or https://bitbucket.org/klecao/package-mixomics/issues",
+    "\n\nVisit http://www.mixOmics.org for more details about our methods.",
+    "\nAny bug reports or comments? Notify us at mixomics at math.univ-toulouse.fr or https://bitbucket.org/klecao/package-mixomics/issues",
     "\n\nThank you for using mixOmics!"
     
     )}
