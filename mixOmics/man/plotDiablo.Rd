@@ -39,7 +39,8 @@ DIABLO - multi omics integration for biomarker discovery. Submitted.
 data('breast.TCGA')
 Y = breast.TCGA$data.train$Y
 
-data = list(mrna =  breast.TCGA$data.train$mrna, mirna =  breast.TCGA$data.train$mirna, prot =  breast.TCGA$data.train$protein)
+data = list(mrna =  breast.TCGA$data.train$mrna,
+mirna =  breast.TCGA$data.train$mirna, prot =  breast.TCGA$data.train$protein)
 
 # set number of component per data set
 ncomp = c(3,3,3)
