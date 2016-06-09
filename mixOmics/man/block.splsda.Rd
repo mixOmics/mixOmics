@@ -88,7 +88,9 @@ that contains the following components:
 
 \references{
 Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
-DIABLO - multi omics integration for biomarker discovery.
+DIABLO - multi omics integration for biomarker discovery. In preparation.
+
+Tenenhaus A., Philippe C., Guillemot V, Le Cao K.A., Grill J, Frouin V. Variable selection for generalized canonical correlation analysis. \emph{Biostatistics}. kxu001
 
 Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.
 
@@ -105,13 +107,15 @@ implications for functional genomics. Statist. Appl.
 Genet. Mol. Biol. 4:32.
 }
 
-\author{Florian Rohart}
+\author{Florian Rohart, Benoit Gautier}
 
 \seealso{\code{\link{plotIndiv}}, \code{\link{plotArrow}}, \code{\link{plotLoadings}}, \code{\link{plotVar}},
-\code{\link{predict}}, \code{\link{perf}}, \code{\link{selectVar}} and http://www.mixOmics.org for more details.}
+\code{\link{predict}}, \code{\link{perf}}, \code{\link{selectVar}}
+and http://www.mixOmics.org/mixDIABLO for more details and examples.}
 
 \examples{
-
+# example with the iintegration of two data sets in a supervised setting
+# --------------------------------------
 data(nutrimouse)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = nutrimouse$diet)
 # with this design, all blocks are connected
@@ -127,10 +131,10 @@ selectVar(res, comp = 1)
 plotIndiv(res)
 plotVar(res)
 
-# -- feature selection with keepX.constraint and keepX
-# we force the first PLS-component of X to be build with only the variables
-# "ENSG00000164930" and "ENSG00000044090",
-# and the second PLS-component with only "ENSG00000109819"
+# example with a constraint sPLS
+# --------------------
+## we force the first PLS-component of X to be build with only the variables
+# "ENSG00000164930" and "ENSG00000044090", and the second PLS-component with only "ENSG00000109819"
 # we decide to keep 100 variables on the third component
 data(stemcells)
 

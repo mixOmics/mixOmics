@@ -94,10 +94,10 @@ implications for functional genomics. Statist. Appl.
 Genet. Mol. Biol. 4:32.
 }
 
-\author{Florian Rohart}
+\author{Florian Rohart, Benoit Gautier}
 
 \seealso{\code{\link{plotIndiv}}, \code{\link{plotArrow}}, \code{\link{plotLoadings}}, \code{\link{plotVar}},
-\code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org for more details.}
+\code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org/mixDIABLO for more details.}
 
 \examples{
 

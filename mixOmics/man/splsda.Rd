@@ -18,7 +18,7 @@ scale = TRUE,
 tol = 1e-06,
 max.iter = 500,
 near.zero.var = FALSE,
-logratio="none", 
+logratio="none", # one of "none", "CLR"
 multilevel=NULL)
 }	
 
@@ -38,16 +38,13 @@ to zero means and unit variances (default: TRUE)}
 \item{tol}{Convergence stopping value.}
 \item{max.iter}{integer, the maximum number of iterations.}
 \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations. Default value is FALSE}
-\item{logratio}{one of ('none','CLR'). Default to 'none'}
-\item{multilevel}{Design matrix for multilevel anaylis (for repeated measurements). A numeric matrix or data frame. The first column
-indicates the repeated measures on each individual, i.e. the individuals ID. If \code{  method = 'splsda'}, the 2nd and 3rd columns are factors. If \code{method = 'spls'} then you can choose to only input the repeated measures (column 1) or the 2nd AND 3rd columns to split the variation for a 2 level factor. See Details.}
+\item{logratio}{one of ('none','CLR') specifies the log ratio transformation to deal with compositional values that may arise from specific normalisation in sequencing dadta. Default to 'none'}
+\item{multilevel}{sample information for multilevel decomposition for repeated measurements. A numeric matrix or data frame. The first column indicates the repeated measures on each individual, i.e. the individuals ID. If \code{  method = 'splsda'}, the 2nd and 3rd columns are factors. If \code{method = 'spls'} then you can choose to only input the repeated measures (column 1) or the 2nd AND 3rd columns to split the variation for a 2 level factor. See examples.}
 }
 \details{
 \code{splsda} function fit sPLS models with \eqn{1, \ldots ,}\code{ncomp} components
 to the factor or class vector \code{Y}. The appropriate indicator (dummy)
-matrix is created.
-
-logratio transform and multilevel analysis are performed sequentially as internal pre-processing step, through \code{\link{logratio.transfo}} and \code{\link{withinVariation}} respectively.
+matrix is created. Logratio transform and multilevel analysis are performed sequentially as internal pre-processing step, through \code{\link{logratio.transfo}} and \code{\link{withinVariation}} respectively.
 }
 
 \value{
@@ -66,20 +63,30 @@ that contains the following components:
   \item{names}{list containing the names to be used for individuals and variables.}
   \item{nzv}{list containing the zero- or near-zero predictors information.}
    \item{tol}{the tolerance used in the iterative algorithm, used for subsequent S3 methods}
-  \item{max.iter}{the maximum number of iterations, used for subsequent S3 methods}
-\item{iter}{Number of iterations of the algorthm for each component}
+    \item{iter}{Number of iterations of the algorthm for each component}
+    \item{max.iter}{the maximum number of iterations, used for subsequent S3 methods}
+    \item{scale}{boolean indicating whether the data were scaled in MINT S3 methods}
+    \item{logratio}{whether logratio transformations were used for compositional data}
+    \item{explained_variance}{explained variance from the multivariate model, used for plotIndiv}
 }
 
 \references{
 On sPLS-DA:
 Le Cao, K.-A., Boitard, S. and Besse, P. (2011). Sparse PLS Discriminant Analysis: biologically relevant feature selection and graphical displays for multiclass problems. \emph{BMC Bioinformatics} \bold{12}:253.
+On log ratio transformations:
+Filzmoser, P., Hron, K., Reimann, C.: Principal component analysis for compositional data with outliers. Environmetrics 20(6), 621-632 (2009)
+Le Cao, K.-A., Costello M.E., Chua X.-Y., Lakis V.A., Bartolo F., Brazeilles R., Rondeau, P. *In revision* MixMC: a multivariate statistical framework to gain insights into Microbial Communities. http://dx.doi.org/10.1101/044206
+On multilevel decomposition:
+Westerhuis, J.A., van Velzen, E.J., Hoefsloot, H.C., Smilde, A.K.: Multivariate paired data analysis: multilevel plsda versus oplsda. Metabolomics 6(1), 119-128 (2010)
+Liquet, B., Lê Cao, K.-A., Hocini, H., Thiébaut, R.: A novel approach for biomarker selection and the integration of repeated measures experiments from two assays. BMC bioinformatics 13(1), 325 (2012)
 }
 
-\author{Ignacio Gonzalez, Kim-Anh Le Cao and Pierre Monget.}
+\author{Florian Rohart, Ignacio Gonzalez, Kim-Anh Le Cao.}
 
 \seealso{\code{\link{spls}}, \code{\link{summary}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, 
-\code{\link{cim}}, \code{\link{network}}, \code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org for more details.}
+\code{\link{cim}}, \code{\link{network}}, \code{\link{predict}}, \code{\link{perf}}, \code{\link{mint.block.splsda}}, \code{\link{block.splsda}}
+and http://www.mixOmics.org for more details.}
 
 \examples{
 ## First example
@@ -132,10 +139,9 @@ add.legend = TRUE, style = 'lattice')
 }
 
 
-
-## Fourth example
+## Fourth example: with more than two classes
+# ------------------------------------------------
 \dontrun{
-## Second example
 data(liver.toxicity)
 X <- as.matrix(liver.toxicity$gene)
 # Y will be transformed as a factor in the function,
@@ -147,6 +153,20 @@ splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
 # individual name is set to the treatment
 plotIndiv(splsda.liver, ind.names = Y, plot.ellipse = TRUE, add.legend = TRUE)
 }
+
+## Fifth example: 16S data with multilevel decomposion and log ratio transformation
+# ------------------------------------------------
+splsda.16S = splsda(
+X = diverse.16S$data.TSS,  # TSS normalised data
+Y =  diverse.16S$bodysite,
+multilevel = diverse.16S$sample, # multilevel decomposition
+ncomp = 2,
+keepX =  c(10, 150),
+logratio= 'CLR')  # CLR log ratio transformation
+
+plotIndiv(splsda.16S, ind.names = F, pch = 16, ellipse = TRUE, legend = TRUE)
+#OTUs selected at the family level
+diverse.16S$taxonomy[selectVar(splsda.16S, comp = 1)$name,'Family']
 }
 
 \keyword{regression}
