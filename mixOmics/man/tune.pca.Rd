@@ -12,8 +12,7 @@
 \usage{
 tune.pca(X, ncomp = NULL, center = TRUE, scale = FALSE,
 max.iter = 500, tol = 1e-09, logratio = 'none',
-V = NULL,
-multilevel = NULL)
+V = NULL, multilevel = NULL)
 }
 
 \arguments{
