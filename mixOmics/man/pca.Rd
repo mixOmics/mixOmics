@@ -50,6 +50,9 @@ data matrix, if the data is complete or by using the NIPALS algorithm if there i
 \code{plot} method produces a bar plot of the percentage of variance explaned by the principal 
 components (PCs).
 
+When using NIPALS (missing values), we make the assumption that the first (\code{min(ncol(X),} \code{nrow(X)})
+principal components will account for 100 \% of the explained variance.
+
 Note that \code{scale= TRUE} cannot be used if there are zero or constant (for \code{center = TRUE}) variables. 
  
 Components are omitted if their standard deviations are less than or equal to \code{comp.tol} times 

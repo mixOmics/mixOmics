@@ -1,5 +1,5 @@
 
-import(MASS, lattice, igraph, rgl, ggplot2,corpcor,parallel,jpeg, RColorBrewer, plyr)
+import(MASS, lattice, igraph, rgl, ggplot2,corpcor,parallel, RColorBrewer, plyr)
 
 importFrom("grDevices", "as.graphicsAnnot", "chull", "col2rgb",
              "colorRamp", "colorRampPalette", "colors", "dev.cur",
