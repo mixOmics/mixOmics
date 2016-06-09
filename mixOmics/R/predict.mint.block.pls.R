@@ -443,7 +443,9 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         
     }
     
-    
+    out$call = match.call()
+    class(out) = paste("predict")
+
     out
     
 }

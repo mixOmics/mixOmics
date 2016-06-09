@@ -755,5 +755,30 @@ print.tune.mint.splsda = function(x, ...)
 }
 
 
+print.predict = function(x, ...)
+{
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    if(is.list(x$predict)) #block analysis
+    {
+        cat(" Prediction values of the test samples for each block and each component: see object$predict \n")
+        cat(" variates of the test samples for each block and each component: see object$variates \n")
+
+        
+        if(!is.null(x$dist)) #DA object, more outputs
+        {
+            cat(" Classification of the test samples for each distance, for each block and each component: see object$class \n")
+            cat(" Majority vote of the test samples for each distance and each component: see object$vote \n")
+        }
+    }else{
+        cat(" Prediction values of the test samples for each component: see object$predict \n")
+        cat(" variates of the test samples: see object$variates \n")
+        
+        if(!is.null(x$dist)) #DA object, more outputs
+        cat(" Classification of the test samples for each distance and for each component: see object$class \n")
+    }
+    
+}
 
 

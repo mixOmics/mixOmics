@@ -171,6 +171,8 @@ S3method(print, perf.splsda.mthd)
 S3method(print, perf.sgccda.mthd)
 S3method(print, perf.mint.splsda.mthd)
 
+S3method(print, predict)
+
 S3method(print, rcc)
 S3method(print, summary)
 S3method(print, pca)
