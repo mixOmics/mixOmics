@@ -7,13 +7,12 @@
 \description{Function to visualise correlation between components from different data sets}
 
 \usage{
-plotDiablo(x, ncomp = 1, groupOrder, ...)
+plotDiablo(x, ncomp = 1, ...)
 }
 
 \arguments{
 \item{x}{object of class inheriting from \code{"block.splsda"}.}
 \item{ncomp}{Which component to plot calculated from each data set. Has to be lower than the minimum of \code{object$ncomp}}
-\item{groupOrder}{Ordering of the Y-levels on the graphical outputs}
 \item{\dots}{not used}
 }
 
@@ -54,7 +53,6 @@ design
 
 BC.diablo = block.splsda(X = data, Y = Y, ncomp = ncomp, keepX = list.keepX, design = design)
 plotDiablo(BC.diablo, ncomp = 1)
-plotDiablo(BC.diablo, groupOrder = levels(Y)[nlevels(Y):1])
 }
 
 \keyword{regression}
