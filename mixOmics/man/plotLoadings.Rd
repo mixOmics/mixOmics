@@ -289,7 +289,7 @@ res = mint.splsda(X = data, Y = type.id, ncomp = 3, keepX = c(10,5,15), study = 
 
 plotLoadings(res)
 plotLoadings(res, contrib = "max")
-plotLoadings(res, contrib = "min", study = 1:6,comp=2)
+plotLoadings(res, contrib = "min", study = 1:4,comp=2)
 
 # combining different plots by setting a layout of 2 rows and 4columns.
 # Note that the legend accounts for a subplot so 4columns instead of 2.
