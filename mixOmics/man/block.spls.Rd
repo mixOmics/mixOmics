@@ -2,9 +2,9 @@
 \encoding{latin1}
 \alias{block.spls}
 
-\title{Horizontal sparse Partial Least Squares (sPLS) Regression}
+\title{Horizontal sparse Partial Least Squares (sPLS) integration}
 
-\description{Integration of multilple data sets matching on the same samples while selection features in each data set, ie. Horizontal sparse Partial Least Squares (sPLS) regression.}
+\description{Integration of multiple data sets measured on the same samples with variable selection in each data set, ie. Horizontal integration.}
 
 
 \usage{
@@ -29,16 +29,16 @@ near.zero.var = FALSE)
 }
 
 \arguments{
-\item{X}{A list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets.}
-\item{Y}{Outcome. Numeric vector or matrix of responses (for multi-response models)}
-\item{indY}{To supply if Y is missing, indicates the position of the outcome in the list \code{X}}
-\item{ncomp}{the number of components to include in the model. Default to 2.}
-\item{keepX.constraint}{A list of same length as X. Each entry keepX.constraint[[i]] is a list containing which variables of X[[i]] are to be kept on each of the first PLS-components}
-\item{keepY.constraint}{Only used if Y is provided, otherwise extracted from keepX.constraint. A list containing which variables of Y are to be kept on each of the first PLS-components}
-\item{keepX}{ A vector of same length as X.  Each entry keepX[i] is the number of X[[i]]-variables kept in the model on the last components (once all keepX.constraint[[i]] are used).}
-\item{keepY}{Only used if Y is provided. Each entry keepY[i] is the number of Y-variables kept in the model on the last components.}
-\item{design}{numeric matrix of size (number of blocks) x (number of blocks) with only 0 or 1 values. A value of 1 (0) indicates a relationship (no relationship) between the blocks to be modelled. If \code{Y} is provided instead of \code{indY}, the \code{design} matrix is changed to include relationships to \code{Y}. }
-\item{scheme}{Either "horst", "factorial" or "centroid". Default = \code{centroid}, see reference paper.}
+\item{X}{A list of data sets (called 'blocks') measured on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets.}
+\item{Y}{Matrix or vector response for a multivariate regression framework. Data should be continuous variables (see block.splsda for supervised classification and factor reponse)}
+\item{indY}{To supply if Y is missing, indicates the position of the matrix / vector response in the list \code{X}}
+\item{ncomp}{the number of components to include in the model. Default to 2. Applies to all blocks.}
+\item{keepX.constraint}{A list of same length as X. Each entry indicates specific variables to be selected in each of the blocks of X for the first PLS-components. See example.}
+\item{keepY.constraint}{Only if Y is provided, otherwise extracted from \code{keepX.constraint} (see details). Each entry indicates specific variables to be selected in Y for the first PLS-components. See example.}
+\item{keepX}{A list of same length as X.  Each entry is the number of variables to select in each of the blocks of X for each component. In the case where keepX.constraint is specified it should indicate the number of variables to select on the remaining components.}
+\item{keepY}{Only if Y is provided. Each entry is the number of variables to select in each of the blocks of Y for each component. In the case where keepX.constraint is specified it should indicate the number of variables to select on the remaining components.}
+\item{design}{numeric matrix of size (number of blocks in X) x (number of blocks in X) with 0 or 1 values. A value of 1 (0) indicates a relationship (no relationship) between the blocks to be modelled. If \code{Y} is provided instead of \code{indY}, the \code{design} matrix is changed to include relationships to \code{Y}. }
+\item{scheme}{Either "horst", "factorial" or "centroid". Default = \code{centroid}, see reference.}
 \item{mode}{character string. What type of algorithm to use, (partially) matching
 one of \code{"regression"}, \code{"canonical"}, \code{"invariant"} or \code{"classic"}.
 See Details. Default = \code{regression}.}
@@ -50,23 +50,22 @@ to zero means and unit variances. Default = \code{TRUE}.}
 \item{verbose}{if set to \code{TRUE}, reports progress on computing.}
 \item{max.iter}{integer, the maximum number of iterations.}
 \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Default = \code{FALSE}.}
-
 }
 
 
 \details{
-\code{block.spls} function fits a horizontal sPLS models with a specific number of component per block (\code{ncomp[i]} components for each block \code{X[i]}).
+\code{block.spls} function fits a horizontal sPLS model with a specified number of components per block).
 An outcome needs to be provided, either by \code{Y} or by its position \code{indY} in the list of blocks \code{X}.
-Multi-response models are fully supported. \code{X} and \code{Y} can contain missing values. Missing values are handled by casewise deletion in the \code{block.pls} function without having to delete the rows with missing data.
+Multi (continuous)response are supported. \code{X} and \code{Y} can contain missing values. Missing values are handled by being disregarded during the cross product computations in the algorithm \code{block.pls} without having to delete rows with missing data.
 
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis
 \code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS
 algorithm \code{("classic")} (see References).
 
-Variable selection is performed on each component for each block of \code{X} via both input parameter \code{keepX.constraint} and \code{keepX}. \code{keepX.constraint$'blocki'[[j]]} is a vector of variables names that indicates which variables to keep on component \code{j}  of block \code{X$'blocki'}; similarly, \code{keepX[[i]][k]} is a single positive value that indicates the number of variables to keep on component \code{j+k} of block \code{X[[i]]}.
-if \code{Y} is given, variable selection is performed on block \code{Y} via both input parameter \code{keepY.constraint} and \code{keepY}. \code{keepY.constraint[[j]]} is a vector of variables names that indicates which variables to keep on component \code{j}  of block \code{Y}; similarly, \code{keepY[k]} is a single positive value that indicates the number of variables to keep on component \code{j+k} of block \code{Y}.
-Note that if \code{Y} is missing and \code{indY} is provided, then variable selection on \code{Y} is performed via both input parameter \code{keepX.constraint} and \code{keepX}.
+Variable selection is performed on each component for each block of \code{X}, and for \code{Y} if specified, via input parameter \code{keepX} and \code{keepY}, and \code{keepX.constraint} and \code{keepY.constraint} for a constraint model. \code{keepX.constraint} and \code{keepY.constraint} specify variable names to be selected in the earlier components of the model (see example).
+
+Note that if \code{Y} is missing and \code{indY} is provided, then variable selection on \code{Y} is performed by specifying the input parameter directly in \code{keepX.constraint} and \code{keepX} (no \code{keepY.constraint} and \code{keepY} is needed).
 
 }
 
@@ -80,8 +79,8 @@ that contains the following components:
 \item{mode}{the algorithm used to fit the model.}
 \item{keepX}{Number of variables used to build each component of each block}
 \item{keepY}{Number of variables used to build each component of Y}
-\item{keepX.constraint}{list indicating which variables where constrained to be used to build the first component for each block}
-\item{keepY.constraint}{list indicating which variables where constrained to be used to build the first component for Y}
+\item{keepX.constraint}{list indicating which variables (indices) where constrained to be used in the first components for each block in the X data set}
+\item{keepY.constraint}{list indicating which variables (indices) where constrained to be used in the first components for each block in the Y data set}
 \item{variates}{list containing the variates of each block of X.}
 \item{loadings}{list containing the estimated loadings for the variates.}
 \item{names}{list containing the names to be used for individuals and variables.}
@@ -102,36 +101,63 @@ Tenenhaus A. and Tenenhaus M., (2011), Regularized
 Generalized Canonical Correlation Analysis,
 Psychometrika, Vol. 76, Nr 2, pp 257-284.
 
-Schafer J. and Strimmer K., (2005), A shrinkage approach
-to large-scale covariance matrix estimation and
-implications for functional genomics. Statist. Appl.
-Genet. Mol. Biol. 4:32.
+Tenenhaus A., Philippe C., Guillemot V, Le Cao K.A., Grill J, Frouin V. Variable selection for generalized canonical correlation analysis. \emph{Biostatistics}. kxu001
 }
 
-\author{Florian Rohart}
+\author{Florian Rohart, Benoit Gautier, Kim-Anh Le Cao}
 
-\seealso{\code{\link{plotIndiv}}, \code{\link{plotArrow}}, \code{\link{plotLoadings}}, \code{\link{plotVar}},
-\code{\link{predict}}, \code{\link{perf}}, \code{\link{selectVar}} and http://www.mixOmics.org for more details.}
+\seealso{\code{\link{plotIndiv}}, \code{\link{plotArrow}}, \code{\link{plotLoadings}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}}, \code{\link{selectVar}}, \code{\link{block.pls}}, \code{\link{block.splsda}} and http://www.mixOmics.org for more details.}
 
 
 \examples{
 
-data(nutrimouse)
-# need to unmap Y for an unsupervised analysis, where Y is included as a data block in data
-Y = unmap(nutrimouse$diet)
-data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
-# with this design, all blocks are connected
-design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3,
-byrow = TRUE, dimnames = list(names(data), names(data)))
+# First example with multi omics TCGA study
+# -----------------------------
+data("breast.TCGA")
+# this is the X data as a list of mRNA and miRNA; the Y data set is a single data set of proteins
+data = list(mrna = breast.TCGA$data.train$mrna, mirna = breast.TCGA$data.train$mirna)
+# set up a full design where every block is connected
+design = matrix(1, ncol = length(data), nrow = length(data), dimnames = list(names(data), names(data)))
+diag(design) =  0
+design
+# set number of component per data set
+ncomp = c(2)
+# set number of variables to select, per component and per data set (this is set arbitrarily)
+list.keepX = list(mrna = rep(20, 2), mirna = rep(10,2))
+list.keepY = c(rep(10, 2))
 
-# indY indicates where the outcome Y is in the list X
-res = block.spls(X = data, indY = 3, keepX = list(gene = c(10,5,15), lipid = c(3,2)),
-    ncomp = 3)
-res$keepX
-selectVar(res, comp = 1)
-plotIndiv(res)
-plotVar(res)
+TCGA.block.spls = block.spls(X = data, Y = breast.TCGA$data.train$protein,
+ncomp = ncomp, keepX = list.keepX, keepY = list.keepY, design = design)
+TCGA.block.spls
+# in plotindiv we color the samples per berast subtype group, but remember this method is unsupervised!
+plotIndiv(TCGA.block.spls, group =  breast.TCGA$data.train$subtype, ind.names = FALSE)
+# illustrates coefficient weights in each block
+plotLoadings(TCGA.block.spls, ncomp = 1)
+plotVar(TCGA.block.spls, style = 'graphics', legend = TRUE)
+network(TCGA.block.spls)
 
+
+# Second example with a constraint sPLS
+# --------------------
+# using the data and design from example above
+## we force the first PLS-component of X to be built with only a few variables selected in the earlier example
+
+constraint.mrna.comp1 = c("EPHB3", "CBR1", "BSPRY")
+constraint.mirna.comp1  = c("hsa-mir-128-2", "hsa-mir-196b")
+constraint.prot.comp1  = c("Paxillin")
+
+TCGA.block.spls.constraint = block.spls(X = data, Y = breast.TCGA$data.train$protein, ncomp = 2,
+keepX = list(mrna = 20, mirna = 20),
+keepY = 20,
+keepX.constraint = list(mrna = list(constraint.mrna.comp1), mirna = list(constraint.mirna.comp1)),
+keepY.constraint = list(protein = list(constraint.prot.comp1)))
+
+# see if that subset contraint on comp 1 affected the variables selected in comp 2:
+intersect(selectVar(TCGA.block.spls.constraint, comp = 2)$mrna$name, selectVar(TCGA.block.spls, comp = 2)$mrna$name)
+
+# indices of the constraint variable on the first component
+TCGA.block.spls.constraint$keepX.constraint
+TCGA.block.spls.constraint$keepY.constraint
 }
 
 \keyword{regression}

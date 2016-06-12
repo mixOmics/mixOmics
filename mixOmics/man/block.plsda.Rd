@@ -2,9 +2,10 @@
 \encoding{latin1}
 \alias{block.plsda}
 
-\title{Horizontal Partial Least Squares - Discriminant Analysis (PLS-DA) Regression}
+\title{Horizontal Partial Least Squares - Discriminant Analysis (PLS-DA) integration}
 
-\description{Integration of multilple data sets matching on the same samples in the aim of classifying a discrete outcome, ie. Horizontal Partial Least Squares - Discriminant Analysis (PLS-DA) regression.}
+\description{Integration of multiple data sets measured on the same samples to classify a discrete outcome, ie. Horizontal Partial Least Squares - Discriminant Analysis (PLS-DA) integration.}
+
 
 \usage{
 block.plsda(X,
@@ -24,12 +25,12 @@ near.zero.var = FALSE)
 }
 
 \arguments{
-\item{X}{A list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets.}
-\item{Y}{A factor or a class vector for the discrete outcome.}
-\item{indY}{To supply if Y is missing, indicates the position of the outcome in the list \code{X}}
-\item{ncomp}{the number of components to include in the model. Default to 2.}
-\item{design}{numeric matrix of size (number of blocks) x (number of blocks) with only 0 or 1 values. A value of 1 (0) indicates a relationship (no relationship) between the blocks to be modelled. If \code{Y} is provided instead of \code{indY}, the \code{design} matrix is changed to include relationships to \code{Y}. }
-\item{scheme}{Either "horst", "factorial" or "centroid". Default = \code{centroid}, see reference paper.}
+\item{X}{A list of data sets (called 'blocks') measured on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets.}
+\item{Y}{A factor or a class vector indicating the discrete outcome of each sample.}
+\item{indY}{To be supplied if Y is missing, indicates the position of the matrix / vector response in the list \code{X}}
+\item{ncomp}{the number of components to include in the model. Default to 2. Applies to all blocks.}
+\item{design}{numeric matrix of size (number of blocks in X) x (number of blocks in X) with 0 or 1 values. A value of 1 (0) indicates a relationship (no relationship) between the blocks to be modelled. If \code{Y} is provided instead of \code{indY}, the \code{design} matrix is changed to include relationships to \code{Y}. }
+\item{scheme}{Either "horst", "factorial" or "centroid". Default = \code{centroid}, see reference.}
 \item{mode}{character string. What type of algorithm to use, (partially) matching
 one of \code{"regression"}, \code{"canonical"}, \code{"invariant"} or \code{"classic"}.
 See Details. Default = \code{regression}.}
@@ -48,17 +49,16 @@ to zero means and unit variances. Default = \code{TRUE}.}
 
 
 \details{
-\code{block.plsda} function fits a horizontal PLS-DA models with a specific number of component per block (\code{ncomp[i]} components for each block \code{X[i]}).
+\code{block.plsda} function fits a horizontal integration PLS-DA model with a specified number of components per block).
+A factor  indicating the discrete outcome needs to be provided, either by \code{Y} or by its position \code{indY} in the list of blocks \code{X}.
 
-A factor for the discrete outcome needs to be provided, either by \code{Y} or by its position \code{indY} in the list of blocks \code{X}.
-
-Multi-response models are fully supported. \code{X} can contain missing values. Missing values are handled by casewise deletion in the \code{block.plsda} function without having to delete the rows with missing data.
-
+\code{X} can contain missing values. Missing values are handled by being disregarded during the cross product computations in the algorithm \code{block.pls} without having to delete rows with missing data.
 
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis
 \code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS
 algorithm \code{("classic")} (see References).
+
 }
 
 \value{
@@ -84,20 +84,16 @@ Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Edit
 Wold H. (1966). Estimation of principal components and related models by iterative least squares.
 In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N.Y., 391-420.
 
-Tenenhaus A. and Tenenhaus M., (2011), Regularized
-Generalized Canonical Correlation Analysis,
-Psychometrika, Vol. 76, Nr 2, pp 257-284.
+Gunther O., Shin H., Ng R. T. , McMaster W. R., McManus B. M. , Keown P. A. , Tebbutt S.J. , Le Cao K-A. ,  (2014) Novel multivariate methods for integration of genomics and proteomics data: Applications in a kidney transplant rejection study, OMICS: A journal of integrative biology, 18(11), 682-95.
 
-Schafer J. and Strimmer K., (2005), A shrinkage approach
-to large-scale covariance matrix estimation and
-implications for functional genomics. Statist. Appl.
-Genet. Mol. Biol. 4:32.
+Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
+DIABLO - multi omics integration for biomarker discovery. In preparation.
+
 }
 
-\author{Florian Rohart, Benoit Gautier}
+\author{Florian Rohart, Benoit Gautier, Kim-Anh Le Cao}
 
-\seealso{\code{\link{plotIndiv}}, \code{\link{plotArrow}}, \code{\link{plotLoadings}}, \code{\link{plotVar}},
-\code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org/mixDIABLO for more details.}
+\seealso{\code{\link{plotIndiv}}, \code{\link{plotArrow}}, \code{\link{plotLoadings}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}}, \code{\link{selectVar}}, \code{\link{block.pls}}, \code{\link{block.splsda}} and http://www.mixOmics.org for more details.}
 
 \examples{
 
@@ -116,8 +112,6 @@ res2 = block.plsda(list(gene = nutrimouse$gene, lipid = nutrimouse$lipid),
     Y = nutrimouse$diet, ncomp = 2)
 plotIndiv(res2)
 plotVar(res2)
-
-
 }
 
 \keyword{regression}

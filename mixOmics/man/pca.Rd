@@ -123,7 +123,8 @@ plotVar(pca.res, rad.in = 0.5, cex = 0.5,style="3d")
 data("diverse.16S")
 pca.res = pca(X = diverse.16S$data.TSS, ncomp = 10,
 logratio = 'CLR', multilevel = diverse.16S$sample)
-
+plot(pca.res)
+plotIndiv(pca.res, ind.names = FALSE, group = diverse.16S$bodysite, title = '16S diverse data')
 }
 
 \keyword{algebra}
