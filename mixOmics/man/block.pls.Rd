@@ -25,7 +25,7 @@ near.zero.var = FALSE)
 
 \arguments{
 \item{X}{A list of data sets (called 'blocks') measured on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets.}
-\item{Y}{Matrix or vector response for a multivariate regression framework. Data should be continuous variables (see block.splsda for supervised classification and factor reponse)}
+\item{Y}{Matrix or vector response for a multivariate regression framework. Data should be continuous variables (see \code{block.splsda} for supervised classification and factor reponse)}
 \item{indY}{To be supplied if Y is missing, indicates the position of the matrix / vector response in the list \code{X}}
 \item{ncomp}{the number of components to include in the model. Default to 2. Applies to all blocks.}
 \item{design}{numeric matrix of size (number of blocks in X) x (number of blocks in X) with 0 or 1 values. A value of 1 (0) indicates a relationship (no relationship) between the blocks to be modelled. If \code{Y} is provided instead of \code{indY}, the \code{design} matrix is changed to include relationships to \code{Y}. }
@@ -47,7 +47,8 @@ to zero means and unit variances. Default = \code{TRUE}.}
 \details{
 \code{block.spls} function fits a horizontal integration PLS model with a specified number of components per block).
 An outcome needs to be provided, either by \code{Y} or by its position \code{indY} in the list of blocks \code{X}.
-Multi (continuous)response are supported. \code{X} and \code{Y} can contain missing values. Missing values are handled by being disregarded during the cross product computations in the algorithm \code{block.pls} without having to delete rows with missing data.
+Multi (continuous)response are supported. \code{X} and \code{Y} can contain missing values. Missing values are handled by being disregarded during the cross product computations in the algorithm \code{block.pls} without having to delete rows with missing data. Alternatively, missing data can be imputed prior using the  \code{nipals} function.
+
 
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis

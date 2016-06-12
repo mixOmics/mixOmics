@@ -50,9 +50,10 @@ to zero means and unit variances. Default = \code{TRUE}.}
 
 \details{
 \code{block.plsda} function fits a horizontal integration PLS-DA model with a specified number of components per block).
-A factor  indicating the discrete outcome needs to be provided, either by \code{Y} or by its position \code{indY} in the list of blocks \code{X}.
+A factor indicating the discrete outcome needs to be provided, either by \code{Y} or by its position \code{indY} in the list of blocks \code{X}.
 
-\code{X} can contain missing values. Missing values are handled by being disregarded during the cross product computations in the algorithm \code{block.pls} without having to delete rows with missing data.
+\code{X} can contain missing values. Missing values are handled by being disregarded during the cross product computations in the algorithm \code{block.pls} without having to delete rows with missing data. Alternatively, missing data can be imputed prior using the  \code{nipals} function.
+
 
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis
@@ -79,11 +80,16 @@ that contains the following components:
 }
 
 \references{
-Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.
+On PLSDA:
+Barker M and Rayens W (2003). Partial least squares for discrimination. \emph{Journal of Chemometrics} \bold{17}(3), 166-173.
+Perez-Enciso, M. and Tenenhaus, M. (2003). Prediction of clinical outcome with microarray data:
+a partial least squares discriminant analysis (PLS-DA) approach. \emph{Human Genetics}
+\bold{112}, 581-592.
+Nguyen, D. V. and Rocke, D. M. (2002). Tumor classification by partial
+least squares using microarray gene expression data. \emph{Bioinformatics}
+\bold{18}, 39-50.
 
-Wold H. (1966). Estimation of principal components and related models by iterative least squares.
-In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N.Y., 391-420.
-
+On multiple integration with PLS-DA
 Gunther O., Shin H., Ng R. T. , McMaster W. R., McManus B. M. , Keown P. A. , Tebbutt S.J. , Le Cao K-A. ,  (2014) Novel multivariate methods for integration of genomics and proteomics data: Applications in a kidney transplant rejection study, OMICS: A journal of integrative biology, 18(11), 682-95.
 
 Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).

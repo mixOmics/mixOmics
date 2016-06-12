@@ -2,10 +2,11 @@
 \encoding{latin1}
 \alias{mint.pls}
 
-\title{Vertical sparse Partial Least Squares (PLS) Regression}
+\title{Vertical integration}
 
-\description{Integration of multilple data sets (or studies) matching on the same variables, ie. vertical Partial Least Squares (PLS) regression.}
 
+\description{Function to integrate and combine multiple independent studies using variants of multi-group PLS.
+}
 
 \usage{
 mint.pls(X,
@@ -21,12 +22,12 @@ near.zero.var = FALSE)
 }
 
 \arguments{
-\item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
-\item{Y}{Outcome. Numeric vector or matrix of responses (for multi-response models)}
+\item{X}{numeric matrix of predictors combining multiple independent studies on the same set of predictors. \code{NA}s are allowed.}
+\item{Y}{Matrix or vector response for a multivariate regression framework. Data should be continuous variables (see \code{mint.plsda} for supervised classification and factor reponse)}
 \item{ncomp}{Number of components to include in the model (see Details). Default to 2}
 \item{mode}{character string. What type of algorithm to use, (partially) matching
 one of \code{"regression"} or \code{"canonical"}. See Details.}
-\item{study}{grouping factor indicating which samples are from the same study}
+\item{study}{factor indicating the membership of each sample to each of the studies being combined}
 \item{scale}{boleean. If scale = TRUE, each block is standardized
 to zero means and unit variances. Default = \code{TRUE}.}
 \item{tol}{Convergence stopping value.}
@@ -37,12 +38,9 @@ to zero means and unit variances. Default = \code{TRUE}.}
 
 
 \details{
-\code{mint.splsda} function fits a vertical sPLS-DA models with \code{ncomp} components in which several studies matching on the same variables are integrated together in the aim of classifying a discrete outcome while selecting features. The grouping factor that indicates which samples are from which study is specified with \code{study}. We advise more than 3 samples per study where all outcome categories are represented.
+\code{mint.pls} fits a vertical PLS-DA models with \code{ncomp} components in which several independent studies measured on the same variables are integrated. The aim is to explain the continuous outcome \code{Y}. The \code{study} factor indicates the membership of each sample in each study. We advise to only combine studies with more than 3 samples as the function performs internal scaling per study.
 
-\code{mint.pls} function fits a vertical PLS models with \code{ncomp} components. in which several studies matching on the same variables are integrated together in the aim of classifying a discrete outcome while selecting features. The grouping factor that indicates which samples are from which study is specified with \code{study}.
-
-Multi-response models are fully supported. \code{X} and \code{Y} can contain missing values. Missing values are handled by casewise deletion in the \code{mint.pls} function without having to delete the rows with missing data.
-
+Multi (continuous)response are supported. \code{X} and \code{Y} can contain missing values. Missing values are handled by being disregarded during the cross product computations in the algorithm \code{block.pls} without having to delete rows with missing data. Alternatively, missing data can be imputed prior using the  \code{nipals} function.
 
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis
@@ -73,30 +71,18 @@ that contains the following components:
 }
 
 \references{
-Rohart F. et al (2016, submitted). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms.
+F Rohart, A Eslami, S Bougeard and K-A. Lê Cao. MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. Submitted.
 
-Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2013). Multi-group PLS Regression: Application to Epidemiology.
-In New Perspectives in Partial Least Squares and Related Methods, pages 243-255. Springer.
+Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2014). Algorithms for multi-group PLS. J. Chemometrics, 28(3), 192-201.
 }
 
-\author{Florian Rohart}
+\author{Florian Rohart, Kim-Anh Le Cao}
 
-\seealso{\code{\link{pls}},
-\code{\link{plotIndiv}}, \code{\link{plotLoadings}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{tune.mint.splsda}} and http://www.mixOmics.org for more details.}
+\seealso{\code{\link{spls}}, \code{\link{summary}},
+\code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}}, \code{\link{mint.spls}}, \code{\link{mint.plsda}}, \code{\link{mint.splsda}} and http://www.mixOmics.org/mixMINT for more details.}
 
 \examples{
-data(stemcells)
-# need to unmap Y for an unsupervised analysis
-Y = unmap(stemcells$celltype)
-res = mint.pls(X = stemcells$gene, Y = Y, ncomp = 3, study = stemcells$study)
-
-plotIndiv(res)
-#plot study-specific outputs for all studies
-plotIndiv(res, study = "all.partial", col = as.numeric(stemcells$celltype))
-
-#plot study-specific outputs for study "2"
-plotIndiv(res, study = "2", col = as.numeric(stemcells$celltype))
-
+# we will soon provide more examples on our website (data too large to be included in the package)
 }
 
 \keyword{regression}

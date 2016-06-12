@@ -2,9 +2,11 @@
 \encoding{latin1}
 \alias{mint.spls}
 
-\title{Vertical sparse Partial Least Squares (sPLS) Regression}
+\title{Vertical integration with variable selection}
 
-\description{Integration of multilple data sets (or studies) matching on the same variables, while selection features in each data set, ie. vertical sparse Partial Least Squares (sPLS) regression.}
+
+\description{Function to integrate and combine multiple independent studies using variants of multi-group sparse PLS for variable selection.
+}
 
 
 \usage{
@@ -25,19 +27,17 @@ near.zero.var = FALSE)
 }	
 
 \arguments{
-\item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
-\item{Y}{Outcome. Numeric vector or matrix of responses (for multi-response models)}
+\item{X}{numeric matrix of predictors combining multiple independent studies on the same set of predictors. \code{NA}s are allowed.}
+\item{Y}{Matrix or vector response for a multivariate regression framework. Data should be continuous variables (see \code{mint.splsda} for supervised classification and factor reponse)}
 \item{ncomp}{Number of components to include in the model. Default to 2}
 \item{mode}{character string. What type of algorithm to use, (partially) matching
 one of \code{"regression"}, \code{"canonical"}, \code{"invariant"} or \code{"classic"}.
 See Details.}
 \item{study}{grouping factor indicating which samples are from the same study}
-\item{keepX.constraint}{A list containing which variables of X are to be kept on each of the first PLS-components}
-\item{keepY.constraint}{A list containing which variables of Y are to be kept on each of the first PLS-components}
-\item{keepX}{numeric vector of length \code{ncomp -length(keepX.constraint)}, the number of variables
-to keep in the \eqn{X}-loadings. By default all variables are kept in the model.}
-\item{keepY}{numeric vector of length \code{ncomp-length(keepY.constraint)}, the number of variables
-to keep in the \eqn{Y}-loadings. By default all variables are kept in the model.}
+\item{keepX.constraint}{A list of vectors. Each vector entry indicates specific variables to be selected in \code{X} for each previous PLS component. }
+\item{keepY.constraint}{A list of vectors. Each vector entry indicates specific variables to be selected  in \code{Y} for each previous PLS component. }
+\item{keepX}{numeric vector indicating the number of variables to select in \code{X} on each component, or remaining components should \code{keepX.constraint} be provided. By default all variables are kept in the model.}
+\item{keepY}{numeric vector indicating the number of variables to select in \code{Y} on each component, or remaining components should \code{keepY.constraint} be provided. By default all variables are kept in the model.}
 \item{scale}{boleean. If scale = TRUE, each block is standardized
 to zero means and unit variances. Default = \code{TRUE}.}
 \item{tol}{Convergence stopping value.}
@@ -48,20 +48,16 @@ to zero means and unit variances. Default = \code{TRUE}.}
 
 
 \details{
-\code{mint.spls} function fits a vertical sPLS models with \code{ncomp} components in which several studies matching on the same variables are integrated together while selecting features. The grouping factor that indicates which samples are from which study is specified with \code{study}.
+\code{mint.spls} fits a vertical sparse PLS-DA models with \code{ncomp} components in which several independent studies measured on the same variables are integrated. The aim is to explain the continuous outcome \code{Y} and selecting correlated features between both data sets \code{X} and \code{Y}. The \code{study} factor indicates the membership of each sample in each study. We advise to only combine studies with more than 3 samples as the function performs internal scaling per study.
 
-Multi-response models are fully supported. \code{X} and \code{Y} can contain missing values. Missing values are handled by casewise deletion in the \code{mint.spls} function without having to delete the rows with missing data.
-
+Multi (continuous)response are supported. \code{X} and \code{Y} can contain missing values. Missing values are handled by being disregarded during the cross product computations in the algorithm \code{block.pls} without having to delete rows with missing data. Alternatively, missing data can be imputed prior using the  \code{nipals} function.
 
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis
 \code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS
 algorithm \code{("classic")} (see References).
 
-
-Variable selection is performed on each component of \code{X} via both input parameter \code{keepX.constraint} and \code{keepX} as follows. \code{keepX.constraint[[j]]} is a vector of variable names that indicates which variables to keep on component \code{j}; similarly, \code{keepX[k]} is a single positive value that indicates the number of variables to keep on component \code{length(keepX.constraint)+k}. See examples below.
-
-Variable selection is performed on each component of \code{Y} via both input parameter \code{keepY.constraint} and \code{keepY} as follows. \code{keepY.constraint[[j]]} is a vector of variables names that indicates which variables to keep on component \code{j}  of block \code{Y}; similarly, \code{keepY[k]} is a single positive value that indicates the number of variables to keep on component \code{length(keepY.constraint)+k} of \code{Y}. See examples below.
+Variable selection is performed on each component for each block of \code{X}, and for \code{Y} if specified, via input parameter \code{keepX} and \code{keepY}, and \code{keepX.constraint} and \code{keepY.constraint} for a constraint model. \code{keepX.constraint} and \code{keepY.constraint} specify variable names to be selected in the previous components of the model.
 
 Note that both \code{keepX.constraint} and \code{keepY.constraint} must have same length.
 
@@ -73,7 +69,7 @@ Useful graphical outputs are available, e.g. \code{\link{plotIndiv}}, \code{\lin
 \code{mint.spls} returns an object of class \code{"mint.spls","spls"}, a list
 that contains the following components:
 
-\item{X}{the centered and standardized original predictor matrix.}
+\item{X}{numeric matrix of predictors combining multiple independent studies on the same set of predictors. \code{NA}s are allowed.}
 \item{Y}{the centered and standardized original response vector or matrix.}
 \item{ncomp}{the number of components included in the model.}
 \item{study}{The study grouping factor}
@@ -94,44 +90,21 @@ that contains the following components:
 }
 
 
-
 \references{
-Rohart F. et al (2016, submitted). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms.
+F Rohart, A Eslami, S Bougeard and K-A. Lê Cao. MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. Submitted.
 
-Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2013). Multi-group PLS Regression: Application to Epidemiology.
-In New Perspectives in Partial Least Squares and Related Methods, pages 243-255. Springer.
+Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2014). Algorithms for multi-group PLS. J. Chemometrics, 28(3), 192-201.
 }
 
-\author{Florian Rohart}
+\author{Florian Rohart, Kim-Anh Le Cao}
 
-\seealso{\code{\link{spls}},
-\code{\link{plotIndiv}}, \code{\link{plotLoadings}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{tune.mint.splsda}} and http://www.mixOmics.org for more details.}
+\seealso{\code{\link{spls}}, \code{\link{summary}},
+\code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}}, \code{\link{mint.pls}}, \code{\link{mint.plsda}}, \code{\link{mint.splsda}} and http://www.mixOmics.org/mixMINT for more details.}
+
+
 
 \examples{
-data(stemcells)
-# need to unmap Y for an unsupervised analysis
-Y = unmap(stemcells$celltype)
-
-# -- feature selection with keepX
-res = mint.spls(X = stemcells$gene, Y = Y, ncomp = 3, keepX = c(10, 5, 15),
-    study = stemcells$study)
-
-plotIndiv(res)
-#plot study-specific outputs for all studies
-plotIndiv(res, study = levels(stemcells$study), col = as.numeric(stemcells$celltype))
-
-#plot study-specific outputs for study "2"
-plotIndiv(res, study = "2", col = as.numeric(stemcells$celltype))
-
-# -- feature selection with keepX.constraint and keepX
-# we force mint.spls to build the PLS-component 1 and 2 with only specific genes
-keepX.constraint = list(comp1 = c("ENSG00000138756", "ENSG00000101470"),
-comp2 = c("ENSG00000120049", "ENSG00000138685", "ENSG00000204248", "ENSG00000103260"))
-
-# we select 10 and 15 variables on component 3 and 4
-res = mint.spls(X = stemcells$gene, Y = Y, ncomp = 4, study = stemcells$study,
-    keepX.constraint = keepX.constraint, keepX = c(10,15))
-
+# we will soon provide more examples on our website (data too large to be included in the package)
 }
 
 \keyword{regression}
