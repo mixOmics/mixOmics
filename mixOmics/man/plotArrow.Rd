@@ -120,7 +120,7 @@ design1 = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 nutrimouse.sgcca <- wrapper.sgcca(X = data,
 design = design1,
 penalty = c(0.3, 0.5, 1),
-ncomp = c(2, 2, 3),
+ncomp = 3,
 scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)
@@ -167,7 +167,7 @@ design1 = matrix(c(0,1,0,1), ncol = 2, nrow = 2, byrow = TRUE)
 nutrimouse.sgccda1 <- wrapper.sgccda(X = data,
 Y = Y,
 design = design1,
-ncomp = c(2, 2),
+ncomp = 2,
 keepX = list(gene = c(10,10), lipid = c(15,15)),
 scheme = "centroid",
 verbose = FALSE,

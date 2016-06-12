@@ -8,7 +8,7 @@ opar <- par(no.readonly = TRUE)
 
 data(stemcells) #load gene, celltype and study
 
-library(mixOmicsv6)
+library(mixOmics)
 data=stemcells$gene
 type.id=stemcells$celltype
 exp=stemcells$study
@@ -33,8 +33,8 @@ colnames(data.near.zero)=c(colnames(stemcells$gene),paste0("nearzero",1:10))
 
 
 res=mint.spls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
-plotLoadings(res,study=1:6,subtitle=1:6)
-plotLoadings(res,study="all.partial",subtitle=1:6)
+plotLoadings(res,study=1:4,subtitle=1:4)
+plotLoadings(res,study="all.partial",subtitle=1:4)
 plotLoadings(res,study=c("global","all.partial"))
 
 #source("/Users/florian/Work/git/package-mixomics/mixOmics/R/plotIndiv.mint.R")
@@ -46,34 +46,34 @@ plotIndiv(res,study="global",group=type.id,ellipse=TRUE)
 plotIndiv(res,study="global",group=type.id,centroid=TRUE)
 plotIndiv(res,study="global",group=type.id,star=TRUE)
 
-plotIndiv(res,study=c(1:2,"global",6:5),group=type.id)
+plotIndiv(res,study=c(1:2,"global",4:3),group=type.id)
 plotIndiv(res,study=c(1),group=type.id,rep.space="XY")
 plotIndiv(res,study=c(1:2),group=type.id,rep.space="XY")
 
-plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,legend=T)
-plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,legend=T,point.lwd=3)
-plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,legend=T,point.lwd=3,size.legend=rel(2))
-plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,legend=T,point.lwd=3,size.legend=rel(2),size.legend.title=rel(2))
+plotIndiv(res,study=c(1:2,"global",4:3),group=type.id,legend=T)
+plotIndiv(res,study=c(1:2,"global",4:3),group=type.id,legend=T,point.lwd=3)
+plotIndiv(res,study=c(1:2,"global",4:3),group=type.id,legend=T,point.lwd=3,size.legend=rel(2))
+plotIndiv(res,study=c(1:2,"global",4:3),group=type.id,legend=T,point.lwd=3,size.legend=rel(2),size.legend.title=rel(2))
 
 
 plotIndiv(res,study="all.partial",group=type.id)
 plotIndiv(res,study=c(1,"all.partial"),group=type.id)
 plotIndiv(res,study=c("global","all.partial",2,3),group=type.id)
-plotIndiv(res,study=c("global",5,3,"all.partial",2),group=type.id)
-plotIndiv(res,study=c("global",5,3,"all.partial"),group=type.id)
+plotIndiv(res,study=c("global",4,3,"all.partial",2),group=type.id)
+plotIndiv(res,study=c("global",4,3,"all.partial"),group=type.id)
 
 
 # to change the levels, need to change the input factor study
-exp.temp=factor(exp,labels=paste0("studyname",1:6))
+exp.temp=factor(exp,labels=paste0("studyname",1:4))
 res=mint.spls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp.temp)
-plotIndiv(res,study=c(levels(res$study)[1:2],"global",levels(res$study)[6:5]),group=type.id,legend=T)
+plotIndiv(res,study=c(levels(res$study)[1:2],"global",levels(res$study)[4:3]),group=type.id,legend=T)
 
-plotIndiv(res,study=c(levels(res$study)[1:2],"global",levels(res$study)[6:5]),group=type.id,legend=T,subtitle=letters[seq( from = 1, to = 5 )])
+plotIndiv(res,study=c(levels(res$study)[1:2],"global",levels(res$study)[4:3]),group=type.id,legend=T,subtitle=letters[seq( from = 1, to = 5 )])
 
-plotIndiv(res,study=c(levels(res$study),"global"),group=type.id,legend=T,subtitle=letters[seq( from = 1, to = 7 )])
+plotIndiv(res,study=c(levels(res$study),"global"),group=type.id,legend=T,subtitle=letters[seq( from = 1, to = 5 )])
 
 #change the layout
-plotIndiv(res,study=c(levels(res$study),"global"),group=type.id,legend=T,subtitle=letters[seq( from = 1, to = 7 )],layout=c(3,2))
+plotIndiv(res,study=c(levels(res$study),"global"),group=type.id,legend=T,subtitle=letters[seq( from = 1, to = 5 )],layout=c(3,2))
 
 # the following can't run on Rstudio (margin too small)
 #plotIndiv(res,study=c(levels(res$study),"global"),group=type.id,legend=T,subtitle=letters[seq( from = 1, to = 7 )],layout=c(3,2),style="graphics")
@@ -92,12 +92,12 @@ plotIndiv(res,study=c(1:2),group=type.id,legend=T,legend.position="bottom",size.
 
 plotIndiv(res,study=c(1,2),group=type.id,legend=T,style="lattice")
 
-plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,legend=T,pch=14+as.numeric(factor(exp)))
+plotIndiv(res,study=c(1:2,"global",4:3),group=type.id,legend=T,pch=14+as.numeric(factor(exp)))
 
 
-plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,subtitle=paste0("study:",letters[seq( from = 1, to = 5 )]))
-plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,subtitle=letters[seq( from = 1, to = 5 )],title="MINT")
-plotIndiv(res,study=c(1:2,"global",6:5),group=type.id,subtitle=letters[seq( from = 1, to = 5 )],title="MINT",legend=TRUE)
+plotIndiv(res,study=c(1:2,"global",4:3),group=type.id,subtitle=paste0("study:",letters[seq( from = 1, to = 5 )]))
+plotIndiv(res,study=c(1:2,"global",4:3),group=type.id,subtitle=letters[seq( from = 1, to = 5 )],title="MINT")
+plotIndiv(res,study=c(1:2,"global",4:3),group=type.id,subtitle=letters[seq( from = 1, to = 5 )],title="MINT",legend=TRUE)
 
 plotIndiv(res,study=c(1:2,"global"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",legend=TRUE,style="graphics")
 plotIndiv(res,study=c(1:2,"global"),group=type.id,subtitle=letters[seq( from = 1, to = 3 )],title="MINT",legend=TRUE,style="graphics",point.lwd=3)
@@ -123,7 +123,7 @@ par(opar)
 ## ======================================================================
 
 
-library(mixOmicsv6)
+library(mixOmics)
 data=stemcells$gene
 type.id=stemcells$celltype
 exp=stemcells$study
@@ -146,8 +146,8 @@ res=mint.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),st
 
 plotLoadings(res,contrib="min")
 plotLoadings(res,contrib="min",study=1)
-plotLoadings(res,contrib="min",study=1:6)
-plotLoadings(res,contrib="min",study=1:6,comp=2)
+plotLoadings(res,contrib="min",study=1:4)
+plotLoadings(res,contrib="min",study=1:4,comp=2)
 
 
 #add useless column for near.zero.var=TRUE tests
@@ -168,14 +168,14 @@ res3=block.pls(list(X=data),Y=Y.mat,ncomp=2,scale=FALSE)
 selectVar(res,block=2)
 
 #######  wraper.block.spls
-res=block.spls(X=A.light,indY=2,keepX=list(X=c(10,5,15),Y=c(3,2)),ncomp=c(3,3))
-res=block.spls(X=A.light,indY=2,keepX=list(Y=c(3,2),X=c(10,5)),ncomp=c(3,3),
+res=block.spls(X=A.light,indY=2,keepX=list(X=c(10,5,15),Y=c(3,2)),ncomp = 3)
+res=block.spls(X=A.light,indY=2,keepX=list(Y=c(3,2),X=c(10,5)),ncomp = 3,
 keepX.constraint=list(X=list(comp1=c(10,12)),Y=list(comp1=c(1,2))))
 
-res=block.spls(X=A.light,indY=2,keepX=list(Y=c(3,2),X=c(10,5)),ncomp=c(3,3),
+res=block.spls(X=A.light,indY=2,keepX=list(Y=c(3,2),X=c(10,5)),ncomp = 3,
 keepX.constraint=list(Y=list(comp1=c(1,2)),X=list(comp1=c(10,12))))
 
-res=block.spls(X=A.light,indY=2,keepX=list(Y=c(3,2),X=c(10,5)),ncomp=c(3,3),
+res=block.spls(X=A.light,indY=2,keepX=list(Y=c(3,2),X=c(10,5)),ncomp = 3,
 keepX.constraint=list(X=list(comp1=c(10,12))),keepY.constraint=list(Y=list(comp1=c(1,2))))
 
 
@@ -196,15 +196,14 @@ selectVar(res,block=2,comp=3)
 
 
 #######  wraper.block.plsda
-res=block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
+res=block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp = 2)
 res=block.plsda(list(XX=data),Y=type.id,ncomp=2)
 
 selectVar(res,block=2)
 
 
 #######  wraper.block.splsda
-res=block.splsda(X=list(X=data,Y=type.id),keepX=list(X=c(10,5)),indY=2,ncomp=c(3,2))
-res=block.splsda(X=list(X=data,Y=type.id),keepX=list(X=c(10,5)),indY=2,ncomp=c(2,2))
+res=block.splsda(X=list(X=data,Y=type.id),keepX=list(X=c(10,5)),indY=2,ncomp = 2)
 res=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(c(100)),
 keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
 
@@ -263,11 +262,11 @@ selectVar(res,block=1,comp=3)
 
 
 #######  wraper.mint.block.pls
-res=mint.block.pls(X=list(X=data,Y=Y.mat),indY=2,ncomp=c(2,2))
+res=mint.block.pls(X=list(X=data,Y=Y.mat),indY=2,ncomp = 2)
 res=mint.block.pls(list(XX=data),Y=Y.mat,ncomp=2)
 
 #######  wraper.mint.block.spls
-res=mint.block.spls(X=list(X=data,Y=Y.mat),indY=2,keepX=list(X=c(10,5)),ncomp=c(2,2))
+res=mint.block.spls(X=list(X=data,Y=Y.mat),indY=2,keepX=list(X=c(10,5)),ncomp = 2)
 res=mint.block.spls(list(XX=data),Y=Y.mat,ncomp=2)
 
 selectVar(res)
@@ -276,12 +275,12 @@ plotVar(res)
 
 
 #######  wraper.mint.block.plsda
-res=mint.block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp=c(2,2))
+res=mint.block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp = 2)
 res=mint.block.plsda(list(XX=data),Y=type.id,ncomp=2)
 
 #######  wraper.mint.block.splsda
 res=mint.block.splsda(list(XX=data),Y=type.id,ncomp=2)
-res=mint.block.splsda(X=list(XX=data,Y=type.id),indY=2,keepX=list(XX=c(10,5)),ncomp=c(2,2))
+res=mint.block.splsda(X=list(XX=data,Y=type.id),indY=2,keepX=list(XX=c(10,5)),ncomp = 2)
 
 selectVar(res)
 selectVar(res,block=2,comp=2)
@@ -311,23 +310,23 @@ res=mixOmics(data.light,type.id.light,ncomp=3,keepX=c(10,5,15))#splsda
 
 #block.pls
 res=mixOmics(X=list(XX=data),Y=unmap(type.id))
-res=mixOmics(X=A,indY=2,ncomp=c(2,2))
+res=mixOmics(X=A,indY=2,ncomp = 2)
 res=mixOmics(X=A,indY=2)
 
 
 #block.spls
 res=mixOmics(X=list(XX=data),Y=unmap(type.id),keepX=list(XX=c(10,5,15)),ncomp=3)
-res=mixOmics(X=list(data=data,Y=Y.mat),indY=2,keepX=list(data=c(10,5,15)),ncomp=c(3,3))
-res=mixOmics(X=A,indY=2,keepX.constraint=list(X=list(1:10)),ncomp=c(2,2))
+res=mixOmics(X=list(data=data,Y=Y.mat),indY=2,keepX=list(data=c(10,5,15)),ncomp = 3)
+res=mixOmics(X=A,indY=2,keepX.constraint=list(X=list(1:10)),ncomp = 2)
 
 # block.plsda
 res=mixOmics(X=A,Y=type.id)
-res=mixOmics(X=list(data=data,Y=type.id),indY=2,ncomp=c(3,3))
+res=mixOmics(X=list(data=data,Y=type.id),indY=2,ncomp = 3)
 res=mixOmics(X=A,Y=type.id)
 res=mixOmics(X=list(XX=data),Y=type.id)
 
 # block.splsda
-res=mixOmics(X=list(data=data,Y=type.id),indY=2,keepX=list(data=c(10,5,15)),ncomp=c(3,3))
+res=mixOmics(X=list(data=data,Y=type.id),indY=2,keepX=list(data=c(10,5,15)),ncomp = 3)
 
 
 system.time(splsda(X=data,Y=type.id,keepX=c(10,5,10),ncomp=3,near.zero.var=TRUE))
@@ -370,17 +369,17 @@ res=mixOmics(X=list(XX=data),Y=unmap(type.id),study=exp)
 
 # mint.block.spls
 res=mixOmics(X=list(XX=data),Y=unmap(type.id),keepX=list(XX=c(10,5)),study=exp,ncomp=2)
-res=mixOmics(X=list(data=data,Y=Y.mat),indY=2,keepX=list(data=c(10,5,15)),ncomp=c(3,3),study=exp)
-res=mixOmics(X=A,indY=2,keepX.constraint=list(X=list(1:10)),ncomp=c(3,1)) # OK
+res=mixOmics(X=list(data=data,Y=Y.mat),indY=2,keepX=list(data=c(10,5,15)),ncomp = 3,study=exp)
+res=mixOmics(X=A,indY=2,keepX.constraint=list(X=list(1:10)),ncomp = 3) # OK
 
 # mint.block.plsda
 res=mixOmics(X=A,Y=type.id,study=exp)
 
 # mint.block.plsda
-res=mixOmics(X=list(data=data,Y=type.id),indY=2,ncomp=c(3,3),study=exp)
+res=mixOmics(X=list(data=data,Y=type.id),indY=2,ncomp = 3,study=exp)
 
 # mint.block.splsda
-res=mixOmics(X=list(data=data,Y=type.id),indY=2,keepX=list(data=c(10,5,15)),ncomp=c(3,3),study=exp)
+res=mixOmics(X=list(data=data,Y=type.id),indY=2,keepX=list(data=c(10,5,15)),ncomp = 3,study=exp)
 
 
 
@@ -391,18 +390,18 @@ res=mixOmics(X=list(data=data,Y=type.id),indY=2,keepX=list(data=c(10,5,15)),ncom
 #RGCCA
 res=mixOmics(X=A,tau=c(1,1))
 res=mixOmics(X=A,tau="optimal")
-res=mixOmics(X=A,indY=2,tau=c(1,1),ncomp=c(3,1)) #OK
+res=mixOmics(X=A,indY=2,tau=c(1,1),ncomp = 3) #OK
 
 #sparse RGCCA
 # keep variable 5 and 10 on the 2first comp of block1, keep variable 2 on comp1 for block 2. completed by keeping all variable on comp2 for block2
-res=mixOmics(X=A,tau=c(1,1),mode="canonical",keepX.constraint=list(X=c(5,10),Y=2),ncomp=c(2,2))
-res1=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(X=list(5,10),Y=list(2)),ncomp=c(2,2))#same
+res=mixOmics(X=A,tau=c(1,1),mode="canonical",keepX.constraint=list(X=c(5,10),Y=2),ncomp = 2)
+res1=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(X=list(5,10),Y=list(2)),ncomp = 2)#same
 
 # keep variable 5 on comp1 and 10 on comp2 of block1; keep variable 2 on comp1 for block 2. completed by keeping all variable on comp3 for block1 and comp2/3 for block2
-res2=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(X=c(5,10),Y=2),ncomp=c(3,3))
+res2=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(X=c(5,10),Y=2),ncomp = 3)
 
 # keep variable 5 and 10 on the first comp of block1, variable 3 on the second comp of block1; keep variable 2 on comp1 for block 2. completed by keeping all variable on comp3 for block1 and comp2/3 for block2
-res3=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(X=list(c(5,10),3),Y=list(2)),ncomp=c(3,3))
+res3=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(X=list(c(5,10),3),Y=list(2)),ncomp = 3)
 
 
 
@@ -421,16 +420,15 @@ which(res3$loadings$X[,2]!=0)
 sum(res3$loadings$X[,3]!=0)
 
 #OK keep variable 5 and 10 on the first comp of block1, variable 3 on the second comp of block1. completed by keeping all variable on comp3 for block1 and comp1/2/3 for block2
-res=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(X=list(c(5,10),3)),ncomp=c(2,2)) #OK
+res=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(X=list(c(5,10),3)),ncomp = 2) #OK
 
 #OK keep variable 5 and 10 on the first comp of block1, variable 3 on the second comp of block1. keep the 10 most important variables on comp3 of block1. completed by keeping all variable on comp3 for block1 and comp1/2/3 for block2
-res=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(X=list(c(5,10),3)),keepX=list(10),ncomp=c(3,3)) #OK
+res=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(X=list(c(5,10),3)),keepX=list(10),ncomp = 3) #OK
 
 
-res=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(),keepX=list(X=c(10,10)),ncomp=c(2,2))#OK
-res=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(),keepX=list(X=c(10,10)),ncomp=c(2,1))#OK
-res=mixOmics(X=A,tau=c(1,1),keepX=list(X=c(10,10)),ncomp=c(3,3))#OK
-res=mixOmics(X=A,tau=c(1,1),keepX=list(5,2),keepX.constraint=list(X=list(c(5,10))),ncomp=c(2,2)) #OK
+res=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(),keepX=list(X=c(10,10)),ncomp = 2)#OK
+res=mixOmics(X=A,tau=c(1,1),keepX=list(X=c(10,10)),ncomp = 3)#OK
+res=mixOmics(X=A,tau=c(1,1),keepX=list(5,2),keepX.constraint=list(X=list(c(5,10))),ncomp = 2) #OK
 
 
 par(opar)

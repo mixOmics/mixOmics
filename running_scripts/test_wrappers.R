@@ -7,7 +7,7 @@ opar <- par(no.readonly = TRUE)
 
 ## RGCCA
 # --------------
-library(mixOmicsv6)
+library(mixOmics)
 data(nutrimouse)
 # need to unmap Y for an unsupervised analysis, where Y is included as a data block in data
 Y = unmap(nutrimouse$diet)
@@ -19,7 +19,7 @@ byrow = TRUE, dimnames = list(names(data), names(data)))
 nutrimouse.rgcca <- wrapper.rgcca(X = data,
 #design = design,
 tau = "optimal",
-ncomp = c(2, 2, 2),
+ncomp = 2,
 scheme = "centroid",
 verbose = FALSE)
 
@@ -68,7 +68,7 @@ byrow = TRUE, dimnames = list(names(data), names(data)))
 nutrimouse.srgcca <- wrapper.rgcca(X = data,
 #design = design,
 tau = "optimal",
-ncomp = c(2, 2, 2),
+ncomp = 2,
 scheme = "centroid",
 verbose = FALSE)
 
@@ -88,7 +88,7 @@ head(nutrimouse.srgcca$loadings[[3]])
 nutrimouse.srgcca2 <- wrapper.rgcca(X = data,
 #design = design,
 tau = "optimal",
-ncomp = c(2, 2, 2),
+ncomp = 2,
 keepX=NULL,
 scheme = "centroid",
 verbose = FALSE)
@@ -107,7 +107,7 @@ head(nutrimouse.srgcca2$loadings[[3]])
 nutrimouse.sgcca <- wrapper.sgcca(X = data,
 design = design,
 penalty = c(0.3, 0.5, 1),
-ncomp = c(3, 3, 3),
+ncomp = 3,
 scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)
@@ -131,7 +131,7 @@ plotVar(nutrimouse.sgcca, col = color.mixo(1:3), cex = c(2,5,3))
 # ----
 nutrimouse.sgcca <- wrapper.sgcca(X = data,
 design = design,
-ncomp = c(2, 2, 2),
+ncomp = 2,
 # for keep: each element of the list corresponds to a block
 # and is of length the # comp per block
 keepX = list(gene = c(10,10), lipid = c(15,15), Y = c(ncol(Y))),
@@ -161,7 +161,7 @@ nutrimouse.sgccda <- wrapper.sgccda(X = data,
 Y = Y,
 design = design,
 keepX = list(gene = c(10,10), lipid = c(15,15)),
-ncomp = c(3, 3),
+ncomp = 3,
 scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)

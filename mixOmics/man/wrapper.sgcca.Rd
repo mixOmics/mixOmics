@@ -11,7 +11,7 @@
 wrapper.sgcca(X,
 design = 1 - diag(length(X)),
 penalty = NULL,
-ncomp = rep(1, length(X)),
+ncomp = 1,
 keepX.constraint,
 keepX,
 scheme = "centroid",
@@ -29,7 +29,7 @@ near.zero.var = FALSE)
   \item{X}{a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables. \code{NA}s are not allowed.}
   \item{design}{numeric matrix of size (number of blocks) x (number of blocks) with only 0 or 1 values. A value of 1 (0) indicates a relationship (no relationship) between the blocks to be modelled using sGCCA.}
   \item{penalty}{numeric vector of length the number of blocks in \code{X}. Each penalty parameter will be applied on each block and takes the value between 0 (no variable selected) and 1 (all variables included).}
-  \item{ncomp}{numeric vector of length the number of blocks in \code{X}. The number of components to include in the model for each block (does not necessarily takes the same value for each block).}
+\item{ncomp}{the number of components to include in the model. Default to 1.}
 \item{keepX.constraint}{A list of same length as X. Each entry keepX.constraint[[i]] is a list containing which variables of X[[i]] are to be kept on each of the first PLS-components}
 \item{keepX}{ A vector of same length as X.  Each entry keepX[i] is the number of X[[i]]-variables kept in the model on the last components (once all keepX.constraint[[i]] are used).}
 \item{scheme}{Either "horst", "factorial" or "centroid"
@@ -67,7 +67,7 @@ that contains the following components:
   \item{loadings.star}{the laodings, standardised.}
   \item{penalty}{the input penalty parameter.}
   \item{scheme}{the input schme.}
-  \item{ncomp}{the number of components on each block.}
+\item{ncomp}{the number of components included in the model for each block.}
   \item{crit}{the convergence criterion.}
   \item{AVE}{Indicators of model quality based on the
   Average Variance Explained (AVE): AVE(for one block),
@@ -107,7 +107,7 @@ design = matrix(c(0,1,1,
 
 #note: the penalty parameters will need to be tuned
 wrap.result.sgcca = wrapper.sgcca(X = data, design = design, penalty = c(.3,.5, 1),
-                                  ncomp = c(2, 2, 1),
+                                  ncomp = 2,
                                   scheme = "centroid", verbose = FALSE)
 wrap.result.sgcca
 #did the algo converge?

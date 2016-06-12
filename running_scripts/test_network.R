@@ -313,7 +313,7 @@ if(additional.test==TRUE)
     blocks = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, diet = diet)
     design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE, dimnames = list(names(blocks), names(blocks)))
     
-    nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = c(4, 3, 3))
+    nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = 4)
     
     network(nutri.sgcca)
     
@@ -361,7 +361,7 @@ if(additional.test==TRUE)
         blocks = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, diet = diet)
         design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE, dimnames = list(names(blocks), names(blocks)))
         
-        nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = c(4, 3, 3))
+        nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = 4)
         
         network(nutri.sgcca)
         

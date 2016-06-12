@@ -154,7 +154,7 @@ data.test=list(gene=gene.test,lipid=lipid.test)
 
 # example with block.splsda=diablo=sgccda and a missing block
 res.train = block.splsda(X=list(gene=gene.train,lipid=lipid.train),Y=Y.train,
-ncomp=c(3,3),keepX=list(gene=c(10,10,10),lipid=c(5,5,5)))
+ncomp=3,keepX=list(gene=c(10,10,10),lipid=c(5,5,5)))
 test.predict = predict(res.train, newdata=data.test[2], method = "max.dist")
 
 

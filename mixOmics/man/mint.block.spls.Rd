@@ -13,7 +13,7 @@ mint.block.spls(X,
 Y,
 indY,
 study,
-ncomp=rep(2,length(X)),
+ncomp = 2,
 keepX.constraint,
 keepY.constraint,
 keepX,
@@ -36,7 +36,7 @@ near.zero.var = FALSE)
 \item{Y}{Outcome. Numeric vector or matrix of responses (for multi-response models)}
 \item{indY}{To supply if Y is missing, indicates the position of the outcome in the list X}
 \item{study}{grouping factor indicating which samples are from the same study}
-\item{ncomp}{Numeric vector of length the number of blocks in \code{X}. The number of components to include in the model for each block (does not necessarily need to take the same value for each block). By default set to 2 per block.}
+\item{ncomp}{the number of components to include in the model. Default to 2.}
 \item{keepX.constraint}{A list of same length as X. Each entry keepX.constraint[[i]] is a list containing which variables of X[[i]] are to be kept on each of the first PLS-components}
 \item{keepY.constraint}{Only used if Y is provided, otherwise extracted from keepX.constraint. A list containing which variables of Y are to be kept on each of the first PLS-components}
 \item{keepX}{ A vector of same length as X.  Each entry keepX[i] is the number of X[[i]]-variables kept in the model on the last components (once all keepX.constraint[[i]] are used).}
@@ -79,7 +79,7 @@ that contains the following components:
 
   \item{X}{the centered and standardized original predictor matrix.}
   \item{Y}{the centered and standardized original response vector or matrix.}
-  \item{ncomp}{the number of components included in the model.}
+\item{ncomp}{the number of components included in the model for each block.}
   \item{mode}{the algorithm used to fit the model.}
   \item{mat.c}{matrix of coefficients to be used internally by \code{predict}.}
   \item{variates}{list containing the \eqn{X} and \eqn{Y} variates.}

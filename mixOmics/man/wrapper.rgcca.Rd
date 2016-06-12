@@ -11,7 +11,7 @@
 wrapper.rgcca(X,
     design = 1 - diag(length(X)),
     tau = rep(1, length(X)),
-    ncomp = rep(1, length(X)),
+    ncomp = 1,
     keepX.constraint,
     keepX,
     scheme = "centroid",
@@ -30,7 +30,7 @@ wrapper.rgcca(X,
   \item{tau}{numeric vector of length the number of blocks in \code{X}. Each regularization parameter will be applied on each block and takes the value between 0 (no regularisation) and 1. If tau = "optimal" the shrinkage paramaters are estimated for each block and
   each dimension using the Schafer and Strimmer (2005)
   analytical formula.}
-  \item{ncomp}{numeric vector of length the number of blocks in \code{X}. The number of components to include in the model for each block (does not necessarily takes the same value for each block).}
+\item{ncomp}{the number of components to include in the model. Default to 1.}
 \item{keepX.constraint}{A list of same length as X. Each entry keepX.constraint[[i]] is a list containing which variables of X[[i]] are to be kept on each of the first PLS-components}
 \item{keepX}{ A vector of same length as X.  Each entry keepX[i] is the number of X[[i]]-variables kept in the model on the last components (once all keepX.constraint[[i]] are used).}
   \item{scheme}{Either "horst", "factorial" or "centroid"
@@ -63,7 +63,7 @@ that contains the following components:
   \item{loadings.star}{the laodings, standardised.}
   \item{tau}{the input tau parameter.}
   \item{scheme}{the input schme.}
-  \item{ncomp}{the number of components on each block.}
+\item{ncomp}{the number of components included in the model for each block.}
   \item{crit}{the convergence criterion.}
   \item{AVE}{Indicators of model quality based on the
   Average Variance Explained (AVE): AVE(for one block),
@@ -105,7 +105,7 @@ design = matrix(c(0,1,1,
                   1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 #note: the tau parameter is the regularization parameter
 wrap.result.rgcca = wrapper.rgcca(X = data, design = design, tau = c(1, 1, 0),
-                                  ncomp = c(2, 2, 1),
+                                  ncomp = 2,
                                   scheme = "centroid", verbose = FALSE)
 #wrap.result.rgcca
 }

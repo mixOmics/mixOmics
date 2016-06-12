@@ -95,7 +95,7 @@ folds = 10,
     ### End: Training samples (X.training and Y.training) and Test samples (X.test / Y.test)
     
     ### Estimation models
-    model = lapply(1 : M, function(x) {block.splsda(X = X.training[[x]], Y = Y.training[[x]], ncomp = object$ncomp[-indY], keepX = object$keepX,
+    model = lapply(1 : M, function(x) {block.splsda(X = X.training[[x]], Y = Y.training[[x]], ncomp = max(object$ncomp[-indY]), keepX = object$keepX,
             design = object$design, max.iter = object$max.iter, tol = object$tol, init = object$init, scheme = object$scheme,
             bias = object$bias, mode = object$mode)})
     

@@ -94,7 +94,7 @@ design = matrix(c(0,1,1,
                   1,1,0), ncol = 3, nrow = 3, byrow = T)
 #note: the penalty parameters need to be tuned
 wrap.result.sgcca = wrapper.sgcca(X = data, design = design, penalty = c(.3,.3, 1),
-                                  ncomp = c(2, 2, 1),
+                                  ncomp = 2,
                                   scheme = "centroid", verbose = FALSE)
 
 #variables selected and loadings values on component 1 for the two blocs

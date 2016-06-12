@@ -10,7 +10,7 @@
 block.pls(X,
 Y,
 indY,
-ncomp = rep(2,length(X)),
+ncomp = 2,
 design,
 scheme,
 mode,
@@ -27,7 +27,7 @@ near.zero.var = FALSE)
 \item{X}{A list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets.}
 \item{Y}{Outcome. Numeric vector or matrix of responses (for multi-response models)}
 \item{indY}{To supply if Y is missing, indicates the position of the outcome in the list \code{X}}
-\item{ncomp}{Numeric vector of length the number of blocks in \code{X}. The number of components to include in the model for each block (does not necessarily need to take the same value for each block). By default set to 2 per block.}
+\item{ncomp}{the number of components to include in the model. Default to 2.}
 \item{design}{numeric matrix of size (number of blocks) x (number of blocks) with only 0 or 1 values. A value of 1 (0) indicates a relationship (no relationship) between the blocks to be modelled. If \code{Y} is provided instead of \code{indY}, the \code{design} matrix is changed to include relationships to \code{Y}. }
 \item{scheme}{Either "horst", "factorial" or "centroid". Default = \code{centroid}, see reference paper.}
 \item{mode}{character string. What type of algorithm to use, (partially) matching
@@ -65,7 +65,7 @@ that contains the following components:
 
   \item{X}{the centered and standardized original predictor matrix.}
   \item{indY}{the position of the outcome Y in the output list X.}
-  \item{ncomp}{the number of components included in the model.}
+  \item{ncomp}{the number of components included in the model for each block.}
   \item{mode}{the algorithm used to fit the model.}
   \item{variates}{list containing the variates of each block of X.}
   \item{loadings}{list containing the estimated loadings for the variates.}
@@ -113,7 +113,7 @@ plotIndiv(res)
 plotVar(res)
 
 # Y is provided
-res2 = block.pls( list(gene = nutrimouse$gene, lipid = nutrimouse$lipid),Y = Y, ncomp = c(2,2))
+res2 = block.pls( list(gene = nutrimouse$gene, lipid = nutrimouse$lipid),Y = Y, ncomp = 2)
 plotIndiv(res2)
 plotVar(res2)
 

@@ -53,7 +53,7 @@ tune= tune.splsda(X,Y=design[,2],ncomp=3,nrepeat=5,logratio="none",test.keepX = 
 
 # mint.splsda
 # ----
-library(mixOmicsv6)
+library(mixOmics)
 data=stemcells$gene
 type.id=stemcells$celltype
 exp=stemcells$study

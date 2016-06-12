@@ -7,7 +7,7 @@ opar <- par(no.readonly = TRUE)
 
 ## sGCC-DA
 # -------------
-library(mixOmicsv6)
+library(mixOmics)
 #source("mixOmics/R/plotIndiv.R")
 data(nutrimouse)
 Y = nutrimouse$diet
@@ -19,7 +19,7 @@ nutrimouse.sgccda <- wrapper.sgccda(X=data,
 Y = Y,
 design = design,
 keepX = list(gene=c(10,10), lipid=c(15,15)),
-ncomp = c(2, 2),
+ncomp = 2,#c(2, 2),
 scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)
@@ -74,7 +74,7 @@ plotVar(nutrimouse.sgccda, col = color.mixo(1:2), cex = c(2,2))
 perf=perf(nutrimouse.sgccda)
 perf$features$stable
 
-perf=perf(nutrimouse.sgccda,validation="loo",parallel=TRUE,cpus=4)
+perf=perf(nutrimouse.sgccda,validation="loo")
 perf$features$stable
 
 

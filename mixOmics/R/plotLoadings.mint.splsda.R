@@ -92,6 +92,10 @@ border = NA,
         size.legend = check$size.legend
         block = check$block # "X"
 
+        #study needs to be either: from levels(object$study), numbers from 1:nlevels(study) or "global"
+        if (any(!study%in%c(levels(object$study), "global" , "all.partial")))
+        stop("'study' must from one of 'object$study', 'global' or 'all.partial', see help file.")
+
         study.init = unique(study)
         # replace "all.partial" by all levels of object$study
         ind.all.partial = which(study.init == "all.partial")
