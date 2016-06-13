@@ -30,7 +30,7 @@ The data are from Koren et al. (2011) who examined the link between oral, gut an
 }
 
 \source{
-The raw data were downloaded from the QIITA database \url{http://qiita.microbio.me/study/description/349}.
+The raw data were downloaded from the QIITA database \url{https://qiita.ucsd.edu/}.
 Filtering and normalisation described in our website \url{ www.mixOmics.org/mixMC}}
 
 \references{
