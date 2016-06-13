@@ -113,9 +113,11 @@ Gunther O., Shin H., Ng R. T. , McMaster W. R., McManus B. M. , Keown P. A. , Te
 # -------------
 data("breast.TCGA")
 # this is the X data as a list of mRNA and miRNA; the Y data set is a single data set of proteins
-data = list(mrna = breast.TCGA$data.train$mrna, mirna = breast.TCGA$data.train$mirna, protein = breast.TCGA$data.train$protein)
+data = list(mrna = breast.TCGA$data.train$mrna, mirna = breast.TCGA$data.train$mirna,
+protein = breast.TCGA$data.train$protein)
 # set up a full design where every block is connected
-design = matrix(1, ncol = length(data), nrow = length(data), dimnames = list(names(data), names(data)))
+design = matrix(1, ncol = length(data), nrow = length(data),
+dimnames = list(names(data), names(data)))
 diag(design) =  0
 design
 # set number of component per data set
@@ -137,7 +139,8 @@ plotVar(TCGA.block.splsda, style = 'graphics', legend = TRUE)
 # block.splsda constraint
 # -------------
 # using the data and design from example above
-## we force the first PLS-component of X to be built with only a few variables selected in the earlier example
+## we force the first PLS-component of X to be built with only a few variables
+# selected in the earlier example
 
 constraint.mrna.comp1 = c("EPHB3", "CBR1", "BSPRY")
 constraint.mirna.comp1  = c("hsa-mir-128-2", "hsa-mir-196b")
@@ -145,10 +148,12 @@ constraint.prot.comp1  = c("Paxillin")
 
 TCGA.block.splsda.constraint = block.splsda(X = data, Y = breast.TCGA$data.train$subtype, ncomp = 2,
 keepX = list(mrna = 20, mirna = 20, protein = 10),
-keepX.constraint = list(mrna = list(constraint.mrna.comp1), mirna = list(constraint.mirna.comp1), protein =  list(constraint.prot.comp1)))
+keepX.constraint = list(mrna = list(constraint.mrna.comp1), mirna = list(constraint.mirna.comp1),
+protein =  list(constraint.prot.comp1)))
 
 # see if that subset contraint on comp 1 affected the variables selected in comp 2:
-intersect(selectVar(TCGA.block.splsda.constraint, comp = 2)$mrna$name, selectVar(TCGA.block.splsda, comp = 2)$mrna$name)
+intersect(selectVar(TCGA.block.splsda.constraint, comp = 2)$mrna$name,
+selectVar(TCGA.block.splsda, comp = 2)$mrna$name)
 
 # indices of the constraint variables on the first component
 TCGA.block.splsda.constraint$keepX.constraint

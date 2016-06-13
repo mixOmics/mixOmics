@@ -1,13 +1,16 @@
-# Copyright (C) 2009 
-# Fangzhou Yao, Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia and
-# Shangai University of Finance and Economics, Shanghai, P.R. China
-# Jeff Coquery, Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia and
-# Sup Biotech, Paris, France
-# Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-# Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-# Kim-Anh Le Cao, French National Institute for Agricultural Research and 
-# Queensland Facility for Bioinformatics, University of Queensland, Australia
-
+# Authors:
+#
+# The function ica.par and ica.def are borrowed from the fastICA package (see references).
+#
+#   Fangzhou Yao, Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia and Shangai University of Finance and Economics, Shanghai, P.R. China
+#   Jeff Coquery, Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia and Sup Biotech, Paris, France
+#   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+#   Kim-Anh Le Cao, French National Institute for Agricultural Research and Queensland Facility for Bioinformatics, University of Queensland, Australia
+#
+# created: 2011
+# last modified: 17-03-2016
+#
+# Copyright (C) 2011
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -22,8 +25,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#
-# The function ica.par and ica.def are borrowed from the fastICA package (see references).
 
 
 sipca <-

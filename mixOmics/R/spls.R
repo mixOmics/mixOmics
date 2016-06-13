@@ -1,11 +1,13 @@
 #############################################################################################################
-# Author :
+# Authors:
+#   Kim-Anh Le Cao, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
-# created: 22-04-2015
+# created: 2009
 # last modified: 24-05-2016
 #
-# Copyright (C) 2015
+# Copyright (C) 2009
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

@@ -1,5 +1,5 @@
 #############################################################################################################
-# Author :
+# Author:
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 16-03-2016

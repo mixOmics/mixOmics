@@ -117,7 +117,8 @@ data("breast.TCGA")
 # this is the X data as a list of mRNA and miRNA; the Y data set is a single data set of proteins
 data = list(mrna = breast.TCGA$data.train$mrna, mirna = breast.TCGA$data.train$mirna)
 # set up a full design where every block is connected
-design = matrix(1, ncol = length(data), nrow = length(data), dimnames = list(names(data), names(data)))
+design = matrix(1, ncol = length(data), nrow = length(data),
+dimnames = list(names(data), names(data)))
 diag(design) =  0
 design
 # set number of component per data set
@@ -129,7 +130,7 @@ list.keepY = c(rep(10, 2))
 TCGA.block.spls = block.spls(X = data, Y = breast.TCGA$data.train$protein,
 ncomp = ncomp, keepX = list.keepX, keepY = list.keepY, design = design)
 TCGA.block.spls
-# in plotindiv we color the samples per berast subtype group, but remember this method is unsupervised!
+# in plotindiv we color the samples per breast subtype group but the method is unsupervised!
 plotIndiv(TCGA.block.spls, group =  breast.TCGA$data.train$subtype, ind.names = FALSE)
 # illustrates coefficient weights in each block
 plotLoadings(TCGA.block.spls, ncomp = 1)
@@ -140,7 +141,8 @@ network(TCGA.block.spls)
 # Second example with a constraint sPLS
 # --------------------
 # using the data and design from example above
-## we force the first PLS-component of X to be built with only a few variables selected in the earlier example
+## we force the first PLS-component of X to be built with only a few variables selected
+# in the earlier example
 
 constraint.mrna.comp1 = c("EPHB3", "CBR1", "BSPRY")
 constraint.mirna.comp1  = c("hsa-mir-128-2", "hsa-mir-196b")
@@ -153,7 +155,8 @@ keepX.constraint = list(mrna = list(constraint.mrna.comp1), mirna = list(constra
 keepY.constraint = list(protein = list(constraint.prot.comp1)))
 
 # see if that subset contraint on comp 1 affected the variables selected in comp 2:
-intersect(selectVar(TCGA.block.spls.constraint, comp = 2)$mrna$name, selectVar(TCGA.block.spls, comp = 2)$mrna$name)
+intersect(selectVar(TCGA.block.spls.constraint, comp = 2)$mrna$name,
+selectVar(TCGA.block.spls, comp = 2)$mrna$name)
 
 # indices of the constraint variable on the first component
 TCGA.block.spls.constraint$keepX.constraint

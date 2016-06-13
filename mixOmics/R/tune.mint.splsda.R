@@ -5,7 +5,7 @@
 # created: 22-04-2016
 # last modified: 26-04-2016
 #
-# Copyright (C) 2015
+# Copyright (C) 2016
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

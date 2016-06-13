@@ -1,11 +1,8 @@
 #############################################################################################################
-# Author :
-#   Kim-Anh Le Cao, French National Institute for Agricultural Research and
-#       Queensland Facility for Bioinformatics, University of Queensland, Australia
-#   Fangzhou Yao, Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia and
-#       Shangai University of Finance and Economics, Shanghai, P.R. China
-#   Jeff Coquery, Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia and
-#       Sup Biotech, Paris, France
+# Authors:
+#   Kim-Anh Le Cao, French National Institute for Agricultural Research and Queensland Facility for Bioinformatics, University of Queensland, Australia
+#   Fangzhou Yao, Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia and Shangai University of Finance and Economics, Shanghai, P.R. China
+#   Jeff Coquery, Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia andSup Biotech, Paris, France
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 2009

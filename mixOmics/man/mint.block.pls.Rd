@@ -80,7 +80,8 @@ that contains the following components:
 }
 
 \references{
-F Rohart, A Eslami, S Bougeard and K-A. Lê Cao. MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. Submitted.
+F Rohart, A Eslami, S Bougeard and K-A. Lê Cao. MINT: A multivariate integrative approach to identify a reproducible biomarker
+signature across multiple experiments and platforms. Submitted.
 
 Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2014). Algorithms for multi-group PLS. J. Chemometrics, 28(3), 192-201.
 }
@@ -92,7 +93,8 @@ Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2014). Algorithms for 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}}, \code{\link{mint.block.spls}}, \code{\link{mint.block.plsda}}, \code{\link{mint.block.splsda}} and http://www.mixOmics.org/mixMINT for more details.}
 
 \examples{
-# we will soon provide more examples on our website (data too large to be included in the package and still in active development)
+# we will soon provide more examples on our website (data too large to be included
+#in the package and still in active development)
 }
 
 

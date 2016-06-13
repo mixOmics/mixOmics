@@ -33,6 +33,7 @@ near.zero.var = FALSE)
 \item{Y}{A factor or a class vector indicating the discrete outcome of each sample.}
 \item{indY}{To be supplied if Y is missing, indicates the position of the matrix / vector response in the list \code{X}}
 \item{study}{factor indicating the membership of each sample to each of the studies being combined}
+\item{ncomp}{Number of components to include in the model (see Details). Default to 2.}
 \item{design}{numeric matrix of size (number of blocks in X) x (number of blocks in X) with 0 or 1 values. A value of 1 (0) indicates a relationship (no relationship) between the blocks to be modelled. If \code{Y} is provided instead of \code{indY}, the \code{design} matrix is changed to include relationships to \code{Y}. }
 \item{scheme}{Either "horst", "factorial" or "centroid" (Default: "centroid"), see reference paper.}
 \item{mode}{character string. What type of algorithm to use, (partially) matching
@@ -103,7 +104,8 @@ Gunther O., Shin H., Ng R. T. , McMaster W. R., McManus B. M. , Keown P. A. , Te
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}}, \code{\link{mint.block.spls}}, \code{\link{mint.block.plsda}}, \code{\link{mint.block.splsda}} and http://www.mixOmics.org/mixMINT for more details.}
 
 \examples{
-# we will soon provide more examples on our website (data too large to be included in the package and still in active development)
+# we will soon provide more examples on our website (data too large to be included in the package
+# and still in active development)
 }
 
 \keyword{regression}

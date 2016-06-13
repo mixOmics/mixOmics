@@ -230,6 +230,7 @@ plotIndiv(res, study = "2")
 
 ## variable representation for objects of class 'sgcca' (or 'rgcca')
 # ----------------------------------------------------
+\dontrun{
 data(nutrimouse)
 Y = unmap(nutrimouse$diet)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
@@ -245,7 +246,6 @@ bias = FALSE)
 # default style: one panel for each block
 plotIndiv(nutrimouse.sgcca)
 
-\dontrun{
     # for the block 'lipid' with ellipse plots and legend, different styles
     plotIndiv(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
     ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", title = 'my plot')
@@ -277,10 +277,11 @@ bias = FALSE)
 
 # plotIndiv
 # ----------
+\dontrun{
 # displaying all blocks. bu default colors correspond to outcome Y
 plotIndiv(nutrimouse.sgccda1)
 
-\dontrun{
+
     # displaying only 2 blocks
     plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet)
 

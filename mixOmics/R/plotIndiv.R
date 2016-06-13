@@ -1,11 +1,16 @@
 #############################################################################################################
-# Author :
+# Authors:
+#   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+#   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+
 #
-# created: 16-03-2016
+# created: 2009
 # last modified: 12-04-2016
 #
-# Copyright (C) 2016
+# Copyright (C) 2009
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
