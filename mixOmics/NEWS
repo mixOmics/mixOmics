@@ -1,9 +1,12 @@
 Changes in 6.0.0 (major, implementation improvements and new methods)
 ================
 In short,
--argument names input in all plots have been changed for homogeneous arguments call:
+- argument names which changed in all plots for homogeneous call are:
 'main' changed to 'title', 'add.legend' -> 'legend', 'cex.xxx' -> 'size.xxx', 'plot.ellipse' -> 'ellipse'
--ncomp is now a single value in all wrapper. and block. functions (multiple integration)
+- ncomp is now a single value in all wrapper. and block. functions (multiple integration)
+
+Please refer to our help files for the functions listed below.
+
 
 New features:
 -------------
