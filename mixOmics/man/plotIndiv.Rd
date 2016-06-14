@@ -162,6 +162,7 @@ keepY = c(10, 10, 10))
 plotIndiv(toxicity.spls)
 
 
+\dontrun{
 # indicating the centroid
 plotIndiv(toxicity.spls, rep.space= 'X-variate', ind.names = FALSE,
           group = liver.toxicity$treatment[, 'Time.Group'], centroid = TRUE)
@@ -178,7 +179,6 @@ plotIndiv(toxicity.spls, rep.space= 'X-variate', ind.names = FALSE,
 
 
 
-\dontrun{
     # in the Y space, colors indicate time of necropsy, text is the dose
     plotIndiv(toxicity.spls, rep.space= 'Y-variate',
     group = liver.toxicity$treatment[, 'Time.Group'],
@@ -259,6 +259,7 @@ plotIndiv(nutrimouse.sgcca)
 
 ## variable representation for objects of class 'sgccda'
 # ----------------------------------------------------
+\dontrun{
 # Note: the code differs from above as we use a 'supervised' GCCA analysis
 data(nutrimouse)
 Y = nutrimouse$diet
@@ -277,7 +278,7 @@ bias = FALSE)
 
 # plotIndiv
 # ----------
-\dontrun{
+
 # displaying all blocks. bu default colors correspond to outcome Y
 plotIndiv(nutrimouse.sgccda1)
 

@@ -156,6 +156,7 @@ plotIndiv(splsda.liver, ind.names = Y, plot.ellipse = TRUE, add.legend = TRUE)
 
 ## Fifth example: 16S data with multilevel decomposion and log ratio transformation
 # ------------------------------------------------
+\dontrun{
 splsda.16S = splsda(
 X = diverse.16S$data.TSS,  # TSS normalised data
 Y =  diverse.16S$bodysite,
@@ -164,9 +165,11 @@ ncomp = 2,
 keepX =  c(10, 150),
 logratio= 'CLR')  # CLR log ratio transformation
 
+
 plotIndiv(splsda.16S, ind.names = FALSE, pch = 16, ellipse = TRUE, legend = TRUE)
 #OTUs selected at the family level
 diverse.16S$taxonomy[selectVar(splsda.16S, comp = 1)$name,'Family']
+}
 }
 
 \keyword{regression}
