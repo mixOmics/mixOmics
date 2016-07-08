@@ -100,7 +100,7 @@ res <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 
 
 # individual names appear
-plotIndiv(res, ind.names = Y, add.legend = TRUE, plot.ellipse =TRUE)
+plotIndiv(res, ind.names = Y, legend = TRUE, ellipse =TRUE)
 
 ## Second example: one-factor analysis with sPLS-DA, selecting a subset of variables
 # as in the paper Liquet et al.
@@ -135,7 +135,7 @@ res.2level <- splsda(X, Y = Y, ncomp = 2, multilevel = design,
 keepX = c(200, 200))
 
 plotIndiv(res.2level, group = Y$stimu, ind.names = vac18.simulated$time,
-add.legend = TRUE, style = 'lattice')
+legend = TRUE, style = 'lattice')
 }
 
 
@@ -151,7 +151,7 @@ Y <- as.factor(liver.toxicity$treatment[, 4])
 splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
 
 # individual name is set to the treatment
-plotIndiv(splsda.liver, ind.names = Y, plot.ellipse = TRUE, add.legend = TRUE)
+plotIndiv(splsda.liver, ind.names = Y, ellipse = TRUE, legend = TRUE)
 }
 
 ## Fifth example: 16S data with multilevel decomposion and log ratio transformation

@@ -375,6 +375,11 @@ if(additional.test==TRUE)
     plotIndiv(pca.res,X.label="X")
     plotIndiv(pca.res,Y.label="Y")
     plotIndiv(pca.res,Z.label="Z",style="3d")
+    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("sphere"))
+    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("sphere"),cex=c(1,5))
+    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("sphere","cube"),cex=c(0.1,0.5))
+    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("cube","sphere"),cex=c(1,0.5),col=1:2)
+    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("cube","sphere","tetra"),cex=c(1,0.5),col=1:3)
     
     ##test xlim,ylim, different style
     

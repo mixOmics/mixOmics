@@ -141,7 +141,7 @@ alpha)
                     p = p +geom_point(data = subset(df, col == i & df$Block == levels(df$Block)[j]),size = 0, shape = 0,
                     color = unique(df[df$col == i & df$Block == levels(df$Block)[j], ]$col))+
                     geom_text(data = subset(df, col == i & df$Block == levels(df$Block)[j]),
-                    aes(label = rownames(subset(df, col == i & df$Block == levels(df$Block)[j]))),
+                    aes(label = names),
                     color = df[df$col == i & df$Block == levels(df$Block)[j], ]$col,
                     size = df[df$col == i & df$Block == levels(df$Block)[j], ]$cex,show.legend  = F)
                 } else {
@@ -685,43 +685,69 @@ alpha)
             }
             
             #-- Display sample or row.names
-            
             for (i in unique(df$col))
             {
                 if (display.names)
                 {
-                    text3d(x = df[df$col == i &  other, "x"],
-                    y = df[df$col == i &  other, "y"],
-                    z = df[df$col == i &  other, "z"],
-                    texts = df[df$col == i &  other, "names"],
-                    color = df[df$col == i, ]$col, size = unique(df[df$col == i, ]$cex))
+                    for (cex_i in unique(df[df$col == i, ]$cex))
+                    {
+                        ind = which(df[df$col == i, ]$cex == cex_i)
+                        text3d(x = df[df$col == i &  other, "x"][ind],
+                        y = df[df$col == i &  other, "y"][ind],
+                        z = df[df$col == i &  other, "z"][ind],
+                        texts = df[df$col == i &  other, "names"][ind],
+                        color = df[df$col == i, ]$col[ind], cex = cex_i)#df[df$col == i, ]$cex)
+                    }
                 }else{
-                    cex=unique(df[df$col == i, ]$cex)*20
-                    switch(unique(df[df$col == i, ]$pch),
-                    sphere = plot3d(x = df[df$col == i & other, "x"],
-                    y = df[df$col == i & other, "y"],
-                    z = df[df$col == i & other, "z"],
-                    col = df[df$col == i, ]$col, size = cex, radius = cex/20, add = TRUE),
-                    tetra = shapelist3d(tetrahedron3d(), x = df[df$col == i &other, "x"],
-                    y = df[df$col == i & other, "y"],
-                    z = df[df$col == i & other, "z"],
-                    col = df[df$col == i, ]$col, size = cex/25),
-                    cube = shapelist3d(cube3d(),x = df[df$col == i & other, "x"],
-                    y = df[df$col == i & other, "y"],
-                    z = df[df$col == i & other, "z"],
-                    col = df[df$col == i, ]$col, size = cex/30),
-                    octa = shapelist3d(octahedron3d(), x = df[df$col == i & other, "x"],
-                    y = df[df$col == i & other, "y"],
-                    z = df[df$col == i & other, "z"],
-                    col = df[df$col == i, ]$col, size = cex/17),
-                    icosa = shapelist3d(icosahedron3d(), x = df[df$col == i & other, "x"],
-                    y = df[df$col == i & other, "y"],
-                    z = df[df$col == i &other, "z"],
-                    col = df[df$col == i, ]$col, size = cex/20),
-                    dodeca = shapelist3d(dodecahedron3d(), x = df[df$col == i &other, "x"],
-                    y = df[df$col == i & other, "y"],
-                    z = df[df$col == i & other, "z"],
-                    col = df[df$col == i, ]$col, size = cex/20))
+                    cex = 20*df[df$col == i, ]$cex
+                    for (pch_i in unique(df[df$col == i, ]$pch))
+                    {
+                        ind = which(df[df$col == i, ]$pch == pch_i)
+                        if(pch_i == "sphere")
+                        {
+                            for (cex_i in unique(df[df$col == i, ]$cex[ind]))
+                            {
+                                ind_cex = which(df[df$col[ind] == i, ]$cex == cex_i)
+                                points3d(x = df[df$col == i & other, "x"][ind][ind_cex],
+                                y = df[df$col == i & other, "y"][ind][ind_cex],
+                                z = df[df$col == i & other, "z"][ind][ind_cex],
+                                col = df[df$col == i, ]$col[ind][ind_cex], size = cex_i*20, radius = cex_i, add = TRUE)
+                            }
+
+                        } else if (pch_i == "tetra") {
+                            shapelist3d(tetrahedron3d(), x = df[df$col == i &other, "x"][ind],
+                            y = df[df$col == i & other, "y"][ind],
+                            z = df[df$col == i & other, "z"][ind],
+                            col = df[df$col == i, ]$col[ind], size = cex[ind]/25)
+                            
+                            
+                        } else if (pch_i == "cube") {
+                            shapelist3d(cube3d(),x = df[df$col == i & other, "x"][ind],
+                            y = df[df$col == i & other, "y"][ind],
+                            z = df[df$col == i & other, "z"][ind],
+                            col = df[df$col == i, ]$col[ind], size = cex[ind]/30)
+                            
+                            
+                        } else if (pch_i == "octa") {
+                            shapelist3d(octahedron3d(), x = df[df$col == i & other, "x"][ind],
+                            y = df[df$col == i & other, "y"][ind],
+                            z = df[df$col == i & other, "z"][ind],
+                            col = df[df$col == i, ]$col[ind], size = cex[ind]/17)
+                            
+                        } else if (pch_i == "icosa") {
+                            shapelist3d(icosahedron3d(), x = df[df$col == i & other, "x"][ind],
+                            y = df[df$col == i & other, "y"][ind],
+                            z = df[df$col == i &other, "z"][ind],
+                            col = df[df$col == i, ]$col[ind], size = cex[ind]/20)
+                            
+                            
+                        } else if (pch_i == "dodeca") {
+                            shapelist3d(dodecahedron3d(), x = df[df$col == i &other, "x"][ind],
+                            y = df[df$col == i & other, "y"][ind],
+                            z = df[df$col == i & other, "z"][ind],
+                            col = df[df$col == i, ]$col[ind], size = cex[ind]/20)
+                        }
+                    }
                 }
             }
             

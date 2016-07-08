@@ -95,7 +95,7 @@ X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
 plsda.breast <- plsda(X, Y, ncomp = 2)
-plotIndiv(plsda.breast, ind.names = TRUE, plot.ellipse = TRUE, add.legend = TRUE)
+plotIndiv(plsda.breast, ind.names = TRUE, ellipse = TRUE, legend = TRUE)
 
 \dontrun{
 ## Second example
@@ -104,7 +104,7 @@ X <- liver.toxicity$gene
 Y <- liver.toxicity$treatment[, 4]
 
 plsda.liver <- plsda(X, Y, ncomp = 2)
-plotIndiv(plsda.liver, ind.names = Y, plot.ellipse = TRUE, add.legend =TRUE)
+plotIndiv(plsda.liver, ind.names = Y, ellipse = TRUE, legend =TRUE)
 
 }
 }
