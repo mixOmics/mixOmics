@@ -148,18 +148,18 @@ col.stimu <- 1:nlevels(design$stimu)
 plotIndiv(res.spls.1level, rep.space = 'X-variate', ind.names = FALSE,
 group = liver.toxicity$treatment$Dose.Group,
 pch = 20, main = 'Gene expression subspace',
-add.legend = TRUE)
+legend = TRUE)
 
 
 plotIndiv(res.spls.1level, rep.space = 'Y-variate', ind.names = FALSE,
 group = liver.toxicity$treatment$Dose.Group,
 pch = 20, main = 'Clinical measurements ssubpace',
-add.legend = TRUE)
+legend = TRUE)
 
 plotIndiv(res.spls.1level, rep.space = 'XY-variate', ind.names = FALSE,
 group = liver.toxicity$treatment$Dose.Group,
 pch = 20, main = 'Both Gene expression and Clinical subspaces',
-add.legend = TRUE)
+legend = TRUE)
 
 }
 

@@ -151,7 +151,7 @@ Y <- as.factor(liver.toxicity$treatment[, 4])
 splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
 
 # individual name is set to the treatment
-plotIndiv(splsda.liver, ind.names = Y, plot.ellipse = TRUE, legend = TRUE)
+plotIndiv(splsda.liver, ind.names = Y, ellipse = TRUE, legend = TRUE)
 }
 
 ## Fifth example: 16S data with multilevel decomposion and log ratio transformation
