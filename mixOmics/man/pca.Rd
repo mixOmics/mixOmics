@@ -38,7 +38,7 @@ multilevel = NULL)
     columns of \code{X} can be supplied. The value is passed to \code{\link{scale}}.} 
 \item{max.iter}{integer, the maximum number of iterations in the NIPALS algorithm.}
 \item{tol}{a positive real, the tolerance used in the NIPALS algorithm.}
-\item{logratio}{one of ('none','CLR','ILR'). Specifies the log ratio transformation to deal with compositional values that may arise from specific normalisation in sequencing dadta. Default to 'none'}
+\item{logratio}{one of ('none','CLR','ILR'). Specifies the log ratio transformation to deal with compositional values that may arise from specific normalisation in sequencing data. Default to 'none'}
 \item{V}{Matrix used in the logratio transformation id provided.}
 \item{multilevel}{sample information for multilevel decomposition for repeated measurements.}
 }
