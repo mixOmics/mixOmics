@@ -113,12 +113,7 @@ alpha)
         #-- Display sample or row.names
         for (i in levels(df$group))
         {
-            if (display.names)
-            {
-                p = p +geom_point(data = subset(df, df$group == i),size = 0, shape = 0)+ geom_text(data = subset(df, df$group == i), aes(label = names), size = 0,show.legend  = F)
-            } else {
-                p = p + geom_point(data = subset(df, df$group == i), size = 0, shape = 0)
-            }
+            p = p + geom_point(data = subset(df, df$group == i), size = 0, shape = 0)
             if (centroid == TRUE)
             {
                 p = p + geom_point(data = subset(df[, c("col", "x0", "y0", "Block", "cex", "pch", "group")], df$group == i), aes(x=x0,y=y0), size = 0, shape = 0)
@@ -146,7 +141,7 @@ alpha)
                     p = p +geom_point(data = subset(df, col == i & df$Block == levels(df$Block)[j]),size = 0, shape = 0,
                     color = unique(df[df$col == i & df$Block == levels(df$Block)[j], ]$col))+
                     geom_text(data = subset(df, col == i & df$Block == levels(df$Block)[j]),
-                    aes(label = names),
+                    aes(label = rownames(subset(df, col == i & df$Block == levels(df$Block)[j]))),
                     color = df[df$col == i & df$Block == levels(df$Block)[j], ]$col,
                     size = df[df$col == i & df$Block == levels(df$Block)[j], ]$cex,show.legend  = F)
                 } else {
