@@ -31,6 +31,8 @@ tune= tune.splsda(X,Y,ncomp=3,nrepeat=5,logratio="none",test.keepX = c(5, 10, 15
 
 tune= tune.splsda(X,Y,ncomp=2,nrepeat=1,logratio="none",test.keepX = c(5, 15),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = FALSE)
 
+tune= tune(method="splsda",X,Y,ncomp=2,nrepeat=1,logratio="none",test.keepX = c(5, 15),folds=10,dist="max.dist",already.tested.X=NULL, progressBar = FALSE)
+
 #source("mixOmics/R/tune.splsda.R")
 #source("mixOmics/R/MCVfold.R")
 

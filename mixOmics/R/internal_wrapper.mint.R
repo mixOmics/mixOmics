@@ -70,6 +70,19 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
     
     #-- validation des arguments --#
    
+    check = Check.entry.pls(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.constraint, mode=mode, scale=scale,
+        near.zero.var=near.zero.var, max.iter=max.iter ,tol=tol ,logratio=logratio ,DA=DA, multilevel=multilevel)
+    X = check$X
+    input.X = X # save the checked X, before logratio/multileve/scale
+    Y = check$Y
+    ncomp = check$ncomp
+    mode = check$mode
+    keepX.constraint = check$keepX.constraint
+    keepY.constraint = check$keepY.constraint
+    keepX = check$keepX
+    keepY = check$keepY
+    nzv.A = check$nzv.A
+    
     #set the default study factor
     if (missing(study))
     {
@@ -87,21 +100,7 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
     
     design = matrix(c(0,1,1,0), ncol = 2, nrow = 2, byrow = TRUE)
 
-    check = Check.entry.pls(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.constraint, mode=mode, scale=scale,
-        near.zero.var=near.zero.var, max.iter=max.iter ,tol=tol ,logratio=logratio ,DA=DA, multilevel=multilevel)
-    X = check$X
-    input.X = X # save the checked X, before logratio/multileve/scale
-    Y = check$Y
-    ncomp = check$ncomp
-    mode = check$mode
-    keepX.constraint = check$keepX.constraint
-    keepY.constraint = check$keepY.constraint
-    keepX = check$keepX
-    keepY = check$keepY
-    nzv.A = check$nzv.A
-    
-    
-    
+
     #-----------------------------#
     #-- logratio transformation --#
     

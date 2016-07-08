@@ -15,7 +15,7 @@ rm(list=ls())
 # if you want to change the size of figures
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE, fig.path= 'Figures/', fig.width=9, fig.height=6)
 
-library(mixOmicsv6)
+library(mixOmics)
 sourceDir <- function(path, trace = TRUE, ...) {
   for (nm in list.files(path, pattern = "\\.[RrSsQq]$")) {
     if(trace) cat(nm,":")
@@ -31,7 +31,7 @@ library(knitr)
 This go through all the scripts in "running_scripts/" and outputs graphics and errors, if any. 
 
 ```{r,echo=TRUE,fig.width=8, fig.height=6,include=FALSE,eval=FALSE}
-library(mixOmicsv6)
+library(mixOmics)
 
 source("mixOmics/R/plotContrib.R")
 scripts.files=list.files("running_scripts/")
@@ -43,7 +43,7 @@ library(knitr)
 
 
 ```{r,fig.width=8.5, fig.height=7}
-library(mixOmicsv6)
+library(mixOmics)
 #library(ellipse)
 #library(rgl)
 #source("mixOmicsv6/R/selectVar.R")
