@@ -107,6 +107,7 @@ alpha)
         main = title, xlab = X.label, ylab = Y.label) +
         theme_bw() + theme(strip.text = element_text(size = size.subtitle, face = "bold"))
         
+
         #}
         
         #-- Display sample or row.names
@@ -130,6 +131,7 @@ alpha)
         p = p + coord_cartesian(xlim=xlim,ylim=ylim)
         
         #-- color samples according to col
+        
         for (i in unique(df$col))
         {
             for(j in 1:nlevels(df$Block))
