@@ -141,7 +141,7 @@ alpha)
                     p = p +geom_point(data = subset(df, col == i & df$Block == levels(df$Block)[j]),size = 0, shape = 0,
                     color = unique(df[df$col == i & df$Block == levels(df$Block)[j], ]$col))+
                     geom_text(data = subset(df, col == i & df$Block == levels(df$Block)[j]),
-                    aes(label = rownames(subset(df, col == i & df$Block == levels(df$Block)[j]))),
+                    aes(label = names),
                     color = df[df$col == i & df$Block == levels(df$Block)[j], ]$col,
                     size = df[df$col == i & df$Block == levels(df$Block)[j], ]$cex,show.legend  = F)
                 } else {
