@@ -1,15 +1,15 @@
 # created on 12/03/15
+# last modified: 02-03-2016
 # Author: F.Rohart
 #purpose: test the pls/plsda/spls/splsda function
 
-
-library(mixOmics)
 
 #######################################################################################################
 #######################################################################################################
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+opar <- par(no.readonly = TRUE)
 
 # pls
 # ----
@@ -18,20 +18,47 @@ X <- linnerud$exercise
 Y <- linnerud$physiological
 linn.pls <- pls(X, Y, mode = "classic")
 
+
+library(mixOmics)
 data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
 
 toxicity.pls <- pls(X, Y, ncomp = 3)
 
+Y1=Y[,1]
+tox=spls(X,Y1)
+
+tox=spls(X,Y[,1,drop=FALSE])
+plotVar(tox)
+
+
+plotIndiv(toxicity.pls, group=rep(1:4,16))
+plotIndiv(toxicity.pls, group=factor(rep(1:4,16),labels=c("a","b","c","d")),add.legend=TRUE)
+plotIndiv(toxicity.pls, group=rep(1:4,16),ind.names=FALSE)
+plotIndiv(toxicity.pls, group=rep(1:4,16),ind.names=FALSE,add.legend=TRUE)
+plotIndiv(toxicity.pls, group=rep(1:4,16),ellipse=TRUE,add.legend=TRUE)
+
+
+plotIndiv(toxicity.pls, group=rep(1:4,16),style="lattice")
+plotIndiv(toxicity.pls, group=factor(rep(1:4,16),labels=c("a","b","c","d")),add.legend=TRUE,style="lattice")
+plotIndiv(toxicity.pls, group=rep(1:4,16),ind.names=FALSE,style="lattice")
+plotIndiv(toxicity.pls, group=rep(1:4,16),ind.names=FALSE,add.legend=TRUE,style="lattice")
+plotIndiv(toxicity.pls, group=rep(1:4,16),ellipse=TRUE,add.legend=TRUE,style="lattice")
+plotIndiv(toxicity.pls, group=rep(1:4,16),star=TRUE,centroid=TRUE,style="lattice")
+
+
 # plsda
 # ----
+library(mixOmics)
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
 plsda.breast <- plsda(X, Y, ncomp = 2)
-plotIndiv(plsda.breast, ind.names = TRUE, plot.ellipse = TRUE, add.legend = TRUE)
+plotIndiv(plsda.breast, ind.names = TRUE, ellipse = TRUE, add.legend = TRUE)
+
+plotLoadings(plsda.breast)
 
 
 data(liver.toxicity)
@@ -39,7 +66,7 @@ X <- liver.toxicity$gene
 Y <- liver.toxicity$treatment[, 4]
 
 plsda.liver <- plsda(X, Y, ncomp = 2)
-plotIndiv(plsda.liver, ind.names = Y, plot.ellipse = TRUE, add.legend =TRUE)
+plotIndiv(plsda.liver, ind.names = Y, ellipse = TRUE, add.legend =TRUE)
 
 
 # spls
@@ -50,9 +77,11 @@ Y <- liver.toxicity$clinic
 
 toxicity.spls <- spls(X, Y, ncomp = 2, keepX = c(50, 50),
 keepY = c(10, 10))
+plotIndiv(toxicity.spls)
 
 # splsda
 # ----
+library(mixOmics)
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 # Y will be transformed as a factor in the function,
@@ -61,9 +90,14 @@ Y <- as.factor(breast.tumors$sample$treatment)
 
 res <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 
+plotLoadings(res)
+plotLoadings(res, contrib = "min")
+plotLoadings(res, contrib = "max")
+
+tune= tune.splsda(X,Y,ncomp=1,nrepeat=5,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist",already.tested.X=NULL)
 
 # individual names appear
-plotIndiv(res, ind.names = Y, add.legend = TRUE, plot.ellipse =TRUE)
+plotIndiv(res, ind.names = Y, add.legend = TRUE, ellipse =TRUE)
 
 
 data(liver.toxicity)
@@ -75,7 +109,7 @@ Y <- as.factor(liver.toxicity$treatment[, 4])
 splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
 
 # individual name is set to the treatment
-plotIndiv(splsda.liver, ind.names = Y, plot.ellipse = TRUE, add.legend = TRUE)
+plotIndiv(splsda.liver, ind.names = Y, ellipse = TRUE, add.legend = TRUE)
 
 #######################################################################################################
 #######################################################################################################
@@ -136,4 +170,37 @@ if(additional.test==TRUE)
     
     
     
+    #######  wraper.pls
+    res=pls(X,Y)
+    res=pls(X,Y,ncomp=3)
+    res=pls(X,Y,ncomp=3)
+    res=pls(X,Y,near.zero.var=TRUE)
+    
+    
+    
+    #######  wraper.spls
+    res=spls(X,Y)
+    res=spls(X,Y,ncomp=3,keepX=c(10,5,15))
+    res=spls(X,Y,ncomp=3,keepX=c(10,5)) #complete keepX
+    res=spls(X,Y,ncomp=3,keepX=c(10),keepX.constraint=list(comp1=c(100,1,3),comp2=c(10)))
+    res=spls(X,Y,ncomp=3,keepX=c(1),keepX.constraint=list(comp1=c(100),comp2=c(10)))
+    res=spls(X,Y,ncomp=3,keepX.constraint=list(comp1=c(100),comp2=c(10)))
+    res=spls(X,Y,ncomp=3,keepY=c(3),keepY.constraint=list(comp1=c(1),comp2=c(2)))
+    
+    #######  wraper.plsda
+    res=plsda(X,Z,ncomp=3)
+    
+    
+    #######  wraper.splsda
+    res=splsda(X,Z)
+    res=splsda(X,Z,ncomp=3,keepX=c(10,5,15))
+    res=splsda(X,Z,ncomp=3,keepX=c(10,5)) #complete keepX
+    res=splsda(X,Z,ncomp=3,keepX=c(10),keepX.constraint=list(comp1=c(100,1,3),comp2=c(10)))
+    res=splsda(X,Z,ncomp=3,keepX=c(1),keepX.constraint=list(comp1=c(100),comp2=c(10)))
+    res=splsda(X,Z,ncomp=3,keepX.constraint=list(comp1=c(100),comp2=c(10)))
+    
+
+    
+    
 }
+par(opar)

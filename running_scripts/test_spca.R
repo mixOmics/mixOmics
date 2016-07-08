@@ -3,7 +3,8 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
-library(mixOmics)
+opar <- par(no.readonly = TRUE)
+
 
 data(liver.toxicity)
 spca.rat <- spca(liver.toxicity$gene, ncomp = 3, keepX = rep(50, 3))
@@ -64,3 +65,4 @@ if(additional.test==TRUE)
     liver.spca<- spca(liver.toxicity$gene, keepX = rep(5, 3))
     plotIndiv(liver.spca)
 }
+par(opar)

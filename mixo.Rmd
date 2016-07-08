@@ -1,12 +1,12 @@
 ---
-title: "mixOmics 5.1.2"
+title: "mixOmicsv6 6.0.0"
 author: "F.Rohart"
-date: "29 October 2015"
+date: "01 March 2016"
 output: pdf_document
 ---
-```{r global_options, include=FALSE}
+```{r global_options, include=TRUE,echo=TRUE}
 rm(list=ls())
-#setwd("~/Work/git/package-mixomics")
+#setwd("~/Work/git/package-mixOmicsv6")
 
 # knitr::opts_chunk$set(#fig.width=4, fig.height=4, 
 #                       dpi=300,
@@ -46,8 +46,8 @@ library(knitr)
 library(mixOmics)
 #library(ellipse)
 #library(rgl)
-#source("mixOmics/R/selectVar.R")
-#source("mixOmics/R/ipca.R")
+#source("mixOmicsv6/R/selectVar.R")
+#source("mixOmicsv6/R/ipca.R")
 
 additional.test=TRUE
 
