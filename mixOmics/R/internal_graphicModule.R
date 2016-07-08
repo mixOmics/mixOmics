@@ -685,7 +685,6 @@ alpha)
             }
             
             #-- Display sample or row.names
-            save(list=ls(),file="temp.Rdata")
             for (i in unique(df$col))
             {
                 if (display.names)
