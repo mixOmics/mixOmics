@@ -126,7 +126,7 @@ multilevel = NULL)
     #-----------------------------#
     #-- logratio transformation --#
     
-    if (is.null(V)) # back-transformation to clr-space, will be used later to recalculate loadings etc
+    if (is.null(V) & logratio == "ILR") # back-transformation to clr-space, will be used later to recalculate loadings etc
     V = clr.backtransfo(X)
     
     X = logratio.transfo(X = X, logratio = logratio)
