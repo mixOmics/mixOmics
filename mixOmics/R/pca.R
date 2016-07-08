@@ -9,7 +9,7 @@
 #   Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
 #
 # created: 2009
-# last modified: 24-05-2016
+# last modified: 08-07-2016
 #
 # Copyright (C) 2009
 #
