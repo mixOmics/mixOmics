@@ -1,9 +1,9 @@
-library(mixOmics)
 #######################################################################################################
 #######################################################################################################
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+opar <- par(no.readonly = TRUE)
 
 data(nutrimouse)
 X <- nutrimouse$lipid
@@ -12,38 +12,42 @@ nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 
 # default, only in the X space
 plotIndiv(nutri.res)
+plotIndiv(nutri.res,layout=c(2,1))
+plotIndiv(nutri.res,layout=c(2,1),style="graphics")
+
+par(opar)
 
 # ellipse with respect to genotype in the XY space,
 # names indicate genotype
 plotIndiv(nutri.res, rep.space= 'XY-variate',
-plot.ellipse = TRUE, ellipse.level = 0.9,
+ellipse = TRUE, ellipse.level = 0.9,
 group = nutrimouse$genotype, ind.names = nutrimouse$genotype)
 
 # ellipse with respect to genotype in the XY space, with legend
 plotIndiv(nutri.res, rep.space= 'XY-variate', group = nutrimouse$genotype,
-add.legend = TRUE)
+legend = TRUE)
 
 
 # lattice style
 plotIndiv(nutri.res, rep.space= 'XY-variate', group = nutrimouse$genotype,
-add.legend = TRUE, style = 'lattice')
+legend = TRUE, style = 'lattice')
 
 # classic style, in the Y space
 plotIndiv(nutri.res, rep.space= 'Y-variate', group = nutrimouse$genotype,
-add.legend = TRUE, style = 'graphics')
+legend = TRUE, style = 'graphics')
 
 # indicating centroid
 plotIndiv(nutri.res, rep.space= 'X-variate', ind.names = FALSE,
-          group = nutrimouse$genotype, plot.centroid = TRUE)
+          group = nutrimouse$genotype, centroid = TRUE)
 
 # indicating the star and centroid
 plotIndiv(nutri.res, rep.space= 'X-variate', ind.names = FALSE,
-          group = nutrimouse$genotype, plot.centroid = TRUE, plot.star = TRUE)
+          group = nutrimouse$genotype, centroid = TRUE, star = TRUE)
 
 
 # indicating the star and ellipse
 plotIndiv(nutri.res, rep.space= 'X-variate', ind.names = FALSE,
-          group = nutrimouse$genotype, plot.centroid = TRUE, plot.star = TRUE, plot.ellipse = TRUE)
+          group = nutrimouse$genotype, centroid = TRUE, star = TRUE, ellipse = TRUE)
 
 
 ## plot of individuals for objects of class 'pls' or 'spls'
@@ -61,14 +65,14 @@ plotIndiv(toxicity.spls)
 plotIndiv(toxicity.spls, rep.space= 'Y-variate',
 group = liver.toxicity$treatment[, 'Time.Group'],
 ind.names = liver.toxicity$treatment[, 'Dose.Group'],
-add.legend = TRUE)
+legend = TRUE)
 
 
 # in the X space, with graphics style
 plotIndiv(toxicity.spls, rep.space= 'X-variate',
 group = liver.toxicity$treatment[, 'Time.Group'],
 ind.names = liver.toxicity$treatment[, 'Dose.Group'],
-add.legend = TRUE,main="",style="graphics")
+legend = TRUE,title="",style="graphics")
 
 
 ## plot of individuals for objects of class 'plsda' or 'splsda'
@@ -83,18 +87,18 @@ splsda.breast <- splsda(X, Y,keepX=c(10,10),ncomp=2)
 plotIndiv(splsda.breast)
 
 # default option with no ind name: pch and color are set automatically, with legend
-plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2), add.legend = TRUE)
+plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2), legend = TRUE)
 
 # trying the different styles
 plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), 
-          plot.ellipse = TRUE, style = "ggplot2", cex = c(1, 1))
+          ellipse = TRUE, style = "ggplot2", cex = c(1, 1))
 plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), 
-          plot.ellipse = TRUE, style = "graphics", cex = c(1, 1))
+          ellipse = TRUE, style = "graphics", cex = c(1, 1))
 plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), 
-          plot.ellipse = TRUE, style = "lattice", cex = c(1, 1))
+          ellipse = TRUE, style = "lattice", cex = c(1, 1))
 
 # with centroid and stars
-plotIndiv(splsda.breast, ind.names = TRUE, plot.centroid = TRUE, plot.star = TRUE)
+plotIndiv(splsda.breast, ind.names = TRUE, centroid = TRUE, star = TRUE)
 
 
 
@@ -104,10 +108,10 @@ data(nutrimouse)
 Y = unmap(nutrimouse$diet)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 design1 = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
-nutrimouse.sgcca <- wrapper.sgcca(blocks = data,
+nutrimouse.sgcca <- wrapper.sgcca(X = data,
 design = design1,
 penalty = c(0.3, 0.5, 1),
-ncomp = c(2, 2, 3),
+ncomp = 3,
 scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)
@@ -116,24 +120,24 @@ bias = FALSE)
 plotIndiv(nutrimouse.sgcca)
 
 # for the block 'lipid' with ellipse plots and legend, different styles
-plotIndiv(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE, 
-          plot.ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", main = 'my plot')
+plotIndiv(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE, 
+          ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", title = 'my plot')
 plotIndiv(nutrimouse.sgcca, style = "lattice", group = nutrimouse$diet, 
-          add.legend = TRUE, plot.ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid",
-main = 'my plot')
+          legend = TRUE, ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid",
+title = 'my plot')
 plotIndiv(nutrimouse.sgcca, style = "graphics", group = nutrimouse$diet, 
-          add.legend = TRUE, plot.ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid",
-          main = 'my plot')
+          legend = TRUE, ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid",
+          title = 'my plot')
 
 # stars and centroids
 plotIndiv(nutrimouse.sgcca, style = "graphics", group = nutrimouse$diet, 
-          add.legend = TRUE, plot.ellipse = TRUE, ellipse.level = 0.5, blocks = c("gene", "lipid"),
-          main = 'my plot', plot.centroid = TRUE, plot.star = TRUE)
+          legend = FALSE, ellipse = TRUE, ellipse.level = 0.5, blocks = c("gene", "lipid"),
+          title = 'my plot', centroid = TRUE, star = TRUE)
 
 # stars and centroids
 plotIndiv(nutrimouse.sgcca, style = "graphics", group = nutrimouse$diet, ind.names = nutrimouse$diet, 
-          add.legend = TRUE, plot.ellipse = TRUE, ellipse.level = 0.5, blocks = c("gene", "lipid"),
-          main = 'my plot', plot.centroid = TRUE, plot.star = TRUE)
+          legend = TRUE, ellipse = TRUE, ellipse.level = 0.5, blocks = c("gene", "lipid"),
+          title = 'my plot', centroid = TRUE, star = TRUE)
 
 
 
@@ -145,14 +149,15 @@ Y = nutrimouse$diet
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
 design1 = matrix(c(0,1,0,1), ncol = 2, nrow = 2, byrow = TRUE)
 
-nutrimouse.sgccda1 <- wrapper.sgccda(blocks = data,
+nutrimouse.sgccda1 <- wrapper.sgccda(X = data,
 Y = Y,
 design = design1,
-ncomp = c(2, 2),
-keep = list(c(10,10), c(15,15)),
-scheme = "centroid",
+ncomp = 2,
+keepX = list(gene=c(10,10), lipid = c(15,15)),
+scheme = "centroid",mode="regression",
 verbose = FALSE,
-bias = FALSE)
+bias = TRUE,scale=TRUE,tol=1e-6)
+nutrimouse.sgccda1$loadings$Y
 
 
 # plotIndiv
@@ -165,12 +170,12 @@ plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet)
 
 # with some ellipse, legend and title
 plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet,
-plot.ellipse = TRUE, add.legend = TRUE, main = 'my sample plot')
+ellipse = TRUE, legend = TRUE, title = 'my sample plot')
 
 # stars and centroids
 plotIndiv(nutrimouse.sgccda1, style = "graphics", group = nutrimouse$diet, 
-          add.legend = TRUE, plot.ellipse = TRUE, ellipse.level = 0.5, 
-          main = 'my plot', plot.centroid = TRUE, plot.star = TRUE)
+          legend = TRUE, ellipse = TRUE, ellipse.level = 0.5, 
+          title = 'my plot', centroid = TRUE, star = TRUE)
 
 
 
@@ -202,7 +207,7 @@ if(additional.test==TRUE)
     ##test ind.names, rep.spec=XY-variate, abline and group
     
     plotIndiv(toxicity.spls, comp = c(1,2), ind.names = rep(c("a","b","c","d"),each=16),
-    rep.space = "XY-variate",abline.line=TRUE,group=rep(c(1,2,3,4), each=16))
+    rep.space = "XY-variate",abline=TRUE,group=rep(c(1,2,3,4), each=16))
     
     # FB: Error: Incompatible lengths for set aesthetics: shape, colour, size
     # is that supposed to be the case, if so PLEASE put COMMENT HERE.
@@ -214,10 +219,10 @@ if(additional.test==TRUE)
     rep.space = "X-variate", X.label="X1",ind.names=FALSE,pch=pch,
     group=rep(c(1,2,3,4), each=16))
     
-    ##test rep.spec=Y-variate, cex,lattice, plot.ellipse, group
+    ##test rep.spec=Y-variate, cex,lattice, ellipse, group
     
     plotIndiv(toxicity.spls,rep.space = "Y-variate",cex=c(1, 1.5, 2, 2.5),
-    ind.names=FALSE,style="lattice", plot.ellipse=TRUE,
+    ind.names=FALSE,style="lattice", ellipse=TRUE,
     group=rep(c(1,2,3,4), each=16))
     
     
@@ -228,22 +233,22 @@ if(additional.test==TRUE)
     
     group=rep(c("group 1","group 2","group 3","group 4"),each = 16)
     
-    ##test  add.legend,abline.line,group
+    ##test  legend,abline,group
     
-    plotIndiv(toxicity.spls,add.legend=TRUE,abline.line = TRUE,group=group)
+    plotIndiv(toxicity.spls,legend=TRUE,abline = TRUE,group=group)
     
-    ##test  add.legend,col,lattice,group
+    ##test  legend,col,lattice,group
     
-    plotIndiv(toxicity.spls,add.legend=TRUE,ind.names=FALSE,col=col,style="lattice",group=group)
+    plotIndiv(toxicity.spls,legend=TRUE,ind.names=FALSE,col=col,style="lattice",group=group)
     
-    ##test ind.names, add.legend,lattice and graphics,group
+    ##test ind.names, legend,lattice and graphics,group
     
-    plotIndiv(toxicity.spls,add.legend=TRUE,ind.names=TRUE,style="lattice",group=group)
-    plotIndiv(toxicity.spls,add.legend=TRUE,ind.names=TRUE,style="graphics",group=group) #####
+    plotIndiv(toxicity.spls,legend=TRUE,ind.names=TRUE,style="lattice",group=group)
+    plotIndiv(toxicity.spls,legend=TRUE,ind.names=TRUE,style="graphics",group=group) #####
     
-    ##test add.legend,lattice and graphics,group
+    ##test legend,lattice and graphics,group
     
-    plotIndiv(toxicity.spls,add.legend=TRUE,ind.names=FALSE,group=group)
+    plotIndiv(toxicity.spls,legend=TRUE,ind.names=FALSE,group=group)
     
     ##test  graphics and group with add after points and abline
     
@@ -270,26 +275,27 @@ if(additional.test==TRUE)
     plotIndiv(nutri.res,col=col,group=rep(c("group 1", "group 2"),each=20))
     plotIndiv(nutri.res,col=col,group=rep(c("group 1", "group 2"),each=20),ind.names = F)
     
-    ##test lattice, group,col,add.legend and plot.ellipse
+    ##test lattice, group,col,legend and ellipse
     
     nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 10)
-    plotIndiv(nutri.res,col=col,style="lattice",add.legend=TRUE,plot.ellipse=TRUE,
-    group=rep(c("group 1", "group 2"),each=20)) ### plot.ellipse
+    plotIndiv(nutri.res,col=col,style="lattice",legend=TRUE,ellipse=TRUE,
+    group=rep(c("group 1", "group 2"),each=20)) ### ellipse
     
-    ##test main,Y.label
+    ##test title,Y.label
     
     nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 10, lambda2 = 0.008)
-    plotIndiv(nutri.res,main="plot",Y.label="Y1",comp=c(2,3))
+    plotIndiv(nutri.res,title="plot",Y.label="Y1",comp=c(2,3))
     
-    ##test graphics,add.legend with add after points and abline
-    
-    plotIndiv(nutri.res,style="graphics")
+    ##test graphics,legend with add after points and abline
+    # working properly if layout is done, otherwise par(mfrow) is reset to 1,1, which messes up with the abline and points. no problem when plotting only one block
+    plotIndiv(nutri.res,style="graphics",layout=c(1,2))
     abline(0,0)
-    plotIndiv(nutri.res,style="graphics",add.legend=T)
+    plotIndiv(nutri.res,style="graphics",legend=T)
     points(0,0)
     plotIndiv(nutri.res,style="graphics")
     abline(0,0)
     
+    par(mfrow=c(1,1))
     ###PLSDA
     
     data(breast.tumors)
@@ -299,17 +305,17 @@ if(additional.test==TRUE)
     ##test lattice and ind.names
     
     breast.plsda = plsda(X, Y, ncomp = 3)
-    plotIndiv(breast.plsda, ind.names = TRUE,style="lattice",add.legend=FALSE)
+    plotIndiv(breast.plsda, ind.names = TRUE,style="lattice",legend=FALSE)
     
     col=unique(color.mixo(as.numeric(map(breast.plsda$ind.mat))))
     
-    ##test ind.names,col,graphics,plot.ellipse and cex
+    ##test ind.names,col,graphics,ellipse and cex
     
-    plotIndiv(breast.plsda,cex=2,col=col, ind.names = TRUE,style="graphics",plot.ellipse=TRUE)
+    plotIndiv(breast.plsda,cex=2,col=col, ind.names = TRUE,style="graphics",ellipse=TRUE)
     
-    ##test plot.ellipse and ellipse.level
+    ##test ellipse and ellipse.level
     
-    plotIndiv(breast.plsda, ind.names = FALSE,ellipse.level=0.5,plot.ellipse=TRUE)
+    plotIndiv(breast.plsda, ind.names = FALSE,ellipse.level=0.5,ellipse=TRUE)
     
     ###BLOCKS
     
@@ -320,7 +326,7 @@ if(additional.test==TRUE)
     
     
     # nutri.sgcca <- wrapper.sgcca(blocks, ncomp = c(3, 2, 1))####
-    nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = c(3, 3, 3))
+    nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = 3)
     
     ##test 1 block
     
@@ -328,29 +334,29 @@ if(additional.test==TRUE)
     plotIndiv(nutri.sgcca) ####
     plotIndiv(nutri.sgcca, blocks = "lipid", ind.names = TRUE)
     
-    ##test 1 block, vector ind.names, group and add.legend
+    ##test 1 block, vector ind.names, group and legend
     
     plotIndiv(nutri.sgcca, blocks = "gene", ind.names = nutrimouse$diet,
-    group=nutrimouse$diet,add.legend=TRUE)
+    group=nutrimouse$diet,legend=TRUE)
     
     ##test all options
     
-    plotIndiv(nutri.sgcca, blocks = "gene", ind.names = FALSE,add.legend=TRUE,
+    plotIndiv(nutri.sgcca, blocks = "gene", ind.names = FALSE,legend=TRUE,
     style="graphics",Y.label="Dim")
     plotIndiv(nutri.sgcca, blocks = "gene", ind.names = 1:40,
-    style="lattice",col="blue",X.label="Dim",abline.line=TRUE)
+    style="lattice",col="blue",X.label="Dim",abline=TRUE)
     plotIndiv(nutri.sgcca, blocks = c("gene","lipid"),
-    col="blue",X.label="Dim",abline.line=TRUE,add.legend=TRUE)
+    col="blue",X.label="Dim",abline=TRUE,legend=TRUE)
     
     ###SPCA
     
     liver.spca= spca(liver.toxicity$gene,ncomp=3)
     
-    ##test group,plot.ellipse, lattice and graphics, add.legend
+    ##test group,ellipse, lattice and graphics, legend
     
     plotIndiv(liver.spca, ind.names=FALSE,
-    group=liver.toxicity$treatment[, 3],plot.ellipse=TRUE,style="lattice")
-    plotIndiv(liver.spca, ind.names=FALSE,add.legend=TRUE,plot.ellipse=TRUE,
+    group=liver.toxicity$treatment[, 3],ellipse=TRUE,style="lattice")
+    plotIndiv(liver.spca, ind.names=FALSE,legend=TRUE,ellipse=TRUE,
     group=liver.toxicity$treatment[, 3],style="graphics") ###
     
     ##test group
@@ -372,27 +378,27 @@ if(additional.test==TRUE)
     
     ##test xlim,ylim, different style
     
-    plotIndiv(toxicity.spls,ylim=list(c(1,5),c(1,5)),style="graphics")
-    plotIndiv(toxicity.spls,ylim=list(c(1,5),c(1,5)),style="ggplot2")
-    plotIndiv(toxicity.spls,xlim=list(c(1,5),c(1,5)),style="lattice")
-    plotIndiv(nutri.sgcca,xlim=list(c(1,5),c(4,5),c(3,6)),style="graphics")
-    plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(4,5),c(3,6)),style="lattice")
-    plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(4,5),c(3,6)),style="ggplot2")
+    plotIndiv(toxicity.spls,ylim=list(c(-10,5),c(1,5)),style="graphics")
+    plotIndiv(toxicity.spls,ylim=list(c(-10,5),c(1,5)),style="ggplot2")#not working
+    plotIndiv(toxicity.spls,xlim=list(c(-10,5),c(1,5)),style="lattice")
+    plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(0,5),c(0,1)),style="graphics")
+    plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(0,5),c(0,1)),style="lattice")
+    plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(4,5),c(0,1)),style="ggplot2") #not working
 
     
     # testing star and centroid
     # if group not provided should throw a warning
-    plotIndiv(nutrimouse.sgcca, add.legend =TRUE, plot.ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", 
-              main = 'my plot', plot.star = TRUE)
+    plotIndiv(nutrimouse.sgcca, legend =TRUE, ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", 
+              title = 'my plot', star = TRUE)
     # star
-    plotIndiv(nutrimouse.sgcca, group = nutrimouse$diet, add.legend =TRUE, plot.ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", main = 'my plot', plot.star = TRUE)
+    plotIndiv(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE, ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", title = 'my plot', star = TRUE)
 
     # star and centroid
-    plotIndiv(nutri.sgcca, group = nutrimouse$diet, add.legend =TRUE, plot.ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", main = 'my plot', plot.star = TRUE, plot.centroid = TRUE)
+    plotIndiv(nutri.sgcca, group = nutrimouse$diet, legend =TRUE, ellipse = TRUE, ellipse.level = 0.5, blocks = "lipid", title = 'my plot', star = TRUE, centroid = TRUE)
 
     # centroid only
-    plotIndiv(nutri.sgcca, group = nutrimouse$diet, add.legend =TRUE, plot.ellipse = TRUE, 
-              ellipse.level = 0.5, blocks = "lipid", main = 'my plot', plot.star = FALSE, plot.centroid = TRUE)
+    plotIndiv(nutri.sgcca, group = nutrimouse$diet, legend =TRUE, ellipse = TRUE, 
+              ellipse.level = 0.5, blocks = "lipid", title = 'my plot', star = FALSE, centroid = TRUE)
     
     #####MULTI
     
@@ -404,8 +410,8 @@ if(additional.test==TRUE)
                          stimul = vac18$stimulation)
     
     # multilevel sPLS-DA model
-    res.1level <- multilevel(X, ncomp = 3, design = design,
-                             method = "splsda", keepX = c(30, 137, 123))
+    res.1level <- splsda(X, Y = design[,2], ncomp = 3, multilevel = design[,1],
+                             keepX = c(30, 137, 123))
     
     # set up colors for plotIndiv
     col.stim <- c("darkblue", "purple", "green4","red3")
@@ -418,11 +424,11 @@ if(additional.test==TRUE)
                          stimu = vac18.simulated$stimulation,
                          time = vac18.simulated$time)
     
-    res.2level <- multilevel(X, ncomp = 2, design = design,
-                             keepX = c(200, 200), method = 'splsda')
+    res.2level <- splsda(X, Y = design[,2], ncomp = 2, multilevel = design[,1],
+                             keepX = c(200, 200))
     
     plotIndiv(res.2level, group = design$stimu, ind.names = vac18.simulated$time,
-              add.legend = TRUE, style = 'lattice')
+              legend = TRUE, style = 'lattice')
     
     data(liver.toxicity)
     # note: we made up those data, pretending they are repeated measurements
@@ -434,33 +440,34 @@ if(additional.test==TRUE)
     
     # this is a spls (unsupervised analysis) so no need to mention any factor in design
     # we only perform a one level variation split
-    design <- data.frame(sample = repeat.indiv) 
-    res.spls.1level <- multilevel(X = liver.toxicity$gene,
+    design <- data.frame(sample = repeat.indiv)
+    res.spls.1level <- spls(X = liver.toxicity$gene,
                                   Y=liver.toxicity$clinic,
-                                  design = design,
+                                  multilevel = design,
                                   ncomp = 3,
                                   keepX = c(50, 50, 50), keepY = c(5, 5, 5),
-                                  method = 'spls', mode = 'canonical')
+                                  mode = 'canonical')
     
     # set up colors and pch for plotIndiv
     col.stimu <- 1:nlevels(design$stimu)
     
     plotIndiv(res.spls.1level, rep.space = 'X-variate', ind.names = FALSE, 
               group = liver.toxicity$treatment$Dose.Group,
-              pch = 20, main = 'Gene expression subspace',
-              add.legend = TRUE)
+              pch = 20, title = 'Gene expression subspace',
+              legend = TRUE)
     
     
     plotIndiv(res.spls.1level, rep.space = 'Y-variate', ind.names = FALSE,
               group = liver.toxicity$treatment$Dose.Group,
-              pch = 20, main = 'Clinical measurements ssubpace',
-              add.legend = TRUE)
+              pch = 20, title = 'Clinical measurements ssubpace',
+              legend = TRUE)
     
     plotIndiv(res.spls.1level, rep.space = 'XY-variate', ind.names = FALSE,
               group = liver.toxicity$treatment$Dose.Group,
-              pch = 20, main = 'Both Gene expression and Clinical subspaces',
-              add.legend = TRUE)
-    
-  
+              pch = 20, title = 'Both Gene expression and Clinical subspaces',
+              legend = TRUE)
+
+    par(mfrow=c(1,1))
 }
+par(opar)
 

@@ -3,6 +3,7 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+opar <- par(no.readonly = TRUE)
 
 data(nutrimouse)
 X <- nutrimouse$lipid
@@ -30,7 +31,7 @@ data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- as.factor(liver.toxicity$treatment[, 4])
 
-ncomp <- 2
+ncomp <- 3
 keepX <- rep(20, ncomp)
 
 splsda.liver <- splsda(X, Y, ncomp = ncomp, keepX = keepX)
@@ -44,7 +45,7 @@ data(nutrimouse)
 # need to unmap the Y factor diet
 Y = unmap(nutrimouse$diet)
 # set up the data as list
-data = list(nutrimouse$gene, nutrimouse$lipid,Y)
+data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 
 # set up the design matrix:
 # with this design, gene expression and lipids are connected to the diet factor
@@ -60,23 +61,24 @@ design = matrix(c(0,1,1,
 
 
 #note: the penalty parameters will need to be tuned
-wrap.result.sgcca = wrapper.sgcca(blocks = data, design = design, penalty = c(.3,.3, 1),
-ncomp = c(2, 2, 1),
+wrap.result.sgcca = wrapper.sgcca(X = data, design = design, penalty = c(.3,.3, 1),
+ncomp = 2,
 scheme = "centroid", verbose = FALSE)
 wrap.result.sgcca
 
-#variables selected on component 1 for the two blocks:
-selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$name.var
+#variables selected on component 1 for each block
+selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'gene'$name
+selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'lipid'$name
 
-#variables selected on component 2 for each block:
-selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$name.var
+#variables selected on component 2 for each block
+selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'gene'$name
+selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'lipid'$name
 
-
-plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), comp.select = c(1,1),main = c('Variables selected on component 1 only'))
-plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), comp.select = c(2,2),main = c('Variables selected on component 2 only'))
+plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), comp.select = c(1,1),title = c('Variables selected on component 1 only'))
+plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), comp.select = c(2,2),title = c('Variables selected on component 2 only'))
 
 # -> this one shows the variables selected on both components
-plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), main = c('Variables selected on components 1 and 2'))
+plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), title = c('Variables selected on components 1 and 2'))
 
 ## variable representation for objects of class 'rgcca'
 # ----------------------------------------------------
@@ -89,10 +91,10 @@ data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3,
 byrow = TRUE, dimnames = list(names(data), names(data)))
 
-nutrimouse.rgcca <- wrapper.rgcca(blocks = data,
+nutrimouse.rgcca <- wrapper.rgcca(X = data,
 design = design,
 tau = "optimal",
-ncomp = c(2, 2, 1),
+ncomp = 2,
 scheme = "centroid",
 verbose = FALSE)
 
@@ -101,7 +103,7 @@ plotVar(nutrimouse.rgcca, comp = c(1,2), block = c(1,2))
 
 
 # set up the data as list
-data = list(nutrimouse$gene, nutrimouse$lipid,Y)
+data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid,Y = Y)
 # with this design, gene expression and lipids are connected to the diet factor
 # design = matrix(c(0,0,1,
 #                   0,0,1,
@@ -113,8 +115,8 @@ design = matrix(c(0,1,1,
 1,0,1,
 1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 #note: the tau parameter is the regularization parameter
-wrap.result.rgcca = wrapper.rgcca(blocks = data, design = design, tau = c(1, 1, 0),
-ncomp = c(2, 2, 1),
+wrap.result.rgcca = wrapper.rgcca(X = data, design = design, tau = c(1, 1, 0),
+ncomp = 2,
 scheme = "centroid", verbose = FALSE)
 #wrap.result.rgcca
 plotVar(wrap.result.rgcca, comp = c(1,2), block = c(1,2))
@@ -190,9 +192,9 @@ if(additional.test==TRUE)
     plotVar(toxicity.spls,overlap = F)
     
     
-    # test add.legend ######
-    plotVar(toxicity.spls,add.legend=FALSE)
-    plotVar(toxicity.spls,add.legend=TRUE)
+    # test legend ######
+    plotVar(toxicity.spls,legend=FALSE)
+    plotVar(toxicity.spls,legend=TRUE)
     
     
     
@@ -241,9 +243,9 @@ if(additional.test==TRUE)
     plotVar(linn.res,rad.in=1)
     
     
-    # test add.legend
-    plotVar(linn.res,add.legend=FALSE)
-    plotVar(linn.res,add.legend=TRUE)
+    # test legend
+    plotVar(linn.res,legend=FALSE)
+    plotVar(linn.res,legend=TRUE)
     
     
     ######### SPCA
@@ -260,7 +262,7 @@ if(additional.test==TRUE)
     blocks = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, diet = diet)
     design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
     
-    nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = c(3, 3, 3))
+    nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = 3)
     
     plotVar(nutri.sgcca)
     
@@ -291,8 +293,8 @@ if(additional.test==TRUE)
     plotVar(nutri.sgcca,blocks=1:3,pch=15:17)
     plotVar(nutri.sgcca,blocks=1:3,pch=15:17,cex=c(3.5,4.5,6.5))
     
-    #test add.legend
-    plotVar(nutri.sgcca,add.legend=TRUE)
+    #test legend
+    plotVar(nutri.sgcca,legend=TRUE)
     
     
     
@@ -346,9 +348,9 @@ if(additional.test==TRUE)
     
     plotVar(toxicity.spls,overlap = FALSE, style = "lattice")
     
-    # test add.legend
-    plotVar(toxicity.spls,add.legend=FALSE, style = "lattice")
-    plotVar(toxicity.spls,add.legend=TRUE, style = "lattice")
+    # test legend
+    plotVar(toxicity.spls,legend=FALSE, style = "lattice")
+    plotVar(toxicity.spls,legend=TRUE, style = "lattice")
     
     
     ########### RCC
@@ -375,7 +377,7 @@ if(additional.test==TRUE)
     rat.spca <- spca(liver.toxicity$gene, ncomp = 3, keepX = rep(50, 3))
     
     plotVar(rat.spca, style = "lattice")
-    plotVar(rat.spca,add.legend = FALSE, style = "lattice")
+    plotVar(rat.spca,legend = FALSE, style = "lattice")
     plotVar(rat.spca,col=list(rep(c("green","red"),each=1558)),style="lattice")
     
     
@@ -450,9 +452,9 @@ if(additional.test==TRUE)
     
     plotVar(toxicity.spls,overlap = FALSE, style = "graphics")
     
-    # test add.legend
-    plotVar(toxicity.spls,add.legend=FALSE, style = "graphics")
-    plotVar(toxicity.spls,add.legend=TRUE, style = "graphics")
+    # test legend
+    plotVar(toxicity.spls,legend=FALSE, style = "graphics")
+    plotVar(toxicity.spls,legend=TRUE, style = "graphics")
     
     
     ########### RCC
@@ -506,6 +508,7 @@ if(additional.test==TRUE)
     plotVar(nutri.sgcca,var.names = c(TRUE,FALSE,FALSE), font= c(1,2,2), style = "graphics")
     plotVar(nutri.sgcca,var.names = c(TRUE,FALSE,TRUE), font= c(4,2,1), style = "graphics")
     
-    #test add.legend
-    plotVar(nutri.sgcca,add.legend=FALSE)
+    #test legend
+    plotVar(nutri.sgcca,legend=FALSE)
 }
+par(opar)

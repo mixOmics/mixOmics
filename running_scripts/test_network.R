@@ -3,6 +3,7 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+opar <- par(no.readonly = TRUE)
 
 ## network representation for objects of class 'rcc'
 data(nutrimouse)
@@ -15,7 +16,7 @@ network(nutri.res, comp = 1:3, threshold = 0.6)
 
 ## Changing the attributes of the network
 
-network(nutri.res, comp = 1:3, threshold = 0.45,
+network(nutri.res, comp = 1:3, threshold = 0.7,
 color.node = c("mistyrose", "lightcyan"),
 shape.node = c("circle", "rectangle"),
 color.edge = color.jet(100),
@@ -222,12 +223,12 @@ if(additional.test==TRUE)
     13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
     
     design <- data.frame(sample = repeat.indiv)
-    res.spls.1level <- multilevel(X = liver.toxicity$gene,
+    res.spls.1level <- spls(X = liver.toxicity$gene,
     Y=liver.toxicity$clinic,
-    design = design,
+    multilevel = design,
     ncomp = 3,
     keepX = c(50, 50, 50), keepY = c(5, 5, 5),
-    method = 'spls', mode = 'canonical')
+    mode = 'canonical')
     
     
     network(res.spls.1level)
@@ -312,7 +313,7 @@ if(additional.test==TRUE)
     blocks = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, diet = diet)
     design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE, dimnames = list(names(blocks), names(blocks)))
     
-    nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = c(4, 3, 3))
+    nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = 4)
     
     network(nutri.sgcca)
     
@@ -360,7 +361,7 @@ if(additional.test==TRUE)
         blocks = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, diet = diet)
         design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE, dimnames = list(names(blocks), names(blocks)))
         
-        nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = c(4, 3, 3))
+        nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = 4)
         
         network(nutri.sgcca)
         
@@ -388,3 +389,5 @@ if(additional.test==TRUE)
     }
     
 }
+
+par(opar)

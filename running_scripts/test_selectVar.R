@@ -1,10 +1,11 @@
-library(mixOmics)
 
 #######################################################################################################
 #######################################################################################################
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+# last modified: 02-03-2016
+opar <- par(no.readonly = TRUE)
 
 data(liver.toxicity)
 X = liver.toxicity$gene
@@ -45,30 +46,30 @@ data(nutrimouse)
 
 # ! need to unmap the Y factor
 Y = unmap(nutrimouse$diet)
-data = list(nutrimouse$gene, nutrimouse$lipid,Y)
+data = list(block1=nutrimouse$gene, block2=nutrimouse$lipid,Y=Y)
 # in this design, gene expression and lipids are connected to the diet factor
 # and gene expression and lipids are also connected
 design = matrix(c(0,1,1,
 1,0,1,
 1,1,0), ncol = 3, nrow = 3, byrow = T)
 #note: the penalty parameters need to be tuned
-wrap.result.sgcca = wrapper.sgcca(blocks = data, design = design, penalty = c(.3,.3, 1),
-ncomp = c(2, 2, 1),
+wrap.result.sgcca = wrapper.sgcca(X = data, design = design, penalty = c(.3,.3, 1),
+ncomp = 2,
 scheme = "centroid", verbose = FALSE)
 
 #variables selected and loadings values on component 1 for the two blocs
 selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))
 
 #variables selected on component 1 for each block
-selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'Block 1'$name
-selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'Block 2'$name
+selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'block1'$name
+selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'block2'$name
 
 #variables selected on component 2 for each block
-selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'Block 1'$name
-selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'Block 2'$name
+selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'block1'$name
+selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'block2'$name
 
 # loading value of the variables selected on the first block
-selectVar(wrap.result.sgcca, comp = 1, block = 1)$'Block 1'$value
+selectVar(wrap.result.sgcca, comp = 1, block = 1)$'block1'$value
 
 
 #######################################################################################################
@@ -108,8 +109,11 @@ if(additional.test==TRUE)
     blocks = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, diet = diet)
     design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 
-    nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = c(3, 2, 2))
+    nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = 3)
     selectVar(nutri.sgcca) ###
     selectVar(nutri.sgcca,block=c(1,2,3))
+    selectVar(nutri.sgcca,block=c(3))
 
 }
+par(opar)
+
