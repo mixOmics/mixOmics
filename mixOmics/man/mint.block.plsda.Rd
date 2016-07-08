@@ -2,11 +2,12 @@
 \encoding{latin1}
 \alias{mint.block.plsda}
 
-\title{Horizontal and Vertical Partial Least Squares - Discriminant Analysis (PLS-DA) Regression}
+\title{Horizontal and Vertical Discriminant Analysis integration}
 
-\description{Function to perform Horizontal and Vertical Partial Least Squares - Discriminant Analysis (PLS-DA) regression.
 
+\description{Function to integrate data sets measured on the same samples (horizontal integration) and to combine multiple independent studies (vertical integration) using variants of multi-group and generalised PLS-DA for supervised classification.
 }
+
 
 \usage{
 mint.block.plsda(X,
@@ -28,12 +29,12 @@ near.zero.var = FALSE)
 }
 
 \arguments{
-\item{X}{A list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets.}
-\item{Y}{Outcome. Numeric vector or matrix of responses (for multi-response models)}
-\item{indY}{To supply if Y is missing, indicates the position of the outcome in the list X}
-\item{study}{grouping factor indicating which samples are from the same study}
-\item{ncomp}{the number of components to include in the model. Default to 2.}
-\item{design}{numeric matrix of size (number of blocks) x (number of blocks) with only 0 or 1 values. A value of 1 (0) indicates a relationship (no relationship) between the blocks to be modelled. If \code{Y} is provided instead of \code{indY}, the \code{design} matrix is changed to include relationships to \code{Y}. }
+\item{X}{A list of data sets (called 'blocks') measured on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets.}
+\item{Y}{A factor or a class vector indicating the discrete outcome of each sample.}
+\item{indY}{To be supplied if Y is missing, indicates the position of the matrix / vector response in the list \code{X}}
+\item{study}{factor indicating the membership of each sample to each of the studies being combined}
+\item{ncomp}{Number of components to include in the model (see Details). Default to 2.}
+\item{design}{numeric matrix of size (number of blocks in X) x (number of blocks in X) with 0 or 1 values. A value of 1 (0) indicates a relationship (no relationship) between the blocks to be modelled. If \code{Y} is provided instead of \code{indY}, the \code{design} matrix is changed to include relationships to \code{Y}. }
 \item{scheme}{Either "horst", "factorial" or "centroid" (Default: "centroid"), see reference paper.}
 \item{mode}{character string. What type of algorithm to use, (partially) matching
 one of \code{"regression"}, \code{"canonical"}, \code{"invariant"} or \code{"classic"}.
@@ -50,23 +51,20 @@ to zero means and unit variances (default: TRUE)}
 
 
 \details{
-\code{pls} function fit PLS models with \eqn{1, \ldots ,}\code{ncomp} components.
-Multi-response models are fully supported. The \code{X} and \code{Y} datasets
-can contain missing values.
+The function fits multi-group generalised PLS models with a specified number of \code{ncomp} components.
+A factor indicating the discrete outcome needs to be provided, either by \code{Y} or by its position \code{indY} in the list of blocks \code{X}.
+
+\code{X} can contain missing values. Missing values are handled by being disregarded during the cross product computations in the algorithm \code{block.pls} without having to delete rows with missing data. Alternatively, missing data can be imputed prior using the  \code{nipals} function.
 
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis
 \code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS
 algorithm \code{("classic")} (see References).
 
-The estimation of the missing values can be performed
-by the reconstitution of the data matrix using the \code{nipals} function. Otherwise, missing
-values are handled by casewise deletion in the \code{pls} function without having to
-delete the rows with missing data.
 }
 
 \value{
-\code{pls} returns an object of class \code{"pls"}, a list
+\code{mint.block.plsda} returns an object of class \code{"mint.plsda", "block.plsda"}, a list
 that contains the following components:
 
 \item{X}{the centered and standardized original predictor matrix.}
@@ -85,17 +83,30 @@ that contains the following components:
 }
 
 \references{
-Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.
+On multi-group PLS:
+F Rohart, A Eslami, S Bougeard and K-A. Lê Cao. MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. Submitted.
 
-Wold H. (1966). Estimation of principal components and related models by iterative least squares.
-In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N.Y., 391-420.
+Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2014). Algorithms for multi-group PLS. J. Chemometrics, 28(3), 192-201.
+
+On multiple integration with PLSDA:
+
+Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
+DIABLO - multi omics integration for biomarker discovery. In preparation.
+
+Tenenhaus A., Philippe C., Guillemot V, Le Cao K.A., Grill J, Frouin V. Variable selection for generalized canonical correlation analysis. \emph{Biostatistics}. kxu001
+
+Gunther O., Shin H., Ng R. T. , McMaster W. R., McManus B. M. , Keown P. A. , Tebbutt S.J. , Le Cao K-A. ,  (2014) Novel multivariate methods for integration of genomics and proteomics data: Applications in a kidney transplant rejection study, OMICS: A journal of integrative biology, 18(11), 682-95.
 }
 
-\author{Florian Rohart}
+\author{Florian Rohart, Benoit Gautier, Kim-Anh Le Cao}
 
 \seealso{\code{\link{spls}}, \code{\link{summary}},
-\code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org for more details.}
+\code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}}, \code{\link{mint.block.spls}}, \code{\link{mint.block.plsda}}, \code{\link{mint.block.splsda}} and http://www.mixOmics.org/mixMINT for more details.}
 
+\examples{
+# we will soon provide more examples on our website (data too large to be included in the package
+# and still in active development)
+}
 
 \keyword{regression}
 \keyword{multivariate}

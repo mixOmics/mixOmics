@@ -213,9 +213,11 @@ cim(cor(X, Y), cluster = "none")
   
 ## CIM representation for objects of class 'rcc'
 #------------------------------------------------------------------
+\dontrun{
 nutri.rcc <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 
 cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6))
+}
 
 #-- interactive 'zoom' available as below
 \dontrun{
@@ -244,6 +246,7 @@ cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6))
 }
 ## CIM representation for objects of class 'spca' (also works for sipca)
 #------------------------------------------------------------------
+\dontrun{
 data(liver.toxicity)
 X <- liver.toxicity$gene
 
@@ -255,10 +258,11 @@ dose.col <- color.mixo(as.numeric(as.factor(liver.toxicity$treatment[, 3])))
 cim(liver.spca, row.sideColors = dose.col, col.names = FALSE,
     row.names = liver.toxicity$treatment[, 3],
     clust.method = c("ward", "ward"))
-    
+}
 
 ## CIM representation for objects of class '(s)pls' 
 #------------------------------------------------------------------
+\dontrun{
 data(liver.toxicity)
 
 X <- liver.toxicity$gene
@@ -270,7 +274,7 @@ liver.spls <- spls(X, Y, ncomp = 3,
 # default
 cim(liver.spls)
 
-\dontrun{
+
     # transpose matrix, choose clustering method
     cim(liver.spls, transpose = TRUE,   
         clust.method = c("ward", "ward"), margins = c(5, 7))
@@ -304,12 +308,21 @@ cim(liver.spls)
 
 ## CIM representation for objects of class '(s)plsda' 
 #------------------------------------------------------------------
+\dontrun{
+
+data(liver.toxicity)
+
+X <- liver.toxicity$gene
 # Setting up the Y outcome first
 Y <- liver.toxicity$treatment[, 3]
+#set up colors for cim
+dose.col <- color.mixo(as.numeric(as.factor(liver.toxicity$treatment[, 3])))
+
 
 liver.splsda <- splsda(X, Y, ncomp = 2, keepX = c(40, 30))
 
 cim(liver.splsda, row.sideColors = dose.col, row.names = Y)
+}
 
 
 ## CIM representation for objects of class splsda 'multilevel' 

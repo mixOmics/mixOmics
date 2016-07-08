@@ -1,15 +1,15 @@
 #############################################################################################################
-# Author :
+# Authors:
 #   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 #   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #   Pierre Monget, Ecole d'Ingenieur du CESI, Angouleme, France
 #
 # This function was borrowed from the mclust package and modified for mixOmics
 #
-# created: ?
+# created: 2013
 # last modified: 12-04-2016
 #
-# Copyright (C) 2015
+# Copyright (C) 2013
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -24,7 +24,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
 #############################################################################################################
 
 # ---------------------------------------------------

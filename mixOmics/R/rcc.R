@@ -1,5 +1,5 @@
 #############################################################################################################
-# Author :
+# Authors:
 #   Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
 #   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 #   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France

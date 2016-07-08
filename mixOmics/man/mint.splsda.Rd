@@ -2,9 +2,12 @@
 \encoding{latin1}
 \alias{mint.splsda}
 
-\title{Vertical sparse Partial Least Squares - Discriminant Analysis (sPLS-DA) Regression}
+\title{Vertical Discriminant Analysis integration with variable selection}
 
-\description{Integration of multilple data sets (or studies) matching on the same variables in the aim of classifying a discrete outcome, while selection features in each data set, ie. vertical sparse Partial Least Squares - Discriminant Analysis (sPLS-DA) regression.}
+
+\description{Function to combine multiple independent studies (vertical integration) using variants of multi-group sparse PLS-DA for supervised classification with variable selection.
+}
+
 
 \usage{
 mint.splsda(X,
@@ -22,15 +25,14 @@ near.zero.var = FALSE)
 }
 
 \arguments{
-\item{X}{numeric matrix of predictors. \code{NA}s are allowed. Concatenation of multiple data sets matching on the same variables.}
-\item{Y}{a factor or a class vector for the discrete outcome.}
+\item{X}{numeric matrix of predictors combining multiple independent studies on the same set of predictors. \code{NA}s are allowed.}
+\item{Y}{A factor or a class vector indicating the discrete outcome of each sample.}
 \item{ncomp}{Number of components to include in the model (see Details). Default to 2}
 \item{mode}{character string. What type of algorithm to use, (partially) matching
 one of \code{"regression"} or \code{"canonical"}. See Details.}
-\item{study}{grouping factor indicating which samples are from the same study (or data set)}
-\item{keepX.constraint}{A list containing which variables of X are to be kept on each of the first PLS-components}
-\item{keepX}{numeric vector of length \code{ncomp}, the number of variables
-to keep in \eqn{X}-loadings. By default all variables are kept in the model.}
+\item{study}{factor indicating the membership of each sample to each of the studies being combined}
+\item{keepX.constraint}{A list of vectors. Each vector entry indicates specific variables to be selected in \code{X} for each previous PLS component. }
+\item{keepX}{numeric vector indicating the number of variables to select in \code{X} on each component, or remaining components should \code{keepX.constraint} be provided. By default all variables are kept in the model.}
 \item{scale}{boleean. If scale = TRUE, each block is standardized
 to zero means and unit variances. Default = \code{TRUE}.}
 \item{tol}{Convergence stopping value.}
@@ -42,10 +44,9 @@ to zero means and unit variances. Default = \code{TRUE}.}
 
 
 \details{
-\code{mint.splsda} function fits a vertical sPLS-DA models with \code{ncomp} components in which several studies matching on the same variables are integrated together in the aim of classifying a discrete outcome while selecting features. The grouping factor that indicates which samples are from which study is specified with \code{study}. We advise more than 3 samples per study where all outcome categories are represented.
+\code{mint.splsda} function fits a vertical sparse PLS-DA models with \code{ncomp} components in which several independent studies measured on the same variables are integrated. The aim is to classify the discrete outcome \code{Y} and select variables that explain the outcome. The \code{study} factor indicates the membership of each sample in each study. We advise to only combine studies with more than 3 samples as the function performs internal scaling per study, and where all outcome categories are represented.
 
-The concatenated data matrix \code{X} can contain missing values. Missing values are handled by casewise deletion in the \code{mint.splsda} function without having to delete the rows with missing data.
-
+\code{X} can contain missing values. Missing values are handled by being disregarded during the cross product computations in the algorithm \code{block.pls} without having to delete rows with missing data. Alternatively, missing data can be imputed prior using the  \code{nipals} function.
 
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis
@@ -53,7 +54,7 @@ algorithms are available: PLS regression \code{("regression")}, PLS canonical an
 algorithm \code{("classic")} (see References).
 
 
-Variable selection is performed on each component of \code{X} via both input parameter \code{keepX.constraint} and \code{keepX} as follows. \code{keepX.constraint[[j]]} is a vector of variable names that indicates which variables to keep on component \code{j}; similarly, \code{keepX[k]} is a single positive value that indicates the number of variables to keep on component \code{length(keepX.constraint)+k}. See examples below.
+Variable selection is performed on each component for \code{X} via input parameter \code{keepX} and \code{keepX.constraint} afor a constraint model. \code{keepX.constraint} specifies variable names to be selected in the previous components of the model, see example.
 
 Useful graphical outputs are available, e.g. \code{\link{plotIndiv}}, \code{\link{plotLoadings}}, \code{\link{plotVar}}.
 }
@@ -83,16 +84,16 @@ that contains the following components:
 }
 
 \references{
-Rohart F. et al (2016, submitted). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms.
+F Rohart, A Eslami, S Bougeard and K-A. Lê Cao. MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. Submitted.
 
-Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2013). Multi-group PLS Regression: Application to Epidemiology.
-In New Perspectives in Partial Least Squares and Related Methods, pages 243-255. Springer.
+Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2014). Algorithms for multi-group PLS. J. Chemometrics, 28(3), 192-201.
 }
 
-\author{Florian Rohart}
+\author{Florian Rohart, Kim-Anh Le Cao}
 
-\seealso{\code{\link{splsda}},
-\code{\link{plotIndiv}}, \code{\link{plotLoadings}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{tune.mint.splsda}} and http://www.mixOmics.org for more details.}
+\seealso{\code{\link{spls}}, \code{\link{summary}},
+\code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}}, \code{\link{mint.pls}}, \code{\link{mint.plsda}}, \code{\link{mint.plsda}} and http://www.mixOmics.org/mixMINT for more details.}
+
 
 
 \examples{
@@ -120,7 +121,7 @@ keepX.constraint = keepX.constraint, keepX = c(10, 15))
 
 #plot study-specific outputs for study "2", "3" and "4"
 plotIndiv(res, study = c(2, 3, 4))
-# bad results because the genes on comp 1 and 2 were randomly selected
+# poor results as the genes constraint on comp 1 and 2 were not relevant
 
 }
 

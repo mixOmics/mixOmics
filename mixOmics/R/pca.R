@@ -1,12 +1,12 @@
 #############################################################################################################
-# Author :
-#   Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+# Authors:
 #   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 #   Kim-Anh Le Cao, French National Institute for Agricultural Research and
 #   ARC Centre of Excellence ins Bioinformatics, Institute for Molecular Bioscience, University of Queensland, Australia
 #   Leigh Coonan, Student, University of Quuensland, Australia
 #   Fangzhou Yao, Student, University of Queensland, Australia
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
 #
 # created: 2009
 # last modified: 24-05-2016

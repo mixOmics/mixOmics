@@ -50,13 +50,13 @@ Gonzalez I., Le Cao K.A., Davis M.J., Dejean S. (2012). Visualising associations
 paired 'omics' data sets. \emph{BioData Mining}; \bold{5}(1).
 }
 
-\author{Amrit Singh}
+\author{Amrit Singh, Florian Rohart}
 
 \seealso{\code{\link{cim}}, \code{\link{heatmap}},
 \code{\link{hclust}}, \code{\link{plotVar}}, 
 \code{\link{network}} and 
 
-\url{http://mixomics.org/graphics/} for more details on all options available.}
+\url{http://mixomics.org/mixDIABLO/} for more details on all options available.}
 
 \examples{
 ## default method: shows cross correlation between 2 data sets

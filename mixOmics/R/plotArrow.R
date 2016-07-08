@@ -1,5 +1,5 @@
-#############################################################################################################
-# Author :
+############################################################################################################
+# Authors:
 #   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
 #   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 #   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
@@ -8,7 +8,7 @@
 # created: 2015
 # last modified: 24-05-2016
 #
-# Copyright (C) 2016
+# Copyright (C) 2015
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License

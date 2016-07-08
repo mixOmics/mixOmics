@@ -1,5 +1,5 @@
 #############################################################################################################
-# Author :
+# Authors:
 #   This function was borrowed from the package caret nzv.R with some enhancements made by
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #   Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD

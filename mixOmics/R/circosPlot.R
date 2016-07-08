@@ -1,9 +1,11 @@
 #############################################################################################################
-# Author :
-#   Amrit Singh
+# Authors:
+#   Amrit Singh, the University of British Columbia, Vancouver, Canada
+#   Michael Vacher, the University of Western Australia, Perth, Australia
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Kim-Anh Le Cao, University of Queensland Diamantina Institute, Brisbane, Australia
 #
-# created: ?
+# created: 2015
 # last modified: 12-04-2016
 #
 # Copyright (C) 2015

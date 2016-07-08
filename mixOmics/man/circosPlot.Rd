@@ -39,9 +39,9 @@ Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.
 DIABLO - multi omics integration for biomarker discovery.
 }
 
-\author{Amrit Singh}
+\author{Michale Vacher, Amrit Singh, Florian Rohart, Kim-Anh Le Cao}
 
-\seealso{\code{\link{block.splsda}} and http://www.mixOmics.org for more details.}
+\seealso{\code{\link{block.splsda}} and http://www.mixOmics.org/mixDIABLO for more details.}
 
 \examples{
 data(nutrimouse)

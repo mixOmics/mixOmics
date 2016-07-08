@@ -1,12 +1,12 @@
 #############################################################################################################
-# Author :
+# Authors:
 #   Florian Rohart, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #   Kim-Anh Le Cao, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 
-# created: 22-04-2015
+# created: 2011
 # last modified: 24-05-2016
 #
-# Copyright (C) 2015
+# Copyright (C) 2011
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
