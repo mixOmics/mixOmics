@@ -125,7 +125,6 @@ light.output = TRUE # mint, splsda
             near.zero.var = near.zero.var,
             nrepeat = nrepeat,
             logratio = logratio,
-            multilevel = multilevel,
             light.output = light.output)
         } else {
             message("Calling 'tune.multilevel' with method = 'splsda'")
