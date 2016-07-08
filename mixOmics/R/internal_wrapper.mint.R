@@ -107,8 +107,8 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
     X = logratio.transfo(X=X, logratio=logratio)
     
     #as X may have changed
-    if (ncomp >= min(ncol(X), nrow(X)))
-    stop("use smaller 'ncomp'", call. = FALSE)
+    if (ncomp > min(ncol(X), nrow(X)))
+    stop("'ncomp' should be smaller than ", min(ncol(X), nrow(X)), call. = FALSE)
     
     #-- logratio transformation --#
     #-----------------------------#
