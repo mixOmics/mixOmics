@@ -287,5 +287,55 @@ points(test.predict$variates[, 1], test.predict$variates[, 2], pch = 19, cex = 1
 
 
 
+# example with mixMC
+# ------------------
+
+library(mixOmics)
+data(diverse.16S)
+data.mixMC = diverse.16S$data.TSS
+Y=diverse.16S$bodysite
+sample=diverse.16S$sample
+
+sp = splsda(X = data.mixMC, Y = Y, multilevel = sample, logratio = "CLR")
+pred = predict(sp, newdata = data.mixMC, multilevel = sample)
+
+
+data.log= logratio.transfo (X = data.mixMC, logratio = "CLR")
+data.log.mult = withinVariation(data.log, design = data.frame(sample))
+
+sp2 = splsda(X = data.log.mult, Y = Y)
+pred2 = predict(sp2, newdata = data.log.mult)
+
+all.equal(pred,pred2) #all good
+
+
+ind.test=which(sample %in% unique(sample)[1:10])
+X.learn = data.mixMC[-ind.test,]
+Y.learn = Y[-ind.test]
+sample.learn = sample[-ind.test]
+
+X.test = data.mixMC[ind.test,]
+Y.test = Y[ind.test]
+sample.test = sample[ind.test]
+
+
+#1
+sp = splsda(X = X.learn, Y = Y.learn, multilevel = sample.learn, logratio = "CLR")
+pred = predict(sp, newdata = X.test, multilevel = sample.test)
+
+#2
+data.log= logratio.transfo (X = X.learn, logratio = "CLR")
+data.log.mult = withinVariation(data.log, design = data.frame(sample.learn))
+sp2 = splsda(X = data.log.mult, Y = Y.learn)
+
+data.log= logratio.transfo (X = X.test, logratio = "CLR")
+data.log.mult = withinVariation(data.log, design = data.frame(sample.test))
+pred2 = predict(sp2, newdata = data.log.mult)
+
+all.equal(pred,pred2) #all good
+
+
+
+
 
 

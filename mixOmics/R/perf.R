@@ -416,14 +416,15 @@ progressBar = TRUE,
     
     
     #---------------------------------------------------------------------------#
-    #-- multilevel approach ----------------------------------------------------#
-    # if no logratio, we can do multilevel on the whole data; otherwise it needs to be done after each logratio inside the CV
-    if (!is.null(multilevel) & logratio == "none")
+    #-- logration + multilevel approach ----------------------------------------#
+    # we can do logratio and multilevel on the whole data as these transformation are done per sample
+    X = logratio.transfo(X = X, logratio = logratio)
+    if (!is.null(multilevel))
     {
         Xw = withinVariation(X, design = multilevel)
         X = Xw
     }
-    #-- multilevel approach ----------------------------------------------------#
+    #-- logratio + multilevel approach -----------------------------------------#
     #---------------------------------------------------------------------------#
 
 
@@ -492,8 +493,8 @@ progressBar = TRUE,
         test.keepX = keepX[comp]
         
         # estimate performance of the model for each component
-        result = MCVfold.splsda (X, Y, validation = validation, folds = folds, nrepeat = 1, ncomp = comp, choice.keepX = choice.keepX,
-        test.keepX = test.keepX, measure = measure, dist = dist, logratio = logratio, multilevel = multilevel, near.zero.var = near.zero.var,
+        result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = 1, ncomp = comp,
+        choice.keepX = choice.keepX, test.keepX = test.keepX, measure = measure, dist = dist, near.zero.var = near.zero.var,
         progressBar = progressBar, class.object = class(object))
         
         # ---- extract stability of features ----- # NEW

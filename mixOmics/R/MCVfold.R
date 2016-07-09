@@ -127,7 +127,6 @@ choice.keepX,
 test.keepX,
 measure = c("overall"), # one of c("overall","BER")
 dist = "max.dist",
-logratio = c('none','CLR'),
 near.zero.var = FALSE,
 progressBar = TRUE,
 class.object = NULL
@@ -209,41 +208,13 @@ class.object = NULL
             #print(j)
             #set up leave out samples.
             omit = which(repeated.measure %in% folds[[j]] == TRUE)
-            
+
             # get training and test set
             X.train = X[-omit, ]
             Y.train = Y[-omit]
             X.test = X[omit, , drop = FALSE]#matrix(X[omit, ], nrow = length(omit)) #removed to keep the colnames in X.test
             Y.test = Y[omit]
-            
-            
-            #---------------------------------------#
-            #-- logratio transformation of X.train --#
-            
-            # X.train
-            X.train = logratio.transfo(X = X.train, logratio = logratio)
-            
-            # X.test
-            X.test = logratio.transfo(X = X.test,logratio = logratio)
-            
-            #-- logratio transformation ------------#
-            #---------------------------------------#
-            
-            #---------------------------------------------------------------------------#
-            #-- multilevel approach ----------------------------------------------------#
-
-            # if no logratio, we can do multilevel on the whole data; otherwise it needs to be done here (after each logratio inside the CV)
-            if (!is.null(multilevel) & logratio != "none")
-            {
-                Xw = suppressMessages(withinVariation(X = rbind(X.train, X.test), design = rbind(multilevel[-omit, ], multilevel[omit, ])))
-
-                X.train = Xw[-omit, ]
-                X.test = Xw[omit, , drop = FALSE]
-            }
-            #-- multilevel approach ----------------------------------------------------#
-            #---------------------------------------------------------------------------#
-
-
+   
             #---------------------------------------#
             #-- near.zero.var ----------------------#
             

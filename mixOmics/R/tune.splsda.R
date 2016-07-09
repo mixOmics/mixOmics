@@ -157,7 +157,9 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     
    
     #---------------------------------------------------------------------------#
-    #-- multilevel approach ----------------------------------------------------#
+    #-- logration + multilevel approach ----------------------------------------#
+    # we can do logratio and multilevel on the whole data as these transformation are done per sample
+    X = logratio.transfo(X = X, logratio = logratio)
     
     if (!is.null(multilevel) & logratio == "none") # if no logratio, we can do multilevel on the whole data; otherwise it needs to be done after each logratio inside the CV
     {
@@ -178,7 +180,6 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
 
     #-- cross-validation approach  ---------------------------------------------#
     #---------------------------------------------------------------------------#
-    
     
     test.keepX = sort(test.keepX) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
     
@@ -241,7 +242,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             cat("\ncomp",comp.real[comp], "\n")
             
             result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = 1 + length(already.tested.X),
-            choice.keepX = already.tested.X, test.keepX = test.keepX, measure = measure, dist = dist, logratio = logratio,
+            choice.keepX = already.tested.X, test.keepX = test.keepX, measure = measure, dist = dist,
             near.zero.var = near.zero.var, progressBar = progressBar, class.object = "splsda")
             
             # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
