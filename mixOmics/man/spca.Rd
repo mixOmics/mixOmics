@@ -89,6 +89,4 @@ plotIndiv(pca.res, ind.names = FALSE, group = diverse.16S$bodysite, title = '16S
 legend=TRUE)
 }
 
-}
-
 \keyword{algebra}
