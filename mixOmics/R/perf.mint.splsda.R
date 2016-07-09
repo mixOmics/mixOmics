@@ -194,7 +194,6 @@ progressBar = TRUE,
             if (progressBar ==  TRUE)
             setTxtProgressBar(pb, (study_i)/M)
             
-            save(list=ls(),file="temp.Rdata")
             # result per study
             #BER
             study.specific[[study_i]]$BER[comp,] = sapply(test.predict.sw$class, function(x){
