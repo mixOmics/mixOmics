@@ -135,30 +135,8 @@ multilevel = NULL)
     if (ncomp > min(ncol(X), nrow(X)))
     stop("use smaller 'ncomp'", call. = FALSE)
     
-    
-    X = scale(X, center = center, scale = scale)
-    cen = attr(X, "scaled:center")
-    sc = attr(X, "scaled:scale")
-    
-    if (any(sc == 0))
-    stop("cannot rescale a constant/zero column to unit variance.",
-    call. = FALSE)
-    
     #-- logratio transformation --#
     #-----------------------------#
-    
-    is.na.X = is.na(X)
-    na.X = FALSE
-    if (any(is.na.X)) na.X = TRUE
-    NA.X = any(is.na.X)
-    
-    cl = match.call()
-    cl[[1]] = as.name('pca')
-    result = list(call = cl, X = X, ncomp = ncomp,NA.X = NA.X,
-    center = if (is.null(cen)) {FALSE} else {cen},
-    scale = if (is.null(sc)) {FALSE} else {sc},
-    names = list(X = X.names, sample = ind.names))
-    
     
     #---------------------------------------------------------------------------#
     #-- multilevel approach ----------------------------------------------------#
@@ -181,6 +159,26 @@ multilevel = NULL)
     }
     #-- multilevel approach ----------------------------------------------------#
     #---------------------------------------------------------------------------#
+    
+    X = scale(X, center = center, scale = scale)
+    cen = attr(X, "scaled:center")
+    sc = attr(X, "scaled:scale")
+    
+    if (any(sc == 0))
+    stop("cannot rescale a constant/zero column to unit variance.",
+    call. = FALSE)
+ 
+    is.na.X = is.na(X)
+    na.X = FALSE
+    if (any(is.na.X)) na.X = TRUE
+    NA.X = any(is.na.X)
+    
+    cl = match.call()
+    cl[[1]] = as.name('pca')
+    result = list(call = cl, X = X, ncomp = ncomp,NA.X = NA.X,
+    center = if (is.null(cen)) {FALSE} else {cen},
+    scale = if (is.null(sc)) {FALSE} else {sc},
+    names = list(X = X.names, sample = ind.names))
     
     
     #-- pca approach -----------------------------------------------------------#

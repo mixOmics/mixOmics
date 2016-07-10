@@ -25,7 +25,8 @@ variates are predicted using a fitted model and a new matrix of observations.
 
 \usage{
 \method{predict}{mint.splsda}(object, newdata, study.test,
-dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), \ldots)
+dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
+multilevel, \ldots)
 }
 
 \arguments{
@@ -35,7 +36,9 @@ dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), \ldots)
   \item{dist}{distance to be applied for discriminant methods to predict the class of new data,
     should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \code{"max.dist"} (see Details). 
 	Defaults to \code{"all"}.}
-  \item{...}{not used currently.}
+\item{multilevel}{Design matrix for multilevel anaylis (for repeated measurements). A numeric matrix or data frame. The first column
+indicates the repeated measures on each individual, i.e. the individuals ID. If \code{  method = 'splsda'}, the 2nd and 3rd columns are factors. If \code{method = 'spls'} then you can choose to only input the repeated measures (column 1) or the 2nd AND 3rd columns to split the variation for a 2 level factor.}
+\item{...}{not used currently.}
 }
 
 \details{

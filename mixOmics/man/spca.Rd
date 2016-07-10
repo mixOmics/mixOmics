@@ -10,7 +10,8 @@ Performs a sparse principal components analysis to perform variable selection by
 \usage{
 spca(X, ncomp = 3, center = TRUE, scale = TRUE, 
      keepX = rep(ncol(X),ncomp), max.iter = 500,
-     tol = 1e-06)
+     tol = 1e-06, logratio = 'none',  # one of ('none','CLR')
+     multilevel = NULL)
 }
 
 \arguments{
@@ -26,6 +27,9 @@ spca(X, ncomp = 3, center = TRUE, scale = TRUE,
   \item{tol}{a positive real, the tolerance used in the iterative algorithm.} 
   \item{keepX}{numeric vector of length ncomp, the number of variables to keep in loading vectors. By default all 
    variables are kept in the model. See details.}
+\item{logratio}{one of ('none','CLR','ILR'). Specifies the log ratio transformation to deal with compositional values that may arise from specific normalisation in sequencing data. Default to 'none'}
+\item{multilevel}{sample information for multilevel decomposition for repeated measurements.}
+
 }
 
 \details{
@@ -73,6 +77,16 @@ plotIndiv(spca.rat, ind.names = liver.toxicity$treatment[, 3],
           group = as.numeric(liver.toxicity$treatment[, 3]))
 \dontrun{plotIndiv(spca.rat, cex = 0.01,
         col = as.numeric(liver.toxicity$treatment[, 3]),style="3d")}
+
+
+# example with multilevel decomposition and CLR log ratio transformation
+# ----------------
+data("diverse.16S")
+pca.res = pca(X = diverse.16S$data.TSS, ncomp = 5,
+logratio = 'CLR', multilevel = diverse.16S$sample)
+plot(pca.res)
+plotIndiv(pca.res, ind.names = FALSE, group = diverse.16S$bodysite, title = '16S diverse data',
+legend=TRUE)
 }
 
 \keyword{algebra}

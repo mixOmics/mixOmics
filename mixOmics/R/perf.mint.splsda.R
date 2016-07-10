@@ -184,7 +184,7 @@ progressBar = TRUE,
             object.res = mint.splsda(X.train, Y.train, study = study.learn.CV, ncomp = comp, keepX = NULL,
             keepX.constraint = already.tested.X, scale = scale, mode = "regression")
             
-            test.predict.sw <- predict(object.res, newdata = X.test, method = dist, study.test = study.test.CV)
+            test.predict.sw <- predict(object.res, newdata = X.test, dist = dist, study.test = study.test.CV)
             prediction.comp[omit, ] =  test.predict.sw$predict[, , comp]
             
             for(ijk in dist)
@@ -193,7 +193,6 @@ progressBar = TRUE,
             
             if (progressBar ==  TRUE)
             setTxtProgressBar(pb, (study_i)/M)
-            
             
             # result per study
             #BER
