@@ -418,7 +418,7 @@ progressBar = TRUE,
     #---------------------------------------------------------------------------#
     #-- logration + multilevel approach ----------------------------------------#
     # we can do logratio and multilevel on the whole data as these transformation are done per sample
-    X = logratio.transfo(X = X, logratio = logratio)
+    X = logratio.transfo(X = X, logratio = logratio, offset = 1)
     if (!is.null(multilevel))
     {
         Xw = withinVariation(X, design = multilevel)

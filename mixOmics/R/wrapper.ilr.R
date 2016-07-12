@@ -4,7 +4,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 2015
-# last modified: 25-02-2016
+# last modified: 12-07-2016
 #
 # Copyright (C) 2015
 #
@@ -27,8 +27,8 @@
 
 # logratio.transfo
 logratio.transfo = function(X,
-logratio = "none" # one of ('none','CLR','ILR')
-)
+logratio = "none", # one of ('none','CLR','ILR')
+offset = 1)
 {
     
     if (logratio == 'ILR')
@@ -38,7 +38,7 @@ logratio = "none" # one of ('none','CLR','ILR')
             X = ilr.transfo(X)
         }
     }else if (logratio == 'CLR') {
-        X = clr.transfo(X)
+        X = clr.transfo(X, offset = offset)
     }
     #if logratio = "none", do nothing
     
@@ -50,7 +50,7 @@ logratio = "none" # one of ('none','CLR','ILR')
 # -----------------
 
 # KA changed the function to add a min value when many zeroes in data (prob with log and division by 0 otherwise)
-ilr.transfo = function(x, fast = TRUE, min.value = min(x[which(x != 0)])*0.01)
+ilr.transfo = function(x, fast = TRUE, offset = 1)
 {
     
     # ilr transformation
@@ -61,13 +61,13 @@ ilr.transfo = function(x, fast = TRUE, min.value = min(x[which(x != 0)])*0.01)
     {
         for (i in 1 : ncol(x.ilr))
         {
-            x.ilr[,i] = sqrt((D-i) / (D-i+1)) * log(((apply(as.matrix(x[, (i+1) : D, drop = FALSE]), 1, prod) + min.value)^(1 / (D-i))) / (x[,i]+ min.value))
+            x.ilr[,i] = sqrt((D-i) / (D-i+1)) * log(((apply(as.matrix(x[, (i+1) : D, drop = FALSE]), 1, prod) + offset)^(1 / (D-i))) / (x[,i]+ offset))
             #x.ilr[,i] = sqrt((D-i)/(D-i+1))*log(((apply(as.matrix(x[,(i+1):D,drop = FALSE]),1,prod))^(1/(D-i)))/(x[,i]))
         }
     } else {
         for (i in 1 : ncol(x.ilr))
         {
-            x.ilr[,i] = sqrt((D-i) / (D-i+1)) * log(apply(as.matrix(x[, (i+1):D]), 1, function(x){exp(log(x))})/(x[, i]+ min.value) + min.value)
+            x.ilr[,i] = sqrt((D-i) / (D-i+1)) * log(apply(as.matrix(x[, (i+1):D]), 1, function(x){exp(log(x))})/(x[, i]+ offset) + offset)
             #x.ilr[,i] = sqrt((D-i)/(D-i+1))*log(apply(as.matrix(x[,(i+1):D]), 1, function(x){exp(log(x))})/(x[,i]))
         }
     }
@@ -97,10 +97,10 @@ clr.backtransfo = function(x)
 
 
 # CLR transformation
-clr.transfo = function(x)
+clr.transfo = function(x, offset = 1)
 {
     # KA added
-    min.value = min(x[which(x != 0)])*0.01
+    #offset = min(x[which(x != 0)])*0.01
     
     
     #if (dim(x)[2] < 2) stop("data must be of dimension greater equal 2")
@@ -114,11 +114,11 @@ clr.transfo = function(x)
             #       else exp(mean(log(unclass(x)[is.finite(x) & x > 0])))
             #     }
             # KA changed to
-            exp(mean(log(x + min.value)))
+            exp(mean(log(x + offset)))
         }
         gm = apply(x, 1, geometricmean)
         # KA changed
-        x.clr = log((x + min.value) / (gm))
+        x.clr = log((x + offset) / (gm))
         res = x.clr #list(x.clr = x.clr, gm = gm)
     }
     class(res) = "clr"
