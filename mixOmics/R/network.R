@@ -83,9 +83,9 @@ name.save = NULL)
         stop(msg, output, call. = FALSE)
     }
     
-    #-- check blocks
-    if(length(blocks) != 2)
-    stop("We can only display 2 blocks",call.=FALSE)
+#    #-- check blocks
+#    if(length(blocks) != 2)
+#    stop("We can only display 2 blocks",call.=FALSE)
     
     #-- save
     if (!is.null(save))
