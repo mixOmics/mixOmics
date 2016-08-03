@@ -60,7 +60,7 @@ should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \cod
 }
 
 \details{
-This tuning function should be used to tune the parameters in the \code{multilevel} function.
+This tuning function should be used to tune the parameters when using a variance decomposition ('multilevel') with a repeated measurement design.
 
 If \code{method = 'splsda'}, a distance metric must be used, see \code{help(predict.splsda)} for details about the distances.
 
@@ -103,9 +103,9 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
 
 }
 
-\author{Benoit Liquet, Kim-Anh Le Cao, Benoit Gautier.}
+\author{Benoit Liquet, Kim-Anh Le Cao, Florian Rohart.}
 
-\seealso{\code{\link{multilevel}} and http://www.mixOmics.org for more details.}
+\seealso{\code{\link{tune.splsda}} and http://www.mixOmics.org for more details.}
 
 \examples{
 ## First example: one-factor analysis with sPLS-DA

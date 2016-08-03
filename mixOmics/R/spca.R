@@ -86,6 +86,7 @@ function(X,
     #-- keepX
     if (length(keepX) != ncomp)
     stop("length of 'keepX' must be equal to ", ncomp, ".")
+    p = ncol(X)
     if (any(keepX > p))
     stop("each component of 'keepX' must be lower or equal than ", p, ".")
 
