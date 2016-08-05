@@ -1,7 +1,7 @@
 ---
-title: "mixOmicsv6 6.0.0"
+title: "mixOmics 6.0.1"
 author: "F.Rohart"
-date: "01 March 2016"
+date: "12 July 2016"
 output: pdf_document
 ---
 ```{r global_options, include=TRUE,echo=TRUE}
