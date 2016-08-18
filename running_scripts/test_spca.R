@@ -19,7 +19,7 @@ plotVar(spca.rat, cex = 3)
 ## samples representation
 plotIndiv(spca.rat, ind.names = liver.toxicity$treatment[, 3],
 group = as.numeric(liver.toxicity$treatment[, 3]))
-plotIndiv(spca.rat, cex = 0.01,
+plotIndiv(spca.rat, cex = 0.7,
 col = as.numeric(liver.toxicity$treatment[, 3]),style="3d")
 
 

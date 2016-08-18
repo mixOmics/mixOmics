@@ -71,7 +71,7 @@ size.legend=1.5)
     XDat[which(XDat < -2)] = -2
     
     dark = brewer.pal(n = 12, name = 'Paired')[seq(2, 12, by = 2)]
-    VarLabels = factor(rep(names(X), lapply(keepA[-length(keepA)], sum)), levels = names(X)[order(names(X))])
+    VarLabels = factor(rep(names(X), lapply(keepA[-length(keepA)], sum)), levels = names(X))#[order(names(X))])
     
     ## Plot heatmap
     opar = par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din", "page")]
@@ -87,5 +87,7 @@ size.legend=1.5)
     text.font = c(2, rep(1, nlevels(Y)), NA, 2, rep(1, nlevels(VarLabels))))
     
     par(opar)
+    
+    return(XDat)
 }
 

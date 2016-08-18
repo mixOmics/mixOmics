@@ -96,7 +96,8 @@ size.labels=1)
     
     AvgFeatExp0 = Xdat %>% mutate(Y = Y) %>% gather(Features, Exp, -Y) %>%
     group_by(Y, Features) %>% dplyr::summarise(Mean = mean(Exp), SD = sd(Exp))
-    AvgFeatExp0$Dataset = factor(rep(names(X), unlist(lapply(cord, nrow))), levels = names(X))
+    AvgFeatExp0$Dataset = factor(rep(names(X), unlist(lapply(cord, nrow))),
+    levels = names(X))[match(AvgFeatExp0$Features,colnames(Xdat))] # to match Xdat that is reordered in AvgFeatExp0
     featExp = AvgFeatExp0 %>% group_by(Dataset, Y) %>% arrange(Mean)
     # Generate a circular plot (circos like) from a correlation matrix (pairwise)
     #
@@ -183,7 +184,7 @@ size.labels=1)
     col = "black", cex=size.legend, bty = "n")
     
     par(xpd=opar,mar=opar1)# put the previous defaut parameter for xpd
-    return(invisible())
+    return(invisible(corMat))
 }
 
 drawIdeogram = function(R, xc=400, yc=400, cir, W,
