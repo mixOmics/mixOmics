@@ -88,6 +88,6 @@ size.legend=1.5)
     
     par(opar)
     
-    return(XDat)
+    return(invisible(XDat))
 }
 
