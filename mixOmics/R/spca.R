@@ -86,9 +86,8 @@ function(X,
     #-- keepX
     if (length(keepX) != ncomp)
     stop("length of 'keepX' must be equal to ", ncomp, ".")
-    p = ncol(X)
-    if (any(keepX > p))
-    stop("each component of 'keepX' must be lower or equal than ", p, ".")
+    if (any(keepX > ncol(X)))
+    stop("each component of 'keepX' must be lower or equal than ", ncol(X), ".")
 
     #-- log.ratio
     choices = c('CLR','none')
