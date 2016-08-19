@@ -32,6 +32,7 @@ showIntraLinks = FALSE,
 line=TRUE,
 size.legend=0.8,
 ncol.legend=1,
+size.variables = 0.25,
 size.labels=1)
 {
     # to satisfy R CMD check that doesn't recognise x, y and group as variable (in aes)
@@ -136,7 +137,7 @@ size.labels=1)
     plot(c(1,figSize), c(1,figSize), type="n", axes=FALSE, xlab="", ylab="", main="")
     
     # Plot ideogram
-    drawIdeogram(R=circleR, cir=db, W=segmentWidth,  show.band.labels=TRUE, show.chr.labels=TRUE, chr.labels.R= chrLabelsR, chrData=chr,size.labels=size.labels)
+    drawIdeogram(R=circleR, cir=db, W=segmentWidth,  show.band.labels=TRUE, show.chr.labels=TRUE, chr.labels.R= chrLabelsR, chrData=chr, size.variables = size.variables, size.labels=size.labels)
     
     # Plot links
     drawLinks(R=linksR, cir=db,   mapping=links,   col=linkColors, drawIntraChr=showIntraLinks)
@@ -191,6 +192,7 @@ drawIdeogram = function(R, xc=400, yc=400, cir, W,
 show.band.labels = FALSE,
 show.chr.labels = FALSE, chr.labels.R = 0,
 chrData,
+size.variables,
 size.labels)
 {
     # Draw the main circular plot: segments, bands and labels
@@ -230,7 +232,7 @@ size.labels)
                 band.po = ((w1+w2)/2)# - ((w2-w1)/3) #position around the circle
                 # print(c(band.po, w1, w2, (w2-w1)/3))
                 band.po.in = R-(W/3.0) #position on the band (middle)
-                draw.text.rt(xc, yc,band.po.in  , band.po , band.text , cex=0.25, segmentWidth = W, side="in" ) 
+                draw.text.rt(xc, yc,band.po.in  , band.po , band.text , cex = size.variables, segmentWidth = W, side="in" )
             }
         } #End for row
         if (show.chr.labels){
