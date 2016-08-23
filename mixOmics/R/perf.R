@@ -347,6 +347,8 @@ perf.splsda = perf.plsda = function(object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
 validation = c("Mfold", "loo"),
 folds = 10,
+nrepeat = 1,
+auc = FALSE,
 progressBar = TRUE,
 ...)
 {
@@ -452,7 +454,7 @@ progressBar = TRUE,
     
     list.features = list()
 
-    mat.sd.error = mat.mean.error = error.per.class.keepX.opt = list()
+    mat.error.rate = mat.sd.error = mat.mean.error = error.per.class.keepX.opt = list()
     error.per.class = list()
     final=list()
     
@@ -463,19 +465,28 @@ progressBar = TRUE,
         mat.mean.error[[measure_i]] = matrix(0,nrow = ncomp, ncol = length(dist),
         dimnames = list(c(paste('comp', 1 : ncomp)), dist))
         error.per.class.keepX.opt[[measure_i]] = list()
+        mat.error.rate[[measure_i]]=list()
         for(ijk in dist)
         {
+            mat.error.rate[[measure_i]][[ijk]] = array(0, c(nlevels(Y),  nrepeat ,ncomp),
+            dimnames = list(c(levels(Y)),c(paste('nrep', 1 : nrepeat)),c(paste('comp', 1 : ncomp))))
+
             error.per.class.keepX.opt[[measure_i]][[ijk]] = matrix(nrow = nlevels(Y), ncol = ncomp,
             dimnames = list(c(levels(Y)), c(paste('comp', 1 : ncomp))))
         }
     }
     
+    if(auc == TRUE)
+    {
+        auc.mean=list()
+        auc.all=list()
+    }
     
-    prediction.all = class.all = list()
+    prediction.all = class.all = auc.mean = auc.all = list()
     for(ijk in dist)
     {
-        class.all[[ijk]] = matrix(nrow = nrow(X), ncol = ncomp,
-        dimnames = list(rownames(X), c(paste('comp', 1 : ncomp))))
+        class.all[[ijk]] = array(0, c(nrow(X),  nrepeat ,ncomp),
+        dimnames = list(rownames(X),c(paste('nrep', 1 : nrepeat)),c(paste('comp', 1 : ncomp))))
     }
 
     for (comp in 1 : ncomp)
@@ -493,9 +504,11 @@ progressBar = TRUE,
         test.keepX = keepX[comp]
         
         # estimate performance of the model for each component
-        result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = 1, ncomp = comp,
+        result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = comp,
         choice.keepX = choice.keepX, test.keepX = test.keepX, measure = measure, dist = dist, near.zero.var = near.zero.var,
-        progressBar = progressBar, class.object = class(object))
+        auc = auc, progressBar = progressBar, class.object = class(object))
+        
+        save(list=ls(),file="temp.Rdata")
         
         # ---- extract stability of features ----- # NEW
         if (any(class(object) == "splsda"))
@@ -505,25 +518,43 @@ progressBar = TRUE,
         {
             for (measure_i in measure)
             {
+                mat.error.rate[[measure_i]][[ijk]][ ,,comp] = result[[measure_i]]$mat.error.rate[[ijk]][,1]
+                mat.mean.error[[measure_i]][comp, ijk]=result[[measure_i]]$error.rate.mean[[ijk]]
                 if (!is.null(result[[measure_i]]$error.rate.sd))
                 mat.sd.error[[measure_i]][comp, ijk]=result[[measure_i]]$error.rate.sd[[ijk]]
-                mat.mean.error[[measure_i]][comp, ijk]=result[[measure_i]]$error.rate.mean[[ijk]]
 
                 # confusion matrix for keepX.opt
                 error.per.class.keepX.opt[[measure_i]][[ijk]][ ,comp]=result[[measure_i]]$confusion[[ijk]][,1]
             }
             
             #prediction of each samples for each fold and each repeat, on each comp
-            class.all[[ijk]][,comp] = result$class.comp[[ijk]][,,1]
+            class.all[[ijk]][, , comp] = result$class.comp[[ijk]][,,1]
         }
         prediction.all[[comp]] = result$prediction.comp[[1]][, , 1] #take only one component [[1]] and one of test.keepX [,,1]
+        
+        if(auc == TRUE)
+        {
+            auc.all[[comp]] = result$auc.all
+            auc.mean[[comp]] = result$auc
+        }
     }
     names(prediction.all) = paste('comp', 1:ncomp)
     
     result = list(error.rate = mat.mean.error,
+    error.rate.sd = mat.sd.error,
+    mat.error.rate = mat.error.rate,
     error.rate.class = error.per.class.keepX.opt[[1]],
     predict = prediction.all,
     class = class.all)
+    
+    if(auc)
+    {
+        names(auc.mean) = c(paste('comp', 1:ncomp))
+        result$auc = auc.mean
+        
+        names(auc.all) = c(paste('comp', 1:ncomp))
+        result$auc.all =auc.all
+    }
 
     if (any(class(object) == "splsda"))
     {
