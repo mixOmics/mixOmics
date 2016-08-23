@@ -177,7 +177,6 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     test.keepX = sort(test.keepX) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
     
     # if some components have already been tuned (eg comp1 and comp2), we're only tuning the following ones (comp3 comp4 .. ncomp)
-
     if ((!is.null(already.tested.X)))
     {
         comp.real = (length(already.tested.X) + 1):ncomp
@@ -223,7 +222,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         cat("\ncomp",comp.real[comp], "\n")
         
         result = LOGOCV (X, Y, ncomp = 1 + length(already.tested.X), study = study,
-        keepX = if(constraint){NULL}else{already.tested.X}, keepX.constraint = if(constraint){already.tested.X}else{NULL},
+        choice.keepX = if(constraint){NULL}else{already.tested.X}, choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
         test.keepX = test.keepX, measure = measure,
         dist = dist, near.zero.var = near.zero.var, progressBar = progressBar, scale = scale, auc = auc)
         
