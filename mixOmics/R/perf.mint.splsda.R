@@ -40,6 +40,7 @@ progressBar = TRUE,
 # ---------------------------------------------------
 perf.mint.splsda = perf.mint.plsda = function (object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
+constraint = TRUE,
 auc = FALSE,
 progressBar = TRUE,
 ...
@@ -55,7 +56,14 @@ progressBar = TRUE,
     ncomp = object$ncomp
     scale = object$scale
     
-    keepX.constraint = apply(object$loadings$X, 2, function(x){names(which(x!=0))})
+    if(constraint)
+    {
+        keepX.constraint = apply(object$loadings$X, 2, function(x){names(which(x!=0))})
+        #keepX = NULL
+    } else {
+        #keepX.constraint = NULL
+        keepX = apply(object$loadings$X, 2, function(x){sum(x!=0)})
+    }
     
     tol = object$tol
     max.iter = object$max.iter
@@ -90,10 +98,6 @@ progressBar = TRUE,
             
             if (ncol(X)==0)
             stop("No more predictors after Near Zero Var has been applied!")
-            
-            if (any(keepX > ncol(X)))
-            keepX = ncol(X)
-            
         }
     }
     # and then we start from the X data set with the nzv removed
@@ -132,7 +136,13 @@ progressBar = TRUE,
     # successively tune the components until ncomp: comp1, then comp2, ...
     for(comp in 1 : ncomp)
     {
-        already.tested.X = keepX.constraint[1:comp]
+        if(constraint)
+        {
+            already.tested.X = keepX.constraint[1:comp]
+        } else {
+            already.tested.X = keepX[1:comp]
+        }
+        
         
         if (progressBar == TRUE)
         cat("\ncomp",comp, "\n")
@@ -190,8 +200,10 @@ progressBar = TRUE,
             if (progressBar ==  TRUE)
             setTxtProgressBar(pb, (study_i-1)/M)
             
-            object.res = mint.splsda(X.train, Y.train, study = study.learn.CV, ncomp = comp, keepX = NULL,
-            keepX.constraint = already.tested.X, scale = scale, mode = "regression")
+            object.res = mint.splsda(X.train, Y.train, study = study.learn.CV, ncomp = comp,
+            keepX = if(constraint){NULL}else{already.tested.X},
+            keepX.constraint = if(constraint){already.tested.X}else{NULL},
+            scale = scale, mode = "regression")
             
             test.predict.sw <- predict(object.res, newdata = X.test, dist = dist, study.test = study.test.CV)
             prediction.comp[omit, ] =  test.predict.sw$predict[, , comp]
