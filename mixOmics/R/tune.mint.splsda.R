@@ -49,6 +49,7 @@ ncomp = 1,
 study,
 test.keepX = c(5, 10, 15),
 already.tested.X,
+constraint = TRUE, #if TRUE, expect a list in already.tested.X, otherwise a number(keepX)
 dist = "max.dist",
 measure = "BER", # one of c("overall","BER")
 auc = FALSE,
@@ -111,8 +112,14 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     #stop("The number of already tested parameters should be NULL or ", ncomp - 1, " since you set ncomp = ", ncomp)
     
     if (missing(already.tested.X))
-    already.tested.X = list()
-    
+    {
+        if(constraint == TRUE)
+        {
+            already.tested.X = list()
+        } else {
+            already.tested.X = NULL
+        }
+    }
     if(length(already.tested.X) >= ncomp)
     stop("'ncomp' needs to be higher than the number of components already tuned, which is length(already.tested.X)=",length(already.tested.X) , call. = FALSE)
     
@@ -163,13 +170,17 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     test.keepX = sort(test.keepX) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
     
     # if some components have already been tuned (eg comp1 and comp2), we're only tuning the following ones (comp3 comp4 .. ncomp)
+
     if ((!is.null(already.tested.X)))
     {
         comp.real = (length(already.tested.X) + 1):ncomp
         #check and match already.tested.X to X
-        already.tested.X = get.keepA.and.keepA.constraint (X = list(X=X), keepX.constraint = list(X=already.tested.X), ncomp = length(already.tested.X))$keepA.constraint$X
-        #transform already.tested.X to characters
-        already.tested.X = relist(colnames(X), skeleton = already.tested.X)
+        if(constraint == TRUE)
+        {
+            already.tested.X = get.keepA.and.keepA.constraint (X = list(X=X), keepX.constraint = list(X=already.tested.X), ncomp = length(already.tested.X))$keepA.constraint$X
+            #transform already.tested.X to characters
+            already.tested.X = relist(colnames(X), skeleton = already.tested.X)
+        }
         
     } else {
         comp.real = 1:ncomp
@@ -205,8 +216,9 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         cat("\ncomp",comp.real[comp], "\n")
         
         result = LOGOCV (X, Y, ncomp = 1 + length(already.tested.X), study = study,
-        keepX.constraint = already.tested.X, test.keepX = test.keepX, measure = measure, dist = dist,
-        near.zero.var = near.zero.var, progressBar = progressBar, scale = scale, auc = auc)
+        keepX = if(constraint){NULL}else{already.tested.X}, keepX.constraint = if(constraint){already.tested.X}else{NULL},
+        test.keepX = test.keepX, measure = measure,
+        dist = dist, near.zero.var = near.zero.var, progressBar = progressBar, scale = scale, auc = auc)
         
         # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
         mat.mean.error[, comp]=result[[measure]]$error.rate.mean[[1]]
@@ -217,10 +229,16 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         error.per.class.keepX.opt[[comp]]=result[[measure]]$confusion[[1]]
         
         # best keepX
-        fit = mint.splsda(X, Y, ncomp = 1 + length(already.tested.X), study = study,
-        keepX.constraint = already.tested.X, keepX = result[[measure]]$keepX.opt[[1]], near.zero.var = near.zero.var, scale = scale)
-        
-        already.tested.X[[comp.real[comp]]] = selectVar(fit, comp = 1 + length(already.tested.X))$name
+        if(!constraint)
+        {
+            already.tested.X = c(already.tested.X, result[[measure]]$keepX.opt[[1]])
+        } else {
+            fit = mint.splsda(X, Y, ncomp = 1 + length(already.tested.X), study = study,
+            keepX.constraint = already.tested.X, keepX = result[[measure]]$keepX.opt[[1]], near.zero.var = near.zero.var, scale = scale)
+            
+            already.tested.X[[comp.real[comp]]] = selectVar(fit, comp = 1 + length(already.tested.X))$name
+        }
+
         
         if(light.output == FALSE)
         {
@@ -240,8 +258,8 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     
     result = list(
     error.rate = mat.mean.error,
-    choice.keepX = lapply(already.tested.X, length),
-    choice.keepX.constraint = already.tested.X,
+    choice.keepX = if(constraint){lapply(already.tested.X, length)}else{already.tested.X},
+    choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
     error.rate.class = error.per.class.keepX.opt)
     
     if(auc)

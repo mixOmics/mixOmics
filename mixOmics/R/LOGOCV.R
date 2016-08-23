@@ -33,7 +33,8 @@ LOGOCV = function(X,
 Y,
 ncomp,
 study,
-keepX.constraint,
+keepX = NULL, #either keepX or keepX.constraint, not both
+keepX.constraint = NULL,
 test.keepX = c(5, 10, 15),
 dist = "max.dist",
 measure = c("BER"), # one of c("overall","BER")
@@ -46,6 +47,7 @@ scale)
     # Y factor input
     # ncomp: which component we are tuning
     # study: study effect
+    # keepX: how many variables are kept on the first ncomp-1 components
     # keepX.constraint: which variables are kept on the first ncomp-1 components
     # test.keepX: grid of keepX that is to be tested in the CV
     # dist= which distance should be used to classify the samples?
@@ -129,7 +131,7 @@ scale)
             if (progressBar ==  TRUE)
             setTxtProgressBar(pb, (study_i-1)/M + (i-1)/length(test.keepX)/M)
             
-            object.res = mint.splsda(X.train, Y.train, study = study.learn.CV, ncomp = ncomp, keepX = test.keepX[i],
+            object.res = mint.splsda(X.train, Y.train, study = study.learn.CV, ncomp = ncomp, keepX = c(keepX, test.keepX[i]),
             keepX.constraint = keepX.constraint, scale = scale, mode = "regression")
             
             # record selected features
@@ -196,8 +198,12 @@ scale)
             
             
             test.keepX.out[[ijk]] = test.keepX[keepX.opt[[ijk]]]
-            choice.keepX.out[[ijk]] = c(lapply(keepX.constraint,length), test.keepX.out)
-            
+            if(is.null(keepX))
+            {
+                choice.keepX.out[[ijk]] = c(lapply(keepX.constraint,length), test.keepX.out)
+            }else{
+                choice.keepX.out[[ijk]] = c(keepX, test.keepX.out)
+            }
             result$"overall"$error.rate.mean = error.mean
             result$"overall"$confusion = error.per.class.keepX.opt.comp
             result$"overall"$keepX.opt = test.keepX.out
@@ -238,8 +244,13 @@ scale)
             
             
             test.keepX.out[[ijk]] = test.keepX[keepX.opt[[ijk]]]
-            choice.keepX.out[[ijk]] = c(lapply(keepX.constraint,length), test.keepX.out)
-            
+            if(is.null(keepX))
+            {
+                choice.keepX.out[[ijk]] = c(lapply(keepX.constraint,length), test.keepX.out)
+            }else{
+                choice.keepX.out[[ijk]] = c(keepX, test.keepX.out)
+            }
+
             result$"BER"$error.rate.mean = error.mean
             result$"BER"$confusion = error.per.class.keepX.opt.comp
             result$"BER"$keepX.opt = test.keepX.out
