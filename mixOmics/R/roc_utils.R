@@ -23,91 +23,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #############################################################################################################
 
-auc  =
-  function(object, ...) UseMethod("auc")
 
-auc.plsda<-auc.splsda<-
-  function(object,newdata=object$X,outcome.test=as.factor(object$Y),plot=TRUE,...){
-  
-  data=list()
-  statauc=list()
-  
-      if(dim(newdata)[[1]]!=length(outcome.test))
-        stop("Factor outcome.test must be a factor with ",dim(newdata)[[1]], " elements.",call. = FALSE)
-     
-      res.predict <- predict(object, newdata = newdata, method = "max.dist")$predict
-    
-    data$outcome=as.factor(outcome.test)
-    
-    for (i in 1:object$ncomp)
-    {
-      data$data=res.predict[,,i]
-      title=paste("ROC Curve Comp",i)
-    statauc[[paste("Comp",i)]]=statauc(data,plot=plot,title=title)
-    
-    }
-    return(statauc)
-}
-
-auc.mint.plsda<-auc.mint.splsda<-
-  function(object,newdata=object$X,outcome.test=as.factor(object$Y),study.test=object$study,plot=TRUE,...){
-    
-    data=list()
-    statauc=list()
-    
-    
-   
-      if(dim(newdata)[[1]]!=length(outcome.test))
-        stop("Factor outcome.test must be a factor with ",dim(newdata)[[1]], " elements.",call. = FALSE)
-      if(dim(newdata)[[1]]!=length(study.test))
-        stop("Factor study.test must be a factor with ",dim(newdata)[[1]], " elements.",call. = FALSE)
-      study.test=as.factor(study.test)
-      res.predict <- predict(object, newdata = newdata, method = "max.dist",  study.test = study.test)$predict
-      
-      
-    data$outcome=as.factor(outcome.test)
-    
-    for (i in 1:object$ncomp)
-    {
-      data$data=res.predict[,,i]
-      title=paste("ROC Curve Comp",i)
-      statauc[[paste("Comp",i)]]=statauc(data,plot=plot,title=title)
-      
-    }
-    return(statauc)
-  }
-
-auc.block.splsda<-auc.block.plsda<-
-  function(object,newdata=object$X,outcome.test=as.factor(object$Y),plot=TRUE,...){
-    
-    data=list()
-    statauc=list()
-    
-     
-      res.predict <- predict(object, newdata = newdata, method = "max.dist")$predict
-      
-    
-    data$outcome=as.factor(outcome.test)
-    
-  for(j in 1:length(res.predict))
-  {
-    for (i in 1:object$ncomp[j])
-    {
-      data$data=res.predict[[j]][,,i]
-      title=paste("ROC Curve Block ",names(res.predict)[j]," Comp",i)
-      statauc[[paste("Block ",names(res.predict)[j]," Comp",i)]]=statauc(data,plot=plot,title=title)
-      
-    }
-  }
-    return(statauc)
-  }
-
-#####utils
-
-
-
-
-statauc <- function(data = NULL,plot=FALSE,title=NULL){
+statauc <- function(data = NULL, plot = FALSE, title = NULL){
   res.predict = data$data; outcome = data$outcome
   
   
@@ -133,13 +50,13 @@ statauc <- function(data = NULL,plot=FALSE,title=NULL){
     }
     if (nlevels(outcome) == 2){
       ann_text = matrix(ncol=3,nrow=1)
-      df = rbind(df, cbind(temp$specificities, temp$sensitivities, paste(paste(levels(outcome)[1], levels(outcome)[2], sep = " vs "),signif(temp$auc, 4))))
+      df = rbind(df, cbind(temp$specificities, temp$sensitivities, paste(paste(levels(outcome)[1], levels(outcome)[2], sep = " vs "),":",signif(temp$auc, 4))))
       #ann_text[i , 1] =
       ann_text[i , 1] = signif(temp$auc, 4)
       ann_text[i , 2] = signif((1 - pnorm(zauc, 0, 1))*2, 4)
       break
     } else {
-      df = rbind(df, cbind(temp$specificities, temp$sensitivities, paste(levels(outcome)[i], "vs Other(s)",signif(temp$auc, 4))))
+      df = rbind(df, cbind(temp$specificities, temp$sensitivities, paste(levels(outcome)[i], "vs Other(s):",signif(temp$auc, 4))))
       #ann_text[i , 1] =
       ann_text[i , 1] = as.numeric(signif(temp$auc, 4))
       ann_text[i , 2] = as.numeric(signif((1 - pnorm(zauc, 0, 1))*2, 4))
@@ -156,7 +73,6 @@ statauc <- function(data = NULL,plot=FALSE,title=NULL){
   names(df) = c("Specificity", "Sensitivity", "Outcome")
   df$Specificity = 100 - 100*as.numeric(df$Specificity)
   df$Sensitivity = 100*as.numeric(df$Sensitivity)
-  
   
   
   if(plot)
