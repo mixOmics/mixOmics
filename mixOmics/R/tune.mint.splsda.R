@@ -119,6 +119,13 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         } else {
             already.tested.X = NULL
         }
+    } else {
+        if(constraint == TRUE)
+        {
+            cat("A total of ",lapply(already.tested.X,length),"specific variables ('already.tested.X') were selected on the first ", length(already.tested.X), "component(s)\n")
+        } else {
+            cat("Number of variables selected on the first ", length(already.tested.X), "component(s) was ", already.tested.X,"\n")
+        }
     }
     if(length(already.tested.X) >= ncomp)
     stop("'ncomp' needs to be higher than the number of components already tuned, which is length(already.tested.X)=",length(already.tested.X) , call. = FALSE)
