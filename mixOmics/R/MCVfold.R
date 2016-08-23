@@ -127,6 +127,7 @@ choice.keepX,
 test.keepX,
 measure = c("overall"), # one of c("overall","BER")
 dist = "max.dist",
+auc = FALSE,
 near.zero.var = FALSE,
 progressBar = TRUE,
 class.object = NULL
@@ -144,7 +145,7 @@ class.object = NULL
     
     M = length(folds)
     features = NULL
-    prediction.comp = class.comp = list()
+    auc.all = prediction.comp = class.comp = list()
     for(ijk in dist)
     class.comp[[ijk]] = array(0, c(nrow(X), nrepeat, length(test.keepX)))# prediction of all samples for each test.keepX and  nrep at comp fixed
     folds.input = folds
@@ -153,6 +154,13 @@ class.object = NULL
         prediction.comp[[nrep]] = array(0, c(nrow(X), nlevels(Y), length(test.keepX)), dimnames = list(rownames(X), levels(Y), test.keepX))
         rownames(prediction.comp[[nrep]]) = rownames(X)
         colnames(prediction.comp[[nrep]]) = levels(Y)
+        
+        if(nlevels(Y)>2)
+        {
+            auc.all[[nrep]] = array(0, c(nlevels(Y),2, length(test.keepX)), dimnames = list(paste(levels(Y), "vs Other(s)"), c("AUC","p-value"), test.keepX))
+        }else{
+            auc.all[[nrep]] = array(0, c(1,2, length(test.keepX)), dimnames = list("", c("AUC","p-value"), test.keepX))
+        }
         
         n = nrow(X)
         repeated.measure = 1:n
@@ -265,15 +273,36 @@ class.object = NULL
         if (progressBar ==  TRUE)
         setTxtProgressBar(pb, (M*nrep)/(M*nrepeat))
         
-        
+        if(auc)
+        {
+            data=list()
+            for (i in 1:length(test.keepX))
+            {
+                data$outcome = Y
+                data$data = prediction.comp[[nrep]][, , i]
+                auc.all[[nrep]][, , i] = as.matrix(statauc(data))
+            }
+        }
+
     } #end nrep 1:nrepeat
-    names(prediction.comp) = paste0("nrep.", 1:nrepeat)
+    names(prediction.comp) = names (auc.all) = paste0("nrep.", 1:nrepeat)
     # class.comp[[ijk]] is a matrix containing all prediction for test.keepX, all nrepeat and all distance, at comp fixed
     
+    # average auc over the nrepeat, for each test.keepX
+    auc.mean.sd =  array(0, c(nlevels(Y),2, length(test.keepX)), dimnames = list(rownames(auc.all[[1]]), c("AUC.mean","AUC.sd"), test.keepX))
+    
+    for(i in 1:length(test.keepX))
+    {
+        temp = NULL
+        for(nrep in 1:nrepeat)
+        {
+            temp = cbind(temp, auc.all[[nrep]][, 1, i])
+        }
+        auc.mean.sd[, 1, i] = apply(temp,1,mean)
+        auc.mean.sd[, 2, i] = apply(temp,1,sd)
+    }
     
     result = list()
-    
-    
     error.mean = error.sd = error.per.class.keepX.opt.comp = keepX.opt = test.keepX.out = mat.error.final = choice.keepX.out = list()
     
     if (any(measure == "overall"))
@@ -381,6 +410,8 @@ class.object = NULL
     
     
     result$prediction.comp = prediction.comp
+    result$auc = auc.mean.sd
+    result$auc.all = auc.all
     result$class.comp = class.comp
     result$features$stable = sort(table(as.factor(features))/M/nrepeat, decreasing = TRUE)
     return(result)
