@@ -54,6 +54,7 @@ validation = "Mfold",
 folds = 10,
 dist = "max.dist",
 measure = "BER", # one of c("overall","BER")
+auc = FALSE,
 progressBar = TRUE,
 near.zero.var = FALSE,
 nrepeat = 1,
@@ -233,6 +234,13 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         if(light.output == FALSE)
         prediction.all = class.all = list()
         
+        if(auc)
+        {
+            auc.mean.sd=list()
+            if(light.output == FALSE)
+            auc.all=list()
+        }
+        
         error.per.class.keepX.opt=list()
         # successively tune the components until ncomp: comp1, then comp2, ...
         for(comp in 1:length(comp.real))
@@ -243,9 +251,10 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             
             result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = 1 + length(already.tested.X),
             choice.keepX = already.tested.X, test.keepX = test.keepX, measure = measure, dist = dist,
-            near.zero.var = near.zero.var, progressBar = progressBar, class.object = "splsda")
+            near.zero.var = near.zero.var, progressBar = progressBar, class.object = "splsda", auc = auc)
             
             # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
+            mat.error.rate[[comp]] = result[[measure]]$mat.error.rate[[1]]
             mat.mean.error[, comp]=result[[measure]]$error.rate.mean[[1]]
             if (!is.null(result[[measure]]$error.rate.sd[[1]]))
             mat.sd.error[, comp]=result[[measure]]$error.rate.sd[[1]]
@@ -256,13 +265,18 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             # best keepX
             already.tested.X = c(already.tested.X, result[[measure]]$keepX.opt[[1]])
             
-            mat.error.rate[[comp]] = result[[measure]]$mat.error.rate[[1]]
-            
             if(light.output == FALSE)
             {
                 #prediction of each samples for each fold and each repeat, on each comp
                 class.all[[comp]] = result$class.comp[[1]]
                 prediction.all[[comp]] = result$prediction.comp
+            }
+            
+            if(auc)
+            {
+                auc.mean.sd[[comp]] = result$auc
+                if(light.output == FALSE)
+                auc.all[[comp]] = result$auc.all
             }
             
         } # end comp
@@ -274,17 +288,27 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         cat('\n')
         
         result = list(
-        mat.mean.error = mat.mean.error,
+        error.rate = mat.mean.error,
         mat.sd.error = mat.sd.error,
         mat.error.rate = mat.error.rate,
         choice.keepX = already.tested.X ,
-        error.per.class = error.per.class.keepX.opt)
+        error.rate.class = error.per.class.keepX.opt)
         
         if(light.output == FALSE)
         {
             names(class.all) = names(prediction.all) = c(paste('comp', comp.real))
             result$predict = prediction.all
             result$class = class.all
+        }
+        if(auc)
+        {
+            names(auc.mean.sd) = c(paste('comp', comp.real))
+            result$auc = auc.mean.sd
+            if(light.output == FALSE)
+            {
+                names(auc.all) = c(paste('comp', comp.real))
+                result$auc.all =auc.all
+            }
         }
         result$call = match.call()
 
