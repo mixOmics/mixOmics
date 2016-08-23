@@ -25,50 +25,36 @@
 #############################################################################################################
 
 
-plot.tune.splsda = plot.tune.mint.splsda  = #plot.spca <- plot.ipca <- plot.sipca <-
-function(   x,
-            ncomp = min(10, length(x$sdev)),
-            type = "barplot", # either barplot or any other type available in plot, as "l","b","p",..
-            explained.var=TRUE,
-            ...)
+plot.tune.splsda = #plot.spca <- plot.ipca <- plot.sipca <-
+function(object)
 {
     
-    #-- checking general input parameters --------------------------------------#
-    #---------------------------------------------------------------------------#
+    error <- object$error.rate
+    select.keepX <- object$choice.keepX[colnames(error)]
+    first.keepX <- names(object$choice.keepX[1])
     
-    #-- ncomp
-    if (is.null(ncomp) || !is.numeric(ncomp) || ncomp < 1 || !is.finite(ncomp))
-    stop("invalid value for 'ncomp'.", call. = FALSE)
+    legend=NULL
     
-    ncomp = round(ncomp)
+    matplot(error, type = "l", axes = FALSE, lwd = 2, lty = 1,
+    xlab = "number of selected genes", ylab = "error rate",
+    col = 1:length(select.keepX)    )
     
-    if (ncomp > length(x$sdev))
-    stop("'ncomp' must be lower or equal than ", length(x$sdev), ".",
-    call. = FALSE)
-    
-    #-- end checking --#
-    #------------------#
-    
-    #-- scree plot -------------------------------------------------------------#
-    #---------------------------------------------------------------------------#
-    
-    variances = (x$sdev^2)[1:ncomp] # relative variance
-    ylab = "Variance"
-    if(explained.var==TRUE)
+    for(i in 1:length(select.keepX))
     {
-        variances=variances/x$var.tot #explained variances
-        ylab = "Explained Variance"
+        # store coordinates of chosen keepX
+        index = which(rownames(error) == select.keepX[i])
+        
+        # choseen keepX:
+        points(index, error[index,i], col = i, lwd=2, cex=1.5)
+        if(names(select.keepX[i])==first.keepX)
+        legend=first.keepX
+        else
+        legend=c(legend,paste(first.keepX," to ",names(select.keepX[i])))
     }
-    if (type == "barplot")
-    {
-        barplot(variances, names.arg = seq(1, ncomp), xlab = "Principal Components", ylab = ylab,...)
-    } else {
-        plot(variances, type = type, axes = FALSE,
-        xlab = "Principal Components",
-        ylab = ylab,... )
-        axis(1, at = 1:ncomp)
-        axis(2)
-    }
+    axis(1, c(1:length(rownames(error))),labels=rownames(error))
+    axis(2)
+    legend("topright", lty = 1, lwd = 2, horiz = FALSE, col = 1:length(select.keepX),
+    legend = legend)
     
 }
 

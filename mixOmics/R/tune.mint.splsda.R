@@ -239,7 +239,8 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     cat('\n')
     
     result = list(
-    mat.mean.error = mat.mean.error,
+    error.rate = mat.mean.error,
+    choice.keepX = lapply(already.tested.X, length),
     choice.keepX.constraint = already.tested.X,
     error.rate.class = error.per.class.keepX.opt)
     
@@ -257,7 +258,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     }
     result$call = match.call()
 
-    class(result) = "tune.mint.splsda"
+    class(result) = c("tune.mint.splsda","tune.splsda")
 
     return(result)
 }
