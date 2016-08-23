@@ -37,6 +37,7 @@ keepX.constraint,
 test.keepX = c(5, 10, 15),
 dist = "max.dist",
 measure = c("BER"), # one of c("overall","BER")
+auc = auc,
 progressBar = TRUE,
 near.zero.var = FALSE,
 scale)
@@ -149,7 +150,22 @@ scale)
     
     result = list()
     
-    error.mean = error.sd = error.per.class.keepX.opt.comp = keepX.opt = test.keepX.out = choice.keepX.out = list()
+    auc.mean = error.mean = error.sd = error.per.class.keepX.opt.comp = keepX.opt = test.keepX.out = choice.keepX.out = list()
+    
+    if(auc)
+    {
+        data=list()
+        for (i in 1:length(test.keepX))
+        {
+            
+            data$outcome=Y
+            data$data=prediction.comp[, , i]
+            
+            auc.mean[[i]]=statauc(data)
+            
+        }
+        names(auc.mean)=test.keepX
+    }
     
     if (any(measure == "overall"))
     {
@@ -234,6 +250,7 @@ scale)
     
     result$prediction.comp = prediction.comp
     result$class.comp = class.comp
+    result$auc = auc.mean
     result$features$stable = sort(table(as.factor(features))/M, decreasing = TRUE)
     return(result)
     

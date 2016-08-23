@@ -40,6 +40,7 @@ progressBar = TRUE,
 # ---------------------------------------------------
 perf.mint.splsda = perf.mint.plsda = function (object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
+auc = FALSE,
 progressBar = TRUE,
 ...
 )
@@ -104,6 +105,11 @@ progressBar = TRUE,
         dimnames = list(rownames(X), c(paste('comp', 1 : ncomp))))
     }
 
+    if(auc)
+    {
+        auc.mean=list()
+        auc.mean.study=list()
+    }
 
     study.specific = global = list()
     for (study_i in 1:nlevels(study)) #LOO on the study factor
@@ -115,9 +121,9 @@ progressBar = TRUE,
         study.specific[[study_i]]$overall = global$overall = matrix(0,nrow = ncomp, ncol = length(dist),
         dimnames = list(c(paste('comp', 1 : ncomp)), dist))
         
-        study.specific[[study_i]]$error.per.class = list()
+        study.specific[[study_i]]$error.rate.class = list()
         for(ijk in dist)
-        study.specific[[study_i]]$error.per.class[[ijk]] = global$error.per.class[[ijk]] = matrix(0,nrow = nlevels(Y), ncol = ncomp,
+        study.specific[[study_i]]$error.rate.class[[ijk]] = global$error.rate.class[[ijk]] = matrix(0,nrow = nlevels(Y), ncol = ncomp,
         dimnames = list(levels(Y),c(paste('comp', 1 : ncomp))))
 
     }
@@ -149,6 +155,9 @@ progressBar = TRUE,
         for(ijk in dist)
         class.comp[[ijk]] = matrix(0, nrow = nrow(X), ncol = 1)# prediction of all samples for each test.keepX and  nrep at comp fixed
         
+        if(auc)
+        auc.mean.study[[comp]] = list()
+
         for (study_i in 1:M) #LOO on the study factor
         {
             if (progressBar ==  TRUE)
@@ -213,10 +222,19 @@ progressBar = TRUE,
                 out = (apply(conf, 1, sum) - diag(conf)) / summary(Y[omit])
             })
             for (ijk in dist)
-            study.specific[[study_i]]$error.per.class[[ijk]][,comp] = temp[[ijk]]
+            study.specific[[study_i]]$error.rate.class[[ijk]][,comp] = temp[[ijk]]
+            
+            #AUC per study
+            if(auc)
+            {
+                data = list()
+                data$outcome = Y[omit]
+                data$data = prediction.comp[omit, ]
+                auc.mean.study[[comp]][[study_i]] = statauc(data)
+            }
             
         } # end study_i 1:M (M folds)
-        
+
         for (ijk in dist)
         {
             #prediction of each samples for each fold and each repeat, on each comp
@@ -244,7 +262,18 @@ progressBar = TRUE,
             out = (apply(conf, 1, sum) - diag(conf)) / summary(Y)
         })
         for (ijk in dist)
-        global$error.per.class[[ijk]][,comp] = temp[[ijk]]
+        global$error.rate.class[[ijk]][,comp] = temp[[ijk]]
+
+        #AUC global
+        if(auc)
+        {
+            names(auc.mean.study[[comp]]) = names.study
+
+            data = list()
+            data$outcome = Y
+            data$data = prediction.comp
+            auc.mean[[comp]] = statauc(data)
+        }
 
 
     } # end comp
@@ -254,6 +283,13 @@ progressBar = TRUE,
     global.error = global,
     predict = prediction.all,
     class = class.all)
+    
+    if(auc)
+    {
+        names(auc.mean) = names(auc.mean.study) = paste('comp', 1:ncomp)
+        result$auc = auc.mean
+        result$auc.study = auc.mean.study
+    }
     
     if (progressBar == TRUE)
     cat('\n')

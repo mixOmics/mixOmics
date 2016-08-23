@@ -51,6 +51,7 @@ test.keepX = c(5, 10, 15),
 already.tested.X,
 dist = "max.dist",
 measure = "BER", # one of c("overall","BER")
+auc = FALSE,
 progressBar = TRUE,
 scale = TRUE,
 tol = 1e-06,
@@ -192,6 +193,8 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     
     if(light.output == FALSE)
     prediction.all = class.all = list()
+    if(auc)
+    auc.mean=list()
     
     error.per.class.keepX.opt=list()
     # successively tune the components until ncomp: comp1, then comp2, ...
@@ -203,7 +206,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         
         result = LOGOCV (X, Y, ncomp = 1 + length(already.tested.X), study = study,
         keepX.constraint = already.tested.X, test.keepX = test.keepX, measure = measure, dist = dist,
-        near.zero.var = near.zero.var, progressBar = progressBar, scale = scale)
+        near.zero.var = near.zero.var, progressBar = progressBar, scale = scale, auc = auc)
         
         # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
         mat.mean.error[, comp]=result[[measure]]$error.rate.mean[[1]]
@@ -225,6 +228,8 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             class.all[[comp]] = result$class.comp[[1]]
             prediction.all[[comp]] = result$prediction.comp
         }
+        if(auc)
+        auc.mean[[comp]]=result$auc
         
     } # end comp
     names(error.per.class.keepX.opt) = c(paste('comp', comp.real))
@@ -237,6 +242,12 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     mat.mean.error = mat.mean.error,
     choice.keepX.constraint = already.tested.X,
     error.rate.class = error.per.class.keepX.opt)
+    
+    if(auc)
+    {
+        names(auc.mean) = c(paste('comp', comp.real))
+        result$auc = auc.mean
+    }
     
     if(light.output == FALSE)
     {
