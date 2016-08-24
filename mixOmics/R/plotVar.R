@@ -3,11 +3,11 @@
 #   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 #   Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Florian Rohart, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #   Kim-Anh Le Cao, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 2009
-# last modified: 2015
+# last modified: 24-08-2016
 #
 # Copyright (C) 2009
 #
@@ -545,7 +545,6 @@ label.axes.box = "both"  )
     
     if (nrow(df) == 0)
     stop("Cutoff value very high for the components ", comp1, " and ", comp2, ".No variable was selected.")
-    save(list=ls(),file="temp.Rdata")
 
     if (overlap)
     {
