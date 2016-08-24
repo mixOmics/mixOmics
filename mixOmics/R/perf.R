@@ -345,6 +345,7 @@ progressBar = TRUE,
 # ---------------------------------------------------
 perf.splsda = perf.plsda = function(object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
+constraint = FALSE,
 validation = c("Mfold", "loo"),
 folds = 10,
 nrepeat = 1,
@@ -369,14 +370,20 @@ progressBar = TRUE,
     near.zero.var = !is.null(object$nzv) # if near.zero.var was used, we set it to TRUE. if not used, object$nzv is NULL
     
     #-- tells which variables are selected in X and in Y --#
-    if (any(class(object) == "splsda"))
+    if(constraint)
     {
-        keepX = object$keepX
+        keepX.constraint = apply(object$loadings$X, 2, function(x){names(which(x!=0))})
+        #keepX = NULL
     } else {
-        keepX = rep(ncol(X), ncomp)
+        #keepX.constraint = NULL
+        if (any(class(object) == "splsda"))
+        {
+            keepX = object$keepX
+        } else {
+            keepX = rep(ncol(X), ncomp)
+        }
     }
-    
-    
+
     tol = object$tol
     max.iter = object$max.iter
     
@@ -494,18 +501,34 @@ progressBar = TRUE,
         if (progressBar == TRUE)
         cat("\ncomp",comp, "\n")
         
-        
-        if(comp > 1)
+        if(constraint)
         {
-            choice.keepX = keepX[1 : (comp - 1)]
+            if(comp > 1)
+            {
+                choice.keepX = keepX[1 : (comp - 1)]
+            } else {
+                choice.keepX = NULL
+            }
+            test.keepX = keepX[comp]
+            names(test.keepX) = test.keepX
+            #test.keepX is a value
         } else {
-            choice.keepX = NULL
+            if(comp > 1)
+            {
+                choice.keepX.constraint = keepX.constraint[1 : (comp - 1)]
+            } else {
+                choice.keepX.constraint = NULL
+            }
+            test.keepX = keepX.constraint[comp]
+            names(test.keepX) = test.keepX
+            #test.keepX is a vector a variables to keep on comp 'comp'
         }
-        test.keepX = keepX[comp]
         
         # estimate performance of the model for each component
         result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = comp,
-        choice.keepX = choice.keepX, test.keepX = test.keepX, measure = measure, dist = dist, near.zero.var = near.zero.var,
+        choice.keepX = if(constraint){NULL}else{choice.keepX},
+        choice.keepX.constraint = if(constraint){choice.keepX.constraint}else{NULL},
+        test.keepX = test.keepX, measure = measure, dist = dist, near.zero.var = near.zero.var,
         auc = auc, progressBar = progressBar, class.object = class(object))
                 
         # ---- extract stability of features ----- # NEW

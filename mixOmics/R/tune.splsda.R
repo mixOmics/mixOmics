@@ -49,7 +49,8 @@
 tune.splsda = function (X, Y,
 ncomp = 1,
 test.keepX = c(5, 10, 15),
-already.tested.X = NULL,
+already.tested.X,
+constraint = FALSE, #if TRUE, expect a list in already.tested.X, otherwise a number(keepX)
 validation = "Mfold",
 folds = 10,
 dist = "max.dist",
@@ -140,18 +141,34 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     #if ((!is.null(already.tested.X)) && (length(already.tested.X) != (ncomp - 1)) )
     #stop("The number of already tested parameters should be NULL or ", ncomp - 1, " since you set ncomp = ", ncomp)
     
-    if(length(already.tested.X) >= ncomp)
-    stop("'ncomp' needs to be higher than the number of components already tuned ('length(already.tested.X)')", call. = FALSE)
+    if (missing(already.tested.X))
+    {
+        if(constraint == TRUE)
+        {
+            already.tested.X = list()
+        } else {
+            already.tested.X = NULL
+        }
+    } else {
+        if(constraint == TRUE)
+        {
+            if(!is.list(already.tested.X))
+            stop("''already.tested.X' must be a list since 'constraint' is set to TRUE")
+            
+            print(paste("A total of",paste(lapply(already.tested.X,length),collapse=" "),"specific variables ('already.tested.X') were selected on the first ", length(already.tested.X), "component(s)"))
+        } else {
+            if(is.list(already.tested.X))
+            stop("''already.tested.X' must be a vector of keepX values since 'constraint' is set to FALSE")
 
-    if ((!is.null(already.tested.X)) && (!is.numeric(already.tested.X)))
-    stop("Expecting a numerical value in already.tested.X", call. = FALSE)
-    
-    if (!is.null(already.tested.X))
-    cat("Number of variables selected on the first ", length(already.tested.X), "component(s) was ", already.tested.X,"\n")
-    
+            print(paste("Number of variables selected on the first", length(already.tested.X), "component(s) was", paste(already.tested.X,collapse = " ")))
+        }
+    }
+    if(length(already.tested.X) >= ncomp)
+    stop("'ncomp' needs to be higher than the number of components already tuned, which is length(already.tested.X)=",length(already.tested.X) , call. = FALSE)
     
     if (any(is.na(validation)) || length(validation) > 1)
     stop("'validation' should be one of 'Mfold' or 'loo'.", call. = FALSE)
+    
     
     #-- end checking --#
     #------------------#
@@ -183,11 +200,19 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     #---------------------------------------------------------------------------#
     
     test.keepX = sort(test.keepX) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
-    
+    names(test.keepX) = test.keepX
     # if some components have already been tuned (eg comp1 and comp2), we're only tuning the following ones (comp3 comp4 .. ncomp)
     if ((!is.null(already.tested.X)))
     {
         comp.real = (length(already.tested.X) + 1):ncomp
+        #check and match already.tested.X to X
+        if(constraint == TRUE)
+        {
+            already.tested.X = get.keepA.and.keepA.constraint (X = list(X=X), keepX.constraint = list(X=already.tested.X), ncomp = length(already.tested.X))$keepA.constraint$X
+            #transform already.tested.X to characters
+            already.tested.X = relist(colnames(X), skeleton = already.tested.X)
+        }
+
     } else {
         comp.real = 1:ncomp
     }
@@ -250,7 +275,9 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             cat("\ncomp",comp.real[comp], "\n")
             
             result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = 1 + length(already.tested.X),
-            choice.keepX = already.tested.X, test.keepX = test.keepX, measure = measure, dist = dist,
+            choice.keepX = if(constraint){NULL}else{already.tested.X},
+            choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
+            test.keepX = test.keepX, measure = measure, dist = dist,
             near.zero.var = near.zero.var, progressBar = progressBar, class.object = "splsda", auc = auc)
             
             # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
@@ -263,7 +290,15 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             error.per.class.keepX.opt[[comp]]=result[[measure]]$confusion[[1]]
 
             # best keepX
-            already.tested.X = c(already.tested.X, result[[measure]]$keepX.opt[[1]])
+            if(!constraint)
+            {
+                already.tested.X = c(already.tested.X, result[[measure]]$keepX.opt[[1]])
+            } else {
+                fit = splsda(X, Y, ncomp = 1 + length(already.tested.X),
+                keepX.constraint = already.tested.X, keepX = result[[measure]]$keepX.opt[[1]], near.zero.var = near.zero.var, mode = "regression")
+                
+                already.tested.X[[paste("comp",comp.real[comp],sep="")]] = selectVar(fit, comp = 1 + length(already.tested.X))$name
+            }
             
             if(light.output == FALSE)
             {
@@ -291,7 +326,8 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         error.rate = mat.mean.error,
         mat.sd.error = mat.sd.error,
         mat.error.rate = mat.error.rate,
-        choice.keepX = already.tested.X ,
+        choice.keepX = if(constraint){lapply(already.tested.X, length)}else{already.tested.X},
+        choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
         error.rate.class = error.per.class.keepX.opt)
         
         if(light.output == FALSE)
