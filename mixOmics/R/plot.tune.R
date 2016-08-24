@@ -4,8 +4,8 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #   Leigh Coonan, Queensland Faculty for Advanced Bioinformatics, Australia
 #
-# created: 2010
-# last modified: 19-04-2016
+# created: 20-08-2016
+# last modified: 24-08-2016
 #
 # Copyright (C) 2010
 #
