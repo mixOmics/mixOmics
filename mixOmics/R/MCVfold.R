@@ -5,7 +5,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 2015
-# last modified: 24-05-2016
+# last modified: 24-08-2016
 #
 # Copyright (C) 2015
 #
@@ -123,10 +123,12 @@ validation,
 folds,
 nrepeat = 1,
 ncomp,
-choice.keepX,
-test.keepX,
+choice.keepX = NULL, #either choice.keepX or choice.keepX.constraint, not both
+choice.keepX.constraint = NULL,
+test.keepX, # can be either a vector of names (keepX.constraint) or a value(keepX). In case of a value, there needs to be names(test.keepX)
 measure = c("overall"), # one of c("overall","BER")
 dist = "max.dist",
+auc = FALSE,
 near.zero.var = FALSE,
 progressBar = TRUE,
 class.object = NULL
@@ -144,15 +146,22 @@ class.object = NULL
     
     M = length(folds)
     features = NULL
-    prediction.comp = class.comp = list()
+    auc.all = prediction.comp = class.comp = list()
     for(ijk in dist)
     class.comp[[ijk]] = array(0, c(nrow(X), nrepeat, length(test.keepX)))# prediction of all samples for each test.keepX and  nrep at comp fixed
     folds.input = folds
     for(nrep in 1:nrepeat)
     {
-        prediction.comp[[nrep]] = array(0, c(nrow(X), nlevels(Y), length(test.keepX)), dimnames = list(rownames(X), levels(Y), test.keepX))
+        prediction.comp[[nrep]] = array(0, c(nrow(X), nlevels(Y), length(test.keepX)), dimnames = list(rownames(X), levels(Y), names(test.keepX)))
         rownames(prediction.comp[[nrep]]) = rownames(X)
         colnames(prediction.comp[[nrep]]) = levels(Y)
+        
+        if(nlevels(Y)>2)
+        {
+            auc.all[[nrep]] = array(0, c(nlevels(Y),2, length(test.keepX)), dimnames = list(paste(levels(Y), "vs Other(s)"), c("AUC","p-value"), names(test.keepX)))
+        }else{
+            auc.all[[nrep]] = array(0, c(1,2, length(test.keepX)), dimnames = list("", c("AUC","p-value"), names(test.keepX)))
+        }
         
         n = nrow(X)
         repeated.measure = 1:n
@@ -194,7 +203,7 @@ class.object = NULL
         
         error.sw = matrix(0,nrow = M, ncol = length(test.keepX))
         rownames(error.sw) = paste0("fold",1:M)
-        colnames(error.sw) = test.keepX
+        colnames(error.sw) = names(test.keepX)
         # for the last keepX (i) tested, prediction combined for all M folds so as to extract the error rate per class
         # prediction.all = vector(length = nrow(X))
         # in case the test set only includes one sample, it is better to advise the user to
@@ -245,7 +254,14 @@ class.object = NULL
                 if (progressBar ==  TRUE)
                 setTxtProgressBar(pb, (M*(nrep-1)+j-1)/(M*nrepeat) + (i-1)/length(test.keepX)/(M*nrepeat))
                 
-                object.res = splsda(X.train, Y.train, ncomp = ncomp, keepX = c(choice.keepX, test.keepX[i]), logratio = "none", near.zero.var = FALSE, mode = "regression")
+                # depending on whether it is a constraint and whether it is from tune or perf, keepX and keepX.constraint differ:
+                # if it's from perf, then it's only either keepX or keepX.constraint
+                # if it's from tune, then it's either keepX, or a combination of keepX.constraint and keepX
+                # we know if it's perf+constraint or tune+constraint depending on the test.keepX that is either a vector or a list
+                object.res = splsda(X.train, Y.train, ncomp = ncomp,
+                keepX = if(is.null(choice.keepX.constraint)){c(choice.keepX, test.keepX[i])}else if(!is.list(test.keepX)){test.keepX[i]} else {NULL} ,
+                keepX.constraint = if(is.null(choice.keepX.constraint)){NULL}else if(!is.list(test.keepX)){choice.keepX.constraint} else {c(choice.keepX.constraint, test.keepX)},
+                logratio = "none", near.zero.var = FALSE, mode = "regression")
                   
                 # added: record selected features
                 if (any(class.object %in% c("splsda")) & length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
@@ -253,7 +269,6 @@ class.object = NULL
                 features = c(features, selectVar(object.res, comp = ncomp)$name)
                 
                 test.predict.sw <- predict(object.res, newdata = X.test, method = dist)
-                                
                 prediction.comp[[nrep]][omit, , i] =  test.predict.sw$predict[, , ncomp]
                 
                 for(ijk in dist)
@@ -265,15 +280,43 @@ class.object = NULL
         if (progressBar ==  TRUE)
         setTxtProgressBar(pb, (M*nrep)/(M*nrepeat))
         
-        
+        if(auc)
+        {
+            data=list()
+            for (i in 1:length(test.keepX))
+            {
+                data$outcome = Y
+                data$data = prediction.comp[[nrep]][, , i]
+                auc.all[[nrep]][, , i] = as.matrix(statauc(data))
+            }
+        }
+
     } #end nrep 1:nrepeat
-    names(prediction.comp) = paste0("nrep.", 1:nrepeat)
+    names(prediction.comp) = names (auc.all) = paste0("nrep.", 1:nrepeat)
     # class.comp[[ijk]] is a matrix containing all prediction for test.keepX, all nrepeat and all distance, at comp fixed
     
+    save(list=ls(),file="temp.Rdata")
+    # average auc over the nrepeat, for each test.keepX
+    if(auc)
+    {
+        auc.mean.sd =  array(0, c(nlevels(Y),2, length(test.keepX)), dimnames = list(rownames(auc.all[[1]]), c("AUC.mean","AUC.sd"), names(test.keepX)))
+        
+        for(i in 1:length(test.keepX))
+        {
+            temp = NULL
+            for(nrep in 1:nrepeat)
+            {
+                temp = cbind(temp, auc.all[[nrep]][, 1, i])
+            }
+            auc.mean.sd[, 1, i] = apply(temp,1,mean)
+            auc.mean.sd[, 2, i] = apply(temp,1,sd)
+        }
+    } else {
+        auc.mean.sd = auc.all = NULL
+        
+    }
     
     result = list()
-    
-    
     error.mean = error.sd = error.per.class.keepX.opt.comp = keepX.opt = test.keepX.out = mat.error.final = choice.keepX.out = list()
     
     if (any(measure == "overall"))
@@ -282,7 +325,7 @@ class.object = NULL
         {
             rownames(class.comp[[ijk]]) = rownames(X)
             colnames(class.comp[[ijk]]) = paste0("nrep.", 1:nrepeat)
-            dimnames(class.comp[[ijk]])[[3]] = paste0("test.keepX.",test.keepX)
+            dimnames(class.comp[[ijk]])[[3]] = paste0("test.keepX.",names(test.keepX))
             
             #finding the best keepX depending on the error measure: overall or BER
             # classification error for each nrep and each test.keepX: summing over all samples
@@ -290,7 +333,7 @@ class.object = NULL
             {
                 sum(as.character(Y) != x)
             })
-            rownames(error) = test.keepX
+            rownames(error) = names(test.keepX)
             colnames(error) = paste0("nrep.",1:nrepeat)
             
             # we want to average the error per keepX over nrepeat and choose the minimum error
@@ -314,9 +357,12 @@ class.object = NULL
             
             
             test.keepX.out[[ijk]] = test.keepX[keepX.opt[[ijk]]]
-            choice.keepX.out[[ijk]] = c(choice.keepX, test.keepX.out)
-            
-            
+            if(is.null(choice.keepX))
+            {
+                choice.keepX.out[[ijk]] = c(lapply(choice.keepX.constraint,length), test.keepX.out)
+            }else{
+                choice.keepX.out[[ijk]] = c(choice.keepX, test.keepX.out)
+            }
             result$"overall"$error.rate.mean = error.mean
             if (!nrepeat ==  1)
             result$"overall"$error.rate.sd = error.sd
@@ -333,14 +379,14 @@ class.object = NULL
         {
             rownames(class.comp[[ijk]]) = rownames(X)
             colnames(class.comp[[ijk]]) = paste0("nrep.", 1:nrepeat)
-            dimnames(class.comp[[ijk]])[[3]] = paste0("test.keepX.",test.keepX)
+            dimnames(class.comp[[ijk]])[[3]] = paste0("test.keepX.",names(test.keepX))
             
             error = apply(class.comp[[ijk]],c(3,2),function(x)
             {
                 conf = get.confusion_matrix(Y.learn = factor(Y),Y.test = factor(Y),pred = x)
                 get.BER(conf)
             })
-            rownames(error) = test.keepX
+            rownames(error) = names(test.keepX)
             colnames(error) = paste0("nrep.",1:nrepeat)
             
             # average BER over the nrepeat
@@ -362,10 +408,13 @@ class.object = NULL
             rownames(error.per.class.keepX.opt.comp[[ijk]]) = levels(Y)
             colnames(error.per.class.keepX.opt.comp[[ijk]]) = paste0("nrep.", 1:nrepeat)
             
-            
             test.keepX.out[[ijk]] = test.keepX[keepX.opt[[ijk]]]
-            choice.keepX.out[[ijk]] = c(choice.keepX, test.keepX.out)
-            
+            if(is.null(choice.keepX))
+            {
+                choice.keepX.out[[ijk]] = c(lapply(choice.keepX.constraint,length), test.keepX.out)
+            }else{
+                choice.keepX.out[[ijk]] = c(choice.keepX, test.keepX.out)
+            }
             result$"BER"$error.rate.mean = error.mean
             if (!nrepeat ==  1)
             result$"BER"$error.rate.sd = error.sd
@@ -381,6 +430,8 @@ class.object = NULL
     
     
     result$prediction.comp = prediction.comp
+    result$auc = auc.mean.sd
+    result$auc.all = auc.all
     result$class.comp = class.comp
     result$features$stable = sort(table(as.factor(features))/M/nrepeat, decreasing = TRUE)
     return(result)
