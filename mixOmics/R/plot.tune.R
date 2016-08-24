@@ -47,15 +47,15 @@ function(object)
     
     if(measure == "overall")
     {
-         ylab = "error rate"
+         ylab = "Classification error rate"
     } else if (measure == "BER")
     {
-        ylab = "balanced error rate"
+        ylab = "Balanced error rate"
     }
    
 
     matplot(error, type = "l", axes = TRUE, lwd = 2, lty = 1, log = "x",
-    xlab = "number of selected genes", ylab = ylab,
+    xlab = "Number of selected genes", ylab = ylab,
     col = col.per.comp)
     
     for(i in 1:length(select.keepX))
