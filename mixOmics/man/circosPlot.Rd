@@ -11,10 +11,11 @@
 circosPlot(object,
 corThreshold,
 showIntraLinks = FALSE,
-line = TRUE,
-size.legend = 0.8,
-ncol.legend = 1,
-size.labels = 1)
+line=TRUE,
+size.legend=0.8,
+ncol.legend=1,
+size.variables = 0.25,
+size.labels=1)
 }
 
 \arguments{
@@ -24,6 +25,7 @@ size.labels = 1)
 \item{line}{if TRUE, shows the overall expression of the selected variables. see examples.}
 \item{size.legend}{size of the legend}
 \item{ncol.legend}{number of columns for the legend}
+\item{size.variables}{size of the variable labels}
 \item{size.labels}{size of the block labels}
 }
 
@@ -36,7 +38,7 @@ size.labels = 1)
 
 \references{
 Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
-DIABLO - multi omics integration for biomarker discovery.
+DIABLO - multi omics integration for biomarker discovery.  BioRxiv \url{http://dx.doi.org/10.1101/067611}
 }
 
 \author{Michale Vacher, Amrit Singh, Florian Rohart, Kim-Anh Le Cao}
