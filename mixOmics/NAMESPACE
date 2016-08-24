@@ -32,6 +32,7 @@ importFrom("tidyr","gather")
 importFrom("reshape2","melt","dcast")
 
 export(
+auc,
 block.pls,
 block.plsda,
 block.spls,
@@ -95,6 +96,12 @@ withinVariation,
 wrapper.rgcca,
 wrapper.sgcca,
 wrapper.sgccda)
+
+S3method(auc, plsda)
+S3method(auc, splsda)
+S3method(auc, sgccda)
+S3method(auc, mint.plsda)
+S3method(auc, mint.splsda)
 
 S3method(perf, pls)
 S3method(perf, spls)

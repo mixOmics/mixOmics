@@ -26,15 +26,15 @@
 
 
 plot.tune.splsda = #plot.spca <- plot.ipca <- plot.sipca <-
-function(object)
+function(x)
 {
     
-    error <- object$error.rate
-    select.keepX <- object$choice.keepX[colnames(error)]
-    first.keepX <- names(object$choice.keepX[1])
+    error <- x$error.rate
+    select.keepX <- x$choice.keepX[colnames(error)]
+    first.keepX <- names(x$choice.keepX[1])
     
     legend=NULL
-    measure = object$measure
+    measure = x$measure
     
     if (length(select.keepX) < 10)
     {
