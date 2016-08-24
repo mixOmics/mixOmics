@@ -809,4 +809,17 @@ display.names)
 }
 
 
+# --------------------------------------------------------------------------------------
+# Internal helpers functions to run some plots functions
+# --------------------------------------------------------------------------------------
 
+#-- Function to display an error message (used for the parameters var.names, cex, col, pch and font)
+stop.message = function(argument, data){
+    if (length(data) == 1) {
+        count.data = sapply(data, length)
+    } else {
+        count.data = paste(paste(sapply(data[-length(data)], length), collapse =  ", "), length(data[[length(data)]]), sep = " and ")
+    }
+    stop(argument, " must be either a vector of length ", length(data),
+    " or a list of ", length(data), " vector components of length ", count.data, " respectively.",call.= FALSE)
+}
