@@ -375,12 +375,15 @@ label.axes.box = "both"  )
     
     #-- pch argument
     missing.pch = FALSE
-    if (missing(pch)) {
+    if (missing(pch))
+    {
         missing.pch = TRUE
         if(style=="3d")
-        pch = unlist(lapply(1 : length(cord.X), function(x){rep(c("sphere", "tetra", "cube", "octa", "icosa", "dodeca")[x], sum(sapply(cord.X[x], nrow)))}))
-        else
-        pch = unlist(lapply(1 : length(cord.X), function(x){rep(c(1:20)[x], sum(sapply(cord.X[x], nrow)))}))
+        {
+            pch = unlist(lapply(1 : length(cord.X), function(x){rep(c("sphere", "tetra", "cube", "octa", "icosa", "dodeca")[x], sum(sapply(cord.X[x], nrow)))}))
+        } else {
+            pch = unlist(lapply(1 : length(cord.X), function(x){rep(c(1:20)[x], sum(sapply(cord.X[x], nrow)))}))
+        }
         
     } else if (((is.vector(pch, mode = "double") || is.vector(pch, mode = "integer")) && !(style=="3d"))
     || (is.vector(pch, mode = "character") && style=="3d")) {
@@ -529,6 +532,9 @@ label.axes.box = "both"  )
     
     df$pch = pch; df$cex = cex; df$col = col; df$font = font
     
+    if(missing.pch)
+    df$pch=1
+    
     if (cutoff != 0){
         if(style=="3d")
         df = df[abs(df$x) > cutoff | abs(df$y) > cutoff | abs(df$z) > cutoff, ,drop = FALSE]
@@ -539,12 +545,18 @@ label.axes.box = "both"  )
     
     if (nrow(df) == 0)
     stop("Cutoff value very high for the components ", comp1, " and ", comp2, ".No variable was selected.")
-    
+    save(list=ls(),file="temp.Rdata")
+
     if (overlap)
     {
-        df$Block = title
+        df$overlap = title
+        df$Block = factor(unlist(lapply(1 : length(cord.X), function(z){rep(blocks[z], nrow(cord.X[[z]]))})))
         if(style %in%c("ggplot2","lattice"))
         title=NULL # to avoid double title
+    } else {
+        df$overlap = df$Block
+        if(style %in%c("ggplot2","lattice"))
+        df$Block = factor(unlist(lapply(1 : length(cord.X), function(z){rep(blocks[z], nrow(cord.X[[z]]))})))
     }
     #-- End: data set
     
@@ -557,8 +569,12 @@ label.axes.box = "both"  )
         x = y = Circle = NULL
         
         #-- Initialise ggplot2
-        p = ggplot(df, aes(x = x, y = y), main = title, xlab = X.label, ylab = Y.label)+ theme_bw()
+        p = ggplot(df, aes(x = x, y = y, color = Block), main = title, xlab = X.label, ylab = Y.label)+ theme_bw()
         
+        for (i in levels(df$Block))
+        {
+            p = p + geom_point(data = subset(df, df$Block == i), size = 0, shape = 0)
+        }
         
         #-- Display sample or var.names
         for (i in 1 : length(var.names)){
@@ -577,14 +593,20 @@ label.axes.box = "both"  )
         }
         
         #-- Modify scale colour - Change X/Ylabel - split plots into Blocks
+        p = p + scale_colour_manual(values = unique(col)[match(levels(factor(as.character(df$Block))), levels(df$Block))], name = "Block", breaks = levels(df$Block))
         p = p + scale_x_continuous(limits = c(-1, 1)) + scale_y_continuous(limits = c(-1, 1))
-        p = p + labs(list(title = title, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = 2, as.table = TRUE)
+        p = p + labs(list(title = title, x = X.label, y = Y.label)) + facet_wrap(~ overlap, ncol = 2, as.table = TRUE)
         
-        #-- Remove Legend
-        # p = p + theme(legend.position="none")
-        p=p+theme(legend.position="right")
+        #-- Legend
+        if (!legend)
+        {
+            p = p + theme(legend.position="none")
+        } else {
+            p = p + guides(colour = guide_legend(override.aes = list(shape = 19, size = unique(df$cex))))
+        }
         
-        
+
+
         #-- abline
         if (abline)
         p = p + geom_vline(aes(xintercept = 0), linetype = 2, colour = "darkgrey") + geom_hline(aes(yintercept = 0),linetype = 2,colour = "darkgrey")
@@ -602,12 +624,12 @@ label.axes.box = "both"  )
     #-- Start: Lattice
     if(style == "lattice" )
     {
-        legend.lattice = list(space = "right", title = "Legend", cex.title = 1.25,
-        points=list(col=unique(col),cex = unique(cex),pch = unique(pch)),
+        legend.lattice = list(space = "right", title = "Block", cex.title = 1.25,
+        points=list(col=unique(df$col),cex = unique(df$cex),pch = unique(df$pch)),
         text = list(blocks))
         
         if (overlap) {
-            p = xyplot(y ~ x | Block, data = df, xlab = X.label, ylab = Y.label, main = title,
+            p = xyplot(y ~ x | overlap, data = df, xlab = X.label, ylab = Y.label, main = title,
             scales = list(x = list(relation = "free", limits = c(-1, 1)),
             y = list(relation = "free", limits = c(-1, 1))),
             key=if (legend) {legend.lattice} else {NULL},
@@ -724,10 +746,10 @@ label.axes.box = "both"  )
             if (legend)
             legend(x = 1.09, y=0.2,
             legend = blocks,
-            title="Legend",
-            col = unique(col),
-            pch = unique(pch),
-            pt.cex = unique(cex),
+            title="Block",
+            col = unique(df$col),
+            pch = unique(df$pch),
+            pt.cex = unique(df$cex),
             bty = "n")
             
             #-- Abline
@@ -796,10 +818,10 @@ label.axes.box = "both"  )
             if (legend)
             legend("center",
             legend = blocks,
-            title="Legend",
-            col = unique(col),
-            pch = unique(pch),
-            cex = unique(cex),
+            title="Block",
+            col = unique(df$col),
+            pch = unique(df$pch),
+            cex = unique(df$cex),
             bty = "n")
             
             par(opar)

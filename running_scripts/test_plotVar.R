@@ -190,8 +190,9 @@ if(additional.test==TRUE)
     
     #test overlap
     plotVar(toxicity.spls,overlap = F)
-    
-    
+    plotVar(toxicity.spls,overlap = F, legend=TRUE)
+
+
     # test legend ######
     plotVar(toxicity.spls,legend=FALSE)
     plotVar(toxicity.spls,legend=TRUE)
@@ -347,6 +348,7 @@ if(additional.test==TRUE)
     
     
     plotVar(toxicity.spls,overlap = FALSE, style = "lattice")
+    plotVar(toxicity.spls,overlap = FALSE, style = "lattice", legend=TRUE)
     
     # test legend
     plotVar(toxicity.spls,legend=FALSE, style = "lattice")
@@ -451,7 +453,8 @@ if(additional.test==TRUE)
     plotVar(toxicity.spls,rad.in=1, style = "graphics")
     
     plotVar(toxicity.spls,overlap = FALSE, style = "graphics")
-    
+    plotVar(toxicity.spls,overlap = FALSE, style = "graphics", legend=TRUE)
+
     # test legend
     plotVar(toxicity.spls,legend=FALSE, style = "graphics")
     plotVar(toxicity.spls,legend=TRUE, style = "graphics")
