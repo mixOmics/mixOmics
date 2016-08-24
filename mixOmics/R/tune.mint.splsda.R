@@ -122,9 +122,15 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     } else {
         if(constraint == TRUE)
         {
-            cat("A total of ",lapply(already.tested.X,length),"specific variables ('already.tested.X') were selected on the first ", length(already.tested.X), "component(s)\n")
+            if(!is.list(already.tested.X))
+            stop("''already.tested.X' must be a list since 'constraint' is set to TRUE")
+            
+            print(paste("A total of",paste(lapply(already.tested.X,length),collapse=" "),"specific variables ('already.tested.X') were selected on the first ", length(already.tested.X), "component(s)"))
         } else {
-            cat("Number of variables selected on the first ", length(already.tested.X), "component(s) was ", already.tested.X,"\n")
+            if(is.list(already.tested.X))
+            stop("''already.tested.X' must be a vector of keepX values since 'constraint' is set to FALSE")
+            
+            print(paste("Number of variables selected on the first", length(already.tested.X), "component(s) was", paste(already.tested.X,collapse = " ")))
         }
     }
     if(length(already.tested.X) >= ncomp)
