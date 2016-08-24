@@ -535,17 +535,6 @@ label.axes.box = "both"  )
     if(missing.pch)
     df$pch=1
     
-    if (cutoff != 0){
-        if(style=="3d")
-        df = df[abs(df$x) > cutoff | abs(df$y) > cutoff | abs(df$z) > cutoff, ,drop = FALSE]
-        else
-        df = df[abs(df$x) > cutoff | abs(df$y) > cutoff, ,drop = FALSE]
-        ind.group = c(0, cumsum(table(df$Block)))
-    }
-    
-    if (nrow(df) == 0)
-    stop("Cutoff value very high for the components ", comp1, " and ", comp2, ".No variable was selected.")
-
     if (overlap)
     {
         df$overlap = title
@@ -557,6 +546,19 @@ label.axes.box = "both"  )
         if(style %in%c("ggplot2","lattice"))
         df$Block = factor(unlist(lapply(1 : length(cord.X), function(z){rep(blocks[z], nrow(cord.X[[z]]))})))
     }
+    
+    if (cutoff != 0){
+        if(style=="3d")
+        df = df[abs(df$x) > cutoff | abs(df$y) > cutoff | abs(df$z) > cutoff, ,drop = FALSE]
+        else
+        df = df[abs(df$x) > cutoff | abs(df$y) > cutoff, ,drop = FALSE]
+        ind.group = c(0, cumsum(table(df$Block)))
+    }
+    
+    if (nrow(df) == 0)
+    stop("Cutoff value very high for the components ", comp1, " and ", comp2, ".No variable was selected.")
+
+
     #-- End: data set
     
     #-- Start: ggplot2
