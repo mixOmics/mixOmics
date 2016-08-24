@@ -150,6 +150,9 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             already.tested.X = NULL
         }
     } else {
+        if(is.null(already.tested.X) | length(already.tested.X)==0)
+        stop("''already.tested.X' must be a vector of keepX values (if 'constraint'= FALSE) or a list (if'constraint'= TRUE) ")
+
         if(constraint == TRUE)
         {
             if(!is.list(already.tested.X))

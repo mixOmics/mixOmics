@@ -112,6 +112,7 @@ S3method(plot, perf)
 S3method(plot, rcc)
 S3method(plot, pca)
 S3method(plot, sgccda)
+S3method(plot, tune.splsda)
 
 
 S3method(plotIndiv, pls)

@@ -503,16 +503,7 @@ progressBar = TRUE,
         
         if(constraint)
         {
-            if(comp > 1)
-            {
-                choice.keepX = keepX[1 : (comp - 1)]
-            } else {
-                choice.keepX = NULL
-            }
-            test.keepX = keepX[comp]
-            names(test.keepX) = test.keepX
-            #test.keepX is a value
-        } else {
+            
             if(comp > 1)
             {
                 choice.keepX.constraint = keepX.constraint[1 : (comp - 1)]
@@ -522,6 +513,16 @@ progressBar = TRUE,
             test.keepX = keepX.constraint[comp]
             names(test.keepX) = test.keepX
             #test.keepX is a vector a variables to keep on comp 'comp'
+        } else {
+            if(comp > 1)
+            {
+                choice.keepX = keepX[1 : (comp - 1)]
+            } else {
+                choice.keepX = NULL
+            }
+            test.keepX = keepX[comp]
+            names(test.keepX) = test.keepX
+            #test.keepX is a value
         }
         
         # estimate performance of the model for each component

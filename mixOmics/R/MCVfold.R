@@ -295,18 +295,25 @@ class.object = NULL
     names(prediction.comp) = names (auc.all) = paste0("nrep.", 1:nrepeat)
     # class.comp[[ijk]] is a matrix containing all prediction for test.keepX, all nrepeat and all distance, at comp fixed
     
+    save(list=ls(),file="temp.Rdata")
     # average auc over the nrepeat, for each test.keepX
-    auc.mean.sd =  array(0, c(nlevels(Y),2, length(test.keepX)), dimnames = list(rownames(auc.all[[1]]), c("AUC.mean","AUC.sd"), names(test.keepX)))
-    
-    for(i in 1:length(test.keepX))
+    if(auc)
     {
-        temp = NULL
-        for(nrep in 1:nrepeat)
+        auc.mean.sd =  array(0, c(nlevels(Y),2, length(test.keepX)), dimnames = list(rownames(auc.all[[1]]), c("AUC.mean","AUC.sd"), names(test.keepX)))
+        
+        for(i in 1:length(test.keepX))
         {
-            temp = cbind(temp, auc.all[[nrep]][, 1, i])
+            temp = NULL
+            for(nrep in 1:nrepeat)
+            {
+                temp = cbind(temp, auc.all[[nrep]][, 1, i])
+            }
+            auc.mean.sd[, 1, i] = apply(temp,1,mean)
+            auc.mean.sd[, 2, i] = apply(temp,1,sd)
         }
-        auc.mean.sd[, 1, i] = apply(temp,1,mean)
-        auc.mean.sd[, 2, i] = apply(temp,1,sd)
+    } else {
+        auc.mean.sd = auc.all = NULL
+        
     }
     
     result = list()
