@@ -6,7 +6,7 @@
 #   Kim-Anh Le Cao, University of Queensland Diamantina Institute, Brisbane, Australia
 #
 # created: 2015
-# last modified: 12-04-2016
+# last modified: 24-08-2016
 #
 # Copyright (C) 2015
 #
@@ -27,7 +27,8 @@
 
 
 circosPlot = function(object,
-corThreshold,
+cutoff,
+var.names = NULL,
 showIntraLinks = FALSE,
 line=TRUE,
 size.legend=0.8,
@@ -61,8 +62,8 @@ size.labels=1)
     if (length(object$X) <= 1)
     stop("This function is only available when there are more than 3 blocks") # so 2 blocks in X + the outcome Y
     
-    if (missing(corThreshold))
-    stop("'corThreshold' is missing", call.=FALSE) # so 2 blocks in X + the outcome Y
+    if (missing(cutoff))
+    stop("'cutoff' is missing", call.=FALSE) # so 2 blocks in X + the outcome Y
 
 
     X = object$X
@@ -73,6 +74,26 @@ size.labels=1)
     object$variates = c(object$variates[-indY], object$variates[indY])
     object$loadings = c(object$loadings[-indY], object$loadings[indY])
     
+    #check var.names
+    sample.X = lapply(object$loadings[-length(object$loadings)], function(x){1 : nrow(x)})
+    if (is.null(var.names))
+    {
+        var.names.list = unlist(sapply(object$loadings[-length(object$loadings)], rownames))
+    } else if (is.list(var.names)) {
+        if (length(var.names) != length(object$loadings[-length(object$loadings)]))
+        stop.message('var.names', sample.X)
+        
+        if(sum(sapply(1 : length(var.names), function(x){
+            length(var.names[[x]]) == length(sample.X[[x]])})) != length(var.names))
+        stop.message('var.names', sample.X)
+        
+        var.names.list = var.names
+    } else {
+        stop.message('var.names', sample.X)
+    }
+
+
+
     if (min(object$ncomp) != max(object$ncomp))
     warning("unequal number of component per block: we use the minimum")
     ncomp.min = min(object$ncomp)
@@ -106,12 +127,14 @@ size.labels=1)
     #   corMat: the main correlation matrix.
     #         -> colnames == rownames (pairwise)  values = correlations
     #   featExp: data.frame holding the expression data.
-    #   corThreshold: minimum value for correlations (<threshold will be ignored)
+    #   cutoff: minimum value for correlations (<threshold will be ignored)
     #   figSize: figure size
     #   segmentWidth: thickness of the segment (main circle)
     #   linePlotWidth: thickness of the line plot (showing expression data)
     #   showIntraLinks = display links intra segments
     
+    
+
     # 1) Generate karyotype data
     chr = genChr(featExp)
     chr.names = unique(chr$chrom) # paste("chr", 1:seg.num, sep="") 
@@ -120,7 +143,7 @@ size.labels=1)
     db = data.frame(db)
     
     # 2) Generate Links
-    links = genLinks(chr, corMat, threshold=corThreshold)
+    links = genLinks(chr, corMat, threshold=cutoff)
     if (nrow(links) < 1)
     stop("Choose a lower correlation threshold")
     
@@ -130,6 +153,11 @@ size.labels=1)
     linksR = circleR - segmentWidth
     linePlotR = circleR + segmentWidth
     chrLabelsR = (figSize / 2.0)
+    
+    # replace chr$name by the ones in var.names (matching)
+    # matching var.names.list with object$loadings
+    ind.match = match(chr$name, unlist(sapply(object$loadings[-length(object$loadings)],rownames)))
+    chr$name.user = unlist(var.names.list)[ind.match]
     
     opar1=par("mar")
     par(mar=c(2, 2, 2, 2))
@@ -181,7 +209,7 @@ size.labels=1)
     legend(x=figSize-(circleR/3), y = (circleR/3), title="Expression", legend=levels(Y),  ## changed PAM50 to Y
     col = lineCols, pch = 19, cex=size.legend, bty = "n",ncol=ncol.legend)
     # third legend top left corner
-    legend(x=figSize-(circleR/2), y = figSize, title="Correlation cut-off", legend=paste("r", corThreshold, sep = "="),
+    legend(x=figSize-(circleR/2), y = figSize, title="Correlation cut-off", legend=paste("r", cutoff, sep = "="),
     col = "black", cex=size.legend, bty = "n")
     
     par(xpd=opar,mar=opar1)# put the previous defaut parameter for xpd
@@ -227,7 +255,7 @@ size.labels)
             draw.arc.s(xc, yc, R, w1, w2, col=col, lwd=W) 
             
             if (show.band.labels){
-                band.text = as.character(dat.v[i,4]) 
+                band.text = as.character(dat.v[i,"name.user"]) 
                 
                 band.po = ((w1+w2)/2)# - ((w2-w1)/3) #position around the circle
                 # print(c(band.po, w1, w2, (w2-w1)/3))

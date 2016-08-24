@@ -8,7 +8,7 @@
 
 #
 # created: 2009
-# last modified: 12-04-2016
+# last modified: 24-08-2016
 #
 # Copyright (C) 2009
 #
@@ -175,6 +175,7 @@ plot_parameters)
     size.axis = plot_parameters$size.axis
     size.legend = plot_parameters$size.legend
     size.legend.title = plot_parameters$size.legend.title
+    legend.title = plot_parameters$legend.title
     legend.position = plot_parameters$legend.position
     point.lwd = plot_parameters$point.lwd
     
@@ -202,6 +203,9 @@ plot_parameters)
     if (length(legend.position)>1 || !legend.position%in%c("bottom", "left", "right", "top"))
     stop('"legend.position" needs to be one of "bottom", "left", "right" or "top"')
     
+    if (length(legend.title)>1)
+    stop("'legend.title' needs to be a single value (length 1)")
+
     if (!is.numeric(point.lwd) || length(point.lwd)>1 || point.lwd<0)
     stop("'point.lwd' needs to be a non negative number")
     
@@ -805,4 +809,17 @@ display.names)
 }
 
 
+# --------------------------------------------------------------------------------------
+# Internal helpers functions to run some plots functions
+# --------------------------------------------------------------------------------------
 
+#-- Function to display an error message (used for the parameters var.names, cex, col, pch and font)
+stop.message = function(argument, data){
+    if (length(data) == 1) {
+        count.data = sapply(data, length)
+    } else {
+        count.data = paste(paste(sapply(data[-length(data)], length), collapse =  ", "), length(data[[length(data)]]), sep = " and ")
+    }
+    stop(argument, " must be either a vector of length ", length(data),
+    " or a list of ", length(data), " vector components of length ", count.data, " respectively.",call.= FALSE)
+}

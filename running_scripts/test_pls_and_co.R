@@ -94,7 +94,8 @@ plotLoadings(res)
 plotLoadings(res, contrib = "min")
 plotLoadings(res, contrib = "max")
 
-tune= tune.splsda(X,Y,ncomp=1,nrepeat=5,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist",already.tested.X=NULL)
+tune= tune.splsda(X,Y,ncomp=2,nrepeat=5,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist")
+
 
 # individual names appear
 plotIndiv(res, ind.names = Y, add.legend = TRUE, ellipse =TRUE)

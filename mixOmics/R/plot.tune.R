@@ -4,8 +4,8 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #   Leigh Coonan, Queensland Faculty for Advanced Bioinformatics, Australia
 #
-# created: 2010
-# last modified: 19-04-2016
+# created: 20-08-2016
+# last modified: 24-08-2016
 #
 # Copyright (C) 2010
 #
@@ -25,50 +25,55 @@
 #############################################################################################################
 
 
-plot.tune.splsda = plot.tune.mint.splsda  = #plot.spca <- plot.ipca <- plot.sipca <-
-function(   x,
-            ncomp = min(10, length(x$sdev)),
-            type = "barplot", # either barplot or any other type available in plot, as "l","b","p",..
-            explained.var=TRUE,
-            ...)
+plot.tune.splsda = #plot.spca <- plot.ipca <- plot.sipca <-
+function(object)
 {
     
-    #-- checking general input parameters --------------------------------------#
-    #---------------------------------------------------------------------------#
+    error <- object$error.rate
+    select.keepX <- object$choice.keepX[colnames(error)]
+    first.keepX <- names(object$choice.keepX[1])
     
-    #-- ncomp
-    if (is.null(ncomp) || !is.numeric(ncomp) || ncomp < 1 || !is.finite(ncomp))
-    stop("invalid value for 'ncomp'.", call. = FALSE)
+    legend=NULL
+    measure = object$measure
     
-    ncomp = round(ncomp)
-    
-    if (ncomp > length(x$sdev))
-    stop("'ncomp' must be lower or equal than ", length(x$sdev), ".",
-    call. = FALSE)
-    
-    #-- end checking --#
-    #------------------#
-    
-    #-- scree plot -------------------------------------------------------------#
-    #---------------------------------------------------------------------------#
-    
-    variances = (x$sdev^2)[1:ncomp] # relative variance
-    ylab = "Variance"
-    if(explained.var==TRUE)
+    if (length(select.keepX) < 10)
     {
-        variances=variances/x$var.tot #explained variances
-        ylab = "Explained Variance"
-    }
-    if (type == "barplot")
-    {
-        barplot(variances, names.arg = seq(1, ncomp), xlab = "Principal Components", ylab = ylab,...)
+        #only 10 colors in color.mixo
+        col.per.comp = color.mixo(1:length(select.keepX))
     } else {
-        plot(variances, type = type, axes = FALSE,
-        xlab = "Principal Components",
-        ylab = ylab,... )
-        axis(1, at = 1:ncomp)
-        axis(2)
+        #use color.jet
+        col.per.comp = color.jet(length(select.keepX))
     }
+    
+    if(measure == "overall")
+    {
+         ylab = "Classification error rate"
+    } else if (measure == "BER")
+    {
+        ylab = "Balanced error rate"
+    }
+   
+
+    matplot(error, type = "l", axes = TRUE, lwd = 2, lty = 1, log = "x",
+    xlab = "Number of selected genes", ylab = ylab,
+    col = col.per.comp)
+    
+    for(i in 1:length(select.keepX))
+    {
+        # store coordinates of chosen keepX
+        index = which(rownames(error) == select.keepX[i])
+        
+        # choseen keepX:
+        points(index, error[index,i], col = col.per.comp[i], lwd=2, cex=1.5)
+        if(names(select.keepX[i])==first.keepX)
+        legend=first.keepX
+        else
+        legend=c(legend,paste(first.keepX," to ",names(select.keepX[i])))
+    }
+    #axis(1, c(1:length(rownames(error))),labels=rownames(error))
+    #axis(2)
+    legend("topright", lty = 1, lwd = 2, horiz = FALSE, col = col.per.comp,
+    legend = legend)
     
 }
 

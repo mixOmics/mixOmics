@@ -38,8 +38,9 @@ ncomp,
 study, # mint.splsda
 test.keepX = c(5, 10, 15), # all but pca, rcc
 test.keepY = NULL, # rcc, multilevel
-already.tested.X = NULL, # all but pca, rcc
-already.tested.Y = NULL, #multilevel
+already.tested.X, # all but pca, rcc
+already.tested.Y, #multilevel
+constraint,
 mode = "regression", # multilevel
 nrepeat = 1, #multilevel, splsda
 grid1 = seq(0.001, 1, length = 5), # rcc
@@ -66,11 +67,14 @@ light.output = TRUE # mint, splsda
 
         if (missing(ncomp))
         ncomp = 1
+        if(missing(constraint))
+        constraint = TRUE
         result = tune.mint.splsda(X = X, Y = Y,
         ncomp = ncomp,
         study = study,
         test.keepX = test.keepX,
         already.tested.X = already.tested.X,
+        constraint = constraint,
         dist = dist,
         measure = measure,
         progressBar = progressBar,
@@ -112,11 +116,13 @@ light.output = TRUE # mint, splsda
 
             if (missing(ncomp))
             ncomp = 1
-
+            if(missing(constraint))
+            constraint = FALSE
             result = tune.splsda (X = X, Y = Y,
             ncomp = ncomp,
             test.keepX = test.keepX,
             already.tested.X = already.tested.X,
+            constraint = constraint,
             validation = validation,
             folds = folds,
             dist = dist ,
@@ -134,7 +140,8 @@ light.output = TRUE # mint, splsda
             result = tune.multilevel(X = X,
             multilevel = multilevel,
             ncomp = ncomp, test.keepX = test.keepX, dist = dist,
-            already.tested.X = already.tested.X, validation = validation, folds = folds,
+            already.tested.X = already.tested.X,
+            constraint = constraint, validation = validation, folds = folds,
             measure = measure, progressBar = progressBar, near.zero.var = near.zero.var,
             logratio = logratio, nrepeat = nrepeat)
         }
@@ -145,7 +152,8 @@ light.output = TRUE # mint, splsda
 
         if (missing(ncomp))
         ncomp = 1
-
+        if (missing(already.tested.Y))
+        already.tested.Y = NULL
         result = tune.multilevel(X = X, Y = Y,
         multilevel = multilevel,
         mode = mode,

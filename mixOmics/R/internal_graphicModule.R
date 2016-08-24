@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 16-03-2016
-# last modified: 08-07-2016
+# last modified: 24-08-2016
 #
 # Copyright (C) 2016
 #
@@ -81,6 +81,7 @@ alpha)
     size.axis = plot_parameters$size.axis
     size.legend = plot_parameters$size.legend
     size.legend.title = plot_parameters$size.legend.title
+    legend.title = plot_parameters$legend.title
     legend.position = plot_parameters$legend.position
     point.lwd = plot_parameters$point.lwd
     
@@ -122,7 +123,7 @@ alpha)
         
         
         #-- Modify scale colour - Change X/Ylabel - split plots into Blocks
-        p = p + scale_colour_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = "Legend", breaks = levels(df$group))
+        p = p + scale_colour_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = legend.title, breaks = levels(df$group))
         
         p = p + labs(list(title = title, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = nCols, scales = "free", as.table = TRUE) #as.table to plot in the same order as the factor
         p = p + theme(plot.title=element_text(size=size.title),axis.title.x=element_text(size=size.xlabel),axis.title.y=element_text(size=size.ylabel),axis.text=element_text(size=size.axis))# bigger title
@@ -235,7 +236,7 @@ alpha)
         }
         
         #-- Modify scale colour - Change X/Ylabel - split plots into Blocks
-        p = p + scale_colour_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = "Outcome", breaks = levels(df$group)) +
+        p = p + scale_colour_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = legend.title, breaks = levels(df$group)) +
             labs(shape = "Study")#levels(object$study)[study.ind])
 
         p = p + scale_shape_manual(values = as.numeric(levels(factor(df$pch)))) # replace the shape/pch by the input, it's converted by default to 1,2,3.. by ggplots
@@ -316,7 +317,7 @@ alpha)
         {
             if (!any(class.object%in%object.mint))
             {
-                list(space = legend.position, title = "Legend", cex.title = size.legend.title,
+                list(space = legend.position, title = legend.title, cex.title = size.legend.title,
                 point = list(col =  col.per.group),cex=size.legend, pch = if(display.names | any(class.object%in%object.mint)) {16} else unique(df$pch.legend),text = list(levels(df$group)))
             } else {#we add the shape legend
                 list(space = legend.position, cex.title = size.legend.title,
@@ -324,7 +325,7 @@ alpha)
                 col =  c(NA, col.per.group, NA, NA, rep("black", length(study.levels)))),
                 cex = c(size.legend.title, rep(size.legend, length(col.per.group)), size.legend, size.legend.title, rep(size.legend,nlevels(factor(df$pch)))),
                 pch = c(NA, rep(16, length(col.per.group)), NA, NA, as.numeric(levels(factor(df$pch)))),
-                text = list(outcome = c("Outcome", levels(df$group), "", "Study", study.levels))
+                text = list(outcome = c(legend.title, levels(df$group), "", "Study", study.levels))
                 )
             }
         } else {
@@ -564,7 +565,7 @@ alpha)
             
             if (legend)
             {
-                legend(par()$usr[2]+0.1, par()$usr[4] - (par()$usr[4]-par()$usr[3])/2, col = col.per.group, legend = levels(df$group), pch = if(display.names) {16} else unique(df$pch.legend), title = 'Legend', cex = size.legend, lty = 0,lwd = point.lwd)
+                legend(par()$usr[2]+0.1, par()$usr[4] - (par()$usr[4]-par()$usr[3])/2, col = col.per.group, legend = levels(df$group), pch = if(display.names) {16} else unique(df$pch.legend), title = legend.title, cex = size.legend, lty = 0,lwd = point.lwd)
                 
             }
             if (legend)

@@ -67,6 +67,11 @@ group = liver.toxicity$treatment[, 'Time.Group'],
 ind.names = liver.toxicity$treatment[, 'Dose.Group'],
 legend = TRUE)
 
+plotIndiv(toxicity.spls, rep.space= 'Y-variate',
+group = liver.toxicity$treatment[, 'Time.Group'],
+ind.names = liver.toxicity$treatment[, 'Dose.Group'],
+legend = TRUE,legend.title="Super!")
+
 
 # in the X space, with graphics style
 plotIndiv(toxicity.spls, rep.space= 'X-variate',

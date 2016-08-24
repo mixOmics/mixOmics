@@ -1,7 +1,7 @@
 ---
 title: "mixOmics 6.0.1"
 author: "F.Rohart"
-date: "12 July 2016"
+date: "24 August 2016"
 output: pdf_document
 ---
 ```{r global_options, include=TRUE,echo=TRUE}
@@ -84,7 +84,7 @@ if(length(ind.error)>0)
       cat(scripts.files[i],"\n")
     
   }
-  cat("\n\n the best way forward is to source a script and traceback() to get the line that broke the code\n")
+  cat("\n\n the best way forward is to source each faulty script and traceback() to get the line that broke the code\n")
 }else{
   
   cat("\n\n NO ERROR found! Good luck on CRAN \n\n")

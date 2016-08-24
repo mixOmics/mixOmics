@@ -33,15 +33,15 @@ plotLoadings(nutrimouse.sgccda)
 plotLoadings(nutrimouse.sgccda,contrib="max")
 
 par(mfrow=c(1,1))
-circosPlot(nutrimouse.sgccda,corThreshold=0.7,ncol=2,size.legend=1.1)
+circosPlot(nutrimouse.sgccda,cutoff=0.7,ncol=2,size.legend=1.1)
 
-circosPlot(nutrimouse.sgccda,corThreshold=0.7,ncol=2,size.legend=1.1,size.labels=2)
+circosPlot(nutrimouse.sgccda,cutoff=0.7,ncol=2,size.legend=1.1,size.labels=2)
 
 #compatibility with par(mfrow)
 par(mfrow=c(2,2))
-circosPlot(nutrimouse.sgccda,corThreshold=0.6,ncol=1,size.legend=0.6)
-circosPlot(nutrimouse.sgccda,corThreshold=0.7,ncol=1,size.legend=0.6)
-circosPlot(nutrimouse.sgccda,corThreshold=0.8,ncol=1,size.legend=0.6,showIntraLinks=TRUE)
+circosPlot(nutrimouse.sgccda,cutoff=0.6,ncol=1,size.legend=0.6)
+circosPlot(nutrimouse.sgccda,cutoff=0.7,ncol=1,size.legend=0.6)
+circosPlot(nutrimouse.sgccda,cutoff=0.8,ncol=1,size.legend=0.6,showIntraLinks=TRUE)
 plot(1:10)
 
 plotIndiv(nutrimouse.sgccda,style="graphics",add.legend=FALSE,layout=c(2,2)) # Amrit function
