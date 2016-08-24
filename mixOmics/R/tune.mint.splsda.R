@@ -286,6 +286,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         result$predict = prediction.all
         result$class = class.all
     }
+    result$measure = measure
     result$call = match.call()
 
     class(result) = c("tune.mint.splsda","tune.splsda")

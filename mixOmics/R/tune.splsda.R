@@ -346,6 +346,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
                 result$auc.all =auc.all
             }
         }
+        result$measure = measure
         result$call = match.call()
 
         class(result) = "tune.splsda"

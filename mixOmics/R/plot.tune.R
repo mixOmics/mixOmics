@@ -34,10 +34,29 @@ function(object)
     first.keepX <- names(object$choice.keepX[1])
     
     legend=NULL
+    measure = object$measure
     
-    matplot(error, type = "l", axes = FALSE, lwd = 2, lty = 1,
-    xlab = "number of selected genes", ylab = "error rate",
-    col = 1:length(select.keepX)    )
+    if (length(select.keepX) < 10)
+    {
+        #only 10 colors in color.mixo
+        col.per.comp = color.mixo(1:length(select.keepX))
+    } else {
+        #use color.jet
+        col.per.comp = color.jet(length(select.keepX))
+    }
+    
+    if(measure == "overall")
+    {
+         ylab = "error rate"
+    } else if (measure == "BER")
+    {
+        ylab = "balanced error rate"
+    }
+   
+
+    matplot(error, type = "l", axes = TRUE, lwd = 2, lty = 1, log = "x",
+    xlab = "number of selected genes", ylab = ylab,
+    col = col.per.comp)
     
     for(i in 1:length(select.keepX))
     {
@@ -45,15 +64,15 @@ function(object)
         index = which(rownames(error) == select.keepX[i])
         
         # choseen keepX:
-        points(index, error[index,i], col = i, lwd=2, cex=1.5)
+        points(index, error[index,i], col = col.per.comp[i], lwd=2, cex=1.5)
         if(names(select.keepX[i])==first.keepX)
         legend=first.keepX
         else
         legend=c(legend,paste(first.keepX," to ",names(select.keepX[i])))
     }
-    axis(1, c(1:length(rownames(error))),labels=rownames(error))
-    axis(2)
-    legend("topright", lty = 1, lwd = 2, horiz = FALSE, col = 1:length(select.keepX),
+    #axis(1, c(1:length(rownames(error))),labels=rownames(error))
+    #axis(2)
+    legend("topright", lty = 1, lwd = 2, horiz = FALSE, col = col.per.comp,
     legend = legend)
     
 }
