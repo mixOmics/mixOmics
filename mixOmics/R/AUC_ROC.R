@@ -45,7 +45,7 @@ roc.comp = 1,
     
     data=list()
     statauc=list()
-    data$outcome=factor(as.factor(outcome.test))
+    data$outcome=factor(outcome.test)
     
     # note here: the dist does not matter as we used the predicted scores only
     res.predict  =  predict(object, newdata = newdata, dist = "max.dist", multilevel = multilevel)$predict
@@ -78,11 +78,11 @@ roc.comp = 1,
     
     if(dim(newdata)[[1]]!=length(study.test))
     stop("Factor study.test must be a factor with ",dim(newdata)[[1]], " elements.",call. = FALSE)
-    study.test=factor(as.factor(study.test))
+    study.test=factor(study.test)
     
     data=list()
     statauc=list()
-    data$outcome=factor(as.factor(outcome.test))
+    data$outcome=factor(outcome.test)
     
     # note here: the dist does not matter as we used the predicted scores only
     res.predict  =  predict(object, newdata = newdata, dist = "max.dist", multilevel = multilevel, study.test = study.test)$predict
@@ -112,7 +112,7 @@ roc.comp = 1,
     
     data=list()
     auc.mean=list()
-    data$outcome=factor(as.factor(outcome.test))
+    data$outcome=factor(outcome.test)
 
     # note here: the dist does not matter as we used the predicted scores only
     res.predict  =  predict(object, newdata = newdata, dist = "max.dist", multilevel = multilevel)$predict
@@ -151,8 +151,8 @@ auroc.mint.block.splsda=auroc.mint.block.plsda = function(
   
   data=list()
   auc.mean=list()
-  data$outcome=factor(as.factor(outcome.test))
-  study.test=factor(as.factor(study.test))
+  data$outcome=factor(outcome.test)
+  study.test=factor(study.test)
   
   # note here: the dist does not matter as we used the predicted scores only
   res.predict  =  predict(object, newdata = newdata, study.test=study.test,dist = "max.dist", multilevel = multilevel)$predict
