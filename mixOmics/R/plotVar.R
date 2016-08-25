@@ -553,6 +553,7 @@ label.axes.box = "both"  )
     #-- Start: ggplot2
     if (style == "ggplot2" &  plot)
     {
+        Block = NULL# R check
         # visible variable issues for x, y and Circle
         # according to http://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when
         # one hack is to set to NULL first.

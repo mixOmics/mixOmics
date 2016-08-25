@@ -1,6 +1,7 @@
 \encoding{latin1}
-\name{tune.splsda}
-\alias{{tune.splsda}}
+\name{plot.tune.splsda}
+\alias{plot.tune.splsda}
+\alias{plot.tune}
 
 \title{Plot for model performance}
 

@@ -13,8 +13,9 @@ grid to determine optimal values for the sparsity parameters in \code{splsda}.
 \usage{
 tune.splsda(X, Y, ncomp = 1,
 test.keepX = c(5, 10, 15), already.tested.X, constraint = FALSE, validation = "Mfold",
-folds = 10, dist = "max.dist", measure = "BER", auc = FALSE, progressBar = TRUE, near.zero.var = FALSE,
-nrepeat = 1, logratio = c('none','CLR'), multilevel = NULL, light.output = TRUE)
+folds = 10, dist = "max.dist", measure = "BER", auc = FALSE,
+progressBar = TRUE, near.zero.var = FALSE, nrepeat = 1,
+logratio = c('none','CLR'), multilevel = NULL, light.output = TRUE)
 
 }	
 
