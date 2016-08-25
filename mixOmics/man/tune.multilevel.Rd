@@ -37,7 +37,7 @@ light.output = TRUE)
 \arguments{
 \item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
 \item{Y}{\code{if(method = 'spls')} numeric vector or matrix of continuous responses (for multi-response models) \code{NA}s are allowed.}
-\item{multilevel}{a numeric matrix that indicates the repeated measures on each individual, i.e. the individuals ID. Fr a two factors decomposition, the two factors are added in the 2nd and 3rd column (see example)}
+\item{multilevel}{Design matrix for multilevel analysis (for repeated measurements). A numeric matrix or data frame. For a one level factor decomposition, the input is a vector indicating the repeated measures on each individual, i.e. the individuals ID. For a two level decomposition with splsda models, the two factors are included in Y. Finally for a two level decomposition with spls models, 2nd AND 3rd columns in design indicate those factors (see example in \code{?splsda} and \code{?spls}).}
 \item{ncomp}{the number of components to include in the model.}
 \item{test.keepX}{numeric vector for the different number of variables to test from the \eqn{X} data set}
 \item{test.keepY}{If \code{method = 'spls'}, numeric vector for the different number of variables to test from the \eqn{Y} data set}
