@@ -28,11 +28,13 @@
 auroc = function(object, ...)
 UseMethod("auroc")
 
+
+# PLSDA object
+# ----------------------
 auroc.plsda = auroc.splsda = function(
 object,
 newdata = object$X,
 outcome.test = as.factor(object$Y),
-dist = "max.dist",
 multilevel = NULL,
 plot = TRUE,
 roc.comp = 1,
@@ -45,7 +47,8 @@ roc.comp = 1,
     statauc=list()
     data$outcome=as.factor(outcome.test)
     
-    res.predict  =  predict(object, newdata = newdata, dist = dist, multilevel = multilevel)$predict
+    # not here: the dist does not matter as we used the predicted scores only
+    res.predict  =  predict(object, newdata = newdata, dist = 'max.dist', multilevel = multilevel)$predict
     
     for (i in 1:object$ncomp)
     {
@@ -56,12 +59,14 @@ roc.comp = 1,
     return(statauc)
 }
 
+
+# MINT object
+# ----------------------
 auroc.mint.plsda = auroc.mint.splsda = function(
 object,
 newdata = object$X,
 outcome.test = as.factor(object$Y),
 study.test = object$study,
-dist = "max.dist",
 multilevel = NULL,
 plot = TRUE,
 roc.comp = 1,
@@ -79,7 +84,7 @@ roc.comp = 1,
     statauc=list()
     data$outcome=as.factor(outcome.test)
     
-    res.predict  =  predict(object, newdata = newdata, dist = dist, multilevel = multilevel, study.test = study.test)$predict
+    res.predict  =  predict(object, newdata = newdata, dist = 'max.dist', multilevel = multilevel, study.test = study.test)$predict
 
     for (i in 1:object$ncomp)
     {
@@ -90,11 +95,13 @@ roc.comp = 1,
     return(statauc)
 }
 
+
+# block.splsda object
+# ----------------------
 auroc.sgccda = function(
 object,
 newdata = object$X,
 outcome.test = as.factor(object$Y),
-dist = "max.dist",
 multilevel = NULL,
 plot = TRUE,
 roc.block = 1,
@@ -106,7 +113,7 @@ roc.comp = 1,
     auc.mean=list()
     data$outcome=as.factor(outcome.test)
 
-    res.predict  =  predict(object, newdata = newdata, dist = dist, multilevel = multilevel)$predict
+    res.predict  =  predict(object, newdata = newdata, dist = 'max.dist', multilevel = multilevel)$predict
     block.all = names(res.predict)
     block.temp = names(res.predict[roc.block])
     
