@@ -49,7 +49,8 @@ statauc <- function(data = NULL, plot = FALSE, title = NULL){
       temp$sensitivities[which(temp$specificities == k)] = temp$sensitivities[rev(which(temp$specificities == k))]
     }
     if (nlevels(outcome) == 2){
-      ann_text = matrix(ncol=3,nrow=1)
+      ann_text = matrix(ncol=2,nrow=1)
+      colnames(ann_text) = c("AUC", "p-value")
       df = rbind(df, cbind(temp$specificities, temp$sensitivities, paste(paste(levels(outcome)[1], levels(outcome)[2], sep = " vs "),":",signif(temp$auc, 4))))
       #ann_text[i , 1] =
       ann_text[i , 1] = signif(temp$auc, 4)
