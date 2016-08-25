@@ -112,7 +112,7 @@ roc.comp = 1,
     
     data=list()
     auc.mean=list()
-    data$outcome=as.factor(outcome.test)
+    data$outcome=factor(outcome.test)
 
     # note here: the dist does not matter as we used the predicted scores only
     res.predict  =  predict(object, newdata = newdata, dist = "max.dist", multilevel = multilevel)$predict
