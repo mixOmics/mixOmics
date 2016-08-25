@@ -115,6 +115,7 @@ light.output = TRUE
         ncomp = ncomp, test.keepX = test.keepX, test.keepY = test.keepY,
         already.tested.X = already.tested.X, already.tested.Y = already.tested.Y)
     }
+    result$call = match.call()
     class(result) = paste("tune",method,sep=".")
 
     return(result)
