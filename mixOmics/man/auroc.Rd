@@ -55,7 +55,7 @@ The AUC and Wilcoxon test pvalue for each 'one vs other' classes comparison perf
 \seealso{\code{\link{tune}}, \code{\link{perf}}, and http://www.mixOmics.org for more details.}
 
 \examples{
-## First example with PLSDA, 2 classes
+## example with PLSDA, 2 classes
 # ----------------
 data(breast.tumors)
 X <- breast.tumors$gene.exp
@@ -64,12 +64,12 @@ Y <- breast.tumors$sample$treatment
 plsda.breast <- plsda(X, Y, ncomp = 2)
 auc.plsda.breast = auroc(plsda.breast, ncomp = 1)
 
-## second example with sPLSDA
+## example with sPLSDA
 # -----------------
 splsda.breast <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 auroc(plsda.breast, plot = FALSE)
 
-## third example with sPLSDA with 4 classes
+## example with sPLSDA with 4 classes
 # -----------------
 data(liver.toxicity)
 X <- as.matrix(liver.toxicity$gene)
@@ -80,7 +80,23 @@ Y <- as.factor(liver.toxicity$treatment[, 4])
 splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
 auc.splsda.liver = auroc(splsda.liver, ncomp = 1)
 
-## fourth example with block.plsda
+
+## example with mint.plsda
+# -----------------
+data(stemcells)
+
+res = mint.plsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3,
+study = stemcells$study)
+auc.mint.pslda = auroc(res, plot = FALSE)
+
+## example with mint.splsda
+# -----------------
+res = mint.splsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3, keepX = c(10, 5, 15),
+study = stemcells$study)
+auc.mint.spslda = auroc(res, plot = TRUE, roc.comp = 3)
+
+
+## example with block.plsda
 # ------------------
 data(nutrimouse)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
@@ -91,7 +107,7 @@ byrow = TRUE, dimnames = list(names(data), names(data)))
 block.plsda.nutri = block.plsda(X = data, Y = nutrimouse$diet)
 auc.block.plsda.nutri = auroc(block.plsda.nutri, block = 'lipid')
 
-## fith example with block.splsda
+## example with block.splsda
 # ---------------
 list.keepX = list(gene = rep(10, 2), lipid = rep(5,2))
 block.splsda.nutri = block.splsda(X = data, Y = nutrimouse$diet, keepX = list.keepX)

@@ -47,8 +47,8 @@ roc.comp = 1,
     statauc=list()
     data$outcome=as.factor(outcome.test)
     
-    # not here: the dist does not matter as we used the predicted scores only
-    res.predict  =  predict(object, newdata = newdata, dist = 'max.dist', multilevel = multilevel)$predict
+    # note here: the dist does not matter as we used the predicted scores only
+    res.predict  =  predict(object, newdata = newdata, dist = "max.dist", multilevel = multilevel)$predict
     
     for (i in 1:object$ncomp)
     {
@@ -84,7 +84,8 @@ roc.comp = 1,
     statauc=list()
     data$outcome=as.factor(outcome.test)
     
-    res.predict  =  predict(object, newdata = newdata, dist = 'max.dist', multilevel = multilevel, study.test = study.test)$predict
+    # note here: the dist does not matter as we used the predicted scores only
+    res.predict  =  predict(object, newdata = newdata, dist = "max.dist", multilevel = multilevel, study.test = study.test)$predict
 
     for (i in 1:object$ncomp)
     {
@@ -113,7 +114,8 @@ roc.comp = 1,
     auc.mean=list()
     data$outcome=as.factor(outcome.test)
 
-    res.predict  =  predict(object, newdata = newdata, dist = 'max.dist', multilevel = multilevel)$predict
+    # note here: the dist does not matter as we used the predicted scores only
+    res.predict  =  predict(object, newdata = newdata, dist = "max.dist", multilevel = multilevel)$predict
     block.all = names(res.predict)
     block.temp = names(res.predict[roc.block])
     
