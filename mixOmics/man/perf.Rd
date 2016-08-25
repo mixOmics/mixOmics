@@ -24,8 +24,8 @@ PLS-DA, sparse PLS-DA, MINT (mint.splsda) and DIABLO (block.splsda) models using
           folds = 10, progressBar = TRUE, \ldots)
 
 \method{perf}{plsda}(object,
-          dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), constraint = FALSE,
-          validation = c("Mfold", "loo"), 
+          dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
+          constraint = FALSE, validation = c("Mfold", "loo"), 
           folds = 10, nrepeat =1, auc = FALSE, progressBar = TRUE, \ldots)
 
 \method{perf}{splsda}(object, 

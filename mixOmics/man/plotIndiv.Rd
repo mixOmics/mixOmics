@@ -26,7 +26,8 @@ X.label = NULL, Y.label = NULL, Z.label = NULL, abline = FALSE,
 xlim = NULL, ylim = NULL, col, cex, pch, alpha = 0.2, axes.box = "box", layout = NULL,
 size.title = rel(2), size.subtitle = rel(1.5), size.xlabel = rel(1),
 size.ylabel = rel(1), size.axis = rel(0.8), size.legend = rel(1),
-size.legend.title = rel(1.1), legend.title = "Legend", legend.position = "right", point.lwd = 1, ... )
+size.legend.title = rel(1.1), legend.title = "Legend", legend.position = "right",
+point.lwd = 1, ... )
 
 \method{plotIndiv}{mint.spls}(object, comp = NULL, study = "global", rep.space = NULL, group, col.per.group,
 style = "ggplot2", ellipse = FALSE, ellipse.level = 0.95, centroid = FALSE, star = FALSE,
@@ -35,7 +36,8 @@ X.label = NULL, Y.label = NULL, abline = FALSE,
 xlim = NULL, ylim = NULL, col, cex, pch, layout = NULL,
 size.title = rel(2), size.subtitle = rel(1.5), size.xlabel = rel(1),
 size.ylabel = rel(1), size.axis = rel(0.8), size.legend = rel(1),
-size.legend.title = rel(1.1), legend.title = "Legend", legend.position = "right", point.lwd = 1, ... )
+size.legend.title = rel(1.1), legend.title = "Legend", legend.position = "right",
+point.lwd = 1, ... )
 
 \method{plotIndiv}{sgcca}(object, comp = NULL, blocks = NULL, ind.names = TRUE, group, col.per.group,
 style = "ggplot2", ellipse = FALSE, ellipse.level = 0.95, centroid = FALSE, star = FALSE,
@@ -44,7 +46,8 @@ X.label = NULL, Y.label = NULL, Z.label = NULL, abline = FALSE,
 xlim = NULL, ylim = NULL, col, cex, pch, alpha = 0.2, axes.box = "box", layout = NULL,
 size.title = rel(2), size.subtitle = rel(1.5), size.xlabel = rel(1),
 size.ylabel = rel(1), size.axis = rel(0.8), size.legend = rel(1),
-size.legend.title = rel(1.1), legend.title = "Legend", legend.position = "right", point.lwd = 1, ... )
+size.legend.title = rel(1.1), legend.title = "Legend", legend.position = "right",
+point.lwd = 1, ... )
 
 
 }
