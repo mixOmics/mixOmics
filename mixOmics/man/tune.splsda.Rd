@@ -37,7 +37,7 @@ should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \cod
 \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Default value is FALSE}
 \item{nrepeat}{Number of times the Cross-Validation process is repeated.}
 \item{logratio}{one of ('none','CLR'). Default to 'none'}
-\item{multilevel}{Design matrix for multilevel anaylis (for repeated measurements) that indicates the repeated measures on each individual, i.e. the individuals ID. See Details.}
+\item{multilevel}{Design matrix for multilevel analysis (for repeated measurements) that indicates the repeated measures on each individual, i.e. the individuals ID. See Details.}
 
 \item{light.output}{if set to FALSE, the prediction/classification of each sample for each of \code{test.keepX} and each comp is returned.}
 

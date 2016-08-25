@@ -36,8 +36,7 @@ multilevel, \ldots)
   \item{dist}{distance to be applied for discriminant methods to predict the class of new data,
     should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \code{"max.dist"} (see Details). 
 	Defaults to \code{"all"}.}
-\item{multilevel}{Design matrix for multilevel anaylis (for repeated measurements). A numeric matrix or data frame. The first column
-indicates the repeated measures on each individual, i.e. the individuals ID. If \code{  method = 'splsda'}, the 2nd and 3rd columns are factors. If \code{method = 'spls'} then you can choose to only input the repeated measures (column 1) or the 2nd AND 3rd columns to split the variation for a 2 level factor.}
+\item{multilevel}{Design matrix for multilevel analysis (for repeated measurements). A numeric matrix or data frame. For a one level factor decomposition, the input is a vector indicating the repeated measures on each individual, i.e. the individuals ID. For a two level decomposition with splsda models, the two factors are included in Y. Finally for a two level decomposition with spls models, 2nd AND 3rd columns in design indicate those factors (see example in \code{?splsda} and \code{?spls}).}
 \item{...}{not used currently.}
 }
 

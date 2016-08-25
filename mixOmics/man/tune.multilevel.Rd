@@ -37,7 +37,7 @@ light.output = TRUE)
 \arguments{
 \item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
 \item{Y}{\code{if(method = 'spls')} numeric vector or matrix of continuous responses (for multi-response models) \code{NA}s are allowed.}
-\item{multilevel}{a numeric matrix that indicates the repeated measures on each individual, i.e. the individuals ID.}
+\item{multilevel}{a numeric matrix that indicates the repeated measures on each individual, i.e. the individuals ID. Fr a two factors decomposition, the two factors are added in the 2nd and 3rd column (see example)}
 \item{ncomp}{the number of components to include in the model.}
 \item{test.keepX}{numeric vector for the different number of variables to test from the \eqn{X} data set}
 \item{test.keepY}{If \code{method = 'spls'}, numeric vector for the different number of variables to test from the \eqn{Y} data set}
@@ -70,7 +70,7 @@ If \code{method = 'splsda'}, a distance metric must be used, see \code{help(pred
 
 For a sPLS-DA one-factor analysis, M-fold cross-validation is performed, internally the training data is decomposed into within-subject variation.
 
-For a sPLS-DA two-factor analysis, the correlation between components from the within-subject variation of X and the \code{cond} matrix is computed on the whole data set. The reason why we cannot obtain a corss-validation error rate as for the spls-DA one-factor analysis is because of the dififculty to decompose and predict the within matrices within each fold.
+For a sPLS-DA two-factor analysis, the correlation between components from the within-subject variation of X and a matrix including the two factors (design[,-1]) is computed on the whole data set. We cannot obtain a cross-validation error rate as for the spls-DA one-factor analysis because of the difficulty to decompose and predict the within matrices within each fold.
 
 For a sPLS two-factor analysis a sPLS canonical mode is run, and the correlation between components from the within-subject variation of X and Y is computed on the whole data set.
 
@@ -115,10 +115,10 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
 ## First example: one-factor analysis with sPLS-DA
 \dontrun{
   data(vac18.simulated) # simulated data
-  design <- data.frame(sample = vac18.simulated$sample,
-                       stimu = vac18.simulated$stimulation)
+  design <- data.frame(sample = vac18.simulated$sample)
   
-    result.ex1 = tune.multilevel(vac18.simulated$genes,
+    result.ex1 = tune.multilevel(X = vac18.simulated$genes,
+                                Y = vac18.simulated$stimulation,
                                multilevel = design,
                                ncomp=2,
                                test.keepX=c(5, 10, 15), 
@@ -127,11 +127,10 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
                                dist = 'mahalanobis.dist',
                                validation = 'loo') 
   
-  # error rate for the tested parameters est.keepX=c(5, 10, 15)
-  result.ex1$error
-  # prediction for ncomp = 2 and keepX = c(50, 15) (15 is the last tested parameter)
-  result.ex1$prediction.all
-  table(vac18.simulated$stimulation, result.ex1$prediction.all)
+  # overall error rate
+  result.ex1$error.rate 
+  # classification error rate per class after 2 components
+  result.ex1$error.rate.class
 }
 
 
@@ -148,11 +147,10 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
                     13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
   summary(as.factor(repeat.indiv)) # 16 rats, 4 measurements each
   
-  design <- data.frame(sample = repeat.indiv,
-                       dose = dose,
-                       time = time)
-  
+  design <- data.frame(sample = repeat.indiv)
+
   result.ex2 = tune.multilevel(liver.toxicity$gene,
+                                Y = data.frame(dose, time),
                                 multilevel = design,
                                 ncomp=2,
                                 test.keepX=c(5, 10, 15), 
