@@ -87,13 +87,13 @@ data(stemcells)
 
 res = mint.plsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3,
 study = stemcells$study)
-auroc(res, plot = FALSE)
+auc.mint.pslda = auroc(res, plot = FALSE)
 
 ## example with mint.splsda
 # -----------------
 res = mint.splsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3, keepX = c(10, 5, 15),
 study = stemcells$study)
-auroc(res, plot = FALSE)
+auc.mint.spslda = auroc(res, plot = TRUE, roc.comp = 3)
 
 
 ## example with block.plsda
