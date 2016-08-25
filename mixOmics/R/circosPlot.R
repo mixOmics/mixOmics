@@ -59,7 +59,7 @@ size.labels=1)
     if (!any(class(object) == "block.splsda"))
     stop("circosPlot is only available for 'block.splsda' objects")
     
-    if (length(object$X) <= 1)
+    if (length(object$X) <= 2)
     stop("This function is only available when there are more than 3 blocks") # so 2 blocks in X + the outcome Y
     
     if (missing(cutoff))
