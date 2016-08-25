@@ -5,7 +5,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2016
-# last modified: 08-07-2016
+# last modified: 25-08-2016
 #
 # Copyright (C) 2016
 #
@@ -49,6 +49,7 @@ validation = "Mfold", # all but pca
 folds = 10, # all but pca
 dist = "max.dist", # all but pca, rcc
 measure = c("BER"), # all but pca, rcc
+auc = FALSE,
 progressBar = TRUE, # all but pca, rcc
 near.zero.var = FALSE, # all but pca, rcc
 logratio = "none", # all but pca, rcc
@@ -69,6 +70,7 @@ light.output = TRUE # mint, splsda
         ncomp = 1
         if(missing(constraint))
         constraint = TRUE
+        
         result = tune.mint.splsda(X = X, Y = Y,
         ncomp = ncomp,
         study = study,
@@ -77,6 +79,7 @@ light.output = TRUE # mint, splsda
         constraint = constraint,
         dist = dist,
         measure = measure,
+        auc = auc,
         progressBar = progressBar,
         scale = scale,
         tol = tol,
@@ -118,6 +121,7 @@ light.output = TRUE # mint, splsda
             ncomp = 1
             if(missing(constraint))
             constraint = FALSE
+            
             result = tune.splsda (X = X, Y = Y,
             ncomp = ncomp,
             test.keepX = test.keepX,
@@ -127,6 +131,7 @@ light.output = TRUE # mint, splsda
             folds = folds,
             dist = dist ,
             measure = measure,
+            auc = auc,
             progressBar = progressBar,
             near.zero.var = near.zero.var,
             nrepeat = nrepeat,
@@ -142,7 +147,8 @@ light.output = TRUE # mint, splsda
             ncomp = ncomp, test.keepX = test.keepX, dist = dist,
             already.tested.X = already.tested.X,
             constraint = constraint, validation = validation, folds = folds,
-            measure = measure, progressBar = progressBar, near.zero.var = near.zero.var,
+            measure = measure, auc = auc,
+            progressBar = progressBar, near.zero.var = near.zero.var,
             logratio = logratio, nrepeat = nrepeat)
         }
         

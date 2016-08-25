@@ -5,7 +5,7 @@
 #   Leigh Coonan, Queensland Faculty for Advanced Bioinformatics, Australia
 #
 # created: 20-08-2016
-# last modified: 24-08-2016
+# last modified: 25-08-2016
 #
 # Copyright (C) 2010
 #
@@ -26,15 +26,15 @@
 
 
 plot.tune.splsda = #plot.spca <- plot.ipca <- plot.sipca <-
-function(object)
+function(x, ...)
 {
     
-    error <- object$error.rate
-    select.keepX <- object$choice.keepX[colnames(error)]
-    first.keepX <- names(object$choice.keepX[1])
+    error <- x$error.rate
+    select.keepX <- x$choice.keepX[colnames(error)]
+    first.keepX <- names(x$choice.keepX[1])
     
     legend=NULL
-    measure = object$measure
+    measure = x$measure
     
     if (length(select.keepX) < 10)
     {
@@ -54,7 +54,7 @@ function(object)
     }
    
 
-    matplot(error, type = "l", axes = TRUE, lwd = 2, lty = 1, log = "x",
+    matplot(rownames(error),error, type = "l", axes = TRUE, lwd = 2, lty = 1, log = "x",
     xlab = "Number of selected genes", ylab = ylab,
     col = col.per.comp)
     
@@ -64,7 +64,7 @@ function(object)
         index = which(rownames(error) == select.keepX[i])
         
         # choseen keepX:
-        points(index, error[index,i], col = col.per.comp[i], lwd=2, cex=1.5)
+        points(rownames(error)[index], error[index,i], col = col.per.comp[i], lwd=2, cex=1.5)
         if(names(select.keepX[i])==first.keepX)
         legend=first.keepX
         else

@@ -9,18 +9,21 @@
 
 \usage{
 circosPlot(object,
-corThreshold,
+cutoff,
+var.names = NULL,
 showIntraLinks = FALSE,
-line=TRUE,
-size.legend=0.8,
-ncol.legend=1,
+line = TRUE,
+size.legend = 0.8,
+ncol.legend = 1,
 size.variables = 0.25,
-size.labels=1)
+size.labels = 1)
 }
 
 \arguments{
 \item{object}{An object of class inheriting from \code{"block.splsda"}.}
-\item{corThreshold}{Only shows links with a correlation higher than \code{corThreshold}}
+\item{cutoff}{Only shows links with a correlation higher than \code{cutoff}}
+\item{var.names}{Optional parameter. A list of length the number of blocks in \code{object$X}, containing the names of the variables of each block.
+If \code{NULL}, the colnames of the data matrix are used.}
 \item{showIntraLinks}{if TRUE, shows the correlation higher than the threshold inside each block.}
 \item{line}{if TRUE, shows the overall expression of the selected variables. see examples.}
 \item{size.legend}{size of the legend}
@@ -61,17 +64,17 @@ scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)
 
-circosPlot(nutrimouse.sgccda, corThreshold = 0.7, ncol.legend = 2, size.legend = 1.1)
+circosPlot(nutrimouse.sgccda, cutoff = 0.7, ncol.legend = 2, size.legend = 1.1)
 
 par(mfrow=c(2,2))
-circosPlot(nutrimouse.sgccda, corThreshold = 0.7, ncol.legend = 2,
+circosPlot(nutrimouse.sgccda, cutoff = 0.7, ncol.legend = 2,
     size.legend = 1.1)
-circosPlot(nutrimouse.sgccda, corThreshold = 0.7, ncol.legend = 2,
+circosPlot(nutrimouse.sgccda, cutoff = 0.7, ncol.legend = 2,
     size.legend = 1.1, showIntraLinks = TRUE)
-circosPlot(nutrimouse.sgccda, corThreshold = 0.7, ncol.legend = 1,
+circosPlot(nutrimouse.sgccda, cutoff = 0.7, ncol.legend = 1,
     size.legend = 1.1, showIntraLinks = TRUE)
-circosPlot(nutrimouse.sgccda, corThreshold = 0.7, ncol.legend = 2,
-    size.legend = 1.1, showIntraLinks = TRUE, line = FALSE)
+circosPlot(nutrimouse.sgccda, cutoff = 0.7, ncol.legend = 2,
+    size.legend = 1.1, showIntraLinks = TRUE, line = FALSE, size.variables = 0.5)
 
 }
 

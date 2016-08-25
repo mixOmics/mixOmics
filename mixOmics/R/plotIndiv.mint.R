@@ -4,7 +4,7 @@
 #   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 16-03-2016
-# last modified: 24-08-2016
+# last modified: 25-08-2016
 #
 # Copyright (C) 2016
 #
@@ -63,7 +63,7 @@ size.ylabel = rel(1),
 size.axis = rel(0.8), 
 size.legend = rel(1), 
 size.legend.title = rel(1.1), 
-legend.title = "Outcome",
+legend.title = "Legend",
 legend.position = "right",
 point.lwd = 1, 
 ...

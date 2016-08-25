@@ -86,7 +86,7 @@ ncomp = 1,
     return(statauc)
 }
 
-auc.block.splsda = auc.block.plsda = function(
+auc.sgccda = function(
 object,
 newdata = object$X,
 outcome.test = as.factor(object$Y),
