@@ -1,9 +1,9 @@
 #############################################################################################################
 # Authors:
 #   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-#   Kim-Anh Le Cao, University of Queensland Diamantina Institute, Brisbane, Australia
 #   Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Kim-Anh Le Cao, University of Queensland Diamantina Institute, Brisbane, Australia
 #
 # created: 23-08-2016
 # last modified:  23-08-2016
@@ -25,10 +25,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #############################################################################################################
 
-auc = function(object, ...)
-UseMethod("auc")
+auroc = function(object, ...)
+UseMethod("auroc")
 
-auc.plsda = auc.splsda = function(
+auroc.plsda = auroc.splsda = function(
 object,
 newdata = object$X,
 outcome.test = as.factor(object$Y),
@@ -54,7 +54,7 @@ ncomp = 1,
     return(statauc)
 }
 
-auc.mint.plsda = auc.mint.splsda = function(
+auroc.mint.plsda = auroc.mint.splsda = function(
 object,
 newdata = object$X,
 outcome.test = as.factor(object$Y),
@@ -86,7 +86,7 @@ ncomp = 1,
     return(statauc)
 }
 
-auc.sgccda = function(
+auroc.sgccda = function(
 object,
 newdata = object$X,
 outcome.test = as.factor(object$Y),

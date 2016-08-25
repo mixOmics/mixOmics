@@ -123,7 +123,7 @@ function(x, ...)
     cat(" plotVar, plotLoadings, network, cim \n")
     cat("\n")
     cat(" Other functions: \n", "-------------------- \n")
-    cat(" auc\n")
+    cat(" auc \n")
     
 }
 
@@ -680,7 +680,7 @@ print.perf.plsda.mthd = function(x, ...)
     cat(" Error rate per class, for each component and for each distance: see object$error.rate.class \n")
     cat(" Prediction values for each component: see object$predict \n")
     cat(" Classification of each sample, for each component and for each distance: see object$class \n")
-    cat(" AUC values: see object$auc \n")
+    cat(" AUC values: see object$auc if auc = TRUE \n")
 }
 
 print.perf.splsda.mthd = function(x, ...)
@@ -693,7 +693,7 @@ print.perf.splsda.mthd = function(x, ...)
     cat(" Prediction values for each component: see object$predict \n")
     cat(" Classification of each sample, for each component and for each distance: see object$class \n")
     cat(" Stable features on each component: see object$features$stable \n")
-    cat(" AUC values: see object$auc \n")
+    cat(" AUC values: see object$auc if auc = TRUE \n")
 }
 
 print.perf.mint.splsda.mthd = function(x, ...)
@@ -706,7 +706,7 @@ print.perf.mint.splsda.mthd = function(x, ...)
     cat(" Prediction values for each component: see object$predict \n")
     cat(" Classification of each sample, for each component and for each distance: see object$class \n")
     cat(" AUC values: see object$auc \n")
-    cat(" AUC values per study: see object$auc.study \n")
+    cat(" AUC values per study: see object$auc.study if auc = TRUE \n")
 }
 
 print.perf.sgccda.mthd = function(x, ...)
@@ -719,7 +719,7 @@ print.perf.sgccda.mthd = function(x, ...)
     cat(" Prediction values for each component: see object$predict \n")
     cat(" Classification of each sample, for each component and for each distance: see object$class \n")
     cat(" Stable features on each component: see object$features$stable \n")
-    cat(" AUC values: see object$auc \n")
+    cat(" AUC values: see object$auc if auc = TRUE \n")
 }
 
 
