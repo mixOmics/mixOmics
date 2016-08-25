@@ -18,12 +18,14 @@ test.keepX = c(5, 10, 15),
 test.keepY = NULL, 
 already.tested.X = NULL, 
 already.tested.Y = NULL, 
+constraint = FALSE,
 method,
 mode = "regression",
 validation = "Mfold",
 folds = 10,
 dist = "max.dist",
 measure = "BER",
+auc = FALSE,
 progressBar = TRUE,
 near.zero.var = FALSE,
 logratio = "none",
@@ -41,6 +43,7 @@ light.output = TRUE)
 \item{test.keepY}{If \code{method = 'spls'}, numeric vector for the different number of variables to test from the \eqn{Y} data set}
 \item{already.tested.X}{if \code{ncomp > 1} numeric vector indicating the number of variables to select rom the \eqn{X} data set on the pfirst components}
 \item{already.tested.Y}{if \code{method = 'spls'} and \code{if(ncomp > 1)} numeric vector indicating the number of variables to select from the \eqn{Y} data set on the first components}
+\item{constraint}{Indicate whether the performance of the model is evaluated in regards to the number of variables selected (keepX, constraint = FALSE) or which specific variables are selected (keepX.constraint, constraint = TRUE)}
 \item{method}{character string. Which multivariate method and type of analysis to choose, matching one of 'splsda' (Discriminant Analysis) or 'spls' (unsupervised integrative analysis). See Details.}
 \item{mode}{character string. What type of algorithm to use, (partially) matching
 one of \code{"regression"}, \code{"canonical"}, \code{"invariant"} or \code{"classic"}.
@@ -52,6 +55,7 @@ See Details.}
 should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \code{"max.dist"} (see Details).}
 
 \item{measure}{Two misclassification measure are available: overall misclassification error \code{overall} or the Balanced Error Rate \code{BER}}
+\item{auc}{if \code{TRUE} calculate the Area Under the Curve (AUC) performance of the model. Only used for \code{method='splsda'}}
 \item{progressBar}{by default set to \code{TRUE} to output the progress bar of the computation.}
 \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Default value is FALSE}
 \item{logratio}{one of ('none','CLR'). Default to 'none'}
