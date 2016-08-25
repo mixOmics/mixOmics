@@ -26,12 +26,16 @@
 
 
 plot.tune.splsda = #plot.spca <- plot.ipca <- plot.sipca <-
-function(x, ...)
+function(x, optimal = TRUE, ...)
 {
     
+    if (!is.logical(optimal))
+    stop("'optimal' must be logical.", call. = FALSE)
+
+
     error <- x$error.rate
     select.keepX <- x$choice.keepX[colnames(error)]
-    first.keepX <- names(x$choice.keepX[1])
+    comp.tuned = length(select.keepX)
     
     legend=NULL
     measure = x$measure
@@ -39,10 +43,10 @@ function(x, ...)
     if (length(select.keepX) < 10)
     {
         #only 10 colors in color.mixo
-        col.per.comp = color.mixo(1:length(select.keepX))
+        col.per.comp = color.mixo(1:comp.tuned)
     } else {
         #use color.jet
-        col.per.comp = color.jet(length(select.keepX))
+        col.per.comp = color.jet(comp.tuned)
     }
     
     if(measure == "overall")
@@ -58,20 +62,27 @@ function(x, ...)
     xlab = "Number of selected genes", ylab = ylab,
     col = col.per.comp)
     
-    for(i in 1:length(select.keepX))
+    if(optimal)
     {
-        # store coordinates of chosen keepX
-        index = which(rownames(error) == select.keepX[i])
-        
-        # choseen keepX:
-        points(rownames(error)[index], error[index,i], col = col.per.comp[i], lwd=2, cex=1.5)
-        if(names(select.keepX[i])==first.keepX)
-        legend=first.keepX
-        else
-        legend=c(legend,paste(first.keepX," to ",names(select.keepX[i])))
+        for(i in 1:comp.tuned)
+        {
+            # store coordinates of chosen keepX
+            index = which(rownames(error) == select.keepX[i])
+            # choseen keepX:
+            points(rownames(error)[index], error[index,i], col = col.per.comp[i], lwd=2, cex=1.5)
+        }
     }
-    #axis(1, c(1:length(rownames(error))),labels=rownames(error))
-    #axis(2)
+    
+    if(length(x$choice.keepX) == 1) #only first comp tuned
+    {
+        legend = "comp 1"
+    } else if(length(x$choice.keepX) == comp.tuned) # all components have been tuned
+    {
+        legend = c("comp 1", paste("comp 1 to", colnames(error)[-1]))
+    } else { #first component was not tuned
+        legend = paste("comp 1 to", colnames(error))
+    }
+
     legend("topright", lty = 1, lwd = 2, horiz = FALSE, col = col.per.comp,
     legend = legend)
     
