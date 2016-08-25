@@ -45,7 +45,7 @@ roc.comp = 1,
     
     data=list()
     statauc=list()
-    data$outcome=as.factor(outcome.test)
+    data$outcome=factor(as.factor(outcome.test))
     
     # note here: the dist does not matter as we used the predicted scores only
     res.predict  =  predict(object, newdata = newdata, dist = "max.dist", multilevel = multilevel)$predict
@@ -78,11 +78,11 @@ roc.comp = 1,
     
     if(dim(newdata)[[1]]!=length(study.test))
     stop("Factor study.test must be a factor with ",dim(newdata)[[1]], " elements.",call. = FALSE)
-    study.test=as.factor(study.test)
+    study.test=factor(as.factor(study.test))
     
     data=list()
     statauc=list()
-    data$outcome=as.factor(outcome.test)
+    data$outcome=factor(as.factor(outcome.test))
     
     # note here: the dist does not matter as we used the predicted scores only
     res.predict  =  predict(object, newdata = newdata, dist = "max.dist", multilevel = multilevel, study.test = study.test)$predict
@@ -112,7 +112,7 @@ roc.comp = 1,
     
     data=list()
     auc.mean=list()
-    data$outcome=factor(outcome.test)
+    data$outcome=factor(as.factor(outcome.test))
 
     # note here: the dist does not matter as we used the predicted scores only
     res.predict  =  predict(object, newdata = newdata, dist = "max.dist", multilevel = multilevel)$predict
@@ -132,5 +132,45 @@ roc.comp = 1,
         }
     }
     return(auc.mean)
+}
+
+# mint.block.splsda object
+# ----------------------
+auroc.mint.block.splsda=auroc.mint.block.plsda = function(
+  object,
+  newdata = object$X,
+  
+  study.test = object$study,
+  outcome.test = as.factor(object$Y),
+  multilevel = NULL,
+  plot = TRUE,
+  roc.block = 1,
+  roc.comp = 1,
+  ...)
+{
+  
+  data=list()
+  auc.mean=list()
+  data$outcome=factor(as.factor(outcome.test))
+  study.test=factor(as.factor(study.test))
+  
+  # note here: the dist does not matter as we used the predicted scores only
+  res.predict  =  predict(object, newdata = newdata, study.test=study.test,dist = "max.dist", multilevel = multilevel)$predict
+  block.all = names(res.predict)
+  block.temp = names(res.predict[roc.block])
+  
+  for(j in 1:length(res.predict))
+  {
+    for (i in 1:object$ncomp[j])
+    {
+      data$data=res.predict[[j]][,,i]
+      title=paste("ROC Curve\nBlock: ", names(res.predict)[j], ", comp: ",i, sep="")
+      
+      plot.temp = ifelse(i%in%roc.comp && names(res.predict)[j]%in%block.temp, plot, FALSE)
+      auc.mean[[names(res.predict)[j]]][[paste("comp",i,sep = "")]] = statauc(data, plot = plot.temp, title = title)
+      
+    }
+  }
+  return(auc.mean)
 }
 

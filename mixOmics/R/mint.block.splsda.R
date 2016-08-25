@@ -108,13 +108,13 @@ near.zero.var = FALSE)
     design=design, scheme=scheme, mode=mode, scale=scale,
     bias=bias, init=init, tol=tol, verbose=verbose, max.iter=max.iter, near.zero.var=near.zero.var)
     
-    
+    print(result$X[result$indY][[1]])
     # choose the desired output from 'result'
     out=list(
         call = match.call(),
         X = result$X[-result$indY],
         Y = Y.input,
-        ind.mat = result$Y[[1]],
+        ind.mat = result$X[result$indY][[1]],
         ncomp = result$ncomp,
         mode = result$mode,
         study = result$study,
