@@ -12,7 +12,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 2009
-# last modified: 24-05-2016
+# last modified: 25-08-2016
 #
 # Copyright (C) 2009
 #
@@ -34,22 +34,22 @@
 
 #------------------ print method for pls ------------------#
 print.pls <-
-function(x, ...) 
+function(x, ...)
 {
-
+    
     mode = paste("'", x$mode, "'", sep = "")
-	
+    
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
-	
+    
     cat(" PLS with a", mode, "mode with", x$ncomp, "PLS components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
     cat(" You entered data Y of dimensions:", nrow(x$Y), ncol(x$Y), "\n\n")
-
+    
     cat(" No variable selection. \n\n")
-	
+    
     cat(" Main numerical outputs: \n",
-        "-------------------- \n")
-	cat(" loading vectors: see object$loadings \n")
+    "-------------------- \n")
+    cat(" loading vectors: see object$loadings \n")
     cat(" variates: see object$variates \n")
     cat(" variable names: see object$names \n")
     
@@ -59,7 +59,7 @@ function(x, ...)
     cat("\n")
     cat(" Functions to visualise variables: \n", "-------------------- \n")
     cat(" plotVar, plotLoadings, network, cim \n")
-
+    
 }
 
 #------------------ print method for mint.pls ------------------#
@@ -75,7 +75,7 @@ function(x, ...)
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
     cat(" You entered data Y of dimensions:", nrow(x$Y), ncol(x$Y), "\n\n")
     cat(" You entered a grouping factor with", nlevels(x$study), "studies. \n")
-
+    
     cat(" No variable selection. \n\n")
     
     cat(" Main numerical outputs: \n",
@@ -97,20 +97,20 @@ function(x, ...)
 
 #------------------ print method for plsda ------------------#
 print.plsda <-
-function(x, ...) 
+function(x, ...)
 {
-	
+    
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
-	
+    
     cat(" PLS-DA (regression mode) with", x$ncomp, "PLS-DA components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
     cat(" You entered data Y with", ncol(x$ind.mat) , "classes. \n\n")
-
+    
     cat(" No variable selection. \n\n")
-	
-    cat(" Main numerical outputs: \n", 
-        "-------------------- \n")
-	
+    
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    
     cat(" loading vectors: see object$loadings \n")
     cat(" variates: see object$variates \n")
     cat(" variable names: see object$names \n")
@@ -121,6 +121,9 @@ function(x, ...)
     cat("\n")
     cat(" Functions to visualise variables: \n", "-------------------- \n")
     cat(" plotVar, plotLoadings, network, cim \n")
+    cat("\n")
+    cat(" Other functions: \n", "-------------------- \n")
+    cat(" auc\n")
     
 }
 
@@ -135,7 +138,7 @@ function(x, ...)
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
     cat(" You entered data Y with", ncol(x$ind.mat) , "classes. \n\n")
     cat(" You entered a grouping factor with", nlevels(x$study), "studies. \n")
-
+    
     cat(" No variable selection. \n\n")
     
     cat(" Main numerical outputs: \n",
@@ -155,31 +158,31 @@ function(x, ...)
     cat(" plotVar, plotLoadings, network, cim \n")
     cat("\n")
     cat(" Other functions: \n", "-------------------- \n")
-    cat(" perf\n")
+    cat(" perf, auc\n")
 }
 
 #----------------- print method for spls ------------------#
 print.spls <-
 function(x, ...)
 {
-
+    
     mode = paste("'", x$mode, "'", sep = "")
     keepX = paste("[", x$keepX, "]", sep = "")
     keepY = paste("[", x$keepY, "]", sep = "")
-	
-	cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
-	
+    
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    
     cat(" sPLS with a", mode, "mode with", x$ncomp, "sPLS components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
     cat(" You entered data Y of dimensions:", nrow(x$Y), ncol(x$Y), "\n\n")
-	
+    
     cat(" Selection of", keepX, "variables on each of the sPLS components on the X data set. \n")
     cat(" Selection of", keepY, "variables on each of the sPLS components on the Y data set. \n\n")
-
-    cat(" Main numerical outputs: \n", 
-        "-------------------- \n")
-	
-	cat(" loading vectors: see object$loadings \n")
+    
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    
+    cat(" loading vectors: see object$loadings \n")
     cat(" variates: see object$variates \n")
     cat(" variable names: see object$names \n")
     
@@ -206,7 +209,7 @@ function(x, ...)
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
     cat(" You entered data Y of dimensions:", nrow(x$Y), ncol(x$Y), "\n\n")
     cat(" You entered a grouping factor with", nlevels(x$study), "studies. \n")
-
+    
     cat(" Selection of", keepX, "variables on each of the sPLS components on the X data set. \n")
     cat(" Selection of", keepY, "variables on each of the sPLS components on the Y data set. \n\n")
     
@@ -235,21 +238,21 @@ function(x, ...)
 print.splsda <-
 function(x, ...)
 {
-
+    
     keepX = paste("[", x$keepX, "]", sep = "")
     keepY = paste("[", x$keepY, "]", sep = "")
-	
-	cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")	
+    
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
     cat(" sPLS-DA (regression mode) with", x$ncomp, "sPLS-DA components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
     cat(" You entered data Y with", ncol(x$ind.mat) , "classes. \n\n")
-	
+    
     cat(" Selection of", keepX, "variables on each of the sPLS-DA components on the X data set. \n")
     cat(" No Y variables can be selected. \n\n")
-
-    cat(" Main numerical outputs: \n", 
-        "-------------------- \n")
-	
+    
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    
     cat(" loading vectors: see object$loadings \n")
     cat(" variates: see object$variates \n")
     cat(" variable names: see object$names \n")
@@ -260,9 +263,9 @@ function(x, ...)
     cat("\n")
     cat(" Functions to visualise variables: \n", "-------------------- \n")
     cat(" plotVar, plotLoadings, network, cim \n")
-	  cat("\n")
-	  cat(" Other functions: \n", "-------------------- \n")
-	  cat(" selectVar, tune, perf \n")
+    cat("\n")
+    cat(" Other functions: \n", "-------------------- \n")
+    cat(" selectVar, tune, perf, auc \n")
 }
 
 #----------------- print method for mint.splsda ------------------#
@@ -299,26 +302,26 @@ function(x, ...)
     cat(" plotVar, plotLoadings, network, cim \n")
     cat("\n")
     cat(" Other functions: \n", "-------------------- \n")
-    cat(" selectVar, tune, perf \n")
-
+    cat(" selectVar, tune, perf, auc \n")
+    
 }
 
 #------------------ print method for rcc ------------------#
 print.rcc <-
 function(x, ...)
 {
-
+    
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
-
+    
     cat(" rCCA with", x$ncomp, "components and regularization parameters", x$lambda[1], "and", x$lambda[2], "for the X and Y data. \n")
     cat(" You entered data X of dimensions :", nrow(x$X), ncol(x$X), "\n")
     cat(" You entered data Y of dimensions :", nrow(x$Y), ncol(x$Y), "\n\n")
-	
-    cat(" Main numerical outputs: \n", 
-        "-------------------- \n")
-	
-	cat(" canonical correlations: see object$cor \n")
-	cat(" loading vectors: see object$loadings \n")
+    
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    
+    cat(" canonical correlations: see object$cor \n")
+    cat(" loading vectors: see object$loadings \n")
     cat(" variates: see object$variates \n")
     cat(" variable names: see object$names \n")
 }
@@ -328,7 +331,7 @@ print.pca <- function(x, ...)
 {
     
     ind.show = min(10, x$ncomp)
-
+    
     cat("Eigenvalues for the first", ind.show, "principal components, see object$sdev^2:", "\n")
     print((x$sdev[1:ind.show])^2)
     cat("\n")
@@ -354,19 +357,19 @@ print.pca <- function(x, ...)
 
 # ------------------------ print for spca -------------------------
 print.spca <-
-function(x, ...) 
+function(x, ...)
 {
-	
+    
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
-	
+    
     cat(" sparse pCA with", x$ncomp, "principal components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
-
+    
     cat(" Selection of", x$keepX, "variables on each of the principal components on the X data set. \n")
-
-    cat(" Main numerical outputs: \n", 
-        "-------------------- \n")
-	
+    
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    
     cat(" loading vectors: see object$rotation \n")
     cat(" principal components: see object$x \n")
     cat(" cumulative explained variance: see object$varX \n")
@@ -374,22 +377,22 @@ function(x, ...)
     cat("\n")
     cat(" Other functions: \n", "-------------------- \n")
     cat(" selectVar, tune\n")
-
+    
 }
 
 # ------------------------ print for ipca -------------------------
 print.ipca <-
-function(x, ...) 
+function(x, ...)
 {
-	
+    
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
-	
+    
     cat(" IPCA with", x$ncomp, "independent components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
-
-    cat(" Main numerical outputs: \n", 
-        "-------------------- \n")
-	
+    
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    
     cat(" unmixing matrix: see object$unmixing \n")
     cat(" independent principal components: see object$x \n")
     cat(" mxing matrix: see object$mixing \n")
@@ -400,26 +403,26 @@ function(x, ...)
 
 # ------------------------ print for sipca -------------------------
 print.sipca <-
-function(x, ...) 
+function(x, ...)
 {
-	
+    
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
-	
+    
     cat(" Sparse IPCA with", x$ncomp, "independent components. \n")
     cat(" You entered data X of dimensions:", nrow(x$X), ncol(x$X), "\n")
-	
-	cat(" Selection of", x$keepX, "variables on each of the principal components on the X data set. \n")
-
-    cat(" Main numerical outputs: \n", 
-        "-------------------- \n")
-	
+    
+    cat(" Selection of", x$keepX, "variables on each of the principal components on the X data set. \n")
+    
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    
     cat(" unmixing matrix: see object$unmixing \n")
-	cat(" independent principal components: see object$x \n")
+    cat(" independent principal components: see object$x \n")
     cat(" mxing matrix: see object$mixing \n")
     cat(" kurtosis: see object$kurtosis \n")
     cat(" variable names: see object$names \n")
     cat(" independent loading vectors: see object$loadings \n")
-
+    
 }
 
 # ------------------------ print for rgcca -------------------------
@@ -488,7 +491,7 @@ print.sgcca<- function(x, ...)
     cat(" variates: see object$variates \n")
     cat(" variable names: see object$names \n")
     
-   
+    
     cat("\n")
     cat(" Functions to visualise samples: \n", "-------------------- \n")
     cat(" plotIndiv, plotArrow \n")
@@ -514,15 +517,15 @@ print.sgccda<- function(x, ...)
     }
     cat(" sGCCA with", x$ncomp[x$indY], "components on the outcome Y\n")
     cat("\n")
-
-
+    
+    
     # dimension
     for(k in 1 : length(x$X)){
         cat(" Dimension of block", k, 'is ', dim(x$X[[k]]), "\n")
     }
     cat(" Outcome Y has", nlevels(x$Y), "levels \n")
     cat("\n")
-
+    
     # selected variables
     list.select = list()
     for(k in 1:length(x$X)){
@@ -544,7 +547,7 @@ print.sgccda<- function(x, ...)
     cat(" plotVar, plotLoadings, network, circosPlot \n")
     cat("\n")
     cat(" Other functions: \n", "-------------------- \n")
-    cat(" selectVar, perf \n")
+    cat(" selectVar, perf, auc \n")
     
 }
 
@@ -677,6 +680,7 @@ print.perf.plsda.mthd = function(x, ...)
     cat(" Error rate per class, for each component and for each distance: see object$error.rate.class \n")
     cat(" Prediction values for each component: see object$predict \n")
     cat(" Classification of each sample, for each component and for each distance: see object$class \n")
+    cat(" AUC values: see object$auc \n")
 }
 
 print.perf.splsda.mthd = function(x, ...)
@@ -689,6 +693,7 @@ print.perf.splsda.mthd = function(x, ...)
     cat(" Prediction values for each component: see object$predict \n")
     cat(" Classification of each sample, for each component and for each distance: see object$class \n")
     cat(" Stable features on each component: see object$features$stable \n")
+    cat(" AUC values: see object$auc \n")
 }
 
 print.perf.mint.splsda.mthd = function(x, ...)
@@ -700,6 +705,8 @@ print.perf.mint.splsda.mthd = function(x, ...)
     cat(" Global error rate (overall, BER and error rate per class) for each component and for each distance: see object$global.error \n")
     cat(" Prediction values for each component: see object$predict \n")
     cat(" Classification of each sample, for each component and for each distance: see object$class \n")
+    cat(" AUC values: see object$auc \n")
+    cat(" AUC values per study: see object$auc.study \n")
 }
 
 print.perf.sgccda.mthd = function(x, ...)
@@ -712,6 +719,7 @@ print.perf.sgccda.mthd = function(x, ...)
     cat(" Prediction values for each component: see object$predict \n")
     cat(" Classification of each sample, for each component and for each distance: see object$class \n")
     cat(" Stable features on each component: see object$features$stable \n")
+    cat(" AUC values: see object$auc \n")
 }
 
 
@@ -739,7 +747,10 @@ print.tune.splsda = function(x, ...)
     cat(" Error rate for each tested keepX, for each component and for each repeat: see object$mat.error.rate \n")
     cat(" Error rate per class obtained with the optimal keepX, for each component and for each nrepeat: see object$error.rate.class \n\n")
     
-    cat(" Other outputs available, see ?tune.splsda \n")
+    cat(" Other outputs available, see ?tune.splsda.  \n\n")
+
+    cat(" Visualisation Functions: \n", "-------------------- \n")
+    cat(" plot \n")
 }
 
 print.tune.mint.splsda = function(x, ...)
@@ -751,7 +762,10 @@ print.tune.mint.splsda = function(x, ...)
     cat(" Error rate for each tested keepX and for each component: see object$mat.mean.error \n")
     cat(" Error rate per class obtained with the optimal keepX.constraint, for each component: see object$error.rate.class \n\n")
     
-    cat(" Other outputs available, see ?tune.mint.splsda \n")
+    cat(" Other outputs available, see ?tune.mint.splsda \n\n")
+
+    cat(" Visualisation Functions: \n", "-------------------- \n")
+    cat(" plot \n")
 }
 
 
@@ -764,7 +778,7 @@ print.predict = function(x, ...)
     {
         cat(" Prediction values of the test samples for each block and each component: see object$predict \n")
         cat(" variates of the test samples for each block and each component: see object$variates \n")
-
+        
         
         if(!is.null(x$dist)) #DA object, more outputs
         {

@@ -5,7 +5,7 @@
 #   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 04-2015
-# last modified: 24-08-2016
+# last modified: 25-08-2016
 #
 # Copyright (C) 2015
 #
@@ -81,7 +81,7 @@ legend.ncol,
     #stackedbar=paste(numberOfRows, numberOfCols, sep="_"))
     
     par(mfrow = c(numberOfRows+1, numberOfCols), mar = rep.int(1/2, 4), oma = c(2,2,2,2))
-    layout(matrix(c(1:(numberOfCols)^2, (numberOfCols)^2+1, (numberOfCols)^2+1),numberOfRows+1,numberOfCols, byrow=TRUE),
+    layout(matrix(c(1:(numberOfCols)^2, rep((numberOfCols)^2+1,numberOfCols)),numberOfRows+1,numberOfCols, byrow=TRUE),
     heights = c(rep(1,numberOfRows), 0.25 * floor(nlevels(Y)/legend.ncol)))
     for(i in 1:numberOfRows)
     {

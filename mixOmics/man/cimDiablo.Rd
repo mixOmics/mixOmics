@@ -14,6 +14,9 @@ cimDiablo(object,
 ncomp = 1,
 margins = c(2, 15),
 legend.position = "topright",
+transpose = FALSE,
+row.names = TRUE,
+col.names = TRUE,
 size.legend = 1.5)
 }
 
@@ -24,6 +27,13 @@ size.legend = 1.5)
 	for column and row names respectively.}
 \item{legend.position}{position of the legend, one of "bottomright", "bottom", "bottomleft",
 "left", "topleft", "top", "topright", "right" and "center". }
+
+\item{transpose}{logical indicating if the matrix should be transposed for plotting.
+Defaults to \code{FALSE}.}
+\item{row.names, col.names}{logical, should the name of rows and/or columns of \code{mat} be shown? If \code{TRUE}
+(defaults) \code{rownames(mat)} and/or \code{colnames(mat)} are used. Possible character vectors with
+row and/or column labels can be used.}
+
 \item{size.legend}{size of the legend}
 }
 

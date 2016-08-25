@@ -11,11 +11,11 @@ importFrom("graphics", "abline", "arrows", "axis", "barplot", "box",
              "image", "layout", "legend", "lines", "locator", "mtext",
              "par", "plot", "plot.default", "points", "polygon", "rect",
              "segments", "strheight", "strwidth", "symbols", "text",
-             "title","Axis","boxplot","rasterImage")
+             "title","Axis","boxplot","rasterImage","matplot")
 
 importFrom("stats", "as.dendrogram", "as.dist", "coefficients", "cor",
              "cov", "dist", "hclust", "lm", "lsfit", "median", "na.omit",
-             "order.dendrogram", "predict", "quantile", "reorder", "var","sd")
+             "order.dendrogram", "predict", "quantile", "reorder", "var","sd","pnorm")
 
 importFrom("utils", "setTxtProgressBar", "txtProgressBar","packageDescription","relist")
 
@@ -23,13 +23,14 @@ importFrom("ellipse","ellipse")
 
 importFrom("grDevices","rainbow")
 
-importFrom("methods", "hasArg")
+importFrom("methods", "hasArg", "is")
 
 importFrom("dplyr","group_by")
 
 importFrom("tidyr","gather")
 
 importFrom("reshape2","melt","dcast")
+
 
 export(
 auc,

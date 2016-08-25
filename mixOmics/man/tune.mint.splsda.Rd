@@ -11,8 +11,8 @@ grid to determine optimal values for the sparsity parameters in \code{mint.splsd
 
 \usage{
 tune.mint.splsda(X, Y, ncomp = 1, study, test.keepX = c(5, 10, 15), already.tested.X,
-dist = "max.dist", measure = "BER", progressBar = TRUE, scale = TRUE, tol = 1e-06,
-max.iter = 500, near.zero.var = FALSE, light.output = TRUE )
+constraint = TRUE, dist = "max.dist", measure = "BER", auc = FALSE, progressBar = TRUE,
+scale = TRUE, tol = 1e-06, max.iter = 500, near.zero.var = FALSE, light.output = TRUE )
 }
 
 \arguments{
@@ -21,9 +21,11 @@ max.iter = 500, near.zero.var = FALSE, light.output = TRUE )
 \item{ncomp}{Number of components to include in the model (see Details). Default to 1}
 \item{study}{grouping factor indicating which samples are from the same study}
 \item{test.keepX}{numeric vector for the different number of variables to test from the \eqn{X} data set}
-\item{already.tested.X}{if \code{ncomp > 1} A list containing which variables of X are to be kept on each of the first PLS-components}
+\item{already.tested.X}{if \code{ncomp > 1} A list containing which variables of X are to be kept on each of the first PLS-components (if \code{constraint=TRUE}) or a numeric vector indicating the number of variables to select from the \eqn{X} data set on the firsts components (if \code{constraint = FALSE})}
+\item{constraint}{Indicate whether the performance of the model is evaluated in regards to the number of variables selected (keepX, constraint = FALSE) or which specific variables are selected (keepX.constraint, constraint = TRUE)}
 \item{dist}{only applies to an object inheriting from \code{"plsda"} or \code{"splsda"} to evaluate the classification performance of the model. Should be a subset of \code{"max.dist"}, \code{"centroids.dist"}, \code{"mahalanobis.dist"}. Default is \code{"all"}. See \code{\link{predict}}.}
 \item{measure}{Two misclassification measure are available: overall misclassification error \code{overall} or the Balanced Error Rate \code{BER}}
+\item{auc}{if \code{TRUE} calculate the Area Under the Curve (AUC) performance of the model.}
 \item{progressBar}{by default set to \code{TRUE} to output the progress bar of the computation.}
 \item{scale}{boleean. If scale = TRUE, each block is standardized
 to zero means and unit variances (default: TRUE)}

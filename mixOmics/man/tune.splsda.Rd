@@ -12,8 +12,8 @@ grid to determine optimal values for the sparsity parameters in \code{splsda}.
 
 \usage{
 tune.splsda(X, Y, ncomp = 1,
-test.keepX = c(5, 10, 15), already.tested.X = NULL, validation = "Mfold", folds = 10,
-dist = "max.dist", measure = "BER", progressBar = TRUE, near.zero.var = FALSE,
+test.keepX = c(5, 10, 15), already.tested.X, constraint = FALSE, validation = "Mfold",
+folds = 10, dist = "max.dist", measure = "BER", auc = FALSE, progressBar = TRUE, near.zero.var = FALSE,
 nrepeat = 1, logratio = c('none','CLR'), multilevel = NULL, light.output = TRUE)
 
 }	
@@ -23,13 +23,15 @@ nrepeat = 1, logratio = c('none','CLR'), multilevel = NULL, light.output = TRUE)
   \item{Y}{\code{if(method = 'spls')} numeric vector or matrix of continuous responses (for multi-response models) \code{NA}s are allowed.}
   \item{ncomp}{the number of components to include in the model.}
   \item{test.keepX}{numeric vector for the different number of variables to test from the \eqn{X} data set}
-  \item{already.tested.X}{if \code{ncomp > 1} numeric vector indicating the number of variables to select from the \eqn{X} data set on the firsts components}
+\item{already.tested.X}{if \code{ncomp > 1} A list containing which variables of X are to be kept on each of the first PLS-components (if \code{constraint=TRUE}) or a numeric vector indicating the number of variables to select from the \eqn{X} data set on the firsts components (if \code{constraint = FALSE})}
+\item{constraint}{Indicate whether the performance of the model is evaluated in regards to the number of variables selected (keepX, constraint = FALSE) or which specific variables are selected (keepX.constraint, constraint = TRUE)}
 \item{validation}{character.  What kind of (internal) validation to use, matching one of \code{"Mfold"} or
 \code{"loo"} (see below). Default is \code{"Mfold"}.}
 \item{folds}{the folds in the Mfold cross-validation. See Details.}
 \item{dist}{distance metric to use for \code{splsda} to estimate the classification error rate,
 should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \code{"max.dist"} (see Details).}
 \item{measure}{Two misclassification measure are available: overall misclassification error \code{overall} or the Balanced Error Rate \code{BER}}
+\item{auc}{if \code{TRUE} calculate the Area Under the Curve (AUC) performance of the model.}
 \item{progressBar}{by default set to \code{TRUE} to output the progress bar of the computation.}
 \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Default value is FALSE}
 \item{nrepeat}{Number of times the Cross-Validation process is repeated.}
@@ -88,7 +90,22 @@ X = breast.tumors$gene.exp
 Y = as.factor(breast.tumors$sample$treatment)
 tune = tune.splsda(X, Y, ncomp = 1, nrepeat = 10, logratio = "none",
     test.keepX = c(5, 10, 15), folds = 10, dist = "max.dist",
-    already.tested.X = NULL, progressBar = TRUE)
+    progressBar = TRUE)
+
+# 2 components, optimising 'keepX' with 'constraint = FALSE'
+tune = tune.splsda(X, Y, ncomp = 2, test.keepX = c(5, 10, 15),
+folds = 10, dist = "max.dist", constraint = FALSE,
+progressBar = TRUE)
+tune$choice.keepX
+tune$choice.keepX.constraint
+
+# 2 components, optimising 'keepX.constraint' with 'constraint = TRUE'
+tune = tune.splsda(X, Y, ncomp = 2, test.keepX = c(5, 10, 15),
+folds = 10, dist = "max.dist", constraint = TRUE,
+progressBar = TRUE)
+tune$choice.keepX
+tune$choice.keepX.constraint
+
 }
 
 ## only tune component 3 and 4
