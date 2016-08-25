@@ -32,8 +32,10 @@ auroc.plsda = auroc.splsda = function(
 object,
 newdata = object$X,
 outcome.test = as.factor(object$Y),
+dist = "max.dist",
+multilevel = NULL,
 plot = TRUE,
-ncomp = 1,
+roc.comp = 1,
 ...)
 {
     if(dim(newdata)[[1]]!=length(outcome.test))
@@ -43,13 +45,13 @@ ncomp = 1,
     statauc=list()
     data$outcome=as.factor(outcome.test)
     
-    res.predict  =  predict(object, newdata = newdata, method = "max.dist")$predict
+    res.predict  =  predict(object, newdata = newdata, dist = dist, multilevel = multilevel)$predict
     
     for (i in 1:object$ncomp)
     {
         data$data=res.predict[,,i]
         title=paste("ROC Curve Comp",i)
-        statauc[[paste("Comp", i, sep = "")]]=statauc(data, plot = ifelse(i%in%ncomp,plot,FALSE), title = title)
+        statauc[[paste("Comp", i, sep = "")]]=statauc(data, plot = ifelse(i%in%roc.comp,plot,FALSE), title = title)
     }
     return(statauc)
 }
@@ -59,8 +61,10 @@ object,
 newdata = object$X,
 outcome.test = as.factor(object$Y),
 study.test = object$study,
+dist = "max.dist",
+multilevel = NULL,
 plot = TRUE,
-ncomp = 1,
+roc.comp = 1,
 ...)
 {
 
@@ -75,13 +79,13 @@ ncomp = 1,
     statauc=list()
     data$outcome=as.factor(outcome.test)
     
-    res.predict  =  predict(object, newdata = newdata, method = "max.dist",  study.test = study.test)$predict
+    res.predict  =  predict(object, newdata = newdata, dist = dist, multilevel = multilevel, study.test = study.test)$predict
 
     for (i in 1:object$ncomp)
     {
         data$data=res.predict[,,i]
         title=paste("ROC Curve Comp",i)
-        statauc[[paste("Comp", i, sep = "")]]=statauc(data, plot = ifelse(i%in%ncomp,plot,FALSE), title = title)
+        statauc[[paste("Comp", i, sep = "")]]=statauc(data, plot = ifelse(i%in%roc.comp,plot,FALSE), title = title)
     }
     return(statauc)
 }
@@ -90,9 +94,11 @@ auroc.sgccda = function(
 object,
 newdata = object$X,
 outcome.test = as.factor(object$Y),
+dist = "max.dist",
+multilevel = NULL,
 plot = TRUE,
-block = 1,
-ncomp = 1,
+roc.block = 1,
+roc.comp = 1,
 ...)
 {
     
@@ -100,9 +106,9 @@ ncomp = 1,
     auc.mean=list()
     data$outcome=as.factor(outcome.test)
 
-    res.predict  =  predict(object, newdata = newdata, method = "max.dist")$predict
+    res.predict  =  predict(object, newdata = newdata, dist = dist, multilevel = multilevel)$predict
     block.all = names(res.predict)
-    block.temp = names(res.predict[block])
+    block.temp = names(res.predict[roc.block])
     
     for(j in 1:length(res.predict))
     {
@@ -111,7 +117,7 @@ ncomp = 1,
             data$data=res.predict[[j]][,,i]
             title=paste("ROC Curve\nBlock: ", names(res.predict)[j], ", comp: ",i, sep="")
             
-            plot.temp = ifelse(i%in%ncomp && names(res.predict)[j]%in%block.temp, plot, FALSE)
+            plot.temp = ifelse(i%in%roc.comp && names(res.predict)[j]%in%block.temp, plot, FALSE)
             auc.mean[[names(res.predict)[j]]][[paste("comp",i,sep = "")]] = statauc(data, plot = plot.temp, title = title)
             
         }

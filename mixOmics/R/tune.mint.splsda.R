@@ -130,7 +130,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             if(is.list(already.tested.X))
             stop("''already.tested.X' must be a vector of keepX values since 'constraint' is set to FALSE")
             
-            print(paste("Number of variables selected on the first", length(already.tested.X), "component(s) was", paste(already.tested.X,collapse = " ")))
+            print(paste("Number of variables selected on the first", length(already.tested.X), "component(s):", paste(already.tested.X,collapse = " ")))
         }
     }
     if(length(already.tested.X) >= ncomp)
