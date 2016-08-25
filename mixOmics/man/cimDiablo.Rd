@@ -11,7 +11,7 @@ represent "high-dimensional" data sets analysed with DIABLO.
 
 \usage{
 cimDiablo(object,
-ncomp = 1,
+ncomp=1,
 margins = c(2, 15),
 legend.position = "topright",
 transpose = FALSE,
@@ -43,7 +43,7 @@ This function is a small wrapper of \code{link{cim}} specific to the DIABLO fram
 
 \references{
 Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
-DIABLO - multi omics integration for biomarker discovery.
+DIABLO - multi omics integration for biomarker discovery. BioRxiv \url{http://dx.doi.org/10.1101/067611}
 
 Eisen, M. B., Spellman, P. T., Brown, P. O. and Botstein, D. (1998). 
 Cluster analysis and display of genome-wide expression patterns. 

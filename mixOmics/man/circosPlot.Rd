@@ -41,7 +41,7 @@ If \code{NULL}, the colnames of the data matrix are used.}
 
 \references{
 Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
-DIABLO - multi omics integration for biomarker discovery.
+DIABLO - multi omics integration for biomarker discovery.  BioRxiv \url{http://dx.doi.org/10.1101/067611}
 }
 
 \author{Michale Vacher, Amrit Singh, Florian Rohart, Kim-Anh Le Cao}
