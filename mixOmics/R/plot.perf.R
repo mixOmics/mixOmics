@@ -28,11 +28,13 @@
 
 
 
-plot.perf <-
+
+# PLS object
+# ----------------------
+
+plot.perf.pls.mthd <-plot.perf.spls.mthd <-
 function (x,
 criterion = c("MSEP", "RMSEP", "R2", "Q2"),
-dist = "all",
-measure = "overall",
 xlab = "number of components",
 ylab = NULL,
 LimQ2 = 0.0975,
@@ -42,10 +44,6 @@ layout = NULL,
 ...)
 {
     
-    #-- plot for pls and spls ----------------------------------------#
-    if (any(class(x) == "perf.pls.mthd") | any(class(x) == "perf.spls.mthd"))
-    {
-        
         if (!any(criterion %in% c("MSEP", "RMSEP", "R2", "Q2")) || missing(criterion))
         stop("Choose a validation criterion: MSEP, RMSEP, R2 or Q2.")
         y = switch(criterion, MSEP = x$MSEP, RMSEP = sqrt(x$MSEP), R2 = x$R2, Q2 = x$Q2)
@@ -96,74 +94,6 @@ layout = NULL,
         if (is.null(cTicks)) cTicks = 1:ncol(y)
         yList = list(relation = "free")
         
-    } # end plot for pls and spls
-    
-    #-- plot for plsda and splsda ----------------------------------------#
-    if (any(class(x) == "perf.plsda.mthd") | any(class(x) == "perf.splsda.mthd"))
-    {
-        
-        if (hasArg(pred.method))
-        stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
-        pred.method = NULL # to pass R CMD check
-
-        if (any(dist == "all"))
-        dist = colnames(x$error.rate[[measure]])
-        
-        if (is.null(dist))
-        stop("'measure' should be among the ones used in your call to 'perf': ", paste(names(x$error.rate),collapse = ", "),".")
-
-        if (!any(dist %in% colnames(x$error.rate[[measure]])))
-        stop("'dist'should be among the ones used in your call to 'perf': ", paste(colnames(x$error.rate[[measure]]), collapse = ", "),".")
-        
-        # KA changed
-        #x = matrix(x[, pred.method], ncol = length(pred.method))
-        x = matrix(x$error.rate[[measure]][, dist], ncol = length(dist))
-        
-        
-        if (is.null(ylab))
-        {
-            if (measure == "overall")
-            ylab = "error rate"
-            
-            if (measure == "BER")
-            ylab = "balanced error rate"
-            
-        }
-        nResp = ncol(x)  # Number of prediction methods
-        nComp = nrow(x)  # Number of components
-        
-        if (nResp > 1) {
-            if (is.null(layout)) {
-                nRows = min(c(2, nResp))
-                nCols = min(c(2, ceiling(nResp / nRows)))
-                layout = c(nRows, nCols)
-            }
-            else {
-                if (length(layout) != 2 || !is.numeric(layout) || any(is.na(layout)))
-                stop("'layout' must be a numeric vector of length 2.")
-                nRows = layout[1]
-                nCols = layout[2]
-            }
-            
-            if (nRows * nCols < nResp) devAskNewPage(TRUE)
-        }
-        
-        ynames = dist
-        val = comps = vector("numeric")
-        varName = vector("character")
-        
-        for (i in 1:nResp) {
-            val = c(val, x[, i])
-            comps = c(comps, 1:nComp)
-            varName = c(varName, rep(ynames[i], nComp))
-        }
-        
-        df = data.frame(val = val, comps = comps, varName = varName)
-        if (is.null(cTicks)) cTicks = 1:nComp
-        yList = list()
-        
-        criterion = ""
-    } # end plot for plsda and splsda
     
     if (criterion == "Q2")
     {
@@ -190,4 +120,105 @@ layout = NULL,
         scales = list(y = yList, x = list(at = cTicks)),
         as.table = TRUE, layout = layout, ...)
     }
+  
+
+  
 }
+
+# PLSDA object
+# ----------------------
+
+plot.perf.plsda.mthd <-plot.perf.splsda.mthd <-
+  function (x,
+            dist = "all",
+            measure = c("all","overall","BER"),
+            type="l",
+            xlab = NULL,
+            ylab = NULL,
+            overlay=c("all","measure"),
+            legend="vertical",
+            ...)
+  {
+      
+      if (hasArg(pred.method))
+        stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
+      pred.method = NULL # to pass R CMD check
+      
+      
+      if (any(measure == "all"))
+        measure = names(x$error.rate)
+      
+      if (is.null(measure))
+        stop("'measure' should be among the ones used in your call to 'perf': ", paste(names(x$error.rate),collapse = ", "),".")
+      
+      if (!any(measure %in% names(x$error.rate)))
+        stop("'measure'should be among the ones used in your call to 'perf': ", paste(colnames(x$error.rate[[measure]]), collapse = ", "),".")
+      
+      
+      if (any(dist == "all"))
+      dist = colnames(x$error.rate[[1]])
+      
+      
+      if (is.null(dist))
+        stop("'dist' should be among the ones used in your call to 'perf': ", paste(colnames(x$error.rate[[1]]),collapse = ", "),".")
+      
+      if (!any(dist %in% colnames(x$error.rate[[1]])))
+        stop("'dist'should be among the ones used in your call to 'perf': ", paste(colnames(x$error.rate[[1]]), collapse = ", "),".")
+      
+      # KA changed
+      #x = matrix(x[, pred.method], ncol = length(pred.method))
+      mat.error.plsda=matrix(nrow=nrow(x$error.rate[[1]]),ncol=0)
+      for(mea in measure)
+        {
+        mat.error.plsda=cbind(mat.error.plsda,x$error.rate[[mea]][, dist])
+        }
+      
+      if (is.null(ylab))
+      {
+          ylab = 'Classification error rate'
+        
+      }
+      
+      if (is.null(xlab))
+      {
+        xlab = 'PLSDA components'
+        
+      }
+      
+    
+      if(overlay=="all")
+        {
+       out<-matplot(mat.error.plsda, type = type, lty = rep(c(1:length(measure)), each = length(dist)), col = rep(color.mixo(1:length(dist)), length(measure)), 
+                lwd = 2, xlab = xlab, ylab = ylab)
+       if(legend=="vertical")
+       {legend('topright', legend = c(measure, dist), lty = c(1:length(measure), rep(NA, length(dist))), 
+               pch = c(rep(NA, length(measure)), rep(16, length(dist))), col = c(rep('black',length(measure)), color.mixo(1:length(dist))), ncol = 1, lwd = 2)}
+       else if(legend=="horizontal")
+       {
+         legend('topright', legend = c(measure,"" ,dist), lty = c(1:length(measure), rep(NA, (length(dist)+1))), 
+                pch = c(rep(NA, (length(measure)+1)), rep(16, length(dist))), col = c(rep('black',length(measure)), NA, color.mixo(1:length(dist))), ncol = 2, lwd = 2)
+         
+       }
+      }
+      
+      else if(overlay=="measure")
+      {
+        layout(matrix(1:length(dist),1,length(dist),byrow=TRUE))
+        for(di in dist)
+        {
+        out<-matplot(mat.error.plsda[,which(colnames(mat.error.plsda)==di)], type = type, lty = c(1:length(measure)), col ="black", 
+                     lwd = 2, xlab = xlab, ylab = ylab)
+        title(di)
+        if(legend=="vertical")
+        {legend('topright', legend = measure, lty = 1:length(measure),  col = rep('black',length(measure)), ncol = 1, lwd = 2)}
+       
+        else if(legend=="horizontal")
+        {
+          legend('topright', legend = c(measure), lty = 1:length(measure),  col = rep('black',length(measure)), ncol = 2, lwd = 2)
+        }
+        }
+      }
+    
+invisible(out)
+    
+  }

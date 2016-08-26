@@ -357,7 +357,6 @@ for(validation in c("Mfold","loo"))
         {
           e<-perf(res.plsda,dist = dist,constraint=constraint,
                   auc = auc,validation = validation,nrepeat=nrepeat)
-          print(e)
         }
       }
       
@@ -381,7 +380,6 @@ for(validation in c("Mfold","loo"))
         {
           e<-perf(res.plsda,dist = dist,constraint=constraint,
                   auc = auc,validation = validation,nrepeat=nrepeat)
-          print(e)
         }
       }
       
@@ -405,7 +403,6 @@ for(validation in c("Mfold","loo"))
          {
           e<-perf(res.plsda,dist = dist,constraint=constraint,
                   auc = auc,validation = validation,nrepeat=nrepeat)
-          print(e)
          }
       }
       
@@ -437,7 +434,6 @@ for(validation in c("Mfold","loo"))
         {
           e<-perf(res.plsda,dist = dist,constraint=constraint,
                   auc = auc,validation = validation,nrepeat=nrepeat)
-          print(e)
         }
       }
       
@@ -459,7 +455,6 @@ for(validation in c("Mfold","loo"))
         {
           e<-perf(res.plsda,dist = dist,constraint=constraint,
                   auc = auc,validation = validation,nrepeat=nrepeat)
-          print(e)
         }
       }
       
