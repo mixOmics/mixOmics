@@ -130,13 +130,13 @@ layout = NULL,
 
 plot.perf.plsda.mthd <-plot.perf.splsda.mthd <-
   function (x,
-            dist = "all",
+            dist = c("all","max.dist","centroids.dist","mahalanobis.dist"),
             measure = c("all","overall","BER"),
             type="l",
             xlab = NULL,
             ylab = NULL,
             overlay=c("all","measure"),
-            legend="vertical",
+            legend=c("vertical","horizontal"),
             ...)
   {
       
@@ -186,11 +186,11 @@ plot.perf.plsda.mthd <-plot.perf.splsda.mthd <-
       }
       
     
-      if(overlay=="all")
+      if(any(overlay=="all"))
         {
        out<-matplot(mat.error.plsda, type = type, lty = rep(c(1:length(measure)), each = length(dist)), col = rep(color.mixo(1:length(dist)), length(measure)), 
                 lwd = 2, xlab = xlab, ylab = ylab)
-       if(legend=="vertical")
+       if(any(legend=="vertical"))
        {legend('topright', legend = c(measure, dist), lty = c(1:length(measure), rep(NA, length(dist))), 
                pch = c(rep(NA, length(measure)), rep(16, length(dist))), col = c(rep('black',length(measure)), color.mixo(1:length(dist))), ncol = 1, lwd = 2)}
        else if(legend=="horizontal")
@@ -203,13 +203,14 @@ plot.perf.plsda.mthd <-plot.perf.splsda.mthd <-
       
       else if(overlay=="measure")
       {
-        layout(matrix(1:length(dist),1,length(dist),byrow=TRUE))
+        def.par <- par(no.readonly = TRUE) 
+        par(mfrow=c(1,length(dist)))
         for(di in dist)
         {
         out<-matplot(mat.error.plsda[,which(colnames(mat.error.plsda)==di)], type = type, lty = c(1:length(measure)), col ="black", 
                      lwd = 2, xlab = xlab, ylab = ylab)
         title(di)
-        if(legend=="vertical")
+        if(any(legend=="vertical"))
         {legend('topright', legend = measure, lty = 1:length(measure),  col = rep('black',length(measure)), ncol = 1, lwd = 2)}
        
         else if(legend=="horizontal")
@@ -217,6 +218,7 @@ plot.perf.plsda.mthd <-plot.perf.splsda.mthd <-
           legend('topright', legend = c(measure), lty = 1:length(measure),  col = rep('black',length(measure)), ncol = 2, lwd = 2)
         }
         }
+        par(def.par)
       }
     
 invisible(out)
