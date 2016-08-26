@@ -160,7 +160,7 @@ class.object = NULL
         {
             auc.all[[nrep]] = array(0, c(nlevels(Y),2, length(test.keepX)), dimnames = list(paste(levels(Y), "vs Other(s)"), c("AUC","p-value"), names(test.keepX)))
         }else{
-            auc.all[[nrep]] = array(0, c(1,2, length(test.keepX)), dimnames = list("", c("AUC","p-value"), names(test.keepX)))
+            auc.all[[nrep]] = array(0, c(1,2, length(test.keepX)), dimnames = list(paste(levels(Y)[1], levels(Y)[2], sep = " vs "), c("AUC","p-value"), names(test.keepX)))
         }
         
         n = nrow(X)
@@ -299,7 +299,13 @@ class.object = NULL
     # average auc over the nrepeat, for each test.keepX
     if(auc)
     {
-        auc.mean.sd =  array(0, c(nlevels(Y),2, length(test.keepX)), dimnames = list(rownames(auc.all[[1]]), c("AUC.mean","AUC.sd"), names(test.keepX)))
+        
+        if(nlevels(Y)>2)
+        {
+            auc.mean.sd =  array(0, c(nlevels(Y),2, length(test.keepX)), dimnames = list(rownames(auc.all[[1]]), c("AUC.mean","AUC.sd"), names(test.keepX)))
+        }else{
+            auc.mean.sd =  array(0, c(1,2, length(test.keepX)), dimnames = list(rownames(auc.all[[1]]), c("AUC.mean","AUC.sd"), names(test.keepX)))
+        }
         
         for(i in 1:length(test.keepX))
         {

@@ -108,7 +108,6 @@ near.zero.var = FALSE)
     design=design, scheme=scheme, mode=mode, scale=scale,
     bias=bias, init=init, tol=tol, verbose=verbose, max.iter=max.iter, near.zero.var=near.zero.var)
     
-    print(result$X[result$indY][[1]])
     # choose the desired output from 'result'
     out=list(
         call = match.call(),
