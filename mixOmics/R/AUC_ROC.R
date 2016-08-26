@@ -73,12 +73,7 @@ roc.comp = 1,
 ...)
 {
 
-    if(dim(newdata)[[1]]!=length(outcome.test))
-    stop("Factor outcome.test must be a factor with ",dim(newdata)[[1]], " elements.",call. = FALSE)
-    
-    if(dim(newdata)[[1]]!=length(study.test))
-    stop("Factor study.test must be a factor with ",dim(newdata)[[1]], " elements.",call. = FALSE)
-    study.test=factor(as.factor(study.test))
+   study.test=factor(as.factor(study.test))
     
     data=list()
     statauc=list()

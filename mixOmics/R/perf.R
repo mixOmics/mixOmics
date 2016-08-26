@@ -350,7 +350,7 @@ validation = c("Mfold", "loo"),
 folds = 10,
 nrepeat = 1,
 auc = FALSE,
-progressBar = TRUE,
+progressBar = FALSE,
 ...)
 {
     
@@ -524,7 +524,7 @@ progressBar = TRUE,
             names(test.keepX) = test.keepX
             #test.keepX is a value
         }
-        
+      
         # estimate performance of the model for each component
         result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = comp,
         choice.keepX = if(constraint){NULL}else{choice.keepX},
