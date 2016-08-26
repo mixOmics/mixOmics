@@ -73,7 +73,6 @@ to select subsets of variables from both data sets that are highly positively or
 }
 
 
-}
 
 \value{
 \code{spls} returns an object of class \code{"spls"}, a list 
