@@ -342,7 +342,7 @@ res.plsda <- plsda(X, Y, ncomp = 2)
 
 ####ERROR A RESOUDRE MFOLD NREPEAT 1 // RESOLU PAR FR
 
-####ERROR CONSTRAINT
+####ERROR CONSTRAINT //RESOLU
 
 
 for(validation in c("Mfold","loo"))
