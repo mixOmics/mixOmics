@@ -26,13 +26,15 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #############################################################################################################
 
+plot.perf<-function(x,...) NextMethod("plot")
 
 
-plot.perf <-
+# PLS object
+# ----------------------
+
+plot.perf.pls.mthd <-plot.perf.spls.mthd <-
 function (x,
 criterion = c("MSEP", "RMSEP", "R2", "Q2"),
-dist = "all",
-measure = "overall",
 xlab = "number of components",
 ylab = NULL,
 LimQ2 = 0.0975,
@@ -42,10 +44,6 @@ layout = NULL,
 ...)
 {
     
-    #-- plot for pls and spls ----------------------------------------#
-    if (any(class(x) == "perf.pls.mthd") | any(class(x) == "perf.spls.mthd"))
-    {
-        
         if (!any(criterion %in% c("MSEP", "RMSEP", "R2", "Q2")) || missing(criterion))
         stop("Choose a validation criterion: MSEP, RMSEP, R2 or Q2.")
         y = switch(criterion, MSEP = x$MSEP, RMSEP = sqrt(x$MSEP), R2 = x$R2, Q2 = x$Q2)
@@ -96,74 +94,6 @@ layout = NULL,
         if (is.null(cTicks)) cTicks = 1:ncol(y)
         yList = list(relation = "free")
         
-    } # end plot for pls and spls
-    
-    #-- plot for plsda and splsda ----------------------------------------#
-    if (any(class(x) == "perf.plsda.mthd") | any(class(x) == "perf.splsda.mthd"))
-    {
-        
-        if (hasArg(pred.method))
-        stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
-        pred.method = NULL # to pass R CMD check
-
-        if (any(dist == "all"))
-        dist = colnames(x$error.rate[[measure]])
-        
-        if (is.null(dist))
-        stop("'measure' should be among the ones used in your call to 'perf': ", paste(names(x$error.rate),collapse = ", "),".")
-
-        if (!any(dist %in% colnames(x$error.rate[[measure]])))
-        stop("'dist'should be among the ones used in your call to 'perf': ", paste(colnames(x$error.rate[[measure]]), collapse = ", "),".")
-        
-        # KA changed
-        #x = matrix(x[, pred.method], ncol = length(pred.method))
-        x = matrix(x$error.rate[[measure]][, dist], ncol = length(dist))
-        
-        
-        if (is.null(ylab))
-        {
-            if (measure == "overall")
-            ylab = "error rate"
-            
-            if (measure == "BER")
-            ylab = "balanced error rate"
-            
-        }
-        nResp = ncol(x)  # Number of prediction methods
-        nComp = nrow(x)  # Number of components
-        
-        if (nResp > 1) {
-            if (is.null(layout)) {
-                nRows = min(c(2, nResp))
-                nCols = min(c(2, ceiling(nResp / nRows)))
-                layout = c(nRows, nCols)
-            }
-            else {
-                if (length(layout) != 2 || !is.numeric(layout) || any(is.na(layout)))
-                stop("'layout' must be a numeric vector of length 2.")
-                nRows = layout[1]
-                nCols = layout[2]
-            }
-            
-            if (nRows * nCols < nResp) devAskNewPage(TRUE)
-        }
-        
-        ynames = dist
-        val = comps = vector("numeric")
-        varName = vector("character")
-        
-        for (i in 1:nResp) {
-            val = c(val, x[, i])
-            comps = c(comps, 1:nComp)
-            varName = c(varName, rep(ynames[i], nComp))
-        }
-        
-        df = data.frame(val = val, comps = comps, varName = varName)
-        if (is.null(cTicks)) cTicks = 1:nComp
-        yList = list()
-        
-        criterion = ""
-    } # end plot for plsda and splsda
     
     if (criterion == "Q2")
     {
@@ -190,4 +120,259 @@ layout = NULL,
         scales = list(y = yList, x = list(at = cTicks)),
         as.table = TRUE, layout = layout, ...)
     }
+  
+
+  
 }
+
+# PLSDA object
+# ----------------------
+
+plot.perf.plsda.mthd <-plot.perf.splsda.mthd <-
+  function (x,
+            dist = c("all","max.dist","centroids.dist","mahalanobis.dist"),
+            measure = c("all","overall","BER"),
+            type="l",
+            xlab = NULL,
+            ylab = NULL,
+            overlay=c("all","measure"),
+            legend=c("vertical","horizontal"),
+            sd=TRUE,
+            ...)
+  {
+      
+      if (hasArg(pred.method))
+        stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
+      pred.method = NULL # to pass R CMD check
+      
+      
+      if (any(measure == "all"))
+        measure = names(x$error.rate)
+      
+      if (is.null(measure) || !any(measure %in% names(x$error.rate)))
+        stop("'measure' should be among the ones used in your call to 'perf': ", paste(names(x$error.rate),collapse = ", "),".")
+      
+      if (any(dist == "all"))
+      dist = colnames(x$error.rate[[1]])
+      
+      
+      if (is.null(dist) || !any(dist %in% colnames(x$error.rate[[1]])))
+        stop("'dist' should be among the ones used in your call to 'perf': ", paste(colnames(x$error.rate[[1]]),collapse = ", "),".")
+      
+      # KA changed
+      #x = matrix(x[, pred.method], ncol = length(pred.method))
+      mat.error.plsda=matrix(nrow=nrow(x$error.rate[[1]]),ncol=0)
+      for(mea in measure)
+        {
+        mat.error.plsda=cbind(mat.error.plsda,x$error.rate[[mea]][, dist])
+      }
+    colnames(mat.error.plsda)=rep(dist,length(measure))
+    
+    sd.error.plsda=matrix(nrow=nrow(x$error.rate.sd[[1]]),ncol=0)
+    for(mea in measure)
+    {
+      sd.error.plsda=cbind(sd.error.plsda,x$error.rate.sd[[mea]][, dist])
+    }
+    colnames(sd.error.plsda)=rep(dist,length(measure))
+      
+      if (is.null(ylab))
+      {
+          ylab = 'Classification error rate'
+        
+      }
+      
+      if (is.null(xlab))
+      {
+        xlab = 'PLSDA components'
+        
+      }
+    def.par <- par(no.readonly = TRUE) 
+    internal_graph_plot.perf(mat.error.plsda,sd.error.plsda, overlay, type,measure,dist,legend,xlab,ylab,sd=sd,  ...)
+    par(def.par)
+    # error.bar(out,as.vector(mat.error.plsda),as.vector(cbind(x$error.rate.sd$overall,x$error.rate.sd$BER)))
+    
+return(invisible(out))
+    
+  }
+
+# mint.PLSDA object
+# ----------------------
+
+plot.perf.mint.plsda.mthd <-plot.perf.mint.splsda.mthd <-
+  function (x,
+            dist = c("all","max.dist","centroids.dist","mahalanobis.dist"),
+            measure = c("all","overall","BER"),
+            type="l",
+            xlab = NULL,
+            ylab = NULL,
+            study="all",
+            error.rate=c("average","study"),
+            overlay=c("all","measure"),
+            legend=c("vertical","horizontal"),
+            ...)
+  {
+    
+    if (hasArg(pred.method))
+      stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
+    pred.method = NULL # to pass R CMD check
+    
+    if(any(error.rate=="average"))
+  {  if (any(measure == "all"))
+      measure = c("BER","overall")
+    
+    if (is.null(measure) || !any(measure %in% c("BER","overall")))
+      stop("'measure' should be among the ones used in your call to 'perf': ", paste(c("BER","overall"),collapse = ", "),".")
+    
+    
+    if (any(dist == "all"))
+      dist = colnames(x$global.error[[1]])
+    
+    
+    if (is.null(dist) || !any(dist %in% colnames(x$global.error[[1]])))
+      stop("'dist' should be among the ones used in your call to 'perf': ", paste(colnames(x$global.error[[1]]),collapse = ", "),".")
+    
+    # KA changed
+    #x = matrix(x[, pred.method], ncol = length(pred.method))
+    mat.error.plsda=matrix(nrow=nrow(x$global.error[[1]]),ncol=0)
+    for(mea in measure)
+    {
+      mat.error.plsda=cbind(mat.error.plsda,x$global.error[[mea]][, dist])
+    }
+    
+    if (is.null(ylab))
+    {
+      ylab = 'Classification error rate'
+      
+    }
+    
+    if (is.null(xlab))
+    {
+      xlab = 'PLSDA components'
+      
+    }
+    def.par <- par(no.readonly = TRUE) 
+    internal_graph_plot.perf(mat.error.plsda,sd.error.plsda=NULL, overlay, type,measure,dist,legend,xlab,ylab,sd=FALSE,  ...)
+    par(def.par)
+    }
+    else if(any(error.rate=="study"))
+    {  
+      
+      def.par <- par(no.readonly = TRUE) 
+      
+      if (any(measure == "all"))
+      measure = c("BER","overall")
+    
+    if (is.null(measure) || !any(measure %in% c("BER","overall")))
+      stop("'measure' should be among the ones used in your call to 'perf': ", paste(c("BER","overall"),collapse = ", "),".")
+    
+      if (any(study == "all"))
+        study = 1:length(x$study.specific.error)
+      
+      
+      if (any(dist == "all"))
+        dist = colnames(x$study.specific.error[[1]][[1]])
+      
+      
+      if (is.null(dist) || !any(dist %in% colnames(x$study.specific.error[[1]][[1]])))
+        stop("'dist' should be among the ones used in your call to 'perf': ", paste(colnames(x$study.specific.error[[1]][[1]]),collapse = ", "),".")
+      
+      
+      if(any(overlay=="all"))
+        par(mfrow=c(1,length(study)))
+      else if(any(overlay=="measure"))
+        par(mfrow=c(length(study),length(dist)))
+      
+    for(stu in study)
+    {
+    # KA changed
+    #x = matrix(x[, pred.method], ncol = length(pred.method))
+    mat.error.plsda=matrix(nrow=nrow(x$study.specific.error[[stu]][[1]]),ncol=0)
+    for(mea in measure)
+    {
+      mat.error.plsda=cbind(mat.error.plsda,x$study.specific.error[[stu]][[mea]][, dist])
+    }
+    
+    if (is.null(ylab))
+    {
+      ylab = 'Classification error rate'
+      
+    }
+    
+    if (is.null(xlab))
+    {
+      xlab = 'PLSDA components'
+      
+    }
+    
+    
+    internal_graph_plot.perf(mat.error.plsda,sd.error.plsda=NULL, overlay, type,measure,dist,legend,xlab,ylab,sd=FALSE,  ...)
+    }
+      
+      par(def.par)
+      
+    }
+    return(invisible(out))
+    
+  }
+
+# SGCCDA object
+# ----------------------
+
+plot.perf.sgccda.mthd <-
+  function (x,
+            dist = c("all","max.dist","centroids.dist","mahalanobis.dist"),
+            measure = "all",
+            type="l",
+            xlab = NULL,
+            ylab = NULL,
+            overlay=c("all","measure"),
+            legend=c("vertical","horizontal"),
+            ...)
+  {
+    
+    if (hasArg(pred.method))
+      stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
+    pred.method = NULL # to pass R CMD check
+    
+    
+    if (any(measure == "all"))
+      measure = names(x$error.rate)
+    
+    if (is.null(measure) || !any(measure %in% names(x$error.rate)))
+      stop("'measure' should be among the ones used in your call to 'perf': ", paste(names(x$error.rate),collapse = ", "),".")
+    
+    if (any(dist == "all"))
+      dist = colnames(x$error.rate[[1]])
+    
+    
+    if (is.null(dist) || !any(dist %in% colnames(x$error.rate[[1]])))
+      stop("'dist' should be among the ones used in your call to 'perf': ", paste(colnames(x$error.rate[[1]]),collapse = ", "),".")
+    
+    # KA changed
+    #x = matrix(x[, pred.method], ncol = length(pred.method))
+    mat.error.plsda=matrix(nrow=nrow(x$error.rate[[1]]),ncol=0)
+    for(mea in measure)
+    {
+      mat.error.plsda=cbind(mat.error.plsda,x$error.rate[[mea]][, dist])
+    }
+    
+    if (is.null(ylab))
+    {
+      ylab = 'Classification error rate'
+      
+    }
+    
+    if (is.null(xlab))
+    {
+      xlab = 'PLSDA components'
+      
+    }
+    def.par <- par(no.readonly = TRUE) 
+    
+    internal_graph_plot.perf(mat.error.plsda,sd.error.plsda=NULL, overlay, type,measure,dist,legend,xlab,ylab,sd=FALSE,  ...)
+   
+       par(def.par)
+    return(invisible(out))
+    
+  }
+
