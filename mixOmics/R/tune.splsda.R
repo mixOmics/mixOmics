@@ -327,8 +327,8 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         
         result = list(
         error.rate = mat.mean.error,
-        mat.sd.error = mat.sd.error,
-        mat.error.rate = mat.error.rate,
+        error.rate.sd = mat.sd.error,
+        error.rate.all = mat.error.rate,
         choice.keepX = if(constraint){lapply(already.tested.X, length)}else{already.tested.X},
         choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
         error.rate.class = error.per.class.keepX.opt)
