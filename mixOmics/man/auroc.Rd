@@ -15,11 +15,20 @@ Calculates the AUC and plots ROC for supervised objects from s/plsda, mint.s/pls
 }
 
 \usage{
-auroc.plsda(object, newdata = object$X, outcome.test = as.factor(object$Y), multilevel = NULL, plot = TRUE, roc.comp = 1, ...)
-auroc.splsda(object, newdata = object$X, outcome.test = as.factor(object$Y), multilevel = NULL, plot = TRUE, roc.comp = 1, ...)
-auroc.mint.plsda(object, newdata = object$X, outcome.test = as.factor(object$Y), study.test = object$study, multilevel = NULL,plot = TRUE, roc.comp = 1, ...)
-auroc.mint.splsda(object, newdata = object$X, outcome.test = as.factor(object$Y), study.test = object$study, multilevel = NULL,plot = TRUE, roc.comp = 1, ...)
-auroc.sgccda(object, newdata = object$X, outcome.test = as.factor(object$Y), multilevel = NULL,plot = TRUE, roc.block = 1, roc.comp = 1, ...)
+\method{auroc}{plsda}(object, newdata = object$X, outcome.test = as.factor(object$Y),
+multilevel = NULL, plot = TRUE, roc.comp = 1, ...)
+
+\method{auroc}{splsda}(object, newdata = object$X, outcome.test = as.factor(object$Y),
+multilevel = NULL, plot = TRUE, roc.comp = 1, ...)
+
+\method{auroc}{mint.plsda}(object, newdata = object$X, outcome.test = as.factor(object$Y),
+study.test = object$study, multilevel = NULL,plot = TRUE, roc.comp = 1, ...)
+
+\method{auroc}{mint.splsda}(object, newdata = object$X, outcome.test = as.factor(object$Y),
+study.test = object$study, multilevel = NULL,plot = TRUE, roc.comp = 1, ...)
+
+\method{auroc}{sgccda}(object, newdata = object$X, outcome.test = as.factor(object$Y),
+multilevel = NULL,plot = TRUE, roc.block = 1, roc.comp = 1, ...)
 
 }	
 

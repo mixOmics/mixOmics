@@ -58,7 +58,6 @@ validation = "Mfold",
 folds = 10,
 dist = "max.dist",
 measure = "BER", # one of c("overall","BER")
-auc = FALSE,
 progressBar = TRUE,
 near.zero.var = FALSE,
 nrepeat = 1,
@@ -256,34 +255,25 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         error.per.class = array(0,c(nlevels(Y),nrepeat,nrow(grid)),dimnames = list(levels(Y), paste("nrep",1:nrepeat,sep=".")))
         for(indice.grid in 1 : nrow(grid))
         {
-            # keepX to be tested for each block on component "comp"
-            test.keepX.comp = grid[indice.grid,]
-            
-            #print(paste("keepX:",paste(keepX.temp.comp, collapse = " ")))
-            
-
-            
             # test.keepX.comp: keepX for each block on component "comp.real[comp]"
-            # already.tested.X: either keepX (constraint=FALSE) or keepX.constraint.temp (constraint=TRUE) for all block on all component 1:(comp.real[comp]-1)
+            # already.tested.X: either keepX (constraint=FALSE) or keepX.constraint.temp (constraint=TRUE) for all block on components 1:(comp.real[comp]-1)
             # keepX.temp: keepX for all block on all component 1:comp.real[comp], only used if constraint=FALSE
+            
+            test.keepX.comp = grid[indice.grid,]
             
             if(constraint == FALSE)
             {
                 keepX.temp = lapply(1:length(X), function(x){c(already.tested.X[[x]],test.keepX.comp[[x]])})
                 names(keepX.temp) = names(X)
-
             }
-
-            #print(keepX.temp)
-
+            
             # run block.splsda
             model = block.splsda(X = X, Y = Y, ncomp=comp.real[comp],
             keepX.constraint = if(constraint){already.tested.X}else{NULL},
-            keepX = if(constraint){test.keepX.comp}else{keepX.temp})
-
-#           model = block.splsda(X = X, Y = Y, ncomp=ncomp,
-#           keepX.constraint=keepX.constraint.temp, keepX=keepX.temp, design=design, scheme=scheme, mode=mode, scale=scale,
-#           bias=bias, init=init, tol=tol, verbose=verbose, max.iter=max.iter, near.zero.var=near.zero.var)
+            keepX = if(constraint){test.keepX.comp}else{keepX.temp},
+            design=design, scheme=scheme, mode=mode, scale=scale,
+            bias=bias, init=init, tol=tol, verbose=verbose, max.iter=max.iter, near.zero.var=near.zero.var)
+            
             
             # run perf on the model
             cvPerf = lapply(1 : nrepeat, function(u){out = perf(model, validation = validation, folds = folds, dist = dist);
@@ -298,17 +288,14 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             mat.error.rate.temp = simplify2array( lapply(cvPerf2, function(x) x$"MajorityClass.error.rate"[measure,comp])) # error over the nrepeat
             mat.error.rate.keepX = rbind(mat.error.rate.keepX, mat.error.rate.temp)
             
-            error.mean = c(error.mean, mean(mat.error.rate.temp))#apply(simplify2array(lapply(cvPerf2, function(x) x$"MajorityClass.error.rate")), c(1,2), mean)[measure,comp]
-            error.per.class[,,indice.grid] = simplify2array(lapply(cvPerf2, function(x){ x$"MajorityClass.error.rate"[1:nlevels(Y),comp]}))
+            error.mean = c(error.mean, mean(mat.error.rate.temp))
+            error.per.class[, , indice.grid] = simplify2array(lapply(cvPerf2, function(x){ x$"MajorityClass.error.rate"[1:nlevels(Y),comp]}))
             
             if(nrepeat > 1)
             error.sd = c(error.sd, apply(simplify2array(lapply(cvPerf2, function(x) x$"MajorityClass.error.rate")), c(1,2), sd)[measure,comp])
             
-
-            
             if (progressBar ==  TRUE)
             setTxtProgressBar(pb, (indice.grid)/nrow(grid))
-
         }
         
         names(error.mean) = apply(grid,1,function(x){paste(x, collapse = "_")})
@@ -322,21 +309,23 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         opt.keepX.comp = as.list(a)
         names(opt.keepX.comp) = names(X)
         
-        error.per.class.keepX.opt[[comp]] = error.per.class[, , which.min(error.mean)]
+        error.per.class.keepX.opt[[comp]] = error.per.class[, , which.min(error.mean)] # error for the optimal keepXs
         error.rate = cbind(error.rate, error.mean)
         mat.sd.error = cbind(mat.sd.error, error.sd)
         mat.error.rate [[comp]] = mat.error.rate.keepX
         
         if(!constraint)
         {
+            # add the optimal keepX to already.tested.X
             already.tested.X = lapply(1:length(X), function(x){c(already.tested.X[[x]],opt.keepX.comp[[x]])})
 
         } else {
-            save(list=ls(),file = "temp.Rdata")
-
+            # get the variables selected by the optimal keepX, and add them in already.tested.X
             fit = block.splsda(X = X, Y = Y, ncomp=comp.real[comp],
             keepX.constraint = already.tested.X,
-            keepX = opt.keepX.comp)
+            keepX = opt.keepX.comp,
+            design=design, scheme=scheme, mode=mode, scale=scale,
+            bias=bias, init=init, tol=tol, verbose=verbose, max.iter=max.iter, near.zero.var=near.zero.var)
             
             varselect = selectVar(fit, comp = comp.real[comp])
             varselect = varselect[which(names(varselect) %in% names(X))]
@@ -348,20 +337,13 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
 
             } else {
                 already.tested.X = lapply(1:length(X),function(x){already.tested.X[[x]] = c(already.tested.X[[x]], list(selectVar(fit, comp = comp.real[comp])[[x]]$"name")); names(already.tested.X[[x]]) = paste("comp",1:comp.real[comp],sep=""); return(already.tested.X[[x]])})
-
-                #paste("comp",comp.real[comp],sep="") =
-            # already.tested needs to be [dataset][comp]
-            
             }
         }
         names(already.tested.X) = names(X)
 
-
-#print(already.tested.X)
     }
     cat("\n")
    
-    #    print(already.tested.X)
     colnames(error.rate) = paste("comp", comp.real, sep='')
     names(mat.error.rate) = c(paste('comp', comp.real, sep=''))
     mat.error.rate = lapply(mat.error.rate, function(x) {colnames(x) = paste("nrep",1:nrepeat,sep="."); rownames(x) = rownames(error.rate);x})
