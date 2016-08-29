@@ -159,24 +159,32 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             already.tested.X = NULL
         }
     } else {
-        if(is.null(already.tested.X) | length(already.tested.X)==0)
-        stop("''already.tested.X' must be a vector of keepX values (if 'constraint'= FALSE) or a list (if'constraint'= TRUE) ")
+        if(!is.list(already.tested.X))
+        stop("'already.tested.X' must be a list, each entry corresponding to a block of X (Y excluded)")
         
+        if(is.null(already.tested.X) | length(already.tested.X)==0)
+        stop("'already.tested.X' must be a vector of keepX values (if 'constraint'= FALSE) or a list (if'constraint'= TRUE) ")
+        
+        # we require the same number of already tuned components on each block
+        if(length(unique(sapply(already.tested.X, length))) > 1)
+        stop("The same number of components must be already tuned for each block, in 'already.tested.X'")
+
+
         if(constraint == TRUE)
         {
-            if(!is.list(already.tested.X))
-            stop("''already.tested.X' must be a list since 'constraint' is set to TRUE")
+            if(any(sapply(already.tested.X, function(x) is.list(x))) != TRUE)
+            stop(" Each entry of 'already.tested.X' must be a list since 'constraint' is set to TRUE")
             
-            print(paste("A total of",paste(lapply(already.tested.X,length),collapse=" "),"specific variables ('already.tested.X') were selected on the first ", length(already.tested.X), "component(s)"))
+            #print(paste("A total of",lapply(already.tested.X, function(x){sapply(x,length)}),collapse=" "),"specific variables ('already.tested.X') were selected on the first ", length(already.tested.X[[1]]), "component(s)"))
         } else {
-            if(is.list(already.tested.X))
-            stop("''already.tested.X' must be a vector of keepX values since 'constraint' is set to FALSE")
+            if(any(sapply(already.tested.X, function(x) is.list(x))) == TRUE)
+            stop(" Each entry of 'already.tested.X' must be a vector of keepX values since 'constraint' is set to FALSE")
             
-            print(paste("Number of variables selected on the first", length(already.tested.X), "component(s):", paste(already.tested.X,collapse = " ")))
+            #print(paste("Number of variables selected on the first", length(already.tested.X), "component(s):", paste(already.tested.X,collapse = " ")))
         }
+        if(length(already.tested.X[[1]]) >= ncomp)
+        stop("'ncomp' needs to be higher than the number of components already tuned, which is length(already.tested.X)=",length(already.tested.X) , call. = FALSE)
     }
-    if(length(already.tested.X) >= ncomp)
-    stop("'ncomp' needs to be higher than the number of components already tuned, which is length(already.tested.X)=",length(already.tested.X) , call. = FALSE)
     
     if (any(is.na(validation)) || length(validation) > 1)
     stop("'validation' should be one of 'Mfold' or 'loo'.", call. = FALSE)
@@ -192,7 +200,12 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         stop(paste("test.keepX should be a list of length ", length(X),", corresponding to the blocks: ", paste(names(X),collapse=", "), sep=""))
     }
     
-    message(paste("You have provided a sequence of keepX of length: ", paste(lapply(test.keepX,length),collapse=", "), " for the blocks: ",paste(names(test.keepX),collapse=", "),", respectively.\nThis results in ",prod(sapply(test.keepX,length)), " models being fitted, it may take some time...",sep=""))
+    l = sapply(test.keepX,length)
+    n = names(test.keepX)
+    temp = data.frame(l, n)
+    
+    
+    message(paste("You have provided a sequence of keepX of length: ", paste(apply(temp, 1, function(x) paste(x,collapse=" for block ")), collapse= " and "), ".\nThis results in ",prod(sapply(test.keepX,length)), " models being fitted for each component, it may take some time...",sep=""))
     
     
     #-- end checking --#
@@ -202,17 +215,19 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
 
     grid = expand.grid (test.keepX[length(test.keepX):1])[length(test.keepX):1] # each row is to be tested, the reordering is just a personal preference, works without it
 
-
     # if some components have already been tuned (eg comp1 and comp2), we're only tuning the following ones (comp3 comp4 .. ncomp)
-    if ((!is.null(already.tested.X)))
+    if ((!is.null(already.tested.X)) & length(already.tested.X) > 0)
     {
-        comp.real = (length(already.tested.X) + 1):ncomp
+        comp.real = (length(already.tested.X[[1]]) + 1):ncomp
         #check and match already.tested.X to X
-        if(constraint == TRUE & length(already.tested.X) >0)
+        if(constraint == TRUE & length(already.tested.X[[1]]) >0)
         {
-            already.tested.X = get.keepA.and.keepA.constraint (X = X, keepX.constraint = already.tested.X, ncomp = length(already.tested.X))$keepA.constraint$X
-            #transform already.tested.X to characters
-            already.tested.X = relist(colnames(X), skeleton = already.tested.X)
+            already.tested.X = get.keepA.and.keepA.constraint (X = X, keepX.constraint = already.tested.X, ncomp = rep(length(already.tested.X[[1]]), length(X)))$keepA.constraint
+            
+            # to get characters in already.tested.X
+            already.tested.X = lapply(1:length(already.tested.X), function(y){temp = lapply(1:length(already.tested.X[[y]]), function(x){colnames(X[[y]])[already.tested.X[[y]][[x]]]}); names(temp) = paste("comp", 1:length(already.tested.X[[1]]), sep=""); temp})
+            names(already.tested.X) = names(X)
+            
         }
         
     } else {
@@ -229,6 +244,13 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         if (progressBar == TRUE)
         cat("\ncomp",comp.real[comp], "\n")
         
+        #-- set up a progress bar --#
+        if (progressBar ==  TRUE & comp == 1)
+        {
+            pb = txtProgressBar(style = 3)
+            nBar = 1
+        }
+        
         result.comp = matrix(nrow=nrow(grid),ncol=1)
         error.mean = error.sd = mat.error.rate.keepX = NULL
         error.per.class = array(0,c(nlevels(Y),nrepeat,nrow(grid)),dimnames = list(levels(Y), paste("nrep",1:nrepeat,sep=".")))
@@ -239,6 +261,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             
             #print(paste("keepX:",paste(keepX.temp.comp, collapse = " ")))
             
+
             
             # test.keepX.comp: keepX for each block on component "comp.real[comp]"
             # already.tested.X: either keepX (constraint=FALSE) or keepX.constraint.temp (constraint=TRUE) for all block on all component 1:(comp.real[comp]-1)
@@ -252,10 +275,9 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             }
 
             #print(keepX.temp)
-            
-            
+
             # run block.splsda
-            model = block.splsda(X = X, Y = Y, ncomp=comp,
+            model = block.splsda(X = X, Y = Y, ncomp=comp.real[comp],
             keepX.constraint = if(constraint){already.tested.X}else{NULL},
             keepX = if(constraint){test.keepX.comp}else{keepX.temp})
 
@@ -264,7 +286,11 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
 #           bias=bias, init=init, tol=tol, verbose=verbose, max.iter=max.iter, near.zero.var=near.zero.var)
             
             # run perf on the model
-            cvPerf = lapply(1 : nrepeat, function(u){perf(model, validation = validation, folds = folds, dist = dist)})
+            cvPerf = lapply(1 : nrepeat, function(u){out = perf(model, validation = validation, folds = folds, dist = dist);
+                if (progressBar ==  TRUE)
+                setTxtProgressBar(pb, ((indice.grid-1)*nrepeat+u)/(nrow(grid)*nrepeat))
+                out
+            })
 
             # record results
             ## Majority Vote
@@ -278,13 +304,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             if(nrepeat > 1)
             error.sd = c(error.sd, apply(simplify2array(lapply(cvPerf2, function(x) x$"MajorityClass.error.rate")), c(1,2), sd)[measure,comp])
             
-            
-                #-- set up a progress bar --#
-                if (progressBar ==  TRUE & comp == 1)
-                {
-                    pb = txtProgressBar(style = 3)
-                    nBar = 1
-                }
+
             
             if (progressBar ==  TRUE)
             setTxtProgressBar(pb, (indice.grid)/nrow(grid))
@@ -312,14 +332,15 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             already.tested.X = lapply(1:length(X), function(x){c(already.tested.X[[x]],opt.keepX.comp[[x]])})
 
         } else {
-            fit = block.splsda(X = X, Y = Y, ncomp=comp,
+            save(list=ls(),file = "temp.Rdata")
+
+            fit = block.splsda(X = X, Y = Y, ncomp=comp.real[comp],
             keepX.constraint = already.tested.X,
             keepX = opt.keepX.comp)
             
             varselect = selectVar(fit, comp = comp.real[comp])
             varselect = varselect[which(names(varselect) %in% names(X))]
             
-            save(list=ls(),file = "temp.Rdata")
             if(length(already.tested.X) == 0)
             {
                 already.tested.X = lapply(1:length(X), function(x){already.tested.X[[x]] = list()})
@@ -341,11 +362,14 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     cat("\n")
    
     #    print(already.tested.X)
-    colnames(error.rate) = paste("comp", comp.real)
-    names(mat.error.rate) = c(paste('comp', comp.real))
+    colnames(error.rate) = paste("comp", comp.real, sep='')
+    names(mat.error.rate) = c(paste('comp', comp.real, sep=''))
     mat.error.rate = lapply(mat.error.rate, function(x) {colnames(x) = paste("nrep",1:nrepeat,sep="."); rownames(x) = rownames(error.rate);x})
+    names(error.per.class.keepX.opt) = c(paste('comp', comp.real, sep=''))
     
-    names(error.per.class.keepX.opt) = c(paste('comp', comp.real))
+    if(nrepeat > 1)
+    colnames(mat.sd.error) = paste("comp", comp.real, sep='')
+
 
     result = list(
     error.rate = error.rate,
