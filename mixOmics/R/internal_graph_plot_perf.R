@@ -28,6 +28,7 @@ else if(overlay=="measure")
   for(di in dist)
   {
     new_mat.error=mat.error.plsda[,which(colnames(mat.error.plsda)==di)]
+    print(new_mat.error)
     out<-matplot(new_mat.error, type = type, lty = c(1:length(measure)), col ="black", 
                  lwd = 2, xlab = xlab, ylab = ylab,axes=FALSE,ylim=c(min(mat.error.plsda),max(mat.error.plsda)))
     axis(1,1:nrow(mat.error.plsda),rownames(mat.error.plsda))
@@ -40,11 +41,17 @@ else if(overlay=="measure")
       legend('topright', legend = c(measure), lty = 1:length(measure),  col = rep('black',length(measure)), ncol = 2, lwd = 2)
     }
     if(sd)
-    {for(col in 1:ncol(new_mat.error))
+     { if(is.matrix(new_mat.error))
+      {for(col in 1:ncol(new_mat.error))
+      {
+        new_sd.error=sd.error.plsda[,which(colnames(sd.error.plsda)==di)]
+        plot_error_bar(new_mat.error[,col],uiw=new_sd.error[,col],add=T,...)
+      }}
+    else
     {
-      new_sd.error=sd.error.plsda[,which(colnames(sd.error.plsda)==di)]
-      plot_error_bar(new_mat.error[,col],uiw=new_sd.error[,col],add=T,...)
-    }}
+      plot_error_bar(new_mat.error,uiw=sd.error.plsda,add=T,...)
+    }
+    }
   }
   
 }
