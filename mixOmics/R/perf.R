@@ -369,10 +369,19 @@ progressBar = TRUE,
     multilevel = object$multilevel # repeated measurement and Y
     near.zero.var = !is.null(object$nzv) # if near.zero.var was used, we set it to TRUE. if not used, object$nzv is NULL
     
+    if(any(class(object) == "plsda") & constraint == TRUE)
+    {
+        constraint = FALSE #no need as all variable will be included
+        warning("'constraint' is set to FALSE as all variables are selected on all components (plsda object).")
+    }
     #-- tells which variables are selected in X and in Y --#
     if(constraint)
     {
         keepX.constraint = apply(object$loadings$X, 2, function(x){names(which(x!=0))})
+        # gives a matrix of ncomp columns, I want a list of length ncomp
+        keepX.constraint = split(keepX.constraint, rep(1:ncol(keepX.constraint), each = nrow(keepX.constraint)))
+        names(keepX.constraint) = paste("comp",1:length(keepX.constraint),sep="")
+        
         #keepX = NULL
     } else {
         #keepX.constraint = NULL
@@ -511,7 +520,7 @@ progressBar = TRUE,
                 choice.keepX.constraint = NULL
             }
             test.keepX = keepX.constraint[comp]
-            names(test.keepX) = test.keepX
+            #names(test.keepX) = test.keepX
             #test.keepX is a vector a variables to keep on comp 'comp'
         } else {
             if(comp > 1)
@@ -524,7 +533,7 @@ progressBar = TRUE,
             names(test.keepX) = test.keepX
             #test.keepX is a value
         }
-        
+        save(list=ls(),file="temp2.Rdata")
         # estimate performance of the model for each component
         result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = comp,
         choice.keepX = if(constraint){NULL}else{choice.keepX},
