@@ -164,7 +164,8 @@ plot.perf.plsda.mthd <-plot.perf.splsda.mthd <-
       for(mea in measure)
         {
         mat.error.plsda=cbind(mat.error.plsda,x$error.rate[[mea]][, dist])
-        }
+      }
+    colnames(mat.error.plsda)=rep(dist,length(measure))
       
       if (is.null(ylab))
       {
@@ -182,7 +183,9 @@ plot.perf.plsda.mthd <-plot.perf.splsda.mthd <-
       if(any(overlay=="all"))
         {
        out<-matplot(mat.error.plsda, type = type, lty = rep(c(1:length(measure)), each = length(dist)), col = rep(color.mixo(1:length(dist)), length(measure)), 
-                lwd = 2, xlab = xlab, ylab = ylab)
+                lwd = 2, xlab = xlab, ylab = ylab,axes=FALSE,ylim=c(min(mat.error.plsda)-0.00000001,max(mat.error.plsda)+0.00000001))
+       axis(1,1:nrow(mat.error.plsda),rownames(mat.error.plsda))
+       axis(2)
        if(any(legend=="vertical"))
        {legend('topright', legend = c(measure, dist), lty = c(1:length(measure), rep(NA, length(dist))), 
                pch = c(rep(NA, length(measure)), rep(16, length(dist))), col = c(rep('black',length(measure)), color.mixo(1:length(dist))), ncol = 1, lwd = 2)}
@@ -203,7 +206,9 @@ plot.perf.plsda.mthd <-plot.perf.splsda.mthd <-
         for(di in dist)
         {
         out<-matplot(mat.error.plsda[,which(colnames(mat.error.plsda)==di)], type = type, lty = c(1:length(measure)), col ="black", 
-                     lwd = 2, xlab = xlab, ylab = ylab)
+                     lwd = 2, xlab = xlab, ylab = ylab,axes=FALSE,ylim=c(min(mat.error.plsda)-0.00000001,max(mat.error.plsda)+0.00000001))
+        axis(1,1:nrow(mat.error.plsda),rownames(mat.error.plsda))
+        axis(2)
         title(di)
         if(any(legend=="vertical"))
         {legend('topright', legend = measure, lty = 1:length(measure),  col = rep('black',length(measure)), ncol = 1, lwd = 2)}
@@ -282,7 +287,9 @@ plot.perf.mint.plsda.mthd <-plot.perf.mint.splsda.mthd <-
     if(any(overlay=="all"))
     {
       out<-matplot(mat.error.plsda, type = type, lty = rep(c(1:length(measure)), each = length(dist)), col = rep(color.mixo(1:length(dist)), length(measure)), 
-                   lwd = 2, xlab = xlab, ylab = ylab)
+                   lwd = 2, xlab = xlab, ylab = ylab,axes=FALSE,ylim=c(min(mat.error.plsda)-0.00000001,max(mat.error.plsda)+0.00000001))
+      axis(1,1:nrow(mat.error.plsda),rownames(mat.error.plsda))
+      axis(2)
       if(any(legend=="vertical"))
       {legend('topright', legend = c(measure, dist), lty = c(1:length(measure), rep(NA, length(dist))), 
               pch = c(rep(NA, length(measure)), rep(16, length(dist))), col = c(rep('black',length(measure)), color.mixo(1:length(dist))), ncol = 1, lwd = 2)}
@@ -302,7 +309,9 @@ plot.perf.mint.plsda.mthd <-plot.perf.mint.splsda.mthd <-
       for(di in dist)
       {
         out<-matplot(mat.error.plsda[,which(colnames(mat.error.plsda)==di)], type = type, lty = c(1:length(measure)), col ="black", 
-                     lwd = 2, xlab = xlab, ylab = ylab)
+                     lwd = 2, xlab = xlab, ylab = ylab,axes=FALSE,ylim=c(min(mat.error.plsda)-0.00000001,max(mat.error.plsda)+0.00000001))
+        axis(1,1:nrow(mat.error.plsda),rownames(mat.error.plsda))
+        axis(2)
         title(di)
         if(any(legend=="vertical"))
         {legend('topright', legend = measure, lty = 1:length(measure),  col = rep('black',length(measure)), ncol = 1, lwd = 2)}
@@ -369,7 +378,9 @@ plot.perf.mint.plsda.mthd <-plot.perf.mint.splsda.mthd <-
     if(any(overlay=="all"))
     {
       out<-matplot(mat.error.plsda, type = type, lty = rep(c(1:length(measure)), each = length(dist)), col = rep(color.mixo(1:length(dist)), length(measure)), 
-                   lwd = 2, xlab = xlab, ylab = ylab)
+                   lwd = 2, xlab = xlab, ylab = ylab,axes=FALSE,ylim=c(min(mat.error.plsda)-0.00000001,max(mat.error.plsda)+0.00000001))
+      axis(1,1:nrow(mat.error.plsda),rownames(mat.error.plsda))
+      axis(2)
       if(any(legend=="vertical"))
       {legend('topright', legend = c(measure, dist), lty = c(1:length(measure), rep(NA, length(dist))), 
               pch = c(rep(NA, length(measure)), rep(16, length(dist))), col = c(rep('black',length(measure)), color.mixo(1:length(dist))), ncol = 1, lwd = 2)}
@@ -386,7 +397,9 @@ plot.perf.mint.plsda.mthd <-plot.perf.mint.splsda.mthd <-
       for(di in dist)
       {
         out<-matplot(mat.error.plsda[,which(colnames(mat.error.plsda)==di)], type = type, lty = c(1:length(measure)), col ="black", 
-                     lwd = 2, xlab = xlab, ylab = ylab)
+                     lwd = 2, xlab = xlab, ylab = ylab,axes=FALSE,ylim=c(min(mat.error.plsda)-0.00000001,max(mat.error.plsda)+0.00000001))
+        axis(1,1:nrow(mat.error.plsda),rownames(mat.error.plsda))
+        axis(2)
         title(paste("study",stu," dist",di))
         if(any(legend=="vertical"))
         {legend('topright', legend = measure, lty = 1:length(measure),  col = rep('black',length(measure)), ncol = 1, lwd = 2)}
@@ -406,3 +419,105 @@ plot.perf.mint.plsda.mthd <-plot.perf.mint.splsda.mthd <-
     invisible(out)
     
   }
+
+# SGCCDA object
+# ----------------------
+
+plot.perf.sgccda.mthd <-
+  function (x,
+            dist = c("all","max.dist","centroids.dist","mahalanobis.dist"),
+            measure = "all",
+            type="l",
+            xlab = NULL,
+            ylab = NULL,
+            overlay=c("all","measure"),
+            legend=c("vertical","horizontal"),
+            ...)
+  {
+    
+    if (hasArg(pred.method))
+      stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
+    pred.method = NULL # to pass R CMD check
+    
+    
+    if (any(measure == "all"))
+      measure = names(x$error.rate)
+    
+    if (is.null(measure) || !any(measure %in% names(x$error.rate)))
+      stop("'measure' should be among the ones used in your call to 'perf': ", paste(names(x$error.rate),collapse = ", "),".")
+    
+    if (any(dist == "all"))
+      dist = colnames(x$error.rate[[1]])
+    
+    
+    if (is.null(dist) || !any(dist %in% colnames(x$error.rate[[1]])))
+      stop("'dist' should be among the ones used in your call to 'perf': ", paste(colnames(x$error.rate[[1]]),collapse = ", "),".")
+    
+    # KA changed
+    #x = matrix(x[, pred.method], ncol = length(pred.method))
+    mat.error.plsda=matrix(nrow=nrow(x$error.rate[[1]]),ncol=0)
+    for(mea in measure)
+    {
+      mat.error.plsda=cbind(mat.error.plsda,x$error.rate[[mea]][, dist])
+    }
+    
+    if (is.null(ylab))
+    {
+      ylab = 'Classification error rate'
+      
+    }
+    
+    if (is.null(xlab))
+    {
+      xlab = 'PLSDA components'
+      
+    }
+    
+    
+    if(any(overlay=="all"))
+    {
+      out<-matplot(mat.error.plsda, type = type, lty = rep(c(1:length(measure)), each = length(dist)), col = rep(color.mixo(1:length(dist)), length(measure)), 
+                   lwd = 2, xlab = xlab, ylab = ylab,axes=FALSE,ylim=c(min(mat.error.plsda)-0.00000001,max(mat.error.plsda)+0.00000001))
+      axis(1,1:nrow(mat.error.plsda),rownames(mat.error.plsda))
+      axis(2)
+      if(any(legend=="vertical"))
+      {legend('topright', legend = c(measure, dist), lty = c(1:length(measure), rep(NA, length(dist))), 
+              pch = c(rep(NA, length(measure)), rep(16, length(dist))), col = c(rep('black',length(measure)), color.mixo(1:length(dist))), ncol = 1, lwd = 2)}
+      else if(legend=="horizontal")
+      {
+        legend('topright', legend = c(measure,"" ,dist), lty = c(1:length(measure), rep(NA, (length(dist)+1))), 
+               pch = c(rep(NA, (length(measure)+1)), rep(16, length(dist))), col = c(rep('black',length(measure)), NA, color.mixo(1:length(dist))), ncol = 2, lwd = 2)
+        
+      }
+      
+      title(main="plot tune.perf.(s)plsda")
+    }
+    
+    else if(overlay=="measure")
+    {
+      def.par <- par(no.readonly = TRUE) 
+      par(mfrow=c(1,length(dist)))
+      for(di in dist)
+      {
+        out<-matplot(mat.error.plsda[,which(colnames(mat.error.plsda)==di)], type = type, lty = c(1:length(measure)), col ="black", 
+                     lwd = 2, xlab = xlab, ylab = ylab,axes=FALSE,ylim=c(min(mat.error.plsda)-0.00000001,max(mat.error.plsda)+0.00000001))
+        axis(1,1:nrow(mat.error.plsda),rownames(mat.error.plsda))
+        axis(2)
+        title(di)
+        if(any(legend=="vertical"))
+        {legend('topright', legend = measure, lty = 1:length(measure),  col = rep('black',length(measure)), ncol = 1, lwd = 2)}
+        
+        else if(legend=="horizontal")
+        {
+          legend('topright', legend = c(measure), lty = 1:length(measure),  col = rep('black',length(measure)), ncol = 2, lwd = 2)
+        }
+      }
+      
+      par(def.par)
+      
+    }
+    
+    invisible(out)
+    
+  }
+
