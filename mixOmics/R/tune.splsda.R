@@ -232,14 +232,14 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     error.per.class = list()
 
     mat.sd.error = matrix(0,nrow = length(test.keepX), ncol = ncomp-length(already.tested.X),
-    dimnames = list(c(test.keepX), c(paste('comp', comp.real))))
+    dimnames = list(c(test.keepX), c(paste('comp', comp.real, sep=''))))
     mat.mean.error = matrix(nrow = length(test.keepX), ncol = ncomp-length(already.tested.X),
-    dimnames = list(c(test.keepX), c(paste('comp', comp.real))))
+    dimnames = list(c(test.keepX), c(paste('comp', comp.real, sep=''))))
 
     error.per.class.mean = matrix(nrow = nlevels(Y), ncol = ncomp-length(already.tested.X),
-        dimnames = list(c(levels(Y)), c(paste('comp', comp.real))))
+        dimnames = list(c(levels(Y)), c(paste('comp', comp.real, sep=''))))
     error.per.class.sd = matrix(0,nrow = nlevels(Y), ncol = ncomp-length(already.tested.X),
-        dimnames = list(c(levels(Y)), c(paste('comp', comp.real))))
+        dimnames = list(c(levels(Y)), c(paste('comp', comp.real, sep=''))))
         
    
     # first: near zero var on the whole data set
@@ -318,34 +318,34 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             }
             
         } # end comp
-        names(mat.error.rate) = c(paste('comp', comp.real))
-        names(error.per.class.keepX.opt) = c(paste('comp', comp.real))
-        names(already.tested.X) = c(paste('comp', 1:ncomp))
+        names(mat.error.rate) = c(paste('comp', comp.real, sep=''))
+        names(error.per.class.keepX.opt) = c(paste('comp', comp.real, sep=''))
+        names(already.tested.X) = c(paste('comp', 1:ncomp, sep=''))
         
         if (progressBar == TRUE)
         cat('\n')
         
         result = list(
         error.rate = mat.mean.error,
-        mat.sd.error = mat.sd.error,
-        mat.error.rate = mat.error.rate,
+        error.rate.sd = mat.sd.error,
+        error.rate.all = mat.error.rate,
         choice.keepX = if(constraint){lapply(already.tested.X, length)}else{already.tested.X},
         choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
         error.rate.class = error.per.class.keepX.opt)
         
         if(light.output == FALSE)
         {
-            names(class.all) = names(prediction.all) = c(paste('comp', comp.real))
+            names(class.all) = names(prediction.all) = c(paste('comp', comp.real, sep=''))
             result$predict = prediction.all
             result$class = class.all
         }
         if(auc)
         {
-            names(auc.mean.sd) = c(paste('comp', comp.real))
+            names(auc.mean.sd) = c(paste('comp', comp.real, sep=''))
             result$auc = auc.mean.sd
             if(light.output == FALSE)
             {
-                names(auc.all) = c(paste('comp', comp.real))
+                names(auc.all) = c(paste('comp', comp.real, sep=''))
                 result$auc.all =auc.all
             }
         }

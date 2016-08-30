@@ -160,7 +160,7 @@ class.object = NULL
         {
             auc.all[[nrep]] = array(0, c(nlevels(Y),2, length(test.keepX)), dimnames = list(paste(levels(Y), "vs Other(s)"), c("AUC","p-value"), names(test.keepX)))
         }else{
-            auc.all[[nrep]] = array(0, c(1,2, length(test.keepX)), dimnames = list("", c("AUC","p-value"), names(test.keepX)))
+            auc.all[[nrep]] = array(0, c(1,2, length(test.keepX)), dimnames = list(paste(levels(Y)[1], levels(Y)[2], sep = " vs "), c("AUC","p-value"), names(test.keepX)))
         }
         
         n = nrow(X)
@@ -247,6 +247,7 @@ class.object = NULL
                     X.test = X.test[, -c(remove.zero),drop = FALSE]
                 }
             }
+            save(list=ls(),file="temp.Rdata")
             #-- near.zero.var ----------------------#
             #---------------------------------------#
             for (i in 1:length(test.keepX))
@@ -259,8 +260,8 @@ class.object = NULL
                 # if it's from tune, then it's either keepX, or a combination of keepX.constraint and keepX
                 # we know if it's perf+constraint or tune+constraint depending on the test.keepX that is either a vector or a list
                 object.res = splsda(X.train, Y.train, ncomp = ncomp,
-                keepX = if(is.null(choice.keepX.constraint)){c(choice.keepX, test.keepX[i])}else if(!is.list(test.keepX)){test.keepX[i]} else {NULL} ,
-                keepX.constraint = if(is.null(choice.keepX.constraint)){NULL}else if(!is.list(test.keepX)){choice.keepX.constraint} else {c(choice.keepX.constraint, test.keepX)},
+                keepX = if(is.null(choice.keepX.constraint) & !is.list(test.keepX)){c(choice.keepX, test.keepX[i])}else if(!is.list(test.keepX)){test.keepX[i]} else {NULL} ,
+                keepX.constraint = if(is.null(choice.keepX.constraint)& !is.list(test.keepX)){NULL}else if(!is.list(test.keepX)){choice.keepX.constraint} else {c(choice.keepX.constraint, test.keepX)},
                 logratio = "none", near.zero.var = FALSE, mode = "regression")
                   
                 # added: record selected features
@@ -299,7 +300,13 @@ class.object = NULL
     # average auc over the nrepeat, for each test.keepX
     if(auc)
     {
-        auc.mean.sd =  array(0, c(nlevels(Y),2, length(test.keepX)), dimnames = list(rownames(auc.all[[1]]), c("AUC.mean","AUC.sd"), names(test.keepX)))
+        
+        if(nlevels(Y)>2)
+        {
+            auc.mean.sd =  array(0, c(nlevels(Y),2, length(test.keepX)), dimnames = list(rownames(auc.all[[1]]), c("AUC.mean","AUC.sd"), names(test.keepX)))
+        }else{
+            auc.mean.sd =  array(0, c(1,2, length(test.keepX)), dimnames = list(rownames(auc.all[[1]]), c("AUC.mean","AUC.sd"), names(test.keepX)))
+        }
         
         for(i in 1:length(test.keepX))
         {
