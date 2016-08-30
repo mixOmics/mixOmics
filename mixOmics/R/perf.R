@@ -552,8 +552,11 @@ progressBar = TRUE,
                 mat.error.rate[[measure_i]][[ijk]][ ,,comp] = result[[measure_i]]$mat.error.rate[[ijk]][,1]
                 mat.mean.error[[measure_i]][comp, ijk]=result[[measure_i]]$error.rate.mean[[ijk]]
                 if (!is.null(result[[measure_i]]$error.rate.sd))
-                mat.sd.error[[measure_i]][comp, ijk]=result[[measure_i]]$error.rate.sd[[ijk]]
-
+                {
+                    mat.sd.error[[measure_i]][comp, ijk]=result[[measure_i]]$error.rate.sd[[ijk]]
+                } else {
+                    mat.sd.error= NULL
+                }
                 # confusion matrix for keepX.opt
                 error.per.class.keepX.opt[[measure_i]][[ijk]][ ,comp]=result[[measure_i]]$confusion[[ijk]][,1]
             }
