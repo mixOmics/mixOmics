@@ -88,7 +88,7 @@ srbct.splsda <- splsda(X, Y, ncomp = ncomp, keepX = rep(10, ncomp))
 # with Mfold
 # ---------
 set.seed(45)
-error <- perf(srbct.splsda, validation = "Mfold", folds = 8, dist = "all", progressBar = FALSE)
+error <- perf(srbct.splsda, validation = "Mfold", folds = 8, dist = "all", progressBar = TRUE, nrepeat =4)
 
 for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))
 {

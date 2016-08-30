@@ -37,7 +37,7 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
     error.rate.concat = matrix(nrow = nrow(error.rate[[1]]), ncol = 0)
     for(mea in measure)
     {
-        temp = error.rate[[mea]][, dist]
+        temp = error.rate[[mea]][, dist, drop = FALSE]
         colnames(temp) = paste(mea, colnames(temp),sep="_")
         error.rate.concat = cbind(error.rate.concat, temp)
     }
@@ -47,9 +47,9 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
         error.rate.sd.concat = matrix(nrow = nrow(error.rate.sd[[1]]), ncol = 0)
         for(mea in measure)
         {
-            temp = error.rate.sd[[mea]][, dist]
+            temp = error.rate.sd[[mea]][, dist, drop = FALSE]
             colnames(temp) = paste(mea, colnames(temp),sep="_")
-            error.rate.sd.concat = cbind(error.rate.concat, temp)
+            error.rate.sd.concat = cbind(error.rate.sd.concat, temp)
         }
     } else {
         error.rate.sd.concat = NULL
@@ -75,8 +75,8 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
         }
         if(!is.null(error.rate.sd.concat))
         {
-            for(col in 1:ncol(error.rate.concat))
-            plot_error_bar(error.rate.concat[, col], uiw=error.rate.sd.concat[, col], add=T)#, ...)
+            for(j in 1:ncol(error.rate.concat))
+            plot_error_bar(error.rate.concat[, j], uiw=error.rate.sd.concat[, j], add=T, col = rep(color.mixo(rep(j,each=nrow(error.rate.concat))), length(measure)))#, ...)
         }
     } else if(overlay == "measure") {
         
@@ -159,13 +159,13 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
 }
 
 
-plot_error_bar <- function (x, y = NULL, uiw, add=FALSE, ...)
+plot_error_bar <- function (x, y = NULL, uiw, add=FALSE, col = "black", ...)
 {
     sfrac = 0.01
     gap = 0
     slty = par("lty")
     pt.bg = par("bg")
-    arglist <- list(...)
+    arglist <- list()#...)
     liw = uiw
     y <- as.numeric(x)
     x <- seq(along = x)
@@ -186,7 +186,7 @@ plot_error_bar <- function (x, y = NULL, uiw, add=FALSE, ...)
     gap <- rep(gap, length(x)) * diff(par("usr")[3:4])
     smidge <- par("fin")[1] * sfrac
     nz <- abs(li - pmax(y - gap, li)) * y.to.in > 0.001
-    scols <- rep(scol, length.out = length(x))[nz]
+    scols <- col#rep(scol, length.out = length(x))[nz]
     
     arrow.args <- c(list(lty = slty, angle = 90, length = smidge, 
     code = 1, col = scols), clean.args(arglist, arrows, 
@@ -196,13 +196,13 @@ plot_error_bar <- function (x, y = NULL, uiw, add=FALSE, ...)
     gap, li)[nz]), arrow.args))
     
     nz <- abs(ui - pmin(y + gap, ui)) * y.to.in > 0.001
-    scols <- rep(scol, length.out = length(x))[nz]
+    #scols <- rep(scol, length.out = length(x))[nz]
     arrow.args$col <- scols
     
     do.call("arrows", c(list(x[nz], ui[nz], x[nz], pmin(y +
     gap, ui)[nz]), arrow.args))
     
-    do.call("points", c(list(x, y, bg = pt.bg), clean.args(arglist,
+    do.call("points", c(list(x, y, bg = pt.bg, col =col), clean.args(arglist,
     points, exclude.other = c("xlab", "ylab", "xlim", 
     "ylim", "axes"))))
     

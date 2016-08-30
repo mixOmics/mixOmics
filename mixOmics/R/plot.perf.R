@@ -166,7 +166,7 @@ xlab = NULL,
 ylab = NULL,
 overlay=c("all", "measure", "dist"),
 legend=c("vertical", "horizontal"),
-sd=TRUE,
+sd = TRUE,
 ...)
 {
     
@@ -194,13 +194,25 @@ sd=TRUE,
     if (is.null(xlab))
     xlab = 'Component'
     
+    if(length(overlay) >1 )
+    overlay = overlay[1]
     
+    if(length(error.rate) >1 )
+    error.rate = error.rate[1]
+    
+    if(length(legend) >1 )
+    legend = legend[1]
+
     # error.rate is a list [[measure]]
     # error.rate[[measure]] is a matrix of dist columns and ncomp rows
     # same for error.rate.sd, if any
     error.rate = x$error.rate
-    error.rate.sd = x$error.rate.sd
-    
+    if(sd)
+    {
+        error.rate.sd = x$error.rate.sd
+    } else {
+        error.rate.sd = NULL
+    }
     def.par = par(no.readonly = TRUE)
     
     internal_graphic.perf(error.rate = error.rate, error.rate.sd = error.rate.sd,
