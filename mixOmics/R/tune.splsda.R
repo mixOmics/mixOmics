@@ -180,7 +180,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     #---------------------------------------------------------------------------#
     #-- logration + multilevel approach ----------------------------------------#
     # we can do logratio and multilevel on the whole data as these transformation are done per sample
-    X = logratio.transfo(X = X, logratio = logratio, offset = 1)
+    X = logratio.transfo(X = X, logratio = logratio)
     
     if (!is.null(multilevel) & logratio == "none") # if no logratio, we can do multilevel on the whole data; otherwise it needs to be done after each logratio inside the CV
     {

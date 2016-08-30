@@ -192,7 +192,7 @@ sd=TRUE,
     ylab = 'Classification error rate'
     
     if (is.null(xlab))
-    xlab = 'PLSDA components'
+    xlab = 'Component'
     
     
     # error.rate is a list [[measure]]
@@ -266,7 +266,7 @@ legend=c("vertical", "horizontal"),
         ylab = 'Classification error rate'
         
         if (is.null(xlab))
-        xlab = 'PLSDA components'
+        xlab = 'Component'
         
         # error.rate is a list [[measure]]
         # error.rate[[measure]] is a matrix of dist columns and ncomp rows
@@ -302,7 +302,7 @@ legend=c("vertical", "horizontal"),
         ylab = 'Classification error rate'
         
         if (is.null(xlab))
-        xlab = 'PLSDA components'
+        xlab = 'Component'
 
 
         if(overlay=="all")
@@ -385,7 +385,7 @@ legend=c("vertical","horizontal"),
     ylab = 'Classification error rate'
    
     if (is.null(xlab))
-    xlab = 'PLSDA components'
+    xlab = 'Component'
         
     # error.rate is a list [[measure]]
     # error.rate[[measure]] is a matrix of dist columns and ncomp rows
