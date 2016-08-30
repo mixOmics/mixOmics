@@ -138,6 +138,7 @@ plot.perf.plsda.mthd <-plot.perf.splsda.mthd <-
             overlay=c("all","measure"),
             legend=c("vertical","horizontal"),
             sd=TRUE,
+            lwd=2,
             ...)
   {
       
@@ -187,7 +188,7 @@ plot.perf.plsda.mthd <-plot.perf.splsda.mthd <-
         
       }
     def.par <- par(no.readonly = TRUE) 
-    internal_graph_plot.perf(mat.error.plsda,sd.error.plsda, overlay, type,measure,dist,legend,xlab,ylab,sd=sd,  ...)
+    internal_graph_plot.perf(mat.error.plsda,sd.error.plsda, overlay, type,measure,dist,legend,xlab,ylab,sd=sd,lwd=lwd,  ...)
     par(def.par)
     # error.bar(out,as.vector(mat.error.plsda),as.vector(cbind(x$error.rate.sd$overall,x$error.rate.sd$BER)))
     
@@ -209,6 +210,7 @@ plot.perf.mint.plsda.mthd <-plot.perf.mint.splsda.mthd <-
             error.rate=c("average","study"),
             overlay=c("all","measure"),
             legend=c("vertical","horizontal"),
+            lwd=2,
             ...)
   {
     
@@ -251,7 +253,7 @@ plot.perf.mint.plsda.mthd <-plot.perf.mint.splsda.mthd <-
       
     }
     def.par <- par(no.readonly = TRUE) 
-    internal_graph_plot.perf(mat.error.plsda,sd.error.plsda=NULL, overlay, type,measure,dist,legend,xlab,ylab,sd=FALSE,  ...)
+    internal_graph_plot.perf(mat.error.plsda,sd.error.plsda=NULL, overlay, type,measure,dist,legend,xlab,ylab,sd=FALSE,lwd=lwd,  ...)
     par(def.par)
     }
     else if(any(error.rate=="study"))
@@ -305,7 +307,7 @@ plot.perf.mint.plsda.mthd <-plot.perf.mint.splsda.mthd <-
     }
     
     
-    internal_graph_plot.perf(mat.error.plsda,sd.error.plsda=NULL, overlay, type,measure,dist,legend,xlab,ylab,sd=FALSE,  ...)
+    internal_graph_plot.perf(mat.error.plsda,sd.error.plsda=NULL, overlay, type,measure,dist,legend,xlab,ylab,sd=FALSE,lwd=lwd,  ...)
     }
       
       par(def.par)
@@ -327,6 +329,7 @@ plot.perf.sgccda.mthd <-
             ylab = NULL,
             overlay=c("all","measure"),
             legend=c("vertical","horizontal"),
+            lwd=2,
             ...)
   {
     
@@ -369,7 +372,7 @@ plot.perf.sgccda.mthd <-
     }
     def.par <- par(no.readonly = TRUE) 
     
-    internal_graph_plot.perf(mat.error.plsda,sd.error.plsda=NULL, overlay, type,measure,dist,legend,xlab,ylab,sd=FALSE,  ...)
+    internal_graph_plot.perf(mat.error.plsda,sd.error.plsda=NULL, overlay, type,measure,dist,legend,xlab,ylab,sd=FALSE,lwd=lwd,  ...)
    
        par(def.par)
     return(invisible(out))

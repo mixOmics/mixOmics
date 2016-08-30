@@ -24,9 +24,10 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #############################################################################################################
 
+plot.tune<-function(x,...) NextMethod("plot")
 
 plot.tune.splsda = #plot.spca <- plot.ipca <- plot.sipca <-
-function(x, optimal = TRUE, ...)
+function(x, optimal = TRUE,type = "l",lwd=2,sd=TRUE,horiz=FALSE,overlay=TRUE, ...)
 {
     
     if (!is.logical(optimal))
@@ -34,6 +35,7 @@ function(x, optimal = TRUE, ...)
 
 
     error <- x$error.rate
+    sd.mat  <- x$mat.sd.error
     select.keepX <- x$choice.keepX[colnames(error)]
     comp.tuned = length(select.keepX)
     
@@ -56,11 +58,17 @@ function(x, optimal = TRUE, ...)
     {
         ylab = "Balanced error rate"
     }
-   
-
-    matplot(rownames(error),error, type = "l", axes = TRUE, lwd = 2, lty = 1, log = "x",
+   if(overlay)
+    {
+     matplot(rownames(error),error, type = type, axes = TRUE, lwd = lwd, lty = 1, log = "x",
     xlab = "Number of selected genes", ylab = ylab,
     col = col.per.comp)
+    
+    if(sd)
+    { for(i in 1:comp.tuned)
+    {
+      plot_error_bar(as.numeric(rownames(error)),error[,i],uiw=sd.mat[,i],add=T,...)
+    }}
     
     if(optimal)
     {
@@ -69,22 +77,46 @@ function(x, optimal = TRUE, ...)
             # store coordinates of chosen keepX
             index = which(rownames(error) == select.keepX[i])
             # choseen keepX:
-            points(rownames(error)[index], error[index,i], col = col.per.comp[i], lwd=2, cex=1.5)
-        }
+            points(rownames(error)[index], error[index,i], col = col.per.comp[i], lwd=lwd+1, cex=lwd+1)
+       
+            }
     }
     
-    if(length(x$choice.keepX) == 1) #only first comp tuned
-    {
-        legend = "comp 1"
-    } else if(length(x$choice.keepX) == comp.tuned) # all components have been tuned
-    {
-        legend = c("comp 1", paste("comp 1 to", colnames(error)[-1]))
-    } else { #first component was not tuned
-        legend = paste("comp 1 to", colnames(error))
-    }
-
-    legend("topright", lty = 1, lwd = 2, horiz = FALSE, col = col.per.comp,
+    legend=paste("Component",1:comp.tuned)
+    
+    legend("topright", lty = 1, lwd = lwd, horiz = horiz, col = col.per.comp,
     legend = legend)
+    }
+    else
+    {
+      def.par <- par(no.readonly = TRUE) 
+      par(mfrow=c(1,comp.tuned))
+      for(i in 1:comp.tuned)
+      {
+        matplot(rownames(error),error[,i], type = type, axes = TRUE, lwd = lwd, lty = 1, log = "x",
+                xlab = "Number of selected genes", ylab = ylab,
+                col = col.per.comp,ylim=c(min(error),max(error)))
+        
+        if(sd)
+        { 
+          plot_error_bar(as.numeric(rownames(error)),error[,i],uiw=sd.mat[,i],add=T,...)
+        }
+        
+        if(optimal)
+        {
+            # store coordinates of chosen keepX
+            index = which(rownames(error) == select.keepX[i])
+            # choseen keepX:
+            points(rownames(error)[index], error[index,i], col = col.per.comp[i], lwd=lwd+1, cex=lwd+1)
+            
+        }
+        
+        title(paste("Component",i))
+        
+      }
+      par(def.par)
+      
+    }
     
 }
 
