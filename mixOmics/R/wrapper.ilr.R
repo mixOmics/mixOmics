@@ -28,7 +28,7 @@
 # logratio.transfo
 logratio.transfo = function(X,
 logratio = "none", # one of ('none','CLR','ILR')
-offset = 1)
+offset = 0)
 {
     
     if (logratio == 'ILR')
@@ -50,9 +50,10 @@ offset = 1)
 # -----------------
 
 # KA changed the function to add a min value when many zeroes in data (prob with log and division by 0 otherwise)
-ilr.transfo = function(x, fast = TRUE, offset = 1)
+ilr.transfo = function(x, fast = TRUE, offset = 0)
 {
-    
+    if(any(x==0) & offset ==0)
+    stop("make sure you use pseudo counts before normalisation to avoid 0 values with log ratio transformation")
     # ilr transformation
     x.ilr = matrix(NA, nrow = nrow(x), ncol = ncol(x)-1)
     D = ncol(x)
@@ -97,8 +98,11 @@ clr.backtransfo = function(x)
 
 
 # CLR transformation
-clr.transfo = function(x, offset = 1)
+clr.transfo = function(x, offset = 0)
 {
+    if(any(x==0) & offset ==0)
+    stop("make sure you use pseudo counts before normalisation to avoid 0 values with log ratio transformation")
+
     # KA added
     #offset = min(x[which(x != 0)])*0.01
     
