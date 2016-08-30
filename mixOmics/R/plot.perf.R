@@ -344,7 +344,7 @@ measure = "all",
 type="l",
 xlab = NULL,
 ylab = NULL,
-overlay=c("all","measure"),
+overlay= c("all", "measure", "dist"),
 legend=c("vertical","horizontal"),
 ...)
 {
