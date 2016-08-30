@@ -172,6 +172,9 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     if (any(is.na(validation)) || length(validation) > 1)
     stop("'validation' should be one of 'Mfold' or 'loo'.", call. = FALSE)
     
+    #-- test.keepX
+    if (is.null(test.keepX) | length(test.keepX) == 1 | !is.numeric(test.keepX))
+    stop("'test.keepX' must be a numeric vector with more than two entries", call. = FALSE)
     
     #-- end checking --#
     #------------------#
