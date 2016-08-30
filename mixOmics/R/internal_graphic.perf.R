@@ -58,11 +58,11 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
     
     if(overlay == "all")
     {
-        out<-matplot(error.rate.concat, type = type, lty = rep(c(1:length(measure)), each = length(dist)), col = rep(color.mixo(1:length(dist)), length(measure)), 
-        lwd = 2, xlab = xlab, ylab = ylab, axes=FALSE, ylim=c(min(error.rate.concat), max(error.rate.concat)))
+        out<-matplot(rownames(error), error.rate.concat, type = type, lty = rep(c(1:length(measure)), each = length(dist)), col = rep(color.mixo(1:length(dist)), length(measure)),
+        lwd = 2, xlab = xlab, ylab = ylab, axes=TRUE, ylim=c(min(error.rate.concat), max(error.rate.concat)))
         
-        axis(1, 1:nrow(error.rate.concat), rownames(error.rate.concat))
-        axis(2)
+        #axis(1, 1:nrow(error.rate.concat), rownames(error.rate.concat))
+        #axis(2)
         
         if(legend == "vertical")
         {
@@ -159,16 +159,18 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
 }
 
 
-plot_error_bar <- function (x, y = NULL, uiw, add=FALSE, col = "black", ...)
+plot_error_bar <- function (x, y = as.numeric(x), uiw, add=FALSE, col = "black", ...)
 {
+    # x are the xaxis values
+    # y are the y axis values
     sfrac = 0.01
     gap = 0
     slty = par("lty")
     pt.bg = par("bg")
     arglist <- list()#...)
     liw = uiw
-    y <- as.numeric(x)
-    x <- seq(along = x)
+    #y <- as.numeric(x)
+    #x <- seq(along = x)
     z <- y
     ui <- z + uiw
     li <- z - liw
