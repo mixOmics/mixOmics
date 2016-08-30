@@ -24,6 +24,9 @@ scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)
 
+a=perf(nutrimouse.sgccda)
+plot(a)
+
 nutrimouse.sgccda$design
 
 plotIndiv(nutrimouse.sgccda,style="graphics")
