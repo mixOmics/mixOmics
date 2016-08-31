@@ -24,7 +24,7 @@ logratio = c('none','CLR'), multilevel = NULL, light.output = TRUE)
   \item{Y}{\code{if(method = 'spls')} numeric vector or matrix of continuous responses (for multi-response models) \code{NA}s are allowed.}
   \item{ncomp}{the number of components to include in the model.}
   \item{test.keepX}{numeric vector for the different number of variables to test from the \eqn{X} data set}
-\item{already.tested.X}{if \code{ncomp > 1} A list containing which variables of X are to be kept on each of the first PLS-components (if \code{constraint=TRUE}) or a numeric vector indicating the number of variables to select from the \eqn{X} data set on the firsts components (if \code{constraint = FALSE})}
+\item{already.tested.X}{Optional, if \code{ncomp > 1} A list containing which variables of X are to be kept on each of the first PLS-components (if \code{constraint=TRUE}) or a numeric vector indicating the number of variables to select from the \eqn{X} data set on the firsts components (if \code{constraint = FALSE})}
 \item{constraint}{Indicate whether the performance of the model is evaluated in regards to the number of variables selected (keepX, constraint = FALSE) or which specific variables are selected (keepX.constraint, constraint = TRUE)}
 \item{validation}{character.  What kind of (internal) validation to use, matching one of \code{"Mfold"} or
 \code{"loo"} (see below). Default is \code{"Mfold"}.}
@@ -46,8 +46,6 @@ should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \cod
 
 \details{
 
-mention stratified subsamplings
-
 This tuning function should be used to tune the parameters in the \code{splsda} function.
 
 For a sPLS-DA, M-fold or LOO cross-validation is performed with stratified subsampling where all classes are represented in each fold.
@@ -68,9 +66,10 @@ If \code{validation = "loo"}, leave-one-out cross-validation is performed. By de
 
 \value{
 Depending on the type of analysis performed, a list that contains:
-\item{mat.mean.error,}{returns the prediction error for each \code{test.keepX} on each component}
-\item{choice.keepX}{returns the variables selected by the optimal keepX on each component.}
-\item{error.per.class}{returns the error rate for each level of \code{Y} and for each component computed with the optimal keepX}
+\item{error.rate}{returns the prediction error for each \code{test.keepX} on each component}
+\item{choice.keepX}{returns the number of variables selected (optimal keepX) on each component.}
+\item{choice.keepX.constraint}{returns the variables selected by the optimal keepX on each component. only if constraint=TRUE.}
+\item{error.rate.class}{returns the error rate for each level of \code{Y} and for each component computed with the optimal keepX}
 
 \item{predict}{Prediction values for each sample, each \code{test.keepX}, each comp and each repeat. Only if light.output=FALSE}
 \item{class}{Predicted class for each sample, each \code{test.keepX}, each comp and each repeat. Only if light.output=FALSE}
@@ -116,6 +115,23 @@ tune$choice.keepX.constraint
 tune = tune.splsda(X = X,Y = Y, ncomp = 4,
 already.tested.X = c(5,10),
 test.keepX = seq(1,10,2), progressBar = TRUE)
+
+}
+
+## only tune component 3 and 4
+# keeping specific variables on the first two components respectively
+\dontrun{
+keepX.constraint = list(comp1 = c("818", "791", "911", "592"),
+comp2 = c("593", "743", "309")
+)
+# constraint is set to TRUE because we use a keepX.constraint on the first 2 PLS-components
+tune = tune.splsda(X = X,Y = Y, ncomp = 4,
+already.tested.X = keepX.constraint,
+test.keepX = seq(1,10,2), constraint = TRUE, progressBar = TRUE)
+
+tune$choice.keepX.constraint
+
+plot(tune)
 
 }
 

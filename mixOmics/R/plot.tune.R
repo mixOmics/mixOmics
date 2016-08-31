@@ -92,12 +92,12 @@ function(x, optimal = TRUE, sd = TRUE, ...)
 
     if(length(x$choice.keepX) == 1) #only first comp tuned
     {
-        legend = "comp 1"
+        legend = "comp1"
     } else if(length(x$choice.keepX) == comp.tuned) # all components have been tuned
     {
-        legend = c("comp 1", paste("comp 1 to", colnames(error)[-1]))
+        legend = c("comp1", paste("comp1 to", colnames(error)[-1]))
     } else { #first component was not tuned
-        legend = paste("comp 1 to", colnames(error))
+        legend = paste("comp1 to", colnames(error))
     }
 
     legend("topright", lty = 1, lwd = 2, horiz = FALSE, col = col.per.comp,

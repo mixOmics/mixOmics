@@ -59,9 +59,9 @@ folds = 10,
 dist = "max.dist",
 measure = "BER", # one of c("overall","BER")
 progressBar = TRUE,
+max.iter = 100,
 near.zero.var = FALSE,
 nrepeat = 1,
-max.iter = 100,
 design,
 scheme,
 mode,
@@ -232,6 +232,11 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             already.tested.X = lapply(1:length(already.tested.X), function(y){temp = lapply(1:length(already.tested.X[[y]]), function(x){colnames(X[[y]])[already.tested.X[[y]][[x]]]}); names(temp) = paste("comp", 1:length(already.tested.X[[1]]), sep=""); temp})
             names(already.tested.X) = names(X)
             
+        } else if(length(already.tested.X[[1]]) >0)
+        {
+            if(length(unique(names(already.tested.X)))!=length(already.tested.X) | sum(is.na(match(names(already.tested.X),names(X)))) > 0)
+            stop("Each entry of 'already.tested.X' must have a unique name corresponding to a block of 'X'")
+
         }
         
     } else {
@@ -273,11 +278,11 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             }
             
             # run block.splsda
-            model = block.splsda(X = X, Y = Y, ncomp=comp.real[comp],
+            model = suppressMessages(block.splsda(X = X, Y = Y, ncomp=comp.real[comp],
             keepX.constraint = if(constraint){already.tested.X}else{NULL},
             keepX = if(constraint){test.keepX.comp}else{keepX.temp},
             design=design, scheme=scheme, mode=mode, scale=scale,
-            bias=bias, init=init, tol=tol, verbose=verbose, max.iter=max.iter, near.zero.var=near.zero.var)
+            bias=bias, init=init, tol=tol, verbose=verbose, max.iter=max.iter, near.zero.var=near.zero.var))
             
             
             # run perf on the model
@@ -326,11 +331,11 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
 
         } else {
             # get the variables selected by the optimal keepX, and add them in already.tested.X
-            fit = block.splsda(X = X, Y = Y, ncomp=comp.real[comp],
+            fit = suppressMessages(block.splsda(X = X, Y = Y, ncomp=comp.real[comp],
             keepX.constraint = already.tested.X,
             keepX = opt.keepX.comp,
             design=design, scheme=scheme, mode=mode, scale=scale,
-            bias=bias, init=init, tol=tol, verbose=verbose, max.iter=max.iter, near.zero.var=near.zero.var)
+            bias=bias, init=init, tol=tol, verbose=verbose, max.iter=max.iter, near.zero.var=near.zero.var))
             
             varselect = selectVar(fit, comp = comp.real[comp])
             varselect = varselect[which(names(varselect) %in% names(X))]
