@@ -123,8 +123,9 @@ diag(design) =  0
 design
 # set number of component per data set
 ncomp = 2
-# set number of variables to select, per component and per data set (this is set arbitrarily)
-list.keepX = list(mrna = rep(20, 2), mirna = rep(10,2), protein = rep(10, 2))
+
+# Tuning the first two components
+# -------------
 
 # definition of the keepX value to be tested for each block mRNA miRNA and protein
 # names of test.keepX must match the names of 'data'
@@ -163,7 +164,7 @@ tune$choice.keepX
 
 
 # with constraint
-## we force the first PLS-component of X to be built with only a few variables
+## we force the first PLS-component of each block to be built with only a few specific variables
 
 constraint.mrna = list(comp1 = c("EPHB3", "CBR1", "BSPRY"))
 constraint.mirna  = list(comp1 = c("hsa-mir-128-2", "hsa-mir-196b"))
