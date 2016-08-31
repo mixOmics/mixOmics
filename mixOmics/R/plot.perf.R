@@ -196,10 +196,7 @@ sd = TRUE,
     
     if(length(overlay) >1 )
     overlay = overlay[1]
-    
-    if(length(error.rate) >1 )
-    error.rate = error.rate[1]
-    
+        
     if(length(legend) >1 )
     legend = legend[1]
 
