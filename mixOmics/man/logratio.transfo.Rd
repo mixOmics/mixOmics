@@ -9,13 +9,13 @@ This function applies a log transformation to the data, either CLR or ILR
 }
 
 \usage{
-logratio.transfo(X, logratio = "none", offset = 1)
+logratio.transfo(X, logratio = "none", offset = 0)
 }	
 
 \arguments{
 \item{X}{numeric matrix of predictors}
 \item{logratio}{log-ratio transform to apply, one of "none", "CLR" or "ILR"}
-\item{offset}{Value that is added to X for CLR log transformation. Default to 1.}
+\item{offset}{Value that is added to X for CLR and ILR log transformation. Default to 0.}
 
 }
 

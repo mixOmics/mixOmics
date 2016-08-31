@@ -36,6 +36,7 @@ multilevel = NULL,plot = TRUE, roc.block = 1, roc.comp = 1, ...)
 \item{object}{Object from one of the following supervised analysis class: "plsda", "splsda", "mint.plsda", "mint.splsda", "block.splsda" or "wrapper.sgccda"}
 \item{newdata}{numeric matrix of predictors, by default set to the training data set (see details).}
 \item{outcome.test}{Either a factor or a class vector for the discrete outcome, by default set to the outcome vector from the training set (see details). }
+\item{study.test}{For MINT objects, grouping factor indicating which samples of \code{newdata} are from the same study. Overlap with \code{object$study} are allowed.}
 \item{multilevel}{Sample information when a newdata matrix is input and when multilevel decomposition for repeated measurements is required. A numeric matrix or data frame indicating the repeated measures on each individual, i.e. the individuals ID. See examples in \code{splsda}.}
 \item{plot}{Whether the ROC curves should be plotted, by default set to TRUE (see details).}
 \item{roc.comp}{Specify the component (integer) for which the ROC will be plotted from the multivariate model, default to 1.}

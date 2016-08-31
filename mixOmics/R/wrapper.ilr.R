@@ -38,7 +38,7 @@ offset = 0)
             X = ilr.transfo(X, offset = offset)
         }
     }else if (logratio == 'CLR') {
-        X = clr.transfo(X)
+        X = clr.transfo(X, offset = offset)
     }
     #if logratio = "none", do nothing
     

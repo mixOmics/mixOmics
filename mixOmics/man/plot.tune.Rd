@@ -10,11 +10,14 @@ Function to plot performance criteria, such as classification error rate or bala
 }
 
 \usage{
-\method{plot}{tune.splsda}(x, \dots)
+\method{plot}{tune.splsda}(x, optimal = TRUE, sd = TRUE, \dots)
 }
 
 \arguments{
   \item{x}{an \code{tune.splsda} object.}
+\item{optimal}{If TRUE, highlights the optimal keepX per component}
+\item{sd}{If 'nrepeat' was used in the call to 'tune.splsda', error bar shows the standard deviation if sd=TRUE}
+
   \item{\dots}{Further arguments sent to \code{\link{xyplot}} function.}
 }
 

@@ -28,7 +28,7 @@
 # --------------------------------------------------------------------------------------
 
 
-internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, measure, dist, legend, xlab, ylab, ...)
+internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, measure, dist, legend.position, xlab, ylab, ...)
 {
     # error.rate is a list [[measure]]
     # error.rate[[measure]] is a matrix of dist columns and ncomp rows
@@ -71,11 +71,11 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
         
         axis(1, rownames(error.rate.concat))#, rownames(error.rate.concat))
         
-        if(legend == "vertical")
+        if(legend.position == "vertical")
         {
             legend('topright', legend = c(measure, dist), lty = c(1:length(measure), rep(NA, length(dist))),
             pch = c(rep(NA, length(measure)), rep(16, length(dist))), col = c(rep('black', length(measure)), color.mixo(1:length(dist))), ncol = 1, lwd = 2)
-        } else if(legend == "horizontal") {
+        } else if(legend.position == "horizontal") {
             legend('topright', legend = c(measure, "" , dist), lty = c(1:length(measure), rep(NA, (length(dist)+1))),
             pch = c(rep(NA, (length(measure)+1)), rep(16, length(dist))), col = c(rep('black', length(measure)), NA, color.mixo(1:length(dist))), ncol = 2, lwd = 2)
             
@@ -102,10 +102,10 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
             axis(1, rownames(error.rate.concat))#, rownames(error.rate.concat))
             #axis(2)
             
-            if(legend == "vertical")
+            if(legend.position == "vertical")
             {
                 legend('topright', legend = measure, lty = 1:length(measure), col = rep(color.mixo(which(di == dist))), ncol = 1, lwd = 2)
-            } else if(legend == "horizontal") {
+            } else if(legend.position == "horizontal") {
                 legend('topright', legend = c(measure), lty = 1:length(measure), col = rep(color.mixo(which(di == dist))), ncol = 2, lwd = 2)
             }
             if(!is.null(error.rate.sd.concat))
@@ -141,10 +141,10 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
             axis(1, rownames(error.rate.concat))#, rownames(error.rate.concat))
             #axis(2)
             
-            if(legend == "vertical")
+            if(legend.position == "vertical")
             {
                 legend('topright', legend = dist, lty = 1:length(dist), col = rep(color.mixo(1:length(dist))), ncol = 1, lwd = 2)
-            } else if(legend == "horizontal") {
+            } else if(legend.position == "horizontal") {
                 legend('topright', dist, lty = 1:length(dist), col = rep(color.mixo(1:length(dist))), ncol = 2, lwd = 2)
             }
             if(!is.null(error.rate.sd.concat))
