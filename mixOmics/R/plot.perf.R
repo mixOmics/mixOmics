@@ -187,12 +187,12 @@ plot.perf.plsda.mthd <-plot.perf.splsda.mthd <-
         xlab = 'PLSDA components'
         
       }
+    
     def.par <- par(no.readonly = TRUE) 
     internal_graph_plot.perf(mat.error.plsda,sd.error.plsda, overlay, type,measure,dist,legend,xlab,ylab,sd=sd,lwd=lwd,  ...)
     par(def.par)
     # error.bar(out,as.vector(mat.error.plsda),as.vector(cbind(x$error.rate.sd$overall,x$error.rate.sd$BER)))
     
-return(invisible(out))
     
   }
 
@@ -313,7 +313,6 @@ plot.perf.mint.plsda.mthd <-plot.perf.mint.splsda.mthd <-
       par(def.par)
       
     }
-    return(invisible(out))
     
   }
 
@@ -375,7 +374,6 @@ plot.perf.sgccda.mthd <-
     internal_graph_plot.perf(mat.error.plsda,sd.error.plsda=NULL, overlay, type,measure,dist,legend,xlab,ylab,sd=FALSE,lwd=lwd,  ...)
    
        par(def.par)
-    return(invisible(out))
     
   }
 

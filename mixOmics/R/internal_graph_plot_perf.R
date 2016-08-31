@@ -19,7 +19,7 @@ if(any(overlay=="all"))
   if(sd)
  { for(col in 1:ncol(mat.error.plsda))
   {
-    plot_error_bar(mat.error.plsda[,col],uiw=sd.error.plsda[,col],add=T,...)
+    plot_error_bar(1:nrow(mat.error.plsda),mat.error.plsda[,col],uiw=sd.error.plsda[,col],add=T,...)
   }}
 }
 else if(overlay=="measure")
@@ -28,11 +28,11 @@ else if(overlay=="measure")
   for(di in dist)
   {
     new_mat.error=mat.error.plsda[,which(colnames(mat.error.plsda)==di)]
-    print(new_mat.error)
     out<-matplot(new_mat.error, type = type, lty = c(1:length(measure)), col ="black", 
                  lwd = lwd, xlab = xlab, ylab = ylab,axes=FALSE,ylim=c(min(mat.error.plsda),max(mat.error.plsda)))
     axis(1,1:nrow(mat.error.plsda),rownames(mat.error.plsda))
     axis(2)
+    title(di)
     if(any(legend=="vertical"))
     {legend('topright', legend = measure, lty = 1:length(measure),  col = rep('black',length(measure)), ncol = 1, lwd = lwd)}
     
@@ -45,13 +45,14 @@ else if(overlay=="measure")
       {for(col in 1:ncol(new_mat.error))
       {
         new_sd.error=sd.error.plsda[,which(colnames(sd.error.plsda)==di)]
-        plot_error_bar(new_mat.error[,col],uiw=new_sd.error[,col],add=T,...)
+        plot_error_bar(1:nrow(mat.error.plsda),new_mat.error[,col],uiw=new_sd.error[,col],add=T,...)
       }}
     else
     {
-      plot_error_bar(new_mat.error,uiw=sd.error.plsda,add=T,...)
+      plot_error_bar(1:nrow(mat.error.plsda),new_mat.error,uiw=sd.error.plsda,add=T,...)
     }
     }
+    
   }
   
 }

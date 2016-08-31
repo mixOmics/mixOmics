@@ -27,7 +27,7 @@
 plot.tune<-function(x,...) NextMethod("plot")
 
 plot.tune.splsda = #plot.spca <- plot.ipca <- plot.sipca <-
-function(x, optimal = TRUE,type = "l",lwd=2,sd=TRUE,horiz=FALSE,overlay=TRUE, ...)
+function(x, optimal = TRUE,type = "l",lwd=2,sd=TRUE,horiz=FALSE,overlay=TRUE,log="", ...)
 {
     
     if (!is.logical(optimal))
@@ -60,9 +60,9 @@ function(x, optimal = TRUE,type = "l",lwd=2,sd=TRUE,horiz=FALSE,overlay=TRUE, ..
     }
    if(overlay)
     {
-     matplot(rownames(error),error, type = type, axes = TRUE, lwd = lwd, lty = 1, log = "x",
+     matplot(rownames(error),error, type = type,  lwd = lwd, lty = 1, log=log,axes=TRUE,
     xlab = "Number of selected genes", ylab = ylab,
-    col = col.per.comp)
+    col = col.per.comp,ylim=c(min(error),max(error)+0.1))
     
     if(sd)
     { for(i in 1:comp.tuned)
@@ -81,11 +81,13 @@ function(x, optimal = TRUE,type = "l",lwd=2,sd=TRUE,horiz=FALSE,overlay=TRUE, ..
        
             }
     }
-    
-    legend=paste("Component",1:comp.tuned)
+    if(comp.tuned==1)
+      legend=c("1")
+    else
+      legend=c(1,paste("1 to",2:comp.tuned))
     
     legend("topright", lty = 1, lwd = lwd, horiz = horiz, col = col.per.comp,
-    legend = legend)
+    legend = legend,title="Component :",seg.len = 1,cex=lwd/2)
     }
     else
     {
@@ -93,7 +95,7 @@ function(x, optimal = TRUE,type = "l",lwd=2,sd=TRUE,horiz=FALSE,overlay=TRUE, ..
       par(mfrow=c(1,comp.tuned))
       for(i in 1:comp.tuned)
       {
-        matplot(rownames(error),error[,i], type = type, axes = TRUE, lwd = lwd, lty = 1, log = "x",
+        matplot(rownames(error),error[,i], type = type,  lwd = lwd, lty = 1, log=log,axes=TRUE,
                 xlab = "Number of selected genes", ylab = ylab,
                 col = col.per.comp,ylim=c(min(error),max(error)))
         

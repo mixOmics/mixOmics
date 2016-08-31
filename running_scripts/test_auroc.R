@@ -64,9 +64,9 @@ for(roc.comp in 1:2){
 data(liver.toxicity)
 
 test=sample(1:64,7,replace=TRUE)
-X <- liver.toxicity$gene
+X <- liver.toxicity$gene[-test,]
 X.test<-liver.toxicity$gene[test,]
-Y <- liver.toxicity$treatment[, 4]
+Y <- liver.toxicity$treatment[-test, 4]
 Y.test <- liver.toxicity$treatment[test, 4]
 
 res.plsda <- plsda(X, Y, ncomp = 2)
