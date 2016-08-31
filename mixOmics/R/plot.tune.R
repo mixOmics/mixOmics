@@ -34,7 +34,7 @@ function(x, optimal = TRUE, sd = TRUE, ...)
 
 
     error <- x$error.rate
-    if(sd)
+    if(sd & !is.null(x$error.rate.sd))
     {
         error.rate.sd = x$error.rate.sd
         ylim = range(error + error.rate.sd)

@@ -115,7 +115,7 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
                 plot_error_bar(x = component, y = new_mat.error[, j], uiw=new_sd.error[, j], add=T, col = color.mixo(which(di == dist)))
             }
             #add title for each subgraph
-            title(di)
+            title(di, line = 1)
         }
         
     } else if(overlay == "dist") {
@@ -148,7 +148,7 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
                 for(j in 1:ncol(new_mat.error))
                 plot_error_bar(x = component, y = new_mat.error[, j], uiw=new_sd.error[, j], add=T, col = col[, j])
             }
-            title(mea)
+            title(mea, line = 1)
         }
         
     }

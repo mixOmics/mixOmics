@@ -301,6 +301,9 @@ legend.position=c("vertical", "horizontal"),
         if (any(dist == "all"))
         dist = colnames(x$study.specific.error[[1]][[1]])
         
+        if((length(study) >1) & (overlay != "all"))
+        stop("When more than one study is plotted, overlay must be 'all'")
+        
         
         if (is.null(dist) || !any(dist %in% colnames(x$study.specific.error[[1]][[1]])))
         stop("'dist' should be among the ones used in your call to 'perf': ", paste(colnames(x$study.specific.error[[1]][[1]]),collapse = ", "),".")
@@ -331,9 +334,14 @@ legend.position=c("vertical", "horizontal"),
             overlay = overlay, type = type, measure = measure, dist = dist, legend.position = legend.position,
             xlab = xlab, ylab = ylab, ...)
             
-            title(stu)
+            if (overlay == "all")
+            title(stu, line = 1)
         }
         
+        if((length(study)==1) & (length(measure) > 1) & overlay != "all")
+        title(stu, outer=TRUE, line = -1)#,...)
+
+
         par(def.par)
         
     }
