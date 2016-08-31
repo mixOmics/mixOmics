@@ -174,10 +174,6 @@ plot_error_bar <- function (x, y = as.numeric(x), uiw, add=FALSE, col = "black",
 {
     # x are the xaxis values
     # y are the y axis values
-    sfrac = 0.01
-    gap = 0
-    slty = par("lty")
-    pt.bg = par("bg")
     arglist <- list()#...)
     liw = uiw
     #y <- as.numeric(x)
@@ -189,21 +185,19 @@ plot_error_bar <- function (x, y = as.numeric(x), uiw, add=FALSE, col = "black",
     arglist$ylab <- deparse(substitute(y))
     arglist$ylim <- range(c(y, ui, li), na.rm = TRUE)
     arglist$xlim <- range(c(x, ui, li), na.rm = TRUE)
-    scol <- par("col")
     plotpoints <- TRUE
     ul <- c(li, ui)
     pin <- par("pin")
     usr <- par("usr")
     x.to.in <- pin[1]/diff(usr[1:2])
     y.to.in <- pin[2]/diff(usr[3:4])
-    gap <- rep(gap, length(x)) * diff(par("usr")[3:4])
-    smidge <- par("fin")[1] * sfrac
+    gap <- rep(0, length(x)) * diff(par("usr")[3:4])
+    smidge <- par("fin")[1] * 0.01
     nz <- abs(li - pmax(y - gap, li)) * y.to.in > 0.001
-    scols <- col#rep(scol, length.out = length(x))[nz]
+    scols <- col
     
-    arrow.args <- c(list(lty = slty, angle = 90, length = smidge,
-    code = 1, col = scols), clean.args(arglist, arrows,
-    exclude.other = c("col", "lty", "axes")))
+    arrow.args <- c(list(lty = par("lty"), angle = 90, length = smidge,
+    code = 1, col = scols))
     
     do.call("arrows", c(list(x[nz], li[nz], x[nz], pmax(y -
     gap, li)[nz]), arrow.args))
@@ -215,28 +209,7 @@ plot_error_bar <- function (x, y = as.numeric(x), uiw, add=FALSE, col = "black",
     do.call("arrows", c(list(x[nz], ui[nz], x[nz], pmin(y +
     gap, ui)[nz]), arrow.args))
     
-    do.call("points", c(list(x, y, bg = pt.bg, col =col), clean.args(arglist,
-    points, exclude.other = c("xlab", "ylab", "xlim",
-    "ylim", "axes"))))
+    do.call("points", c(list(x, y, bg = par("bg"), col =col)))
     
     invisible(list(x = x, y = y))
-}
-
-
-# from plotrix: 3.0-6
-clean.args<-function(argstr, fn, exclude.repeats=FALSE, exclude.other=NULL,
-dots.ok=TRUE) {
-    
-    fnargs<-names(formals(fn))
-    if(length(argstr) > 0 && !("..." %in% fnargs && dots.ok)) {
-        badargs<-names(argstr)[!sapply(names(argstr), "%in%", c(fnargs, ""))]
-        for(i in badargs) argstr[[i]]<-NULL
-    }
-    if(exclude.repeats) {
-        ntab<-table(names(argstr))
-        badargs<-names(ntab)[ntab > 1 & names(ntab) != ""]
-        for (i in badargs) argstr[[i]]<-NULL
-    }
-    for(i in exclude.other) argstr[[i]]<-NULL
-    argstr
 }
