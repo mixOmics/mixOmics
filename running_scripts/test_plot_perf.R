@@ -11,8 +11,8 @@
 #######################################################################################################
 opar <- par(no.readonly = TRUE)
 
-source("mixOmics/R/plot.perf.R")
-source("mixOmics/R/internal_graphic.perf.R")
+#source("mixOmics/R/plot.perf.R")
+#source("mixOmics/R/internal_graphic.perf.R")
 
 
 ## validation for objects of class 'pls' (classification)
@@ -49,23 +49,19 @@ for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))
 {
     for(mea in c("all", "BER" , "overall"))
     {
-        for(typ in c("p","l","b","c","o","h","s","S"))
+        for(overla in c("all","measure"))
         {
-            for(overla in c("all","measure"))
+            for(leg in c("vertical","horizontal"))
             {
-                for(leg in c("vertical","horizontal"))
-                {
-                    quartz()
-                    print(paste(di,mea,typ,overla,leg))
-                    plot(error,
-                    dist =di,
-                    measure = mea,
-                    type=typ,
-                    xlab = NULL,
-                    ylab = NULL,
-                    overlay=overla,
-                    legend=leg)
-                }
+                quartz()
+                print(paste(di,mea,overla,leg))
+                plot(error,
+                dist =di,
+                measure = mea,
+                xlab = NULL,
+                ylab = NULL,
+                overlay=overla,
+                legend.position=leg)
             }
         }
     }
@@ -94,23 +90,19 @@ for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))
 {
     for(mea in c("all", "BER" , "overall"))
     {
-        for(typ in c("p","l","b","c","o","h","s","S"))
+        for(overla in c("all","measure"))
         {
-            for(overla in c("all","measure"))
+            for(leg in c("vertical","horizontal"))
             {
-                for(leg in c("vertical","horizontal"))
-                {
-                    
-                    print(paste(di,mea,typ,overla,leg))
-                    plot(error,
-                    dist =di,
-                    measure = mea,
-                    type=typ,
-                    xlab = NULL,
-                    ylab = NULL,
-                    overlay=overla,
-                    legend=leg)
-                }
+                
+                print(paste(di,mea,overla,leg))
+                plot(error,
+                dist =di,
+                measure = mea,
+                xlab = NULL,
+                ylab = NULL,
+                overlay=overla,
+                legend.position=leg)
             }
         }
     }
