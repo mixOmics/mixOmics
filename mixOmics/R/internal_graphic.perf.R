@@ -1,6 +1,6 @@
 #############################################################################################################
 # Author:
-#   Francois Bartolo, 
+#   Francois Bartolo,
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 29-08-2016
@@ -13,7 +13,7 @@
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful, 
+# This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
@@ -28,7 +28,7 @@
 # --------------------------------------------------------------------------------------
 
 
-internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, measure, dist, legend, xlab, ylab, ...)
+internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, measure, dist, legend.position, xlab, ylab, ...)
 {
     # error.rate is a list [[measure]]
     # error.rate[[measure]] is a matrix of dist columns and ncomp rows
@@ -37,7 +37,7 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
     error.rate.concat = matrix(nrow = nrow(error.rate[[1]]), ncol = 0)
     for(mea in measure)
     {
-        temp = error.rate[[mea]][, dist]
+        temp = error.rate[[mea]][, dist, drop = FALSE]
         colnames(temp) = paste(mea, colnames(temp),sep="_")
         error.rate.concat = cbind(error.rate.concat, temp)
     }
@@ -47,36 +47,45 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
         error.rate.sd.concat = matrix(nrow = nrow(error.rate.sd[[1]]), ncol = 0)
         for(mea in measure)
         {
-            temp = error.rate.sd[[mea]][, dist]
+            temp = error.rate.sd[[mea]][, dist, drop = FALSE]
             colnames(temp) = paste(mea, colnames(temp),sep="_")
-            error.rate.sd.concat = cbind(error.rate.concat, temp)
+            error.rate.sd.concat = cbind(error.rate.sd.concat, temp)
         }
+        ylim = range(error.rate.concat + error.rate.sd.concat)
+        
     } else {
         error.rate.sd.concat = NULL
+        ylim = range(error.rate.concat)
+        
     }
-   
+    
+    #extract component numbers from rownames(error.rate.concat)
+    
+    rownames(error.rate.concat) = sapply(strsplit(rownames(error.rate.concat)," "), function(x){x[2]})
+    component = as.numeric(rownames(error.rate.concat))
     
     if(overlay == "all")
     {
-        out<-matplot(error.rate.concat, type = type, lty = rep(c(1:length(measure)), each = length(dist)), col = rep(color.mixo(1:length(dist)), length(measure)), 
-        lwd = 2, xlab = xlab, ylab = ylab, axes=FALSE, ylim=c(min(error.rate.concat), max(error.rate.concat)))
+        out<-matplot(component, error.rate.concat, type = type, lty = rep(c(1:length(measure)), each = length(dist)), col = rep(color.mixo(1:length(dist)), length(measure)),
+        lwd = 2, xlab = xlab, ylab = ylab, xaxt="n", ylim = ylim)
         
-        axis(1, 1:nrow(error.rate.concat), rownames(error.rate.concat))
-        axis(2)
+        axis(1, rownames(error.rate.concat))#, rownames(error.rate.concat))
         
-        if(legend == "vertical")
+        if(legend.position == "vertical")
         {
-            legend('topright', legend = c(measure, dist), lty = c(1:length(measure), rep(NA, length(dist))), 
+            legend('topright', legend = c(measure, dist), lty = c(1:length(measure), rep(NA, length(dist))),
             pch = c(rep(NA, length(measure)), rep(16, length(dist))), col = c(rep('black', length(measure)), color.mixo(1:length(dist))), ncol = 1, lwd = 2)
-        } else if(legend == "horizontal") {
-            legend('topright', legend = c(measure, "" , dist), lty = c(1:length(measure), rep(NA, (length(dist)+1))), 
+        } else if(legend.position == "horizontal") {
+            legend('topright', legend = c(measure, "" , dist), lty = c(1:length(measure), rep(NA, (length(dist)+1))),
             pch = c(rep(NA, (length(measure)+1)), rep(16, length(dist))), col = c(rep('black', length(measure)), NA, color.mixo(1:length(dist))), ncol = 2, lwd = 2)
             
         }
         if(!is.null(error.rate.sd.concat))
         {
-            for(col in 1:ncol(error.rate.concat))
-            plot_error_bar(error.rate.concat[, col], uiw=error.rate.sd.concat[, col], add=T)#, ...)
+            col = matrix(rep(color.mixo(rep(1:length(dist), each = nrow(error.rate.concat))), length(measure)), nrow = nrow(error.rate.concat))
+            
+            for(j in 1:ncol(error.rate.concat))
+            plot_error_bar(x = component, y = error.rate.concat[, j], uiw=error.rate.sd.concat[, j], add=T, col = col[, j])
         }
     } else if(overlay == "measure") {
         
@@ -84,74 +93,62 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
         par(mfrow=c(1, length(dist)))
         for(di in dist)
         {
-            new_mat.error=error.rate.concat[, grep(di, colnames(error.rate.concat))]
+            new_mat.error = error.rate.concat[, grep(di, colnames(error.rate.concat)), drop = FALSE]
             
             out<-matplot(new_mat.error, type = type, lty = c(1:length(measure)),
             col = rep(color.mixo(which(di == dist))),
-            lwd = 2, xlab = xlab, ylab = ylab, axes=FALSE, ylim=c(min(error.rate.concat), max(error.rate.concat)))
+            lwd = 2, xlab = xlab, ylab = ylab, xaxt="n", ylim = ylim)
             
-            axis(1, 1:nrow(error.rate.concat), rownames(error.rate.sd.concat))
-            axis(2)
+            axis(1, rownames(error.rate.concat))#, rownames(error.rate.concat))
+            #axis(2)
             
-            if(legend == "vertical")
+            if(legend.position == "vertical")
             {
                 legend('topright', legend = measure, lty = 1:length(measure), col = rep(color.mixo(which(di == dist))), ncol = 1, lwd = 2)
-            } else if(legend == "horizontal") {
+            } else if(legend.position == "horizontal") {
                 legend('topright', legend = c(measure), lty = 1:length(measure), col = rep(color.mixo(which(di == dist))), ncol = 2, lwd = 2)
             }
             if(!is.null(error.rate.sd.concat))
             {
-                if(is.matrix(new_mat.error))
-                {
-                    for(col in 1:ncol(new_mat.error))
-                    {
-                        new_sd.error=error.rate.sd.concat[, grep(di, colnames(error.rate.sd.concat))]
-                        plot_error_bar(new_mat.error[, col], uiw=new_sd.error[, col], add=T)#, ...)
-                    }
-                } else {
-                    plot_error_bar(new_mat.error, uiw=error.rate.sd.concat, add=T)#, ...)
-                }
+                new_sd.error = error.rate.sd.concat[, grep(di, colnames(error.rate.sd.concat)), drop = FALSE]
+                for(j in 1:ncol(new_mat.error))
+                plot_error_bar(x = component, y = new_mat.error[, j], uiw=new_sd.error[, j], add=T, col = color.mixo(which(di == dist)))
             }
             #add title for each subgraph
-            title(di)
+            title(di, line = 1)
         }
         
     } else if(overlay == "dist") {
         
         # overlaying all distance on one graph, a graph per measure
-
+        
         par(mfrow=c(1, length(measure)))
         for(mea in measure)
         {
-            new_mat.error=error.rate.concat[, grep(mea, colnames(error.rate.concat))]
+            new_mat.error=error.rate.concat[, grep(mea, colnames(error.rate.concat)), drop = FALSE]
             
             out<-matplot(new_mat.error, type = type, lty = c(1:length(dist)),
             col = rep(color.mixo(1:length(dist))),
-            lwd = 2, xlab = xlab, ylab = ylab, axes=FALSE, ylim=c(min(error.rate.concat), max(error.rate.concat)))
+            lwd = 2, xlab = xlab, ylab = ylab, xaxt="n", ylim = ylim)
             
-            axis(1, 1:nrow(error.rate.concat), rownames(error.rate.concat))
-            axis(2)
+            axis(1, rownames(error.rate.concat))#, rownames(error.rate.concat))
+            #axis(2)
             
-            if(legend == "vertical")
+            if(legend.position == "vertical")
             {
                 legend('topright', legend = dist, lty = 1:length(dist), col = rep(color.mixo(1:length(dist))), ncol = 1, lwd = 2)
-            } else if(legend == "horizontal") {
+            } else if(legend.position == "horizontal") {
                 legend('topright', dist, lty = 1:length(dist), col = rep(color.mixo(1:length(dist))), ncol = 2, lwd = 2)
             }
             if(!is.null(error.rate.sd.concat))
             {
-                if(is.matrix(new_mat.error))
-                {
-                    for(col in 1:ncol(new_mat.error))
-                    {
-                        new_sd.error=error.rate.sd.concat[, grep(mea, colnames(error.rate.sd.concat))]
-                        plot_error_bar(new_mat.error[, col], uiw=new_sd.error[, col], add=T)#, ...)
-                    }
-                } else {
-                    plot_error_bar(new_mat.error, uiw=error.rate.sd.concat, add=T)#, ...)
-                }
+                col = matrix(color.mixo(rep(1:length(dist), each = nrow(error.rate.concat))), nrow = nrow(error.rate.concat))
+                
+                new_sd.error=error.rate.sd.concat[, grep(mea, colnames(error.rate.sd.concat)), drop = FALSE]
+                for(j in 1:ncol(new_mat.error))
+                plot_error_bar(x = component, y = new_mat.error[, j], uiw=new_sd.error[, j], add=T, col = col[, j])
             }
-            title(mea)
+            title(mea, line = 1)
         }
         
     }
@@ -159,16 +156,14 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
 }
 
 
-plot_error_bar <- function (x, y = NULL, uiw, add=FALSE, ...)
+plot_error_bar <- function (x, y = as.numeric(x), uiw, add=FALSE, col = "black")
 {
-    sfrac = 0.01
-    gap = 0
-    slty = par("lty")
-    pt.bg = par("bg")
-    arglist <- list(...)
+    # x are the xaxis values
+    # y are the y axis values
+    arglist <- list()#...)
     liw = uiw
-    y <- as.numeric(x)
-    x <- seq(along = x)
+    #y <- as.numeric(x)
+    #x <- seq(along = x)
     z <- y
     ui <- z + uiw
     li <- z - liw
@@ -176,54 +171,31 @@ plot_error_bar <- function (x, y = NULL, uiw, add=FALSE, ...)
     arglist$ylab <- deparse(substitute(y))
     arglist$ylim <- range(c(y, ui, li), na.rm = TRUE)
     arglist$xlim <- range(c(x, ui, li), na.rm = TRUE)
-    scol <- par("col")
     plotpoints <- TRUE
     ul <- c(li, ui)
     pin <- par("pin")
     usr <- par("usr")
     x.to.in <- pin[1]/diff(usr[1:2])
     y.to.in <- pin[2]/diff(usr[3:4])
-    gap <- rep(gap, length(x)) * diff(par("usr")[3:4])
-    smidge <- par("fin")[1] * sfrac
+    gap <- rep(0, length(x)) * diff(par("usr")[3:4])
+    smidge <- par("fin")[1] * 0.01
     nz <- abs(li - pmax(y - gap, li)) * y.to.in > 0.001
-    scols <- rep(scol, length.out = length(x))[nz]
+    scols <- col
     
-    arrow.args <- c(list(lty = slty, angle = 90, length = smidge, 
-    code = 1, col = scols), clean.args(arglist, arrows, 
-    exclude.other = c("col", "lty", "axes")))
+    arrow.args <- c(list(lty = par("lty"), angle = 90, length = smidge,
+    code = 1, col = scols))
     
     do.call("arrows", c(list(x[nz], li[nz], x[nz], pmax(y -
     gap, li)[nz]), arrow.args))
     
     nz <- abs(ui - pmin(y + gap, ui)) * y.to.in > 0.001
-    scols <- rep(scol, length.out = length(x))[nz]
+    #scols <- rep(scol, length.out = length(x))[nz]
     arrow.args$col <- scols
     
     do.call("arrows", c(list(x[nz], ui[nz], x[nz], pmin(y +
     gap, ui)[nz]), arrow.args))
     
-    do.call("points", c(list(x, y, bg = pt.bg), clean.args(arglist,
-    points, exclude.other = c("xlab", "ylab", "xlim", 
-    "ylim", "axes"))))
+    do.call("points", c(list(x, y, bg = par("bg"), col =col)))
     
     invisible(list(x = x, y = y))
-}
-
-
-# from plotrix: 3.0-6
-clean.args<-function(argstr, fn, exclude.repeats=FALSE, exclude.other=NULL, 
-dots.ok=TRUE) {
-    
-    fnargs<-names(formals(fn))
-    if(length(argstr) > 0 && !("..." %in% fnargs && dots.ok)) {
-        badargs<-names(argstr)[!sapply(names(argstr), "%in%", c(fnargs, ""))]
-        for(i in badargs) argstr[[i]]<-NULL
-    }
-    if(exclude.repeats) {
-        ntab<-table(names(argstr))
-        badargs<-names(ntab)[ntab > 1 & names(ntab) != ""]
-        for (i in badargs) argstr[[i]]<-NULL
-    }
-    for(i in exclude.other) argstr[[i]]<-NULL
-    argstr
 }

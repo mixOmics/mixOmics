@@ -90,6 +90,8 @@ layout = NULL,
     nResp = nrow(y)  # Number of response variables
     nComp = ncol(y)  # Number of components
     
+    def.par = par(no.readonly = TRUE)
+
     if (nResp > 1) {
         if (is.null(layout)) {
             nRows = min(c(3, nResp))
@@ -150,6 +152,7 @@ layout = NULL,
         as.table = TRUE, layout = layout, ...)
     }
     
+    par(def.par)
     
     
 }
@@ -161,14 +164,15 @@ plot.perf.plsda.mthd = plot.perf.splsda.mthd =
 function (x,
 dist = c("all","max.dist","centroids.dist","mahalanobis.dist"),
 measure = c("all","overall","BER"),
-type="l",
 xlab = NULL,
 ylab = NULL,
 overlay=c("all", "measure", "dist"),
-legend=c("vertical", "horizontal"),
-sd=TRUE,
+legend.position=c("vertical", "horizontal"),
+sd = TRUE,
 ...)
 {
+    # maybe later, so far we set type = "l"
+    type = "l"
     
     if (hasArg(pred.method))
     stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
@@ -194,17 +198,26 @@ sd=TRUE,
     if (is.null(xlab))
     xlab = 'Component'
     
-    
+    if(length(overlay) >1 )
+    overlay = overlay[1]
+        
+    if(length(legend.position) >1 )
+    legend.position = legend.position[1]
+
     # error.rate is a list [[measure]]
     # error.rate[[measure]] is a matrix of dist columns and ncomp rows
     # same for error.rate.sd, if any
     error.rate = x$error.rate
-    error.rate.sd = x$error.rate.sd
-    
+    if(sd)
+    {
+        error.rate.sd = x$error.rate.sd
+    } else {
+        error.rate.sd = NULL
+    }
     def.par = par(no.readonly = TRUE)
     
     internal_graphic.perf(error.rate = error.rate, error.rate.sd = error.rate.sd,
-    overlay = overlay, type = type, measure = measure, dist = dist, legend = legend,
+    overlay = overlay, type = type, measure = measure, dist = dist, legend.position = legend.position,
     xlab = xlab, ylab = ylab, sd = sd,  ...)
     
     par(def.par)
@@ -221,16 +234,16 @@ plot.perf.mint.plsda.mthd = plot.perf.mint.splsda.mthd =
 function (x,
 dist = c("all","max.dist","centroids.dist","mahalanobis.dist"),
 measure = c("all","overall","BER"),
-type="l",
 xlab = NULL,
 ylab = NULL,
-study="all",
-error.rate=c("global","study"),
+study = "global",
 overlay= c("all", "measure", "dist"),
-legend=c("vertical", "horizontal"),
+legend.position=c("vertical", "horizontal"),
 ...)
 {
-    
+    # maybe later, so far we set type = "l"
+    type = "l"
+
     if (hasArg(pred.method))
     stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
     pred.method = NULL # to pass R CMD check
@@ -249,14 +262,11 @@ legend=c("vertical", "horizontal"),
     if(length(overlay) >1 )
     overlay = overlay[1]
     
-    if(length(error.rate) >1 )
-    error.rate = error.rate[1]
-    
-    if(length(legend) >1 )
-    legend = legend[1]
+    if(length(legend.position) >1 )
+    legend.position = legend.position[1]
 
 
-    if(error.rate == "global")
+    if(any(study == "global"))
     {
         if (is.null(dist) || !any(dist %in% colnames(x$global.error[[1]])))
         stop("'dist' should be among the ones used in your call to 'perf': ", paste(colnames(x$global.error[[1]]),collapse = ", "),".")
@@ -277,22 +287,25 @@ legend=c("vertical", "horizontal"),
         def.par = par(no.readonly = TRUE)
         
         internal_graphic.perf(error.rate = error.rate, error.rate.sd = NULL,
-        overlay = overlay, type = type, measure = measure, dist = dist, legend = legend,
+        overlay = overlay, type = type, measure = measure, dist = dist, legend.position = legend.position,
         xlab = xlab, ylab = ylab, ...)
         
         par(def.par)
         
-    } else if(error.rate=="study") {
+    } else {
         
         def.par = par(no.readonly = TRUE)
         
         
-        if (any(study == "all"))
+        if (any(study == "all.partial"))
         study = 1:length(x$study.specific.error)
         
         
         if (any(dist == "all"))
         dist = colnames(x$study.specific.error[[1]][[1]])
+        
+        if((length(study) >1) & (overlay != "all"))
+        stop("When more than one study is plotted, overlay must be 'all'")
         
         
         if (is.null(dist) || !any(dist %in% colnames(x$study.specific.error[[1]][[1]])))
@@ -321,12 +334,17 @@ legend=c("vertical", "horizontal"),
             error.rate = x$study.specific.error[[stu]]
 
             internal_graphic.perf(error.rate = error.rate, error.rate.sd = NULL,
-            overlay = overlay, type = type, measure = measure, dist = dist, legend = legend,
+            overlay = overlay, type = type, measure = measure, dist = dist, legend.position = legend.position,
             xlab = xlab, ylab = ylab, ...)
             
-            title(stu)
+            if (overlay == "all")
+            title(stu, line = 1)
         }
         
+        if((length(study)==1) & (length(measure) > 1) & overlay != "all")
+        title(stu, outer=TRUE, line = -1)#,...)
+
+
         par(def.par)
         
     }
@@ -340,15 +358,16 @@ legend=c("vertical", "horizontal"),
 plot.perf.sgccda.mthd =
 function (x,
 dist = c("all","max.dist","centroids.dist","mahalanobis.dist"),
-measure = "all",
-type="l",
+measure = c("all","overall","BER"),
 xlab = NULL,
 ylab = NULL,
-overlay=c("all","measure"),
-legend=c("vertical","horizontal"),
+overlay= c("all", "measure", "dist"),
+legend.position=c("vertical","horizontal"),
 ...)
 {
-    
+    # maybe later, so far we set type = "l"
+    type = "l"
+
     if (hasArg(pred.method))
     stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
     pred.method = NULL # to pass R CMD check
@@ -374,8 +393,8 @@ legend=c("vertical","horizontal"),
     if(length(overlay) >1 )
     overlay = overlay[1]
     
-    if(length(legend) >1 )
-    legend = legend[1]
+    if(length(legend.position) >1 )
+    legend.position = legend.position[1]
 
 
     if (is.null(dist) || !any(dist %in% colnames(x$error.rate[[1]])))
@@ -409,7 +428,7 @@ legend=c("vertical","horizontal"),
     def.par = par(no.readonly = TRUE)
     
     internal_graphic.perf(error.rate = error.rate, error.rate.sd = NULL,
-    overlay = overlay, type = type, measure = measure, dist = dist, legend = legend,
+    overlay = overlay, type = type, measure = measure, dist = dist, legend.position = legend.position,
     xlab = xlab, ylab = ylab, ...)
     
     par(def.par)

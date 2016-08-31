@@ -94,6 +94,7 @@ if(additional.test==TRUE)
     #test perf diablo
     #source("mixOmics/R/tune.diablo.R")
     
+    set.seed(45)
     # classic tune
     tune = tune.block.splsda(
     X = data,

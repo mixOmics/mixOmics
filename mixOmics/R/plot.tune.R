@@ -26,7 +26,7 @@
 
 
 plot.tune.splsda = #plot.spca <- plot.ipca <- plot.sipca <-
-function(x, optimal = TRUE, ...)
+function(x, optimal = TRUE, sd = TRUE, ...)
 {
     
     if (!is.logical(optimal))
@@ -34,6 +34,15 @@ function(x, optimal = TRUE, ...)
 
 
     error <- x$error.rate
+    if(sd & !is.null(x$error.rate.sd))
+    {
+        error.rate.sd = x$error.rate.sd
+        ylim = range(c(error + error.rate.sd), c(error - error.rate.sd))
+    } else {
+        error.rate.sd = NULL
+        ylim = range(error)
+    }
+
     select.keepX <- x$choice.keepX[colnames(error)]
     comp.tuned = length(select.keepX)
     
@@ -60,7 +69,7 @@ function(x, optimal = TRUE, ...)
 
     matplot(rownames(error),error, type = "l", axes = TRUE, lwd = 2, lty = 1, log = "x",
     xlab = "Number of selected genes", ylab = ylab,
-    col = col.per.comp)
+    col = col.per.comp, ylim = ylim)
     
     if(optimal)
     {
@@ -69,18 +78,26 @@ function(x, optimal = TRUE, ...)
             # store coordinates of chosen keepX
             index = which(rownames(error) == select.keepX[i])
             # choseen keepX:
-            points(rownames(error)[index], error[index,i], col = col.per.comp[i], lwd=2, cex=1.5)
+            points(rownames(error)[index], error[index,i], col = col.per.comp[i], lwd=2, cex=3, pch = 18)
         }
     }
     
+    if(!is.null(error.rate.sd))
+    {
+        for(j in 1:ncol(error))
+        plot_error_bar(x = as.numeric(names(error[, j])), y =error[, j] , uiw=error.rate.sd[, j], add=T, col = color.mixo(rep(j,each=nrow(error))))#, ...)
+    }
+
+
+
     if(length(x$choice.keepX) == 1) #only first comp tuned
     {
-        legend = "comp 1"
+        legend = "comp1"
     } else if(length(x$choice.keepX) == comp.tuned) # all components have been tuned
     {
-        legend = c("comp 1", paste("comp 1 to", colnames(error)[-1]))
+        legend = c("comp1", paste("comp1 to", colnames(error)[-1]))
     } else { #first component was not tuned
-        legend = paste("comp 1 to", colnames(error))
+        legend = paste("comp1 to", colnames(error))
     }
 
     legend("topright", lty = 1, lwd = 2, horiz = FALSE, col = col.per.comp,

@@ -68,7 +68,7 @@ bias,
 init ,
 tol = 1e-06,
 verbose,
-max.iter = 500,
+max.iter = 100,
 near.zero.var = FALSE)
 {
     if(!missing(Y))

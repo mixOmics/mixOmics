@@ -16,7 +16,7 @@ keepX,
 keepX.constraint=NULL,
 scale = TRUE,
 tol = 1e-06,
-max.iter = 500,
+max.iter = 100,
 near.zero.var = FALSE,
 logratio="none", # one of "none", "CLR"
 multilevel=NULL)

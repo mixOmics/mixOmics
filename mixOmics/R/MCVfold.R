@@ -129,6 +129,7 @@ test.keepX, # can be either a vector of names (keepX.constraint) or a value(keep
 measure = c("overall"), # one of c("overall","BER")
 dist = "max.dist",
 auc = FALSE,
+max.iter = 100,
 near.zero.var = FALSE,
 progressBar = TRUE,
 class.object = NULL
@@ -247,7 +248,7 @@ class.object = NULL
                     X.test = X.test[, -c(remove.zero),drop = FALSE]
                 }
             }
-            save(list=ls(),file="temp.Rdata")
+            
             #-- near.zero.var ----------------------#
             #---------------------------------------#
             for (i in 1:length(test.keepX))
@@ -262,7 +263,7 @@ class.object = NULL
                 object.res = splsda(X.train, Y.train, ncomp = ncomp,
                 keepX = if(is.null(choice.keepX.constraint) & !is.list(test.keepX)){c(choice.keepX, test.keepX[i])}else if(!is.list(test.keepX)){test.keepX[i]} else {NULL} ,
                 keepX.constraint = if(is.null(choice.keepX.constraint)& !is.list(test.keepX)){NULL}else if(!is.list(test.keepX)){choice.keepX.constraint} else {c(choice.keepX.constraint, test.keepX)},
-                logratio = "none", near.zero.var = FALSE, mode = "regression")
+                logratio = "none", near.zero.var = FALSE, mode = "regression", max.iter = max.iter)
                   
                 # added: record selected features
                 if (any(class.object %in% c("splsda")) & length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far

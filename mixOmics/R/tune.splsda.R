@@ -57,6 +57,7 @@ dist = "max.dist",
 measure = "BER", # one of c("overall","BER")
 auc = FALSE,
 progressBar = TRUE,
+max.iter = 100,
 near.zero.var = FALSE,
 nrepeat = 1,
 logratio = c('none','CLR'),
@@ -158,12 +159,12 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             if(!is.list(already.tested.X))
             stop("''already.tested.X' must be a list since 'constraint' is set to TRUE")
             
-            print(paste("A total of",paste(lapply(already.tested.X,length),collapse=" "),"specific variables ('already.tested.X') were selected on the first ", length(already.tested.X), "component(s)"))
+            message(paste("A total of",paste(lapply(already.tested.X,length),collapse=" and "),"specific variables ('already.tested.X') were selected on the first ", length(already.tested.X), "component(s)"))
         } else {
             if(is.list(already.tested.X))
             stop("''already.tested.X' must be a vector of keepX values since 'constraint' is set to FALSE")
 
-            print(paste("Number of variables selected on the first", length(already.tested.X), "component(s):", paste(already.tested.X,collapse = " ")))
+            message(paste("Number of variables selected on the first", length(already.tested.X), "component(s):", paste(already.tested.X,collapse = " ")))
         }
     }
     if(length(already.tested.X) >= ncomp)
@@ -172,6 +173,9 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     if (any(is.na(validation)) || length(validation) > 1)
     stop("'validation' should be one of 'Mfold' or 'loo'.", call. = FALSE)
     
+    #-- test.keepX
+    if (is.null(test.keepX) | length(test.keepX) == 1 | !is.numeric(test.keepX))
+    stop("'test.keepX' must be a numeric vector with more than two entries", call. = FALSE)
     
     #-- end checking --#
     #------------------#
@@ -281,7 +285,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             choice.keepX = if(constraint){NULL}else{already.tested.X},
             choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
             test.keepX = test.keepX, measure = measure, dist = dist,
-            near.zero.var = near.zero.var, progressBar = progressBar, class.object = "splsda", auc = auc)
+            near.zero.var = near.zero.var, progressBar = progressBar, class.object = "splsda", max.iter = max.iter, auc = auc)
             
             # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
             mat.error.rate[[comp]] = result[[measure]]$mat.error.rate[[1]]

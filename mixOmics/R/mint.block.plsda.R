@@ -62,7 +62,7 @@ bias,
 init ,
 tol = 1e-06,
 verbose,
-max.iter = 500,
+max.iter = 100,
 near.zero.var = FALSE)
 {
     # checking that the outcome, either in Y or X[indY] is a factor with more than 1 level

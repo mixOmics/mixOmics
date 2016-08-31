@@ -421,6 +421,13 @@ progressBar = TRUE,
     if (!(validation %in% c("Mfold", "loo")))
     stop("Choose 'validation' among the two following possibilities: 'Mfold' or 'loo'")
     
+    if (validation == "loo")
+    {
+        if (nrepeat != 1)
+        warnings("Leave-One-Out validation does not need to be repeated: 'nrepeat' is set to '1'.")
+        nrepeat = 1
+    }
+    
     if (!is.logical(progressBar))
     stop("'progressBar' must be either TRUE or FALSE")
     
@@ -533,7 +540,7 @@ progressBar = TRUE,
             names(test.keepX) = test.keepX
             #test.keepX is a value
         }
-        save(list=ls(),file="temp2.Rdata")
+
         # estimate performance of the model for each component
         result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = comp,
         choice.keepX = if(constraint){NULL}else{choice.keepX},

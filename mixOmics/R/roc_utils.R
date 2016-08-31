@@ -610,7 +610,7 @@ roc.utils.min.partial.auc.auc <- function(auc) {
     roc.utils.min.partial.auc(attr(auc, "partial.auc"), attr(auc, "percent"))
 }
 
-roc.utils.max.partial.auc.auc <- function(roc) {
+roc.utils.max.partial.auc.auc <- function(auc) {
     roc.utils.max.partial.auc(attr(auc, "partial.auc"), attr(auc, "percent"))
 }
 
