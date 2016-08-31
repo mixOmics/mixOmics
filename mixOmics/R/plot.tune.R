@@ -37,7 +37,7 @@ function(x, optimal = TRUE, sd = TRUE, ...)
     if(sd & !is.null(x$error.rate.sd))
     {
         error.rate.sd = x$error.rate.sd
-        ylim = range(error + error.rate.sd)
+        ylim = range(c(error + error.rate.sd), c(error - error.rate.sd))
     } else {
         error.rate.sd = NULL
         ylim = range(error)
