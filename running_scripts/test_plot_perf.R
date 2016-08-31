@@ -67,9 +67,8 @@ for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))
     }
 }
 
-print(paste(di,mea,typ,overla,leg))
-plot(error, dist ="all", measure = "all", type=typ, overlay="all", legend="vertical")
-#can't see a lot of differences with type
+print(paste(di,mea,overla,leg))
+plot(error, dist ="all", measure = "all", overlay="all", legend="vertical")
 
 ## validation for objects of class 'splsda' (classification)
 # ----------------------------------------

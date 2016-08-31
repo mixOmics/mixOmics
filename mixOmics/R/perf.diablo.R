@@ -89,6 +89,8 @@ folds = 10,
     } else {
         stop("validation can be only 'Mfold' or 'loo'")
     }
+    M = length(folds)
+
     ### Start: Check parameter validation / set up sample
     
     ### Start: Training samples (X.training and Y.training) and Test samples (X.test / Y.test)

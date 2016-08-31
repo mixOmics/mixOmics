@@ -286,7 +286,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             
             
             # run perf on the model
-            cvPerf = lapply(1 : nrepeat, function(u){out = perf(model, validation = validation, folds = folds, dist = dist);
+            cvPerf = lapply(1 : nrepeat, function(u){out = suppressMessages(perf(model, validation = validation, folds = folds, dist = dist));
                 if (progressBar ==  TRUE)
                 setTxtProgressBar(pb, ((indice.grid-1)*nrepeat+u)/(nrow(grid)*nrepeat))
                 out

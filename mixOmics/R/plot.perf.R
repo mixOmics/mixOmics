@@ -90,6 +90,8 @@ layout = NULL,
     nResp = nrow(y)  # Number of response variables
     nComp = ncol(y)  # Number of components
     
+    def.par = par(no.readonly = TRUE)
+
     if (nResp > 1) {
         if (is.null(layout)) {
             nRows = min(c(3, nResp))
@@ -150,6 +152,7 @@ layout = NULL,
         as.table = TRUE, layout = layout, ...)
     }
     
+    par(def.par)
     
     
 }

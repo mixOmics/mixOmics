@@ -87,24 +87,24 @@ srbct.plsda <- plsda(X, Y, ncomp = ncomp)
 set.seed(45)
 error <- perf(srbct.plsda, validation = "Mfold", folds = 8, dist = "all", progressBar = FALSE)
 
-plot(error, type = "l")
+plot(error)
 
 error <- perf(srbct.plsda, validation = "Mfold", folds = 8, dist = "all", progressBar = FALSE, constraint = TRUE)
-
+#warning
 
 
 #source("mixOmics/R/perf.R")
 #source("mixOmics/R/MCVfold.R")
 error.overall <- perf(srbct.plsda, validation = "Mfold", folds = 8, dist = "all", progressBar = FALSE)
 error.BER <- perf(srbct.plsda, validation = "Mfold", folds = 8, dist = "all", progressBar = FALSE)
-plot(error, type = "l")
+plot(error)
 
 #source("mixOmics/R/perf.R")
 #source("mixOmics/R/MCVfold.R")
 error.both <- perf(srbct.plsda, validation = "Mfold", folds = 8, dist = "all", progressBar = FALSE)
 
-plot(error.both, type = "l")
-plot(error.both, type = "l", measure = "BER")
+plot(error.both)
+plot(error.both, measure = "BER")
 
 
 
@@ -123,8 +123,8 @@ srbct.splsda <- splsda(X, Y, ncomp = ncomp, keepX = rep(10, ncomp))
 set.seed(45)
 error <- perf(srbct.splsda, validation = "Mfold", folds = 8, dist = "all", progressBar = FALSE)
 
-plot(error, type = "l")
-plot(error.both, type = "l", measure = "BER")
+plot(error )
+plot(error.both , measure = "BER")
 
 error <- perf(srbct.splsda, validation = "Mfold", folds = 8, dist = "all", progressBar = FALSE, constraint = TRUE)
 
