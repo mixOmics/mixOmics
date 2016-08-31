@@ -106,6 +106,26 @@ plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2),
 plotIndiv(splsda.breast, ind.names = TRUE, centroid = TRUE, star = TRUE)
 
 
+data(liver.toxicity)
+X <- as.matrix(liver.toxicity$gene)
+# Y will be transformed as a factor in the function,
+# but we set it as a factor to set up the colors.
+Y <- as.factor(liver.toxicity$treatment[, 4])
+
+splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
+plotIndiv(splsda.liver, ind.names = TRUE, ellipse=TRUE, centroid = TRUE, star = TRUE)
+
+#with only one sample in a class
+Y <- as.factor(liver.toxicity$treatment[, 4])
+ind.remove = which(Y==levels(Y)[1])[-sample(1:sum(Y==levels(Y)[1]),1)]
+Y2 = Y[-ind.remove]
+X2 = X[-ind.remove, ]
+
+res2 <- splsda(X2, Y2, ncomp = 2, keepX = c(25, 25))
+plotIndiv(res2, ind.names = Y2, add.legend = TRUE, ellipse =TRUE)
+plotIndiv(res2, ind.names = TRUE, ellipse=TRUE, centroid = TRUE, star = TRUE)
+
+
 
 ## variable representation for objects of class 'sgcca' (or 'rgcca')
 # ----------------------------------------------------

@@ -194,9 +194,13 @@ alpha)
         {
             for (i in 1 : nlevels(df$group))
             {
-                p = p + geom_path(data = df.ellipse,
-                aes_string(x = paste0("Col", 2*(i - 1) + 1), y = paste0("Col", 2 * i),
-                label = "Block", group = NULL), color = unique(col.per.group)[i], size = point.lwd)
+                if( !is.na(match(paste0("Col", 2*(i - 1) + 1), colnames(df.ellipse))))
+                {
+                    p = p + geom_path(data = df.ellipse,
+                    aes_string(x = paste0("Col", 2*(i - 1) + 1), y = paste0("Col", 2 * i),
+                    label = "Block", group = NULL), color = unique(col.per.group)[i], size = point.lwd)
+                }
+
             }
         }
         

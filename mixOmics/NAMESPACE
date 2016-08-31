@@ -1,5 +1,11 @@
 
-import(MASS, lattice, igraph, rgl, ggplot2,corpcor,parallel, RColorBrewer, plyr)
+import(MASS, lattice, igraph, ggplot2,corpcor,parallel, RColorBrewer, plyr)
+
+importFrom(rgl, axes3d, bbox3d, box3d, cube3d, dodecahedron3d,
+            ellipse3d, icosahedron3d, layout3d, legend3d, mtext3d,
+            next3d, octahedron3d, open3d, par3d, plot3d, points3d,
+            rotationMatrix, segments3d, shade3d, shapelist3d, spheres3d,
+            tetrahedron3d, text3d, title3d, triangles3d)
 
 importFrom("grDevices", "as.graphicsAnnot", "chull", "col2rgb",
              "colorRamp", "colorRampPalette", "colors", "dev.cur",
@@ -87,6 +93,7 @@ study_split,
 tune,
 tune.mint.splsda,
 tune.splsda,
+tune.block.splsda,
 tune.multilevel,
 tune.splslevel,
 tune.pca,
@@ -116,7 +123,13 @@ S3method(perf, mint.splsda)
 
 S3method(image, tune.rcc)
 
-S3method(plot, perf)
+S3method(plot, perf.pls.mthd)
+S3method(plot, perf.spls.mthd)
+S3method(plot, perf.plsda.mthd)
+S3method(plot, perf.splsda.mthd)
+S3method(plot, perf.mint.plsda.mthd)
+S3method(plot, perf.mint.splsda.mthd)
+S3method(plot, perf.sgccda.mthd)
 S3method(plot, rcc)
 S3method(plot, pca)
 S3method(plot, sgccda)

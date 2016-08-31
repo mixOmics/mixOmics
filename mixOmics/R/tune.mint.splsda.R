@@ -56,7 +56,7 @@ auc = FALSE,
 progressBar = TRUE,
 scale = TRUE,
 tol = 1e-06,
-max.iter = 500,
+max.iter = 100,
 near.zero.var = FALSE,
 light.output = TRUE # if FALSE, output the prediction and classification of each sample during each folds, on each comp, for each repeat
 )
@@ -125,12 +125,12 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             if(!is.list(already.tested.X))
             stop("''already.tested.X' must be a list since 'constraint' is set to TRUE")
             
-            print(paste("A total of",paste(lapply(already.tested.X,length),collapse=" "),"specific variables ('already.tested.X') were selected on the first ", length(already.tested.X), "component(s)"))
+            message(paste("A total of",paste(lapply(already.tested.X,length),collapse=" and "),"specific variables ('already.tested.X') were selected on the first ", length(already.tested.X), "component(s)"))
         } else {
             if(is.list(already.tested.X))
             stop("''already.tested.X' must be a vector of keepX values since 'constraint' is set to FALSE")
             
-            print(paste("Number of variables selected on the first", length(already.tested.X), "component(s):", paste(already.tested.X,collapse = " ")))
+            message(paste("Number of variables selected on the first", length(already.tested.X), "component(s):", paste(already.tested.X,collapse = " ")))
         }
     }
     if(length(already.tested.X) >= ncomp)
@@ -230,7 +230,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         result = LOGOCV (X, Y, ncomp = 1 + length(already.tested.X), study = study,
         choice.keepX = if(constraint){NULL}else{already.tested.X}, choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
         test.keepX = test.keepX, measure = measure,
-        dist = dist, near.zero.var = near.zero.var, progressBar = progressBar, scale = scale, auc = auc)
+        dist = dist, near.zero.var = near.zero.var, progressBar = progressBar, scale = scale, max.iter = max.iter, auc = auc)
         
         # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
         mat.mean.error[, comp]=result[[measure]]$error.rate.mean[[1]]

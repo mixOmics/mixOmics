@@ -12,7 +12,7 @@ grid to determine optimal values for the sparsity parameters in \code{mint.splsd
 \usage{
 tune.mint.splsda(X, Y, ncomp = 1, study, test.keepX = c(5, 10, 15), already.tested.X,
 constraint = TRUE, dist = "max.dist", measure = "BER", auc = FALSE, progressBar = TRUE,
-scale = TRUE, tol = 1e-06, max.iter = 500, near.zero.var = FALSE, light.output = TRUE )
+scale = TRUE, tol = 1e-06, max.iter = 100, near.zero.var = FALSE, light.output = TRUE )
 }
 
 \arguments{
@@ -47,9 +47,9 @@ All component \eqn{1:\code{ncomp}} are tuned, except the first ones for which a 
 
 \value{
 The returned value is a list with components: 
-\item{mat.mean.error,}{returns the prediction error for each \code{test.keepX} on each component}
+\item{error.rate}{returns the prediction error for each \code{test.keepX} on each component}
 \item{choice.keepX.constraint}{returns the variables selected by the optimal keepX on each component.}
-\item{error.per.class}{returns the error rate for each level of \code{Y} and for each component computed with the optimal keepX.constraint}
+\item{error.rate.class}{returns the error rate for each level of \code{Y} and for each component computed with the optimal keepX.constraint}
 
   \item{predict}{Prediction values for each sample, each \code{test.keepX} and each comp.}
   \item{class}{Predicted class for each sample, each \code{test.keepX} and each comp.}
@@ -74,15 +74,17 @@ res = mint.splsda(X=data,Y=type.id,ncomp=3,keepX=c(10,5,15),study=exp)
 
 \dontrun{
 out = tune.mint.splsda(X=data,Y=type.id,ncomp=2,near.zero.var=FALSE,
-    study=exp,test.keepX=seq(1,10,1))
+    study=exp,test.keepX=seq(1,10,1), constraint = TRUE)
 out$choice.keepX.constraint
 
 ## only tune component 2 and keeping
 # "ENSG00000159199" "ENSG00000106012" "ENSG00000129317" on the first component
 out = tune.mint.splsda(X=data,Y=type.id,ncomp=2, study=exp,
 already.tested.X = list(comp1 = c("ENSG00000159199", "ENSG00000106012", "ENSG00000129317")),
-test.keepX=seq(1,10,1))
+test.keepX=seq(1,10,1), constraint = TRUE)
 out$choice.keepX.constraint
+out$choice.keepX
+# gives the number of variables selected (which comes from out$choice.keepX.constraint)
 
 }
 
