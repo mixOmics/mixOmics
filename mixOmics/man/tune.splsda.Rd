@@ -14,7 +14,7 @@ grid to determine optimal values for the sparsity parameters in \code{splsda}.
 tune.splsda(X, Y, ncomp = 1,
 test.keepX = c(5, 10, 15), already.tested.X, constraint = FALSE, validation = "Mfold",
 folds = 10, dist = "max.dist", measure = "BER", auc = FALSE,
-progressBar = TRUE, near.zero.var = FALSE, nrepeat = 1,
+progressBar = TRUE, max.iter = 100, near.zero.var = FALSE, nrepeat = 1,
 logratio = c('none','CLR'), multilevel = NULL, light.output = TRUE)
 
 }	
@@ -34,6 +34,7 @@ should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \cod
 \item{measure}{Two misclassification measure are available: overall misclassification error \code{overall} or the Balanced Error Rate \code{BER}}
 \item{auc}{if \code{TRUE} calculate the Area Under the Curve (AUC) performance of the model.}
 \item{progressBar}{by default set to \code{TRUE} to output the progress bar of the computation.}
+\item{max.iter}{integer, the maximum number of iterations.}
 \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Default value is FALSE}
 \item{nrepeat}{Number of times the Cross-Validation process is repeated.}
 \item{logratio}{one of ('none','CLR'). Default to 'none'}

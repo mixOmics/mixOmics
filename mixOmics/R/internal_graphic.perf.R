@@ -66,7 +66,7 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
     
     if(overlay == "all")
     {
-        out<-matplot(1:3, error.rate.concat, type = type, lty = rep(c(1:length(measure)), each = length(dist)), col = rep(color.mixo(1:length(dist)), length(measure)),
+        out<-matplot(component, error.rate.concat, type = type, lty = rep(c(1:length(measure)), each = length(dist)), col = rep(color.mixo(1:length(dist)), length(measure)),
         lwd = 2, xlab = xlab, ylab = ylab, xaxt="n", ylim = ylim)
         
         axis(1, rownames(error.rate.concat))#, rownames(error.rate.concat))

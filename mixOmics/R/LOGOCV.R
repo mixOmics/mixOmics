@@ -39,7 +39,7 @@ test.keepX = c(5, 10, 15),
 dist = "max.dist",
 measure = c("BER"), # one of c("overall","BER")
 auc = auc,
-max.iter = 50,
+max.iter = 100,
 progressBar = TRUE,
 near.zero.var = FALSE,
 scale)

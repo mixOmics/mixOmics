@@ -129,7 +129,7 @@ test.keepX, # can be either a vector of names (keepX.constraint) or a value(keep
 measure = c("overall"), # one of c("overall","BER")
 dist = "max.dist",
 auc = FALSE,
-max.iter = 50,
+max.iter = 100,
 near.zero.var = FALSE,
 progressBar = TRUE,
 class.object = NULL

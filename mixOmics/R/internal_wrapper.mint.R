@@ -58,7 +58,7 @@ keepY,
 mode,
 scale = FALSE,
 near.zero.var = FALSE,
-max.iter = 50,
+max.iter = 100,
 tol = 1e-06,
 logratio = "none",   # one of "none", "CLR"
 DA = FALSE,           # indicate whether it's a DA analysis, only used for the multilvel approach with withinVariation

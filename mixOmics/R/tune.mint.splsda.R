@@ -56,7 +56,7 @@ auc = FALSE,
 progressBar = TRUE,
 scale = TRUE,
 tol = 1e-06,
-max.iter = 50,
+max.iter = 100,
 near.zero.var = FALSE,
 light.output = TRUE # if FALSE, output the prediction and classification of each sample during each folds, on each comp, for each repeat
 )

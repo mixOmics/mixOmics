@@ -35,7 +35,7 @@ near.zero.var = FALSE, # all but pca, rcc
 logratio = "none", # all but pca, rcc
 center = TRUE, # pca
 scale = TRUE, # mint, splsda
-max.iter = 500, #pca
+max.iter = 100, #pca
 tol = 1e-09,
 light.output = TRUE # mint, splsda
 )

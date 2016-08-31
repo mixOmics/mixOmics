@@ -58,7 +58,7 @@ bias,
 init ,
 tol = 1e-06,
 verbose,
-max.iter = 50,
+max.iter = 100,
 near.zero.var = FALSE)
 
 {
