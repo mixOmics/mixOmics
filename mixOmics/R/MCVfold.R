@@ -248,7 +248,7 @@ class.object = NULL
                     X.test = X.test[, -c(remove.zero),drop = FALSE]
                 }
             }
-            save(list=ls(),file="temp.Rdata")
+            
             #-- near.zero.var ----------------------#
             #---------------------------------------#
             for (i in 1:length(test.keepX))
