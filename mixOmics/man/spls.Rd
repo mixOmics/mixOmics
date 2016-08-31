@@ -20,7 +20,7 @@ keepX,
 keepY,
 scale = TRUE,
 tol = 1e-06,
-max.iter = 500,
+max.iter = 100,
 near.zero.var = FALSE,
 logratio="none", 
 multilevel=NULL)
@@ -73,7 +73,6 @@ to select subsets of variables from both data sets that are highly positively or
 }
 
 
-}
 
 \value{
 \code{spls} returns an object of class \code{"spls"}, a list 

@@ -57,6 +57,7 @@ dist = "max.dist",
 measure = "BER", # one of c("overall","BER")
 auc = FALSE,
 progressBar = TRUE,
+max.iter = 100,
 near.zero.var = FALSE,
 nrepeat = 1,
 logratio = c('none','CLR'),
@@ -158,12 +159,12 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             if(!is.list(already.tested.X))
             stop("''already.tested.X' must be a list since 'constraint' is set to TRUE")
             
-            print(paste("A total of",paste(lapply(already.tested.X,length),collapse=" "),"specific variables ('already.tested.X') were selected on the first ", length(already.tested.X), "component(s)"))
+            message(paste("A total of",paste(lapply(already.tested.X,length),collapse=" and "),"specific variables ('already.tested.X') were selected on the first ", length(already.tested.X), "component(s)"))
         } else {
             if(is.list(already.tested.X))
             stop("''already.tested.X' must be a vector of keepX values since 'constraint' is set to FALSE")
 
-            print(paste("Number of variables selected on the first", length(already.tested.X), "component(s):", paste(already.tested.X,collapse = " ")))
+            message(paste("Number of variables selected on the first", length(already.tested.X), "component(s):", paste(already.tested.X,collapse = " ")))
         }
     }
     if(length(already.tested.X) >= ncomp)
@@ -172,6 +173,9 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     if (any(is.na(validation)) || length(validation) > 1)
     stop("'validation' should be one of 'Mfold' or 'loo'.", call. = FALSE)
     
+    #-- test.keepX
+    if (is.null(test.keepX) | length(test.keepX) == 1 | !is.numeric(test.keepX))
+    stop("'test.keepX' must be a numeric vector with more than two entries", call. = FALSE)
     
     #-- end checking --#
     #------------------#
@@ -180,7 +184,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     #---------------------------------------------------------------------------#
     #-- logration + multilevel approach ----------------------------------------#
     # we can do logratio and multilevel on the whole data as these transformation are done per sample
-    X = logratio.transfo(X = X, logratio = logratio, offset = 1)
+    X = logratio.transfo(X = X, logratio = logratio)
     
     if (!is.null(multilevel) & logratio == "none") # if no logratio, we can do multilevel on the whole data; otherwise it needs to be done after each logratio inside the CV
     {
@@ -232,14 +236,14 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     error.per.class = list()
 
     mat.sd.error = matrix(0,nrow = length(test.keepX), ncol = ncomp-length(already.tested.X),
-    dimnames = list(c(test.keepX), c(paste('comp', comp.real))))
+    dimnames = list(c(test.keepX), c(paste('comp', comp.real, sep=''))))
     mat.mean.error = matrix(nrow = length(test.keepX), ncol = ncomp-length(already.tested.X),
-    dimnames = list(c(test.keepX), c(paste('comp', comp.real))))
+    dimnames = list(c(test.keepX), c(paste('comp', comp.real, sep=''))))
 
     error.per.class.mean = matrix(nrow = nlevels(Y), ncol = ncomp-length(already.tested.X),
-        dimnames = list(c(levels(Y)), c(paste('comp', comp.real))))
+        dimnames = list(c(levels(Y)), c(paste('comp', comp.real, sep=''))))
     error.per.class.sd = matrix(0,nrow = nlevels(Y), ncol = ncomp-length(already.tested.X),
-        dimnames = list(c(levels(Y)), c(paste('comp', comp.real))))
+        dimnames = list(c(levels(Y)), c(paste('comp', comp.real, sep=''))))
         
    
     # first: near zero var on the whole data set
@@ -281,7 +285,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             choice.keepX = if(constraint){NULL}else{already.tested.X},
             choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
             test.keepX = test.keepX, measure = measure, dist = dist,
-            near.zero.var = near.zero.var, progressBar = progressBar, class.object = "splsda", auc = auc)
+            near.zero.var = near.zero.var, progressBar = progressBar, class.object = "splsda", max.iter = max.iter, auc = auc)
             
             # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
             mat.error.rate[[comp]] = result[[measure]]$mat.error.rate[[1]]
@@ -318,34 +322,34 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             }
             
         } # end comp
-        names(mat.error.rate) = c(paste('comp', comp.real))
-        names(error.per.class.keepX.opt) = c(paste('comp', comp.real))
-        names(already.tested.X) = c(paste('comp', 1:ncomp))
+        names(mat.error.rate) = c(paste('comp', comp.real, sep=''))
+        names(error.per.class.keepX.opt) = c(paste('comp', comp.real, sep=''))
+        names(already.tested.X) = c(paste('comp', 1:ncomp, sep=''))
         
         if (progressBar == TRUE)
         cat('\n')
         
         result = list(
         error.rate = mat.mean.error,
-        mat.sd.error = mat.sd.error,
-        mat.error.rate = mat.error.rate,
+        error.rate.sd = mat.sd.error,
+        error.rate.all = mat.error.rate,
         choice.keepX = if(constraint){lapply(already.tested.X, length)}else{already.tested.X},
         choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
         error.rate.class = error.per.class.keepX.opt)
         
         if(light.output == FALSE)
         {
-            names(class.all) = names(prediction.all) = c(paste('comp', comp.real))
+            names(class.all) = names(prediction.all) = c(paste('comp', comp.real, sep=''))
             result$predict = prediction.all
             result$class = class.all
         }
         if(auc)
         {
-            names(auc.mean.sd) = c(paste('comp', comp.real))
+            names(auc.mean.sd) = c(paste('comp', comp.real, sep=''))
             result$auc = auc.mean.sd
             if(light.output == FALSE)
             {
-                names(auc.all) = c(paste('comp', comp.real))
+                names(auc.all) = c(paste('comp', comp.real, sep=''))
                 result$auc.all =auc.all
             }
         }

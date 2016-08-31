@@ -18,6 +18,7 @@ scale = FALSE,
 max.iter = 500,
 tol = 1e-09,
 logratio = 'none',  # one of ('none','CLR','ILR')
+ilr.offset = 0.001,
 V = NULL,
 multilevel = NULL)
 }
@@ -39,6 +40,7 @@ multilevel = NULL)
 \item{max.iter}{integer, the maximum number of iterations in the NIPALS algorithm.}
 \item{tol}{a positive real, the tolerance used in the NIPALS algorithm.}
 \item{logratio}{one of ('none','CLR','ILR'). Specifies the log ratio transformation to deal with compositional values that may arise from specific normalisation in sequencing data. Default to 'none'}
+\item{ilr.offset}{When logratio is set to 'ILR', an offset must be used to avoid infinite value after the logratio transform.}
 \item{V}{Matrix used in the logratio transformation id provided.}
 \item{multilevel}{sample information for multilevel decomposition for repeated measurements.}
 }

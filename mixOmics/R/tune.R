@@ -55,7 +55,7 @@ near.zero.var = FALSE, # all but pca, rcc
 logratio = "none", # all but pca, rcc
 center = TRUE, # pca
 scale = TRUE, # mint, splsda
-max.iter = 500, #pca
+max.iter = 100, #pca
 tol = 1e-09, #pca
 light.output = TRUE # mint, splsda
 )
@@ -133,6 +133,7 @@ light.output = TRUE # mint, splsda
             measure = measure,
             auc = auc,
             progressBar = progressBar,
+            max.iter = max.iter,
             near.zero.var = near.zero.var,
             nrepeat = nrepeat,
             logratio = logratio,

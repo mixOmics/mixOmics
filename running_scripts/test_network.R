@@ -352,42 +352,40 @@ if(additional.test==TRUE)
     network(nutri.sgcca,cex.node.name = 0.5)
     network(nutri.sgcca,cex.node.name = 1.5)
     
-    if(FALSE)# we can only display 2 blocks
-    {
-        ### 3 blocks
-        data(nutrimouse)
-        
-        diet = unmap(nutrimouse$diet)
-        blocks = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, diet = diet)
-        design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE, dimnames = list(names(blocks), names(blocks)))
-        
-        nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = 4)
-        
-        network(nutri.sgcca)
-        
-        # test comp
-        network(nutri.sgcca,comp=list(gene=1,lipid=1,diet=c(1,2)),blocks=1:3)
-        network(nutri.sgcca,comp=list(gene=c(1,2),lipid=c(2,3),diet=1:3),blocks=1:3)
-        
-        
-        # test threshold
-        network(nutri.sgcca, threshold = 0,blocks=1:3)
-        network(nutri.sgcca, threshold = 0.8,blocks=1:3)
-        network(nutri.sgcca, threshold = 0.7,blocks=1:3)
-        
-        # test block.var.names
-        network(nutri.sgcca,block.var.names = FALSE,blocks=1:3)
-        network(nutri.sgcca,block.var.names = c(FALSE,FALSE,TRUE),blocks=1:3)
-        network(nutri.sgcca,block.var.names = list(rep("",120),rep("",21),c("d1","d2","d3","d4","d5")),blocks=1:3)
-        
-        # test color.node
-        network(nutri.sgcca,color.node = c("orange","blue","cyan"),blocks=1:3)
-        
-        # test shape.node
-        network(nutri.sgcca,shape.node = c(gene='none',lipid='circle',diet="rectangle"),blocks=1:3)
-        network(nutri.sgcca,shape.node = c(gene='rectangle',lipid='none',diet="circle"),blocks=1:3)
-    }
+
+    ### 3 blocks
+    data(nutrimouse)
     
+    diet = unmap(nutrimouse$diet)
+    blocks = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, diet = diet)
+    design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE, dimnames = list(names(blocks), names(blocks)))
+    
+    nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = 4)
+    
+    network(nutri.sgcca, blocks=1:3)
+    
+    # test comp
+    network(nutri.sgcca,comp=list(gene=1,lipid=1,diet=c(1,2)),blocks=1:3)
+    network(nutri.sgcca,comp=list(gene=c(1,2),lipid=c(2,3),diet=1:3),blocks=1:3)
+    
+    
+    # test threshold
+    network(nutri.sgcca, threshold = 0,blocks=1:3)
+    network(nutri.sgcca, threshold = 0.8,blocks=1:3)
+    network(nutri.sgcca, threshold = 0.7,blocks=1:3)
+    
+    # test block.var.names
+    network(nutri.sgcca,block.var.names = FALSE,blocks=1:3)
+    network(nutri.sgcca,block.var.names = c(FALSE,FALSE,TRUE),blocks=1:3)
+    network(nutri.sgcca,block.var.names = list(rep("",120),rep("",21),c("d1","d2","d3","d4","d5")),blocks=1:3)
+    
+    # test color.node
+    network(nutri.sgcca,color.node = c("orange","blue","cyan"),blocks=1:3)
+    
+    # test shape.node
+    network(nutri.sgcca,shape.node = c(gene='none',lipid='circle',diet="rectangle"),blocks=1:3)
+    network(nutri.sgcca,shape.node = c(gene='rectangle',lipid='none',diet="circle"),blocks=1:3)
+
 }
 
 par(opar)

@@ -36,6 +36,7 @@ scale = FALSE,
 max.iter = 500,
 tol = 1e-09,
 logratio = 'none',# one of ('none','CLR','ILR')
+ilr.offset = 0.001,
 V = NULL,
 multilevel = NULL)
 {
@@ -129,7 +130,7 @@ multilevel = NULL)
     if (is.null(V) & logratio == "ILR") # back-transformation to clr-space, will be used later to recalculate loadings etc
     V = clr.backtransfo(X)
     
-    X = logratio.transfo(X = X, logratio = logratio)
+    X = logratio.transfo(X = X, logratio = logratio, offset = ilr.offset)
     
     #as X may have changed
     if (ncomp > min(ncol(X), nrow(X)))

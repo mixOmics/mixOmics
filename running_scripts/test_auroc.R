@@ -19,7 +19,7 @@ opar <- par(no.readonly = TRUE)
 
 library(mixOmics)
 data(breast.tumors)
-test=sample(1:47,5,replace=TRUE)
+test=sample(1:47,5,replace=FALSE)
 X <- breast.tumors$gene.exp
 X.test<-breast.tumors$gene.exp[test,]
 Y <- breast.tumors$sample$treatment
@@ -27,80 +27,71 @@ Y.test<-breast.tumors$sample$treatment[test]
 
 res.plsda <- plsda(X, Y, ncomp = 2)
 
-for(roc.comp in 1:2){
-  for(plot in c(TRUE,FALSE)){
-    a=auroc(res.plsda,plot = plot,roc.comp = roc.comp)
-    print(a)
-}
-}
+auroc(res.plsda,plot = TRUE,roc.comp = 1)
+auroc(res.plsda,plot = TRUE,roc.comp = 2)
+auroc(res.plsda,plot = FALSE,roc.comp = 1)
+auroc(res.plsda,plot = FALSE,roc.comp = 2)
 
-for(roc.comp in 1:2){
-  for(plot in c(TRUE,FALSE)){
-    a=auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = plot,roc.comp = roc.comp)
-    print(a)
-  }
-}
+
+auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = TRUE,roc.comp = 1)
+auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = TRUE,roc.comp = 2)
+auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = FALSE,roc.comp = 1)
+auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = FALSE,roc.comp = 2)
 
 
 res.plsda <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 
-for(roc.comp in 1:2){
-  for(plot in c(TRUE,FALSE)){
-    a=auroc(res.plsda,plot = plot,roc.comp = roc.comp)
-    print(a)
-  }
-}
+auroc(res.plsda,plot = TRUE,roc.comp = 1)
+auroc(res.plsda,plot = TRUE,roc.comp = 2)
+auroc(res.plsda,plot = FALSE,roc.comp = 1)
+auroc(res.plsda,plot = FALSE,roc.comp = 2)
 
-for(roc.comp in 1:2){
-  for(plot in c(TRUE,FALSE)){
-    a=auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = plot,roc.comp = roc.comp)
-    print(a)
-  }
-}
+
+auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = TRUE,roc.comp = 1)
+auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = TRUE,roc.comp = 2)
+auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = FALSE,roc.comp = 1)
+auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = FALSE,roc.comp = 2)
 
 
 
 
 data(liver.toxicity)
 
-test=sample(1:64,7,replace=TRUE)
-X <- liver.toxicity$gene[-test,]
+test=sample(1:64,7,replace=FALSE)
+X <- liver.toxicity$gene
 X.test<-liver.toxicity$gene[test,]
-Y <- liver.toxicity$treatment[-test, 4]
+Y <- liver.toxicity$treatment[, 4]
 Y.test <- liver.toxicity$treatment[test, 4]
 
 res.plsda <- plsda(X, Y, ncomp = 2)
 
-for(roc.comp in 1:2){
-  for(plot in c(TRUE,FALSE)){
-    a=auroc(res.plsda,plot = plot,roc.comp = roc.comp)
-    print(a)
-  }
-}
+auroc(res.plsda,plot = TRUE,roc.comp = 1)
+auroc(res.plsda,plot = TRUE,roc.comp = 2)
+auroc(res.plsda,plot = FALSE,roc.comp = 1)
+auroc(res.plsda,plot = FALSE,roc.comp = 2)
 
-for(roc.comp in 1:2){
-  for(plot in c(TRUE,FALSE)){
-    a=auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = plot,roc.comp = roc.comp)
-    print(a)
-  }
-}
+
+auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = TRUE,roc.comp = 1)
+auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = TRUE,roc.comp = 2)
+auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = FALSE,roc.comp = 1)
+auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = FALSE,roc.comp = 2)
+
 
 
 res.plsda <- plsda(X, Y, ncomp = 3)
 
-for(roc.comp in 1:3){
-  for(plot in c(TRUE,FALSE)){
-    a=auroc(res.plsda,plot = plot,roc.comp = roc.comp)
-    print(a)
-  }
-}
+auroc(res.plsda,plot = TRUE,roc.comp = 1)
+auroc(res.plsda,plot = TRUE,roc.comp = 2)
+auroc(res.plsda,plot = FALSE,roc.comp = 1)
+auroc(res.plsda,plot = FALSE,roc.comp = 2)
 
-for(roc.comp in 1:3){
-  for(plot in c(TRUE,FALSE)){
-    a=auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = plot,roc.comp = roc.comp)
-    print(a)
-  }
-}
+
+auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = TRUE,roc.comp = 1)
+auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = TRUE,roc.comp = 2)
+auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = FALSE,roc.comp = 1)
+auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = FALSE,roc.comp = 2)
+
+
 
 
 # mint.plsda
@@ -123,19 +114,24 @@ A.light=list(X=data.light,Y=Y.mat.light)
 
 res.plsda=mint.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
-for(roc.comp in 1:3){
-  for(plot in c(TRUE,FALSE)){
-    a=auroc(res.plsda,plot = plot,roc.comp = roc.comp)
-    print(a)
-  }
-}
+auroc(res.plsda,plot = TRUE,roc.comp = 1)
+auroc(res.plsda,plot = TRUE,roc.comp = 2)
+auroc(res.plsda,plot = TRUE,roc.comp = 3)
+auroc(res.plsda,plot = FALSE,roc.comp = 1)
+auroc(res.plsda,plot = FALSE,roc.comp = 2)
+auroc(res.plsda,plot = FALSE,roc.comp = 3)
 
-for(roc.comp in 1:3){
-  for(plot in c(TRUE,FALSE)){
-    a=auroc(res.plsda,newdata = data.light,outcome.test = as.factor(type.id.light),study.test = study.light,plot = plot,roc.comp = roc.comp)
-print(a)
-  }
-}
+# ###############WARNINGS / RESOLU
+
+auroc(res.plsda,newdata = data.light,outcome.test = as.factor(type.id.light),study.test = study.light,plot = TRUE,roc.comp = 1)
+auroc(res.plsda,newdata = data.light,outcome.test = as.factor(type.id.light),study.test = study.light,plot = TRUE,roc.comp = 2)
+auroc(res.plsda,newdata = data.light,outcome.test = as.factor(type.id.light),study.test = study.light,plot = TRUE,roc.comp = 3)
+auroc(res.plsda,newdata = data.light,outcome.test = as.factor(type.id.light),study.test = study.light,plot = FALSE,roc.comp = 1)
+auroc(res.plsda,newdata = data.light,outcome.test = as.factor(type.id.light),study.test = study.light,plot = FALSE,roc.comp = 2)
+auroc(res.plsda,newdata = data.light,outcome.test = as.factor(type.id.light),study.test = study.light,plot = FALSE,roc.comp = 3)
+
+
+
 
 
 res.plsda=block.plsda(X=list(X=data,Y=type.id),indY=2,ncomp = 2)
@@ -166,7 +162,63 @@ auroc(res.plsda,newdata = list(XX=data.light),outcome.test = as.factor(type.id.l
 auroc(res.plsda,newdata = list(XX=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = FALSE,roc.comp = 2)
 
 
-res.plsda<-mint.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=exp)
+
+res.plsda=block.splsda(X=list(X=data,Y=type.id),keepX=list(X=c(10,5)),indY=2,ncomp = 2)
+auroc(res.plsda,plot = TRUE,roc.comp = 1)
+auroc(res.plsda,plot = TRUE,roc.comp = 2)
+auroc(res.plsda,plot = FALSE,roc.comp = 1)
+auroc(res.plsda,plot = FALSE,roc.comp = 2)
+
+auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = TRUE,roc.comp = 1)
+auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = TRUE,roc.comp = 2)
+auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = FALSE,roc.comp = 1)
+auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = FALSE,roc.comp = 2)
+
+
+res.plsda=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(X=c(100)),
+                       keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
+
+auroc(res.plsda,plot = TRUE,roc.comp = 1)
+auroc(res.plsda,plot = TRUE,roc.comp = 2)
+auroc(res.plsda,plot = FALSE,roc.comp = 1)
+auroc(res.plsda,plot = FALSE,roc.comp = 2)
+
+auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = TRUE,roc.comp = 1)
+auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = TRUE,roc.comp = 2)
+auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = FALSE,roc.comp = 1)
+auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = FALSE,roc.comp = 2)
+
+
+
+res.plsda=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(X=c(100)),
+                       keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
+
+auroc(res.plsda,plot = TRUE,roc.comp = 1)
+auroc(res.plsda,plot = TRUE,roc.comp = 2)
+auroc(res.plsda,plot = FALSE,roc.comp = 1)
+auroc(res.plsda,plot = FALSE,roc.comp = 2)
+
+auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = TRUE,roc.comp = 1)
+auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = TRUE,roc.comp = 2)
+auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = FALSE,roc.comp = 1)
+auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = FALSE,roc.comp = 2)
+
+
+res.plsda=block.splsda(X=list(X2=data),Y=type.id,keepX=list(X2=c(10,5,10)),ncomp=3,mode="canonical")
+
+auroc(res.plsda,plot = TRUE,roc.comp = 1)
+auroc(res.plsda,plot = TRUE,roc.comp = 2)
+auroc(res.plsda,plot = FALSE,roc.comp = 1)
+auroc(res.plsda,plot = FALSE,roc.comp = 2)
+
+auroc(res.plsda,newdata = list(X2=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = TRUE,roc.comp = 1)
+auroc(res.plsda,newdata = list(X2=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = TRUE,roc.comp = 2)
+auroc(res.plsda,newdata = list(X2=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = FALSE,roc.comp = 1)
+auroc(res.plsda,newdata = list(X2=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = FALSE,roc.comp = 2)
+
+
+
+res.plsda=mint.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=exp)
 
 auroc(res.plsda,plot = TRUE,roc.comp = 1)
 auroc(res.plsda,plot = TRUE,roc.comp = 2)
@@ -238,7 +290,7 @@ auroc(res.plsda,newdata = list(XX=data.light),outcome.test = as.factor(type.id.l
 
 
 
-res.plsda<-mint.block.splsda(list(XX=data),Y=type.id,ncomp=2)
+res.plsda=mint.block.splsda(list(XX=data),Y=type.id,ncomp=2)
 
 ####PROBLEME ERROR//RESOLU
 
@@ -254,7 +306,7 @@ auroc(res.plsda,newdata = list(XX=data.light),outcome.test = as.factor(type.id.l
 
 
 
-res.plsda<-mint.block.splsda(X=list(XX=data,Y=type.id),indY=2,keepX=list(XX=c(10,5),ncomp = 2))
+res.plsda=mint.block.splsda(X=list(XX=data,Y=type.id),indY=2,keepX=list(XX=c(10,5)),ncomp = 2)
 
 ####PROBLEME ERROR//RESOLU
 
@@ -275,8 +327,8 @@ auroc(res.plsda,newdata = list(XX=data.light),outcome.test = as.factor(type.id.l
 # ----
 
 data(nutrimouse)
-train=sample(1:40,40,replace=TRUE)
-test=sample(1:40,4,replace=TRUE)
+train=sample(1:40,40,replace=FALSE)
+test=sample(1:40,4,replace=FALSE)
 Y = nutrimouse$diet[train]
 Y.test=nutrimouse$diet[test]
 data = list(gene = nutrimouse$gene[train,], lipid = nutrimouse$lipid[train,])
@@ -306,7 +358,7 @@ auroc(nutrimouse.sgccda,plot = FALSE,roc.block = 2,roc.comp = 2)
 auroc(nutrimouse.sgccda,plot = FALSE,roc.block = 1,roc.comp = 3)
 auroc(nutrimouse.sgccda,plot = FALSE,roc.block = 2,roc.comp = 3)
 
-###PROBLEME FACTOR (levels de facteurs non présent): RESOLU en ajoutant factor
+###PROBLEME FACTOR (levels de facteurs non prÃ©sent): RESOLU en ajoutant factor
 
 
 auroc(nutrimouse.sgccda,newdata = data.test,outcome.test = as.factor(Y.test),plot = TRUE,roc.block = 1,roc.comp = 1)
@@ -323,7 +375,7 @@ auroc(nutrimouse.sgccda,newdata = data.test,outcome.test = as.factor(Y.test),plo
 auroc(nutrimouse.sgccda,newdata = data.test,outcome.test = as.factor(Y.test),plot = FALSE,roc.block = 2,roc.comp = 3)
 
 
-############################perf
+############################ e<-perf
 
 
 
@@ -332,7 +384,7 @@ auroc(nutrimouse.sgccda,newdata = data.test,outcome.test = as.factor(Y.test),plo
 
 library(mixOmics)
 data(breast.tumors)
-test=sample(1:47,5,replace=TRUE)
+test=sample(1:47,5,replace=FALSE)
 X <- breast.tumors$gene.exp
 X.test<-breast.tumors$gene.exp[test,]
 Y <- breast.tumors$sample$treatment
@@ -340,81 +392,50 @@ Y.test<-breast.tumors$sample$treatment[test]
 
 res.plsda <- plsda(X, Y, ncomp = 2)
 
-####ERROR A RESOUDRE MFOLD NREPEAT 1 // RESOLU PAR FR
-
-####ERROR CONSTRAINT //RESOLU
-
+####ERROR A RESOUDRE MFOLD NREPEAT 1
 
 for(validation in c("Mfold","loo"))
 {
   for(nrepeat in 1:2)
-{
-    for(auc in c(TRUE,FALSE))
-    { 
-      for(dist in c("all", "max.dist", "centroids.dist", "mahalanobis.dist"))
-      {
-        for(constraint in c(TRUE,FALSE))
-        {
-          e<-perf(res.plsda,dist = dist,constraint=constraint,
-                  auc = auc,validation = validation,nrepeat=nrepeat)
-        }
-      }
-      
-    }
+  {
+    print(paste("validation ",validation, "nrepeat", nrepeat, "\n"))
+    e<-perf(res.plsda,dist = c("max.dist"), auc = TRUE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
+    e<-perf(res.plsda,dist = c("max.dist"),
+            auc = FALSE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
+    
+    e<-perf(res.plsda,dist = c("all"),
+            auc = TRUE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
+    e<-perf(res.plsda,dist = c("all"),
+            auc = FALSE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)}
 }
-}
+
 
 res.plsda <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 
-####ERROR 
-
-for(validation in c("Mfold","loo"))
-{
-  for(nrepeat in 1:2)
-  {
-    for(auc in c(TRUE,FALSE))
-    { 
-      for(dist in c("all", "max.dist", "centroids.dist", "mahalanobis.dist"))
-      {
-        for(constraint in c(TRUE,FALSE))
-        {
-          e<-perf(res.plsda,dist = dist,constraint=constraint,
-                  auc = auc,validation = validation,nrepeat=nrepeat)
-        }
-      }
-      
-    }
-  }
-}
 
 res.plsda <- plsda(X, Y, ncomp = 2)
 
-####ERROR 
-
 for(validation in c("Mfold","loo"))
 {
   for(nrepeat in 1:2)
   {
-    for(auc in c(TRUE,FALSE))
-    { 
-      for(dist in c("all", "max.dist", "centroids.dist", "mahalanobis.dist"))
-      {
-         for(constraint in c(TRUE,FALSE))
-         {
-          e<-perf(res.plsda,dist = dist,constraint=constraint,
-                  auc = auc,validation = validation,nrepeat=nrepeat)
-         }
-      }
-      
-    }
-  }
+    print(paste("validation ",validation, "nrepeat", nrepeat, "\n"))
+    e<-perf(res.plsda,dist = c("max.dist"),
+            auc = TRUE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
+    e<-perf(res.plsda,dist = c("max.dist"),
+            auc = FALSE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
+    
+    e<-perf(res.plsda,dist = c("all"),
+            auc = TRUE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
+    e<-perf(res.plsda,dist = c("all"),
+            auc = FALSE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)}
 }
-                    
-                    
+
+
 
 data(liver.toxicity)
 
-test=sample(1:64,7,replace=TRUE)
+test=sample(1:64,7,replace=FALSE)
 X <- liver.toxicity$gene
 X.test<-liver.toxicity$gene[test,]
 Y <- liver.toxicity$treatment[, 4]
@@ -422,45 +443,9 @@ Y.test <- liver.toxicity$treatment[test, 4]
 
 res.plsda <- plsda(X, Y, ncomp = 2)
 
-for(validation in c("Mfold","loo"))
-{
-  for(nrepeat in 1:2)
-  {
-    for(auc in c(TRUE,FALSE))
-    { 
-      for(dist in c("all", "max.dist", "centroids.dist", "mahalanobis.dist"))
-      {
-        for(constraint in c(TRUE,FALSE))
-        {
-          e<-perf(res.plsda,dist = dist,constraint=constraint,
-                  auc = auc,validation = validation,nrepeat=nrepeat)
-        }
-      }
-      
-    }
-  }
-}
 
 res.plsda <- plsda(X, Y, ncomp = 3)
 
-for(validation in c("Mfold","loo"))
-{
-  for(nrepeat in 1:2)
-  {
-    for(auc in c(TRUE,FALSE))
-    { 
-      for(dist in c("all", "max.dist", "centroids.dist", "mahalanobis.dist"))
-      {
-        for(constraint in c(TRUE,FALSE))
-        {
-          e<-perf(res.plsda,dist = dist,constraint=constraint,
-                  auc = auc,validation = validation,nrepeat=nrepeat)
-        }
-      }
-      
-    }
-  }
-}
 
 # mint.plsda
 # ----
@@ -482,52 +467,118 @@ A.light=list(X=data.light,Y=Y.mat.light)
 
 res.plsda=mint.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
-for(auc in c(TRUE,FALSE))
-{ 
-  for(dist in c("all", "max.dist", "centroids.dist", "mahalanobis.dist"))
-  {
-    for(constraint in c(TRUE,FALSE))
-    {
-      e<-perf(res.plsda,dist = dist,constraint=constraint,
-              auc = auc)
-      print(e)
-    }
-  }
-  
-}
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
+
+e<-perf(res.plsda,dist = c("all"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
+
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
+
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
+
 
 
 
 res.plsda=mint.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=exp)
 
-for(auc in c(TRUE,FALSE))
-{ 
-  for(dist in c("all", "max.dist", "centroids.dist", "mahalanobis.dist"))
-  {
-    for(constraint in c(TRUE,FALSE))
-    {
-      e<-perf(res.plsda,dist = dist,constraint=constraint,
-              auc = auc)
-      print(e)
-    }
-  }
-  
-}
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
+
+e<-perf(res.plsda,dist = c("all"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
+
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
+
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
 
 
 res.plsda=mint.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
 
-    for(auc in c(TRUE,FALSE))
-   { 
-      for(dist in c("all", "max.dist", "centroids.dist", "mahalanobis.dist"))
-      {
-        for(constraint in c(TRUE,FALSE))
-        {
-          e<-perf(res.plsda,dist = dist,constraint=constraint,
-            auc = auc)
-    print(e)
-        }
-      }
-    
-    }
+e<-perf(res.plsda,dist = c("all"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
+
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
+
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)

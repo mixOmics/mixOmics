@@ -533,9 +533,18 @@ display.names)
             cex = rep(cex, ceiling(n/length(cex)))[1 : n]
         }
     }
-    
+
     if (ellipse)
     {
+        # removing calculation for classes with only one sample
+        
+        nlevels.class = 1 : ncol(object$ind.mat)
+        ind.unique = which(apply(object$ind.mat, 2, sum) == 1)
+        if(length(ind.unique) > 0)
+        {
+            nlevels.class = nlevels.class[-ind.unique]
+        }
+       
         #-- Start: Computation ellipse
         min.ellipse = max.ellipse = xlim.min = xlim.max = ylim.min = ylim.max = list()
         ind.gp = matrice = cdg = variance = list()
@@ -543,7 +552,7 @@ display.names)
         matrice = lapply(1 : length(x), function(z1) {lapply(ind.gp, function(z2){matrix(c(x[[z1]][z2], y[[z1]][z2]), ncol = 2)})})
         cdg = lapply(1 : length(x), function(z){ lapply(matrice[[z]], colMeans)})
         variance = lapply(1 : length(x), function(z){lapply(matrice[[z]], var)})
-        coord.ellipse = lapply(1 : length(x), function(z1){ lapply(1 : ncol(object$ind.mat), function(z2){ellipse(variance[[z1]][[z2]],
+        coord.ellipse = lapply(1 : length(x), function(z1){ lapply(nlevels.class, function(z2){ellipse(variance[[z1]][[z2]],
             centre = cdg[[z1]][[z2]],
             level = ellipse.level)})})
         max.ellipse = lapply(1 : length(x), function(z1) {sapply(coord.ellipse[[z1]], function(z2){apply(z2, 2, max)})})
@@ -664,7 +673,7 @@ display.names)
         df$names = rep(ind.names, length(x))
         
         df$pch = pch; df$cex = cex
-        df$col.per.group = levels.color[group] #FR: don't understand what is that changing as levels.color is already group?
+        df$col.per.group = levels.color#[group] #FR: don't understand what is that changing as levels.color is already group?
         df$col = as.character(col)
         
         
@@ -699,9 +708,13 @@ display.names)
         if (ellipse == TRUE)
         {
             df.ellipse = data.frame(do.call("rbind", lapply(1 : length(x), function(k){do.call("cbind", coord.ellipse[[k]])})), "Block" = paste0("Block: ", rep(blocks, each = 100)))
-            
-            
-            names(df.ellipse)[1 : (2*nlevels(group))] = paste0("Col", 1 : (2*nlevels(group)))
+            if(length(ind.unique) > 0)
+            {
+                names(df.ellipse)[1 : (2*length(nlevels.class))] = paste0("Col", c(1 : (2*nlevels(group)))[-c(2*(ind.unique-1)+1,2*ind.unique)])
+            } else {
+                names(df.ellipse)[1 : (2*nlevels(group))] = paste0("Col", c(1 : (2*nlevels(group))))
+
+            }
             df.ellipse$ellipse.level = ellipse.level
         } else {
             df.ellipse = NULL
