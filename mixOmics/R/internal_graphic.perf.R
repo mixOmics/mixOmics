@@ -85,7 +85,7 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
             col = matrix(rep(color.mixo(rep(1:length(dist), each = nrow(error.rate.concat))), length(measure)), nrow = nrow(error.rate.concat))
             
             for(j in 1:ncol(error.rate.concat))
-            plot_error_bar(x = component, y = error.rate.concat[, j], uiw=error.rate.sd.concat[, j], add=T, col = col[, j])#, ...)
+            plot_error_bar(x = component, y = error.rate.concat[, j], uiw=error.rate.sd.concat[, j], add=T, col = col[, j])
         }
     } else if(overlay == "measure") {
         
@@ -93,7 +93,7 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
         par(mfrow=c(1, length(dist)))
         for(di in dist)
         {
-            new_mat.error=error.rate.concat[, grep(di, colnames(error.rate.concat))]
+            new_mat.error = error.rate.concat[, grep(di, colnames(error.rate.concat)), drop = FALSE]
             
             out<-matplot(new_mat.error, type = type, lty = c(1:length(measure)),
             col = rep(color.mixo(which(di == dist))),
@@ -110,16 +110,9 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
             }
             if(!is.null(error.rate.sd.concat))
             {
-                if(is.matrix(new_mat.error))
-                {
-                    for(j in 1:ncol(new_mat.error))
-                    {
-                        new_sd.error=error.rate.sd.concat[, grep(di, colnames(error.rate.sd.concat))]
-                        plot_error_bar(x = component, y = new_mat.error[, j], uiw=new_sd.error[, j], add=T, col = color.mixo(which(di == dist)))#, ...)
-                    }
-                } else {
-                    plot_error_bar(x = component, y = new_mat.error, uiw=error.rate.sd.concat, add=T, col = color.mixo(which(di == dist)))#, ...)
-                }
+                new_sd.error = error.rate.sd.concat[, grep(di, colnames(error.rate.sd.concat)), drop = FALSE]
+                for(j in 1:ncol(new_mat.error))
+                plot_error_bar(x = component, y = new_mat.error[, j], uiw=new_sd.error[, j], add=T, col = color.mixo(which(di == dist)))
             }
             #add title for each subgraph
             title(di)
@@ -132,7 +125,7 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
         par(mfrow=c(1, length(measure)))
         for(mea in measure)
         {
-            new_mat.error=error.rate.concat[, grep(mea, colnames(error.rate.concat))]
+            new_mat.error=error.rate.concat[, grep(mea, colnames(error.rate.concat)), drop = FALSE]
             
             out<-matplot(new_mat.error, type = type, lty = c(1:length(dist)),
             col = rep(color.mixo(1:length(dist))),
@@ -149,18 +142,11 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
             }
             if(!is.null(error.rate.sd.concat))
             {
-                if(is.matrix(new_mat.error))
-                {
-                    col = matrix(color.mixo(rep(1:length(dist), each = nrow(error.rate.concat))), nrow = nrow(error.rate.concat))
-
-                    for(j in 1:ncol(new_mat.error))
-                    {
-                        new_sd.error=error.rate.sd.concat[, grep(mea, colnames(error.rate.sd.concat))]
-                        plot_error_bar(x = component, y = new_mat.error[, j], uiw=new_sd.error[, j], add=T, col = col[, j])#, ...)
-                    }
-                } else {
-                    plot_error_bar(x = component, y = new_mat.error, uiw=error.rate.sd.concat, add=T, col = col[, j])#, ...)
-                }
+                col = matrix(color.mixo(rep(1:length(dist), each = nrow(error.rate.concat))), nrow = nrow(error.rate.concat))
+                
+                new_sd.error=error.rate.sd.concat[, grep(mea, colnames(error.rate.sd.concat)), drop = FALSE]
+                for(j in 1:ncol(new_mat.error))
+                plot_error_bar(x = component, y = new_mat.error[, j], uiw=new_sd.error[, j], add=T, col = col[, j])
             }
             title(mea)
         }
@@ -170,7 +156,7 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
 }
 
 
-plot_error_bar <- function (x, y = as.numeric(x), uiw, add=FALSE, col = "black", ...)
+plot_error_bar <- function (x, y = as.numeric(x), uiw, add=FALSE, col = "black")
 {
     # x are the xaxis values
     # y are the y axis values
