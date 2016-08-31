@@ -38,7 +38,7 @@
 internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)), tau=NULL,#rep(1, length(A)),
 ncomp = rep(1, length(A)), scheme = "centroid", scale = TRUE,  bias = FALSE,
 init = "svd.single", tol = 1e-06, verbose = FALSE,
-mode = "canonical", max.iter = 500,study = NULL, keepA = NULL,
+mode = "canonical", max.iter = 50,study = NULL, keepA = NULL,
 keepA.constraint = NULL, penalty = NULL)
 {
     # A: list of matrices

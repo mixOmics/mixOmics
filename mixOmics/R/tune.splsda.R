@@ -57,6 +57,7 @@ dist = "max.dist",
 measure = "BER", # one of c("overall","BER")
 auc = FALSE,
 progressBar = TRUE,
+max.iter = 50,
 near.zero.var = FALSE,
 nrepeat = 1,
 logratio = c('none','CLR'),
@@ -284,7 +285,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
             choice.keepX = if(constraint){NULL}else{already.tested.X},
             choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
             test.keepX = test.keepX, measure = measure, dist = dist,
-            near.zero.var = near.zero.var, progressBar = progressBar, class.object = "splsda", auc = auc)
+            near.zero.var = near.zero.var, progressBar = progressBar, class.object = "splsda", max.iter = max.iter, auc = auc)
             
             # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
             mat.error.rate[[comp]] = result[[measure]]$mat.error.rate[[1]]

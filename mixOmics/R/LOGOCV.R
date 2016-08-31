@@ -39,6 +39,7 @@ test.keepX = c(5, 10, 15),
 dist = "max.dist",
 measure = c("BER"), # one of c("overall","BER")
 auc = auc,
+max.iter = 50,
 progressBar = TRUE,
 near.zero.var = FALSE,
 scale)
@@ -132,7 +133,7 @@ scale)
             setTxtProgressBar(pb, (study_i-1)/M + (i-1)/length(test.keepX)/M)
             
             object.res = mint.splsda(X.train, Y.train, study = study.learn.CV, ncomp = ncomp, keepX = c(choice.keepX, test.keepX[i]),
-            keepX.constraint = choice.keepX.constraint, scale = scale, mode = "regression")
+            keepX.constraint = choice.keepX.constraint, scale = scale, mode = "regression", max.iter = max.iter)
             
             # record selected features
             if (length(test.keepX) ==  1) # only done if only one test.keepX as not used if more so far

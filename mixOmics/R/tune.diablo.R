@@ -61,7 +61,7 @@ measure = "BER", # one of c("overall","BER")
 progressBar = TRUE,
 near.zero.var = FALSE,
 nrepeat = 1,
-max.iter = 500,
+max.iter = 50,
 design,
 scheme,
 mode,
