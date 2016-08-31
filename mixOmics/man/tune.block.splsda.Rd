@@ -11,7 +11,7 @@ grid to determine optimal values for the sparsity parameters in \code{block.spls
 }
 
 \usage{
-tune.block.splsda(X, Y, ncomp = 1,
+tune.block.splsda(X, Y,
 indY,
 ncomp = 2,
 test.keepX,
