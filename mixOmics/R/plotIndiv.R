@@ -623,7 +623,13 @@ display.names)
         } else {
             pch = rep(pch, ceiling(n/length(pch)))[1 : n]
         }
+        
+        # if pch is given and ind.names is TRUE, pch takes over
+        if(display.names)
+        warning("'ind.names' is set to FALSE as 'pch' overrides it")
+
         display.names = FALSE
+      
     }
     
     

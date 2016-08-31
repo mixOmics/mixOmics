@@ -105,7 +105,8 @@ or integers. See \code{\link{points}} for all alternatives.}
 depending on the subspace of projection. Each point corresponds to an individual.
 
 If \code{ind.names=TRUE} and row names is \code{NULL}, then \code{ind.names=1:n}, where
-\code{n} is the number of individuals.
+\code{n} is the number of individuals. Also, if \code{pch} is an input, then \code{ind.names} is set to FALSE
+as we do not show both names and shapes.
 
 The arguments \code{col}, \code{cex} and \code{pch} can be atomic vectors or vectors of
 length \code{n}. If atomic, this argument value determines the graphical attribute for all the individuals.
