@@ -27,6 +27,7 @@
 
 
 circosPlot = function(object,
+comp = 1 : min(object$ncomp),
 cutoff,
 var.names = NULL,
 showIntraLinks = FALSE,
@@ -73,6 +74,7 @@ size.labels=1)
     indY = object$indY
     object$variates = c(object$variates[-indY], object$variates[indY])
     object$loadings = c(object$loadings[-indY], object$loadings[indY])
+    object$ncomp = c(object$ncomp[-indY], object$ncomp[indY])
     
     #check var.names
     sample.X = lapply(object$loadings[-length(object$loadings)], function(x){1 : nrow(x)})
@@ -93,14 +95,17 @@ size.labels=1)
     }
 
 
+    if(any(comp > min(object$ncomp)))
+    {
+        warning("Limitation to ",min(object$ncomp), " components, as determined by min(object$ncomp)")
+        comp[which(comp > min(object$ncomp))] = min(object$ncomp)
+    }
+    comp = unique(sort(comp))
 
-    if (min(object$ncomp) != max(object$ncomp))
-    warning("unequal number of component per block: we use the minimum")
-    ncomp.min = min(object$ncomp)
     
-    keepA = lapply(object$loadings, function(i) apply(abs(i), 1, sum) > 0)
+    keepA = lapply(object$loadings, function(i) apply(abs(i)[, comp, drop = FALSE], 1, sum) > 0)
     cord = mapply(function(x, y, keep){
-        cor(x[, keep], y[, 1:ncomp.min], use = "pairwise")
+        cor(x[, keep], y[, comp], use = "pairwise")
     }, x=object$X, y=object$variates[-length(object$variates)], keep = keepA[-length(keepA)])
     
     simMatList = vector("list", length(X))
@@ -145,7 +150,7 @@ size.labels=1)
     # 2) Generate Links
     links = genLinks(chr, corMat, threshold=cutoff)
     if (nrow(links) < 1)
-    stop("Choose a lower correlation threshold")
+    warning("Choose a lower correlation threshold to highlight links between datasets")
     
     # 3) Plot
     # Calculate parameters
@@ -168,6 +173,7 @@ size.labels=1)
     drawIdeogram(R=circleR, cir=db, W=segmentWidth,  show.band.labels=TRUE, show.chr.labels=TRUE, chr.labels.R= chrLabelsR, chrData=chr, size.variables = size.variables, size.labels=size.labels)
     
     # Plot links
+    if(nrow(links)>0)
     drawLinks(R=linksR, cir=db,   mapping=links,   col=linkColors, drawIntraChr=showIntraLinks)
     
     # Plot expression values
@@ -211,7 +217,11 @@ size.labels=1)
     # third legend top left corner
     legend(x=figSize-(circleR/2), y = figSize, title="Correlation cut-off", legend=paste("r", cutoff, sep = "="),
     col = "black", cex=size.legend, bty = "n")
-    
+
+    legend(x=-circleR/4, y = figSize, legend=paste("Comp",paste(comp,collapse="-")),
+    col = "black", cex=size.legend, bty = "n")
+
+
     par(xpd=opar,mar=opar1)# put the previous defaut parameter for xpd
     return(invisible(corMat))
 }
