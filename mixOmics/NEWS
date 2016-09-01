@@ -1,3 +1,36 @@
+Changes in 6.1.0 (improvements and bug fixes)
+================
+
+New features:
+-------------
+- auroc function applicable for (mint).(block).(s)plsda objects. AUc values also included in perf and tune functions (except mixDIABLO module)
+- tune.block.splsda function to chose the keepX parameters of block.splsda (mixDIABLO)
+- plot for perf objects. Shows the error rate depending on the component
+- plot for tune objects (except for tune.block.splsda)
+- multilevel function has been removed (as planned) as it is now included as an argument in other functions (see pls, splsda, etc)
+
+Enhancements:
+-------------
+1 - All tune functions (except for mixDIABLO module) have now a 'constraint' argument that allows the function to chose either specific parameters (object$keepX.constraint) or the number of parameters (object$keepX) 
+2 - All perf functions (except for mixDIABLO module) have now a 'constraint' argument that allows the performances to be calculate either based on the number of parameter per component or based on which variables are selected on each component.
+3 - max.iter has been set to 100 to speed up computational time for tune and perf functions.
+4 - cimDiablo: new arguments transpose, row.names and col.names
+5 - circosPlot: new arguments var.names and comp. 'cutoff' has replaced 'corThreshold'.
+6 - plotIndiv: new argument legend.title
+7 - network function for block.spls(da) models and allows to plot more than 2 blocks
+8 - PCA: new argument ilr.offset to be used only for ilr log transform
+9 - add legend in plotDiablo, and new argument legend.ncol
+
+
+Bug fixes:
+----------
+1 - plotIndiv and ellipse: plot ellipse for all groups with more than 1 sample
+2 - add multilevel and log transform in the predict function; new argument multilevel
+3 - Call to plsda.vip() from the RVAideMemoire package
+4 - other small bugs
+
+
+
 Changes in 6.0.0 (major, implementation improvements and new methods)
 ================
 In short,
