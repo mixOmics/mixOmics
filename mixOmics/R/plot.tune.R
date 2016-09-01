@@ -27,7 +27,7 @@
 plot.tune<-function(x,...) NextMethod("plot")
 
 
-plot.tune.splsda = #plot.spca <- plot.ipca <- plot.sipca <-
+plot.tune.splsda = #plot.tune.mint.splsda
   function(x, optimal = TRUE, sd=TRUE,horiz=FALSE,overlay=TRUE,log="", ...)
   {
     
@@ -92,11 +92,14 @@ plot.tune.splsda = #plot.spca <- plot.ipca <- plot.sipca <-
     }
     
     
-      
-      if(comp.tuned==1)
-        legend=c("1")
+      for(test in 1:comp.tuned)
+     { 
+        if(j==1 && strsplit(colnames(error),"p")[[1]][2]==1)
+          legend=c(legend,strsplit(colnames(error),"p")[[1]][2])
       else
-        legend=c(1,paste("1 to",2:comp.tuned))
+        legend=c(legend,paste("1 to",strsplit(colnames(error),"p")[[test]][2]))
+      
+      }
       
       legend("topright", lty = 1,  horiz = horiz, col = col.per.comp,
              legend = legend,title="Component :",seg.len = 1)
@@ -109,7 +112,7 @@ plot.tune.splsda = #plot.spca <- plot.ipca <- plot.sipca <-
       {
         matplot(rownames(error),error[,i], type = "l", axes = TRUE, lwd = 2, lty = 1, log = log,
                 xlab = "Number of selected genes", ylab = ylab,
-                col = col.per.comp, ylim = ylim)
+                col = col.per.comp[i], ylim = ylim)
         
         if(optimal)
         {
@@ -125,8 +128,10 @@ plot.tune.splsda = #plot.spca <- plot.ipca <- plot.sipca <-
             plot_error_bar(x = as.numeric(rownames(error)), y =error[, i] , uiw=error.rate.sd[, i], add=T, col = color.mixo(rep(i,nrow(error))))#, ...)
         }
         
-        
-        title(paste("Component",i))
+        if(strsplit(colnames(error),"p")[[i]][2]==1)
+          title(paste("Component 1"))
+        else
+          title(paste("Component 1 to",strsplit(colnames(error),"p")[[i]][2]))
          
       }
       
