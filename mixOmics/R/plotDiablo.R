@@ -114,7 +114,7 @@ splotMatPlot = function(x, y, datNames, Y, ptype)
     {
         plot(1, type = "n", axes = FALSE)
         r = round(cor(x, y), 2)
-        text(1, 1, labels=r, cex = 0.6/strwidth(r)*r)
+        text(1, 1, labels=r, cex = 0.6/strwidth(abs(r))*abs(r))
         box()
     }
     if(names(ptype) == "scatter")
