@@ -37,6 +37,10 @@ plotLoadings(nutrimouse.sgccda,contrib="max")
 
 par(mfrow=c(1,1))
 circosPlot(nutrimouse.sgccda,cutoff=0.7,ncol=2,size.legend=1.1)
+circosPlot(nutrimouse.sgccda,cutoff=0.9,ncol=2,size.legend=1.1)
+
+circosPlot(nutrimouse.sgccda,cutoff=0.5,ncol=2,size.legend=1.1, size.variables = 1.5, comp =2)
+
 
 circosPlot(nutrimouse.sgccda,cutoff=0.7,ncol=2,size.legend=1.1,size.labels=2)
 

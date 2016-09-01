@@ -399,7 +399,7 @@ label.axes.box = "both"  )
         if (length(cord.X) < 10) {
             col = unlist(lapply(1 : length(cord.X), function(x){rep(color.mixo(x), sum(sapply(cord.X[x], nrow)))}))
         } else {
-            col = unlist(lapply(1 : length(cord.X), function(x){rep(color.jet(x), sum(sapply(cord.X[x], nrow)))}))
+            col = unlist(lapply(1 : length(cord.X), function(x){rep(color.jet(length(cord.X))[x], sum(sapply(cord.X[x], nrow)))}))
         }
     } else if (is.vector(col, mode = "double") | is.vector(col, mode = "character")) {
         if (length(col) != length(sample.X))

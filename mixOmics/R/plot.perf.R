@@ -26,35 +26,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #############################################################################################################
 
-#############################################################################################################
-# Authors:
-#   Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-#   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-#   Kim-Anh Le Cao, French National Institute for Agricultural Research and
-#   Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia
-# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-#
-# created: 2011
-# last modified: 19-04-2016
-#
-# Copyright (C) 2011
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 2
-# of the License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
-
-
+plot.perf<-function(x,...) NextMethod("plot")
 
 # PLS object
 # ----------------------
@@ -178,7 +150,7 @@ plot.perf.plsda.mthd = plot.perf.splsda.mthd =
       stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
     pred.method = NULL # to pass R CMD check
     
-    
+    print(names(x$error.rate))
     if (any(measure == "all"))
       measure = names(x$error.rate)
     
