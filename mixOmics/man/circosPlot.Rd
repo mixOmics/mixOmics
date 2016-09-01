@@ -9,6 +9,7 @@
 
 \usage{
 circosPlot(object,
+comp = 1 : min(object$ncomp),
 cutoff,
 var.names = NULL,
 showIntraLinks = FALSE,
@@ -21,6 +22,7 @@ size.labels = 1)
 
 \arguments{
 \item{object}{An object of class inheriting from \code{"block.splsda"}.}
+\item{comp}{Numeric vector indicating which component to plot. Default to all}
 \item{cutoff}{Only shows links with a correlation higher than \code{cutoff}}
 \item{var.names}{Optional parameter. A list of length the number of blocks in \code{object$X}, containing the names of the variables of each block.
 If \code{NULL}, the colnames of the data matrix are used.}
