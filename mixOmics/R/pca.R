@@ -130,7 +130,7 @@ multilevel = NULL)
     if (is.null(V) & logratio == "ILR") # back-transformation to clr-space, will be used later to recalculate loadings etc
     V = clr.backtransfo(X)
     
-    X = logratio.transfo(X = X, logratio = logratio, offset = ilr.offset)
+    X = logratio.transfo(X = X, logratio = logratio, offset = if(logartio == "ILR") {ilr.offset} else {0})
     
     #as X may have changed
     if (ncomp > min(ncol(X), nrow(X)))
