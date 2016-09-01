@@ -106,3 +106,76 @@ for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))
         }
     }
 }
+
+## validation for objects of class 'mint.splsda' (classification)
+# ----------------------------------------
+
+
+data(stemcells)
+res = mint.splsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3, keepX = c(10, 5, 15),
+study = stemcells$study)
+
+out = perf(res)
+for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))
+{
+    for(mea in c("all", "BER" , "overall"))
+    {
+        for(overla in c("all","measure"))
+        {
+            for(leg in c("vertical","horizontal"))
+            {
+                
+                print(paste(di,mea,overla,leg))
+                plot(out,
+                dist =di,
+                measure = mea,
+                xlab = NULL,
+                ylab = NULL,
+                overlay=overla,
+                legend.position=leg)
+            }
+        }
+    }
+}
+
+## validation for objects of class 'sgccda' (classification)
+# ----------------------------------------
+
+data(nutrimouse)
+Y = nutrimouse$diet
+data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
+design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+
+
+nutrimouse.sgccda <- block.splsda(X=data,
+Y = Y,
+design = design,
+keepX = list(gene=c(10,10), lipid=c(15,15)),
+ncomp = 2,
+scheme = "centroid",
+verbose = FALSE,
+bias = FALSE)
+
+perf = perf(nutrimouse.sgccda)
+for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))
+{
+    for(mea in c("all", "BER" , "overall"))
+    {
+        for(overla in c("all","measure"))
+        {
+            for(leg in c("vertical","horizontal"))
+            {
+                
+                print(paste(di,mea,overla,leg))
+                plot(perf,
+                dist =di,
+                measure = mea,
+                xlab = NULL,
+                ylab = NULL,
+                overlay=overla,
+                legend.position=leg)
+            }
+        }
+    }
+}
+
