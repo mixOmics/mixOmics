@@ -583,7 +583,7 @@ progressBar = TRUE,
     
     result = list(error.rate = mat.mean.error,
     error.rate.sd = mat.sd.error,
-    mat.error.rate = mat.error.rate,
+    error.rate.all = mat.error.rate,
     error.rate.class = error.per.class.keepX.opt[[1]],
     predict = prediction.all,
     class = class.all)

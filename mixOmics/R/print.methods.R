@@ -657,7 +657,11 @@ print.perf.pls.mthd = function(x, ...)
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
     cat(" Main numerical outputs: \n",
     "-------------------- \n")
-    cat(" MSEP, R2, Q2, Q2.total, RSS, PRESS. See the help file ?perf \n")
+    cat(" MSEP, R2, Q2, Q2.total, RSS, PRESS. See the help file ?perf \n\n")
+    
+    cat(" Visualisation Functions: \n", "-------------------- \n")
+    cat(" plot \n")
+
 }
 
 print.perf.spls.mthd = function(x, ...)
@@ -667,7 +671,11 @@ print.perf.spls.mthd = function(x, ...)
     "-------------------- \n")
     cat(" MSEP, R2, Q2, Q2.total, RSS, PRESS. See the help file ?perf \n")
     cat(" Stable features of X on each component: see object$features$stable.X \n")
-    cat(" Stable features of Y on each component: see object$features$stable.Y \n")
+    cat(" Stable features of Y on each component: see object$features$stable.Y \n\n")
+    
+    cat(" Visualisation Functions: \n", "-------------------- \n")
+    cat(" plot \n")
+
 }
 
 
@@ -680,7 +688,11 @@ print.perf.plsda.mthd = function(x, ...)
     cat(" Error rate per class, for each component and for each distance: see object$error.rate.class \n")
     cat(" Prediction values for each component: see object$predict \n")
     cat(" Classification of each sample, for each component and for each distance: see object$class \n")
-    cat(" AUC values: see object$auc if auc = TRUE \n")
+    cat(" AUC values: see object$auc if auc = TRUE \n\n")
+    
+    cat(" Visualisation Functions: \n", "-------------------- \n")
+    cat(" plot \n")
+
 }
 
 print.perf.splsda.mthd = function(x, ...)
@@ -688,12 +700,17 @@ print.perf.splsda.mthd = function(x, ...)
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
     cat(" Main numerical outputs: \n",
     "-------------------- \n")
-    cat(" Error rate (overall or BER) for each component and for each distance: see object$error.rate \n")
+    cat(" Error rate (overall or BER) for each component and for each distance (averaged over the nrepeat): see object$error.rate \n")
+    cat(" Error rate (overall or BER) for each component, for each distance and for each repeat: see object$error.rate.all \n")
     cat(" Error rate per class, for each component and for each distance: see object$error.rate.class \n")
     cat(" Prediction values for each component: see object$predict \n")
     cat(" Classification of each sample, for each component and for each distance: see object$class \n")
     cat(" Stable features on each component: see object$features$stable \n")
-    cat(" AUC values: see object$auc if auc = TRUE \n")
+    cat(" AUC values: see object$auc if auc = TRUE \n\n")
+    
+    cat(" Visualisation Functions: \n", "-------------------- \n")
+    cat(" plot \n")
+
 }
 
 print.perf.mint.splsda.mthd = function(x, ...)
@@ -706,7 +723,11 @@ print.perf.mint.splsda.mthd = function(x, ...)
     cat(" Prediction values for each component: see object$predict \n")
     cat(" Classification of each sample, for each component and for each distance: see object$class \n")
     cat(" AUC values: see object$auc \n")
-    cat(" AUC values per study: see object$auc.study if auc = TRUE \n")
+    cat(" AUC values per study: see object$auc.study if auc = TRUE \n\n")
+    
+    cat(" Visualisation Functions: \n", "-------------------- \n")
+    cat(" plot \n")
+
 }
 
 print.perf.sgccda.mthd = function(x, ...)
@@ -719,7 +740,11 @@ print.perf.sgccda.mthd = function(x, ...)
     cat(" Prediction values for each component: see object$predict \n")
     cat(" Classification of each sample, for each component and for each distance: see object$class \n")
     cat(" Stable features on each component: see object$features$stable \n")
-    cat(" AUC values: see object$auc if auc = TRUE \n")
+    cat(" AUC values: see object$auc if auc = TRUE \n\n")
+    
+    cat(" Visualisation Functions: \n", "-------------------- \n")
+    cat(" plot \n")
+
 }
 
 
@@ -742,9 +767,10 @@ print.tune.splsda = function(x, ...)
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
     cat(" Main numerical outputs: \n",
     "-------------------- \n")
-    cat(" Optimal keepX for each component: see object$choice.keepX \n")
-    cat(" Error rate for each tested keepX and for each component (averaged over the nrepeat): see object$mat.mean.error \n")
-    cat(" Error rate for each tested keepX, for each component and for each repeat: see object$mat.error.rate \n")
+    cat(" Optimal keepX for each component, if 'constraint=FALSE': see object$choice.keepX \n")
+    cat(" Optimal keepX.constraint for each component, if 'constraint=TRUE': see object$choice.keepX.constraint \n")
+    cat(" Error rate for each tested keepX and for each component (averaged over the nrepeat): see object$error.rate \n")
+    cat(" Error rate for each tested keepX, for each component and for each repeat: see object$error.rate.all \n")
     cat(" Error rate per class obtained with the optimal keepX, for each component and for each nrepeat: see object$error.rate.class \n\n")
     
     cat(" Other outputs available, see ?tune.splsda.  \n\n")
@@ -758,8 +784,9 @@ print.tune.mint.splsda = function(x, ...)
     cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
     cat(" Main numerical outputs: \n",
     "-------------------- \n")
-    cat(" Optimal keepX.constraint for each component: see object$choice.keepX.constraint \n")
-    cat(" Error rate for each tested keepX and for each component: see object$mat.mean.error \n")
+    cat(" Optimal keepX for each component, if 'constraint=FALSE': see object$choice.keepX \n")
+    cat(" Optimal keepX.constraint for each component, if 'constraint=TRUE': see object$choice.keepX.constraint \n")
+    cat(" Error rate for each tested keepX and for each component: see object$error.rate \n")
     cat(" Error rate per class obtained with the optimal keepX.constraint, for each component: see object$error.rate.class \n\n")
     
     cat(" Other outputs available, see ?tune.mint.splsda \n\n")
@@ -768,6 +795,20 @@ print.tune.mint.splsda = function(x, ...)
     cat(" plot \n")
 }
 
+print.tune.block.splsda = function(x, ...)
+{
+    cat("\nCall:\n", deparse(x$call, width.cutoff = 500), "\n\n")
+    cat(" Main numerical outputs: \n",
+    "-------------------- \n")
+    cat(" Optimal keepX for each component, if 'constraint=FALSE': see object$choice.keepX \n")
+    cat(" Optimal keepX.constraint for each component, if 'constraint=TRUE': see object$choice.keepX.constraint \n")
+    cat(" Error rate for each tested keepX and for each component (averaged over the nrepeat): see object$error.rate \n")
+    cat(" Error rate for each tested keepX, for each component and for each repeat: see object$error.rate.all \n")
+    cat(" Error rate per class obtained with the optimal keepX, for each component and for each nrepeat: see object$error.rate.class \n\n")
+    
+    cat(" Other outputs available, see ?tune.splsda.  \n\n")
+    
+}
 
 print.predict = function(x, ...)
 {
