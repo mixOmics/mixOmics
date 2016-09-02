@@ -171,7 +171,7 @@ class.object = NULL
             repeated.measure = multilevel[,1]
             n = length(unique(repeated.measure)) # unique observation: we put every observation of the same "sample" in the either the training or test set
         }
-        
+       
         
         #-- define the folds --#
         if (validation ==  "Mfold")
@@ -218,13 +218,13 @@ class.object = NULL
             #print(j)
             #set up leave out samples.
             omit = which(repeated.measure %in% folds[[j]] == TRUE)
-            
+
             # get training and test set
             X.train = X[-omit, ]
             Y.train = Y[-omit]
             X.test = X[omit, , drop = FALSE]#matrix(X[omit, ], nrow = length(omit)) #removed to keep the colnames in X.test
             Y.test = Y[omit]
-            
+   
             #---------------------------------------#
             #-- near.zero.var ----------------------#
             
@@ -264,7 +264,7 @@ class.object = NULL
                 keepX = if(is.null(choice.keepX.constraint) & !is.list(test.keepX)){c(choice.keepX, test.keepX[i])}else if(!is.list(test.keepX)){test.keepX[i]} else {NULL} ,
                 keepX.constraint = if(is.null(choice.keepX.constraint)& !is.list(test.keepX)){NULL}else if(!is.list(test.keepX)){choice.keepX.constraint} else {c(choice.keepX.constraint, test.keepX)},
                 logratio = "none", near.zero.var = FALSE, mode = "regression", max.iter = max.iter)
-                
+                  
                 # added: record selected features
                 if (any(class.object %in% c("splsda")) & length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
                 # note: if plsda, 'features' includes everything: to optimise computational time, we don't evaluate for plsda object
@@ -292,7 +292,7 @@ class.object = NULL
                 auc.all[[nrep]][, , i] = as.matrix(statauc(data))
             }
         }
-        
+
     } #end nrep 1:nrepeat
     names(prediction.comp) = names (auc.all) = paste0("nrep.", 1:nrepeat)
     # class.comp[[ijk]] is a matrix containing all prediction for test.keepX, all nrepeat and all distance, at comp fixed

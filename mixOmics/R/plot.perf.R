@@ -26,7 +26,35 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #############################################################################################################
 
-plot.perf<-function(x,...) NextMethod("plot")
+#############################################################################################################
+# Authors:
+#   Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+#   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
+#   Kim-Anh Le Cao, French National Institute for Agricultural Research and
+#   Queensland Facility for Advanced Bioinformatics, University of Queensland, Australia
+# Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#
+# created: 2011
+# last modified: 19-04-2016
+#
+# Copyright (C) 2011
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#############################################################################################################
+
+
 
 # PLS object
 # ----------------------
@@ -63,7 +91,7 @@ layout = NULL,
     nComp = ncol(y)  # Number of components
     
     def.par = par(no.readonly = TRUE)
-    
+
     if (nResp > 1) {
         if (is.null(layout)) {
             nRows = min(c(3, nResp))
@@ -150,7 +178,7 @@ sd = TRUE,
     stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
     pred.method = NULL # to pass R CMD check
     
-    print(names(x$error.rate))
+    
     if (any(measure == "all"))
     measure = names(x$error.rate)
     
@@ -172,10 +200,10 @@ sd = TRUE,
     
     if(length(overlay) >1 )
     overlay = overlay[1]
-    
+        
     if(length(legend.position) >1 )
     legend.position = legend.position[1]
-    
+
     # error.rate is a list [[measure]]
     # error.rate[[measure]] is a matrix of dist columns and ncomp rows
     # same for error.rate.sd, if any
@@ -215,7 +243,7 @@ legend.position=c("vertical", "horizontal"),
 {
     # maybe later, so far we set type = "l"
     type = "l"
-    
+
     if (hasArg(pred.method))
     stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
     pred.method = NULL # to pass R CMD check
@@ -236,8 +264,8 @@ legend.position=c("vertical", "horizontal"),
     
     if(length(legend.position) >1 )
     legend.position = legend.position[1]
-    
-    
+
+
     if(any(study == "global"))
     {
         if (is.null(dist) || !any(dist %in% colnames(x$global.error[[1]])))
@@ -288,8 +316,8 @@ legend.position=c("vertical", "horizontal"),
         
         if (is.null(xlab))
         xlab = 'Component'
-        
-        
+
+
         if(overlay=="all")
         {
             par(mfrow=c(1,length(study)))
@@ -299,12 +327,12 @@ legend.position=c("vertical", "horizontal"),
         } else if(overlay=="dist") {
             par(mfrow=c(length(study),length(measure)))
         }
-        
-        
+
+
         for(stu in study)
         {
             error.rate = x$study.specific.error[[stu]]
-            
+
             internal_graphic.perf(error.rate = error.rate, error.rate.sd = NULL,
             overlay = overlay, type = type, measure = measure, dist = dist, legend.position = legend.position,
             xlab = xlab, ylab = ylab, ...)
@@ -315,8 +343,8 @@ legend.position=c("vertical", "horizontal"),
         
         if((length(study)==1) & (length(measure) > 1) & overlay != "all")
         title(stu, outer=TRUE, line = -1)#,...)
-        
-        
+
+
         par(def.par)
         
     }
@@ -339,7 +367,7 @@ legend.position=c("vertical","horizontal"),
 {
     # maybe later, so far we set type = "l"
     type = "l"
-    
+
     if (hasArg(pred.method))
     stop("'pred.method' argument has been replaced by 'dist' to match the 'tune' and 'perf' functions")
     pred.method = NULL # to pass R CMD check
@@ -367,17 +395,17 @@ legend.position=c("vertical","horizontal"),
     
     if(length(legend.position) >1 )
     legend.position = legend.position[1]
-    
-    
+
+
     if (is.null(dist) || !any(dist %in% colnames(x$error.rate[[1]])))
     stop("'dist' should be among the ones used in your call to 'perf': ", paste(colnames(x$error.rate[[1]]),collapse = ", "),".")
     
     if (is.null(ylab))
     ylab = 'Classification error rate'
-    
+   
     if (is.null(xlab))
     xlab = 'Component'
-    
+        
     # error.rate is a list [[measure]]
     # error.rate[[measure]] is a matrix of dist columns and ncomp rows
     # same for error.rate.sd, if any
@@ -390,7 +418,7 @@ legend.position=c("vertical","horizontal"),
             temp = t(x$MajorityClass.error.rate[[di]][mea, , drop=FALSE])
             colnames(temp) = di
             error.temp = cbind(error.temp, temp)
-            
+
         }
         error.rate[[mea]] = error.temp
     }

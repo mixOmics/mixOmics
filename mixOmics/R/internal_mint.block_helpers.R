@@ -76,7 +76,7 @@ soft_thresholding_L1 = function(x,nx)
         if (any(rank(absa, ties.method = "max") <= nx))
         {
             x = ifelse(rank(absa, ties.method = "max") <= nx, 0,
-            sign(x) * (absa - max(absa[rank(absa, ties.method = "max") <= nx])))
+                        sign(x) * (absa - max(absa[rank(absa, ties.method = "max") <= nx])))
         }
     }
     
@@ -137,15 +137,12 @@ sparsity=function(loadings.A, keepA, keepA.constraint=NULL, penalty=NULL)
     {
         loadings.A[-keepA.constraint] = 0
     } else if (!is.null(keepA)) {
-        if(is.numeric(keepA))
         nx = length(loadings.A) - keepA
-        else
-        nx = length(loadings.A) - length(keepA)
         loadings.A = soft_thresholding_L1(loadings.A, nx = nx)
     } else if (!is.null(penalty)) {
         loadings.A = soft.threshold(loadings.A, penalty)
     }
-    
+
     return(loadings.A)
 }
 
@@ -188,14 +185,14 @@ mean_centering_per_study=function(data, study, scale, bias=FALSE)
     M = length(levels(study))   # number of groups
     # split the data
     data.list.study = study_split(data, study)
-    
+
     # center and scale data per group, and concatene the data
     res = lapply(data.list.study, scale.function, scale = scale, bias = bias)
     concat.data = do.call("rbind", lapply(res,function(x){x[[1]]}))
     meanX = lapply(res, function(x){x[[2]]})
     sqrt.sdX = lapply(res, function(x){x[[3]]})
     rownames.study = lapply(res, function(x){rownames(x[[1]])})
-    
+
     #rename rows and cols of concatenated centered (and/or scaled) data
     colnames(concat.data) = colnames(data)
     
