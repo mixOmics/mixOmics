@@ -209,7 +209,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     temp = data.frame(l, n)
     
     
-    message(paste("You have provided a sequence of keepX of length: ", paste(apply(temp, 1, function(x) paste(x,collapse=" for block ")), collapse= " and "), ".\nThis results in ",prod(sapply(test.keepX,length)), " models being fitted for each component, this may  take some time to run, be patient!",sep=""))
+    message(paste("You have provided a sequence of keepX of length: ", paste(apply(temp, 1, function(x) paste(x,collapse=" for block ")), collapse= " and "), ".\nThis results in ",prod(sapply(test.keepX,length)), " models being fitted for each component, this may take some time to run, be patient!",sep=""))
     
     
     #-- end checking --#
