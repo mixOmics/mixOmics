@@ -47,24 +47,24 @@ error <- perf(srbct.plsda, validation = "Mfold", folds = 8, dist = "all", progre
 
 for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))
 {
-  for(mea in c("all", "BER" , "overall"))
-  {
-    for(overla in c("all","measure"))
+    for(mea in c("all", "BER" , "overall"))
     {
-      for(leg in c("vertical","horizontal"))
-      {
-        quartz()
-        print(paste(di,mea,overla,leg))
-        plot(error,
-             dist =di,
-             measure = mea,
-             xlab = NULL,
-             ylab = NULL,
-             overlay=overla,
-             legend.position=leg)
-      }
+        for(overla in c("all","measure"))
+        {
+            for(leg in c("vertical","horizontal"))
+            {
+                quartz()
+                print(paste(di,mea,overla,leg))
+                plot(error,
+                dist =di,
+                measure = mea,
+                xlab = NULL,
+                ylab = NULL,
+                overlay=overla,
+                legend.position=leg)
+            }
+        }
     }
-  }
 }
 
 print(paste(di,mea,overla,leg))
@@ -87,26 +87,25 @@ error <- perf(srbct.splsda, validation = "Mfold", folds = 8, dist = "all", progr
 
 for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))
 {
-  for(mea in c("all", "BER" , "overall"))
-  {
-    for(overla in c("all","measure"))
+    for(mea in c("all", "BER" , "overall"))
     {
-      for(leg in c("vertical","horizontal"))
-      {
-        
-        print(paste(di,mea,overla,leg))
-        plot(error,
-             dist =di,
-             measure = mea,
-             xlab = NULL,
-             ylab = NULL,
-             overlay=overla,
-             legend.position=leg)
-      }
+        for(overla in c("all","measure"))
+        {
+            for(leg in c("vertical","horizontal"))
+            {
+                
+                print(paste(di,mea,overla,leg))
+                plot(error,
+                dist =di,
+                measure = mea,
+                xlab = NULL,
+                ylab = NULL,
+                overlay=overla,
+                legend.position=leg)
+            }
+        }
     }
-  }
 }
-
 
 ## validation for objects of class 'mint.splsda' (classification)
 # ----------------------------------------
@@ -114,29 +113,29 @@ for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))
 
 data(stemcells)
 res = mint.splsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3, keepX = c(10, 5, 15),
-                  study = stemcells$study)
+study = stemcells$study)
 
 out = perf(res)
 for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))
 {
-  for(mea in c("all", "BER" , "overall"))
-  {
-    for(overla in c("all","measure"))
+    for(mea in c("all", "BER" , "overall"))
     {
-      for(leg in c("vertical","horizontal"))
-      {
-        
-        print(paste(di,mea,overla,leg))
-        plot(out,
-             dist =di,
-             measure = mea,
-             xlab = NULL,
-             ylab = NULL,
-             overlay=overla,
-             legend.position=leg)
-      }
+        for(overla in c("all","measure"))
+        {
+            for(leg in c("vertical","horizontal"))
+            {
+                
+                print(paste(di,mea,overla,leg))
+                plot(out,
+                dist =di,
+                measure = mea,
+                xlab = NULL,
+                ylab = NULL,
+                overlay=overla,
+                legend.position=leg)
+            }
+        }
     }
-  }
 }
 
 ## validation for objects of class 'sgccda' (classification)
@@ -149,34 +148,34 @@ design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 
 
 nutrimouse.sgccda <- block.splsda(X=data,
-                                  Y = Y,
-                                  design = design,
-                                  keepX = list(gene=c(10,10), lipid=c(15,15)),
-                                  ncomp = 2,
-                                  scheme = "centroid",
-                                  verbose = FALSE,
-                                  bias = FALSE)
+Y = Y,
+design = design,
+keepX = list(gene=c(10,10), lipid=c(15,15)),
+ncomp = 2,
+scheme = "centroid",
+verbose = FALSE,
+bias = FALSE)
 
 perf = perf(nutrimouse.sgccda)
 for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))
 {
-  for(mea in c("all", "BER" , "overall"))
-  {
-    for(overla in c("all","measure"))
+    for(mea in c("all", "BER" , "overall"))
     {
-      for(leg in c("vertical","horizontal"))
-      {
-        
-        print(paste(di,mea,overla,leg))
-        plot(perf,
-             dist =di,
-             measure = mea,
-             xlab = NULL,
-             ylab = NULL,
-             overlay=overla,
-             legend.position=leg)
-      }
+        for(overla in c("all","measure"))
+        {
+            for(leg in c("vertical","horizontal"))
+            {
+                
+                print(paste(di,mea,overla,leg))
+                plot(perf,
+                dist =di,
+                measure = mea,
+                xlab = NULL,
+                ylab = NULL,
+                overlay=overla,
+                legend.position=leg)
+            }
+        }
     }
-  }
 }
 
