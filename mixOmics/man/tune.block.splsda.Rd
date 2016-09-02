@@ -3,11 +3,11 @@
 \alias{tune.block.splsda}
 
 
-\title{Tuning functions for block.splsda method}
+\title{Tuning function for block.splsda method}
 
 \description{
-Computes M-fold or Leave-One-Out Cross-Validation scores on a user-input
-grid to determine optimal values for the sparsity parameters in \code{block.splsda}.
+Computes M-fold or Leave-One-Out Cross-Validation scores based on a user-input
+grid to determine the optimal parsity parameters values for method \code{block.splsda}.
 }
 
 \usage{
@@ -45,9 +45,9 @@ light.output = TRUE
 \item{ncomp}{the number of components to include in the model.}
 \item{test.keepX}{A list of length the number of blocks in X (without the outcome). Each entry of this list is a numeric vector for the different keepX values to test for that specific block.}
 
-\item{already.tested.X}{Optional, only if \code{ncomp > 1}. A list of length the number of blocks in X (without the outcome). Each entry contains a list of which variables of X are to be kept on each of the first PLS-components (if \code{constraint=TRUE}) or a numeric vector indicating the number of variables to select from the \eqn{X} data set on the firsts components (if \code{constraint = FALSE}). see examples}
+\item{already.tested.X}{Optional, only if \code{ncomp > 1}. A list of length the number of blocks in X (without the outcome). Each entry contains a list of which variables of X are to be kept on each of the first PLS-components (if \code{constraint=TRUE}) or a numeric vector indicating the number of variables to select from the \eqn{X} data set on the firsts components (if \code{constraint = FALSE}), see examples.}
 
-\item{constraint}{Indicate whether the performance of the model is evaluated in regards to the number of variables selected (keepX, constraint = FALSE) or which specific variables are selected (keepX.constraint, constraint = TRUE)}
+\item{constraint}{Indicate whether the performance of the model should be evaluated w.r.t the number of variables selected (keepX, default constraint = FALSE) or w.r.t the specific variables selected by the model (keepX.constraint, constraint = TRUE), see examples. }
 \item{validation}{character.  What kind of (internal) validation to use, matching one of \code{"Mfold"} or
 \code{"loo"} (see below). Default is \code{"Mfold"}.}
 \item{folds}{the folds in the Mfold cross-validation. See Details.}
@@ -77,21 +77,21 @@ to zero means and unit variances. Default = \code{TRUE}.}
 \details{
 
 
-This tuning function should be used to tune the parameters in the \code{block.splsda} function.
+This tuning function should be used to tune the keepX parameters in the \code{block.splsda} function.
 
 M-fold or LOO cross-validation is performed with stratified subsampling where all classes are represented in each fold.
 
 If \code{validation = "Mfold"}, M-fold cross-validation is performed.
-How many folds to generate is selected by specifying the number of folds in \code{folds}.
+The number of folds to generate is to be specified in the argument \code{folds}.
 
 If \code{validation = "loo"}, leave-one-out cross-validation is performed. By default \code{folds} is set to the number of unique individuals.
 
-All combination of test.keepX values are tested. A message advises how many will be fitted on each component for the test.keepX given.
+All combination of test.keepX values are tested. A message infoms how many will be fitted on each component for a given test.keepX.
 
 }
 
 \value{
-Depending on the type of analysis performed, a list that contains:
+A list that contains:
 \item{error.rate}{returns the prediction error for each \code{test.keepX} on each component}
 \item{choice.keepX}{returns the number of variables selected (optimal keepX) on each component, for each block.}
 \item{choice.keepX.constraint}{returns the variables selected by the optimal keepX on each component, for each block. only if constraint=TRUE.}
@@ -101,11 +101,17 @@ Depending on the type of analysis performed, a list that contains:
 \item{class}{Predicted class for each sample, each \code{test.keepX}, each comp and each repeat. Only if light.output=FALSE}
 
 \item{cor.value}{compute the correlation between latent variables for two-factor sPLS-DA analysis.}
-
 }
 
 
-\author{Florian Rohart, Amrit Singh.}
+
+\references{
+Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
+DIABLO - multi omics integration for biomarker discovery. BioRxiv available here: \url{http://biorxiv.org/content/early/2016/08/03/067611}
+}
+
+
+\author{Florian Rohart, Amrit Singh, Kim-Anh Le Cao.}
 
 \seealso{\code{\link{block.splsda}} and http://www.mixOmics.org for more details.}
 
@@ -131,8 +137,10 @@ ncomp = 2
 # names of test.keepX must match the names of 'data'
 test.keepX = list(mrna = seq(10,100,20), mirna = seq(10,100,10), protein = seq(1,20,5))
 
+# the following may take some time to run, note that for through tuning
+# nrepeat should be > 1
 tune = tune.block.splsda(X = data, Y = breast.TCGA$data.train$subtype,
-ncomp = ncomp, test.keepX = test.keepX, design = design)
+ncomp = ncomp, test.keepX = test.keepX, design = design, nrepeat = 1)
 
 tune$choice.keepX.constraint # NULL as constraint = FALSE per default
 tune$choice.keepX

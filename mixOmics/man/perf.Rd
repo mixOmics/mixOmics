@@ -48,7 +48,7 @@ folds = 10, nrepeat =1, auc = FALSE, progressBar = TRUE, \ldots)
   \item{object}{object of class inheriting from \code{"pls"}, \code{"plsda"},
     \code{"spls"}, \code{"splsda"} or  \code{"mint.splsda"}. The function will retrieve some key parameters stored in that object.}
 \item{dist}{only applies to an object inheriting from \code{"plsda"}, \code{"splsda"} or \code{"mint.splsda"} to evaluate the classification performance of the model. Should be a subset of \code{"max.dist"}, \code{"centroids.dist"}, \code{"mahalanobis.dist"}. Default is \code{"all"}. See \code{\link{predict}}.}
-\item{constraint}{Indicate whether the performance of the model is evaluated in regards to the number of variables selected (keepX, constraint = FALSE) or which specific variables are selected (keepX.constraint, constraint = TRUE)}
+\item{constraint}{Indicate whether the performance of the model should be evaluated w.r.t the number of variables selected (keepX, default constraint = FALSE) or w.r.t the specific variables selected by the model (keepX.constraint, constraint = TRUE), see examples. }
 \item{validation}{character.  What kind of (internal) validation to use, matching one of \code{"Mfold"} or
     \code{"loo"} (see below). Default is \code{"Mfold"}.}
   \item{folds}{the folds in the Mfold cross-validation. See Details.}

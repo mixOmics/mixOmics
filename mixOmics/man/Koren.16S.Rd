@@ -18,7 +18,7 @@ The 16S data come from Koren et al. (2011) and compared the bodysites oral, gut 
 A list containing two data sets, \code{data.TSS} and \code{data.raw} and some meta data information:
   \describe{
     \item{\code{data.TSS}}{data frame with 43 rows (samples) and 980 columns (OTUs). The prefiltered normalised data using Total Sum Scaling normalisation.}
-    \item{\code{data.raw}}{data frame with 43 rows (samples) and 980 columns (OTUs). The prefiltered raw count OTU data.}
+    \item{\code{data.raw}}{data frame with 43 rows (samples) and 980 columns (OTUs). The prefiltered raw count OTU data which include a 1 offset (i.e. no 0 values).}
     \item{\code{taxonomy}}{data frame with 980 rows (OTUs) and 7 columns indicating the taxonomy of each OTU.}
     \item{\code{indiv}}{data frame with 43 rows indicating sample meta data.}
     \item{\code{bodysite}}{factor of length 43 indicating the bodysite with levels arterial plaque, saliva and stool.}
@@ -33,8 +33,14 @@ The data are from Koren et al. (2011) who examined the link between oral, gut an
 The raw data were downloaded from the QIITA database.
 Filtering and normalisation described in our website \url{ www.mixOmics.org/mixMC}}
 
+\details{
+The \code{data.raw} include a 1 offset in order to be log ratios transformed after TSS normalisation. Consequently, the \code{data.TSS} are TSS normalisation of \code{data.raw}.
+The CSS normalisation was performed on the orignal data (including zero values)
+}
+
+
 \references{
-K-A. Lê Cao, ME Costello,  VA Lakis, F Bartolo, XY Chua, R Brazeilles, P Rondeau. MixMC: Multivariate insights into Microbial Communities. Submitted, also on \url{http://dx.doi.org/10.1101/044206}
+K-A. L\^{e} Cao, ME Costello,  VA Lakis, F Bartolo, XY Chua, R Brazeilles, P Rondeau. MixMC: Multivariate insights into Microbial Communities. PLoS ONE, 11(8): e0160169 (2016).
 
 Koren, O., Spor, A., Felin, J., Fak, F., Stombaugh, J., Tremaroli, V., et al.: Human oral, gut, and plaque microbiota in patients with atherosclerosis. Proceedings of the National Academy of Sciences 108(Supplement 1), 4592-4598 (2011)
 }

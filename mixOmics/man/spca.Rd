@@ -11,6 +11,7 @@ Performs a sparse principal components analysis to perform variable selection by
 spca(X, ncomp = 3, center = TRUE, scale = TRUE, 
      keepX = rep(ncol(X),ncomp), max.iter = 500,
      tol = 1e-06, logratio = 'none',  # one of ('none','CLR')
+     ilr.offset = 0.001,
      multilevel = NULL)
 }
 
@@ -28,6 +29,7 @@ spca(X, ncomp = 3, center = TRUE, scale = TRUE,
   \item{keepX}{numeric vector of length ncomp, the number of variables to keep in loading vectors. By default all 
    variables are kept in the model. See details.}
 \item{logratio}{one of ('none','CLR','ILR'). Specifies the log ratio transformation to deal with compositional values that may arise from specific normalisation in sequencing data. Default to 'none'}
+\item{ilr.offset}{When logratio is set to 'ILR', an offset must be input to avoid infinite value after the logratio transform, default to 0.001.}
 \item{multilevel}{sample information for multilevel decomposition for repeated measurements.}
 
 }
@@ -42,6 +44,12 @@ sparsity on the loading vectors.
 of \code{X} and \code{keepX} is the degree of sparsity, which refers to the number of zeros in each loading vector.
 
 Note that \code{spca} does not apply to the data matrix with missing values. The biplot function for \code{spca} is not available.
+
+According to Filzmoser et al., a ILR log ratio transformation is more appropriate for PCA with compositional data. Both CLR and ILR are valid.
+
+Logratio transform and multilevel analysis are performed sequentially as internal pre-processing step, through \code{\link{logratio.transfo}} and \code{\link{withinVariation}} respectively.
+
+Logratio can only be applied if the data do not contain any 0 value (for count data, we thus advise the normalise raw data with a 1 offset). For ILR transformation and additional offset might be needed.
 }    
 
 \value{

@@ -36,7 +36,9 @@ If \code{NULL}, the colnames of the data matrix are used.}
 
 
 \details{
-\code{circosPlot} function shows the correlation of variables selected with \code{block.splsda} among different blocks.}
+\code{circosPlot} function depicts correlations of variables selected with \code{block.splsda} among different blocks, using a generalisation of the method presented in Gonzalez et al 2012.
+If \code{ncomp} is specified, then only the variables selected on that component are displayed.
+}
 
 
 
@@ -44,9 +46,13 @@ If \code{NULL}, the colnames of the data matrix are used.}
 \references{
 Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
 DIABLO - multi omics integration for biomarker discovery.  BioRxiv \url{http://dx.doi.org/10.1101/067611}
+
+Gonzalez I., Le Cao K.A., Davis M.J., Dejean S. (2012). Visualising associations between
+paired 'omics' data sets. \emph{BioData Mining}; \bold{5}(1).
+
 }
 
-\author{Michale Vacher, Amrit Singh, Florian Rohart, Kim-Anh Le Cao}
+\author{Michael Vacher, Amrit Singh, Florian Rohart, Kim-Anh Le Cao}
 
 \seealso{\code{\link{block.splsda}} and http://www.mixOmics.org/mixDIABLO for more details.}
 

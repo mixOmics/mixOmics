@@ -25,8 +25,7 @@ logratio = c('none','CLR'), multilevel = NULL, light.output = TRUE)
   \item{ncomp}{the number of components to include in the model.}
   \item{test.keepX}{numeric vector for the different number of variables to test from the \eqn{X} data set}
 \item{already.tested.X}{Optional, if \code{ncomp > 1} A list containing which variables of X are to be kept on each of the first PLS-components (if \code{constraint=TRUE}) or a numeric vector indicating the number of variables to select from the \eqn{X} data set on the firsts components (if \code{constraint = FALSE})}
-\item{constraint}{Indicate whether the performance of the model is evaluated in regards to the number of variables selected (keepX, constraint = FALSE) or which specific variables are selected (keepX.constraint, constraint = TRUE)}
-\item{validation}{character.  What kind of (internal) validation to use, matching one of \code{"Mfold"} or
+\item{constraint}{Indicate whether the performance of the model should be evaluated w.r.t the number of variables selected (keepX, default constraint = FALSE) or w.r.t the specific variables selected by the model (keepX.constraint, constraint = TRUE), see examples. }\item{validation}{character.  What kind of (internal) validation to use, matching one of \code{"Mfold"} or
 \code{"loo"} (see below). Default is \code{"Mfold"}.}
 \item{folds}{the folds in the Mfold cross-validation. See Details.}
 \item{dist}{distance metric to use for \code{splsda} to estimate the classification error rate,

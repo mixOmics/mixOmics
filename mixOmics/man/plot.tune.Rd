@@ -6,7 +6,7 @@
 \title{Plot for model performance}
 
 \description{
-Function to plot performance criteria, such as classification error rate or balanced error rate.
+Function to plot performance criteria, such as classification error rate or balanced error rate on a tune.splsda result.
 }
 
 \usage{

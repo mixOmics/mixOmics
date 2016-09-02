@@ -12,7 +12,7 @@
 \title{Plot for model performance}
 
 \description{
-Function to plot performance criteria, such as MSEP, RMSEP, \eqn{R^2} or \eqn{Q^2}, as a
+Function to plot performance criteria, such as MSEP, RMSEP, \eqn{R^2}, \eqn{Q^2} for s/PLS methods, and classification performance for supervised methods, as a
 function of the number of components.
 }
 
@@ -92,7 +92,7 @@ model, laid out in a multi panel display.  It uses \code{\link{xyplot}} for
 performing the actual plotting.
 }
 
-\author{Ignacio Gonzalez, Florian Rohart.}
+\author{Ignacio Gonzalez, Florian Rohart, Francois Bartolo, Kim-Anh Le Cao.}
 
 \seealso{\code{\link{pls}}, \code{\link{spls}}, \code{\link{plsda}}, \code{\link{splsda}}, 
 \code{\link{perf}}.}
