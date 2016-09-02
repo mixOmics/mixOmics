@@ -89,12 +89,14 @@ plotIndiv(spca.rat, ind.names = liver.toxicity$treatment[, 3],
 
 # example with multilevel decomposition and CLR log ratio transformation
 # ----------------
+\dontrun{
 data("diverse.16S")
 pca.res = pca(X = diverse.16S$data.TSS, ncomp = 5,
 logratio = 'CLR', multilevel = diverse.16S$sample)
 plot(pca.res)
 plotIndiv(pca.res, ind.names = FALSE, group = diverse.16S$bodysite, title = '16S diverse data',
 legend=TRUE)
+}
 }
 
 \keyword{algebra}

@@ -57,3 +57,11 @@ R CMD check mixOmics_5.0-4.tar.gz --as-cran --timings
 R CMD INSTALL mixOmics_5.0-4.tar.gz
 
 
+6- check dependencies:
+http://rpackages.ianhowson.com/cran/devtools/man/revdep_check.html?
+http://developer.r-project.org/CRAN/Scripts/depends.R?
+> library(devtools)
+> revdep_check("~/Work/git/package-mixomics/mixOmics/")
+
+then on the faulty:
+download the tag.gz and run a R CMD check on them to pinpoint the problem
