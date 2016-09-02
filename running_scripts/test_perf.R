@@ -126,7 +126,7 @@ error <- perf(srbct.splsda, validation = "Mfold", folds = 8, dist = "all", progr
 plot(error )
 plot(error.both , measure = "BER")
 
-error <- perf(srbct.splsda, validation = "Mfold", folds = 8, dist = "all", progressBar = FALSE, constraint = TRUE)
+error <- perf(srbct.splsda, validation = "Mfold", folds = 8, dist = "all", progressBar = FALSE, constraint = TRUE, nrepeat=3)
 
 
 

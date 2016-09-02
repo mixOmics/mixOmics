@@ -521,11 +521,20 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.co
     if (any(keepY<0))
     stop("each component of 'keepY' must be non negative ")
     
-    if (any(keepX > ncol(X)))
+    
+    if(is.numeric(keepX))
+   { if (any(keepX > ncol(X)))
     stop("each component of 'keepX' must be lower or equal than ", P, ".")
     if (any(keepY > ncol(Y)))
     stop("each component of 'keepY' must be lower or equal than ", Q, ".")
-    
+    }
+    else
+    {
+      if (any(length(keepX) > ncol(X)))
+        stop("each component of 'keepX' must be lower or equal than ", P, ".")
+      if (any(length(keepY) > ncol(Y)))
+        stop("each component of 'keepY' must be lower or equal than ", Q, ".")
+    }
     if (is.numeric(unlist(keepX.constraint)) && any(unlist(keepX.constraint) > ncol(X)))
     stop("each entry of 'keepX.constraint' must be lower or equal than ", P, ".")
     if ( is.numeric(unlist(keepY.constraint)) && any(unlist(keepY.constraint) > ncol(Y)))

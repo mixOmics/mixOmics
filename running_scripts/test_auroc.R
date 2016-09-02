@@ -176,7 +176,7 @@ auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.li
 
 
 res.plsda=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(X=c(100)),
-            keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
+                       keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
 
 auroc(res.plsda,plot = TRUE,roc.comp = 1)
 auroc(res.plsda,plot = TRUE,roc.comp = 2)
@@ -191,7 +191,7 @@ auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.li
 
 
 res.plsda=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(X=c(100)),
-                keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
+                       keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
 
 auroc(res.plsda,plot = TRUE,roc.comp = 1)
 auroc(res.plsda,plot = TRUE,roc.comp = 2)
@@ -358,7 +358,7 @@ auroc(nutrimouse.sgccda,plot = FALSE,roc.block = 2,roc.comp = 2)
 auroc(nutrimouse.sgccda,plot = FALSE,roc.block = 1,roc.comp = 3)
 auroc(nutrimouse.sgccda,plot = FALSE,roc.block = 2,roc.comp = 3)
 
-###PROBLEME FACTOR (levels de facteurs non présent): RESOLU en ajoutant factor
+###PROBLEME FACTOR (levels de facteurs non prÃ©sent): RESOLU en ajoutant factor
 
 
 auroc(nutrimouse.sgccda,newdata = data.test,outcome.test = as.factor(Y.test),plot = TRUE,roc.block = 1,roc.comp = 1)
@@ -397,41 +397,41 @@ res.plsda <- plsda(X, Y, ncomp = 2)
 for(validation in c("Mfold","loo"))
 {
   for(nrepeat in 1:2)
-{
+  {
     print(paste("validation ",validation, "nrepeat", nrepeat, "\n"))
     e<-perf(res.plsda,dist = c("max.dist"), auc = TRUE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("max.dist"),
-                auc = FALSE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
-
- e<-perf(res.plsda,dist = c("all"),
-                 auc = TRUE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("all"),
-                 auc = FALSE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)}
+    e<-perf(res.plsda,dist = c("max.dist"),
+            auc = FALSE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
+    
+    e<-perf(res.plsda,dist = c("all"),
+            auc = TRUE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
+    e<-perf(res.plsda,dist = c("all"),
+            auc = FALSE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)}
 }
- 
+
 
 res.plsda <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 
 
-                    res.plsda <- plsda(X, Y, ncomp = 2)
-                    
-                    for(validation in c("Mfold","loo"))
-                    {
-                      for(nrepeat in 1:2)
-                      {
-                        print(paste("validation ",validation, "nrepeat", nrepeat, "\n"))
-                        e<-perf(res.plsda,dist = c("max.dist"),
-                                auc = TRUE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
-                         e<-perf(res.plsda,dist = c("max.dist"),
-                                         auc = FALSE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
-                        
-                         e<-perf(res.plsda,dist = c("all"),
-                                         auc = TRUE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
-                         e<-perf(res.plsda,dist = c("all"),
-                                         auc = FALSE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)}
-                    }
-                     
-                    
+res.plsda <- plsda(X, Y, ncomp = 2)
+
+for(validation in c("Mfold","loo"))
+{
+  for(nrepeat in 1:2)
+  {
+    print(paste("validation ",validation, "nrepeat", nrepeat, "\n"))
+    e<-perf(res.plsda,dist = c("max.dist"),
+            auc = TRUE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
+    e<-perf(res.plsda,dist = c("max.dist"),
+            auc = FALSE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
+    
+    e<-perf(res.plsda,dist = c("all"),
+            auc = TRUE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
+    e<-perf(res.plsda,dist = c("all"),
+            auc = FALSE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)}
+}
+
+
 
 data(liver.toxicity)
 
@@ -468,117 +468,117 @@ A.light=list(X=data.light,Y=Y.mat.light)
 res.plsda=mint.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
 e<-perf(res.plsda,dist = c("max.dist"),
-          constraint = TRUE,auc = FALSE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("max.dist"),
-          constraint = FALSE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("max.dist"),
-          constraint = TRUE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("max.dist"),
-          constraint = FALSE,auc = FALSE, progressBar = FALSE)
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
 
- e<-perf(res.plsda,dist = c("all"),
-          constraint = TRUE,auc = FALSE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("all"),
-          constraint = FALSE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("all"),
-          constraint = TRUE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("all"),
-          constraint = FALSE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
 
- e<-perf(res.plsda,dist = c("centroids.dist"),
-          constraint = TRUE,auc = FALSE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("centroids.dist"),
-          constraint = FALSE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("centroids.dist"),
-          constraint = TRUE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("centroids.dist"),
-          constraint = FALSE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
 
- e<-perf(res.plsda,dist = c("mahalanobis.dist"),
-          constraint = TRUE,auc = FALSE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("mahalanobis.dist"),
-          constraint = FALSE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("mahalanobis.dist"),
-          constraint = TRUE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("mahalanobis.dist"),
-          constraint = FALSE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
 
 
 
 
 res.plsda=mint.plsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,study=exp)
 
- e<-perf(res.plsda,dist = c("max.dist"),
-          constraint = TRUE,auc = FALSE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("max.dist"),
-          constraint = FALSE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("max.dist"),
-          constraint = TRUE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("max.dist"),
-          constraint = FALSE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
 
- e<-perf(res.plsda,dist = c("all"),
-          constraint = TRUE,auc = FALSE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("all"),
-          constraint = FALSE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("all"),
-          constraint = TRUE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("all"),
-          constraint = FALSE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
 
- e<-perf(res.plsda,dist = c("centroids.dist"),
-          constraint = TRUE,auc = FALSE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("centroids.dist"),
-          constraint = FALSE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("centroids.dist"),
-          constraint = TRUE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("centroids.dist"),
-          constraint = FALSE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
 
- e<-perf(res.plsda,dist = c("mahalanobis.dist"),
-          constraint = TRUE,auc = FALSE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("mahalanobis.dist"),
-          constraint = FALSE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("mahalanobis.dist"),
-          constraint = TRUE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("mahalanobis.dist"),
-          constraint = FALSE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
 
 
 res.plsda=mint.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
- e<-perf(res.plsda,dist = c("max.dist"),
-          constraint = TRUE,auc = FALSE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("max.dist"),
-          constraint = FALSE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("max.dist"),
-          constraint = TRUE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("max.dist"),
-          constraint = FALSE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("max.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
 
- e<-perf(res.plsda,dist = c("all"),
-          constraint = TRUE,auc = FALSE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("all"),
-          constraint = FALSE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("all"),
-          constraint = TRUE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("all"),
-          constraint = FALSE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("all"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
 
- e<-perf(res.plsda,dist = c("centroids.dist"),
-          constraint = TRUE,auc = FALSE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("centroids.dist"),
-          constraint = FALSE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("centroids.dist"),
-          constraint = TRUE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("centroids.dist"),
-          constraint = FALSE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("centroids.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
 
- e<-perf(res.plsda,dist = c("mahalanobis.dist"),
-          constraint = TRUE,auc = FALSE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("mahalanobis.dist"),
-          constraint = FALSE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("mahalanobis.dist"),
-          constraint = TRUE,auc = TRUE, progressBar = FALSE)
- e<-perf(res.plsda,dist = c("mahalanobis.dist"),
-          constraint = FALSE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = TRUE,auc = FALSE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = FALSE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = TRUE,auc = TRUE, progressBar = FALSE)
+e<-perf(res.plsda,dist = c("mahalanobis.dist"),
+        constraint = FALSE,auc = FALSE, progressBar = FALSE)
