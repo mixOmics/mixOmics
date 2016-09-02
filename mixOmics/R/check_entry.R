@@ -40,7 +40,7 @@ get.keepA.and.keepA.constraint=function(X,keepX,keepX.constraint,ncomp)
             #if both keepX.constraint and keepX are missing, pls-like: keepX=ncol(X)
             for (q in 1:length(X))
             keepA[[q]]=rep(ncol(X[[q]]),max(ncomp)) #keepX
-        
+            
             names(keepA)=names(X)
         } else {
             
@@ -53,7 +53,7 @@ get.keepA.and.keepA.constraint=function(X,keepX,keepX.constraint,ncomp)
             # error if no names on keepX or not matching the names in X
             if(length(unique(names(keepX)))!=length(keepX) | sum(is.na(match(names(keepX),names(X)))) > 0)
             stop("Each entry of 'keepX' must have a unique name corresponding to a block of 'X'")
-
+            
             # I want to match keepX to X by names
             ind.match = match(names(X), names(keepX))
             
@@ -78,7 +78,7 @@ get.keepA.and.keepA.constraint=function(X,keepX,keepX.constraint,ncomp)
                     keepA[[q]] = keepX[[ind.match[q]]]
                     if (length(keepA[[q]]) < max(ncomp))
                     keepA[[q]] = c(keepA[[q]], rep(ncol(X[[q]]), max(ncomp) - length(keepA[[q]]))) #complete the keepX already provided
-                
+                    
                 }else{
                     keepA[[q]]=rep(ncol(X[[q]]),max(ncomp))##
                 }
@@ -99,10 +99,10 @@ get.keepA.and.keepA.constraint=function(X,keepX,keepX.constraint,ncomp)
         # error if no names on keepX.constraint or not matching the names in X
         if (length(unique(names(keepX.constraint))) != length(keepX.constraint) | sum(is.na(match(names(keepX.constraint),names(X)))) > 0)
         stop("Each entry of 'keepX.constraint' must have a unique name corresponding to a block of 'X'")
-
+        
         # I want to match keepX.constraint to X by names
         ind.match = match(names(X), names(keepX.constraint))
-       
+        
         # check that ncomp>=length(keepX.constraint)
         for(q in 1:length(X))
         {
@@ -138,7 +138,7 @@ get.keepA.and.keepA.constraint=function(X,keepX,keepX.constraint,ncomp)
             
             ind.match.keepX = match(names(X), names(keepX))
             ind.match.keepX.constraint = match(names(X), names(keepX.constraint))
-
+            
             for(q in 1:length(X))
             {
                 
@@ -148,7 +148,7 @@ get.keepA.and.keepA.constraint=function(X,keepX,keepX.constraint,ncomp)
                     if ((length(keepX.constraint[[ind.match.keepX.constraint[q]]]) + length(keepX[[ind.match.keepX[q]]])) > ncomp[q])
                     stop(paste0("length (keepX.constraint[[", ind.match.keepX.constraint[q], "]]) + length(keepX[[", ind.match.keepX[q], "]]) = ", (length(keepX.constraint[[ind.match.keepX.constraint[q]]]) + length(keepX[[ind.match.keepX[q]]])), "; it should be lower or equal to ncomp[", q, "]=", ncomp[q], "."))
                 }
-
+                
                 if (!is.na(ind.match.keepX[q])) # # keepX is available for block X[q], maybe keepX.constraint
                 {
                     #checking entries of keepX
@@ -214,7 +214,7 @@ get.keepA.and.keepA.constraint=function(X,keepX,keepX.constraint,ncomp)
                 
                 # we need numbers in keepX.constraint from now on
                 keepX.constraint[[ind.match[q]]] = sapply(keepX.constraint[[ind.match[q]]], function(x){match(x, colnames(X[[q]]))}, simplify = FALSE)
-            
+                
                 keepA.constraint[[q]] = keepX.constraint[[ind.match[q]]] #match keepA.constraint with blocks in 'X'
             }else{
                 keepA.constraint[[q]] = list()
@@ -280,7 +280,7 @@ match.keepX.constraint=function(names.remove,keepX.constraint)
 
 Check.entry.single = function(X,  ncomp, q)
 {
-
+    
     #-- validation des arguments --#
     if (length(dim(X)) != 2)
     stop(paste0("'X[[", q, "]]' must be a numeric matrix."))
@@ -314,9 +314,9 @@ Check.entry.single = function(X,  ncomp, q)
     }
     
     if (length(unique(rownames(X))) != nrow(X))
-        stop("samples should have a unique identifier/rowname")
+    stop("samples should have a unique identifier/rowname")
     if (length(unique(X.names)) != P)
-        stop("Unique indentifier is needed for the columns of X")
+    stop("Unique indentifier is needed for the columns of X")
     
     return(list(X=X, ncomp=ncomp, X.names=X.names, ind.names=ind.names))
 }
@@ -344,9 +344,9 @@ Check.entry.single = function(X,  ncomp, q)
 
 
 Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.constraint, mode, scale,
-     near.zero.var, max.iter, tol, logratio, DA, multilevel)
+near.zero.var, max.iter, tol, logratio, DA, multilevel)
 {
-
+    
     if (missing(mode))
     mode = "regression"
     
@@ -418,7 +418,7 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.co
         dimnames(X)[[2]] = X.names
     }
     
-
+    
     
     ind.names = dimnames(X)[[1]]
     if (is.null(ind.names))
@@ -523,16 +523,16 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.co
     
     
     if(is.numeric(keepX))
-   { if (any(keepX > ncol(X)))
-    stop("each component of 'keepX' must be lower or equal than ", P, ".")
-    if (any(keepY > ncol(Y)))
-    stop("each component of 'keepY' must be lower or equal than ", Q, ".")
+    { if (any(keepX > ncol(X)))
+        stop("each component of 'keepX' must be lower or equal than ", P, ".")
+        if (any(keepY > ncol(Y)))
+        stop("each component of 'keepY' must be lower or equal than ", Q, ".")
     }
     else
     {
-      if (any(length(keepX) > ncol(X)))
+        if (any(length(keepX) > ncol(X)))
         stop("each component of 'keepX' must be lower or equal than ", P, ".")
-      if (any(length(keepY) > ncol(Y)))
+        if (any(length(keepY) > ncol(Y)))
         stop("each component of 'keepY' must be lower or equal than ", Q, ".")
     }
     if (is.numeric(unlist(keepX.constraint)) && any(unlist(keepX.constraint) > ncol(X)))
@@ -573,7 +573,7 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.co
         keepY.constraint = relist(colnames(Y.indice), skeleton=keepY.constraint)
     }
     
-
+    
     # at this stage keepA.constraint needs to be character, to easily remove variables with near zero variance
     ### near.zero.var, remove the variables with very small variances
     if (near.zero.var == TRUE)
@@ -676,13 +676,13 @@ verbose)
     
     # transform ncomp to length(X)
     ncomp = rep(ncomp, length(X))
-
+    
     # check names on X are unique
     if (length(unique(names(X))) != length(X))
     stop("Each block of 'X' must have a unique name.")
     #names(X)=paste0("block", 1:length(X)) #add names to the blocks if no names or not unique name for each block
-
-
+    
+    
     #check dimnames and ncomp per block of A
     for (q in 1:length(X))
     {
@@ -709,7 +709,7 @@ verbose)
     
     
     if (!missing(Y))# Y is not missing, so we don't care about indY
-    {        
+    {
         if (!missing(indY))
         warning("'Y' and 'indY' are provided, 'Y' is used.")
         
@@ -737,11 +737,11 @@ verbose)
         check.temp.Y = get.keepA.and.keepA.constraint(X = list(Y = Y), keepX = keepY, keepX.constraint = keepY.constraint, ncomp = ncomp)
         keepY.temp = check.temp.Y$keepA
         keepY.constraint.temp = check.temp.Y$keepA.constraint
-
+        
         keepA[[length(X)+1]] = keepY.temp[[1]] #add keepY in keepA
         keepA.constraint[[length(X)+1]] = keepY.constraint.temp[[1]] #add keepY.constraint in keepA
-
-
+        
+        
         # check design matrix before adding Y in
         A = X
         ### Start check design matrix
@@ -759,7 +759,7 @@ verbose)
         }
         rownames(design) = colnames(design) = c(names(A), "Y")
         ### End check design matrix
-
+        
         # build the list A by adding Y, and creating indY
         A[[length(A)+1]] = Y
         names(A)[length(A)] = names(keepA)[length(A)] = names(keepA.constraint)[length(A)] = "Y"
@@ -777,7 +777,7 @@ verbose)
         warning("indY is provided: 'keepY' is ignored and only 'keepX' is used.")
         if (!missing(keepY.constraint))
         warning("indY is provided: 'keepY.constraint' is ignored and only 'keepX.constraint' is used.")
-
+        
         A = X #list provided as input
         
         ### Start check design matrix
@@ -794,7 +794,7 @@ verbose)
         # check indY
         if (!is.numeric(indY) | indY > length(A) | length(indY) > 1)
         stop(paste0("'indY' must be a numeric value lower or equal to ", length(A), ", the number of blocks in A."))
-
+        
     }
     
     # --------------------------------------------------------------------------------
@@ -955,17 +955,17 @@ keepX.constraint)
     if (length(unique(names(X))) != length(X))
     stop("Each block of 'X' must have a unique name.")
     #names(X)=paste0("block", 1:length(X)) #add names to the blocks if no names or not unique name for each block
-
+    
     if (missing(ncomp))
     ncomp = 1
-
+    
     #check length(ncomp)=1
     if (length(ncomp) != 1)
     stop("'ncomp' must be a single value")
-
+    
     # transform ncomp to length(X)
     ncomp = rep(ncomp, length(X))
-
+    
     #check dimnames and ncomp per block of A
     for (q in 1:length(X))
     {
@@ -1133,12 +1133,12 @@ keepX.constraint)
     
     if (length(unique(unlist(lapply(X, nrow)))) != 1)
     stop("Unequal number of rows among the blocks of 'X'")
-
+    
     # check names on X are unique
     if (length(unique(names(X))) != length(X))
     stop("Each block of 'X' must have a unique name.")
     #names(X)=paste0("block", 1:length(X)) #add names to the blocks if no names or not unique name for each block
-
+    
     if (is.null(tau))
     stop("'tau' is needed")
     
