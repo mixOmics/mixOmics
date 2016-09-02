@@ -36,6 +36,7 @@ function(X,
          max.iter = 500, 
          tol = 1e-06,
          logratio = 'none',# one of ('none','CLR')
+         ilr.offset = 0.001,
          multilevel = NULL)
 {
 
@@ -130,7 +131,7 @@ function(X,
     
     #-----------------------------#
     #-- logratio transformation --#
-    X = logratio.transfo(X = X, logratio = logratio)
+    X = logratio.transfo(X = X, logratio = logratio, offset = if(logratio == "ILR") {ilr.offset} else {0})
     
     #-- logratio transformation --#
     #-----------------------------#
