@@ -8,7 +8,7 @@
 \alias{auroc.sgccda}
 
 
-\title{Area Under the Curve (AUC) and Receiver Operating Characteristic (ROC) curves for supervised classification}
+\title{Area Under the Curve (AUC) v and Receiver Operating Characteristic (ROC) curves for supervised classification}
 
 \description{
 Calculates the AUC and plots ROC for supervised objects from s/plsda, mint.s/plsda and block.plsda, block.splsda or wrapper.sgccda.
