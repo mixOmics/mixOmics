@@ -24,6 +24,9 @@ scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)
 
+a=perf(nutrimouse.sgccda)
+plot(a)
+
 nutrimouse.sgccda$design
 
 plotIndiv(nutrimouse.sgccda,style="graphics")
@@ -33,15 +36,19 @@ plotLoadings(nutrimouse.sgccda)
 plotLoadings(nutrimouse.sgccda,contrib="max")
 
 par(mfrow=c(1,1))
-circosPlot(nutrimouse.sgccda,corThreshold=0.7,ncol=2,size.legend=1.1)
+circosPlot(nutrimouse.sgccda,cutoff=0.7,ncol=2,size.legend=1.1)
+circosPlot(nutrimouse.sgccda,cutoff=0.9,ncol=2,size.legend=1.1)
 
-circosPlot(nutrimouse.sgccda,corThreshold=0.7,ncol=2,size.legend=1.1,size.labels=2)
+circosPlot(nutrimouse.sgccda,cutoff=0.5,ncol=2,size.legend=1.1, size.variables = 1.5, comp =2)
+
+
+circosPlot(nutrimouse.sgccda,cutoff=0.7,ncol=2,size.legend=1.1,size.labels=2)
 
 #compatibility with par(mfrow)
 par(mfrow=c(2,2))
-circosPlot(nutrimouse.sgccda,corThreshold=0.6,ncol=1,size.legend=0.6)
-circosPlot(nutrimouse.sgccda,corThreshold=0.7,ncol=1,size.legend=0.6)
-circosPlot(nutrimouse.sgccda,corThreshold=0.8,ncol=1,size.legend=0.6,showIntraLinks=TRUE)
+circosPlot(nutrimouse.sgccda,cutoff=0.6,ncol=1,size.legend=0.6)
+circosPlot(nutrimouse.sgccda,cutoff=0.7,ncol=1,size.legend=0.6)
+circosPlot(nutrimouse.sgccda,cutoff=0.8,ncol=1,size.legend=0.6,showIntraLinks=TRUE)
 plot(1:10)
 
 plotIndiv(nutrimouse.sgccda,style="graphics",add.legend=FALSE,layout=c(2,2)) # Amrit function
@@ -88,6 +95,96 @@ if(additional.test==TRUE)
 {
     cat("no additional tests")
     
+    #test perf diablo
+    #source("mixOmics/R/tune.diablo.R")
+    
+    set.seed(45)
+    # classic tune
+    tune = tune.block.splsda(
+    X = data,
+    Y = Y,
+    design = design,
+    ncomp = 2,#c(2, 2),
+    scheme = "centroid",
+    verbose = FALSE,
+    bias = FALSE,
+    nrepeat = 11
+    )
+    tune
+
+    # classic tune, with test.keepX as input
+    tune = tune.block.splsda(
+    X = data,
+    Y = Y,
+    design = design,
+    ncomp = 2,#c(2, 2),
+    test.keepX = list(gene=c(1,5,10,4),lipid=c(1,2,3)),
+    scheme = "centroid",
+    verbose = FALSE,
+    bias = FALSE
+    )
+    tune
+
+    # tune with constraint
+    tune = tune.block.splsda(
+    X=data,
+    Y = Y,
+    design = design,
+    constraint=TRUE,
+    nrepeat=4,
+    ncomp = 2,#c(2, 2),
+    scheme = "centroid",
+    verbose = FALSE,
+    bias = FALSE
+    )
+    tune
+    
+    # tune with constraint, with test.keepX as input
+    tune = tune.block.splsda(
+    X = data,
+    Y = Y,
+    design = design,
+    ncomp = 2,#c(2, 2),
+    test.keepX = list(gene=c(1,5,10,4),lipid=c(1,2,3)),
+    constraint = TRUE,
+    scheme = "centroid",
+    verbose = FALSE,
+    bias = FALSE
+    )
+    tune
+
+    # tune without constraint, but only component 2
+    tune = tune.block.splsda(
+    X=data,
+    Y = Y,
+    design = design,
+    constraint = FALSE,
+    already.tested.X = list(gene=c(10), lipid=c(15)),
+    nrepeat=4,
+    ncomp = 2,#c(2, 2),
+    scheme = "centroid",
+    verbose = FALSE,
+    bias = FALSE
+    )
+    tune
+
+
+    # tune with constraint, and only component 2 and 3
+    tune = tune.block.splsda(
+    X=data,
+    Y = Y,
+    design = design,
+    constraint=TRUE,
+    already.tested.X = list(gene=list(comp1=sample(colnames(data$gene),10)), lipid=list(comp1=sample(colnames(data$lipid),5))),
+    nrepeat=4,
+    ncomp = 3,#c(2, 2),
+    scheme = "centroid",
+    verbose = FALSE,
+    bias = FALSE
+    )
+    tune
+
+
 }
 
 par(opar)

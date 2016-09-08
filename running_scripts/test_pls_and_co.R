@@ -94,10 +94,29 @@ plotLoadings(res)
 plotLoadings(res, contrib = "min")
 plotLoadings(res, contrib = "max")
 
-tune= tune.splsda(X,Y,ncomp=1,nrepeat=5,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist",already.tested.X=NULL)
+tune= tune.splsda(X,Y,ncomp=2,nrepeat=5,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist")
+
 
 # individual names appear
 plotIndiv(res, ind.names = Y, add.legend = TRUE, ellipse =TRUE)
+
+#with only 1 sample in a class
+Y <- as.factor(breast.tumors$sample$treatment)
+ind.remove = which(Y==levels(Y)[1])[-sample(1:sum(Y==levels(Y)[1]),1)]
+Y2 = Y[-ind.remove]
+X2 = X[-ind.remove, ]
+
+res2 <- splsda(X2, Y2, ncomp = 2, keepX = c(25, 25))
+plotIndiv(res2, ind.names = Y2, add.legend = TRUE, ellipse =TRUE)
+
+#with only 1 sample in a class
+Y <- as.factor(breast.tumors$sample$treatment)
+ind.remove = which(Y==levels(Y)[2])[-sample(1:sum(Y==levels(Y)[2]),1)]
+Y3 = Y[-ind.remove]
+X3 = X[-ind.remove, ]
+
+res3 <- splsda(X3, Y3, ncomp = 2, keepX = c(25, 25))
+plotIndiv(res3, ind.names = Y3, add.legend = TRUE, ellipse =TRUE)
 
 
 data(liver.toxicity)

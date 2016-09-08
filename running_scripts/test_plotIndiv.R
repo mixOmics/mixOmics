@@ -67,6 +67,11 @@ group = liver.toxicity$treatment[, 'Time.Group'],
 ind.names = liver.toxicity$treatment[, 'Dose.Group'],
 legend = TRUE)
 
+plotIndiv(toxicity.spls, rep.space= 'Y-variate',
+group = liver.toxicity$treatment[, 'Time.Group'],
+ind.names = liver.toxicity$treatment[, 'Dose.Group'],
+legend = TRUE,legend.title="Super!")
+
 
 # in the X space, with graphics style
 plotIndiv(toxicity.spls, rep.space= 'X-variate',
@@ -99,6 +104,26 @@ plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2),
 
 # with centroid and stars
 plotIndiv(splsda.breast, ind.names = TRUE, centroid = TRUE, star = TRUE)
+
+
+data(liver.toxicity)
+X <- as.matrix(liver.toxicity$gene)
+# Y will be transformed as a factor in the function,
+# but we set it as a factor to set up the colors.
+Y <- as.factor(liver.toxicity$treatment[, 4])
+
+splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
+plotIndiv(splsda.liver, ind.names = TRUE, ellipse=TRUE, centroid = TRUE, star = TRUE)
+
+#with only one sample in a class
+Y <- as.factor(liver.toxicity$treatment[, 4])
+ind.remove = which(Y==levels(Y)[1])[-sample(1:sum(Y==levels(Y)[1]),1)]
+Y2 = Y[-ind.remove]
+X2 = X[-ind.remove, ]
+
+res2 <- splsda(X2, Y2, ncomp = 2, keepX = c(25, 25))
+plotIndiv(res2, ind.names = Y2, add.legend = TRUE, ellipse =TRUE)
+plotIndiv(res2, ind.names = TRUE, ellipse=TRUE, centroid = TRUE, star = TRUE)
 
 
 
@@ -375,6 +400,11 @@ if(additional.test==TRUE)
     plotIndiv(pca.res,X.label="X")
     plotIndiv(pca.res,Y.label="Y")
     plotIndiv(pca.res,Z.label="Z",style="3d")
+    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("sphere"))
+    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("sphere"),cex=c(1,5))
+    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("sphere","cube"),cex=c(0.1,0.5))
+    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("cube","sphere"),cex=c(1,0.5),col=1:2)
+    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("cube","sphere","tetra"),cex=c(1,0.5),col=1:3)
     
     ##test xlim,ylim, different style
     
