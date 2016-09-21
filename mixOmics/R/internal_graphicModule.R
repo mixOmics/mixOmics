@@ -641,7 +641,6 @@ alpha)
     }
     #-- End: graphics
     
-    
     #internal_3d=function(df,group,blocks,names,centroid,x0,y0,col.per.group,title,X.label,Y.label,lim.X,xlim,lim.Y,ylim,class.object,
     #col,display.names,legend,abline,pch.legend,cex,star,x,y,ellipse,df.ellipse,axes.box,Z.label,z)
     if (style=="3d")
@@ -712,7 +711,7 @@ alpha)
                         {
                             for (cex_i in unique(df[df$col == i, ]$cex[ind]))
                             {
-                                ind_cex = which(df[df$col[ind] == i, ]$cex == cex_i)
+                                ind_cex = which(df[df$col == i, ]$cex[ind] == cex_i)
                                 points3d(x = df[df$col == i & other, "x"][ind][ind_cex],
                                 y = df[df$col == i & other, "y"][ind][ind_cex],
                                 z = df[df$col == i & other, "z"][ind][ind_cex],

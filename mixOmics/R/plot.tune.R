@@ -26,7 +26,7 @@
 
 
 plot.tune.splsda = #plot.spca <- plot.ipca <- plot.sipca <-
-function(x, optimal = TRUE, sd = TRUE, ...)
+function(x, optimal = TRUE, sd = TRUE, legend.position = "topright", ...)
 {
     
     if (!is.logical(optimal))
@@ -100,7 +100,7 @@ function(x, optimal = TRUE, sd = TRUE, ...)
         legend = paste("comp1 to", colnames(error))
     }
 
-    legend("topright", lty = 1, lwd = 2, horiz = FALSE, col = col.per.comp,
+    legend(legend.position, lty = 1, lwd = 2, horiz = FALSE, col = col.per.comp,
     legend = legend)
     
 }

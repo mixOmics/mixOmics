@@ -110,7 +110,7 @@ Gunther O., Shin H., Ng R. T. , McMaster W. R., McManus B. M. , Keown P. A. , Te
 # block.splsda
 # -------------
 data("breast.TCGA")
-# this is the X data as a list of mRNA and miRNA; the Y data set is a single data set of proteins
+# this is the X data as a list of mRNA, miRNA and proteins
 data = list(mrna = breast.TCGA$data.train$mrna, mirna = breast.TCGA$data.train$mirna,
 protein = breast.TCGA$data.train$protein)
 # set up a full design where every block is connected

@@ -133,7 +133,7 @@ label.axes.box = "both"  )
             stop(paste("The number of components for one selected block '", paste(blocks, collapse = " - "),"' is 1. The number of components must be superior or equal to 2."), call. = FALSE)
         }
         ncomp = object$ncomp[blocks]
-    } else if (any(class.object %in% c("rcc", "pls", "spls", "mlspls"))) {
+    } else if (any(class.object %in% c("rcc", "pls", "spls", "mlspls")) & all(class.object !="DA")) {
         blocks = c("X", "Y")
     } else {
         blocks = "X"
@@ -754,7 +754,7 @@ label.axes.box = "both"  )
             
             title(title)#, outer = TRUE, line = -1)
             
-            if (legend) par(opar)
+            if (legend) par(mai = opar$mai, xpd = opar$xpd)
             
         } else {
             opar <- par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din", "page")]

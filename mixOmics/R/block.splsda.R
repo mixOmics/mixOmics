@@ -136,7 +136,7 @@ near.zero.var = FALSE)
         design = result$design,
         scheme = result$scheme,
         indY = result$indY,
-        explained_variance = result$explained_variance[-result$indY])
+        explained_variance = result$explained_variance)#[-result$indY])
     
     # give a class
     class(out) = c("block.splsda","block.spls","sgccda","sgcca","DA")

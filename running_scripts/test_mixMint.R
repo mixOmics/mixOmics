@@ -140,9 +140,17 @@ rownames(Y.mat.light)=rownames(data.light)
 A=list(X=data,Y=Y.mat)
 A.light=list(X=data.light,Y=Y.mat.light)
 
+res=mint.pca(data,scale=FALSE)
+plotIndiv(res,group=exp)
+acp=pca(data)
+plotIndiv(acp,group=exp, title="same as mint.pca without study")
+
+res=mint.pca(data,study = exp)
+plotIndiv(res,group=exp)
+plotIndiv(res,group=type.id)
+
+
 res=mint.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
-
-
 
 plotLoadings(res,contrib="min")
 plotLoadings(res,contrib="min",study=1)
