@@ -34,7 +34,6 @@ plotLoadings.pls =
 plotLoadings.spls =
 #plotLoadings.mlspls =     # because spls too
 plotLoadings.rcc =
-plotLoadings.pca =
 plotLoadings.sgcca =
 plotLoadings.rgcca =
 
