@@ -641,7 +641,6 @@ alpha)
     }
     #-- End: graphics
     
-    save(list=ls(),file="temp.Rdata")
     #internal_3d=function(df,group,blocks,names,centroid,x0,y0,col.per.group,title,X.label,Y.label,lim.X,xlim,lim.Y,ylim,class.object,
     #col,display.names,legend,abline,pch.legend,cex,star,x,y,ellipse,df.ellipse,axes.box,Z.label,z)
     if (style=="3d")
