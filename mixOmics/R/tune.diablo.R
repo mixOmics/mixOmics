@@ -209,7 +209,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     temp = data.frame(l, n)
     
     
-    message(paste("You have provided a sequence of keepX of length: ", paste(apply(temp, 1, function(x) paste(x,collapse=" for block ")), collapse= " and "), ".\nThis results in ",prod(sapply(test.keepX,length)), " models being fitted for each component, this may take some time to run, be patient!",sep=""))
+    message(paste("You have provided a sequence of keepX of length: ", paste(apply(temp, 1, function(x) paste(x,collapse=" for block ")), collapse= " and "), ".\nThis results in ",prod(sapply(test.keepX,length)), " models being fitted for each component and each nrepeat, this may take some time to run, be patient!",sep=""))
     
     
     #-- end checking --#
@@ -312,8 +312,17 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
         if(nrepeat > 1)
         names(error.sd) = names(error.mean)
         
-        min.keepX = names(which.min(error.mean))
-        a=as.numeric(strsplit(min.keepX,"_")[[1]]) # vector of each optimal keepX for all block on component comp.real[comp]
+        min.error = min(error.mean)
+        min.keepX = names(which(error.mean == min.error)) # vector of all keepX combination that gives the minimum error
+        
+        a = strsplit(min.keepX,"_") # list of all keepX combination
+        a = lapply(a, as.numeric) # transform characters of keepX into numbers
+        
+        #transform keepX in percentage of variable per dataset, so we choose the minimal overall
+        p = sapply(X,ncol)
+        percent = sapply(a, function(x) sum(x/p))
+        ind.opt = which.min(percent) # we take only one
+        a = a[[ind.opt]]# vector of each optimal keepX for all block on component comp.real[comp]
         
         # best keepX
         opt.keepX.comp = as.list(a)
