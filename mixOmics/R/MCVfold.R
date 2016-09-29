@@ -235,8 +235,40 @@ class.object = NULL
             {
                 X.train = X.train[, -c(ind.var),drop = FALSE]
                 X.test = X.test[, -c(ind.var),drop = FALSE]
+
+                # match choice.keepX, choice.keepX.constraint and test.keepX if needed
+                if(is.null(choice.keepX.constraint) & !is.list(test.keepX))
+                {
+                    # keepX = c(choice.keepX, test.keepX[i])
+                    # keepX.constraint = NULL
+                    
+                    # reduce choice.keepX and test.keepX if needed
+                    if (any(choice.keepX > ncol(X.train)))
+                    choice.keepX[which(choice.keepX>ncol(X.train))] = ncol(X.train)
+                    
+                    if (any(test.keepX > ncol(X.train)))
+                    test.keepX[which(test.keepX>ncol(X.train))] = ncol(X.train)
+
+                } else if(!is.list(test.keepX)){
+                    # keepX = test.keepX[i]
+                    # keepX.constraint = choice.keepX.constraint
+                    
+                    # reduce test.keepX if needed
+                    if (any(test.keepX > ncol(X.train)))
+                    test.keepX[which(test.keepX>ncol(X.train))] = ncol(X.train)
+
+                    choice.keepX.constraint = match.keepX.constraint(names.remove = names(ind.var), keepX.constraint = choice.keepX.constraint)
+
+                } else {
+                    # keepX = NULL
+                    # keepX.constraint = c(choice.keepX.constraint, test.keepX)
+                    
+                    # reduce choice.keepX.constraint if needed
+                    choice.keepX.constraint = match.keepX.constraint(names.remove = names(ind.var), keepX.constraint = c(choice.keepX.constraint, test.keepX))
+
+                }
+                
             }
-            
             
             if(near.zero.var == TRUE)
             {
@@ -244,9 +276,45 @@ class.object = NULL
                 
                 if (length(remove.zero) > 0)
                 {
+                    names.var = colnames(X.train)[remove.zero]
+                    
                     X.train = X.train[, -c(remove.zero),drop = FALSE]
                     X.test = X.test[, -c(remove.zero),drop = FALSE]
+
+                    # match choice.keepX, choice.keepX.constraint and test.keepX if needed
+                    if(is.null(choice.keepX.constraint) & !is.list(test.keepX))
+                    {
+                        # keepX = c(choice.keepX, test.keepX[i])
+                        # keepX.constraint = NULL
+                        
+                        # reduce choice.keepX and test.keepX if needed
+                        if (any(choice.keepX > ncol(X.train)))
+                        choice.keepX[which(choice.keepX>ncol(X.train))] = ncol(X.train)
+                        
+                        if (any(test.keepX > ncol(X.train)))
+                        test.keepX[which(test.keepX>ncol(X.train))] = ncol(X.train)
+                        
+                    } else if(!is.list(test.keepX)){
+                        # keepX = test.keepX[i]
+                        # keepX.constraint = choice.keepX.constraint
+                        
+                        # reduce test.keepX if needed
+                        if (any(test.keepX > ncol(X.train)))
+                        test.keepX[which(test.keepX>ncol(X.train))] = ncol(X.train)
+                        
+                        choice.keepX.constraint = match.keepX.constraint(names.remove = names.var, keepX.constraint = choice.keepX.constraint)
+                        
+                    } else {
+                        # keepX = NULL
+                        # keepX.constraint = c(choice.keepX.constraint, test.keepX)
+                        
+                        # reduce choice.keepX.constraint if needed
+                        choice.keepX.constraint = match.keepX.constraint(names.remove = names.var, keepX.constraint = c(choice.keepX.constraint, test.keepX))
+                        
+                    }
+
                 }
+                #print(remove.zero)
             }
             
             #-- near.zero.var ----------------------#

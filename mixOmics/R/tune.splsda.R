@@ -128,7 +128,7 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     if (validation == 'loo')
     {
         if (nrepeat != 1)
-        warnings("Leave-One-Out validation does not need to be repeated: 'nrepeat' is set to '1'.")
+        warning("Leave-One-Out validation does not need to be repeated: 'nrepeat' is set to '1'.")
         nrepeat = 1
     }
     
