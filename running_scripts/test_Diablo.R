@@ -22,7 +22,20 @@ keepX = list(gene=c(10,10), lipid=c(15,15)),
 ncomp = 2,#c(2, 2),
 scheme = "centroid",
 verbose = FALSE,
-bias = FALSE)
+bias = FALSE,
+tol=1e-30)
+
+
+nutrimouse.sgccda2 <- wrapper.sgccda(X=c(data[-1],data[1]),
+Y = Y,
+design = design,
+keepX = list(gene=c(10,10), lipid=c(15,15)),
+ncomp = 2,#c(2, 2),
+scheme = "centroid",
+verbose = FALSE,
+bias = FALSE,
+tol=1e-30)
+
 
 a=perf(nutrimouse.sgccda)
 plot(a)

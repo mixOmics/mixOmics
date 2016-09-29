@@ -37,6 +37,7 @@ perf.sgccda = function (object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
 validation = c("Mfold", "loo"),
 folds = 10,
+cpus,
 ...)
 {
     
@@ -90,7 +91,13 @@ folds = 10,
         stop("validation can be only 'Mfold' or 'loo'")
     }
     M = length(folds)
-
+    
+    if(!missing(cpus))
+    {
+        if(!is.numeric(cpus) | length(cpus)!=1)
+        stop("'cpus' must be a numerical value")
+        
+    }
     ### Start: Check parameter validation / set up sample
     
     ### Start: Training samples (X.training and Y.training) and Test samples (X.test / Y.test)
@@ -102,9 +109,21 @@ folds = 10,
     ### End: Training samples (X.training and Y.training) and Test samples (X.test / Y.test)
     
     ### Estimation models
-    model = lapply(1 : M, function(x) {block.splsda(X = X.training[[x]], Y = Y.training[[x]], ncomp = max(object$ncomp[-indY]), keepX = object$keepX,
+    if(missing(cpus))
+    {
+        model = lapply(1 : M, function(x) {block.splsda(X = X.training[[x]], Y = Y.training[[x]], ncomp = max(object$ncomp[-indY]), keepX = object$keepX,
+                design = object$design, max.iter = object$max.iter, tol = object$tol, init = object$init, scheme = object$scheme,
+                bias = object$bias, mode = object$mode)})
+    } else {
+        cl <- makeCluster(cpus, type = "SOCK")
+        clusterExport(cl, c("block.splsda"))
+
+        model = parLapply(cl, 1 : M, function(x) {block.splsda(X = X.training[[x]], Y = Y.training[[x]], ncomp = max(object$ncomp[-indY]), keepX = object$keepX,
             design = object$design, max.iter = object$max.iter, tol = object$tol, init = object$init, scheme = object$scheme,
             bias = object$bias, mode = object$mode)})
+
+        stopCluster(cl)
+    }
     
     ### Retrieve selected variables per component
     features = lapply(1 : J, function(x)
