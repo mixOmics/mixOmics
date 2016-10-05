@@ -676,7 +676,6 @@ plot_parameters)
                 
             }
             
-            save(list=ls(),file="temp.Rdata")
             # no subtitle with these objects
             if(size.title != rel(2)) # rel(2) is the default
             size.subtitle = size.title

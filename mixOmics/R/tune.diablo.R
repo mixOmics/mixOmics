@@ -58,6 +58,7 @@ validation = "Mfold",
 folds = 10,
 dist = "max.dist",
 measure = "BER", # one of c("overall","BER")
+weight = NULL,
 progressBar = TRUE,
 max.iter = 100,
 near.zero.var = FALSE,
@@ -271,7 +272,7 @@ cpus)
         
         
         # run perf on the model
-        cvPerf = lapply(1 : nrepeat, function(u){out = suppressMessages(perf(model, validation = validation, folds = folds, dist = dist));
+        cvPerf = lapply(1 : nrepeat, function(u){out = suppressMessages(perf(model, validation = validation, folds = folds, dist = dist, weight = weight));
             if (progressBar ==  TRUE)
             setTxtProgressBar(pb, ((indice.grid-1)*nrepeat+u)/(nrow(grid)*nrepeat))
             out
