@@ -111,6 +111,7 @@ near.zero.var = FALSE)
         mode = result$mode,
         variates = result$variates,
         loadings = result$loadings,
+        crit = result$crit,
         names = result$names,
         init = result$init,
         bias = result$bias,

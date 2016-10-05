@@ -90,6 +90,7 @@ near.zero.var = FALSE)
         keepY.constraint = result$keepA.constraint[result$indY][[1]],
         variates = result$variates,
         loadings = result$loadings,
+        crit = result$crit,
         names = result$names,
         init = result$init,
         bias = result$bias,
