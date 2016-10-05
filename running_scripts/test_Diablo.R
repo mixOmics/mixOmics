@@ -25,6 +25,9 @@ verbose = FALSE,
 bias = FALSE,
 tol=1e-30)
 
+pred=predict(nutrimouse.sgccda, data)
+pred2=predict(nutrimouse.sgccda, data,weight=c(1,2))
+
 
 nutrimouse.sgccda2 <- wrapper.sgccda(X=c(data[-1],data[1]),
 Y = Y,
@@ -37,8 +40,18 @@ bias = FALSE,
 tol=1e-30)
 
 
+set.seed(43)
 a=perf(nutrimouse.sgccda)
 plot(a)
+
+set.seed(43)
+a2=perf(nutrimouse.sgccda,cpus=4)
+
+
+res = all.equal(a[-which(names(a)=="call")],a2[-which(names(a2)=="call")])
+if(!isTRUE(res))
+stop("problem parallel diablo")
+
 
 nutrimouse.sgccda$design
 
@@ -106,8 +119,7 @@ perf$features$stable
 
 if(additional.test==TRUE)
 {
-    cat("no additional tests")
-    
+   
     #test perf diablo
     #source("mixOmics/R/tune.diablo.R")
     

@@ -407,4 +407,3 @@ annotate("text", x = 50, y = 0.1, label = "BER = 13.2%")
 
 
 
-
