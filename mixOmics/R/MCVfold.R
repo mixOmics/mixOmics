@@ -174,7 +174,7 @@ cl
             repeated.measure = multilevel[,1]
             n = length(unique(repeated.measure)) # unique observation: we put every observation of the same "sample" in the either the training or test set
         }
-       
+        
         
         #-- define the folds --#
         if (validation ==  "Mfold")
@@ -401,7 +401,7 @@ cl
                 auc.all[[nrep]][, , i] = as.matrix(statauc(data))
             }
         }
-
+        
     } #end nrep 1:nrepeat
     
     names(prediction.comp) = names (auc.all) = paste0("nrep.", 1:nrepeat)
@@ -553,6 +553,3 @@ cl
     result$features$stable = sort(table(as.factor(features))/M/nrepeat, decreasing = TRUE)
     return(result)
 }
-
-
-
