@@ -419,12 +419,24 @@ ylim = NULL,
 col,
 cex,
 pch,
-display.names)
+display.names,
+plot_parameters)
 {
     
     class.object = class(object)
     object.mint = c("mint.pls", "mint.spls", "mint.plsda", "mint.splsda")
     
+    size.title = plot_parameters$size.title
+    size.subtitle = plot_parameters$size.subtitle
+    size.xlabel = plot_parameters$size.xlabel
+    size.ylabel = plot_parameters$size.ylabel
+    size.axis = plot_parameters$size.axis
+    size.legend = plot_parameters$size.legend
+    size.legend.title = plot_parameters$size.legend.title
+    legend.title = plot_parameters$legend.title
+    legend.position = plot_parameters$legend.position
+    point.lwd = plot_parameters$point.lwd
+
     # --------------------------------------------------------------------------------------
     #           need class.object whether it's DA
     # --------------------------------------------------------------------------------------
@@ -661,7 +673,14 @@ display.names)
                 df = data.frame(do.call(rbind, df), "Block" = title)
                 if (style %in%c("ggplot2", "lattice"))
                 title = NULL # to avoid double title
+                
             }
+            
+            # no subtitle with these objects
+            if(size.title != rel(2)) # rel(2) is the default
+            size.subtitle = size.title
+
+
             df$Block = as.factor(df$Block)
         } else {
             df = data.frame(do.call(rbind, df), "Block" = paste0("Block: ", unlist(lapply(1 : length(df), function(z){rep(blocks[z], nrow(df[[z]]))}))))
@@ -823,8 +842,11 @@ display.names)
     study.ind = match(study, levels(object$study))
     
     #print(df)
+    plot_parameters = list(size.title = size.title, size.subtitle = size.subtitle, size.xlabel = size.xlabel, size.ylabel = size.ylabel,
+    size.axis = size.axis, size.legend = size.legend, size.legend.title = size.legend.title, legend.title = legend.title,
+    legend.position = legend.position, point.lwd = point.lwd)
     
-    out = list(df = df, study.ind = study.ind, df.ellipse = df.ellipse, col.per.group = col.per.group, title = title, display.names = display.names, xlim = xlim, ylim = ylim, missing.col = missing.col, ellipse = ellipse, centroid = centroid, star = star)
+    out = list(df = df, study.ind = study.ind, df.ellipse = df.ellipse, col.per.group = col.per.group, title = title, display.names = display.names, xlim = xlim, ylim = ylim, missing.col = missing.col, ellipse = ellipse, centroid = centroid, star = star, plot_parameters = plot_parameters)
 }
 
 

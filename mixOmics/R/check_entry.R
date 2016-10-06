@@ -815,7 +815,7 @@ verbose)
     warning("At least one study has less than 5 samples, mean centering might not do as expected")
     
     if (missing(init))
-    init = "svd"
+    init = "svd.single"
     
     if (!init%in%c("svd","svd.single"))
     stop("init should be one of 'svd' or 'svd.single'")
