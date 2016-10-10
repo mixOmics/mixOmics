@@ -171,7 +171,7 @@ class.object = NULL
             repeated.measure = multilevel[,1]
             n = length(unique(repeated.measure)) # unique observation: we put every observation of the same "sample" in the either the training or test set
         }
-       
+        
         
         #-- define the folds --#
         if (validation ==  "Mfold")
@@ -218,13 +218,13 @@ class.object = NULL
             #print(j)
             #set up leave out samples.
             omit = which(repeated.measure %in% folds[[j]] == TRUE)
-
+            
             # get training and test set
             X.train = X[-omit, ]
             Y.train = Y[-omit]
             X.test = X[omit, , drop = FALSE]#matrix(X[omit, ], nrow = length(omit)) #removed to keep the colnames in X.test
             Y.test = Y[omit]
-   
+            
             #---------------------------------------#
             #-- near.zero.var ----------------------#
             
@@ -235,8 +235,40 @@ class.object = NULL
             {
                 X.train = X.train[, -c(ind.var),drop = FALSE]
                 X.test = X.test[, -c(ind.var),drop = FALSE]
+                
+                # match choice.keepX, choice.keepX.constraint and test.keepX if needed
+                if(is.null(choice.keepX.constraint) & !is.list(test.keepX))
+                {
+                    # keepX = c(choice.keepX, test.keepX[i])
+                    # keepX.constraint = NULL
+                    
+                    # reduce choice.keepX and test.keepX if needed
+                    if (any(choice.keepX > ncol(X.train)))
+                    choice.keepX[which(choice.keepX>ncol(X.train))] = ncol(X.train)
+                    
+                    if (any(test.keepX > ncol(X.train)))
+                    test.keepX[which(test.keepX>ncol(X.train))] = ncol(X.train)
+                    
+                } else if(!is.list(test.keepX)){
+                    # keepX = test.keepX[i]
+                    # keepX.constraint = choice.keepX.constraint
+                    
+                    # reduce test.keepX if needed
+                    if (any(test.keepX > ncol(X.train)))
+                    test.keepX[which(test.keepX>ncol(X.train))] = ncol(X.train)
+                    
+                    choice.keepX.constraint = match.keepX.constraint(names.remove = names(ind.var), keepX.constraint = choice.keepX.constraint)
+                    
+                } else {
+                    # keepX = NULL
+                    # keepX.constraint = c(choice.keepX.constraint, test.keepX)
+                    
+                    # reduce choice.keepX.constraint if needed
+                    choice.keepX.constraint = match.keepX.constraint(names.remove = names(ind.var), keepX.constraint = c(choice.keepX.constraint, test.keepX))
+                    
+                }
+                
             }
-            
             
             if(near.zero.var == TRUE)
             {
@@ -244,9 +276,45 @@ class.object = NULL
                 
                 if (length(remove.zero) > 0)
                 {
+                    names.var = colnames(X.train)[remove.zero]
+                    
                     X.train = X.train[, -c(remove.zero),drop = FALSE]
                     X.test = X.test[, -c(remove.zero),drop = FALSE]
+                    
+                    # match choice.keepX, choice.keepX.constraint and test.keepX if needed
+                    if(is.null(choice.keepX.constraint) & !is.list(test.keepX))
+                    {
+                        # keepX = c(choice.keepX, test.keepX[i])
+                        # keepX.constraint = NULL
+                        
+                        # reduce choice.keepX and test.keepX if needed
+                        if (any(choice.keepX > ncol(X.train)))
+                        choice.keepX[which(choice.keepX>ncol(X.train))] = ncol(X.train)
+                        
+                        if (any(test.keepX > ncol(X.train)))
+                        test.keepX[which(test.keepX>ncol(X.train))] = ncol(X.train)
+                        
+                    } else if(!is.list(test.keepX)){
+                        # keepX = test.keepX[i]
+                        # keepX.constraint = choice.keepX.constraint
+                        
+                        # reduce test.keepX if needed
+                        if (any(test.keepX > ncol(X.train)))
+                        test.keepX[which(test.keepX>ncol(X.train))] = ncol(X.train)
+                        
+                        choice.keepX.constraint = match.keepX.constraint(names.remove = names.var, keepX.constraint = choice.keepX.constraint)
+                        
+                    } else {
+                        # keepX = NULL
+                        # keepX.constraint = c(choice.keepX.constraint, test.keepX)
+                        
+                        # reduce choice.keepX.constraint if needed
+                        choice.keepX.constraint = match.keepX.constraint(names.remove = names.var, keepX.constraint = c(choice.keepX.constraint, test.keepX))
+                        
+                    }
+                    
                 }
+                #print(remove.zero)
             }
             
             #-- near.zero.var ----------------------#
@@ -264,7 +332,7 @@ class.object = NULL
                 keepX = if(is.null(choice.keepX.constraint) & !is.list(test.keepX)){c(choice.keepX, test.keepX[i])}else if(!is.list(test.keepX)){test.keepX[i]} else {NULL} ,
                 keepX.constraint = if(is.null(choice.keepX.constraint)& !is.list(test.keepX)){NULL}else if(!is.list(test.keepX)){choice.keepX.constraint} else {c(choice.keepX.constraint, test.keepX)},
                 logratio = "none", near.zero.var = FALSE, mode = "regression", max.iter = max.iter)
-                  
+                
                 # added: record selected features
                 if (any(class.object %in% c("splsda")) & length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
                 # note: if plsda, 'features' includes everything: to optimise computational time, we don't evaluate for plsda object
@@ -292,7 +360,7 @@ class.object = NULL
                 auc.all[[nrep]][, , i] = as.matrix(statauc(data))
             }
         }
-
+        
     } #end nrep 1:nrepeat
     names(prediction.comp) = names (auc.all) = paste0("nrep.", 1:nrepeat)
     # class.comp[[ijk]] is a matrix containing all prediction for test.keepX, all nrepeat and all distance, at comp fixed
@@ -443,6 +511,3 @@ class.object = NULL
     result$features$stable = sort(table(as.factor(features))/M/nrepeat, decreasing = TRUE)
     return(result)
 }
-
-
-

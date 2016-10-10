@@ -331,7 +331,7 @@ progressBar = TRUE,
     } else if (any(class(object) == "pls")) {
         method = "pls.mthd"
     } else {
-        warnings("Something that should not happen happened. Please contact us.")
+        warning("Something that should not happen happened. Please contact us.")
     }
     class(result) = c("perf",paste(c("perf", method), collapse ="."))
     result$call = match.call()
@@ -424,7 +424,7 @@ progressBar = TRUE,
     if (validation == "loo")
     {
         if (nrepeat != 1)
-        warnings("Leave-One-Out validation does not need to be repeated: 'nrepeat' is set to '1'.")
+        warning("Leave-One-Out validation does not need to be repeated: 'nrepeat' is set to '1'.")
         nrepeat = 1
     }
     
@@ -616,7 +616,7 @@ progressBar = TRUE,
     } else if (any(class(object) == "plsda")) {
         method = "plsda.mthd"
     } else {
-        warnings("Something that should not happen happened. Please contact us.")
+        warning("Something that should not happen happened. Please contact us.")
     }
     class(result) = c("perf",paste(c("perf", method), collapse ="."))
     result$call = match.call()

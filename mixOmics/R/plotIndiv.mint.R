@@ -303,7 +303,7 @@ point.lwd = 1,
         out = shape.input.plotIndiv(object = object, n = n, blocks = blocks, x = x, y = y, z = z, ind.names = ind.names, group = group,
         col.per.group = col.per.group, style = style, study = study, ellipse = ellipse, ellipse.level = ellipse.level,
         centroid = centroid, star = star, title = title, xlim = xlim, ylim = ylim, 
-        col = col, cex = cex, pch = pch, display.names = display.names)
+        col = col, cex = cex, pch = pch, display.names = display.names, plot_parameters = plot_parameters)
         #-- retrieve outputs
         df = out$df
         df.ellipse = out$df.ellipse
@@ -313,6 +313,7 @@ point.lwd = 1,
         xlim = out$xlim
         ylim = out$ylim
         missing.col = out$missing.col
+        plot_parameters = out$plot_parameters
 
 
         # concatenate results

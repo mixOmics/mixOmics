@@ -184,8 +184,9 @@ alpha)
             for (i in 1 : nlevels(df$group))
             {
                 p = p + geom_segment(data = subset(df, group == levels(df$group)[i]),
-                aes(x = x0, y = y0, xend = x, yend = y,
-                label = "Block"), color = unique(col.per.group)[i],size = point.lwd)
+                aes(x = x0, y = y0, xend = x, yend = y),
+                #label = "Block"),
+                color = unique(col.per.group)[i],size = point.lwd)
             }
         }
         
@@ -198,7 +199,8 @@ alpha)
                 {
                     p = p + geom_path(data = df.ellipse,
                     aes_string(x = paste0("Col", 2*(i - 1) + 1), y = paste0("Col", 2 * i),
-                    label = "Block", group = NULL), color = unique(col.per.group)[i], size = point.lwd)
+                    #label = "Block",
+                    group = NULL), color = unique(col.per.group)[i], size = point.lwd)
                 }
 
             }
@@ -285,8 +287,9 @@ alpha)
             for (i in 1 : nlevels(df$group))
             {
                 p = p + geom_segment(data = subset(df, group == levels(df$group)[i]),
-                aes(x = x0, y = y0, xend = x, yend = y,
-                label = "Block"), color = unique(col.per.group)[i],size = point.lwd)
+                aes(x = x0, y = y0, xend = x, yend = y),
+                #label = "Block"),
+                color = unique(col.per.group)[i],size = point.lwd)
             }
         }
 
@@ -295,9 +298,12 @@ alpha)
         {
             for (i in 1 : nlevels(df$group))
             {
+
                 p = p + geom_path(data = df.ellipse,
-                aes_string(x = paste0("Col", 2*(i - 1) + 1), y = paste0("Col", 2 * i),
-                label = "Block", group = NULL, shape = NULL), color = unique(col.per.group)[i], size = point.lwd)
+                aes_string(x = paste0("Col", 2*(i - 1) + 1), y = paste0("Col", 2 * i)),
+                #label = "Block",
+                #group = NULL),# shape = NULL),
+                color = unique(col.per.group)[i], size = point.lwd, inherit.aes =FALSE)
             }
         }
 
