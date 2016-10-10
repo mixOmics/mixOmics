@@ -45,6 +45,7 @@ plotIndiv(res,study="global",group=type.id)
 plotIndiv(res,study="global",group=type.id,ellipse=TRUE)
 plotIndiv(res,study="global",group=type.id,centroid=TRUE)
 plotIndiv(res,study="global",group=type.id,star=TRUE)
+plotIndiv(res,study="global",group=type.id,star=TRUE,centroid=TRUE,ellipse=TRUE)
 
 plotIndiv(res,study=c(1:2,"global",4:3),group=type.id)
 plotIndiv(res,study=c(1),group=type.id,rep.space="XY")
