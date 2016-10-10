@@ -72,7 +72,8 @@ init ,
 tol = 1e-06,
 verbose,
 light.output = TRUE, # if FALSE, output the prediction and classification of each sample during each folds, on each comp, for each repeat
-cpus)
+cpus,
+name.save = NULL)
 {
     #-- checking general input parameters --------------------------------------#
     #---------------------------------------------------------------------------#
@@ -394,6 +395,35 @@ cpus)
             }
         }
         names(already.tested.X) = names(X)
+        
+        
+        # prepping the results and save a file, if necessary
+        if(!is.null(name.save))
+        {
+            colnames(error.rate) = paste("comp", comp.real[1:comp], sep='')
+            names(mat.error.rate) = c(paste('comp', comp.real[1:comp], sep=''))
+            mat.error.rate = lapply(mat.error.rate, function(x) {colnames(x) = paste("nrep",1:nrepeat,sep="."); rownames(x) = rownames(error.rate);x})
+            names(error.per.class.keepX.opt) = c(paste('comp', comp.real[1:comp], sep=''))
+            
+            if(nrepeat > 1)
+            colnames(mat.sd.error) = paste("comp", comp.real[1:comp], sep='')
+            
+            
+            result = list(
+            error.rate = error.rate,
+            error.rate.sd = mat.sd.error,
+            error.rate.all = mat.error.rate,
+            choice.keepX = if(constraint){lapply(already.tested.X, function(x){sapply(x,length)})}else{already.tested.X},
+            choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
+            error.rate.class = error.per.class.keepX.opt)
+            
+            result$measure = measure.input
+            result$call = match.call()
+            
+            class(result) = "tune.block.splsda"
+        
+            save(result, file = paste0(name.save,".comp",comp.real[1],"to",comp.real[comp],".Rdata"))
+        }
         
     }
     #close the cluster after ncomp

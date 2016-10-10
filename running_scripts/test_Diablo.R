@@ -208,6 +208,21 @@ if(additional.test==TRUE)
     bias = FALSE
     )
     tune
+    
+    # tune with saving a file
+    tune = tune.block.splsda(
+    X = data,
+    Y = Y,
+    design = design,
+    ncomp = 2,#c(2, 2),
+    scheme = "centroid",
+    verbose = FALSE,
+    bias = FALSE,
+    nrepeat = 2,
+    name.save="try",
+    constraint=TRUE,
+    cpus=4
+    )
 
 
 }
