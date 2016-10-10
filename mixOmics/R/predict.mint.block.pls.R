@@ -39,7 +39,7 @@
 
 predict.block.pls <-predict.block.spls <- predict.mint.splsda <-
 predict.pls <-predict.spls <-
-function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), multilevel = NULL, weight = NULL,  ...)
+function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), multilevel = NULL, ...)
 {
     
     if(any(class(object)%in%c("rgcca","sparse.rgcca")))
@@ -73,9 +73,6 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
     ### if the object is a block, the input newdata is different, we check newdata, make sure it's a list and check newdata/X
     if(length(grep("block",class(object)))==0) # not a block (pls/spls/plsda/splsda/mint...)
     {
-        if(!is.null(weight))
-        warning("'weight' is only used for 'block.(s)plsda' objects")
-        
         p=ncol(object$X)
         if(is.list(object$X))
         stop("Something is wrong, object$X should be a matrix and it appears to be a list") #this should never happen/intern check
@@ -134,23 +131,6 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         object$X=X
 
         p = lapply(X, ncol)
-        
-        if(!is.null(weight) & any(class(object)=="DA")) # a DA analysis (mint).(block).(s)plsda
-        {
-            if(length(weight) != length(X) | !is.vector(weight) | any(weight<0))
-            stop("'weight' must be a vector of positive values of length ", length(X))
-            
-            if(!is.null(names(weight)))
-            {
-                ind.match = match(names(X), names(weight))
-                if(any(is.na(ind.match)))
-                warning("Some blocks are missing in 'weight':", paste(names(X)[is.na(ind.match)],collapse=", "))
-                weight = weight(match(names(X), names(weight)))
-            } else {
-                names(weight) = names(X)
-            }
-        
-        }
 
         #matching newdata and X
         
@@ -465,7 +445,7 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         object.temp = object
         object.temp$X = object.temp$X[which(!is.na(ind.match))]
         object.temp$variates = object.temp$variates[c(which(!is.na(ind.match)),J+1)] #J+1 is Y
-        classif.DA=internal_predict.DA(object=object.temp, q=q, out=out.temp, dist=dist, weight = weight)
+        classif.DA=internal_predict.DA(object=object.temp, q=q, out=out.temp, dist=dist, weights = object$weights)
         out=c(out,classif.DA)
         
     }

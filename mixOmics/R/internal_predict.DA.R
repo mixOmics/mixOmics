@@ -40,7 +40,7 @@
 #Y
 
 
-internal_predict.DA = function(object, out, q, dist, weight)
+internal_predict.DA = function(object, out, q, dist, weights)
 {
     
     if (length(grep("plsda",class(object)))==0) # a DA analysis (mint).(block).(s)plsda
@@ -192,7 +192,7 @@ internal_predict.DA = function(object, out, q, dist, weight)
         names(out.DA$vote) = names(out.DA$class)
         
         # weighted vote for each distance, each comp
-        if(!is.null(weight))
+        if(!is.null(weights))
         {
             out.DA$not.weighted.vote = out.DA$vote
             out.DA$vote = lapply(out.DA$class, function(x){ # x is a distance
@@ -200,8 +200,8 @@ internal_predict.DA = function(object, out, q, dist, weight)
                 names(class.per.comp) = paste("comp",1:min(ncomp))
                 class.per.comp = lapply(class.per.comp, function(y){rownames(y) = rownames(out.DA$vote[[1]]); y})
                 class.weighted.per.comp = sapply(class.per.comp, function(y){ # for each component
-                    apply(y,1,function(z){  # we aggregate the results of each individuals using the 'weight'
-                        temp = aggregate(weight,list(z),sum)
+                    apply(y,1,function(z){  # we aggregate the results of each individuals using the 'weights'
+                        temp = aggregate(weights,list(z),sum)
                         ind = which(temp[,2]== max (temp[,2]))# if two max, then NA
                         if(length(ind) == 1)
                         {
@@ -215,7 +215,7 @@ internal_predict.DA = function(object, out, q, dist, weight)
                 })
 
             })
-            out.DA$weight = weight
+            out.DA$weights = weights
             
         }
     }else{

@@ -58,7 +58,7 @@ validation = "Mfold",
 folds = 10,
 dist = "max.dist",
 measure = "BER", # one of c("overall","BER")
-weight = NULL,
+weighted = TRUE, # optimise the weighted or not-weighted prediction
 progressBar = TRUE,
 max.iter = 100,
 near.zero.var = FALSE,
@@ -114,7 +114,9 @@ name.save = NULL)
         
     }
     
-    
+    #-- dist
+    dist = match.arg(dist, choices = c("max.dist", "centroids.dist", "mahalanobis.dist"), several.ok = FALSE)
+
     #-- progressBar
     if (!is.logical(progressBar))
     stop("'progressBar' must be a logical constant (TRUE or FALSE).", call. = FALSE)
@@ -219,6 +221,13 @@ name.save = NULL)
     } else {
         parallel = TRUE
     }
+    
+    if(weighted == TRUE)
+    {
+        perfo = paste0("WeightedVoteClass.error.rate.",dist)
+    } else {
+        perfo = paste0("MajorityClass.error.rate.",dist)
+    }
     #-- end checking --#
     #------------------#
     
@@ -273,7 +282,7 @@ name.save = NULL)
         
         
         # run perf on the model
-        cvPerf = lapply(1 : nrepeat, function(u){out = suppressMessages(perf(model, validation = validation, folds = folds, dist = dist, weight = weight));
+        cvPerf = lapply(1 : nrepeat, function(u){out = suppressMessages(perf(model, validation = validation, folds = folds, dist = dist));
             if (progressBar ==  TRUE)
             setTxtProgressBar(pb, ((indice.grid-1)*nrepeat+u)/(nrow(grid)*nrepeat))
             out
@@ -282,9 +291,17 @@ name.save = NULL)
         
         # record results
         ## Majority Vote
-        cvPerf2 = lapply(1 : nrepeat, function(x){unlist(cvPerf[[x]][names(cvPerf[[x]]) == "MajorityClass.error.rate"], recursive = FALSE)})
-        names(cvPerf2) = paste("nrepeat",1:nrepeat,sep="")
-        
+        if(weighted == TRUE)
+        {
+            cvPerf2 = lapply(1 : nrepeat, function(x){unlist(cvPerf[[x]][names(cvPerf[[x]]) == "WeightedVoteClass.error.rate"], recursive = FALSE)})
+            names(cvPerf2) = paste("nrepeat",1:nrepeat,sep="")
+        } else {
+            cvPerf2 = lapply(1 : nrepeat, function(x){unlist(cvPerf[[x]][names(cvPerf[[x]]) == "MajorityClass.error.rate"], recursive = FALSE)})
+            names(cvPerf2) = paste("nrepeat",1:nrepeat,sep="")
+        }
+
+
+    
         setTxtProgressBar(pb, indice.grid/nrow(grid))
         
         return(cvPerf2)
@@ -330,17 +347,17 @@ name.save = NULL)
             # test.keepX.comp: keepX for each block on component "comp.real[comp]"
             # already.tested.X: either keepX (constraint=FALSE) or keepX.constraint.temp (constraint=TRUE) for all block on components 1:(comp.real[comp]-1)
             # keepX.temp: keepX for all block on all component 1:comp.real[comp], only used if constraint=FALSE
-            mat.error.rate.temp = simplify2array( lapply(cvPerf3[[indice.grid]], function(x) x$"MajorityClass.error.rate"[measure,comp])) # error over the nrepeat
+            mat.error.rate.temp = simplify2array( lapply(cvPerf3[[indice.grid]], function(x) x[[perfo]][measure,comp])) # error over the nrepeat
             mat.error.rate.keepX = rbind(mat.error.rate.keepX, mat.error.rate.temp)
             
             error.mean = c(error.mean, mean(mat.error.rate.temp))
-            error.per.class[, , indice.grid] = simplify2array(lapply(cvPerf3[[indice.grid]], function(x){ x$"MajorityClass.error.rate"[1:nlevels(Y),comp]}))
+            error.per.class[, , indice.grid] = simplify2array(lapply(cvPerf3[[indice.grid]], function(x){ x[[perfo]][1:nlevels(Y),comp]}))
             
             if(nrepeat > 1)
-            error.sd = c(error.sd, apply(simplify2array(lapply(cvPerf3[[indice.grid]], function(x) x$"MajorityClass.error.rate")), c(1,2), sd)[measure,comp])
+            error.sd = c(error.sd, apply(simplify2array(lapply(cvPerf3[[indice.grid]], function(x) x[[perfo]])), c(1,2), sd)[measure,comp])
             
-            if (progressBar ==  TRUE)
-            setTxtProgressBar(pb, (indice.grid)/nrow(grid))
+            #if (progressBar ==  TRUE)
+            #setTxtProgressBar(pb, (indice.grid)/nrow(grid))
             
         }
         

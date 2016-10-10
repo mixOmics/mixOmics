@@ -37,7 +37,6 @@ perf.sgccda = function (object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
 validation = c("Mfold", "loo"),
 folds = 10,
-weight = NULL,
 cpus,
 ...)
 {
@@ -129,6 +128,10 @@ cpus,
     ### Retrieve convergence criterion
     crit = lapply(1 : M, function(x){model[[x]]$crit})
     
+    ### Retrieve weights
+    weights = sapply(1 : M, function(x){model[[x]]$weights})
+
+
     ### Retrieve selected variables per component
     features = lapply(1 : J, function(x)
     {
@@ -183,7 +186,7 @@ cpus,
     
     ### Start: Prediction (score / class) sample test
     # Prediction model on test dataset
-    predict.all = lapply(1 : M, function(x) {predict(model[[x]], X.test[[x]], method = "all", weight = weight)})
+    predict.all = lapply(1 : M, function(x) {predict(model[[x]], X.test[[x]], method = "all")})
     
     # Retrieve class prediction
     Y.predict = lapply(1 : M, function(x) {predict.all[[x]]$class})
@@ -437,7 +440,7 @@ cpus,
         
         ## Start: retrieve (weighted) vote for each component
         # Reorganization dist.select / folds
-        Y.vote = lapply(1 : length(dist.select), function(x)
+        Y.weighted.vote = lapply(1 : length(dist.select), function(x)
         {
             lapply(1 : M, function(y)
             {
@@ -445,19 +448,70 @@ cpus,
             })
         })
         # Merge Score
+        Y.weighted.vote = lapply(1 : length(dist.select), function(x)
+        {
+                do.call(rbind, Y.weighted.vote[[x]])
+        })
+        
+        # Sort matrix
+        Y.weighted.vote = lapply(1 : length(dist.select), function(x)
+        {
+                Y.weighted.vote[[x]][sort(unlist(folds), index.return = TRUE)$ix, , drop = FALSE]
+        })
+        
+        names(Y.weighted.vote) = dist.select
+    
+        ## End: retrieve (weighted) vote for each component
+        ### End: Prediction (score / class) sample test
+        
+        
+        ## subjects with NA are considered false
+        Y.weighted.vote.res = lapply(1 : length(dist.select), function(x)
+        {
+            apply(Y.weighted.vote[[x]], 2, function(y)
+            {
+                y[is.na(y)] <- nlevels(Y)+5   ## adding a new level for unsure subjects (replacing NA with this level)
+                temp=table(factor(y, levels = c(levels(Y), nlevels(Y)+5)), Y)
+                diag(temp) <- 0
+                err = c(colSums(temp)/summary(Y), sum(temp)/length(Y), mean(colSums(temp)/summary(Y)))
+                return(err=err)
+            })
+        })
+        
+
+        Y.weighted.vote.res = lapply(1 : length(dist.select), function(x)
+        {
+            colnames(Y.weighted.vote.res[[x]]) = paste("comp", 1:max(object$ncomp[-(J + 1)]))
+            row.names(Y.weighted.vote.res[[x]]) = c(levels(Y), "Overall.ER", "Overall.BER")
+            return((Y.weighted.vote.res[[x]]))
+        })
+        names(Y.weighted.vote) = dist.select; names(Y.weighted.vote.res) = dist.select
+        
+        
+        
+        ## Start: retrieve non weighted vote for each component
+        # Reorganization dist.select / folds
         Y.vote = lapply(1 : length(dist.select), function(x)
         {
-                do.call(rbind, Y.vote[[x]])
+            lapply(1 : M, function(y)
+            {
+                predict.all[[y]][["not.weighted.vote"]][[x]]
+            })
+        })
+        # Merge Score
+        Y.vote = lapply(1 : length(dist.select), function(x)
+        {
+            do.call(rbind, Y.vote[[x]])
         })
         
         # Sort matrix
         Y.vote = lapply(1 : length(dist.select), function(x)
         {
-                Y.vote[[x]][sort(unlist(folds), index.return = TRUE)$ix, , drop = FALSE]
+            Y.vote[[x]][sort(unlist(folds), index.return = TRUE)$ix, , drop = FALSE]
         })
         
         names(Y.vote) = dist.select
-    
+        
         ## End: retrieve (weighted) vote for each component
         ### End: Prediction (score / class) sample test
         
@@ -475,7 +529,7 @@ cpus,
             })
         })
         
-
+        
         Y.vote.res = lapply(1 : length(dist.select), function(x)
         {
             colnames(Y.vote.res[[x]]) = paste("comp", 1:max(object$ncomp[-(J + 1)]))
@@ -484,60 +538,6 @@ cpus,
         })
         names(Y.vote) = dist.select; names(Y.vote.res) = dist.select
         
-        
-        
-        ## Start: retrieve non weighted vote for each component
-        # Reorganization dist.select / folds
-        if(!is.null(weight))
-        {
-            Y.noweight.vote = lapply(1 : length(dist.select), function(x)
-            {
-                lapply(1 : M, function(y)
-                {
-                    predict.all[[y]][["not.weighted.vote"]][[x]]
-                })
-            })
-            # Merge Score
-            Y.noweight.vote = lapply(1 : length(dist.select), function(x)
-            {
-                do.call(rbind, Y.noweight.vote[[x]])
-            })
-            
-            # Sort matrix
-            Y.noweight.vote = lapply(1 : length(dist.select), function(x)
-            {
-                Y.noweight.vote[[x]][sort(unlist(folds), index.return = TRUE)$ix, , drop = FALSE]
-            })
-            
-            names(Y.vote) = dist.select
-            
-            ## End: retrieve (weighted) vote for each component
-            ### End: Prediction (score / class) sample test
-            
-            
-            ## subjects with NA are considered false
-            Y.noweight.vote.res = lapply(1 : length(dist.select), function(x)
-            {
-                apply(Y.noweight.vote[[x]], 2, function(y)
-                {
-                    y[is.na(y)] <- nlevels(Y)+5   ## adding a new level for unsure subjects (replacing NA with this level)
-                    temp=table(factor(y, levels = c(levels(Y), nlevels(Y)+5)), Y)
-                    diag(temp) <- 0
-                    err = c(colSums(temp)/summary(Y), sum(temp)/length(Y), mean(colSums(temp)/summary(Y)))
-                    return(err=err)
-                })
-            })
-            
-            
-            Y.noweight.vote.res = lapply(1 : length(dist.select), function(x)
-            {
-                colnames(Y.noweight.vote.res[[x]]) = paste("comp", 1:max(object$ncomp[-(J + 1)]))
-                row.names(Y.noweight.vote.res[[x]]) = c(levels(Y), "Overall.ER", "Overall.BER")
-                return((Y.noweight.vote.res[[x]]))
-            })
-            names(Y.noweight.vote) = dist.select; names(Y.noweight.vote.res) = dist.select
-            
-        }
         ## End: retrieve non weighted vote for each component
 
         
@@ -561,12 +561,9 @@ cpus,
         result$MajorityClass = Y.vote
         result$MajorityClass.error.rate = Y.vote.res
 
-        if(!is.null(weight))
-        {
-            result$NotWeightedVoteClass = Y.noweight.vote
-            result$NotWeightedVoteClass.error.rate = Y.noweight.vote.res
-            result$weight = predict.all[[1]]$weight
-        }
+        result$WeightedVoteClass = Y.weighted.vote
+        result$WeightedVoteClass.error.rate = Y.weighted.vote.res
+        result$weights = weights
 
     }
     
