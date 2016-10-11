@@ -146,9 +146,31 @@ if(additional.test==TRUE)
     test.keepX = list(gene=c(1,5,10,4),lipid=c(1,2,3)),
     scheme = "centroid",
     verbose = FALSE,
-    bias = FALSE
+    bias = FALSE,
+    weighted=FALSE
     )
     tune
+
+X = data
+test.keepX = list(gene=c(1,5,10,4),lipid=c(1,2,3))
+scheme = "centroid"
+bias=FALSE
+ncomp=2
+measure = "BER"
+dist = "max.dist"
+validation = "Mfold"
+folds = 10
+max.iter = 100
+near.zero.var = FALSE
+nrepeat=1
+scale=TRUE
+tol = 1e-06
+weighted = TRUE
+progressBar = TRUE
+constraint = FALSE
+weighted = TRUE
+parallel=FALSE
+
 
     # tune with constraint
     tune = tune.block.splsda(

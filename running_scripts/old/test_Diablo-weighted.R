@@ -41,6 +41,7 @@ get.result = function(X.train, Y.train, ncomp, keepX, design, X.test, Y.test)
 {
     
     model = block.splsda(X = X.train, Y = Y.train, ncomp = ncomp, keepX = keepX, design = design)
+    print(model$crit)
 
     pred.train <- predict(object = model, newdata = X.train, method = "all")
     pred.test <- predict(object = model, newdata = X.test, method = "all")
@@ -67,7 +68,7 @@ get.result = function(X.train, Y.train, ncomp, keepX, design, X.test, Y.test)
     rownames(corMat.diablo) <- paste(names(model$variates),".comp",rep(1:ncomp,each=length(model$variates)),sep="")
     colnames(corMat.diablo) <- names(model$variates)
     
-    temp = matrix(corMat.diablo[,"Y"],ncol=2)
+    temp = matrix(corMat.diablo[,"Y"],ncol=ncomp)
     correlation = apply(temp, 1, function(x){mean(abs(x))})[1:length(X.train)]
     names(correlation) = names(X.train)
     
@@ -187,9 +188,9 @@ all(names(Y) == rownames(X[[3]]))
 all(names(Y) == rownames(X[[4]]))
 dim(X[[1]]); dim(X[[2]]); dim(X[[3]]); dim(X[[4]]);
 
-ncomp = 3
+ncomp = 4
 
-keep = 3
+keep = 15
 keepX = list(mRNA=rep(keep,ncomp), miRNA=rep(keep,ncomp), CpGs=rep(keep,ncomp), Proteins=rep(keep,ncomp))
 
 ## Validate in Test set
@@ -241,17 +242,23 @@ rownames(correlation.design.allcomp) <- colnames(correlation.design.allcomp) <- 
 full.design = matrix(1,nrow=4,ncol=4)-diag(4)
 
 
+ncomp=7
+keepX = list(mRNA=rep(keep,ncomp), miRNA=rep(keep,ncomp), CpGs=rep(keep,ncomp), Proteins=rep(keep,ncomp))
 
-table.full.design = get.result(X.train = X, Y.train = Y, ncomp = 4, keepX = keepX, design = full.design, X.test = X.test, Y.test = Y.test)
+set.seed(43)
+table.full.design = get.result(X.train = X, Y.train = Y, ncomp = ncomp, keepX = keepX, design = full.design, X.test = X.test, Y.test = Y.test)
 table.full.design$BER
 
+set.seed(43)
 table.design = get.result(X.train = X, Y.train = Y, ncomp = ncomp, keepX = keepX, design = design, X.test = X.test, Y.test = Y.test)
 table.design$BER
 
-table.correlation.design.comp1 = get.result(X.train = X, Y.train = Y, ncomp = 4, keepX = keepX, design = correlation.design.comp1, X.test = X.test, Y.test = Y.test)
+set.seed(43)
+table.correlation.design.comp1 = get.result(X.train = X, Y.train = Y, ncomp = ncomp, keepX = keepX, design = correlation.design.comp1, X.test = X.test, Y.test = Y.test)
 table.correlation.design.comp1$BER
 
-table.correlation.design.allcomp = get.result(X.train = X, Y.train = Y, ncomp = 4, keepX = keepX, design = correlation.design.allcomp, X.test = X.test, Y.test = Y.test)
+set.seed(43)
+table.correlation.design.allcomp = get.result(X.train = X, Y.train = Y, ncomp = ncomp, keepX = keepX, design = correlation.design.allcomp, X.test = X.test, Y.test = Y.test)
 table.correlation.design.allcomp$BER
 
 
