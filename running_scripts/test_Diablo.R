@@ -11,6 +11,36 @@ library(mixOmics)
 #source("mixOmics/R/plotIndiv.R")
 data(nutrimouse)
 Y = nutrimouse$diet
+data = list(gene = nutrimouse$gene, outcome=Y, lipid = nutrimouse$lipid)
+design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+
+
+nutrimouse.sgccda <- wrapper.sgccda(X=data,
+indY = 2,
+design = design,
+keepX = list(gene=c(10,10), lipid=c(15,15)),
+ncomp = 2,#c(2, 2),
+scheme = "centroid",
+verbose = FALSE,
+bias = FALSE,
+tol=1e-30)
+
+
+data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, outcome=Y)
+design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+
+
+nutrimouse.sgccda <- wrapper.sgccda(X=data,
+indY = 3,
+design = design,
+keepX = list(gene=c(10,10), lipid=c(15,15)),
+ncomp = 2,#c(2, 2),
+scheme = "centroid",
+verbose = FALSE,
+bias = FALSE,
+tol=1e-30)
+
+
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 
@@ -24,6 +54,7 @@ scheme = "centroid",
 verbose = FALSE,
 bias = FALSE,
 tol=1e-30)
+
 
 pred=predict(nutrimouse.sgccda, data)
 pred2=predict(nutrimouse.sgccda, data,weight=c(1,2))
@@ -43,6 +74,10 @@ tol=1e-30)
 set.seed(43)
 a=perf(nutrimouse.sgccda)
 plot(a)
+
+set.seed(43)
+a=perf(nutrimouse.sgccda,nrepeat=3)
+
 
 set.seed(43)
 a2=perf(nutrimouse.sgccda,cpus=4)

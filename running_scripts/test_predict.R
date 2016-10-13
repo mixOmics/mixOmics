@@ -39,7 +39,7 @@ train <- setdiff(1:nrow(X), test)
 plsda.train <- plsda(X[train, ], Y[train], ncomp = 2)
 test.predict <- predict(plsda.train, X[test, ], method = "max.dist")
 
-Prediction <- levels(Y)[test.predict$class$max.dist[, 2]]
+Prediction <- test.predict$class$max.dist[, 2]
 cbind(Y = as.character(Y[test]), Prediction)
 
 plotIndiv(plsda.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction PLS-DA")
@@ -54,7 +54,7 @@ c(paste0("new ind",1:length(test))), pos = 3)
 splsda.train <- splsda(X[train, ], Y[train], ncomp = 2, keepX = c(30, 30))
 
 test.predict <- predict(splsda.train, X[test, ], method = "max.dist")
-Prediction <- levels(Y)[test.predict$class$max.dist[, 2]]
+Prediction <- test.predict$class$max.dist[, 2]
 cbind(Y = as.character(Y[test]), Prediction)
 
 

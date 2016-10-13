@@ -560,7 +560,7 @@ cpus,
         choice.keepX.constraint = if(constraint){choice.keepX.constraint}else{NULL},
         test.keepX = test.keepX, measure = measure, dist = dist, near.zero.var = near.zero.var,
         auc = auc, progressBar = progressBar, class.object = class(object), cl = cl)
-                
+                save(list=ls(),file="tempres.Rdata")
         # ---- extract stability of features ----- # NEW
         if (any(class(object) == "splsda"))
         list.features[[comp]] = result$features$stable
@@ -584,7 +584,8 @@ cpus,
             #prediction of each samples for each fold and each repeat, on each comp
             class.all[[ijk]][, , comp] = result$class.comp[[ijk]][,,1]
         }
-        prediction.all[[comp]] = result$prediction.comp[[1]][, , 1] #take only one component [[1]] and one of test.keepX [,,1]
+        prediction.all[[comp]] = array(unlist(result$prediction.comp),c(nrow(result$prediction.comp[[1]]), ncol(result$prediction.comp[[1]]), nrepeat),
+        dimnames = c(dimnames(result$prediction.comp[[1]])[1:2], list(paste0("nrep",1:nrepeat))))#[[1]][, , 1] #take only one component [[1]] and one of test.keepX [,,1]
         
         if(auc == TRUE)
         {

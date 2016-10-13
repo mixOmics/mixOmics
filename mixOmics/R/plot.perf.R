@@ -409,9 +409,9 @@ legend.position=c("vertical","horizontal"),
     
     if(weighted == TRUE)
     {
-        perfo = "WeightedVoteClass.error.rate"
+        perfo = "WeightedVote.error.rate"
     } else {
-        perfo = "MajorityClass.error.rate"
+        perfo = "MajorityVote.error.rate"
     }
     
     # error.rate is a list [[measure]]

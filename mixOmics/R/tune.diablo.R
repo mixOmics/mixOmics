@@ -224,9 +224,9 @@ name.save = NULL)
     
     if(weighted == TRUE)
     {
-        perfo = paste0("WeightedVoteClass.error.rate.",dist)
+        perfo = paste0("WeightedVote.error.rate.",dist)
     } else {
-        perfo = paste0("MajorityClass.error.rate.",dist)
+        perfo = paste0("MajorityVote.error.rate.",dist)
     }
     #-- end checking --#
     #------------------#
@@ -293,10 +293,10 @@ name.save = NULL)
         ## Majority Vote
         if(weighted == TRUE)
         {
-            cvPerf2 = lapply(1 : nrepeat, function(x){unlist(cvPerf[[x]][names(cvPerf[[x]]) == "WeightedVoteClass.error.rate"], recursive = FALSE)})
+            cvPerf2 = lapply(1 : nrepeat, function(x){unlist(cvPerf[[x]][names(cvPerf[[x]]) == "WeightedVote.error.rate"], recursive = FALSE)})
             names(cvPerf2) = paste("nrepeat",1:nrepeat,sep="")
         } else {
-            cvPerf2 = lapply(1 : nrepeat, function(x){unlist(cvPerf[[x]][names(cvPerf[[x]]) == "MajorityClass.error.rate"], recursive = FALSE)})
+            cvPerf2 = lapply(1 : nrepeat, function(x){unlist(cvPerf[[x]][names(cvPerf[[x]]) == "MajorityVote.error.rate"], recursive = FALSE)})
             names(cvPerf2) = paste("nrepeat",1:nrepeat,sep="")
         }
 

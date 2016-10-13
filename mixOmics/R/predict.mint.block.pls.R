@@ -426,6 +426,34 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
     if(length(grep("block",class(object)))!=0 )
     {
         out=list(predict=Y.hat[which(!is.na(ind.match))],variates=t.pred[which(!is.na(ind.match))],B.hat=B.hat[which(!is.na(ind.match))])
+        
+        # average prediction over the blocks
+        temp.all =list()
+        for(comp in 1:min(ncomp)) #note: all ncomp are the same in v6 as the input parameter is a single value
+        {
+            temp = array(0, c(nrow(Y.hat[[1]]), ncol(Y.hat[[1]]), J), dimnames = list(rownames(newdata[[1]]), colnames(Y),names(object$X)))
+            for(i in 1 : J)
+            temp[, , i] = Y.hat[[i]][, , comp]
+            
+            temp.all[[comp]] = temp
+        }
+        names(temp.all) = paste("dim", c(1:ncomp[i]), sep = " ")
+        
+        out$AveragedPredict = array(unlist(lapply(temp.all, function(x){apply(x, c(1,2), mean)})), dim(Y.hat[[1]]), dimnames = list(rownames(newdata[[1]]), colnames(Y), paste("dim", c(1:ncomp[i]), sep = " ")))
+        
+        out$WeightedPredict = array(unlist(lapply(temp.all, function(x){apply(x, c(1,2), function(z){
+            temp = aggregate(object$weights,list(z),sum)
+            ind = which(temp[,2]== max (temp[,2]))# if two max, then NA
+            if(length(ind) == 1)
+            {
+                res = temp[ind, 1]
+            } else {
+                res = NA
+            }
+            res
+        })})), dim(Y.hat[[1]]), dimnames = list(rownames(newdata[[1]]), colnames(Y), paste("dim", c(1:ncomp[i]), sep = " ")))
+
+
         #out$newdata=concat.newdata
     }else{# not a block (pls/spls/plsda/splsda/mint...)
         out=list(predict=Y.hat[[1]],variates=t.pred[[1]],B.hat=B.hat[[1]])
@@ -433,10 +461,36 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         
     }
 
-
     # get the classification for each new sample if the object is a DA
     if(any(class(object)=="DA")) # a DA analysis (mint).(block).(s)plsda
     {
+        
+        if(length(grep("block",class(object)))!=0 )
+        {
+
+            # predict class of AveragePredict, only with max.dist
+            out$AveragedPredict.class$max.dist = matrix(sapply(1:ncomp[1], ### List level
+                function(y){apply(out$AveragedPredict[, , y, drop = FALSE], 1,  ### component level
+                    function(z){
+                        paste(levels(Y.factor)[which(z == max(z))], collapse = "/")
+                    }) ### matrix level
+                }), nrow = nrow(newdata[[1]]), ncol = ncomp[1])
+            
+            
+            # predict class of WeightedPredict, only with max.dist
+            out$WeightedPredict.class$max.dist = matrix(sapply(1:ncomp[1], ### List level
+            function(y){apply(out$WeightedPredict[, , y, drop = FALSE], 1,  ### component level
+                function(z){
+                    paste(levels(Y.factor)[which(z == max(z))], collapse = "/")
+                }) ### matrix level
+            }), nrow = nrow(newdata[[1]]), ncol = ncomp[1])
+            
+            rownames(out$AveragedPredict.class$max.dist) = rownames(out$WeightedPredict.class$max.dist) = rownames(newdata[[1]])
+            colnames(out$AveragedPredict.class$max.dist) = colnames(out$WeightedPredict.class$max.dist) = paste("dim", c(1:ncomp[i]), sep = " ")
+        }
+        
+        
+        
         # creating temporary 'blocks' outputs to pass into the internal_predict.DA function
         out.temp=list(predict=Y.hat[which(!is.na(ind.match))],variates=t.pred[which(!is.na(ind.match))],B.hat=B.hat[which(!is.na(ind.match))])
         out.temp$newdata=concat.newdata[which(!is.na(ind.match))]
