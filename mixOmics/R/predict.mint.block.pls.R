@@ -211,7 +211,7 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
     
     # logratio and multilevel transform if necessary
     if (!is.null(object$logratio))
-    newdata2 = lapply(newdata, logratio.transfo, logratio = object$logratio)
+    newdata = lapply(newdata, logratio.transfo, logratio = object$logratio)
     
     if(!is.null(multilevel))
     newdata = lapply(newdata, withinVariation, design = data.frame(multilevel))
