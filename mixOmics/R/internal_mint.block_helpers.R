@@ -34,7 +34,7 @@
 # --------------------------------------
 # study_split: used in 'internal_mint.block.R' and 'predict.mint.block.pls.R'
 # --------------------------------------
-get.weights = function(variates)
+get.weights = function(variates, indY)
 {
     ncomp = min(sapply(variates, ncol))
     x.xList <- list()
@@ -44,7 +44,7 @@ get.weights = function(variates)
         for(i in 1:length(variates)){
             corDat <- rep(0, length(variates))
             names(corDat) <- paste("cor", names(variates)[i], names(variates), sep = "_")
-            for(j in (i):length(variates)){
+            for(j in 1:length(variates)){
                 corDat[j] <- as.numeric(cor(variates[[i]][,comp], variates[[j]][,comp]))
             }
             x.xList[[compt]] <- corDat
@@ -55,11 +55,11 @@ get.weights = function(variates)
     rownames(corMat.diablo) <- paste(names(variates),".comp",rep(1:ncomp,each=length(variates)),sep="")
     colnames(corMat.diablo) <- names(variates)
     
-    temp = matrix(corMat.diablo[,"Y"],ncol=ncomp)
+    temp = matrix(corMat.diablo[,indY],ncol=ncomp)
     correlation = apply(temp, 1, function(x){mean(abs(x))})[1:length(variates)]
     names(correlation) = names(variates)
     
-    correlation = correlation[-which(names(correlation) == "Y")]
+    correlation = correlation[-indY]
     return(correlation)
     
 }
