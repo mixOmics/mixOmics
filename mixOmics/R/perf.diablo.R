@@ -552,7 +552,7 @@ cpus,
         ### End: Supplementary analysis for sgcca
     } ### end nrepeat
     
-    save(list=ls(),file="temp.Rdata")
+    #save(list=ls(),file="temp.Rdata")
     
     names(error.mat) = names(error.mat.class) = names(Y.all) = names(predict.all) = names(Y.predict) =
     names(list.features) = names(final.features) = paste0("nrep",1:nrepeat)

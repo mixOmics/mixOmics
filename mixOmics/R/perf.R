@@ -560,7 +560,7 @@ cpus,
         choice.keepX.constraint = if(constraint){choice.keepX.constraint}else{NULL},
         test.keepX = test.keepX, measure = measure, dist = dist, near.zero.var = near.zero.var,
         auc = auc, progressBar = progressBar, class.object = class(object), cl = cl)
-                save(list=ls(),file="tempres.Rdata")
+
         # ---- extract stability of features ----- # NEW
         if (any(class(object) == "splsda"))
         list.features[[comp]] = result$features$stable
