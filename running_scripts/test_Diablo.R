@@ -70,13 +70,13 @@ verbose = FALSE,
 bias = FALSE,
 tol=1e-30)
 
+set.seed(43)
+a=perf(nutrimouse.sgccda,nrepeat=3)
+
 
 set.seed(43)
 a=perf(nutrimouse.sgccda)
 plot(a)
-
-set.seed(43)
-a=perf(nutrimouse.sgccda,nrepeat=3)
 
 
 set.seed(43)
