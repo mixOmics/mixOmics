@@ -185,7 +185,7 @@ internal_predict.DA = function(object, out, q, dist, weights)
         {
             out.DA$WeightedVote = lapply(out.DA$class, function(x){ # x is a distance
                 class.per.comp = lapply(1:min(ncomp), function(y) {matrix(sapply(x, function(z)  z[,y, drop = FALSE]),ncol=J)}) # combine the results per component
-                names(class.per.comp) = paste("comp",1:min(ncomp))
+                names(class.per.comp) = paste0("comp",1:min(ncomp))
                 class.per.comp = lapply(class.per.comp, function(y){rownames(y) = rownames(out.DA$vote[[1]]); y})
                 class.weighted.per.comp = sapply(class.per.comp, function(y){ # for each component
                     apply(y,1,function(z){  # we aggregate the results of each individuals using the 'weights'

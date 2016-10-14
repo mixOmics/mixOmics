@@ -500,7 +500,7 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         object.temp = object
         object.temp$X = object.temp$X[which(!is.na(ind.match))]
         object.temp$variates = object.temp$variates[c(which(!is.na(ind.match)),J+1)] #J+1 is Y
-        classif.DA=internal_predict.DA(object=object.temp, q=q, out=out.temp, dist=dist, weights = object$weights)
+        classif.DA=internal_predict.DA(object=object.temp, q=q, out=out.temp, dist=dist, weights = object$weights[which(!is.na(ind.match))])
         out=c(out,classif.DA)
         
     }
