@@ -218,8 +218,13 @@ name.save = NULL)
     if(missing(cpus))
     {
         parallel = FALSE
+        message(paste("You can look into the 'cpus' argument to speed up computation time.",sep=""))
+
     } else {
         parallel = TRUE
+        if(progressBar == TRUE)
+        message(paste("As code is running in parallel, the progressBar will only show 100% upon completion of each component.",sep=""))
+
     }
     
     if(weighted == TRUE)
