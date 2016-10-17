@@ -2,7 +2,7 @@ Package: mixOmics
 Type: Package
 Title: Omics Data Integration Project
 Version: 6.1.1
-Date: 2016-07-08
+Date: 2016-10-17
 Depends: R (>= 2.10), MASS, lattice, ggplot2
 Imports: igraph, rgl, ellipse, corpcor, RColorBrewer, plyr,parallel,
         dplyr, tidyr, reshape2, methods

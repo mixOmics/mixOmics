@@ -359,6 +359,7 @@ plot.perf.sgccda.mthd =
 function (x,
 dist = c("all","max.dist","centroids.dist","mahalanobis.dist"),
 measure = c("all","overall","BER"),
+weighted = TRUE,
 xlab = NULL,
 ylab = NULL,
 overlay= c("all", "measure", "dist"),
@@ -405,7 +406,14 @@ legend.position=c("vertical","horizontal"),
    
     if (is.null(xlab))
     xlab = 'Component'
-        
+    
+    if(weighted == TRUE)
+    {
+        perfo = "WeightedVote.error.rate"
+    } else {
+        perfo = "MajorityVote.error.rate"
+    }
+    
     # error.rate is a list [[measure]]
     # error.rate[[measure]] is a matrix of dist columns and ncomp rows
     # same for error.rate.sd, if any
@@ -415,7 +423,7 @@ legend.position=c("vertical","horizontal"),
         error.temp = NULL
         for(di in dist)
         {
-            temp = t(x$MajorityClass.error.rate[[di]][mea, , drop=FALSE])
+            temp = t(x[[perfo]][[di]][mea, , drop=FALSE])
             colnames(temp) = di
             error.temp = cbind(error.temp, temp)
 

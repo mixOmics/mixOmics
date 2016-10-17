@@ -50,6 +50,7 @@ legend.position=c("vertical", "horizontal"),
 \method{plot}{perf.sgccda.mthd}(x,
 dist = c("all","max.dist","centroids.dist","mahalanobis.dist"),
 measure = c("all","overall","BER"),
+weighted = TRUE,
 xlab = NULL,
 ylab = NULL,
 overlay= c("all", "measure", "dist"),
@@ -65,6 +66,7 @@ legend.position=c("vertical","horizontal"),
   \item{dist}{prediction method applied in \code{perf} for \code{plsda} or \code{splsda}. 
 	See \code{\link{perf}}.}
 \item{measure}{Two misclassification measure are available: overall misclassification error \code{overall} or the Balanced Error Rate \code{BER}}
+\item{weighted}{plot either the performance of the Majority vote or the Weighted vote.}
 \item{study}{Indicates which study-specific outputs to plot. A character vector containing some levels of \code{object$study}, "all.partial" to plot all studies or "global" is expected. Default to "global".}
 \item{overlay}{parameter to overlay graphs; if 'all', only one graph is shown with all outputs; if 'measure', a graph is shown per distance; if 'dist', a graph is shown per measure.}
 \item{legend.position}{position of the legend, one of "vertical" (only one column) or "horizontal" (two columns). }

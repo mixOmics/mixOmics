@@ -86,8 +86,8 @@ that contains the following components:
 \item{names}{list containing the names to be used for individuals and variables.}
 \item{nzv}{list containing the zero- or near-zero predictors information.}
 \item{iter}{Number of iterations of the algorthm for each component}
+\item{weights}{Correlation between the variate of each block and the variate of the outcome. Used to weight predictions.}
 \item{explained_variance}{Percentage of explained variance for each component and each block}
-
 }
 
 
