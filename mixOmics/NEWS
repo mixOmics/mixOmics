@@ -1,3 +1,18 @@
+
+Changes in 6.1.1 (patch)
+================
+
+Enhancements:
+-------------
+1 - add a weighted prediction for block approaches. 
+2 - add a 'constraint' parameter for sPLS-DA perf and tune functions.
+3 - add a 'cpus' parameter for sPLS-DA perf/tune and block.splsda perf/tune. To be used to run the code in parallel
+
+Bug fixes:
+----------
+- predict with logratio (the logratio transform is now performed inside the predict function)
+
+
 Changes in 6.1.0 (improvements and bug fixes)
 ================
 In short,
