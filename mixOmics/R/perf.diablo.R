@@ -76,7 +76,7 @@ cpus,
         
     }
     
-    error.mat = error.mat.class = Y.all = predict.all = Y.predict = list.features = final.features = list()
+    error.mat = error.mat.class = Y.all = predict.all = Y.predict = list.features = final.features = weights = crit = list()
     if (length(X) > 1)
     Y.mean = Y.mean.res = Y.weighted.vote = Y.weighted.vote.res = Y.vote = Y.vote.res = Y.WeightedPredict = Y.WeightedPredict.res = list()
     
@@ -142,11 +142,11 @@ cpus,
         }
         
         ### Retrieve convergence criterion
-        crit = lapply(1 : M, function(x){model[[x]]$crit})
+        crit[[nrep]] = lapply(1 : M, function(x){model[[x]]$crit})
         
         ### Retrieve weights
-        weights = sapply(1 : M, function(x){model[[x]]$weights})
-        colnames(weights) = names(crit) = paste0("fold",1:M)
+        weights[[nrep]] = sapply(1 : M, function(x){model[[x]]$weights})
+        colnames(weights[[nrep]]) = names(crit[[nrep]]) = paste0("fold",1:M)
         
         ### Retrieve selected variables per component
         features = lapply(1 : J, function(x)
@@ -555,7 +555,7 @@ cpus,
     #save(list=ls(),file="temp.Rdata")
     
     names(error.mat) = names(error.mat.class) = names(Y.all) = names(predict.all) = names(Y.predict) =
-    names(list.features) = names(final.features) = paste0("nrep",1:nrepeat)
+    names(list.features) = names(final.features) = names(crit) = names(weights) = paste0("nrep",1:nrepeat)
     
     
     ###------------------------------------------------------------###
