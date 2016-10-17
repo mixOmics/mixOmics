@@ -74,7 +74,7 @@ get.result = function(X.train, Y.train, ncomp, keepX, design, X.test, Y.test)
     
     
     ##### on the training set
-    class = sapply(pred.train$class$max.dist,function(x) x[,ncomp])
+    class = sapply(pred.train$class$mahalanobis.dist,function(x) x[,ncomp])
     
     
     #aggregate(correlation,list(class["A0T1",]),sum)
@@ -92,24 +92,24 @@ get.result = function(X.train, Y.train, ncomp, keepX, design, X.test, Y.test)
     
     #differences between pred.train$vote and pred.weighted.vote
     
-    temp = cbind(pred.train$vote$max.dist[,ncomp],pred.weighted.vote)
+    temp = cbind(pred.train$vote$mahalanobis.dist[,ncomp],pred.weighted.vote)
     temp = replace(temp,which(is.na(temp)),"NA")
     
     sum(apply(temp,1,function(x){as.character(x[1])!=as.character(x[2])}),na.rm=TRUE)
     
     # comparison pred.weighted.vote with the truth Y
-    pred.train$vote$max.dist[,ncomp] = replace(pred.train$vote$max.dist[,ncomp],which(is.na(pred.train$vote$max.dist[,ncomp])),"NA")
+    pred.train$MajorityVote$mahalanobis.dist[,ncomp] = replace(pred.train$MajorityVote$mahalanobis.dist[,ncomp],which(is.na(pred.train$MajorityVote$mahalanobis.dist[,ncomp])),"NA")
     
     get.confusion_matrix(Y,Y,pred.weighted.vote)
     BER.train.weighted = get.BER(get.confusion_matrix(Y,Y,pred.weighted.vote))
     
-    get.confusion_matrix(Y,Y,pred.train$vote$max.dist[,ncomp])
-    BER.train = get.BER(get.confusion_matrix(Y,Y,pred.train$vote$max.dist[,ncomp]))
+    get.confusion_matrix(Y,Y,pred.train$MajorityVote$mahalanobis.dist[,ncomp])
+    BER.train = get.BER(get.confusion_matrix(Y,Y,pred.train$MajorityVote$mahalanobis.dist[,ncomp]))
     
     
     
     ##### on the test set
-    class = sapply(pred.test$class$max.dist,function(x) x[,ncomp])
+    class = sapply(pred.test$class$mahalanobis.dist,function(x) x[,ncomp])
     
     correlation.test = correlation[which(names(correlation)%in%colnames(class))]
     pred.weighted.vote = apply(class,1,function(x){
@@ -125,20 +125,20 @@ get.result = function(X.train, Y.train, ncomp, keepX, design, X.test, Y.test)
     
     #differences between pred.train$vote and pred.weighted.vote
     
-    temp = cbind(pred.test$vote$max.dist[,ncomp],pred.weighted.vote)
+    temp = cbind(pred.test$MajorityVote$mahalanobis.dist[,ncomp],pred.weighted.vote)
     temp = replace(temp,which(is.na(temp)),"NA")
     
     sum(apply(temp,1,function(x){as.character(x[1])!=as.character(x[2])}),na.rm=TRUE)
     
     
     # comparison pred.weighted.vote with the truth Y
-    pred.test$vote$max.dist[,ncomp] = replace(pred.test$vote$max.dist[,ncomp],which(is.na(pred.test$vote$max.dist[,ncomp])),"NA")
+    pred.test$MajorityVote$mahalanobis.dist[,ncomp] = replace(pred.test$MajorityVote$mahalanobis.dist[,ncomp],which(is.na(pred.test$MajorityVote$mahalanobis.dist[,ncomp])),"NA")
     
     get.confusion_matrix(Y,Y.test,pred.weighted.vote)
     BER.test.weighted = get.BER(get.confusion_matrix(Y,Y.test,pred.weighted.vote))
     
-    get.confusion_matrix(Y,Y.test,pred.test$vote$max.dist[,ncomp])
-    BER.test = get.BER(get.confusion_matrix(Y,Y.test,pred.test$vote$max.dist[,ncomp]))
+    get.confusion_matrix(Y,Y.test,pred.test$MajorityVote$mahalanobis.dist[,ncomp])
+    BER.test = get.BER(get.confusion_matrix(Y,Y.test,pred.test$MajorityVote$mahalanobis.dist[,ncomp]))
     
     
     BER = cbind(c(BER.train.weighted,BER.test.weighted), c(BER.train,BER.test))
@@ -242,7 +242,7 @@ rownames(correlation.design.allcomp) <- colnames(correlation.design.allcomp) <- 
 full.design = matrix(1,nrow=4,ncol=4)-diag(4)
 
 
-ncomp=7
+ncomp=4
 keepX = list(mRNA=rep(keep,ncomp), miRNA=rep(keep,ncomp), CpGs=rep(keep,ncomp), Proteins=rep(keep,ncomp))
 
 set.seed(43)
