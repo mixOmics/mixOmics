@@ -149,7 +149,7 @@ cl
 
     
     M = length(folds)
-    features = NULL
+    features = features.j = NULL
     auc.all = prediction.comp = class.comp = list()
     for(ijk in dist)
     class.comp[[ijk]] = array(0, c(nrow(X), nrepeat, length(test.keepX)))# prediction of all samples for each test.keepX and  nrep at comp fixed
