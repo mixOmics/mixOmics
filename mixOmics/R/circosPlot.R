@@ -42,7 +42,6 @@ size.labels=1)
 
 
     options(stringsAsFactors = FALSE)
-    set.seed(1234)
     figSize = 800
     segmentWidth = 25
     linePlotWidth = 90

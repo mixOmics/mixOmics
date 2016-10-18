@@ -186,6 +186,10 @@ cpus
         parallel = TRUE
         cl = makeCluster(cpus, type = "SOCK")
         clusterExport(cl, c("splsda","selectVar"))
+        
+        if(progressBar == TRUE)
+        message(paste("As code is running in parallel, the progressBar will only show 100% upon completion of each component.",sep=""))
+
     } else {
         parallel = FALSE
         cl = NULL

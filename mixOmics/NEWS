@@ -8,6 +8,10 @@ Enhancements:
 2 - add a 'constraint' parameter for sPLS-DA perf and tune functions.
 3 - add a 'cpus' parameter for sPLS-DA perf/tune and block.splsda perf/tune. To be used to run the code in parallel
 
+New features:
+-------------
+ - mint.pca function to do unsupervised integration of data
+
 Bug fixes:
 ----------
 - predict with logratio (the logratio transform is now performed inside the predict function)
