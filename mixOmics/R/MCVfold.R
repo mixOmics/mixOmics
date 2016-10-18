@@ -349,7 +349,7 @@ cl
                 # added: record selected features
                 if (any(class.object %in% c("splsda")) & length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
                 # note: if plsda, 'features' includes everything: to optimise computational time, we don't evaluate for plsda object
-                features = c(features, selectVar(object.res, comp = ncomp)$name)
+                features.j = selectVar(object.res, comp = ncomp)$name
                 
                 test.predict.sw <- predict(object.res, newdata = X.test, method = dist)
                 prediction.comp.j[, , i] =  test.predict.sw$predict[, , ncomp]
@@ -359,7 +359,7 @@ cl
             } # end i
             
             
-            return(list(class.comp.j = class.comp.j, prediction.comp.j = prediction.comp.j, features = features, omit = omit))
+            return(list(class.comp.j = class.comp.j, prediction.comp.j = prediction.comp.j, features = features.j, omit = omit))
             
         } # end fonction.j.folds
 
@@ -384,6 +384,10 @@ cl
             
             for(ijk in dist)
             class.comp[[ijk]][omit,nrep, ] = class.comp.j[[ijk]]
+            
+            if (any(class.object %in% c("splsda")) & length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
+            features = c(features, result[[j]]$features)
+
         }
         
 

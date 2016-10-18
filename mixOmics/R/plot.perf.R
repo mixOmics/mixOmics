@@ -90,7 +90,7 @@ layout = NULL,
     nResp = nrow(y)  # Number of response variables
     nComp = ncol(y)  # Number of components
     
-    def.par = par(no.readonly = TRUE)
+    #def.par = par(no.readonly = TRUE)
 
     if (nResp > 1) {
         if (is.null(layout)) {
@@ -107,8 +107,7 @@ layout = NULL,
         
         if (nRows * nCols < nResp) devAskNewPage(TRUE)
         ynames = rownames(y)
-    }
-    else {
+    } else {
         ynames = "Y"
     }
     
@@ -145,14 +144,19 @@ layout = NULL,
                 if (LimQ2.col != "none") panel.abline(h = LimQ2, col = LimQ2.col)
                 panel.xyplot(x, y, ...)})
         }
-    }
-    else {
-        xyplot(val ~ comps | varName, data = df, xlab = xlab, ylab = ylab,
+    } else {
+        plt = xyplot(val ~ comps | varName, data = df, xlab = xlab, ylab = ylab,
         scales = list(y = yList, x = list(at = cTicks)),
         as.table = TRUE, layout = layout, ...)
+        plot(plt)
+
     }
     
-    par(def.par)
+    if (nResp > 1) {
+        if (nRows * nCols < nResp) devAskNewPage(FALSE)
+    }
+
+    #par(def.par)
     
     
 }
