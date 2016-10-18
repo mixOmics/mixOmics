@@ -115,14 +115,14 @@ train <- setdiff(1:nrow(X), test)
 
 plsda.train <- plsda(X[train, ], Y[train], ncomp = 2)
 test.predict <- predict(plsda.train, X[test, ], dist = "max.dist")
-Prediction <- levels(Y)[test.predict$class$max.dist[, 2]]
+Prediction <- test.predict$class$max.dist[, 2]
 cbind(Y = as.character(Y[test]), Prediction)
 
 \dontrun{
 ## Second example with splsda
 splsda.train <- splsda(X[train, ], Y[train], ncomp = 2, keepX = c(30, 30))
 test.predict <- predict(splsda.train, X[test, ], dist = "max.dist")
-Prediction <- levels(Y)[test.predict$class$max.dist[, 2]]
+Prediction <- test.predict$class$max.dist[, 2]
 cbind(Y = as.character(Y[test]), Prediction)
 
 
@@ -164,7 +164,7 @@ test.predict = predict(res.train, newdata=data.test[2], method = "max.dist")
 data(stemcells)
 
 #training set
-ind.test = which(stemcells$study == "5")
+ind.test = which(stemcells$study == "3")
 gene.train = stemcells$gene[-ind.test,]
 Y.train = stemcells$celltype[-ind.test]
 study.train = factor(stemcells$study[-ind.test])
