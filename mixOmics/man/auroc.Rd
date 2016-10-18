@@ -18,7 +18,7 @@ Calculates the AUC and plots ROC for supervised objects from s/plsda, mint.s/pls
 \method{auroc}{plsda}(object, newdata = object$input.X, outcome.test = as.factor(object$Y),
 multilevel = NULL, plot = TRUE, roc.comp = 1, ...)
 
-\method{auroc}{splsda}(object, newdata = object$X, outcome.test = as.factor(object$Y),
+\method{auroc}{splsda}(object, newdata = object$input.X, outcome.test = as.factor(object$Y),
 multilevel = NULL, plot = TRUE, roc.comp = 1, ...)
 
 \method{auroc}{mint.plsda}(object, newdata = object$X, outcome.test = as.factor(object$Y),
