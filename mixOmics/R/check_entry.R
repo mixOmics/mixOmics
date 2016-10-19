@@ -990,7 +990,7 @@ keepX.constraint)
     
     #check scheme
     if (missing(scheme))
-    scheme= "centroid"
+    scheme= "horst"
     
     if (!(scheme %in% c("horst", "factorial","centroid")))
     {
@@ -1189,7 +1189,7 @@ keepX.constraint)
     stop("init should be 'svd.single'.")
     
     # check scheme
-    if(missing(scheme)) scheme = "centroid"
+    if(missing(scheme)) scheme = "horst"
     if (!(scheme %in% c("horst", "factorial", "centroid")))
     {
         stop("Choose one of the three following schemes: horst, centroid or factorial")
