@@ -447,6 +447,9 @@ name.save = NULL)
             save(result, file = paste0(name.save,".comp",comp.real[1],"to",comp.real[comp],".Rdata"))
         }
         
+        if (progressBar ==  TRUE)
+        setTxtProgressBar(pb, 1)
+
     }
     #close the cluster after ncomp
     if (parallel == TRUE)
