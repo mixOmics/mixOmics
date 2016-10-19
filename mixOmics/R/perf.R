@@ -589,8 +589,8 @@ cpus,
         
         if(auc == TRUE)
         {
-            auc.all[[comp]] = result$auc.all
-            auc.mean[[comp]] = result$auc
+            auc.all[[comp]] = lapply(result$auc.all, function(x) x[,,1])
+            auc.mean[[comp]] = result$auc[, , 1]
         }
     }
     if (parallel == TRUE)

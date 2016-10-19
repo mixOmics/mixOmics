@@ -55,7 +55,9 @@ in the calculation of the distance.
 
 For MINT objects, the \code{study.test} argument is required and provides the grouping factor of \code{newdata}.
 
-For multi block analysis (thus block objects), \code{newdata} is a list of matrices whose names are a subset of \code{names(object$X)} and missing blocks are allowed. Prediction is made for each block indepedently and a majority vote is performed to combine all blocks, where NA means that there is no consensus among the block.
+For multi block analysis (thus block objects), \code{newdata} is a list of matrices whose names are a subset of \code{names(object$X)} and missing blocks are allowed. Several predictions are returned, either for each block or for all blocks.
+For non discriminant analysis, the predicted values (\code{predict}) are returned for each block and these values are combined by average (\code{AveragedPredict}) or weighted average (\code{WeightedPredict}), using the weights of the blocks that are calculated as the correlation between a block's components and the outcome's components.
+For discriminant analysis, the predicted class is returned for each block (\code{class}) and each distance (\code{dist}) and these predictions are combined by majority vote (\code{MajorityVote}) or weighted majority vote (\code{WeightedVote}), using the weights of the blocks that are calculated as the correlation between a block's components and the outcome's components. NA means that there is no consensus among the block.
 
 }
 
@@ -64,11 +66,21 @@ For multi block analysis (thus block objects), \code{newdata} is a list of matri
   \item{predict}{predicted response values. The dimensions
 	correspond to the observations, the response variables and the model dimension, respectively.}
   \item{variates}{matrix of predicted variates.}
-  \item{B.hat}{matrix of regression coefficients (without the intercept).}
-  \item{class}{predicted class of \code{newdata} for each \eqn{1,...,}\code{ncomp} components.}
-  \item{centroids}{matrix of coordinates for centroids.}
+\item{B.hat}{matrix of regression coefficients (without the intercept).}
+
+\item{AveragedPredict}{if more than one block, returns the average predicted values over the blocks (using the \code{predict} output)}
+\item{WeightedPredict}{if more than one block, returns the weighted average of the predicted values over the blocks (using the \code{predict} and \code{weights} outputs)}
+
+\item{class}{predicted class of \code{newdata} for each \eqn{1,...,}\code{ncomp} components.}
+
+\item{MajorityVote}{if more than one block, returns the majority class over the blocks. NA for a sample means that there is no consensus on the predicted class for this particular sample over the blocks.}
+\item{WeightedVote}{if more than one block, returns the weighted majority class over the blocks. NA for a sample means that there is no consensus on the predicted class for this particular sample over the blocks.}
+\item{weights}{Returns the weights of each block used for the weighted predictions, for each nrepeat and each fold}
+
+\item{centroids}{matrix of coordinates for centroids.}
   \item{dist}{type of distance requested.}
   \item{vote}{majority vote result for multi block analysis (see details above).}
+
 }
 
 \references{

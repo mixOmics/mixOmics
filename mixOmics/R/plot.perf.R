@@ -168,6 +168,7 @@ plot.perf.plsda.mthd = plot.perf.splsda.mthd =
 function (x,
 dist = c("all","max.dist","centroids.dist","mahalanobis.dist"),
 measure = c("all","overall","BER"),
+col,
 xlab = NULL,
 ylab = NULL,
 overlay=c("all", "measure", "dist"),
@@ -196,6 +197,14 @@ sd = TRUE,
     if (is.null(dist) || !any(dist %in% colnames(x$error.rate[[1]])))
     stop("'dist' should be among the ones used in your call to 'perf': ", paste(colnames(x$error.rate[[1]]),collapse = ", "),".")
     
+    if(missing(col)) #one col per distance
+    {
+        col = color.mixo(1:length(dist))
+    } else {
+        if(length(col) != length(dist))
+        stop("'col' should be a vector of length ", length(dist),".")
+    }
+    
     if (is.null(ylab))
     ylab = 'Classification error rate'
     
@@ -222,7 +231,7 @@ sd = TRUE,
     
     internal_graphic.perf(error.rate = error.rate, error.rate.sd = error.rate.sd,
     overlay = overlay, type = type, measure = measure, dist = dist, legend.position = legend.position,
-    xlab = xlab, ylab = ylab, sd = sd,  ...)
+    xlab = xlab, ylab = ylab, sd = sd, color = col, ...)
     
     par(def.par)
     # error.bar(out,as.vector(mat.error.plsda),as.vector(cbind(x$error.rate.sd$overall,x$error.rate.sd$BER)))
@@ -238,6 +247,7 @@ plot.perf.mint.plsda.mthd = plot.perf.mint.splsda.mthd =
 function (x,
 dist = c("all","max.dist","centroids.dist","mahalanobis.dist"),
 measure = c("all","overall","BER"),
+col,
 xlab = NULL,
 ylab = NULL,
 study = "global",
@@ -269,6 +279,14 @@ legend.position=c("vertical", "horizontal"),
     if(length(legend.position) >1 )
     legend.position = legend.position[1]
 
+    if(missing(col)) #one col per distance
+    {
+        col = color.mixo(1:length(dist))
+    } else {
+        if(length(col) != length(dist))
+        stop("'col' should be a vector of length ", length(dist),".")
+    }
+
 
     if(any(study == "global"))
     {
@@ -292,7 +310,7 @@ legend.position=c("vertical", "horizontal"),
         
         internal_graphic.perf(error.rate = error.rate, error.rate.sd = NULL,
         overlay = overlay, type = type, measure = measure, dist = dist, legend.position = legend.position,
-        xlab = xlab, ylab = ylab, ...)
+        xlab = xlab, ylab = ylab, color = col, ...)
         
         par(def.par)
         
@@ -339,7 +357,7 @@ legend.position=c("vertical", "horizontal"),
 
             internal_graphic.perf(error.rate = error.rate, error.rate.sd = NULL,
             overlay = overlay, type = type, measure = measure, dist = dist, legend.position = legend.position,
-            xlab = xlab, ylab = ylab, ...)
+            xlab = xlab, ylab = ylab, color = col, ...)
             
             if (overlay == "all")
             title(stu, line = 1)
@@ -363,6 +381,7 @@ plot.perf.sgccda.mthd =
 function (x,
 dist = c("all","max.dist","centroids.dist","mahalanobis.dist"),
 measure = c("all","overall","BER"),
+col,
 weighted = TRUE,
 xlab = NULL,
 ylab = NULL,
@@ -405,6 +424,14 @@ legend.position=c("vertical","horizontal"),
     if (is.null(dist) || !any(dist %in% colnames(x$error.rate[[1]])))
     stop("'dist' should be among the ones used in your call to 'perf': ", paste(colnames(x$error.rate[[1]]),collapse = ", "),".")
     
+    if(missing(col)) #one col per distance
+    {
+        col = color.mixo(1:length(dist))
+    } else {
+        if(length(col) != length(dist))
+        stop("'col' should be a vector of length ", length(dist),".")
+    }
+    
     if (is.null(ylab))
     ylab = 'Classification error rate'
    
@@ -441,7 +468,7 @@ legend.position=c("vertical","horizontal"),
     
     internal_graphic.perf(error.rate = error.rate, error.rate.sd = NULL,
     overlay = overlay, type = type, measure = measure, dist = dist, legend.position = legend.position,
-    xlab = xlab, ylab = ylab, ...)
+    xlab = xlab, ylab = ylab, color = col, ...)
     
     par(def.par)
     return(invisible())
