@@ -230,8 +230,6 @@ sd = TRUE,
     }
     def.par = par(no.readonly = TRUE)
     
-    save(list=ls(),file="temp.Rdata")
-    
     internal_graphic.perf(error.rate = error.rate, error.rate.sd = error.rate.sd,
     overlay = overlay, type = type, measure = measure, dist = dist, legend.position = legend.position,
     xlab = xlab, ylab = ylab, sd = sd, color = col, ...)
