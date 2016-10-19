@@ -346,6 +346,15 @@ label.axes.box = "both"  )
             }
         }}
     
+    # output a message if some variates are anti correlated among blocks
+    if (any(class.object %in%  object.blocks))
+    {
+        VarX = do.call(cbind, lapply(object$variates, function(i) i[, ncomp]))
+        corX = cor(VarX)
+        if(any(corX < 0))
+        warning("There is negative correlation between the variates of some blocks, be careful with the interpretation of the correlation circle.")
+    }
+    
     if (any(sapply(cord.X, nrow) == 0))
     stop("No variable selected on at least one block")
     

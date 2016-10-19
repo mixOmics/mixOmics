@@ -244,7 +244,7 @@ nutrimouse.sgcca <- wrapper.sgcca(X = data,
 design = design1,
 penalty = c(0.3, 0.5, 1),
 ncomp = 3,
-scheme = "centroid",
+scheme = "horst",
 verbose = FALSE,
 bias = FALSE)
 
