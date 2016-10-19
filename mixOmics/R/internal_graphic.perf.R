@@ -52,7 +52,7 @@ internal_graphic.perf<- function (error.rate, error.rate.sd, overlay, type, meas
             colnames(temp) = paste(mea, colnames(temp),sep="_")
             error.rate.sd.concat = cbind(error.rate.sd.concat, temp)
         }
-        ylim = range(error.rate.concat + error.rate.sd.concat)
+        ylim = range(c(error.rate.concat + error.rate.sd.concat), c(error.rate.concat - error.rate.sd.concat))
         
     } else {
         error.rate.sd.concat = NULL
