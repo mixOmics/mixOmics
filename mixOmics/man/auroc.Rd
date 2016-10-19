@@ -90,6 +90,7 @@ Y <- as.factor(liver.toxicity$treatment[, 4])
 splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
 auc.splsda.liver = auroc(splsda.liver, ncomp = 1)
 
+\dontrun{
 
 ## example with mint.plsda
 # -----------------
@@ -122,6 +123,7 @@ auc.block.plsda.nutri = auroc(block.plsda.nutri, block = 'lipid')
 list.keepX = list(gene = rep(10, 2), lipid = rep(5,2))
 block.splsda.nutri = block.splsda(X = data, Y = nutrimouse$diet, keepX = list.keepX)
 auc.block.splsda.nutri = auroc(block.splsda.nutri, block = 1)
+}
 }
 
 \keyword{regression}
