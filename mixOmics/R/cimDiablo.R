@@ -35,7 +35,7 @@
 # This function is a small wrapper of cim. For more customisation, please use cim
 
 cimDiablo = function(object,
-ncomp=1,
+comp = NULL,
 margins = c(2, 15),
 legend.position="topright",
 transpose = FALSE,
@@ -50,9 +50,28 @@ size.legend=1.5)
 
     if (length(object$X) <= 1)
     stop("This function is only available when there are more than 3 blocks") # so 2 blocks in X + the outcome Y
+    
+    ncomp = min(object$ncomp)
+    #-- comp
+    if(is.null(comp))
+    {comp=1:ncomp}
+    if (length(comp) > 1) {
+        comp=unique(comp)
+        if (!is.numeric(comp) || any(comp < 1))
+        stop("invalid vector for 'comp'.", call. = FALSE)
+        if (any(comp > ncomp))
+        stop("the elements of 'comp' must be smaller or equal than ", ncomp, ".",
+        call. = FALSE)
+    }
+    
+    if (length(comp) == 1) {
+        if (is.null(comp) || !is.numeric(comp) || comp <= 0 || comp > ncomp)
+        stop("invalid value for 'comp'.", call. = FALSE)
+        comp=c(comp,comp)
+    }
+    
+    comp = round(comp)
 
-    if(ncomp > min(object$ncomp))
-    stop("'ncomp' needs to be higher than object$ncomp")
 
     X = object$X
     Y = object$Y
@@ -63,7 +82,7 @@ size.legend=1.5)
     object$loadings = c(object$loadings[-indY], object$loadings[indY])
     
     #reducing loadings for ncomp
-    object$loadings = lapply(object$loadings, function(x){x[, 1:ncomp, drop=FALSE]})
+    object$loadings = lapply(object$loadings, function(x){x[, comp, drop=FALSE]})
     
     keepA = lapply(object$loadings, function(i) apply(abs(i), 1, sum) > 0)
     XDatList = mapply(function(x, y){
