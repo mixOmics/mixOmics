@@ -266,8 +266,10 @@ name.save = NULL)
     
     
     if (parallel == TRUE)
-    cl <- makeCluster(cpus, type = "SOCK")
-    
+    {
+        cl <- makeCluster(cpus, type = "SOCK")
+        clusterEvalQ(cl, library(mixOmics))
+    }
     
     fonction.indice.grid = function(indice.grid, mode, design, scheme, bias, init, verbose){
         test.keepX.comp = grid[indice.grid,]

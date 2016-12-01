@@ -70,8 +70,8 @@ size.legend=1.5)
         x[, y]
     }, x=X, y=keepA[-length(keepA)], SIMPLIFY=FALSE)
     XDat = do.call(cbind, XDatList)
-    XDat[which(XDat > 2)] = 2
-    XDat[which(XDat < -2)] = -2
+    #XDat[which(XDat > 2)] = 2
+    #XDat[which(XDat < -2)] = -2
     
     dark = brewer.pal(n = 12, name = 'Paired')[seq(2, 12, by = 2)]
     VarLabels = factor(rep(names(X), lapply(keepA[-length(keepA)], sum)), levels = names(X))#[order(names(X))])
