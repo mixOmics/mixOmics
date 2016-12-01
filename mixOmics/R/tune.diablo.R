@@ -325,7 +325,7 @@ name.save = NULL)
         cat("\ncomp",comp.real[comp], "\n")
         
         #-- set up a progress bar --#
-        if (progressBar ==  TRUE & comp == 1)
+        if (progressBar ==  TRUE)# & comp == 1)
         {
             pb = txtProgressBar(style = 3)
             nBar = 1
