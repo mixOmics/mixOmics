@@ -39,7 +39,7 @@ train <- setdiff(1:nrow(X), test)
 plsda.train <- plsda(X[train, ], Y[train], ncomp = 2)
 test.predict <- predict(plsda.train, X[test, ], method = "max.dist")
 
-Prediction <- levels(Y)[test.predict$class$max.dist[, 2]]
+Prediction <- test.predict$class$max.dist[, 2]
 cbind(Y = as.character(Y[test]), Prediction)
 
 plotIndiv(plsda.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction PLS-DA")
@@ -54,7 +54,7 @@ c(paste0("new ind",1:length(test))), pos = 3)
 splsda.train <- splsda(X[train, ], Y[train], ncomp = 2, keepX = c(30, 30))
 
 test.predict <- predict(splsda.train, X[test, ], method = "max.dist")
-Prediction <- levels(Y)[test.predict$class$max.dist[, 2]]
+Prediction <- test.predict$class$max.dist[, 2]
 cbind(Y = as.character(Y[test]), Prediction)
 
 
@@ -108,12 +108,12 @@ par(mfrow=c(1,2))
 plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction block.PLS",blocks="gene")
 points(test.predict$variates[["gene"]][, 1], test.predict$variates[["gene"]][, 2], pch = 19, cex = 1.2)
 text(test.predict$variates[["gene"]][, 1], test.predict$variates[["gene"]][, 2],
-c(paste0("new ind",1:length(test))), pos = 3)
+c(paste0("new ind",1:nrow(data.test[[1]]))), pos = 3)
 
 plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,blocks="lipid")
 points(test.predict$variates[["lipid"]][, 1], test.predict$variates[["lipid"]][, 2], pch = 19, cex = 1.2)
 text(test.predict$variates[["lipid"]][, 1], test.predict$variates[["lipid"]][, 2],
-c(paste0("new ind",1:length(test))), pos = 3)
+c(paste0("new ind",1:nrow(data.test[[1]]))), pos = 3)
 
 
 # example with block.spls
@@ -125,12 +125,12 @@ par(mfrow=c(1,2))
 plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction block.sPLS",blocks="gene")
 points(test.predict$variates[["gene"]][, 1], test.predict$variates[["gene"]][, 2], pch = 19, cex = 1.2)
 text(test.predict$variates[["gene"]][, 1], test.predict$variates[["gene"]][, 2],
-c(paste0("new ind",1:length(test))), pos = 3)
+c(paste0("new ind",1:nrow(data.test[[1]]))), pos = 3)
 
 plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,blocks="lipid")
 points(test.predict$variates[["lipid"]][, 1], test.predict$variates[["lipid"]][, 2], pch = 19, cex = 1.2)
 text(test.predict$variates[["lipid"]][, 1], test.predict$variates[["lipid"]][, 2],
-c(paste0("new ind",1:length(test))), pos = 3)
+c(paste0("new ind",1:nrow(data.test[[1]]))), pos = 3)
 
 
 # example with block.plsda
@@ -138,7 +138,7 @@ c(paste0("new ind",1:length(test))), pos = 3)
 res.train=block.plsda(X=list(gene=gene.train,lipid=lipid.train),Y=Y.train,ncomp = 3)
 test.predict <- predict(res.train, newdata=data.test, method = "max.dist")
 
-Prediction <- test.predict$vote$max.dist[, 3]
+Prediction <- test.predict$WeightedVote$max.dist[, 3]
 color.test=color.mixo(as.numeric(factor(Prediction,levels=levels(Y.train))))
 color.test[is.na(color.test)]=1
 
@@ -146,16 +146,16 @@ par(mfrow=c(1,2))
 plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction block.sPLS-DA",blocks="gene")
 points(test.predict$variates[["gene"]][, 1], test.predict$variates[["gene"]][, 2], pch = 19, cex = 1.2,col=color.test)
 text(test.predict$variates[["gene"]][, 1], test.predict$variates[["gene"]][, 2],
-c(paste0("new ind",1:length(test))), pos = 3)
+c(paste0("new ind",1:nrow(data.test[[1]]))), pos = 3)
 
 
 plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,blocks="lipid")
 points(test.predict$variates[["lipid"]][, 1], test.predict$variates[["lipid"]][, 2], pch = 19, cex = 1.2,col=color.test)
 text(test.predict$variates[["lipid"]][, 1], test.predict$variates[["lipid"]][, 2],
-c(paste0("new ind",1:length(test))), pos = 3)
+c(paste0("new ind",1:nrow(data.test[[1]]))), pos = 3)
 
 
-# need to code the majority vote for block.plsda and block.splsda, to add in predict.mint.block.pls
+# need to code the majority WeightedVote for block.plsda and block.splsda, to add in predict.mint.block.pls
 
 #Prediction <- levels(Y.train)[test.predict$class$max.dist[, 2]]
 #cbind(Y = as.character(Y[test]), Prediction)
@@ -165,7 +165,7 @@ c(paste0("new ind",1:length(test))), pos = 3)
 res.train=block.splsda(X=list(gene=gene.train,lipid=lipid.train),Y=Y.train,ncomp = 3,keepX=list(gene=c(10,10,10),lipid=c(5,5,5)))
 test.predict <- predict(res.train, newdata=data.test, method = "max.dist")
 
-Prediction <- test.predict$vote$max.dist[, 3]
+Prediction <- test.predict$WeightedVote$max.dist[, 3]
 color.test=color.mixo(as.numeric(factor(Prediction,levels=levels(Y.train))))
 color.test[is.na(color.test)]=1
 
@@ -173,20 +173,20 @@ par(mfrow=c(1,2))
 plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction block.sPLS-DA",blocks="gene")
 points(test.predict$variates[["gene"]][, 1], test.predict$variates[["gene"]][, 2], pch = 19, cex = 1.2,col=color.test)
 text(test.predict$variates[["gene"]][, 1], test.predict$variates[["gene"]][, 2],
-c(paste0("new ind",1:length(test))), pos = 3)
+c(paste0("new ind",1:nrow(data.test[[1]]))), pos = 3)
 
 
 plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,blocks="lipid")
 points(test.predict$variates[["lipid"]][, 1], test.predict$variates[["lipid"]][, 2], pch = 19, cex = 1.2,col=color.test)
 text(test.predict$variates[["lipid"]][, 1], test.predict$variates[["lipid"]][, 2],
-c(paste0("new ind",1:length(test))), pos = 3)
+c(paste0("new ind",1:nrow(data.test[[1]]))), pos = 3)
 
 
 # example with block.splsda=diablo=sgccda and a missing block
 res.train=block.splsda(X=list(gene=gene.train,lipid=lipid.train),Y=Y.train,ncomp = 3,keepX=list(gene=c(10,10,10),lipid=c(5,5,5)))
 test.predict <- predict(res.train, newdata=data.test[2], method = "max.dist")
 
-Prediction <- test.predict$vote$max.dist[, 3]
+Prediction <- test.predict$MajorityVote$max.dist[, 3]
 color.test=color.mixo(as.numeric(factor(Prediction,levels=levels(Y.train))))
 color.test[is.na(color.test)]=1
 

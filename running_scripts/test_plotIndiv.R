@@ -409,11 +409,11 @@ if(additional.test==TRUE)
     ##test xlim,ylim, different style
     
     plotIndiv(toxicity.spls,ylim=list(c(-10,5),c(1,5)),style="graphics")
-    plotIndiv(toxicity.spls,ylim=list(c(-10,5),c(1,5)),style="ggplot2")#not working
+    plotIndiv(toxicity.spls,ylim=c(-15,5),style="ggplot2")#not working
     plotIndiv(toxicity.spls,xlim=list(c(-10,5),c(1,5)),style="lattice")
     plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(0,5),c(0,1)),style="graphics")
     plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(0,5),c(0,1)),style="lattice")
-    plotIndiv(nutri.sgcca,ylim=list(c(1,5),c(4,5),c(0,1)),style="ggplot2") #not working
+    plotIndiv(nutri.sgcca,ylim=c(1,5),style="ggplot2") #not working
 
     
     # testing star and centroid
