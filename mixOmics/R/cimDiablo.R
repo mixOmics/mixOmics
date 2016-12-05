@@ -35,6 +35,7 @@
 # This function is a small wrapper of cim. For more customisation, please use cim
 
 cimDiablo = function(object,
+color = NULL,
 comp = NULL,
 margins = c(2, 15),
 legend.position="topright",
@@ -98,7 +99,7 @@ size.legend=1.5)
     ## Plot heatmap
     opar = par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din", "page")]
     par(mfrow=c(1,1))
-    cim(XDat,transpose= transpose,
+    cim(XDat,transpose= transpose, color = color,
     row.names = row.names, col.names = col.names,
     col.sideColors = dark[as.numeric(VarLabels)],
     row.sideColors = color.mixo(as.numeric(Y)), margins = margins)
