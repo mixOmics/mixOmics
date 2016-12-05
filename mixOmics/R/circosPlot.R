@@ -194,9 +194,7 @@ size.labels=1)
     # matching var.names.list with object$loadings
     ind.match = match(chr$name, unlist(sapply(object$loadings[-length(object$loadings)],rownames)))
     chr$name.user = unlist(var.names.list)[ind.match]
-    
-    save(list=ls(),file="temp.Rdata")
-    
+        
     opar1=par("mar")
     par(mar=c(2, 2, 2, 2))
     
