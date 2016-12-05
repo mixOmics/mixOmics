@@ -32,6 +32,7 @@ cex.edge.label = 1,
 show.color.key = TRUE,
 symkey = TRUE,
 keysize = c(1, 1),
+keysize.label = 1,
 breaks,
 interactive = FALSE,
 layout.fun = NULL,
@@ -61,6 +62,7 @@ labels (defaults to \code{FALSE}).}
 \item{symkey}{boolean indicating whether the color key should be made symmetric about 0.
 Defaults to \code{TRUE}.}
 \item{keysize}{numeric value indicating the size of the color key.}
+\item{keysize.label}{vector of length 1, indicating the size of the labels and title of the color key.}
 \item{breaks}{(optional) either a numeric vector indicating the splitting points for
 binning \code{mat} into colors, or a integer number of break points to be used, in
 which case the break points will be spaced equally between \code{min(mat)}

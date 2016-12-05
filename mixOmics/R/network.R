@@ -44,6 +44,7 @@ cex.edge.label = 1,
 show.color.key = TRUE,
 symkey = TRUE,
 keysize = c(1, 1),
+keysize.label = 1,
 breaks,
 interactive = FALSE,
 layout.fun = NULL,
@@ -586,6 +587,11 @@ name.save = NULL)
     stop("'keysize' must be a numeric vector of length 2.",
     call. = FALSE)
     
+    #-- keysize.label
+    if (length(keysize.label) != 1 || any(!is.finite(keysize)))
+    stop("'keysize' must be a numeric vector of length 1.",
+    call. = FALSE)
+    
     #-- interactive
     if (!is.logical(interactive))
     stop("'interactive' must be a logical constant (TRUE or FALSE).",
@@ -805,8 +811,8 @@ name.save = NULL)
             image(z.mat, col = col, xaxt = "n", yaxt = "n")
             box()
             par(usr = c(0, 1, 0, 1))
-            axis(1, at = xv, labels = lv)
-            title("Color key", font.main = 1)
+            axis(1, at = xv, labels = lv, cex.axis = keysize.label)
+            title("Color key", font.main = 1, cex.main = keysize.label)
             par(def.par)
             par(new = TRUE)
         }
@@ -872,8 +878,8 @@ name.save = NULL)
             image(z.mat, col = col, xaxt = "n", yaxt = "n")
             box()
             par(usr = c(0, 1, 0, 1))
-            axis(1, at = xv, labels = lv)
-            title("Color key", font.main = 1)
+            axis(1, at = xv, labels = lv, cex.axis = keysize.label)
+            title("Color key", font.main = 1, cex.main = keysize.label)
             par(def.par)
             par(new = TRUE)
         }
@@ -979,8 +985,8 @@ name.save = NULL)
                         image(z.mat, col = col, xaxt = "n", yaxt = "n")
                         box()
                         par(usr = c(0, 1, 0, 1))
-                        axis(1, at = xv, labels = lv)
-                        title("Color key", font.main = 1)
+                        axis(1, at = xv, labels = lv, cex.axis = keysize.label)
+                        title("Color key", font.main = 1, cex.main = keysize.label)
                         par(def.par)
                         par(new = TRUE)
                     }
@@ -1035,8 +1041,8 @@ name.save = NULL)
                         image(z.mat, col = col, xaxt = "n", yaxt = "n")
                         box()
                         par(usr = c(0, 1, 0, 1))						
-                        axis(1, at = xv, labels = lv)
-                        title("Color key", font.main = 1)
+                        axis(1, at = xv, labels = lv, cex.axis = keysize.label)
+                        title("Color key", font.main = 1, cex.main = keysize.label)
                         par(def.par)
                         par(new = TRUE)
                     }
