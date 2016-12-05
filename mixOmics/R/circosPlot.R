@@ -84,7 +84,7 @@ size.labels=1)
         if(length(color.blocks) != length(object$X))
         stop("'color.blocks' must be of length ", length(object$X))
         
-        color.blocks.adj = adjustcolor(color.blocks, alpha = 0.5) #to get two shades of the same color per block
+        color.blocks.adj = adjustcolor(color.blocks, alpha.f = 0.5) #to get two shades of the same color per block
         
         color.blocks = c(rbind(color.blocks, color.blocks.adj)) # to put the color next to its shaded color
     }
@@ -194,7 +194,7 @@ size.labels=1)
     # matching var.names.list with object$loadings
     ind.match = match(chr$name, unlist(sapply(object$loadings[-length(object$loadings)],rownames)))
     chr$name.user = unlist(var.names.list)[ind.match]
-        
+    
     opar1=par("mar")
     par(mar=c(2, 2, 2, 2))
     
