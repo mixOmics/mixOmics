@@ -11,12 +11,12 @@ X <- nutrimouse$lipid
 Y <- nutrimouse$gene
 nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 
-network(nutri.res, comp = 1:3, threshold = 0.6)
+network(nutri.res, comp = 1:3, cutoff = 0.6)
 
 
 ## Changing the attributes of the network
 
-network(nutri.res, comp = 1:3, threshold = 0.7,
+network(nutri.res, comp = 1:3, cutoff = 0.7,
 color.node = c("mistyrose", "lightcyan"),
 shape.node = c("circle", "rectangle"),
 color.edge = color.jet(100),
@@ -24,9 +24,9 @@ lty.edge = "solid", lwd.edge = 2,
 show.edge.labels = FALSE)
 
 
-## interactive 'threshold'
-#network(nutri.res, comp = 1:3, threshold = 0.55, interactive = TRUE)
-## select the 'threshold' and "see" the new network
+## interactive 'cutoff'
+#network(nutri.res, comp = 1:3, cutoff = 0.55, interactive = TRUE)
+## select the 'cutoff' and "see" the new network
 
 
 ## network representation for objects of class 'spls'
@@ -36,7 +36,7 @@ Y <- liver.toxicity$clinic
 toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50),
 keepY = c(10, 10, 10))
 
-network(toxicity.spls, comp = 1:3, threshold = 0.8,
+network(toxicity.spls, comp = 1:3, cutoff = 0.8,
 color.node = c("mistyrose", "lightcyan"),
 shape.node = c("rectangle", "circle"),
 color.edge = color.spectral(100),
@@ -69,10 +69,10 @@ if(additional.test==TRUE)
     network(toxicity.spls,comp=c(3,2))
     network(toxicity.spls,comp=1:3)
     
-    # test threshold
-    network(toxicity.spls, threshold = 0.1)
-    network(toxicity.spls, threshold = 0.8)
-    network(toxicity.spls, threshold = 0.2)
+    # test cutoff
+    network(toxicity.spls, cutoff = 0.1)
+    network(toxicity.spls, cutoff = 0.8)
+    network(toxicity.spls, cutoff = 0.2)
     
     # test row.names, col.names
     network(toxicity.spls,row.names = FALSE)
@@ -130,8 +130,8 @@ if(additional.test==TRUE)
     
     # test interactive
     #network(toxicity.spls,interactive = TRUE)
-    #network(toxicity.spls,threshold = 0.3, interactive = TRUE)
-    #network(toxicity.spls,threshold = 0.6, interactive = TRUE)
+    #network(toxicity.spls,cutoff = 0.3, interactive = TRUE)
+    #network(toxicity.spls,cutoff = 0.6, interactive = TRUE)
     
     
     ####### RCC
@@ -150,10 +150,10 @@ if(additional.test==TRUE)
     network(linn.res,comp=c(3,2)) ####
     network(linn.res,comp=1:3)
     
-    # test threshold
-    network(linn.res, threshold = 0)
-    network(linn.res, threshold = 0.8)
-    network(linn.res, threshold = 0.4)
+    # test cutoff
+    network(linn.res, cutoff = 0)
+    network(linn.res, cutoff = 0.8)
+    network(linn.res, cutoff = 0.4)
     
     # test row.names, col.names
     network(linn.res,row.names = FALSE)
@@ -210,8 +210,8 @@ if(additional.test==TRUE)
     
     # test interactive
     #network(linn.res,interactive = TRUE)
-    #network(linn.res,threshold = 0.3, interactive = TRUE)
-    #network(linn.res,threshold = 0.6, interactive = TRUE)
+    #network(linn.res,cutoff = 0.3, interactive = TRUE)
+    #network(linn.res,cutoff = 0.6, interactive = TRUE)
     
     
     ####### MULTILEVEL (SPLSDA)
@@ -239,10 +239,10 @@ if(additional.test==TRUE)
     network(res.spls.1level,comp=c(3,2))
     network(res.spls.1level,comp=1:3)
     
-    # test threshold
-    network(res.spls.1level, threshold = 0)
-    network(res.spls.1level, threshold = 0.8)
-    network(res.spls.1level, threshold = 0.7)
+    # test cutoff
+    network(res.spls.1level, cutoff = 0)
+    network(res.spls.1level, cutoff = 0.8)
+    network(res.spls.1level, cutoff = 0.7)
     
     # test row.names, col.names
     network(res.spls.1level,row.names = FALSE)
@@ -300,8 +300,8 @@ if(additional.test==TRUE)
     
     # test interactive
     #network(res.spls.1level,interactive = TRUE)
-    #network(res.spls.1level,threshold = 0.3, interactive = TRUE)
-    #network(res.spls.1level,threshold = 0.6, interactive = TRUE)
+    #network(res.spls.1level,cutoff = 0.3, interactive = TRUE)
+    #network(res.spls.1level,cutoff = 0.6, interactive = TRUE)
     
     
     ####### BLOCKS (SGCCA)
@@ -325,10 +325,10 @@ if(additional.test==TRUE)
     network(nutri.sgcca,comp=list(lipid=c(2,3),gene=c(1,2)))
     
     
-    # test threshold
-    network(nutri.sgcca, threshold = 0)
-    network(nutri.sgcca, threshold = 0.8)
-    network(nutri.sgcca, threshold = 0.7)
+    # test cutoff
+    network(nutri.sgcca, cutoff = 0)
+    network(nutri.sgcca, cutoff = 0.8)
+    network(nutri.sgcca, cutoff = 0.7)
     
     # test block.var.names
     network(nutri.sgcca,block.var.names = FALSE)
@@ -369,10 +369,10 @@ if(additional.test==TRUE)
     network(nutri.sgcca,comp=list(gene=c(1,2),lipid=c(2,3),diet=1:3),blocks=1:3)
     
     
-    # test threshold
-    network(nutri.sgcca, threshold = 0,blocks=1:3)
-    network(nutri.sgcca, threshold = 0.8,blocks=1:3)
-    network(nutri.sgcca, threshold = 0.7,blocks=1:3)
+    # test cutoff
+    network(nutri.sgcca, cutoff = 0,blocks=1:3)
+    network(nutri.sgcca, cutoff = 0.8,blocks=1:3)
+    network(nutri.sgcca, cutoff = 0.7,blocks=1:3)
     
     # test block.var.names
     network(nutri.sgcca,block.var.names = FALSE,blocks=1:3)
