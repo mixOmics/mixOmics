@@ -11,7 +11,7 @@ importFrom("grDevices", "as.graphicsAnnot", "chull", "col2rgb",
              "colorRamp", "colorRampPalette", "colors", "dev.cur",
              "dev.new", "dev.off", "dev.prev", "dev.set",
              "devAskNewPage", "graphics.off", "gray", "gray.colors",
-             "heat.colors", "rgb","jpeg", "pdf", "tiff", "x11")
+             "heat.colors", "rgb","jpeg", "pdf", "tiff", "x11", "adjustcolor")
 
 importFrom("graphics", "abline", "arrows", "axis", "barplot", "box",
              "image", "layout", "legend", "lines", "locator", "mtext",
