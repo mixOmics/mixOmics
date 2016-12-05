@@ -12,7 +12,7 @@ represent "high-dimensional" data sets analysed with DIABLO.
 \usage{
 cimDiablo(object,
 color = NULL,
-comp=1,
+comp = NULL,
 margins = c(2, 15),
 legend.position = "topright",
 transpose = FALSE,
