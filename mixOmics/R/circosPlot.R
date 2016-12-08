@@ -70,7 +70,7 @@ size.labels=1)
     
     if(missing(color.Y))
     {
-        color.Y = color.mixo(1:nlevels(Y))
+        color.Y = color.mixo(1:nlevels(object$Y))
     } else {
         if(length(color.Y) != nlevels(object$Y))
         stop("'color.Y' must be of length ", nlevels(object$Y))
