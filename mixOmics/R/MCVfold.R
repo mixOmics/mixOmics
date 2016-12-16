@@ -351,7 +351,7 @@ cl
                 # note: if plsda, 'features' includes everything: to optimise computational time, we don't evaluate for plsda object
                 features.j = selectVar(object.res, comp = ncomp)$name
                 
-                test.predict.sw <- predict(object.res, newdata = X.test, method = dist)
+                test.predict.sw <- predict(object.res, newdata = X.test, dist = dist)
                 prediction.comp.j[, , i] =  test.predict.sw$predict[, , ncomp]
                 
                 for(ijk in dist)
