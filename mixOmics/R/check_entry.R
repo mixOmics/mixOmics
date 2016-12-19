@@ -714,7 +714,7 @@ verbose)
         if (!missing(indY))
         warning("'Y' and 'indY' are provided, 'Y' is used.")
         
-        if (is.list(Y) | length(dim(Y)) != 2 | !is.matrix(Y) | !is.numeric(Y))
+        if (is.list(Y) | length(dim(Y)) != 2 | !is.numeric(Y))
         stop("'Y' must be a numeric matrix.")
 
         #check dimnames and ncomp per block of A
