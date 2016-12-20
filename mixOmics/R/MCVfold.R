@@ -407,7 +407,7 @@ cl
         }
         
     } #end nrep 1:nrepeat
-    
+
     names(prediction.comp) = names (auc.all) = paste0("nrep.", 1:nrepeat)
     # class.comp[[ijk]] is a matrix containing all prediction for test.keepX, all nrepeat and all distance, at comp fixed
     

@@ -290,7 +290,9 @@ cpus
             auc.all=list()
         }
         
-        error.per.class.keepX.opt=list()
+        error.per.class.keepX.opt = list()
+        error.per.class.keepX.opt.mean = matrix(0, nrow = nlevels(Y), ncol = length(comp.real),
+        dimnames = list(c(levels(Y)), c(paste('comp', comp.real, sep=''))))
         # successively tune the components until ncomp: comp1, then comp2, ...
         for(comp in 1:length(comp.real))
         {
@@ -312,6 +314,8 @@ cpus
             
             # confusion matrix for keepX.opt
             error.per.class.keepX.opt[[comp]]=result[[measure]]$confusion[[1]]
+            error.per.class.keepX.opt.mean[, comp]=apply(result[[measure]]$confusion[[1]], 1, mean)
+
 
             # best keepX
             if(!constraint)
@@ -355,7 +359,8 @@ cpus
         error.rate.all = mat.error.rate,
         choice.keepX = if(constraint){lapply(already.tested.X, length)}else{already.tested.X},
         choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
-        error.rate.class = error.per.class.keepX.opt)
+        error.rate.class = error.per.class.keepX.opt.mean,
+        error.rate.class.all = error.per.class.keepX.opt)
         
         if(light.output == FALSE)
         {

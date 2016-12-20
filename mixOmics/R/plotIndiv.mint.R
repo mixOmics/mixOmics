@@ -327,13 +327,17 @@ point.lwd = 1,
     
     # change the levels of df.final$Block to "subtitle"
     if (!missing(subtitle))
-    df.final$Block = factor(df.final$Block, labels = subtitle)
+    {
+        df.final$Block = factor(df.final$Block, labels = subtitle)
 
+        if(ellipse)
+        df.ellipse$Block = factor(df.ellipse$Block, labels = subtitle)
+    }
     df = df.final
         
     if (style == "ggplot2")
     style = "ggplot2-MINT"
-
+        
     #call plot module (ggplot2, lattice, graphics, 3d)
     res = internal_graphicModule(df = df, centroid = centroid, col.per.group = col.per.group, title = title,
     X.label = X.label, Y.label = Y.label, xlim = xlim, ylim = ylim, class.object = class(object),
