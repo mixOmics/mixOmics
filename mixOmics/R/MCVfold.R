@@ -407,7 +407,8 @@ cl
         }
         
     } #end nrep 1:nrepeat
-    
+    save(list=ls(),file="tempM.Rdata")
+
     names(prediction.comp) = names (auc.all) = paste0("nrep.", 1:nrepeat)
     # class.comp[[ijk]] is a matrix containing all prediction for test.keepX, all nrepeat and all distance, at comp fixed
     
