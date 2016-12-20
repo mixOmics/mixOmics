@@ -291,7 +291,7 @@ cpus
         }
         
         error.per.class.keepX.opt = list()
-        error.per.class.keepX.opt.mean = matrix(0, nrow = nlevels(Y), ncol = ncomp,
+        error.per.class.keepX.opt.mean = matrix(0, nrow = nlevels(Y), ncol = length(comp.real),
         dimnames = list(c(levels(Y)), c(paste('comp', comp.real, sep=''))))
         # successively tune the components until ncomp: comp1, then comp2, ...
         for(comp in 1:length(comp.real))
