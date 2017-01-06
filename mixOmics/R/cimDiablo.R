@@ -36,6 +36,8 @@
 
 cimDiablo = function(object,
 color = NULL,
+color.Y,
+color.blocks,
 comp = NULL,
 margins = c(2, 15),
 legend.position="topright",
@@ -55,9 +57,9 @@ size.legend=1.5)
     ncomp = min(object$ncomp)
     #-- comp
     if(is.null(comp))
-    {comp=1:ncomp}
+    {comp = 1:ncomp}
     if (length(comp) > 1) {
-        comp=unique(comp)
+        comp = unique(comp)
         if (!is.numeric(comp) || any(comp < 1))
         stop("invalid vector for 'comp'.", call. = FALSE)
         if (any(comp > ncomp))
@@ -72,8 +74,25 @@ size.legend=1.5)
     }
     
     comp = round(comp)
-
-
+    
+    # color
+    if(missing(color.Y))
+    {
+        color.Y = color.mixo(1:nlevels(object$Y))
+    } else {
+        if(length(color.Y) != nlevels(object$Y))
+        stop("'color.Y' needs to be of length ", nlevels(object$Y))
+    }
+    
+    
+    if(missing(color.blocks))
+    {
+        color.blocks = brewer.pal(n = 12, name = 'Paired')[seq(2, 12, by = 2)]
+    } else {
+        if(length(color.blocks) != length(object$X))
+        stop("'color.blocks' needs to be of length ", length(object$X))
+    }
+    
     X = object$X
     Y = object$Y
 
@@ -93,7 +112,7 @@ size.legend=1.5)
     XDat[which(XDat > 2)] = 2
     XDat[which(XDat < -2)] = -2
     
-    dark = brewer.pal(n = 12, name = 'Paired')[seq(2, 12, by = 2)]
+    #dark = brewer.pal(n = 12, name = 'Paired')[seq(2, 12, by = 2)]
     VarLabels = factor(rep(names(X), lapply(keepA[-length(keepA)], sum)), levels = names(X))#[order(names(X))])
     
     ## Plot heatmap
@@ -101,15 +120,29 @@ size.legend=1.5)
     par(mfrow=c(1,1))
     cim(XDat,transpose= transpose, color = color,
     row.names = row.names, col.names = col.names,
-    col.sideColors = dark[as.numeric(VarLabels)],
-    row.sideColors = color.mixo(as.numeric(Y)), margins = margins)
+    col.sideColors = color.blocks[as.numeric(VarLabels)],
+    row.sideColors = color.Y[as.numeric(Y)], margins = margins)
     
-    legend(legend.position, c("Rows", c(levels(Y)[order(levels(Y))], "",
-    "Columns", names(X))), col = c(1, color.mixo(1:nlevels(Y)), 1,
-    1, dark[1:nlevels(VarLabels)][match(levels(VarLabels), names(X))]),
-    pch = c(NA, rep(19, nlevels(Y)), NA, NA, rep(19, nlevels(VarLabels))), bty="n", cex = size.legend,
-    text.font = c(2, rep(1, nlevels(Y)), NA, 2, rep(1, nlevels(VarLabels))))
-    
+    if(!transpose)
+    {
+        legend(legend.position,
+        c("Rows", c(levels(Y)[order(levels(Y))], "", "Columns", names(X))),
+        col = c(1, color.Y, 1, 1, color.blocks[1:nlevels(VarLabels)][match(levels(VarLabels), names(X))]),
+        pch = c(NA, rep(19, nlevels(Y)), NA, NA, rep(19, nlevels(VarLabels))),
+        bty="n",
+        cex = size.legend,
+        text.font = c(2, rep(1, nlevels(Y)), NA, 2, rep(1, nlevels(VarLabels))))
+
+    } else { # if transpose == TRUE, rows and columns must be switched
+        legend(legend.position,
+        c("Rows", names(X), "", "Columns", c(levels(Y)[order(levels(Y))])),
+        col = c(1, color.blocks[1:nlevels(VarLabels)][match(levels(VarLabels), names(X))], 1, 1, color.Y),
+        pch = c(NA, rep(19, nlevels(VarLabels)), NA, NA, rep(19, nlevels(Y))),
+        bty="n",
+        cex = size.legend,
+        text.font = c(2, rep(1, nlevels(VarLabels)), NA, 2, rep(1, nlevels(Y))))
+        
+    }
     par(opar)
     
     return(invisible(XDat))
