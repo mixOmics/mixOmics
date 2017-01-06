@@ -252,7 +252,6 @@ size.labels=1)
     legend(x=-circleR/4, y = figSize, legend=paste("Comp",paste(comp,collapse="-")),
     col = "black", cex=size.legend, bty = "n")
 
-
     par(xpd=opar,mar=opar1)# put the previous defaut parameter for xpd
     return(invisible(corMat))
 }
@@ -512,7 +511,7 @@ genChr =function (expr, bandWidth = 1.0, color.blocks)
     chrColScheme = data.frame(dark, clear)
     n_datasets = length(unique(expr$Dataset))
     chrColScheme = chrColScheme[c(1:n_datasets),]
-    rownames(chrColScheme) = unique(expr$Dataset)
+    rownames(chrColScheme) = levels(factor(expr$Dataset))#alphabetical order
     
     seg.out = c() 
     for (i in 1:nrow(expr)){
