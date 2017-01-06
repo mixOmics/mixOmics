@@ -122,7 +122,7 @@ Y2 = Y[-ind.remove]
 X2 = X[-ind.remove, ]
 
 res2 <- splsda(X2, Y2, ncomp = 2, keepX = c(25, 25))
-plotIndiv(res2, ind.names = Y2, add.legend = TRUE, ellipse =TRUE)
+plotIndiv(res2, ind.names = Y2, legend = TRUE, ellipse =TRUE)
 plotIndiv(res2, ind.names = TRUE, ellipse=TRUE, centroid = TRUE, star = TRUE)
 
 

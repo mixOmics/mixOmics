@@ -102,7 +102,7 @@ alpha)
         }
 
         #note: at this present time, ggplot2 does not allow xlim to be changed per subplot, so cannot use xlim properly
-        
+
         #-- Initialise ggplot2
         p = ggplot(df, aes(x = x, y = y, color = group),
         main = title, xlab = X.label, ylab = Y.label) +
@@ -114,7 +114,7 @@ alpha)
         #-- Display sample or row.names
         for (i in levels(df$group))
         {
-            p = p + geom_point(data = subset(df, df$group == i), size = 0, shape = 0)
+            # p = p + geom_point(data = subset(df, df$group == i), size = 0, shape = 0) # commented out to remove the dots
             if (centroid == TRUE)
             {
                 p = p + geom_point(data = subset(df[, c("col", "x0", "y0", "Block", "cex", "pch", "group")], df$group == i), aes(x=x0,y=y0), size = 0, shape = 0)
@@ -230,6 +230,7 @@ alpha)
         #note: at this present time, ggplot2 does not allow xlim to be changed per subplot, so cannot use xlim properly
         df$studyname = factor(df$pch, labels = study.levels)
         
+
         #-- Initialise ggplot2
         p = ggplot(df, aes(x = x, y = y, color = group, shape = studyname),
         main = title, xlab = X.label, ylab = Y.label) +
