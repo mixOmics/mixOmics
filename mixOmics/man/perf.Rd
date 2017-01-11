@@ -148,7 +148,7 @@ Regression (PCR) and Partial Least Squares Regression (PLSR). \emph{Journal of C
 
 \author{Ignacio Gonzalez, Amrit Singh, Kim-Anh Le Cao, Benoit Gautier, Florian Rohart.}
 
-\seealso{\code{\link{predict}}, \code{\link{nipals}}, \code{\link{plot.perf}} and \url{www.mixOmics.org} for more details.}
+\seealso{\code{\link{predict}}, \code{\link{nipals}}, \code{\link{plot.perf}}, \code{\link{auroc}} and \url{www.mixOmics.org} for more details.}
 
 \examples{
 \dontrun{
