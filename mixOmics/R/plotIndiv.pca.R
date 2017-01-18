@@ -54,7 +54,8 @@ ylim = NULL,
 col, 
 cex, 
 pch, 
-alpha = 0.2, 
+pch.names,
+alpha = 0.2,
 axes.box = "box", 
 layout = NULL, 
 size.title = rel(2), 
@@ -65,6 +66,7 @@ size.axis = rel(0.8),
 size.legend = rel(1), 
 size.legend.title = rel(1.1), 
 legend.title = "Legend",
+legend.title.pch = "Legend",
 legend.position = "right",
 point.lwd = 1, 
 ...
@@ -72,7 +74,7 @@ point.lwd = 1,
 {
     plot_parameters = list(size.title = size.title, size.subtitle = size.subtitle, size.xlabel = size.xlabel, size.ylabel = size.ylabel, 
     size.axis = size.axis, size.legend = size.legend, size.legend.title = size.legend.title, legend.title = legend.title,
-    legend.position = legend.position, point.lwd = point.lwd)
+    legend.title.pch = legend.title.pch, legend.position = legend.position, point.lwd = point.lwd)
 
     blocks = "X"
     rep.space = "X-variate"

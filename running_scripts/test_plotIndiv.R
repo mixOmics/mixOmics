@@ -3,6 +3,7 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+library(mixOmics)
 opar <- par(no.readonly = TRUE)
 
 data(nutrimouse)
@@ -82,6 +83,7 @@ legend = TRUE,title="",style="graphics")
 
 ## plot of individuals for objects of class 'plsda' or 'splsda'
 # ----------------------------------------------------
+library(mixOmics)
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
@@ -104,6 +106,27 @@ plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2),
 
 # with centroid and stars
 plotIndiv(splsda.breast, ind.names = TRUE, centroid = TRUE, star = TRUE)
+
+# with different pch and cex
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c(3,4), legend=T)
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c(3,4,2), legend=T)
+#plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5,10), pch = c(3,4,2), legend=T) #error on purpose
+
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c(3,4,2),
+    pch.levels = c("aha","why?","maybe"), legend=T)
+
+#creating a vector of size 47 qith different names
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c(3,4,5),pch.levels=c("a","b","d"), legend=T)
+
+#creating a vector of size 47 qith different names
+pch.group = factor (c(rep(c("abab","cad?","maybe"),15), rep("well",2)))
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = pch.group, legend=T)
+
+#with a nice legend.title.pch
+pch.group = factor (c(rep(c("abab","cad?","maybe"),15), rep("well",2)))
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = pch.group, legend=T,
+legend.title = "my class",
+legend.title.pch = "Random")
 
 
 data(liver.toxicity)
@@ -401,10 +424,10 @@ if(additional.test==TRUE)
     plotIndiv(pca.res,Y.label="Y")
     plotIndiv(pca.res,Z.label="Z",style="3d")
     plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("sphere"))
-    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("sphere"),cex=c(1,5))
-    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("sphere","cube"),cex=c(0.1,0.5))
+    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("sphere"),cex=c(1))
+    #    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("sphere","cube"),cex=c(0.1,0.5))
     plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("cube","sphere"),cex=c(1,0.5),col=1:2)
-    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("cube","sphere","tetra"),cex=c(1,0.5),col=1:3)
+    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("cube","sphere","tetra"),cex=c(1,0.5,2),col=1:3)
     
     ##test xlim,ylim, different style
     

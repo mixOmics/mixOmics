@@ -57,7 +57,8 @@ ylim = NULL,
 col, 
 cex, 
 pch, 
-alpha = 0.2, 
+pch.names,
+alpha = 0.2,
 axes.box = "box", 
 layout = NULL, 
 size.title = rel(2), 
@@ -68,6 +69,7 @@ size.axis = rel(0.8),
 size.legend = rel(1), 
 size.legend.title = rel(1.1), 
 legend.title = "Legend",
+legend.title.pch = "Legend",
 legend.position = "right",
 point.lwd = 1, 
 ...
@@ -75,7 +77,7 @@ point.lwd = 1,
 {
     plot_parameters = list(size.title = size.title, size.subtitle = size.subtitle, size.xlabel = size.xlabel, size.ylabel = size.ylabel,
     size.axis = size.axis, size.legend = size.legend, size.legend.title = size.legend.title, legend.title = legend.title,
-    legend.position = legend.position, point.lwd = point.lwd, alpha = alpha)
+    legend.title.pch = legend.title.pch, legend.position = legend.position, point.lwd = point.lwd, alpha = alpha)
 
     if(any(class(object)%in%c("mint.block.pls", "mint.block.spls", "mint.block.plsda", "mint.block.splsda")))
     stop("No plotIndiv for the following functions at this stage: mint.block.pls, mint.block.spls, mint.block.plsda, mint.block.splsda.")
@@ -166,7 +168,7 @@ point.lwd = 1,
         if(ellipse)
         df.ellipse$Block = factor(df.ellipse$Block, labels = subtitle)
     }
-
+    save(list=ls(),file="temp.Rdata")
     #call plot module (ggplot2, lattice, graphics, 3d)
     res = internal_graphicModule(df = df, centroid = centroid, col.per.group = col.per.group, title = title, X.label = X.label,
     Y.label = Y.label, Z.label = Z.label, xlim = xlim, ylim = ylim, class.object = class(object), display.names = display.names, legend = legend,

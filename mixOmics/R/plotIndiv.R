@@ -176,6 +176,7 @@ plot_parameters)
     size.legend = plot_parameters$size.legend
     size.legend.title = plot_parameters$size.legend.title
     legend.title = plot_parameters$legend.title
+    legend.title.pch = plot_parameters$legend.title.pch
     legend.position = plot_parameters$legend.position
     point.lwd = plot_parameters$point.lwd
     
@@ -205,6 +206,9 @@ plot_parameters)
     
     if (length(legend.title)>1)
     stop("'legend.title' needs to be a single value (length 1)")
+
+    if (length(legend.title.pch)>1)
+    stop("'legend.title.pch' needs to be a single value (length 1)")
 
     if (!is.numeric(point.lwd) || length(point.lwd)>1 || point.lwd<0)
     stop("'point.lwd' needs to be a non negative number")
@@ -434,6 +438,7 @@ ylim = NULL,
 col,
 cex,
 pch,
+pch.levels,
 display.names,
 plot_parameters)
 {
@@ -449,6 +454,7 @@ plot_parameters)
     size.legend = plot_parameters$size.legend
     size.legend.title = plot_parameters$size.legend.title
     legend.title = plot_parameters$legend.title
+    legend.title.pch = plot_parameters$legend.title.pch
     legend.position = plot_parameters$legend.position
     point.lwd = plot_parameters$point.lwd
 
@@ -552,12 +558,16 @@ plot_parameters)
         {
             cex = rep(cex, n)
             cex = cex[as.factor(group)]
-        } else if (length(cex) > n) {
-            stop("Length of 'cex' should be of length inferior or equal to ", n, ".")
         } else if (length(cex) == length(unique(group))) {
             cex = cex[as.factor(group)]
-        }else {
-            cex = rep(cex, ceiling(n/length(cex)))[1 : n]
+        } else {
+            if(length(unique(group))>1)
+            {
+                stop("Length of 'cex' should be either 1 or ",length(unique(group)), ".")
+            }else{ # one group
+                stop("Length of 'cex' should be 1.")
+            }
+            #cex = rep(cex, ceiling(n/length(cex)))[1 : n]
         }
     }
 
@@ -632,6 +642,8 @@ plot_parameters)
                 pch = as.numeric(group)
             }
         }
+        pch.levels = pch
+
     }else if (any(class.object%in%object.mint)) {
         if (missing(pch))
         {
@@ -641,6 +653,8 @@ plot_parameters)
             if (length(pch)!= length(object$study))
             stop("'pch' needs to be of length 'object$study' as each of 'pch' represents a specific study", call. = FALSE)
         }
+        pch.levels = pch
+
     } else {
         if (style == "3d")
         {
@@ -648,15 +662,29 @@ plot_parameters)
             stop("pch' must be a simple character or character vector from {'sphere', 'tetra', 'cube', 'octa', 'icosa', 'dodeca'}.",
             call. = FALSE)
         }
+        
+        if(!missing(pch.levels))
+        {
+            if(length(pch.levels) != length(pch))
+            stop("'pch.levels' needs to be a vector of the same length as 'pch': ", length(pch))
+        } else {
+            pch.levels = pch
+        }
+        
         if (length(pch) == 1)
         {
             pch = rep(pch, n)
+            pch.levels = rep(pch.levels, n)
+
         } else if (length(pch) > n) {
-            stop("Length of 'pch' should be of length inferior or equal to ", length(group), ".")
+            stop("Length of 'pch' should be of length inferior or equal to ", n, ".")
         } else if (length(pch) == length(unique(group))) {
             pch = pch[as.factor(group)]
+            pch.levels = pch.levels[as.factor(group)]
+
         } else {
             pch = rep(pch, ceiling(n/length(pch)))[1 : n]
+            pch.levels = rep(pch.levels, ceiling(n/length(pch.levels)))[1 : n]
         }
         
         # if pch is given and ind.names is TRUE, pch takes over
@@ -720,7 +748,8 @@ plot_parameters)
         if (display.names)
         df$names = rep(ind.names, length(x))
         
-        df$pch = pch; df$cex = cex
+        df$pch = pch; df$pch.levels = pch.levels
+        df$cex = cex
         df$col.per.group = levels.color#[group] #FR: don't understand what is that changing as levels.color is already group?
         df$col = as.character(col)
         
@@ -867,7 +896,7 @@ plot_parameters)
     #print(df)
     plot_parameters = list(size.title = size.title, size.subtitle = size.subtitle, size.xlabel = size.xlabel, size.ylabel = size.ylabel,
     size.axis = size.axis, size.legend = size.legend, size.legend.title = size.legend.title, legend.title = legend.title,
-    legend.position = legend.position, point.lwd = point.lwd)
+    legend.title.pch = legend.title.pch, legend.position = legend.position, point.lwd = point.lwd)
     
     out = list(df = df, study.ind = study.ind, df.ellipse = df.ellipse, col.per.group = col.per.group, title = title, display.names = display.names, xlim = xlim, ylim = ylim, missing.col = missing.col, ellipse = ellipse, centroid = centroid, star = star, plot_parameters = plot_parameters)
 }

@@ -82,9 +82,40 @@ alpha)
     size.legend = plot_parameters$size.legend
     size.legend.title = plot_parameters$size.legend.title
     legend.title = plot_parameters$legend.title
+    legend.title.pch = plot_parameters$legend.title.pch # to change +_#)@%$%)$#T$#%T%
     legend.position = plot_parameters$legend.position
     point.lwd = plot_parameters$point.lwd
     
+    save(list=ls(),file="temp.Rdata")
+    # check whether pch and group are the same factors, otherwise we need two legends
+    group.pch = "same"
+    temp = table(df$group, df$pch)
+    # if factors are the same, there should be only one value different from 0 per column/row
+    a = NULL
+    for(i in 1:nrow(temp))
+    {
+        a = c(a, sum(temp[i,]!=0))
+    }
+    if(sum(a) != nrow(temp))
+    {
+        group.pch = "different"
+    } else {
+        a = NULL
+        for(j in 1:ncol(temp))
+        {
+            a = c(a, sum(temp[,j]!=0))
+        }
+        if(sum(a) != ncol(temp))
+        group.pch = "different"
+    }
+    
+    # override if only one pch
+    if(nlevels(df$pch) == 1)
+    group.pch = "same"
+    
+    df$pch = factor(df$pch) #number or names
+    df$pch.levels = factor(df$pch.levels) #names or number
+
     #-- Start: ggplot2
     if (style == "ggplot2")
     {
@@ -100,21 +131,25 @@ alpha)
             nRows = layout[1]
             nCols = layout[2]
         }
-
+        
         #note: at this present time, ggplot2 does not allow xlim to be changed per subplot, so cannot use xlim properly
-
+        
         #-- Initialise ggplot2
-        p = ggplot(df, aes(x = x, y = y, color = group),
+        p = ggplot(df, aes(x = x, y = y, color = group, shape = pch.levels),
         main = title, xlab = X.label, ylab = Y.label) +
         theme_bw() + theme(strip.text = element_text(size = size.subtitle, face = "bold"))
         
-
-        #}
         
         #-- Display sample or row.names
         for (i in levels(df$group))
         {
-            # p = p + geom_point(data = subset(df, df$group == i), size = 0, shape = 0) # commented out to remove the dots
+            if(display.names)
+            {
+                p = p + geom_point(data = subset(df, df$group == i), size = 0, shape = 0) # commented out to remove the dots, BUT necessary when display.names
+            } else {
+                #p = p + geom_point(data = df, shape = df$pch, size = df$cex, color = df$col)
+                p = p + geom_point(data = subset(df, df$group == i), size = subset(df, df$group == i)$cex[1], stroke = point.lwd)
+            }
             if (centroid == TRUE)
             {
                 p = p + geom_point(data = subset(df[, c("col", "x0", "y0", "Block", "cex", "pch", "group")], df$group == i), aes(x=x0,y=y0), size = 0, shape = 0)
@@ -123,7 +158,27 @@ alpha)
         
         
         #-- Modify scale colour - Change X/Ylabel - split plots into Blocks
-        p = p + scale_colour_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = legend.title, breaks = levels(df$group))
+        p = p + scale_color_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = legend.title, breaks = levels(df$group))
+        
+        # if pch is same factor as color, then same legend
+        if(suppressWarnings(sum(is.na(as.numeric(as.character(df$pch)))))==0)
+        {
+            #pch was numbers so we use them
+            values.pch = sort(unique(as.numeric(as.character(df$pch))))
+        } else {
+            values.pch = 1:nlevels(df$pch)
+        }
+        
+
+        if(group.pch == "same")
+        {
+            p = p + scale_shape_manual(values = values.pch,
+            name = legend.title, breaks = levels(df$group))
+        } else {
+            # if pch different factor, then second legend
+            p = p + scale_shape_manual(values = values.pch, name = legend.title.pch, breaks = levels(df$pch.levels))
+            #as.numeric(levels(factor(as.numeric(df$pch))))[match(levels(factor(as.character(df$pch))), levels(df$pch))]
+        }
         
         p = p + labs(list(title = title, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = nCols, scales = "free", as.table = TRUE) #as.table to plot in the same order as the factor
         p = p + theme(plot.title=element_text(size=size.title),axis.title.x=element_text(size=size.xlabel),axis.title.y=element_text(size=size.ylabel),axis.text=element_text(size=size.axis))# bigger title
@@ -132,7 +187,6 @@ alpha)
         p = p + coord_cartesian(xlim=xlim,ylim=ylim)
         
         #-- color samples according to col
-        
         for (i in unique(df$col))
         {
             for(j in 1:nlevels(df$Block))
@@ -145,12 +199,12 @@ alpha)
                     aes(label = names),
                     color = df[df$col == i & df$Block == levels(df$Block)[j], ]$col,
                     size = df[df$col == i & df$Block == levels(df$Block)[j], ]$cex,show.legend  = F)
-                } else {
-                    p = p + geom_point(data = subset(df, col == i & df$Block == levels(df$Block)[j]),
-                    color = unique(df[df$col == i & df$Block == levels(df$Block)[j], ]$col),
-                    size = df[df$col == i & df$Block == levels(df$Block)[j], ]$cex,
-                    shape = df[df$col == i & df$Block == levels(df$Block)[j],  ]$pch, stroke = point.lwd)# unique(df[df$col == i & df$Block == paste0("Block: ", blocks[1]), ]$pch))
-                }
+                } #else {
+                #  p = p + geom_point(data = subset(df, col == i & df$Block == levels(df$Block)[j]),
+                #   color = unique(df[df$col == i & df$Block == levels(df$Block)[j], ]$col),
+                #   size = df[df$col == i & df$Block == levels(df$Block)[j], ]$cex,
+                #   shape = df[df$col == i & df$Block == levels(df$Block)[j],  ]$pch, stroke = point.lwd)# unique(df[df$col == i & df$Block == paste0("Block: ", blocks[1]), ]$pch))
+                #}
                 if (centroid == TRUE)
                 {
                     p = p + geom_point(data = subset(df[, c("col", "x0", "y0", "Block", "cex", "pch", "group")], col == i), aes(x = x0, y = y0),
@@ -158,20 +212,21 @@ alpha)
                     size = unique(df[df$col == i & df$Block == levels(df$Block)[1], ]$cex),
                     shape = 8, stroke = point.lwd)
                 }
-            
+                
             }
         }
-        
         
         
         #-- Legend
         if (!legend)
         {
             p = p + theme(legend.position="none")
-        } else {
-            p = p + guides(colour = guide_legend(override.aes = list(shape = if(display.names | any(class.object%in%object.mint) ) {19} else unique(df$pch.legend), size = unique(df$cex),stroke=point.lwd)))    +
+        } else if(group.pch == "same") {
+            p = p + guides(color = guide_legend(override.aes = list(shape = if(display.names | any(class.object%in%object.mint) ) {19} else unique(df$pch.legend), size = 3,stroke=point.lwd)))    +
             theme(legend.title=element_text(size=size.legend.title),legend.text=element_text(size=size.legend)) +
             theme(legend.position=legend.position)
+        } else if(group.pch == "different") {
+            p = p + guides(shape = guide_legend(override.aes = list(size=3, stroke=point.lwd)))
         }
         
         #-- abline
@@ -200,9 +255,10 @@ alpha)
                     p = p + geom_path(data = df.ellipse,
                     aes_string(x = paste0("Col", 2*(i - 1) + 1), y = paste0("Col", 2 * i),
                     #label = "Block",
-                    group = NULL), color = unique(col.per.group)[i], size = point.lwd)
+                    group = NULL, shape = NULL),
+                    color = unique(col.per.group)[i], size = point.lwd)
                 }
-
+                
             }
         }
         
@@ -230,7 +286,7 @@ alpha)
         #note: at this present time, ggplot2 does not allow xlim to be changed per subplot, so cannot use xlim properly
         df$studyname = factor(df$pch, labels = study.levels)
         
-
+        
         #-- Initialise ggplot2
         p = ggplot(df, aes(x = x, y = y, color = group, shape = studyname),
         main = title, xlab = X.label, ylab = Y.label) +
@@ -239,15 +295,15 @@ alpha)
         #-- Display sample or row.names
         for (i in levels(df$group))
         {
-                p = p + geom_point(data = subset(df, df$group == i), size = subset(df, df$group == i)$cex[1], stroke = point.lwd)
+            p = p + geom_point(data = subset(df, df$group == i), size = subset(df, df$group == i)$cex[1], stroke = point.lwd)
         }
         
         #-- Modify scale colour - Change X/Ylabel - split plots into Blocks
         p = p + scale_colour_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = legend.title, breaks = levels(df$group)) +
-            labs(shape = "Study")#levels(object$study)[study.ind])
-
+        labs(shape = "Study")#levels(object$study)[study.ind])
+        
         p = p + scale_shape_manual(values = as.numeric(levels(factor(df$pch)))) # replace the shape/pch by the input, it's converted by default to 1,2,3.. by ggplots
-
+        
         p = p + labs(list(title = title, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = nCols, scales = "free", as.table = TRUE) #as.table to plot in the same order as the factor
         p = p + theme(plot.title = element_text(size=size.title), axis.title.x = element_text(size=size.xlabel), axis.title.y = element_text(size = size.ylabel), axis.text = element_text(size = size.axis))# bigger title
         
@@ -267,8 +323,8 @@ alpha)
         #-- abline
         if (abline)
         p = p + geom_vline(aes(xintercept = 0), linetype = 2, colour = "darkgrey") + geom_hline(aes(yintercept = 0),linetype = 2,colour = "darkgrey")
-
-
+        
+        
         #-- centroid
         if (centroid == TRUE) #only when one block
         {
@@ -280,8 +336,8 @@ alpha)
                 shape = 8, stroke = point.lwd)
             }
         }
-
-
+        
+        
         #-- star
         if (star == TRUE) #only when one block
         {
@@ -293,13 +349,13 @@ alpha)
                 color = unique(col.per.group)[i],size = point.lwd)
             }
         }
-
+        
         #-- ellipse
         if (ellipse == TRUE) #only when one block
         {
             for (i in 1 : nlevels(df$group))
             {
-
+                
                 p = p + geom_path(data = df.ellipse,
                 aes_string(x = paste0("Col", 2*(i - 1) + 1), y = paste0("Col", 2 * i),
                 #label = "Block",
@@ -307,7 +363,7 @@ alpha)
                 color = unique(col.per.group)[i], size = point.lwd, inherit.aes =FALSE)
             }
         }
-
+        
         plot(p)
     }
     #-- End: ggplot2
@@ -389,7 +445,7 @@ alpha)
             panels = trellis.currentLayout(which = "panel")
             for (k in 1 : nlevels(df$Block))
             {
-
+                
                 other = df$Block %in% levels(df$Block)[k] #paste0("Block: ", blocks[k])
                 ind = which(panels == k, arr.ind = TRUE)
                 trellis.focus("panel", ind[2], ind[1], highlight = FALSE)
@@ -399,7 +455,7 @@ alpha)
                     x0 = mean(df[other & df$group == levels(df$group)[i], ]$x)
                     y0 = mean(df[other & df$group == levels(df$group)[i], ]$y)
                     panel.points(x = x0, y = y0, col = unique(col.per.group)[i],
-                        pch = 8, cex = df[other & df$group == levels(df$group)[i], ]$cex)
+                    pch = 8, cex = df[other & df$group == levels(df$group)[i], ]$cex)
                 }
             }
             trellis.unfocus()
@@ -413,7 +469,7 @@ alpha)
             panels = trellis.currentLayout(which = "panel")
             for (k in 1 : nlevels(df$Block))
             {
-     
+                
                 other = df$Block %in% levels(df$Block)[k]#paste0("Block: ", blocks[k])
                 ind = which(panels == k, arr.ind = TRUE)
                 trellis.focus("panel", ind[2], ind[1], highlight = FALSE)
@@ -444,7 +500,7 @@ alpha)
             panels = trellis.currentLayout(which = "panel")
             for (k in 1 : nlevels(df$Block))
             {
-  
+                
                 other.ellipse = df.ellipse$Block %in% levels(df$Block)[k]#paste0("Block: ", blocks[k])
                 ind = which(panels == k, arr.ind = TRUE)
                 trellis.focus("panel",ind[2], ind[1], highlight = FALSE)
@@ -466,7 +522,8 @@ alpha)
     if (style=="graphics")
     {
         #-- Start: graphics
-        
+        df$pch = as.numeric(df$pch) #number or names
+
         opar = par(c("mai","mar","usr","cxy","xaxp","yaxp"))
         
         reset.mfrow = FALSE # if set to TRUE, the algorithm ends up with  par(mfrow=reset.mfrow)
@@ -501,15 +558,15 @@ alpha)
             if (nRows * nCols < nResp)
             devAskNewPage(TRUE)
         }
-
-
+        
+        
         for (k in 1 : nlevels(df$Block))
         {
             if (legend)
             par(mai=c(1.360000, 1.093333, 1.093333, (max(strwidth(levels(df$group),"inches"))) + 0.6), xpd=TRUE)
-
+            
             other = df$Block %in% levels(df$Block)[k]
-
+            
             plot(df[other, "x" ], df[other, "y" ],
             type = "n", xlab = X.label, ylab = Y.label,
             xlim = c(xlim[[k]][1], xlim[[k]][2]), ylim = c(ylim[[k]][1], ylim[[k]][2]),
@@ -530,7 +587,7 @@ alpha)
             
             #add title of the 'blocks'
             title(main = titlemain, line = 1, cex.main = size.subtitle)
-
+            
             #-- Display sample or row.names
             for (i in 1 : nlevels(df$group))
             {
@@ -638,7 +695,7 @@ alpha)
         #par(usr=opar["usr"])
         #par(xaxp=opar["xaxp"])
         #par(yaxp=opar["yaxp"])
-
+        
         #par(mai=opar["mai"])
         if (reset.mfrow)
         par(mfrow = omfrow)
@@ -724,7 +781,7 @@ alpha)
                                 z = df[df$col == i & other, "z"][ind][ind_cex],
                                 col = df[df$col == i, ]$col[ind][ind_cex], size = cex_i*20, radius = cex_i, add = TRUE)
                             }
-
+                            
                         } else if (pch_i == "tetra") {
                             shapelist3d(tetrahedron3d(), x = df[df$col == i &other, "x"][ind],
                             y = df[df$col == i & other, "y"][ind],
