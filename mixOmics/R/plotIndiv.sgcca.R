@@ -57,7 +57,7 @@ ylim = NULL,
 col, 
 cex, 
 pch, 
-pch.names,
+pch.levels,
 alpha = 0.2,
 axes.box = "box", 
 layout = NULL, 
@@ -145,7 +145,7 @@ point.lwd = 1,
     out = shape.input.plotIndiv(object = object, n = n, blocks = blocks, x = x, y = y, z = z, ind.names = ind.names, group, col.per.group = col.per.group, 
     style = style, study = "global", ellipse = ellipse, ellipse.level = ellipse.level, 
     centroid = centroid, star = star, title = title, xlim = xlim, ylim = ylim, 
-    col = col, cex = cex, pch = pch, display.names = display.names, plot_parameters = plot_parameters)
+    col = col, cex = cex, pch = pch, pch.levels = pch.levels, display.names = display.names, plot_parameters = plot_parameters)
     #-- retrieve outputs
     df = out$df
     df.ellipse = out$df.ellipse

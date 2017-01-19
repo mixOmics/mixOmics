@@ -86,7 +86,7 @@ alpha)
     legend.position = plot_parameters$legend.position
     point.lwd = plot_parameters$point.lwd
     
-    save(list=ls(),file="temp.Rdata")
+    #save(list=ls(),file="temp.Rdata")
     # check whether pch and group are the same factors, otherwise we need two legends
     group.pch = "same"
     temp = table(df$group, df$pch)
@@ -109,12 +109,23 @@ alpha)
         group.pch = "different"
     }
     
+    df$pch = factor(df$pch) #number or names
+    df$pch.levels = factor(df$pch.levels) #names or number
+
     # override if only one pch
     if(nlevels(df$pch) == 1)
     group.pch = "same"
-    
-    df$pch = factor(df$pch) #number or names
-    df$pch.levels = factor(df$pch.levels) #names or number
+
+    # if pch is same factor as color, then same legend
+    if(suppressWarnings(sum(is.na(as.numeric(as.character(df$pch)))))==0)
+    {
+        #pch was numbers so we use them
+        values.pch = unique(as.numeric(as.character(df$pch)))[as.numeric(unique(df$pch.levels))]# need to match pch to pch.levels
+        # as.numeric(unique(df$pch.levels)) gives the order of the levels in which they appear in df
+    } else {
+        values.pch = 1:nlevels(df$pch)
+    }
+
 
     #-- Start: ggplot2
     if (style == "ggplot2")
@@ -160,14 +171,6 @@ alpha)
         #-- Modify scale colour - Change X/Ylabel - split plots into Blocks
         p = p + scale_color_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = legend.title, breaks = levels(df$group))
         
-        # if pch is same factor as color, then same legend
-        if(suppressWarnings(sum(is.na(as.numeric(as.character(df$pch)))))==0)
-        {
-            #pch was numbers so we use them
-            values.pch = sort(unique(as.numeric(as.character(df$pch))))
-        } else {
-            values.pch = 1:nlevels(df$pch)
-        }
         
 
         if(group.pch == "same")
@@ -384,8 +387,20 @@ alpha)
         {
             if (!any(class.object%in%object.mint))
             {
-                list(space = legend.position, title = legend.title, cex.title = size.legend.title,
+                if(group.pch == "same")
+                {
+                    list(space = legend.position, title = legend.title, cex.title = size.legend.title,
                 point = list(col =  col.per.group),cex=size.legend, pch = if(display.names | any(class.object%in%object.mint)) {16} else unique(df$pch.legend),text = list(levels(df$group)))
+                } else {
+                    list(space = legend.position, cex.title = size.legend.title,
+                    point = list(
+                    col =  c(NA, col.per.group, NA, NA, rep("black", nlevels(df$pch.levels)))),
+                    cex = c(size.legend.title, rep(size.legend, length(col.per.group)), size.legend, size.legend.title, rep(size.legend,nlevels(factor(df$pch)))),
+                    pch = c(NA, rep(16, length(col.per.group)), NA, NA, values.pch),
+                    text = list(outcome = c(legend.title, levels(df$group), "", legend.title.pch, levels(df$pch.levels)))
+                    )
+
+                }
             } else {#we add the shape legend
                 list(space = legend.position, cex.title = size.legend.title,
                 point = list(
@@ -562,9 +577,12 @@ alpha)
         
         for (k in 1 : nlevels(df$Block))
         {
-            if (legend)
-            par(mai=c(1.360000, 1.093333, 1.093333, (max(strwidth(levels(df$group),"inches"))) + 0.6), xpd=TRUE)
-            
+            if (legend & group.pch == "same")
+            {
+                par(mai=c(1.360000, 1.093333, 1.093333, (max(strwidth(c(levels(df$group),legend.title),"inches"))) + 1), xpd=TRUE)
+            } else if(legend & group.pch == "different") {
+                par(mai=c(1.360000, 1.093333, 1.093333, (max(strwidth(c(levels(df$group),legend.title,legend.title.pch),"inches"))) + 1), xpd=TRUE)
+            }
             other = df$Block %in% levels(df$Block)[k]
             
             plot(df[other, "x" ], df[other, "y" ],
@@ -620,21 +638,35 @@ alpha)
                 }
             }
             
-            pch.legend = NULL
-            if (missing.col)
-            {
-                
-                for (i in 1:nlevels(factor(df$col)))
-                pch.legend = c(pch.legend, df[df$col == levels(factor(df$col))[i], ]$pch)
-            } else {
-                for (i in 1:nlevels(df$group))
-                pch.legend = c(pch.legend, df[df$group == levels(df$group)[i], ]$pch)
-            }
+
             
-            if (legend)
+            if (legend & group.pch == "same")
             {
+                pch.legend = NULL
+                if (missing.col)
+                {
+                    
+                    for (i in 1:nlevels(factor(df$col)))
+                    pch.legend = c(pch.legend, df[df$col == levels(factor(df$col))[i], ]$pch)
+                } else {
+                    for (i in 1:nlevels(df$group))
+                    pch.legend = c(pch.legend, df[df$group == levels(df$group)[i], ]$pch)
+                }
+                
                 legend(par()$usr[2]+0.1, par()$usr[4] - (par()$usr[4]-par()$usr[3])/2, col = col.per.group, legend = levels(df$group), pch = if(display.names) {16} else unique(df$pch.legend), title = legend.title, cex = size.legend, lty = 0,lwd = point.lwd)
                 
+                
+            } else if(legend & group.pch == "different") {
+                
+                legend(par()$usr[2]+0.1, par()$usr[4] - (par()$usr[4]-par()$usr[3])/2,
+                col =  c(NA, col.per.group, NA, NA, rep("black", nlevels(df$pch.levels))),
+                legend = c(legend.title, levels(df$group), "", legend.title.pch, levels(df$pch.levels)),
+                pch = c(NA, rep(16, length(col.per.group)), NA, NA, values.pch),
+                cex = max(c(size.legend.title, size.legend)),
+                lty = 0,
+                lwd = point.lwd
+                )
+  
             }
             if (legend)
             par(xpd=FALSE) # so the abline does not go outside the plot

@@ -24,6 +24,30 @@ plotIndiv(nutri.res, rep.space= 'XY-variate',
 ellipse = TRUE, ellipse.level = 0.9,
 group = nutrimouse$genotype, ind.names = nutrimouse$genotype)
 
+# with pch - two legends expected
+plotIndiv(nutri.res, rep.space= 'XY-variate',
+ellipse = TRUE, ellipse.level = 0.9,
+group = nutrimouse$genotype, legend=T,
+ind.names=FALSE,
+pch=rep(c("1","a","v","p"),each=10),
+style="ggplot2", legend.title.pch="group.pch", legend.title="group.col")
+
+
+plotIndiv(nutri.res, rep.space= 'XY-variate',
+ellipse = TRUE, ellipse.level = 0.9,
+group = nutrimouse$genotype, legend=T,
+ind.names=FALSE,
+pch=rep(c("1","a","v","p"),each=10),
+style="lattice", legend.title.pch="group.pch", legend.title="group.col")
+
+plotIndiv(nutri.res, rep.space= 'XY-variate',
+ellipse = TRUE, ellipse.level = 0.9,
+group = nutrimouse$genotype, legend=T,
+ind.names=FALSE,
+pch=rep(c("1","a","v","p"),each=10),
+style="graphics", legend.title.pch="group.pch", legend.title="group.col")
+
+
 # ellipse with respect to genotype in the XY space, with legend
 plotIndiv(nutri.res, rep.space= 'XY-variate', group = nutrimouse$genotype,
 legend = TRUE)
@@ -114,6 +138,38 @@ plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c(3,4,2), legen
 
 plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c(3,4,2),
     pch.levels = c("aha","why?","maybe"), legend=T)
+
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c(2,4,3),
+pch.levels = c("aha","why?","maybe"), legend=T)
+
+
+#checking matching pch and names: 1:circle, 2:triangle, 3:cross
+
+#ggplot2
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = 1:3,
+pch.levels = c("aha","why?","maybe"), legend=T)
+# circle for aha, triangle for why and cross for maybe
+#quartz()
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = 3:1,
+pch.levels = c("aha","why?","maybe"), legend=T)
+# cross for aha, triangle for why and circle for maybe
+
+
+#lattice
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = 1:3,
+pch.levels = c("aha","why?","maybe"), legend=T, style="lattice")
+#quartz()
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = 3:1,
+pch.levels = c("aha","why?","maybe"), legend=T, style="lattice")
+
+#graphics
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = 1:3,
+pch.levels = c("aha","why?","maybe"), legend=T, style="graphics")
+#quartz()
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = 3:1,
+pch.levels = c("aha","why?","maybe"), legend=T, style="graphics")
+
+
 
 #creating a vector of size 47 qith different names
 plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c(3,4,5),pch.levels=c("a","b","d"), legend=T)
