@@ -112,6 +112,9 @@ data(breast.tumors)
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
+acp = pca(X)
+plotIndiv(acp)
+
 splsda.breast <- splsda(X, Y,keepX=c(10,10),ncomp=2)
 
 # default option: note the outcome color is included by default!
@@ -132,6 +135,14 @@ plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2),
 plotIndiv(splsda.breast, ind.names = TRUE, centroid = TRUE, star = TRUE)
 
 # with different pch and cex
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c("o","+","X"), legend=T)
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c("o","+","X"), pch.levels=c("aha","why?","maybe"),legend=T)
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c("aha","why?","maybe"), pch.levels=c("aha","why?","maybe"),legend=T)
+
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = "F",legend=T)
+
+
+
 plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c(3,4), legend=T)
 plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c(3,4,2), legend=T)
 #plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5,10), pch = c(3,4,2), legend=T) #error on purpose

@@ -353,12 +353,48 @@ cpus
         if (progressBar == TRUE)
         cat('\n')
         
+        
+        # calculating the number of optimal component based on t.tests and the error.rate.all, if more than 3 error.rates(repeat>3)
+        if(nrepeat > 3 & length(comp.real) >1)
+        {
+            keepX = if(constraint){lapply(already.tested.X, length)}else{already.tested.X}
+            error.keepX = NULL
+            for(comp in 1:length(comp.real))
+            {
+                ind.row = match(keepX[[comp.real[comp]]],test.keepX)
+                error.keepX = cbind(error.keepX, mat.error.rate[[comp]][ind.row,])
+            }
+            colnames(error.keepX) = c(paste('comp', comp.real, sep=''))
+            
+            max = length(comp.real) #number max of components included
+            pval = NULL
+            opt = 1 #initialise the first optimal number of genes
+            alpha = 0.01
+            for(j in 2:max)
+            {
+                
+                pval[j]=t.test(error.keepX[,opt],error.keepX[,j],alternative="greater")$p.value #t.test of "is adding X genes improves the overall results"
+                
+                if( (pval[j]< (alpha)))
+                {
+                    opt=j #if the p-value is lower than 0.05, the optimal number of genes is updated
+                    #cat("opt.temp ", opt,"\n") #print the temporary optimal number of genes for MC
+                }
+            }
+            
+            ncomp_opt = comp.real[opt]
+        } else {
+            ncomp_opt = error.keepX = NULL
+        }
+        
+        
         result = list(
         error.rate = mat.mean.error,
         error.rate.sd = mat.sd.error,
         error.rate.all = mat.error.rate,
         choice.keepX = if(constraint){lapply(already.tested.X, length)}else{already.tested.X},
         choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
+        choice.ncomp = list(ncomp = ncomp_opt, values = error.keepX),
         error.rate.class = error.per.class.keepX.opt.mean,
         error.rate.class.all = error.per.class.keepX.opt)
         

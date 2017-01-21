@@ -86,11 +86,12 @@ alpha)
     legend.position = plot_parameters$legend.position
     point.lwd = plot_parameters$point.lwd
     
-    #save(list=ls(),file="temp.Rdata")
+    save(list=ls(),file="temp.Rdata")
     # check whether pch and group are the same factors, otherwise we need two legends
     group.pch = "same"
     temp = table(df$group, df$pch)
     # if factors are the same, there should be only one value different from 0 per column/row
+    # if pch is same factor as color, then same legend
     a = NULL
     for(i in 1:nrow(temp))
     {
@@ -109,22 +110,16 @@ alpha)
         group.pch = "different"
     }
     
-    df$pch = factor(df$pch) #number or names
-    df$pch.levels = factor(df$pch.levels) #names or number
+    df$pch.levels = factor(df$pch.levels) #factor(as.character(df$pch.levels)) #names or number
 
+    values.pch = unique(df$pch)[as.numeric(unique(df$pch.levels))] # makes pch and pch.levels correspond
+    #df$pch = factor(df$pch) #number or names
+    
+    # shape in ggplot is ordered by the levels of pch.levels: levels(factor(as.character(df$pch.levels)))
+    
     # override if only one pch
-    if(nlevels(df$pch) == 1)
+    if(nlevels(factor(df$pch)) == 1)
     group.pch = "same"
-
-    # if pch is same factor as color, then same legend
-    if(suppressWarnings(sum(is.na(as.numeric(as.character(df$pch)))))==0)
-    {
-        #pch was numbers so we use them
-        values.pch = unique(as.numeric(as.character(df$pch)))[as.numeric(unique(df$pch.levels))]# need to match pch to pch.levels
-        # as.numeric(unique(df$pch.levels)) gives the order of the levels in which they appear in df
-    } else {
-        values.pch = 1:nlevels(df$pch)
-    }
 
 
     #-- Start: ggplot2
@@ -175,8 +170,9 @@ alpha)
 
         if(group.pch == "same")
         {
-            p = p + scale_shape_manual(values = values.pch,
-            name = legend.title, breaks = levels(df$group))
+            p = p + scale_shape_manual(values = values.pch[match(levels(factor(as.character(df$pch.levels))),levels(df$pch.levels))],
+            name = legend.title, breaks = levels(factor(df$group)))
+            #match(..) reorder the values as the values of pch.levels, if there's more than 10 levels, R/ggplot orders characters different than values 1, 10, 11, 2, 3, etc
         } else {
             # if pch different factor, then second legend
             p = p + scale_shape_manual(values = values.pch, name = legend.title.pch, breaks = levels(df$pch.levels))
@@ -537,7 +533,7 @@ alpha)
     if (style=="graphics")
     {
         #-- Start: graphics
-        df$pch = as.numeric(df$pch) #number or names
+        #df$pch = as.numeric(df$pch) #number or names
 
         opar = par(c("mai","mar","usr","cxy","xaxp","yaxp"))
         
