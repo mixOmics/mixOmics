@@ -125,7 +125,7 @@ plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2), legend = TRUE)
 
 # trying the different styles
 plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), 
-          ellipse = TRUE, style = "ggplot2", cex = c(1, 1))
+          ellipse = TRUE, style = "ggplot2", cex = c(3, 3))
 plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), 
           ellipse = TRUE, style = "graphics", cex = c(1, 1))
 plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), 
@@ -206,6 +206,7 @@ splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
 plotIndiv(splsda.liver, ind.names = TRUE, ellipse=TRUE, centroid = TRUE, star = TRUE)
 
 #with only one sample in a class
+set.seed(123)
 Y <- as.factor(liver.toxicity$treatment[, 4])
 ind.remove = which(Y==levels(Y)[1])[-sample(1:sum(Y==levels(Y)[1]),1)]
 Y2 = Y[-ind.remove]

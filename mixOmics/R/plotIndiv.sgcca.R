@@ -154,7 +154,7 @@ point.lwd = 1,
     display.names = out$display.names
     xlim = out$xlim
     ylim = out$ylim
-    missing.col = out$missing.col
+    #missing.col = out$missing.col
     ellipse = out$ellipse
     centroid = out$centroid
     star = out$star
@@ -173,7 +173,8 @@ point.lwd = 1,
     res = internal_graphicModule(df = df, centroid = centroid, col.per.group = col.per.group, title = title, X.label = X.label,
     Y.label = Y.label, Z.label = Z.label, xlim = xlim, ylim = ylim, class.object = class(object), display.names = display.names, legend = legend,
     abline = abline, star = star, ellipse = ellipse, df.ellipse = df.ellipse, style = style, layout = layout,
-    missing.col = missing.col, axes.box = axes.box, plot_parameters = plot_parameters, alpha = alpha)
+    #missing.col = missing.col,
+    axes.box = axes.box, plot_parameters = plot_parameters, alpha = alpha)
 
     return(invisible(list(df = df, df.ellipse = df.ellipse, graph = res)))
 

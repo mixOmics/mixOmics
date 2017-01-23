@@ -59,7 +59,7 @@ ellipse,
 df.ellipse,
 style,
 layout=NULL,
-missing.col,
+#missing.col,
 axes.box,
 study.levels,
 plot_parameters,
@@ -111,7 +111,7 @@ alpha)
     }
     
     df$pch.levels = factor(df$pch.levels) #factor(as.character(df$pch.levels)) #names or number
-
+    
     values.pch = unique(df$pch)[as.numeric(unique(df$pch.levels))] # makes pch and pch.levels correspond
     #df$pch = factor(df$pch) #number or names
     
@@ -120,8 +120,8 @@ alpha)
     # override if only one pch
     if(nlevels(factor(df$pch)) == 1)
     group.pch = "same"
-
-
+    
+    
     #-- Start: ggplot2
     if (style == "ggplot2")
     {
@@ -167,11 +167,11 @@ alpha)
         p = p + scale_color_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = legend.title, breaks = levels(df$group))
         
         
-
+        
         if(group.pch == "same")
         {
             p = p + scale_shape_manual(values = values.pch[match(levels(factor(as.character(df$pch.levels))),levels(df$pch.levels))],
-            name = legend.title, breaks = levels(factor(df$group)))
+            name = legend.title, breaks = levels(factor(df$group)), guide = FALSE)
             #match(..) reorder the values as the values of pch.levels, if there's more than 10 levels, R/ggplot orders characters different than values 1, 10, 11, 2, 3, etc
         } else {
             # if pch different factor, then second legend
@@ -386,7 +386,7 @@ alpha)
                 if(group.pch == "same")
                 {
                     list(space = legend.position, title = legend.title, cex.title = size.legend.title,
-                point = list(col =  col.per.group),cex=size.legend, pch = if(display.names | any(class.object%in%object.mint)) {16} else unique(df$pch.legend),text = list(levels(df$group)))
+                    point = list(col =  col.per.group),cex=size.legend, pch = if(display.names | any(class.object%in%object.mint)) {16} else unique(df$pch.legend),text = list(levels(df$group)))
                 } else {
                     list(space = legend.position, cex.title = size.legend.title,
                     point = list(
@@ -395,7 +395,7 @@ alpha)
                     pch = c(NA, rep(16, length(col.per.group)), NA, NA, values.pch),
                     text = list(outcome = c(legend.title, levels(df$group), "", legend.title.pch, levels(df$pch.levels)))
                     )
-
+                    
                 }
             } else {#we add the shape legend
                 list(space = legend.position, cex.title = size.legend.title,
@@ -534,7 +534,7 @@ alpha)
     {
         #-- Start: graphics
         #df$pch = as.numeric(df$pch) #number or names
-
+        
         opar = par(c("mai","mar","usr","cxy","xaxp","yaxp"))
         
         reset.mfrow = FALSE # if set to TRUE, the algorithm ends up with  par(mfrow=reset.mfrow)
@@ -634,20 +634,13 @@ alpha)
                 }
             }
             
-
+            
             
             if (legend & group.pch == "same")
             {
                 pch.legend = NULL
-                if (missing.col)
-                {
-                    
-                    for (i in 1:nlevels(factor(df$col)))
-                    pch.legend = c(pch.legend, df[df$col == levels(factor(df$col))[i], ]$pch)
-                } else {
-                    for (i in 1:nlevels(df$group))
-                    pch.legend = c(pch.legend, df[df$group == levels(df$group)[i], ]$pch)
-                }
+                for (i in 1:nlevels(df$group))
+                pch.legend = c(pch.legend, df[df$group == levels(df$group)[i], ]$pch)
                 
                 legend(par()$usr[2]+0.1, par()$usr[4] - (par()$usr[4]-par()$usr[3])/2, col = col.per.group, legend = levels(df$group), pch = if(display.names) {16} else unique(df$pch.legend), title = legend.title, cex = size.legend, lty = 0,lwd = point.lwd)
                 
@@ -662,7 +655,7 @@ alpha)
                 lty = 0,
                 lwd = point.lwd
                 )
-  
+                
             }
             if (legend)
             par(xpd=FALSE) # so the abline does not go outside the plot
