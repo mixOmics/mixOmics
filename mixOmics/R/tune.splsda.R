@@ -353,7 +353,7 @@ cpus
         if (progressBar == TRUE)
         cat('\n')
         
-        
+        save(list=ls(),file="temp.Rdata")
         # calculating the number of optimal component based on t.tests and the error.rate.all, if more than 3 error.rates(repeat>3)
         if(nrepeat > 3 & length(comp.real) >1)
         {
@@ -372,16 +372,22 @@ cpus
             alpha = 0.01
             for(j in 2:max)
             {
-                
-                pval[j]=t.test(error.keepX[,opt],error.keepX[,j],alternative="greater")$p.value #t.test of "is adding X genes improves the overall results"
-                
+                print(j)
+
+                pval[j] = NA
+                temp = try(t.test(error.keepX[,opt],error.keepX[,j],alternative="greater")$p.value, silent=T) #t.test of "is adding X genes improves the overall results"
+                if(any(class(temp) == "try-error"))
+                {
+                    ncomp_opt = NULL
+                    break
+                }
                 if( (pval[j]< (alpha)))
                 {
                     opt=j #if the p-value is lower than 0.05, the optimal number of genes is updated
                     #cat("opt.temp ", opt,"\n") #print the temporary optimal number of genes for MC
                 }
             }
-            
+            if(all(class(temp) != "try-error"))
             ncomp_opt = comp.real[opt]
         } else {
             ncomp_opt = error.keepX = NULL
