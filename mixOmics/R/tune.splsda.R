@@ -353,7 +353,7 @@ cpus
         if (progressBar == TRUE)
         cat('\n')
         
-        save(list=ls(),file="temp.Rdata")
+        #save(list=ls(),file="temp.Rdata")
         # calculating the number of optimal component based on t.tests and the error.rate.all, if more than 3 error.rates(repeat>3)
         if(nrepeat > 3 & length(comp.real) >1)
         {
