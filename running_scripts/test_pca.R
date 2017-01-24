@@ -33,7 +33,8 @@ plotIndiv(pca.res, ind.names = multidrug$cell.line$Class, group = as.factor(mult
 plotIndiv(pca.res, ind.names = multidrug$cell.line$Class, col = as.numeric(as.factor(multidrug$cell.line$Class)))
 
 plotIndiv(pca.res, ind.names = multidrug$cell.line$Class, col = rep(1:2,30))
-plotIndiv(pca.res, ind.names = multidrug$cell.line$Class, group = as.numeric(as.factor(multidrug$cell.line$Class)),col = rep(1:10,6),ellipse=TRUE)
+plotIndiv(pca.res, ind.names = multidrug$cell.line$Class, group = as.numeric(as.factor(multidrug$cell.line$Class)),col = 1:9,ellipse=TRUE)
+plotIndiv(pca.res, ind.names = multidrug$cell.line$Class, col = rep(1:10,6),ellipse=TRUE)
 
 
 plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,

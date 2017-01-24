@@ -53,7 +53,7 @@ for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))
         {
             for(leg in c("vertical","horizontal"))
             {
-                quartz()
+                #quartz()
                 print(paste(di,mea,overla,leg))
                 plot(error,
                 dist =di,
@@ -178,4 +178,6 @@ for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))
         }
     }
 }
+
+par(opar)
 
