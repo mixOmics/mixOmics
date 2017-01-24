@@ -441,32 +441,37 @@ legend.position=c("vertical","horizontal"),
     if(weighted == TRUE)
     {
         perfo = "WeightedVote.error.rate"
+        perfo.sd = "WeightedVote.error.rate.sd"
     } else {
         perfo = "MajorityVote.error.rate"
+        perfo.sd = "MajorityVote.error.rate.sd"
     }
     
     # error.rate is a list [[measure]]
     # error.rate[[measure]] is a matrix of dist columns and ncomp rows
     # same for error.rate.sd, if any
-    error.rate = list()
+    error.rate = error.rate.sd = list()
     for(mea in measure)
     {
-        error.temp = NULL
+        error.temp = error.temp.sd = NULL
         for(di in dist)
         {
             temp = t(x[[perfo]][[di]][mea, , drop=FALSE])
-            colnames(temp) = di
+            temp.sd = t(x[[perfo.sd]][[di]][mea, , drop=FALSE])
+            colnames(temp) = colnames(temp.sd) = di
             error.temp = cbind(error.temp, temp)
+            error.temp.sd = cbind(error.temp.sd, temp.sd)
 
         }
         error.rate[[mea]] = error.temp
+        error.rate.sd[[mea]] = error.temp.sd
     }
     
     
     
     def.par = par(no.readonly = TRUE)
     
-    internal_graphic.perf(error.rate = error.rate, error.rate.sd = NULL,
+    internal_graphic.perf(error.rate = error.rate, error.rate.sd = error.rate.sd,
     overlay = overlay, type = type, measure = measure, dist = dist, legend.position = legend.position,
     xlab = xlab, ylab = ylab, color = col, ...)
     
