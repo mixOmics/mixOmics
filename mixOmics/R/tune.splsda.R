@@ -373,19 +373,16 @@ cpus
             for(j in 2:max)
             {
                 pval[j] = NA
-                temp = try(t.test(error.keepX[,opt],error.keepX[,j],alternative="greater")$p.value, silent=T) #t.test of "is adding X genes improves the overall results"
+                temp = try(t.test(error.keepX[,opt],error.keepX[,j],alternative="greater")$p.value, silent=T) #t.test of "is adding X comp improves the overall results"
                 if(any(class(temp) == "try-error"))
                 {
                     ncomp_opt = NULL
                     break
                 } else {
-                    pval[j] = temp #not before otherwise the class is lost
+                    pval[j] = temp #had to be two steps (temp then pval =temp) otherwise the class is lost
                 }
                 if( (pval[j]< (alpha)))
-                {
-                    opt=j #if the p-value is lower than 0.05, the optimal number of genes is updated
-                    #cat("opt.temp ", opt,"\n") #print the temporary optimal number of genes for MC
-                }
+                opt=j #if the p-value is lower than 0.05, the optimal number of comp is updated
             }
             if(all(class(temp) != "try-error"))
             ncomp_opt = comp.real[opt]
