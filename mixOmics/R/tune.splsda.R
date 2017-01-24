@@ -372,14 +372,14 @@ cpus
             alpha = 0.01
             for(j in 2:max)
             {
-                print(j)
-
                 pval[j] = NA
                 temp = try(t.test(error.keepX[,opt],error.keepX[,j],alternative="greater")$p.value, silent=T) #t.test of "is adding X genes improves the overall results"
                 if(any(class(temp) == "try-error"))
                 {
                     ncomp_opt = NULL
                     break
+                } else {
+                    pval[j] = temp #not before otherwise the class is lost
                 }
                 if( (pval[j]< (alpha)))
                 {
