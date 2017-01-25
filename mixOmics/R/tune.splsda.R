@@ -355,7 +355,7 @@ cpus
         
         #save(list=ls(),file="temp.Rdata")
         # calculating the number of optimal component based on t.tests and the error.rate.all, if more than 3 error.rates(repeat>3)
-        if(nrepeat > 3 & length(comp.real) >1)
+        if(nrepeat > 2 & length(comp.real) >1)
         {
             keepX = if(constraint){lapply(already.tested.X, length)}else{already.tested.X}
             error.keepX = NULL
