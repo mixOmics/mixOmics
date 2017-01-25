@@ -1,0 +1,47 @@
+--
+title: "mixDIABLO - Example Asthma Study (Repeated Measures)"
+date: "22 November 2016"
+output:
+  html_document:
+    code_folding: show
+    highlight: haddock
+    df_print: kable
+
+---
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
+                      fig.show=TRUE, fig.keep = 'all', fig.width= 6)
+```
+
+# Multi ‘omics data: Asthma study (Repeated Measures)
+
+Paired blood samples were obtained from 14 asthmatic individuals undergoing allergen inhalation challenge. This study was a **repeated measurement experiment** (samples from the same patients were obtained before and after inhalation challenge). 
+
+
+Using Eigengene a total of 15,683 genes were reduced to 229 KEGG pathways and 292 metabolites were reduced to 60 metabolic pathways. 
+
+'omics included **methylation** **gene expression** **metabolite profiling** **cell count**
+
+
+
+Below we set up the data as a list of ‘blocks‘ (`omics data sets, each row should match to the same biological sample from one data set to another) and the time (ie: before and after) Y as a factor.
+
+# Data
+
+Download zip file with full data set and R script [here](). 
+
+
+```{r}
+load('Rdata/asthma.mixDIABLO')
+
+lapply(data, dim)
+
+# repeated measures design is summarised in the data frame design
+summary(design$time)
+```
+
+
+# References
+
+1. [Singh, A., Cohen Freue, G.V., Oosthuizen, J.L., Kam, S.H., Ruan, J., Takhar, M.K., Gauvreau, G.M., O'Byrne, P.M., FitzGerald, J.M., Boulet, L.P. and Borchers, C.H., 2012. Plasma proteomics can discriminate isolated early from dual responses in asthmatic individuals undergoing an allergen inhalation challenge. PROTEOMICS-Clinical Applications, 6(9-10), pp.476-485.](https://scholar.google.com/scholar_url?url=https://www.researchgate.net/profile/Amrit_Singh14/publication/230756620_Plasma_proteomics_can_discriminate_isolated_early_from_dual_responses_in_asthmatic_individuals_undergoing_an_allergen_inhalation_challenge/links/0c96053b642dd3e19f000000.pdf&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=w2xGWLnXONWujAHEo7TIBw&scisig=AAGBfm1W1WWILQsYOWAHFWHAVUytKJrOSg)

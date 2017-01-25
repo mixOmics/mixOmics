@@ -1,0 +1,140 @@
+---
+title: "plotIndiv"
+author: "Danielle Davenport"
+date: "23 January 2017"
+output: html_document
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
+                      fig.show=TRUE, fig.keep = 'all', fig.height= 8, fig.width=9)
+```
+# plotIndiv
+
+# Individuals representation
+
+In this plot the samples are represented as point placed according to their relation to two dimensions among those chosen in the analysis (the *ncomp parameter*). Such points tends to aggregate together when they are share similarities.
+
+# Usage in mixOmics
+
+Individual 2D plots can be obtained in mixOmics via the function **plotIndiv()** as displayed below:
+
+```{r}
+library(mixOmics)
+data(nutrimouse)
+  
+diet = unmap(nutrimouse$diet)
+blocks = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, diet = diet)
+    
+design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+    
+    
+nutri.sgcca <- wrapper.sgcca(blocks,design=design, ncomp = 3)
+```
+
+```{r}
+plotIndiv(nutri.sgcca, 
+          group = nutrimouse$diet, 
+          ind.names = nutrimouse$diet,
+          legend =TRUE, 
+          ellipse = TRUE,
+          ellipse.level = 0.5, 
+          blocks = "lipid", 
+          main = 'sgcca',
+          star = TRUE, 
+          centroid = TRUE)
+```
+
+
+```{r}
+X <- nutrimouse$lipid
+Y <- nutrimouse$gene
+nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
+
+plotIndiv(nutri.res,
+          group = nutrimouse$genotype,
+          ind.names = FALSE,
+          legend = TRUE)
+```     
+    
+```{r}
+data(liver.toxicity)
+    
+X <- liver.toxicity$gene
+Y <- liver.toxicity$clinic
+toxicity.spls <- spls(X, Y, ncomp = 3,
+keepX = c(50, 50, 50), keepY = c(10, 10, 10))
+group=rep(c("group 1","group 2","group 3","group 4"),each = 16)
+##test add.legend,group
+
+plotIndiv(toxicity.spls, 
+          legend=TRUE,
+          ind.names=FALSE,
+          group=group)
+```
+
+```{r}
+data("breast.tumors")
+X = breast.tumors$gene.exp
+Y = breast.tumors$sample$treatment
+breast.plsda<- plsda(X,Y, ncomp=10)    
+ ##plot.ellipse and ellipse.level
+    
+plotIndiv(breast.plsda,
+          comp= c(1,2),
+          ind.names = breast.tumors$sample$treatment,
+          ellipse.level=0.5,
+          ellipse=TRUE)
+```
+
+```{r}
+liver.spca= spca(liver.toxicity$gene,ncomp=3)
+    
+plotIndiv(liver.spca,
+          ind.names=FALSE,
+          legend=TRUE,
+          ellipse=TRUE,
+          group=liver.toxicity$treatment[, 3]) 
+```
+
+```{r}
+### Multilevel
+data(vac18)
+X <- vac18$genes
+Y <- vac18$stimulation
+
+# sample indicates the repeated measurements
+# setup the design matrix by indicating the repeated measurements
+design <- data.frame(sample = vac18$sample)
+
+# multilevel sPLS-DA model
+vac18.splsda.multilevel <- splsda(X, 
+                                  Y = vac18$stimulation, 
+                                  multilevel = design, 
+                                  ncomp = 3, 
+                                  keepX = c(30, 137, 123))
+
+plotIndiv(vac18.splsda.multilevel, 
+          rep.space = 'XY-variate',
+          ind.names = vac18$stimulation,
+          pch = 20,
+          main = 'Both Gene expression and Stimulation subspaces',
+          legend = TRUE)
+```
+
+```{r, eval=FALSE}
+plotIndiv(nutri.sgcca, 
+          group = nutrimouse$diet, 
+          ind.names = nutrimouse$diet,
+          legend =TRUE, 
+          ellipse = TRUE,
+          ellipse.level = 0.5, 
+          blocks = "lipid", 
+          main = '3D-Nutrimouse',
+          star = TRUE, 
+          centroid = TRUE,
+          style='3d')
+```
+
+![Nutrimouse 3D-Plot](Images/3d_nutrimouse.png)

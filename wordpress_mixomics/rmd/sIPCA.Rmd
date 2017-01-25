@@ -1,0 +1,69 @@
+---
+title: "(s)IPCA"
+date: "20 January 2017"
+output: html_document
+---
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
+                      fig.show=TRUE, fig.keep = 'all')
+```
+
+
+# Independant Principle Component Analysis 
+
+In some case studies, we have identified some limitations when using PCA:
+
+* PCA assumes that gene expression follows a multivariate normal distribution and recent studies have demonstrated that microarray gene expression measurements follow instead a super-Gaussian distribution.
+
+* PCA decomposes the data based on the maximization of its variance. In some cases, the biological question may not be related to the highest variance in the data.
+
+Instead, we propose to apply Independent Principal Component Analysis (IPCA) which combines the advantages of both PCA and Independent Component Analysis (ICA). It uses ICA as a denoising process of the loading vectors produced by PCA to better highlight the important biological entities and reveal insightful patterns in the data. A sparse version is also proposed (sIPCA). This approach was proposed in collaboration with Eric F. Yao (QFAB and University of Shanghai).
+
+The algorithm of IPCA is as follows:
+
+1. The original data matrix is centered (by default).
+
+2. PCA is used to reduce dimension and generate the loading vectors.
+
+3. ICA (FastICA) is implemented on the loading vectors to generate independent loading vectors.
+
+4. The centered data matrix is projected on the independent loading vectors to obtain the independent principal components.
+
+IPCA offers a better visualization of the data than ICA and with a smaller number of components than PCA.
+
+## Choosing the optimal parameters
+
+The number of variables to select is still an open issue. In [1] we proposed to use the Davies Bouldin measure which is an index of crisp cluster validity. This index compares the within-cluster scatter with the between-cluster separation.
+
+# IPCA
+
+IPCA is of class sPCA and PCA, and most of the PCA graphical methods can be applied. The default algorithm to estimate the unmixing matrix is set to *mode = ‘deflation’*. By default, the data are centered, but not necessarily scaled.
+
+```{r}
+library(mixOmics)
+data("liver.toxicity")
+ipca.res <- ipca(liver.toxicity$gene, ncomp = 3, mode="deflation")
+ipca.res
+```
+
+
+See See [Case Study: IPCA Liver Toxicity](http://mixomics.org/case-studies/ipca-liver-toxicity/) for plotting options. 
+
+# Kurtosis
+
+The kurtosis measure is used to order the loading vectors to order the Independent Principal Components.  We have shown that the kurtosis value is a good post hoc indicator of the number of components to choose, as a sudden drop in the values corresponds to irrelevant dimensions.
+
+```{r}
+ipca.res$kurtosis
+```
+
+
+
+# References 
+
+1. [Yao, F., Coquery, J. and Lê Cao, K.A., 2012. Independent principal component analysis for biologically meaningful dimension reduction of large biological data sets. BMC bioinformatics, 13(1), p.24.](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-13-24)
+
+2. [Comon, P., 1994. Independent component analysis, a new concept?. Signal processing, 36(3), pp.287-314.](Yao, F., Coquery, J. and Lê Cao, K.A., 2012. Independent principal component analysis for biologically meaningful dimension reduction of large biological data sets. BMC bioinformatics, 13(1), p.24.)
+
+3. [Hyvärinen, A. and Oja, E., 2000. Independent component analysis: algorithms and applications. Neural networks, 13(4), pp.411-430.](http://mlsp.cs.cmu.edu/courses/fall2012/lectures/ICA_Hyvarinen.pdf)

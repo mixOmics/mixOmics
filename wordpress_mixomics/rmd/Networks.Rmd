@@ -1,0 +1,58 @@
+---
+title: "Networks"
+date: "23 January 2017"
+output: html_document
+---
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
+                      fig.show=TRUE, fig.keep = 'all', fig.height= 8, fig.width=9)
+```
+
+# Networks
+
+Networks can be displayed to represent the relevant associations between X and Y variables, they are inferred using a pairwise association score between X and Y variables. The user can set a threshold to represent only the variables X and Y with an association score greater than the threshold. By changing this threshold, the user can choose to include or exclude relationships in the relevance network. The output is a graph where each X- and Y-variable corresponds to a node and the edges included in the graph portray associations between them.
+
+# Usage in mixOmics
+
+Networks graphs can be obtained in mixOmics via the function network as displayed below:
+```{r}
+library(mixOmics)
+```
+
+```{r}
+## Will work with sPLS result
+data(liver.toxicity)
+    
+    X <- liver.toxicity$gene
+    Y <- liver.toxicity$clinic
+    toxicity.spls <- spls(X, Y, ncomp = 3)
+                          
+ network(toxicity.spls,
+         color.node = c("orange","blue"),
+         cutoff = 0.75,
+         row.names = FALSE, 
+         col.names = FALSE)
+```
+ 
+```{r}
+network(toxicity.spls,color.edge = c("red","orange","cyan","blue"),row.names=FALSE, cutoff = 0.75)
+```
+ 
+```{r}
+ network(toxicity.spls,lty.edge='dotted',row.names = FALSE, cutoff = 0.75)
+```
+
+We can export the graph to **Cytoscape** file format using write.graph from the igraph package. 
+ 
+```{r eval = FALSE}
+net.result <- network(toxicity.spls)
+
+write.graph(net.result$gR, file = "network.gml", format = "gml")
+```
+
+# References 
+
+[González I., Lê Cao K.-A., Davis, M.D. and Déjean S. (2013) Insightful graphical outputs to explore relationships between two ‘omics’ data sets. BioData Mining 5:19](http://mixomics.org/wp-content/uploads/2012/03/Visualising_JDataMining.pdf)
+ 
+ 

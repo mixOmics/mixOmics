@@ -1,0 +1,103 @@
+---
+title: "IPCA_SPCA_livertoxcity"
+date: "10 January 2017"
+output: html_document
+---
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
+                      fig.show=TRUE, fig.keep = 'all', fig.height= 8, fig.width=9)
+
+```
+
+# Case study Independent PCA analysis (IPCA) & Sparse IPCA on Liver Toxicity data set
+
+Independent Principal Component Analysis (IPCA) combines the advantages of both PCA and ICA to better highlight the important biological entities and reveal insightful patterns in the data, see reference Yao et al. IPCA results in better clustering of the biological samples on graphical representations. A sparse version (sIPCA) is also implemented which performs an internal variable selection to identify biologically relevant features. 
+
+Here, we illustrate IPCA and sIPCA using the liver toxicity data set which contains the expression measure of **3116 genes and 10 clinical measurements for 64 subjects (rats)** that were exposed to non-toxic, moderately toxic or severely toxic doses of acetaminophen in a controlled experiment, see study details in [2]. 
+
+## To begin...
+
+Load the latest version of [mixOmics](https://www.rdocumentation.org/link/%20www.mixOmics.org%2FmixMC?package=mixOmics&version=6.0.0).
+
+```{r include = FALSE}
+library(mixOmics)
+```
+
+# Data
+
+The liver toxicity data set is implemented in mixOmics via **liver.toxicity**, see **?liver.toxicity**.
+
+Independent Principal Component Analysis (IPCA) combines the advantages of both PCA and Independent Component Analysis (ICA). It uses ICA as a denoising process of the loading vectors produced by PCA to better highlight the important biological entities and reveal insightful patterns in the data.  A sparse version is also implemented (sIPCA), see below in the next section, also see [1]. 
+
+
+```{r}
+data(liver.toxicity)
+X <- liver.toxicity$gene
+
+liver.ipca <- ipca(X, ncomp = 3, mode="deflation", scale = FALSE)
+```
+
+## Sample Plots
+
+```{r}
+plotIndiv(liver.ipca, ind.names = liver.toxicity$treatment[, 4], group= liver.toxicity$treatment[,4], legend = TRUE, title = 'Liver, IPCA')
+```
+
+Here, the plotIndiv shows that the IPCA clusters the low doses together, however see below where sIPCA improves visualization of sample plots. 
+
+## Variable Plots
+
+```{r}
+plotVar(liver.ipca, pch = 20)
+```
+
+Likewise, the use of a sIPCA would be more appropriate here to interpret the results as there are too many genes, see section sIPCA below. 
+
+## Kurtosis
+ 
+The *kurtosis* measure in IPCA is discussed in Yao et al. In PCA, the cumulative percentage of explained variance is a popular criterion to choose the number of principal components. In IPCA, the kurtosis value of the associated loading vectors gives a good indicator of the ability of the components to separate the clusters. 
+
+```{r}
+liver.ipca$kurtosis
+```
+
+As shown above, the first 2 components would be enough to extract information from IPCA. 
+
+# Sparse Independent PCA analysis (sIPCA)
+
+Sparse Independent Principal Component Analysis (IPCA) combines the advantages of IPCA with soft-thresholding applied in the independent loading vectors to perform internal variable selection, see mixOmics page [here](http://mixomics.org/methods/sipca/) for more details. 
+
+Mode = 'deflation' is the proposed default algorithm to use when estimating
+the unmixing matrix in IPCA (see reference Yao et al.)
+
+```{r}
+liver.sipca <- sipca(X, ncomp = 3, mode = "deflation",
+                         scale = FALSE, keepX = c(50,50,50))
+```
+
+```{r}
+selectVar(liver.sipca, comp = 1)
+```
+
+The *selectVar()*  highlights the variables selected on principle component 1 and outputs their weights in the associated loading vector. 
+
+## Sample Plots
+
+```{r}
+plotIndiv(liver.sipca, ind.names = liver.toxicity$treatment[, 4], group= liver.toxicity$treatment[,4], legend = TRUE, title = 'Liver, IPCA')
+```
+
+## Variable Plots
+
+```{r}
+plotVar(liver.sipca, pch = 20)
+```
+
+Above the sIPCA improves data visualization, reveals experimental characteristics and also identifies biologically relevant variables.
+
+# References 
+
+1. [Yao F., Coquery J., Lê Cao K.-A. (2012) Independent Principal Component Analysis for biologically meaningful dimension reduction of large biological data sets, BMC Bioinformatics 13:24.](http://www.biomedcentral.com/1471-2105/13/24)
+
+2. [Bushel, P.R., Wolfinger, R.D. and Gibson, G., 2007. Simultaneous clustering of gene expression data with clinical chemistry and pathological evaluations reveals phenotypic prototypes. BMC Systems Biology, 1(1), p.1.](http://bmcsystbiol.biomedcentral.com/articles/10.1186/1752-0509-1-15)

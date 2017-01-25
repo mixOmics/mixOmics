@@ -1,0 +1,80 @@
+---
+title: "sPLS"
+author: "Danielle Davenport"
+date: "20 January 2017"
+output: html_document
+---
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
+                      fig.show=TRUE, fig.keep = 'all')
+```
+
+# Partial Least Squares regression (PLS)
+
+Partial Least Squares (PLS) regression (Wold, 1966; Wold et al., 2001) is a multivariate methodology which relates (integrates) two data matrices X (e.g. transcriptomics) and Y (e.g. metabolites). PLS goes beyond traditional multiple regression by modelling the structure of both matrices. Unlike traditional multiple regression models, it is not limited to uncorrelated variables. One of the many advantages of PLS is that it can handle many noisy, collinear (correlated) and missing variables and can also simultaneously model several response variables Y. It is especically efficient when p + q >> n .
+
+The flexibility of the PLS variants enables us to address different types of analytical questions, they include:
+
+### PLS Modes
+
+**Regression mode:** this is to model a causal relationship between the two data sets, i.e. PLS will predict Y from X
+
+**Canonical mode:** similar to CCA, this mode is used to model a bi-directional relationship between the two data sets
+
+**Invariant mode:** performs a redundancy analysis (the Y matrix is not deflated)
+
+**Classic mode:** is the classical PLS as proposed in Tenenhaus (1998)
+
+
+# Sparse Partial Least Squares regression (sPLS)
+
+Even though PLS is highly efficient in the high dimensional context, interpretability is needed to get more insight into the biological study. sPLS has been recently developed by our team to perform simultaneous variable selection in the two data sets (Lê Cao et al., 2008). Variable selection is achieved by introducing LASSO penalization on the pair of loading vectors. Both *mode = regression* and *mode = canonical* are available. In addition to the number of dimensions or components *ncomp* to choose, the user will have to specify the number of variables to selection on each dimension and for each data set *KeepX*, *KeepY*. In the complex case of highly dimensional omics data sets, the proposed statistical criteria may not be satisfactory enough to address the biological question. Sometimes it is best that the user chooses the number of variables to select based on intuition and the posterior biological interpretation of the results.
+
+# Usage in mixOmics
+
+## Tuning the number of components
+
+The *perf()* function performs cross-validation, as specified by the arguments *validation* which performs cross-validation or leave-one-out to compute the MSEP, R2 and Q2. The rule of thumbs is that a PLS component should be included in the model if its value is greater than or equal to 0.0975 (Tenenhaus, 1998). Tuning criteria are mostly available for regression mode. However, it is advised to follow your intuition, backed up with the downstream biological interpretation of the results (gene ontology, functional analyses, etc). 
+
+PLS is implemented in mixOmics via the functions **pls()** and **spls()** as displayed below:
+
+```{r}
+library(mixOmics)
+data(liver.toxicity)
+X <- liver.toxicity$gene
+Y <- liver.toxicity$clinic
+
+#PLS
+result <- pls(X, Y, ncomp = 3)  # where ncomp is the number of dimensions/components to choose
+tune.pls <- perf(result, validation = 'loo', criterion = 'all', progressBar = FALSE)
+
+# SPLS
+ncomp = 10
+result.spls <- spls(X, Y, ncomp = ncomp, keepX = c(rep(10, ncomp)), mode = 'regression')
+tune.spls <- perf(result.spls, validation = 'Mfold', folds = 10,
+                  criterion = 'all', progressBar = FALSE)
+```
+
+See [Case Study: sPLS Liver Toxicity](http://mixomics.org/case-studies/spls-liver-toxicity/)
+
+# References
+
+Wold, S., Esbensen, K., and Geladi, P. (1987). Principal component analysis. Chemometrics and intelligent laboratory systems, 2(1), 37–52.
+
+Wold, S., Sjöström, M., and Eriksson, L. (2001). Pls-regression: a basic tool of chemometrics. Chemometrics and intelligent laboratory systems, 58(2), 109–130.
+
+## PLS
+Tenenhaus M. (1998) La régression PLS: théorie et pratique. Paris: Editions Technic.
+
+[Geladi P. and Kowalski B.R. (1986) Partial Least Squares Regression: A Tutorial. Analytica Chimica Acta 185, pp 1-17.](http://www.ece.mcmaster.ca/faculty/reilly/ece712/tutorial%20on%20PLS%20and%20PCA.pdf)
+
+Wold H. (1966) Estimation of principal components and related models by iterative least squares. In: Krishnaiah, P.R. (editors). Multivariate Analysis. Academic Press, N.Y., pp 391-420.
+
+## sPLS
+
+[Lê Cao K.-A., Martin P.G.P., Robert-Granié C. and Besse P. (2009) Sparse canonical methods for biological data integration: application to a cross-platform study. BMC Bioinformatics 10(34).](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-10-34)
+
+[Lê Cao K.-A., Rossouw D., Robert-Granié C. and Besse P. (2008) A sparse PLS for variable selection when integrating Omics data. Statistical Applications in Genetics and Molecular Biology 7, article 35.](https://espace.library.uq.edu.au/view/UQ:205582/UQ205582_OA.pdf)
+
+[Shen H. and Huang J.Z. (2008) Sparse principal component analysis via regularized low rank matrix approximation. Journal of Multivariate Analysis 99, pp 1015-1034.](http://www.sciencedirect.com/science/article/pii/S0047259X07000887)
