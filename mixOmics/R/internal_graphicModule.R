@@ -472,8 +472,6 @@ alpha)
             trellis.unfocus()
         }
         
-        
-        
         #-- star
         if (star)
         {
@@ -501,17 +499,12 @@ alpha)
             trellis.unfocus()
         }
         
-        
-        
-        
-        
         #-- ellipse
         if (ellipse)
         {
             panels = trellis.currentLayout(which = "panel")
             for (k in 1 : nlevels(df$Block))
             {
-                
                 other.ellipse = df.ellipse$Block %in% levels(df$Block)[k]#paste0("Block: ", blocks[k])
                 ind = which(panels == k, arr.ind = TRUE)
                 trellis.focus("panel",ind[2], ind[1], highlight = FALSE)
@@ -690,7 +683,6 @@ alpha)
                     col = unique(col.per.group)[i], lwd = point.lwd)#,...)
                 }
             }
-            
             
             #-- Ellipse
             if (ellipse == TRUE)
