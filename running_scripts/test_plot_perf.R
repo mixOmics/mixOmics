@@ -156,7 +156,7 @@ scheme = "centroid",
 verbose = FALSE,
 bias = FALSE)
 
-perf = perf(nutrimouse.sgccda)
+perf = perf(nutrimouse.sgccda, nrepeat = 5 , folds = 5)
 for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))
 {
     for(mea in c("all", "BER" , "overall"))
@@ -165,15 +165,17 @@ for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))
         {
             for(leg in c("vertical","horizontal"))
             {
-                
-                print(paste(di,mea,overla,leg))
-                plot(perf,
-                dist =di,
-                measure = mea,
-                xlab = NULL,
-                ylab = NULL,
-                overlay=overla,
-                legend.position=leg)
+                for(sd in c("TRUE","FALSE"))
+                {
+                    print(paste(di,mea,overla,leg))
+                    plot(perf,
+                    dist =di,
+                    measure = mea,
+                    xlab = NULL,
+                    ylab = NULL,
+                    overlay=overla,
+                    legend.position=leg, sd =sd)
+                }
             }
         }
     }
