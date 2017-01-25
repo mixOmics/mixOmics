@@ -387,6 +387,7 @@ xlab = NULL,
 ylab = NULL,
 overlay= c("all", "measure", "dist"),
 legend.position=c("vertical","horizontal"),
+sd = TRUE,
 ...)
 {
     # maybe later, so far we set type = "l"
@@ -457,14 +458,23 @@ legend.position=c("vertical","horizontal"),
         for(di in dist)
         {
             temp = t(x[[perfo]][[di]][mea, , drop=FALSE])
-            temp.sd = t(x[[perfo.sd]][[di]][mea, , drop=FALSE])
-            colnames(temp) = colnames(temp.sd) = di
+            colnames(temp) = di
             error.temp = cbind(error.temp, temp)
-            error.temp.sd = cbind(error.temp.sd, temp.sd)
+            if(sd)
+            {
+                temp.sd = t(x[[perfo.sd]][[di]][mea, , drop=FALSE])
+                colnames(temp.sd) = di
+                error.temp.sd = cbind(error.temp.sd, temp.sd)
+            }
 
         }
         error.rate[[mea]] = error.temp
-        error.rate.sd[[mea]] = error.temp.sd
+        if(sd)
+        {
+            error.rate.sd[[mea]] = error.temp.sd
+        } else {
+            error.rate.sd = NULL
+        }
     }
     
     
