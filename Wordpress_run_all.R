@@ -5,11 +5,11 @@
 
 #this file needs to be sourced in R
 
-scripts.files=list.files("wordpress_mixomics")
-scripts.files=scripts.files[grep(".Rmd",scripts.files)][1:3]#[1:15]#[c(3,4,5,8,15,16,17,20,22)]
+scripts.files=list.files("wordpress_mixomics/rmd/")
+scripts.files=scripts.files[grep(".Rmd",scripts.files)]#[5]
 scripts.files
 
-out=lapply(1:length(scripts.files),function(x){print(scripts.files[x]);try(suppressMessages(rmarkdown::render(paste0("wordpress_mixomics/",scripts.files[x]))),silent=TRUE)})
+out=lapply(1:length(scripts.files),function(x){print(scripts.files[x]);try(suppressMessages(rmarkdown::render(paste0("wordpress_mixomics/rmd/",scripts.files[x]), output_dir = "wordpress_mixomics/html/")),silent=TRUE)})
 a=lapply(out,class)
 ind.error=grep("try-error",a)
 
