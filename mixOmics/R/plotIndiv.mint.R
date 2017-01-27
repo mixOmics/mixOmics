@@ -315,7 +315,7 @@ point.lwd = 1,
         #missing.col = out$missing.col
         plot_parameters = out$plot_parameters
 
-save(list=ls(),file="temp.Rdata")
+        #save(list=ls(),file="temp.Rdata")
         # concatenate results
         df.final = rbind(df.final, df)
     }

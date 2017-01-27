@@ -86,7 +86,7 @@ alpha)
     legend.position = plot_parameters$legend.position
     point.lwd = plot_parameters$point.lwd
     
-    #save(list=ls(),file="temp.Rdata")
+    save(list=ls(),file="temp.Rdata")
     # check whether pch and group are the same factors, otherwise we need two legends
     group.pch = "same"
     temp = table(df$group, df$pch)

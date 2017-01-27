@@ -448,6 +448,12 @@ sd = TRUE,
         perfo.sd = "MajorityVote.error.rate.sd"
     }
     
+    if(sd == TRUE)
+    {
+        if(is.null(x[[perfo.sd]]))
+        sd = FALSE
+    }
+    
     # error.rate is a list [[measure]]
     # error.rate[[measure]] is a matrix of dist columns and ncomp rows
     # same for error.rate.sd, if any

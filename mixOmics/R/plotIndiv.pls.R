@@ -180,7 +180,7 @@ point.lwd = 1,
     plot_parameters = out$plot_parameters
 
     # change the levels of df$Block to "subtitle"
-    if (!missing(subtitle) & !is.null(title))
+    if (!missing(subtitle) & nlevels(df$Block)>1)#& !is.null(title)) # commented so that subtitle can be change without changing the title
     {
         df$Block = factor(df$Block, labels = subtitle)
         if (ellipse)

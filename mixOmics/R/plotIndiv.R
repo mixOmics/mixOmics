@@ -723,7 +723,8 @@ plot_parameters)
         }
         
         title.save = title # to use for ellipse
-        if (any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda")) & length(blocks) == 1 & !any(class(object)%in%object.mint)) # add blocks == 1 to allow "multi" with plsda
+        #if (any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda")) &
+        if(length(blocks) == 1 & !any(class(object)%in%c(object.mint, "sgcca", "rgcca"))) # add blocks == 1 to allow "multi" with plsda
         {
             if (is.null(title))
             {
