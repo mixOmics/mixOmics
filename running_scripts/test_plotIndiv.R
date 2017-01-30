@@ -32,6 +32,40 @@ ind.names=FALSE,
 pch=rep(c("1","a","v","p"),each=10),
 style="ggplot2", legend.title.pch="group.pch", legend.title="group.col")
 
+plotIndiv(nutri.res, rep.space= 'XY-variate',
+ellipse = TRUE, ellipse.level = 0.9,
+group = nutrimouse$genotype, legend=T,
+ind.names=FALSE,
+pch=rep(c("1","a","v","p"),each=10),
+style="ggplot2", legend.title.pch="group.pch", legend.title="group.col", pch.levels= as.character(rep(4:1,each=10)))
+# 1 is 4, a is 3, v is 2, p is 1
+
+
+# more than 10 pch
+random.sample = sample (1:40)
+random.pch = c(rep(1:12, 3),2,3,1,5)[random.sample]
+pch.levels = letters[1:12][random.pch]#random.pch#letters[1:12][random.pch]
+
+plotIndiv(nutri.res, rep.space= 'XY-variate',
+ellipse = TRUE, ellipse.level = 0.9,
+group = nutrimouse$genotype, legend=T,
+ind.names=FALSE,
+pch=random.pch,
+pch.levels = pch.levels,
+#pch=order.pch,
+style="lattice", legend.title.pch="group.pch", legend.title="group.col")
+
+#quartz()
+
+plotIndiv(nutri.res, rep.space= 'XY-variate',
+ellipse = TRUE, ellipse.level = 0.9,
+group = nutrimouse$genotype, legend=T,
+ind.names=FALSE,
+pch=random.pch,
+pch.levels = pch.levels,
+#pch=order.pch,
+style="ggplot2", legend.title.pch="group.pch", legend.title="group.col")
+
 
 plotIndiv(nutri.res, rep.space= 'XY-variate',
 ellipse = TRUE, ellipse.level = 0.9,
@@ -112,8 +146,8 @@ data(breast.tumors)
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
-acp = pca(X)
-plotIndiv(acp)
+#acp = pca(X)
+#plotIndiv(acp)
 
 splsda.breast <- splsda(X, Y,keepX=c(10,10),ncomp=2)
 
@@ -281,8 +315,8 @@ nutrimouse.sgccda1$loadings$Y
 # displaying all blocks. bu default colors correspond to outcome Y
 plotIndiv(nutrimouse.sgccda1)
 
-# displaying only 2 blocks
-plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet)
+# displaying only 1 block
+plotIndiv(nutrimouse.sgccda1, blocks = c(1), group = nutrimouse$diet)
 
 # with some ellipse, legend and title
 plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet,

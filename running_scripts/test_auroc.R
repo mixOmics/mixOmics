@@ -596,4 +596,4 @@ cv <- perf(mod, validation = "loo", auc = TRUE)
 
 cv$auc #should be <0.5
 if(cv$auc[[2]][1]>=0.5)
-stop("random AUC should be less than 0.5")
+stop("random AUC should be less than 0.5. This is a extra check -see last line of R code")
