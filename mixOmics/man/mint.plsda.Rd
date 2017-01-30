@@ -97,7 +97,7 @@ plotIndiv(res)
 plotIndiv(res, study = "all.partial")
 
 #plot study-specific outputs for study "2"
-plotIndiv(res, study = "2", col = as.numeric(stemcells$celltype))
+plotIndiv(res, study = "2", col = 1:3, legend = TRUE)
 
 }
 
