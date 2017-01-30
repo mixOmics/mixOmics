@@ -12,6 +12,8 @@ represent "high-dimensional" data sets analysed with DIABLO.
 \usage{
 cimDiablo(object,
 color = NULL,
+color.Y,
+color.blocks,
 comp = NULL,
 margins = c(2, 15),
 legend.position = "topright",

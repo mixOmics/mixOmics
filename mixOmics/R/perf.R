@@ -379,10 +379,12 @@ cpus,
     if(constraint)
     {
         keepX.constraint = apply(object$loadings$X, 2, function(x){names(which(x!=0))})
-        # gives a matrix of ncomp columns, I want a list of length ncomp
-        keepX.constraint = split(keepX.constraint, rep(1:ncol(keepX.constraint), each = nrow(keepX.constraint)))
-        names(keepX.constraint) = paste("comp",1:length(keepX.constraint),sep="")
-        
+        # gives a matrix of ncomp columns if same number of selected variables on each comp, I want a list of length ncomp
+        if(is.matrix(keepX.constraint))
+        {
+            keepX.constraint = split(keepX.constraint, rep(1:ncol(keepX.constraint), each = nrow(keepX.constraint)))
+            names(keepX.constraint) = paste("comp",1:length(keepX.constraint),sep="")
+        }
         #keepX = NULL
     } else {
         #keepX.constraint = NULL

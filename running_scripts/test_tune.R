@@ -24,6 +24,9 @@ res <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 
 tune= tune.splsda(X,Y,ncomp=1,nrepeat=5,logratio="none",test.keepX = c(5,10),folds=10,dist="max.dist", progressBar = FALSE)
 
+tune= tune.splsda(X,Y,ncomp=4,nrepeat=5,logratio="none",test.keepX = seq(1,100,5),folds=10,dist="max.dist", progressBar = FALSE, light.output=FALSE)
+
+
 tune= tune.splsda(X,Y,ncomp=3,nrepeat=5,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist", progressBar = FALSE, already.tested.X = c(5,10))
 
 tune= tune.splsda(X,Y,ncomp=3,nrepeat=5,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist", progressBar = FALSE, already.tested.X = list(comp1=c(5,10)), constraint=TRUE)

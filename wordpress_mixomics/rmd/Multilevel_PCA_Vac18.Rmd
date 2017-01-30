@@ -1,0 +1,62 @@
+---
+title: "Multilevel_PCA_Vac18"
+date: "12 January 2017"
+output: html_document
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
+                      fig.show=TRUE, fig.keep = 'all', fig.height= 8, fig.width=9)
+
+```
+
+# title
+xxx
+
+This multilevel approach example aims to highlight the treatment effects within subject separately from the biological variation between biological samples.
+
+# To begin...
+
+Load the latest version of [mixOmics](https://www.rdocumentation.org/link/%20www.mixOmics.org%2FmixMC?package=mixOmics&version=6.0.0).
+
+```{r}
+library(mixOmics)
+```
+
+# Data
+
+The multilevel Vac18 data set is implemented in **mixOmics** via vac18, and contains the following:
+
+The vac18 dataset contains the following:
+** $gene:** a data frame with 42 rows and 1,000 columns representing the expression measure of
+2,500 genes for the 42 samples (PBMC cells from 12 unique subjects).
+<br>
+<br>
+**$stimulation:** a factor of 42 elements indicating the type of in vitro stimulation for each sample (4 classes in total).
+<br>
+<br>
+**$sample:** a vector of 42 elements indicating the unique subjects (for example the value ’1’ corresponds to the first patient PBMC cells). Note that the design of this study is unbalanced.
+<br>
+<br>
+**$tab.prob.gene:** data frame with 2,500 rows and 2 columns indicating the Illumina probe ID and the gene name of the annotated genes.
+
+```{r}
+data(vac18)
+X <- vac18$genes
+#the treatments
+summary(vac18$stimulation)
+#the number of repeated measurements per individual
+summary(as.factor(vac18$sample))
+```
+
+# Preliminary analysis with PCA
+
+Start a preliminary investigation with PCA analysis on the liver toxicity data. We perform a multilevel PCA which is a PCA applied on the within-subject deviation matrix calculated by specifying *multilevel.* 
+
+```{r}
+design <- data.frame(sample = vac18$sample)
+pca.multilevel.vac18 <- pca(X, ncomp = 3, scale = TRUE, center = TRUE, 
+                            multilevel = design)
+pca.multilevel.vac18
+```

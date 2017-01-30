@@ -41,6 +41,8 @@ auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = FALSE,r
 
 res.plsda <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 
+res.plsda <- splsda(X, Y, ncomp = 2, keepX = c(2, 2))
+
 auroc(res.plsda,plot = TRUE,roc.comp = 1)
 auroc(res.plsda,plot = TRUE,roc.comp = 2)
 auroc(res.plsda,plot = FALSE,roc.comp = 1)
@@ -582,3 +584,16 @@ e<-perf(res.plsda,dist = c("mahalanobis.dist"),
         constraint = TRUE,auc = TRUE, progressBar = FALSE)
 e<-perf(res.plsda,dist = c("mahalanobis.dist"),
         constraint = FALSE,auc = FALSE, progressBar = FALSE)
+
+
+############################ simulating data to check AUC <0.5
+
+X = matrix(rnorm(50*100), nrow=50)
+Y = factor(c(rep("a",25),rep("b",25)))
+
+mod = plsda(X,Y,ncomp=2)
+cv <- perf(mod, validation = "loo", auc = TRUE)
+
+cv$auc #should be <0.5
+if(cv$auc[[2]][1]>=0.5)
+stop("random AUC should be less than 0.5. This is a extra check -see last line of R code")

@@ -21,7 +21,8 @@ importFrom("graphics", "abline", "arrows", "axis", "barplot", "box",
 
 importFrom("stats", "as.dendrogram", "as.dist", "coefficients", "cor",
              "cov", "dist", "hclust", "lm", "lsfit", "median", "na.omit",
-             "order.dendrogram", "predict", "quantile", "reorder", 		"var","sd","pnorm", "aggregate")
+             "order.dendrogram", "predict", "quantile", "reorder", "var","sd",
+		"pnorm", "aggregate", "t.test")
 
 importFrom("utils", "setTxtProgressBar", "txtProgressBar","packageDescription","relist")
 
@@ -36,7 +37,6 @@ importFrom("dplyr","group_by")
 importFrom("tidyr","gather")
 
 importFrom("reshape2","melt","dcast")
-
 
 export(
 auroc,

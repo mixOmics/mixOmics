@@ -3,6 +3,7 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
+library(mixOmics)
 opar <- par(no.readonly = TRUE)
 
 data(nutrimouse)
@@ -22,6 +23,64 @@ par(opar)
 plotIndiv(nutri.res, rep.space= 'XY-variate',
 ellipse = TRUE, ellipse.level = 0.9,
 group = nutrimouse$genotype, ind.names = nutrimouse$genotype)
+
+# with pch - two legends expected
+plotIndiv(nutri.res, rep.space= 'XY-variate',
+ellipse = TRUE, ellipse.level = 0.9,
+group = nutrimouse$genotype, legend=T,
+ind.names=FALSE,
+pch=rep(c("1","a","v","p"),each=10),
+style="ggplot2", legend.title.pch="group.pch", legend.title="group.col")
+
+plotIndiv(nutri.res, rep.space= 'XY-variate',
+ellipse = TRUE, ellipse.level = 0.9,
+group = nutrimouse$genotype, legend=T,
+ind.names=FALSE,
+pch=rep(c("1","a","v","p"),each=10),
+style="ggplot2", legend.title.pch="group.pch", legend.title="group.col", pch.levels= as.character(rep(4:1,each=10)))
+# 1 is 4, a is 3, v is 2, p is 1
+
+
+# more than 10 pch
+random.sample = sample (1:40)
+random.pch = c(rep(1:12, 3),2,3,1,5)[random.sample]
+pch.levels = letters[1:12][random.pch]#random.pch#letters[1:12][random.pch]
+
+plotIndiv(nutri.res, rep.space= 'XY-variate',
+ellipse = TRUE, ellipse.level = 0.9,
+group = nutrimouse$genotype, legend=T,
+ind.names=FALSE,
+pch=random.pch,
+pch.levels = pch.levels,
+#pch=order.pch,
+style="lattice", legend.title.pch="group.pch", legend.title="group.col")
+
+#quartz()
+
+plotIndiv(nutri.res, rep.space= 'XY-variate',
+ellipse = TRUE, ellipse.level = 0.9,
+group = nutrimouse$genotype, legend=T,
+ind.names=FALSE,
+pch=random.pch,
+pch.levels = pch.levels,
+#pch=order.pch,
+style="ggplot2", legend.title.pch="group.pch", legend.title="group.col")
+
+
+plotIndiv(nutri.res, rep.space= 'XY-variate',
+ellipse = TRUE, ellipse.level = 0.9,
+group = nutrimouse$genotype, legend=T,
+ind.names=FALSE,
+pch=rep(c("1","a","v","p"),each=10),
+style="lattice", legend.title.pch="group.pch", legend.title="group.col")
+
+plotIndiv(nutri.res, rep.space= 'XY-variate',
+ellipse = TRUE, ellipse.level = 0.9,
+group = nutrimouse$genotype, legend=T,
+ind.names=FALSE,
+pch=rep(c("1","a","v","p"),each=10),
+style="graphics", legend.title.pch="group.pch", legend.title="group.col")
+
 
 # ellipse with respect to genotype in the XY space, with legend
 plotIndiv(nutri.res, rep.space= 'XY-variate', group = nutrimouse$genotype,
@@ -82,9 +141,13 @@ legend = TRUE,title="",style="graphics")
 
 ## plot of individuals for objects of class 'plsda' or 'splsda'
 # ----------------------------------------------------
+library(mixOmics)
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
+
+#acp = pca(X)
+#plotIndiv(acp)
 
 splsda.breast <- splsda(X, Y,keepX=c(10,10),ncomp=2)
 
@@ -96,7 +159,7 @@ plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2), legend = TRUE)
 
 # trying the different styles
 plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), 
-          ellipse = TRUE, style = "ggplot2", cex = c(1, 1))
+          ellipse = TRUE, style = "ggplot2", cex = c(3, 3))
 plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), 
           ellipse = TRUE, style = "graphics", cex = c(1, 1))
 plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2), 
@@ -104,6 +167,67 @@ plotIndiv(splsda.breast, ind.names = TRUE, comp = c(1, 2),
 
 # with centroid and stars
 plotIndiv(splsda.breast, ind.names = TRUE, centroid = TRUE, star = TRUE)
+
+# with different pch and cex
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c("o","+","X"), legend=T)
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c("o","+","X"), pch.levels=c("aha","why?","maybe"),legend=T)
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c("aha","why?","maybe"), pch.levels=c("aha","why?","maybe"),legend=T)
+
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = "F",legend=T)
+
+
+
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c(3,4), legend=T)
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c(3,4,2), legend=T)
+#plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5,10), pch = c(3,4,2), legend=T) #error on purpose
+
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c(3,4,2),
+    pch.levels = c("aha","why?","maybe"), legend=T)
+
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c(2,4,3),
+pch.levels = c("aha","why?","maybe"), legend=T)
+
+
+#checking matching pch and names: 1:circle, 2:triangle, 3:cross
+
+#ggplot2
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = 1:3,
+pch.levels = c("aha","why?","maybe"), legend=T)
+# circle for aha, triangle for why and cross for maybe
+#quartz()
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = 3:1,
+pch.levels = c("aha","why?","maybe"), legend=T)
+# cross for aha, triangle for why and circle for maybe
+
+
+#lattice
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = 1:3,
+pch.levels = c("aha","why?","maybe"), legend=T, style="lattice")
+#quartz()
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = 3:1,
+pch.levels = c("aha","why?","maybe"), legend=T, style="lattice")
+
+#graphics
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = 1:3,
+pch.levels = c("aha","why?","maybe"), legend=T, style="graphics")
+#quartz()
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = 3:1,
+pch.levels = c("aha","why?","maybe"), legend=T, style="graphics")
+
+
+
+#creating a vector of size 47 qith different names
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c(3,4,5),pch.levels=c("a","b","d"), legend=T)
+
+#creating a vector of size 47 qith different names
+pch.group = factor (c(rep(c("abab","cad?","maybe"),15), rep("well",2)))
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = pch.group, legend=T)
+
+#with a nice legend.title.pch
+pch.group = factor (c(rep(c("abab","cad?","maybe"),15), rep("well",2)))
+plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = pch.group, legend=T,
+legend.title = "my class",
+legend.title.pch = "Random")
 
 
 data(liver.toxicity)
@@ -116,6 +240,7 @@ splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
 plotIndiv(splsda.liver, ind.names = TRUE, ellipse=TRUE, centroid = TRUE, star = TRUE)
 
 #with only one sample in a class
+set.seed(123)
 Y <- as.factor(liver.toxicity$treatment[, 4])
 ind.remove = which(Y==levels(Y)[1])[-sample(1:sum(Y==levels(Y)[1]),1)]
 Y2 = Y[-ind.remove]
@@ -190,8 +315,8 @@ nutrimouse.sgccda1$loadings$Y
 # displaying all blocks. bu default colors correspond to outcome Y
 plotIndiv(nutrimouse.sgccda1)
 
-# displaying only 2 blocks
-plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet)
+# displaying only 1 block
+plotIndiv(nutrimouse.sgccda1, blocks = c(1), group = nutrimouse$diet)
 
 # with some ellipse, legend and title
 plotIndiv(nutrimouse.sgccda1, blocks = c(1,2), group = nutrimouse$diet,
@@ -401,10 +526,10 @@ if(additional.test==TRUE)
     plotIndiv(pca.res,Y.label="Y")
     plotIndiv(pca.res,Z.label="Z",style="3d")
     plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("sphere"))
-    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("sphere"),cex=c(1,5))
-    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("sphere","cube"),cex=c(0.1,0.5))
+    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("sphere"),cex=c(1))
+    #    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("sphere","cube"),cex=c(0.1,0.5))
     plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("cube","sphere"),cex=c(1,0.5),col=1:2)
-    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("cube","sphere","tetra"),cex=c(1,0.5),col=1:3)
+    plotIndiv(pca.res,Z.label="Z",style="3d",pch=c("cube","sphere","tetra"),cex=c(1,0.5,2),col=1:3)
     
     ##test xlim,ylim, different style
     

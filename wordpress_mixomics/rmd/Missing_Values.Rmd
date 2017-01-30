@@ -1,0 +1,54 @@
+---
+title: "Missing Values"
+date: "20 January 2017"
+output: html_document
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
+                      fig.show=TRUE, fig.keep = 'all')
+```
+
+# Missing values
+
+All methodologies implemented in **mixOmics** can handle missing values. In particular, **(s)PLS**, **(s)PLS-DA**, **(s)PCA** (using the non-linear iterative partial least squares algorithm **NIPALS** approach) take advantage of the PLS algorithm which performs local regressions on the latent components (NIPALS, Wold 1966).
+
+The **valid()** function for *(s)PLS-DA* has not yet been implemented to deal with missing values. A solution for now is to impute the missing values from each data set separately using the **nipals()** function.
+
+# Usage in mixOmics
+
+```{r}
+library(mixOmics)
+data(liver.toxicity)
+X <- liver.toxicity$gene[, 1:100] # a reduced size data set
+
+## pretend there are 20 NA values in our data
+na.row <- sample(1:nrow(X), 20, replace = TRUE)
+na.col <- sample(1:ncol(X), 20, replace = TRUE)
+X.na <- as.matrix(X)
+
+## fill these NA values in X
+X.na[cbind(na.row, na.col)] <- NA
+sum(is.na(X.na)) # Should display 20
+
+# this might take some time depending on the size of the data set
+nipals.tune = nipals(X.na, reconst = TRUE, ncomp = 10)$eig
+barplot(nipals.tune, xlab = 'number of components', ylab = 'explained variance')
+
+#nipals with the chosen number of components (try to choose a large number)
+nipals.X = nipals(X.na, reconst = TRUE, ncomp = 10)$rec
+
+#  only replace the imputation for the missing values
+id.na = is.na(X.na)
+nipals.X[!id.na] = X[!id.na]
+
+nipals.X[id.na]  # imputed values
+X[id.na]         # original values
+```
+
+# References 
+
+Wold H. (1966) Multivariate Analysis. Academic Press, New York, Wiley.
+
+Tenenhaus M. (1998) La régression PLS : théorie et pratique. Editions Technip.

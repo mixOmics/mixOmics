@@ -127,6 +127,8 @@ cimDiablo(nutrimouse.sgccda,size.legend=0.3)
 
 
 plotIndiv(nutrimouse.sgccda)
+plotIndiv(nutrimouse.sgccda,legend=TRUE,ind.names=FALSE, centroid=FALSE)
+plotIndiv(nutrimouse.sgccda,legend=TRUE,ind.names=FALSE, centroid=TRUE)
 #plotIndiv(nutrimouse.sgccda, blocks = c(1,2), group = nutrimouse$diet,
 #ellipse = TRUE)
 
