@@ -72,7 +72,7 @@ alpha)
     #class.object=class(object)
     
     # to satisfy R CMD check that doesn't recognise x, y and group as variable (in aes)
-    x = y = group = pch = studyname = NULL
+    x = y = group = pch = studyname = pch.levels = NULL
     
     size.title = plot_parameters$size.title
     size.subtitle = plot_parameters$size.subtitle
@@ -86,7 +86,7 @@ alpha)
     legend.position = plot_parameters$legend.position
     point.lwd = plot_parameters$point.lwd
     
-    save(list=ls(),file="temp.Rdata")
+    #save(list=ls(),file="temp.Rdata")
     # check whether pch and group are the same factors, otherwise we need two legends
     group.pch = "same"
     temp = table(df$group, df$pch)
@@ -110,9 +110,15 @@ alpha)
         group.pch = "different"
     }
     
-    df$pch.levels = factor(df$pch.levels) #factor(as.character(df$pch.levels)) #names or number
+    df$pch.levels = factor(as.character(df$pch.levels)) #forced to be character, so that the order of the levels is the same all the time (1, 10, 11, 12, 2, 3...), instead of changing between ggplot2 and the rest
     
-    values.pch = unique(df$pch)[as.numeric(unique(df$pch.levels))] # makes pch and pch.levels correspond
+    # df$pch.levels is sorted in the legend, we need to have the df$pch in the same order so that points/legend are matching
+    a=sort(unique(as.numeric(df$pch.levels)),index.return=TRUE)
+    # unique(df$pch.levels)[a$ix] is ordered
+    
+    values.pch = unique(df$pch) [a$ix]
+    
+    #values.pch = unique(df$pch)[match(unique(df$pch.levels),sort(levels(df$pch.levels)))]#as.numeric(levels(df$pch.levels))#unique(df$pch)[as.numeric(unique(df$pch.levels))] # makes pch and pch.levels correspond
     #df$pch = factor(df$pch) #number or names
     
     # shape in ggplot is ordered by the levels of pch.levels: levels(factor(as.character(df$pch.levels)))
@@ -166,8 +172,7 @@ alpha)
         #-- Modify scale colour - Change X/Ylabel - split plots into Blocks
         p = p + scale_color_manual(values = unique(col.per.group)[match(levels(factor(as.character(df$group))), levels(df$group))], name = legend.title, breaks = levels(df$group))
         
-        
-        
+
         if(group.pch == "same")
         {
             p = p + scale_shape_manual(values = values.pch[match(levels(factor(as.character(df$pch.levels))),levels(df$pch.levels))],
@@ -175,11 +180,12 @@ alpha)
             #match(..) reorder the values as the values of pch.levels, if there's more than 10 levels, R/ggplot orders characters different than values 1, 10, 11, 2, 3, etc
         } else {
             # if pch different factor, then second legend
-            p = p + scale_shape_manual(values = values.pch, name = legend.title.pch, breaks = levels(df$pch.levels))
+            p = p + scale_shape_manual(values = values.pch[match(levels(factor(as.character(df$pch.levels))),levels(df$pch.levels))], name = legend.title.pch, breaks = levels(df$pch.levels))
             #as.numeric(levels(factor(as.numeric(df$pch))))[match(levels(factor(as.character(df$pch))), levels(df$pch))]
         }
         
         p = p + labs(list(title = title, x = X.label, y = Y.label)) + facet_wrap(~ Block, ncol = nCols, scales = "free", as.table = TRUE) #as.table to plot in the same order as the factor
+        
         p = p + theme(plot.title=element_text(size=size.title),axis.title.x=element_text(size=size.xlabel),axis.title.y=element_text(size=size.ylabel),axis.text=element_text(size=size.axis))# bigger title
         
         #-- xlim, ylim
@@ -254,8 +260,8 @@ alpha)
                     p = p + geom_path(data = df.ellipse,
                     aes_string(x = paste0("Col", 2*(i - 1) + 1), y = paste0("Col", 2 * i),
                     #label = "Block",
-                    group = NULL, shape = NULL),
-                    color = unique(col.per.group)[i], size = point.lwd)
+                    group = NULL),#, shape = NULL),
+                    color = unique(col.per.group)[i], size = point.lwd, inherit.aes = FALSE)
                 }
                 
             }
@@ -580,7 +586,8 @@ alpha)
             cex.axis = size.axis, cex.lab = size.xlabel, lwd = point.lwd)#,...)
             
             #-- initialise plot
-            if (any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda")) & nlevels(df$Block) == 1 & !any(class.object%in%object.mint)) # avoid double title when only one block is plotted
+            #if (any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda")) &
+            if (nlevels(df$Block) == 1 & !any(class.object%in%c(object.mint, "sgcca", "rgcca"))) # avoid double title when only one block is plotted
             {
                 titlemain = NULL
                 if (ellipse)
@@ -695,7 +702,8 @@ alpha)
                 }
             }
             
-            if (any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda")) & nlevels(df$Block)==1 & !any(class.object %in% object.mint) )
+            if (nlevels(df$Block) == 1 & !any(class.object%in%c(object.mint, "sgcca", "rgcca"))) # avoid double title when only one block is plotted
+            #if (any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp", "splsda", "plsda")) & nlevels(df$Block)==1 & !any(class.object %in% object.mint) )
             {
                 title(title, line = 1, cex.main = size.title)#,...)
             } else {

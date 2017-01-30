@@ -132,7 +132,7 @@ roc.default <- function(response, predictor,
     }
     
     # update 13/01/17: first level as control to force directionality:
-    #“>”: if the predictor values for the control group are higher than the values of
+    # > : if the predictor values for the control group are higher than the values of
     #the case group (controls > t >= cases)
     
     #if (median(controls) <= median(cases))
