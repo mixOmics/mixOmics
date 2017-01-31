@@ -114,7 +114,7 @@ vac18.plsda.multilevel <- plsda(X, Y = vac18$stimulation, multilevel = design, n
 plotIndiv(vac18.plsda, ind.names = vac18$sample,
           group = vac18$stimulation, 
           legend = TRUE,
-          main = 'VAC18, classical PLS-DA, comp 1 - 2')
+          title = 'VAC18, classical PLS-DA, comp 1 - 2')
 ```
 
 ```{r}
