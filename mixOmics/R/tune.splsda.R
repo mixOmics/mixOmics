@@ -395,7 +395,7 @@ cpus
         error.rate = mat.mean.error,
         error.rate.sd = mat.sd.error,
         error.rate.all = mat.error.rate,
-        choice.keepX = if(constraint){lapply(already.tested.X, length)}else{already.tested.X},
+        choice.keepX = if(constraint){sapply(already.tested.X, length)}else{already.tested.X},
         choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
         choice.ncomp = list(ncomp = ncomp_opt, values = error.keepX),
         error.rate.class = error.per.class.keepX.opt.mean,

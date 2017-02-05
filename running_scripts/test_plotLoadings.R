@@ -6,6 +6,20 @@
 opar <- par(no.readonly = TRUE)
 
 data(liver.toxicity)
+X = liver.toxicity$gene
+Y = liver.toxicity$clinic
+
+toxicity.spls = spls(X, Y, ncomp = 2, keepX = c(50, 50),
+keepY = c(10, 10))
+
+plotLoadings(toxicity.spls)
+
+# with xlim
+xlim = matrix(c(-0.1,0.3, -0.4,0.6), nrow=2, byrow=T)
+plotLoadings(toxicity.spls, xlim = xlim)
+
+
+data(liver.toxicity)
 X <- as.matrix(liver.toxicity$gene)
 Y <- as.factor(liver.toxicity$treatment[, 4])
 
