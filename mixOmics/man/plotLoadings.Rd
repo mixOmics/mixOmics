@@ -29,12 +29,14 @@ This function provides a horizontal bar plot to visualise loading vectors. For d
 
 \usage{
 \S3method{plotLoadings}{pls}(object, block, comp = 1, col = NULL, ndisplay = NULL,
-size.name = 0.7, name.var = NULL, name.var.complete = FALSE, title = NULL,
-subtitle, size.title = rel(2), size.subtitle = rel(1.5), layout = NULL, border = NA, xlim = NULL, ... )
+size.name = 0.7, name.var = NULL, name.var.complete = FALSE, title = NULL, subtitle,
+size.title = rel(2), size.subtitle = rel(1.5), layout = NULL, border = NA,
+xlim = NULL, ... )
 
 \method{plotLoadings}{mint.pls}(object, study = "global", comp = 1, col = NULL, ndisplay = NULL,
 size.name = 0.7, name.var = NULL, name.var.complete = FALSE, title = NULL, subtitle,
-size.title = rel(1.8), size.subtitle = rel(1.4), layout = NULL, border = NA, xlim = NULL, ... )
+size.title = rel(1.8), size.subtitle = rel(1.4), layout = NULL, border = NA,
+xlim = NULL, ... )
 
 \method{plotLoadings}{plsda}(object, contrib, method = "mean", block, comp = 1,
 plot = TRUE, show.ties = TRUE, col.ties="white", ndisplay = NULL, size.name = 0.7,

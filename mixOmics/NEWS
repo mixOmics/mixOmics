@@ -8,9 +8,14 @@ New features:
 
 Enhancements:
 -------------
-1 - the 'threshold' argument is now 'cutoff' in network, to match plotVar and circosPlot 
-2 - cimDiablo has a "color.Y" and "color.blocks" arguments
-3 - sd in plot.perf for block.splsda method
+1 - argument 'cutoff' has replaced 'threshold' in network, to match plotVar and circosPlot 
+2 - new argument 'sd' in plot.perf for block.splsda method
+3 - new arguments "color.Y" and "color.blocks" in cimDiablo
+4 - new argument 'xlim' in plotLoadings
+
+Bug fixes:
+----------
+- directionality is now forced in AUROC (results lower than 0.5 can be observed)
 
 
 Changes in 6.1.1 (patch)

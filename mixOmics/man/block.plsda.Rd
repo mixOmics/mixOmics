@@ -114,11 +114,13 @@ res = block.plsda(X = data, indY = 3) # indY indicates where the outcome Y is in
 plotIndiv(res, ind.names = FALSE, legend = TRUE)
 plotVar(res)
 
+\dontrun{
 # when Y is provided
 res2 = block.plsda(list(gene = nutrimouse$gene, lipid = nutrimouse$lipid),
     Y = nutrimouse$diet, ncomp = 2)
 plotIndiv(res2)
 plotVar(res2)
+}
 }
 
 \keyword{regression}

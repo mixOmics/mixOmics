@@ -79,6 +79,8 @@ auc.plsda.breast = auroc(plsda.breast, ncomp = 1)
 splsda.breast <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 auroc(plsda.breast, plot = FALSE)
 
+\dontrun{
+
 ## example with sPLSDA with 4 classes
 # -----------------
 data(liver.toxicity)
@@ -90,7 +92,6 @@ Y <- as.factor(liver.toxicity$treatment[, 4])
 splsda.liver <- splsda(X, Y, ncomp = 2, keepX = c(20, 20))
 auc.splsda.liver = auroc(splsda.liver, ncomp = 1)
 
-\dontrun{
 
 ## example with mint.plsda
 # -----------------
