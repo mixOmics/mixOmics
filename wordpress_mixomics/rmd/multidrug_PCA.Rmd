@@ -1,0 +1,98 @@
+---
+title: "PCA_Multidrug"
+date: "11 January 2017"
+output: html_document
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
+                      fig.show=TRUE, fig.keep = 'all', fig.height= 8, fig.width=9)
+
+```
+
+#  Case study of PCA with Multidrug data set 
+
+Multidrug data set contains the expression of 48 known human ABC transporters with patterns of drug activity in 60 diverse cancer cell lines (the NCI-60) used by the National Cancer Institute to screen for anticancer activity. The data come from a pharmacogenomic study [1] in which two kinds of measurements acquired on the NCI-60 cancer cell lines are considered, expression data and drug activity (GI50). 
+
+The NCI-60 panel includes cell lines derived from cancers of colorectal (7 cell lines), renal (8), ovarian (6), breast (8), prostate (2), lung (9) and central nervous system origin (6), as well as leukemias (6) and melanomas (8).
+
+# To begin...
+
+Load the latest version of [mixOmics](https://www.rdocumentation.org/link/%20www.mixOmics.org%2FmixMC?package=mixOmics&version=6.0.0).
+
+```{r}
+library(mixOmics)
+```
+
+# Data
+
+The multidrug data set is implemented in **mixOmics** via multidrug, and contains the following:
+
+**multidrug$ABC.trans** data matrix with 60 rows and 48 columns. The expression of the 48 human ABC transporters for the 60 cell lines.
+<br>
+<br>
+**multidrug$compound** data matrix with 60 rows and 1429 columns. The activity of 1429 drugs for the 60 cell lines.
+<br>
+<br>
+**multidrug$comp.name** character vector. The names or the NSC No. of the 1429 compounds.
+<br>
+<br>
+**multidrug$cell.line** a list containing two character vector components: Sample the names of the 60 cell line which were analysed, and Class the phenotypes of the 60 cell lines.
+
+### We begin my examining the ABC transporter data *multidrug$ABC.trans:*
+
+```{r}
+data(multidrug)
+X <- multidrug$ABC.trans 
+dim(X) # check dimension of data
+```
+
+# Preliminary analysis with PCA
+
+Start a preliminary investigation with PCA analysis on the expression data of transporter genes. PCA is an unsupervised approach (eg. no information about the cell class is input in PCA), but coloring the samples according to their cell classes can help the interpretation.
+
+```{r}
+trans.pca <- pca(X, ncomp = 10, center = TRUE, scale = TRUE)
+trans.pca
+```
+
+```{r}
+trans.pca2 <- pca(X, ncomp = 48, center = TRUE, scale = TRUE) 
+# some warnings may appear as we are asking for many comp and the algo may not converge
+plot(trans.pca2$explained_variance, 
+        main = 'Proportion of explained variance per component')
+```
+
+# Sample Plots
+
+```{r}
+plotIndiv(trans.pca, comp = c(1, 2), ind.names = TRUE, 
+          group = multidrug$cell.line$Class, 
+          legend = TRUE, title = 'Multidrug transporter, PCA comp 1 - 2')
+```
+
+From the PCA sample plots, we can observe some separation between the different cell lines. The sample plot on the first 2 principal components shows an interesting separation of the Melanoma cell lines along the first component. 
+
+# Variable Plots
+
+Here, a correlation circle plot highlights clusters of ABC transporters and show their contribution to each principal component (variables close to the circle of radius 1). See [here](http://mixomics.org/graphics/sample-plot/plotvar/) for details on interpreting correlation circle plots. 
+
+```{r}
+plotVar(trans.pca, comp = c(1, 2), var.names = TRUE, 
+        title = 'Multidrug transporter, PCA comp 1 - 2')
+```
+
+
+Biplots allow to both samples and variables to be graphically displayed simultaneously. See [here](http://mixomics.org/graphics/sample-plot/plotvar/) for details on interpreting biplots.
+
+```{r}
+biplot(trans.pca, cex = 0.7,
+       xlabs = paste(multidrug$cell.line$Class, 1:nrow(X)))
+```
+
+In the biplot above observe that the Melanoma samples seem to be characterized by a small subset of highly positively correlated ABC transporters.
+
+# References 
+
+1. [Szakács G., Annereau J.-P., Lababidi S., Shankavaram U., Arciello A., Bussey K.J., Reinhold W., Guo Y., Kruh G.D., Reimers M., Weinstein J.N. and Gottesman M.M. (2004) Predicting drug sensitivity and resistance: Profiling ABC transporter genes in cancer cells. Cancer Cell 4, pp 147-166.](https://www.ncbi.nlm.nih.gov/pubmed/15324696)

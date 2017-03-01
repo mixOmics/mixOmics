@@ -78,14 +78,14 @@ data(srbct)
 X <- srbct$gene
 Y <- srbct$class
 
-ncomp = 5
+ncomp = 3
 
 srbct.plsda <- plsda(X, Y, ncomp = ncomp)
 
 # with Mfold
 # ---------
 set.seed(45)
-error <- perf(srbct.plsda, validation = "Mfold", folds = 8, dist = "all", progressBar = FALSE)
+error <- perf(srbct.plsda, validation = "Mfold", folds = 8, dist = "all", progressBar = FALSE,nrepeat=5)
 
 plot(error)
 

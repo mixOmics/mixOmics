@@ -1,0 +1,95 @@
+---
+title: "Multilevel"
+date: "20 January 2017"
+output: html_document
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
+                      fig.show=TRUE, fig.keep = 'all', fig.height= 8, fig.width=9)
+```
+
+In order to take into account the complex structure of repeated measurements from different assays where different treatments are applied on the same subjects, a multilevel multivariate approach was developed to highlight the treatment effects within subject separately from the biological variation between subject (collaboration with A/Prof. B. Liquet).
+
+Two different frameworks are proposed:
+
+**1.** A discriminant analysis (*method = ‘splsda’*) enables the selection of features separating the different treatments (indicated by the vector or the matrix ‘cond‘).
+
+**2.** A integrative analysis  (*method = ‘spls’*) enables the interaction of two matched data sets and the selection of subset of correlated variables (positively or negatively) across the samples. The approach is unsupervised: no prior knowledge about the samples groups is included.
+
+The multilevel function first decomposes the variance in the data sets X (and Y) and applies either sPLS-DA or sPLS on the within-subject deviation. One or two-factor analyses are available for sPLS-DA.
+
+![Multilevel Framework](Images/Multilevel.jpg)
+
+# Usage in mixOmics
+
+```{r}
+library(mixOmics)
+data(vac18)
+X <- vac18$genes
+Y <- vac18$stimulation
+
+# sample indicates the repeated measurements
+# setup the design matrix by indicating the repeated measurements
+design <- data.frame(sample = vac18$sample)
+
+# multilevel sPLS-DA model
+vac18.splsda.multilevel <- splsda(X, 
+                                  Y = vac18$stimulation, 
+                                  multilevel = design, 
+                                  ncomp = 3, 
+                                  keepX = c(30, 137, 123))
+```
+
+## Variable Selection
+
+A tuning function **tune.multilevel()** is proposed to tune the number of variables to select:
+
+**1.** Either using leave-one-out cross validation for sPLS-DA one factor analysis. 
+
+```{r, results= "hide"}
+tune.loo.vac18 <- tune.multilevel(X, Y, multilevel = vac18$sample,
+                               ncomp=2,
+                               test.keepX=c(5, 10, 15), 
+                               already.tested.X = c(50),
+                               method = 'splsda',
+                               dist = 'mahalanobis.dist',
+                               validation = 'loo') 
+```
+
+**2.** Maximising the correlation between the latent variables for sPLS-DA two factors analysis or sPLS on the whole data set (applies when there are too many conditions and not enough samples).
+
+```{r, eval=FALSE}
+# Two factor analysis with sPLS-DA
+data("liver.toxicity")
+
+dose <- as.factor(liver.toxicity$treatment$Dose.Group)
+time <- as.factor(liver.toxicity$treatment$Time.Group)
+
+# note: we made up those data, pretending they are repeated measurements
+repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
+                    6, 5, 6, 7, 7, 8, 6, 7, 8, 7, 8, 8, 9, 10, 9, 10, 11, 9, 9,
+                    10, 11, 12, 12, 10, 11, 12, 11, 12, 13, 14, 13, 14, 13, 14,
+                    13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
+
+summary(as.factor(repeat.indiv)) # 16 rats, 4 measurements each
+
+design <- data.frame(sample = repeat.indiv)
+
+liver.tune = tune.multilevel(liver.toxicity$gene,
+                             Y = data.frame(dose, time),
+                             multilevel = design,
+                             ncomp=2,
+                             test.keepX=c(5, 10, 15),
+                             already.tested.X = c(50),
+                             method = 'splsda',
+                             dist = 'mahalanobis.dist')
+```
+
+See [Case Study: Multilevel vac18](http://mixomics.org/case-studies/multilevelvac18/) for more tuning details and plotting options. 
+
+
+# References
+
+[Liquet, B., Lê Cao, K.A., Hocini, H. and Thiébaut, R., 2012. A novel approach for biomarker selection and the integration of repeated measures experiments from two assays. BMC bioinformatics, 13(1), p.325.](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-13-325)

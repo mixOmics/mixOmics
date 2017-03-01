@@ -1,0 +1,41 @@
+---
+title: "TSS_Normalisation"
+author: "Danielle Davenport"
+date: "13 January 2017"
+output:
+  html_document:
+    code_folding: show
+    highlight: haddock
+---
+
+```{r setup, include=FALSE, echo=TRUE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# mixMC: TSS Normalisation 
+Here we use the Human Microbiome Most Diverse 16S data set as a worked example for **TSS Normalisation** which follows prefiltering in data analysis using **mixMC**.
+
+# Normalisation 
+The normalisation steps outlined in the example below describe the normalisation process of filtered microbiome sequencing data counts using **TSS normalisation**. 
+
+
+## TSS Normalisation 
+
+**Total Sum Scaling(TSS)** normalises count data by dividing variable read count by the total number of read counts in each individual sample. 
+
+```{r, echo=FALSE}
+load("Rdata/Prefilter.Rdata")
+```
+
+```{r TSS Normalisation, warning=FALSE, message=FALSE, echo=TRUE}
+# each variable read count is divided by the total no. of read counts
+TSS.divide = function(x){
+ x/sum(x)
+}
+# function is applied to each row
+data.TSS = t(apply(data.filter, 1, TSS.divide))
+```
+
+## Transformation 
+If normalisation = 'TSS', then a ILR transformation follows to account for compositional data inside the pca.R function. The components and loading vectors are back transformed inside the function to a CLR space.
+

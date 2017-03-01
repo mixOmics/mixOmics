@@ -1,0 +1,59 @@
+---
+title: "WPBloggingFromR to mixOmics site"
+author: "Danielle Davenport"
+date: "23 November 2016"
+output: html_document
+---
+Steps to post your RMarkdown file to WordPress Mixomics Blog  
+
+These are the required Libraries and Packages
+#Step 1: Check libraries and packages 
+Might need: 
+install.packages("devtools")
+install.packages("RCurl")
+install.packages("XML")
+devtools:::install_github("duncantl/XMLRPC")
+devtools:::install_github("duncantl/RWordPress")
+```{r}
+library(RWordPress)
+library(knitr)
+# Set figure dimensions
+#opts_chunk$set(fig.width=5, fig.height=5)
+# Set figures to upload to imgur.com
+opts_knit$set(upload.fun = imgur_upload, base.url = NULL) 
+```
+
+
+(a) The Easy Way
+If you are using Rstudio make an Rmd document and then click *knit*
+
+#Step 3
+Now setup wordpress details
+```{r}
+# Set your WP username, password, and your site URL
+options(WordpressLogin = c(your.username = 'your.password'), #update these
+        WordpressURL = 'https://mixomics.org/xmlrpc.ph')
+```
+#Step 4
+Post a new blog post 
+```{r}
+knit2wp(input = 'your Rmd File.Rmd', title = 'The title of your post',shortcode = FALSE ,publish = FALSE)
+
+#publish = FALSE this keeps the post as a draft so you can check it on wordpress before publishing 
+```
+
+#Step 5
+Now check post on mixomics page
+*it will be posted as a post, not a page. To change it to a page, just go to the mixomics site, find the post in the "Posts" tab, click "quick edit"", and change the "post type" dropdown box from post -> page. you can now find it under the "page" tab.
+Then go to the pages tab, review, then publish. 
+Now add to menu in "Apperence/Menu"
+
+-------
+References/Links
+------
+
+http://3.14a.ch/archives/2015/03/08/how-to-publish-with-r-markdown-in-wordpress/
+
+http://francojc.github.io/publishing-rmarkdown-to-wordpress-or-jekyll/
+
+http://chinapleth.io/2016/01/13/write-posts-with-rstudio-rmarkdown-format-and-publish-directly-to-wordpress-with-knitr-rwordpress/

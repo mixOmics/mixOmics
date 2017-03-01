@@ -18,8 +18,8 @@ design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 nutrimouse.sgccda <- wrapper.sgccda(X=data,
 indY = 2,
 design = design,
-keepX = list(gene=c(10,10), lipid=c(15,15)),
-ncomp = 2,#c(2, 2),
+keepX = list(gene=c(10), lipid=c(15)),
+ncomp = 1,#c(2, 2),
 scheme = "centroid",
 verbose = FALSE,
 bias = FALSE,
@@ -127,6 +127,8 @@ cimDiablo(nutrimouse.sgccda,size.legend=0.3)
 
 
 plotIndiv(nutrimouse.sgccda)
+plotIndiv(nutrimouse.sgccda,legend=TRUE,ind.names=FALSE, centroid=FALSE)
+plotIndiv(nutrimouse.sgccda,legend=TRUE,ind.names=FALSE, centroid=TRUE)
 #plotIndiv(nutrimouse.sgccda, blocks = c(1,2), group = nutrimouse$diet,
 #ellipse = TRUE)
 
@@ -173,7 +175,7 @@ if(additional.test==TRUE)
     tune
 
     # classic tune, with test.keepX as input
-    tune = tune.block.splsda(
+    tune2 = tune.block.splsda(
     X = data,
     Y = Y,
     design = design,

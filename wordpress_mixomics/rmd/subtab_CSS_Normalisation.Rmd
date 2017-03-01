@@ -1,0 +1,52 @@
+---
+title: "CSS_Normalisation"
+author: "Danielle Davenport"
+date: "13 January 2017"
+output:
+  html_document:
+    code_folding: show
+    highlight: haddock
+---
+
+```{r setup, include=FALSE, echo=TRUE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# mixMC: CSS Normalisation 
+
+Here we use the Human Microbiome Most Diverse 16S data set as a worked example for **CSS normalisation** following prefiltering in data analysis using **mixMC**.
+
+# Normalisation 
+The normalisation steps outlined in the example below describe the normalisation process of filtered microbiome sequencing data counts using **CSS normalisation**. 
+
+## CSS Normalisation 
+
+**Cumulative Sum Scaling normalisation (CSS)** was specifically developed for sparse microbiome data counts by Paulson et al., [1, 2]. CSS is an extension of the quantile normalization approach suited to marker gene survey data and works by scaling raw counts that are relatively invariant across samples up to a percentile determined using a data-driven approach, see [1, 2] for details. 
+```{r, echo=FALSE}
+load("Rdata/Prefilter.Rdata")
+```
+
+
+```{r CSS Normalisation, warning=FALSE, message=FALSE}
+# source("http://bioconductor.org/biocLite.R")
+# biocLite("metagenomeSeq")
+library(mixOmics)
+library(metagenomeSeq)
+
+phenotypeData = as(diverse.16S$indiv,"AnnotatedDataFrame")
+OTUdata = as(as.data.frame(diverse.16S$taxonomy),"AnnotatedDataFrame")
+# calculate the proper percentile by which to normalise counts
+data.metagenomeSeq = newMRexperiment(t(data.filter), phenoData=phenotypeData, 
+                      featureData=NULL, libSize=NULL, normFactors=NULL) #using filtered data 
+p = cumNormStat(data.metagenomeSeq) #default is 0.5
+data.cumnorm = cumNorm(data.metagenomeSeq, p=p)
+data.cumnorm
+data.CSS = t(MRcounts(data.cumnorm, norm=TRUE, log=TRUE)) #save data 
+```
+
+## Transformation 
+If normalisation = 'CSS' then no further transformation is necessary (the log transformation is applied implicitly when using the metagenomeSeq package).
+
+# References
+
+1. [Paulson, J.N., Stine, O.C.,Bravo, H.C., Pop, M.: Differential abundance analysis for microbial marker-gene surveys. Nature methods 10(12), 1200–1202 (2013)](https://scholar.google.com/scholar_url?url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4010126/&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=mJI7WMPtOIahjAHSwYSoAw&scisig=AAGBfm1fyLHA-6ERYM0zWC3IG5LnXL78HA)
+2. [Paulson, J.N., Pop, M., Bravo, H.C.: metagenomeSeq : Statistical analysis for sparse high-throughput sequencing. Bioconductor package: 1.6.0. (2015). http://cbcb.umd.edu/software/metagenomeSeq](https://scholar.google.com/scholar_url?url=http://bioconductor.jp/packages/3.0/bioc/vignettes/metagenomeSeq/inst/doc/metagenomeSeq.pdf&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=Z5I7WNP-F4K_jAHDyIawCQ&scisig=AAGBfm0OogJCyrTPj60IdHKQwRzwffz_OA)
