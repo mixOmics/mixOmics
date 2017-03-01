@@ -29,7 +29,7 @@ size.title = rel(2), size.subtitle = rel(1.5), size.xlabel = rel(1),
 size.ylabel = rel(1), size.axis = rel(0.8), size.legend = rel(1),
 size.legend.title = rel(1.1), legend.title = "Legend", legend.title.pch = "Legend",
 legend.position = "right",
-point.lwd = 1, ... )
+point.lwd = 1, background = NULL, ... )
 
 \method{plotIndiv}{mint.spls}(object, comp = NULL, study = "global", rep.space = NULL, group, col.per.group,
 style = "ggplot2", ellipse = FALSE, ellipse.level = 0.95, centroid = FALSE, star = FALSE,
@@ -103,6 +103,7 @@ or integers. See \code{\link{points}} for all alternatives.}
 \item{legend.position}{position of the legend, one of "bottom",
 "left", "top" and "right". }
 \item{point.lwd}{\code{lwd} of the points, used when \code{ind.names = FALSE}}
+\item{background}{color the background by the predicted class, see \code{\link{background.predict}}}
 \item{...}{external arguments or type par can be added with \code{style = 'graphics'}}
 }
 
