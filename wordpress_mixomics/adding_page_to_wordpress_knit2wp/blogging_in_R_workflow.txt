@@ -1,0 +1,61 @@
+WorkFlow for Blogging from R
+
+Required libraries and Packages
+install.packages("devtools")
+install.packages("RCurl")
+install.packages("XML")
+devtools:::install_github("duncantl/XMLRPC")
+devtools:::install_github("duncantl/RWordPress")
+- - - - - - - - 
+library(knitr)
+# Set figure dimensions
+opts_chunk$set(fig.width=5, fig.height=5)
+# Set figures to upload to imgur.com
+opts_knit$set(upload.fun = imgur_upload, base.url = NULL) 
+
+rmd.file <- “yourFile.Rmd”	#add your file name here
+# Knit the .Rmd file
+knit(rmd.file)
+# Set up input/ output files
+——
+now send to Markdown
+——
+
+markdown.file <- gsub(pattern = "Rmd$", replacement = "md", x = rmd.file)
+html.file <- gsub(pattern = "md$", replacement = "_pub.html", x = markdown.file)
+
+——
+Now setup wordpress details and 
+——
+library(RWordPress)
+# Set your WP username, password, and your site URL
+options(WordpressLogin = c(your.username = 'your.password'), 
+        WordpressURL = 'https://mixomics.org/xmlrpc.ph')
+——
+post a new blog post
+—— 
+
+knit2wp(input = 'mixMC_sPLS_DA_diverse.Rmd', title = 'Example of multilevel analysis with mixMC',shortcode = FALSE,publish = FALSE)
+
+#publish = FALSE this keeps the post as a draft so you can check it on wordpress before publishing 
+
+****
+References/Links
+****
+
+http://3.14a.ch/archives/2015/03/08/how-to-publish-with-r-markdown-in-wordpress/
+
+http://francojc.github.io/publishing-rmarkdown-to-wordpress-or-jekyll/
+
+http://chinapleth.io/2016/01/13/write-posts-with-rstudio-rmarkdown-format-and-publish-directly-to-wordpress-with-knitr-rwordpress/
+
+
+
+if your using R markdown in R studio....
+
+library(RWordPress)
+# Set your WP username, password, and your site URL
+options(WordpressLogin = c(adogwalkingblog = '1L0ui33lm01'), 
+        WordpressURL = 'http://mixomics.org/xmlrpc.php')
+
+knit2wp(input = 'mixMC_sPLS_DA_diverse.Rmd', title = 'Repeated Measures Example (Oral)',shortcode = FALSE,publish = FALSE)

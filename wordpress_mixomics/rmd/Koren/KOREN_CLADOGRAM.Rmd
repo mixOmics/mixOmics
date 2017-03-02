@@ -1,0 +1,221 @@
+---
+title: "KOREN_CLADOGRAM"
+author: "Danielle Davenport"
+date: "6 December 2016"
+output: html_document
+---
+
+## Cladogram
+
+The script available [here](http://mixomics.org/wp-content/uploads/2016/12/MixMC_example.zip) will prepare the input tree and annotation files to call the Graphlan python package and produce the cladogram outputs based on the OTUs selected in the sPLS-DA model for all components. 
+
+```{r, eval= FALSE, echo= FALSE}
+
+##
+# Setting up some parameters
+##
+# setup colors w.r.t per bodysite and for each sample
+col.sample.unique = vector(length = nlevels(Y))
+names(col.sample.unique) = levels(Y)
+col.sample.unique = c("#009E73", "#56B4E9", "#999999") #chose your fav colors
+
+##
+# Function to create the Annotation file for a graphlAn input
+#
+taxonomy = Koren.16S$taxonomy
+taxo.output = function(contrib, Y, name.var, taxonomy){
+  # contrib is a result from plotLoadings
+  # Y indicates the sample class
+  # name.var is the OTU name matching with contrib
+  # taxonomy is the input taxonomy file (so far a matrix for the diffrent clasification levels, we only consider the family level here)
+  
+  # taxonomy info
+  taxonomy = as.data.frame(taxonomy)
+  taxo.input = cbind(taxonomy[rownames(contrib),], OTU = sub('OTU_97.', 'OTU_97_', rownames(contrib)))
+  # indicate where NA values are, or blanks
+  na.index = c(which(is.na(taxo.input$Family)), which(as.character(taxo.input$Family)== ''))
+  
+  # taxonomy at the OTU levels
+  taxo.level = name.var[rownames(contrib)]
+  # node size
+  node.size=vector(length=nrow(contrib))
+  for(k in 1:nrow(contrib)){
+    # based on median: extract the max median from a contrib output
+    node.size[k]= abs(as.numeric(max(contrib[k, 1:nlevels(Y)]))) #[contrib[k, 'GroupContrib']])
+  }
+  #the node size factor can be changed here:
+  node.size = round(node.size*50)
+  
+  
+  #--node color: blue is positive weight on the splsda loading vector, yellow is negative weight on the splsda loading vector
+  node.color = c(rep('#388ECC', nrow(contrib)))
+  node.color[which(contrib$importance <= 0)] = '#F0E442'
+  
+  #-- edge color (no need)
+  edge.color = c(rep(NA, nrow(contrib)))
+  
+  #--background color
+  back.color = contrib
+  
+  #--body site
+  GroupContrib=contrib$GroupContrib
+  
+  # summarise the results
+  annot.family = cbind(taxo.level, node.size, node.color, edge.color, back.color, GroupContrib)
+  
+  # remove na values: when we dont have the family information
+  if(length(na.index) > 0 ) {
+    taxo.input = taxo.input[-c(na.index), ]
+    annot.family = annot.family[-c(na.index), ]
+  }
+  return(list(taxo = taxo.input, annot = annot.family, na.index = na.index))
+}
+
+# ------------------
+# prepare tree input based on taxonomy
+# ------------------
+# first, name.var: remove the OTU_97 text
+#name.var2 = sub('OTU_97.', 'OTU_97_', rownames(taxonomy)) #alternatively could be 
+namevar2 = rownames(taxonomy)
+names(name.var2) = rownames(taxonomy)
+
+# calculate contribution
+mat.taxo = NULL
+mat.annot = NULL # initialise
+# then fill in tree input per component
+for(k in 1: choice.ncomp){
+  contrib = plotLoadings(res.splsda, method = 'median', comp = k, plot = F)
+  res = taxo.output(contrib = contrib, Y = Y, name.var = name.var2, taxonomy = taxonomy)
+  mat.taxo = rbind(mat.taxo, res$taxo)
+  mat.annot = rbind(mat.annot, res$annot)
+}
+
+
+# suppress double or triple points
+mat.taxo.final=matrix(ncol=1,nrow=nrow(mat.taxo))
+for(i in 1:nrow(mat.taxo))
+{
+  mat.taxo.level=NULL
+  for(j in 1:ncol(mat.taxo[i,]))
+  {
+    if((!as.character(mat.taxo[i,j][[1]])=="") && (!is.na(as.character(mat.taxo[i,j][[1]]))))
+    {
+      if(j==1)
+        mat.taxo.level=mat.taxo[i,j]
+      else
+        mat.taxo.level=paste(mat.taxo.level,mat.taxo[i,j],sep='.')
+    }
+  }
+  mat.taxo.final[i,]=mat.taxo.level
+}
+# input ready for graphLAn
+write.table(mat.taxo.final, sep = '.', row.names = F, col.names = F, na = '', quote = F, file = paste(path.output, 'treeInput.txt', sep =''))
+
+# ------------------
+# #prepare background annotation
+# ------------------
+
+if(!is.null(col.sample.unique))
+{
+  for (i in 1:nlevels(Y))
+  {
+    mat.annot[mat.annot[,6]==levels(Y)[i],5]=col.sample.unique[i]
+  }
+}
+
+annotation.otu=c(as.character(mat.taxo[,2]),as.character(mat.taxo[,3]),as.character(mat.taxo[,5]))
+annotation.otu=unique(annotation.otu)
+annotation.otu[is.na(annotation.otu)]='unknown'
+red.annotation.otu=c()
+let=c(letters,LETTERS)
+ncont=1
+list.mat.taxo=c(as.character(mat.taxo[,2]),as.character(mat.taxo[,3]),as.character(mat.taxo[,5]))
+list.mat.taxo[is.na(list.mat.taxo)]='unknown'
+tb=table(factor(list.mat.taxo,levels=annotation.otu))
+
+for(i in 1:length(as.vector(tb)))
+{
+  if((as.vector(tb)[i]*2)<(nchar(names(tb)[i])))
+  {
+    red.annotation.otu=c(red.annotation.otu,paste(let[ncont],names(tb)[i],sep=':'))
+    ncont=ncont+1
+  }else{
+    red.annotation.otu=c(red.annotation.otu,names(tb)[i])
+  }
+}
+
+n.nrow=9+3*nrow(mat.annot)+3*length(annotation.otu)
+mat.annot.final=matrix(nrow=n.nrow,ncol=3)
+mat.annot.final[,3]=''
+
+mat.annot.final[1,1]='clade_separation'
+mat.annot.final[1,2]=0.5
+mat.annot.final[2,1]='branch_thickness'
+mat.annot.final[2,2]=1.5
+mat.annot.final[3,1]='branch_bracket_depth'
+mat.annot.final[3,2]=0.8
+mat.annot.final[4,1]='branch_bracket_width'
+mat.annot.final[4,2]=0.25
+mat.annot.final[5,1]='clade_marker_size'
+mat.annot.final[5,2]=40
+mat.annot.final[6,1]='clade_marker_edge_color'
+mat.annot.final[6,2]='#555555'
+mat.annot.final[7,1]='clade_marker_edge_width'
+mat.annot.final[7,2]=1.2
+mat.annot.final[8,1]='annotation_background_alpha'
+mat.annot.final[8,2]=0.6
+mat.annot.final[9,1]='annotation_legend_font_size'
+mat.annot.final[9,2]=9
+
+mat.annot.final[1:nrow(mat.annot)+9,2]='clade_marker_color'
+mat.annot.final[1:nrow(mat.annot)+9,1]=as.character(mat.annot[,1])
+mat.annot.final[1:nrow(mat.annot)+9,3]=as.character(mat.annot[,3])
+mat.annot.final[1:nrow(mat.annot)+(nrow(mat.annot)+9),2]='clade_marker_size'
+mat.annot.final[1:nrow(mat.annot)+(nrow(mat.annot)+9),1]=as.character(mat.annot[,1])
+mat.annot.final[1:nrow(mat.annot)+(nrow(mat.annot)+9),3]=mat.annot[,2]
+mat.annot.final[1:nrow(mat.annot)+(nrow(mat.annot)*2+9),2]='annotation_background_color'
+mat.annot.final[1:nrow(mat.annot)+(nrow(mat.annot)*2+9),1]=as.character(mat.annot[,1])
+mat.annot.final[1:nrow(mat.annot)+(nrow(mat.annot)*2+9),3]=as.character(mat.annot[,5])
+mat.annot.final[1:length(annotation.otu)+(nrow(mat.annot)*3+9),2]='annotation'
+mat.annot.final[1:length(annotation.otu)+(nrow(mat.annot)*3+9),1]=as.character(annotation.otu)
+mat.annot.final[1:length(annotation.otu)+(nrow(mat.annot)*3+9),3]=as.character(red.annotation.otu)
+mat.annot.final[1:length(annotation.otu)+(nrow(mat.annot)*3+length(annotation.otu)+9),2]='annotation_background_color'
+mat.annot.final[1:length(annotation.otu)+(nrow(mat.annot)*3+length(annotation.otu)+9),1]=annotation.otu
+mat.annot.final[1:length(annotation.otu)+(nrow(mat.annot)*3+length(annotation.otu)+9),3]='#e2e2e2'
+mat.annot.final[1:length(annotation.otu)+(nrow(mat.annot)*3+2*length(annotation.otu)+9),2]='annotation_font_size'
+mat.annot.final[1:length(annotation.otu)+(nrow(mat.annot)*3+2*length(annotation.otu)+9),1]=annotation.otu
+mat.annot.final[1:length(annotation.otu)+(nrow(mat.annot)*3+2*length(annotation.otu)+9),3]=11
+
+
+write.table(mat.annot.final, sep = '\t', row.names = F, col.names = F, quote = F, file = paste(path.output, 'annotation.txt', sep =''))
+```
+
+
+```{r echo= FALSE, eval= FALSE}
+x <- paste("./graphlan_annotate.py --annot ", path.output, "annotation.txt ",
+           path.output, "treeInput.txt ", path.output, "treeInput.xml",sep='')
+cat(x)
+
+system(x)
+
+x <- paste("./graphlan.py ", path.output, "treeInput.xml ", path.output,
+           "Cladogram.png --dpi 300 --size 7 --pad 0.75", sep='')
+cat(x)
+
+system(x)
+```
+
+```{r, out.width = "400px", echo=FALSE}
+knitr::include_graphics("Koren/tree_koren.png")
+```
+
+```{r, include=FALSE}
+#**Note:** 
+#The R code above indicates the call to the GraphlAn python library from R provided this library has been installed. Ensure you have the following specifications to launch the bash code:
+#- Python 2.7 or higher (http://www.python.org/)
+
+#- biopython library 1.6 or higher (http://biopython.org)
+
+#- matplotlib python library or higher (http://matplotlib.sourceforge.net)
+```
+

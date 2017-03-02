@@ -1,0 +1,23 @@
+---
+title: "variable_plots_main"
+date: "23 January 2017"
+output: html_document
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
+                      fig.show=TRUE, fig.keep = 'all', fig.height= 8, fig.width=9)
+```
+
+# Variable plots
+
+## Overview
+
+**mixOmics** can display several types of 2D and 3D plots fully customizable. These plots are independent of the statistical methods used to analyze the data and can process any results coming from them. The two main 3D plots available are:
+
+[plotVar](http://mixomics.org/graphics/sample-plot/plotvar/) – in this type of graphical display, the variables X and Y are represented through their projections into the sphere defined either by X-variates or Y-variates.
+
+[Cluster Image Map](http://mixomics.org/graphics/variable-plots/cim/) (CIM) – This function generates color-coded Clustered Image Maps (CIMs) (“heat maps”) to  represent “high-dimensional” data sets.
+
+[Networks](http://mixomics.org/graphics/variable-plots/networks/) – Display relevance associations network for (regularized) canonical correlation analysis and (sparse) PLS regression.

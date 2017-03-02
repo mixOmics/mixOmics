@@ -1,0 +1,22 @@
+---
+title: "sample_plots_main"
+date: "23 January 2017"
+output: html_document
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
+                      fig.show=TRUE, fig.keep = 'all', fig.height= 8, fig.width=9)
+```
+
+# Sample plots
+
+## Overview
+
+**mixOmics** can display several types of fully customizable sample plots. These plots are independent of the statistical methods used to analyze the data and can process any results coming from them.
+
+[plotIndiv](http://mixomics.org/graphics/sample-plot/plotindiv/) – in this plot the samples are represented as point placed according to their relation to two dimensions among those chosen in the analysis (the ncomp parameter). Such points tends to aggregate together when they are share similarities.
+
+[plotArrow](http://mixomics.org/graphics/sample-plot/arrow-plot/) – Represents samples from multiple coordinates.
+

@@ -1,0 +1,96 @@
+---
+title: "sPLS-DA"
+date: "20 January 2017"
+output: html_document
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
+                      fig.show=TRUE, fig.keep = 'all', eval = FALSE)
+```
+
+# PLS Discriminat Anlysis (PLS-DA)
+
+Although Partial Least Squares was not originally designed for classification and discrimination prob- lems, it has often been used for that purpose (Nguyen and Rocke, 2002; Tan et al., 2004). The response matrix Y is qualitative and is internally recoded as a dummy block matrix that records the membership of each observation, i.e. each of the response categories are coded via an indicator variable. The PLS regression (now PLS-DA) is then run as if Y was a continuous matrix. Note that this might be wrong from a theoretical point of view, however, it has been previously shown that this works well in practice. 
+
+* PLS-Discriminant Analysis (PLS-DA) is a linear model which performs a classification task and is able to predict the class of new samples (Barker and Rayens, 2003).
+
+* The sparse variant sparse PLS-DA (sPLS-DA) enables the selection of the most predictive or discriminative features in the data that help classify the samples (Lê Cao et al., 2011).
+
+# sparse PLS Discriminat Analysis (sPLS-DA)
+
+sPLS-DA performs variable selection and classification in a one step procedure. sPLS-DA is a special case of sparse PLS  to allow variable selection, except that this time, the variables are only selected in the X data set and in a supervised framework, i.e. we are selecting the X-variables with respect to different categories of the samples.
+
+# Usage in mixOmics
+
+(s)PLS-DA is implemented in mixOmics via the functions **plsda()** and **splsda()** as displayed below. For both plsda and splsda, we strongly advise to work with a training and a testing set. 
+
+# PLS-DA
+
+## Variable selection
+
+Similar to a PLS-regression mode, the tuning parameters include the number of dimensions or components *ncomp*. We can rely on the estimation of the classification error rate using leave-one-out or cross-validation. We use the function **perf()** to evaluate a PLS-DA model and **predict()**. 
+
+```{r}
+library(mixOmics)
+data(liver.toxicity)
+X <- as.matrix(liver.toxicity$gene)
+Y <- as.factor(liver.toxicity$treatment[, 4])             
+
+## PLS-DA function
+result <- plsda(X, Y, ncomp = 3) # where ncomp is the number of components wanted
+```
+
+# sPLS-DA
+
+## Tuning sPLS-DA
+
+We use the function **tune.splsda()** to select the parameters including the number of components/dimensions, *ncomp*, and the number of variables to choose in the X data set, *keepX*.
+
+```{r}
+# grid of possible keepX values that will be tested for comp 1 and comp 2
+list.keepX <- c(1:10,  seq(20, 100, 10))
+# to speed up computation in this example we choose 5 folds repeated 10 times:
+tune.splsda.srbct <- tune.splsda(X, Y, ncomp = 5, validation = 'Mfold', folds = 5, 
+                           progressBar = FALSE, dist = 'mahalanobis.dist',
+                           test.keepX = list.keepX, nrepeat = 10) #nrepeat 50-100
+```
+
+```{r}
+## sPLS-DA function
+result <- splsda(X, Y, ncomp = 3, keepX = c(10, 10, 10)) # where keepX is the number of variables selected for each components
+```
+
+With (s)PLS-DA, the classes of new samples or observations can be predicted in the model by using thepredict function. This is an example to perform 3-fold cross-validation. Normally 10-fold cross-validation should be performed several times and the results should be averaged to get a better estimation of the generalization performance:
+
+```{r}
+data(liver.toxicity)
+X <- as.matrix(liver.toxicity$gene)
+Y <- as.factor(liver.toxicity$treatment[, 4]) # Y is a factor, we chose it as the time points of necropsy
+i <- 1
+samp <- sample(1:3, nrow(X), replace = TRUE) # Creation of a list of the same size as X containing 1, 2 or 3
+
+test <- which(samp == i) # Search which column in samp has a value of 1
+train <- setdiff(1:nrow(X), test) # Keeping the column that are not in test
+
+## For PLS-DA
+plsda.train <- plsda(X[train, ], Y[train], ncomp = 3)
+test.predict <- predict(plsda.train, X[test, ], method = "max.dist")
+
+## For sPLS-DA
+splsda.train <- splsda(X[train, ], Y[train], ncomp = 3, keepX = c(10, 10, 10))
+test.predict <- predict(splsda.train, X[test, ], method = "max.dist")
+```
+
+See [Case Study: sPLS-DA srbct](http://mixomics.org/case-studies/spls-da-srbct-2/) for more details and plotting options. 
+
+# Reference 
+
+In addintion to references form (s)PLS.
+
+[Pérez-Enciso, M. and Tenenhaus, M., 2003. Prediction of clinical outcome with microarray data: a partial least squares discriminant analysis (PLS-DA) approach. Human genetics, 112(5-6), pp.581-592.](http://link.springer.com/article/10.1007/s00439-003-0921-9/fulltext.html)
+
+[Nguyen, D.V. and Rocke, D.M., 2002. Tumor classification by partial least squares using microarray gene expression data. Bioinformatics, 18(1), pp.39-50.](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-253)
+
+[Lê Cao, K.A., Boitard, S. and Besse, P., 2011. Sparse PLS discriminant analysis: biologically relevant feature selection and graphical displays for multiclass problems. BMC bioinformatics, 12(1), p.253](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-253)
