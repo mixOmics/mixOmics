@@ -13,7 +13,6 @@ Description: Multivariate methods are well suited to large omics data sets where
 License: GPL (>= 2)
 URL: http://www.mixOmics.org
 BugReports: https://bitbucket.org/klecao/package-mixomics/issues
-	or <mixomics@math.univ-toulouse.fr>
 Repository: CRAN
 Date/Publication: 2017-02-06 12:08:22
 Packaged: 2017-02-06 06:49:17 UTC; klecao
