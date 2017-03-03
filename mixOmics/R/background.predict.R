@@ -342,13 +342,13 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
             
             poly = area[contour,]
             poly.save[[ind.area]] = poly
-            names(poly.save)[ind.area] = levels(Y)[ind.area]#adjustcolor(color.mixo(ind.area), alpha.f=0.1)
             
         }
         
     }
-    
-   
+    names(poly.save) = levels(Y)#adjustcolor(color.mixo(ind.area), alpha.f=0.1)
+
+
     class(poly.save) = "background.predict"
     return(poly.save)
 }

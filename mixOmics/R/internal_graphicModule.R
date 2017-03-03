@@ -155,7 +155,10 @@ background = NULL)
         if(!is.null(background))
         {
             for(i in 1:length(background))
-            background[[i]]=data.frame(id=i,col=names(background)[i], background[[i]])
+            {
+                if(!is.null(background[[i]]))
+                background[[i]]=data.frame(id=i,col=names(background)[i], background[[i]])
+            }
             
             background = do.call(rbind,background)
 
