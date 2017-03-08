@@ -40,6 +40,7 @@ importFrom("reshape2","melt","dcast")
 
 export(
 auroc,
+background.predict,
 block.pls,
 block.plsda,
 block.spls,

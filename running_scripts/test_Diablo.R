@@ -72,6 +72,12 @@ tol=1e-30)
 
 set.seed(43)
 a=perf(nutrimouse.sgccda,nrepeat=3)
+plot(a)
+
+set.seed(43)
+a2=perf(nutrimouse.sgccda,nrepeat=3, constraint = TRUE)
+plot(a2)
+
 
 
 set.seed(43)
