@@ -39,7 +39,7 @@ folds = 10, nrepeat =1, auc = FALSE, progressBar = TRUE, cpus, \ldots)
 
 \method{perf}{sgccda}(object,
             dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
-            validation = c("Mfold", "loo"),
+            constraint = FALSE, validation = c("Mfold", "loo"),
             folds = 10, nrepeat =1, cpus, \ldots)
 
 }
