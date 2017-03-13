@@ -39,7 +39,7 @@ folds = 10, nrepeat =1, auc = FALSE, progressBar = TRUE, cpus, \ldots)
 
 \method{perf}{sgccda}(object,
             dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
-            validation = c("Mfold", "loo"),
+            constraint = FALSE, validation = c("Mfold", "loo"),
             folds = 10, nrepeat =1, cpus, \ldots)
 
 }
@@ -60,9 +60,9 @@ folds = 10, nrepeat =1, auc = FALSE, progressBar = TRUE, cpus, \ldots)
 }
 
 \details{
-The process of evaluating the performance of a fitted model \code{object} is similar for all PLS-derived methods; a cross-validation approach is used to fit the method of \code{object} on \code{folds-1} subsets of the data and then to predict on the subset left out. Different measures of performance are available depending on the model. Parameters such as \code{logratio}, \code{multilevel}, \code{keepX} or \code{keepY} are retrieved from \code{object}.
+Procedure. The process of evaluating the performance of a fitted model \code{object} is similar for all PLS-derived methods; a cross-validation approach is used to fit the method of \code{object} on \code{folds-1} subsets of the data and then to predict on the subset left out. Different measures of performance are available depending on the model. Parameters such as \code{logratio}, \code{multilevel}, \code{keepX} or \code{keepY} are retrieved from \code{object}.
 
-If \code{validation = "Mfold"}, M-fold cross-validation is performed.
+Parameters. If \code{validation = "Mfold"}, M-fold cross-validation is performed.
 \code{folds} specifies the number of folds to generate.
 The folds also can be supplied as a list of vectors containing the indexes defining each
 fold as produced by \code{split}. When using \code{validation = "Mfold"}, make sure that you repeat the process several times (as the results will be highly dependent on the random splits and the sample size).
@@ -70,20 +70,20 @@ fold as produced by \code{split}. When using \code{validation = "Mfold"}, make s
 If \code{validation = "loo"}, leave-one-out cross-validation is performed (in that case, there is no need to repeat the process).
 
 
-For fitted PLS and sPLS regression models, \code{perf} estimates the 
+Measures of performance. For fitted PLS and sPLS regression models, \code{perf} estimates the
 mean squared error of prediction (MSEP), \eqn{R^2}, and \eqn{Q^2} to assess the predictive 
 perfity of the model using M-fold or leave-one-out cross-validation. Note that only the \code{classic}, \code{regression} and  \code{invariant} modes can be applied.
 For sPLS, the MSEP, \eqn{R^2}, and \eqn{Q^2} criteria are averaged across all folds.
 Note that for PLS and sPLS objects, perf is performed on the pre-processed data after log ratio transform and multilevel analysis, if any.
 
 
-The sPLS, sPLS-DA and sgccda functions are run on several and different subsets of data (the cross-folds) and will certainly lead to different subset of selected features. Those are summarised in the output \code{features$stable} (see output Value below) to assess how often the variables are selected across all folds.
+Sparse methods. The sPLS, sPLS-DA and sgccda functions are run on several and different subsets of data (the cross-folds) and will certainly lead to different subset of selected features. Those are summarised in the output \code{features$stable} (see output Value below) to assess how often the variables are selected across all folds.
 Note that for PLS-DA and sPLS-DA objects, perf is performed on the original data, i.e. before the pre-processing step of the log ratio transform and multilevel analysis, if any. In addition for these methods, the classification error rate is averaged across all folds.
 
 The mint.sPLS-DA function estimates errors based on Leave-one-group-out cross validation (where each levels of object$study is left out (and predicted) once) and provides study-specific outputs (\code{study.specific.error}) as well as global outputs (\code{global.error}).
 
-For PLS-DA, sPLS-DA, mint.PLS-DA and mint.sPLS-DA methods: if \code{auc=TRUE}, Area Under the Curve (AUC) values are calculated from the predicted values obtained from the cross-validation process, either for all samples or for study-specific samples (for mint models). See \code{\link{auroc}} for more details.
 
+AUROC. For PLS-DA, sPLS-DA, mint.PLS-DA and mint.sPLS-DA methods: if \code{auc=TRUE}, Area Under the Curve (AUC) values are calculated from the predicted scores obtained from the \code{predict} function applied to the internal test sets in the cross-validation process, either for all samples or for study-specific samples (for mint models). Therefore we minimise the risk of overfitting. See \code{\link{auroc}} for more details. Our multivariate supervised methods already use a prediction threshold based on distances (see \code{predict}) that optimally determine class membership of the samples tested. As such AUC and ROC are not needed to estimate the performance of the model. We provide those outputs as complementary performance measures.
 }
 
 \value{
