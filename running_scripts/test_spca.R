@@ -5,6 +5,19 @@
 #######################################################################################################
 opar <- par(no.readonly = TRUE)
 
+data(nutrimouse)
+X = nutrimouse$gene
+spls.nut = spls(X=X, Y= X, ncomp = 3)#, keepX = rep(10, 3), keepY = rep(10, 3))
+
+
+
+acp = pca(X, scale=T)
+sacp = spca(X)
+ind.match = names(acp)%in% names(sacp)
+ind.match2 = match(names(acp)[ind.match], names(sacp))
+all.equal(acp[ind.match],sacp[ind.match2])
+
+
 
 data(liver.toxicity)
 spca.rat <- spca(liver.toxicity$gene, ncomp = 3, keepX = rep(50, 3))
