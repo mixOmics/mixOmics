@@ -127,7 +127,7 @@ background = NULL)
     if(nlevels(factor(df$pch)) == 1)
     group.pch = "same"
     
-    save(list=ls(),file="temp.Rdata")
+    #save(list=ls(),file="temp.Rdata")
 
     #-- Start: ggplot2
     if (style == "ggplot2")
