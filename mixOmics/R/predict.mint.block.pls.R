@@ -122,7 +122,7 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         if(!is.list(newdata))
         stop("'newdata' should be a list")
         
-        if(!is.null(object$indY))
+        if(!is.null(object$indY) && length(grep("DA",class(object)))==0 ) #if DA, object$X is already without Y
         {
             X = object$X[-object$indY]
         }else{
