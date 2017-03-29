@@ -103,7 +103,7 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
     ####################################
     # ---- estimate polygon
     ####################################
-    poly.save = list()
+    poly.save = vector("list", length = nlevels(Y))
     G = cls = list()
     
     if(dist == "max.dist")
