@@ -20,7 +20,8 @@ line = TRUE,
 size.legend = 0.8,
 ncol.legend = 1,
 size.variables = 0.25,
-size.labels = 1)
+size.labels = 1,
+legend = TRUE)
 }
 
 \arguments{
@@ -38,6 +39,7 @@ If \code{NULL}, the colnames of the data matrix are used.}
 \item{ncol.legend}{number of columns for the legend}
 \item{size.variables}{size of the variable labels}
 \item{size.labels}{size of the block labels}
+\item{legend}{boolean. Whether the legend should be added. Default is TRUE.}
 }
 
 
