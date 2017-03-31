@@ -201,7 +201,7 @@ legend = TRUE)
     
     plot(c(1,figSize), c(1,figSize), type="n", axes=FALSE, xlab="", ylab="", main="")
     
-    save(list=ls(),file="temp.Rdata")
+    #save(list=ls(),file="temp.Rdata")
     # Plot ideogram
     drawIdeogram(R=circleR, cir=db, W=segmentWidth,  show.band.labels=TRUE, show.chr.labels=TRUE, chr.labels.R= chrLabelsR, chrData=chr, size.variables = size.variables, size.labels=size.labels, color.blocks = color.blocks, line = line)
     # Plot links
