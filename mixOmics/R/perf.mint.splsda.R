@@ -218,19 +218,19 @@ progressBar = TRUE,
             # result per study
             #BER
             study.specific[[study_i]]$BER[comp,] = sapply(test.predict.sw$class, function(x){
-            conf = get.confusion_matrix(Y.learn = Y[-omit], Y.test = Y[omit], pred = x[,comp])
+            conf = get.confusion_matrix(truth = Y[omit], all.levels = levels(Y), predicted = x[,comp])
             get.BER(conf)
             })
             
             #overall
             study.specific[[study_i]]$overall[comp,] = sapply(test.predict.sw$class, function(x){
-                conf = get.confusion_matrix(Y.learn = Y[-omit], Y.test = Y[omit], pred = x[,comp])
+                conf = get.confusion_matrix(truth = Y[omit], all.levels = levels(Y), predicted = x[,comp])
                 out = sum(apply(conf, 1, sum) - diag(conf)) / length(Y[omit])
             })
             
             #classification for each level of Y
             temp = lapply(test.predict.sw$class, function(x){
-                conf = get.confusion_matrix(Y.learn = Y[-omit], Y.test = Y[omit], pred = x[,comp])
+                conf = get.confusion_matrix(truth = Y[omit], all.levels = levels(Y), predicted = x[,comp])
                 out = (apply(conf, 1, sum) - diag(conf)) / summary(Y[omit])
             })
             for (ijk in dist)
@@ -258,19 +258,19 @@ progressBar = TRUE,
         # global results
         #BER
         global$BER[comp,] = sapply(class.comp, function(x){
-            conf = get.confusion_matrix(Y.learn = factor(Y), Y.test = factor(Y), pred = x)
+            conf = get.confusion_matrix(truth = factor(Y), predicted = x)
             get.BER(conf)
         })
         
         #overall
         global$overall[comp,] = sapply(class.comp, function(x){
-            conf = get.confusion_matrix(Y.learn = factor(Y), Y.test = factor(Y), pred = x)
+            conf = get.confusion_matrix(truth = factor(Y), predicted = x)
             out = sum(apply(conf, 1, sum) - diag(conf)) / length(Y)
         })
         
         #classification for each level of Y
         temp = lapply(class.comp, function(x){
-            conf = get.confusion_matrix(Y.learn = factor(Y), Y.test = factor(Y), pred = x)
+            conf = get.confusion_matrix(truth = factor(Y), predicted = x)
             out = (apply(conf, 1, sum) - diag(conf)) / summary(Y)
         })
         for (ijk in dist)

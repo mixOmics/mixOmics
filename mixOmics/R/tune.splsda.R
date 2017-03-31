@@ -322,7 +322,7 @@ cpus
             {
                 already.tested.X = c(already.tested.X, result[[measure]]$keepX.opt[[1]])
             } else {
-                fit = splsda(X, Y, ncomp = 1 + length(already.tested.X),
+                fit = mixOmics::splsda(X, Y, ncomp = 1 + length(already.tested.X),
                 keepX.constraint = already.tested.X, keepX = result[[measure]]$keepX.opt[[1]], near.zero.var = near.zero.var, mode = "regression")
                 
                 already.tested.X[[paste("comp",comp.real[comp],sep="")]] = selectVar(fit, comp = 1 + length(already.tested.X))$name
@@ -432,7 +432,7 @@ cpus
 
         for (i in 1:length(test.keepX))
         {
-            spls.train = splsda(X, Y, ncomp = ncomp, keepX = c(already.tested.X, test.keepX[i]), logratio = logratio, near.zero.var = FALSE, mode = "regression")
+            spls.train = mixOmics::splsda(X, Y, ncomp = ncomp, keepX = c(already.tested.X, test.keepX[i]), logratio = logratio, near.zero.var = FALSE, mode = "regression")
             
             # Note: this is performed on the full data set
             # (could be done with resampling (bootstrap) (option 1) and/or prediction (option 2))

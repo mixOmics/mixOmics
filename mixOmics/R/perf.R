@@ -208,7 +208,7 @@ progressBar = TRUE,
                 if(any(keepX.temp > sum(nzv)))
                 keepX.temp[which(keepX.temp>sum(nzv))] = sum(nzv)
                 
-                spls.res = spls(X.train[,nzv], Y.train, ncomp = ncomp, mode = mode, max.iter = max.iter, tol = tol, keepX = keepX.temp, keepY = keepY, near.zero.var = FALSE)
+                spls.res = mixOmics::spls(X.train[,nzv], Y.train, ncomp = ncomp, mode = mode, max.iter = max.iter, tol = tol, keepX = keepX.temp, keepY = keepY, near.zero.var = FALSE)
                 Y.hat = predict(spls.res, X.test[,nzv])$predict
                 if(sum(is.na(Y.hat))>0) break
                 for (k in 1:ncomp)

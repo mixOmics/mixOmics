@@ -192,7 +192,7 @@ scale)
             # confusion matrix for keepX.opt
             error.per.class.keepX.opt.comp[[ijk]] = apply(class.comp[[ijk]][, keepX.opt[[ijk]], drop = FALSE], 2, function(x)
             {
-                conf = get.confusion_matrix(Y.learn = factor(Y), Y.test = factor(Y), pred = x)
+                conf = get.confusion_matrix(truth = factor(Y), predicted = x)
                 out = (apply(conf, 1, sum) - diag(conf)) / summary(Y)
             })
             
@@ -226,7 +226,7 @@ scale)
                 omit = which(study %in% names.study[study_i])
                 error[study_i,] = apply(class.comp[[ijk]][omit,], 2, function(x)
                 {
-                    conf = get.confusion_matrix(Y.learn = factor(Y[-omit]), Y.test = factor(Y[omit]), pred = x)
+                    conf = get.confusion_matrix(truth = factor(Y[omit]), all.levels = levels(factor(Y)), predicted = x)
                     get.BER(conf)
                 })
             }
@@ -238,7 +238,7 @@ scale)
             # confusion matrix for keepX.opt
             error.per.class.keepX.opt.comp[[ijk]] = apply(class.comp[[ijk]][, keepX.opt[[ijk]], drop = FALSE], 2, function(x)
             {
-                conf = get.confusion_matrix(Y.learn = factor(Y), Y.test = factor(Y), pred = x)
+                conf = get.confusion_matrix(truth = factor(Y), predicted = x)
                 out = (apply(conf, 1, sum) - diag(conf)) / summary(Y)
             })
             
