@@ -2,9 +2,9 @@
 \encoding{latin1}
 \alias{background.predict}
 
-\title{Horizontal Partial Least Squares (PLS) integration}
+\title{Calculate prediction areas}
 
-\description{Integration of multiple data sets measured on the same samples, ie. Horizontal integration.}
+\description{Calculate prediction areas that can be used in plotIndiv to shade the background.}
 
 \usage{
 background.predict (object, comp.predicted = 1, dist = "max.dist",

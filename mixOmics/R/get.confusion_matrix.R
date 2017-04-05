@@ -45,7 +45,7 @@ get.confusion_matrix = function(truth, all.levels, predicted)
     if(missing(all.levels))
     all.levels = levels(truth)
     
-    print(all.levels)
+    #print(all.levels)
     
     nlevels.truth = length(all.levels)
     
