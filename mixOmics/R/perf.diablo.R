@@ -229,7 +229,7 @@ cpus,
         
         ### Start: Prediction (score / class) sample test
         # Prediction model on test dataset
-        predict.all[[nrep]] = lapply(1 : M, function(x) {predict(model[[x]], X.test[[x]], method = "all")})
+        predict.all[[nrep]] = lapply(1 : M, function(x) {predict(model[[x]], X.test[[x]], dist = "all")})
         
         # Retrieve class prediction
         Y.predict[[nrep]] = lapply(1 : M, function(x) {predict.all[[nrep]][[x]]$class})

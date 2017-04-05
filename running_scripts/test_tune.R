@@ -117,6 +117,32 @@ tt=tune(method="mint.splsda",X=data,Y=type.id,ncomp=2,near.zero.var=FALSE,study=
 plot(tt)
 
 
+# create a study with missing levels of Y to test tune.mint.splsda
+temp = table(exp,type.id)
+ind.remove = which(exp %in% c(3,4) & type.id == "Fibroblast") #removing fib from study 3,4
+
+X.temp = data[-ind.remove,]
+Y.temp = factor(type.id[-ind.remove])
+study.temp = exp[-ind.remove]
+
+res=mint.splsda(X=X.temp,Y=Y.temp,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=study.temp)
+tt=tune.mint.splsda(X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = TRUE,constraint=FALSE)
+
+
+# create a study with missing levels of Y to test tune.mint.splsda
+temp = table(exp,type.id)
+ind.remove = which(exp %in% c(2,3,4) & type.id == "Fibroblast") #removing fib from study 2,3,4
+
+X.temp = data[-ind.remove,]
+Y.temp = factor(type.id[-ind.remove])
+study.temp = exp[-ind.remove]
+
+res=mint.splsda(X=X.temp,Y=Y.temp,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=study.temp)
+tt=tune.mint.splsda(X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = TRUE,constraint=FALSE)
+
+
+
+
 if(FALSE)
 {
 # with the full data, to check that we get the same results: 2+15

@@ -197,7 +197,7 @@ background = NULL,
         names(background) = adjustcolor(col.per.group[ind.match],alpha.f=0.1)
     }
     
-    save(list = ls(), file = "temp.Rdata")
+    #save(list = ls(), file = "temp.Rdata")
 
     #call plot module (ggplot2, lattice, graphics, 3d)
     res = internal_graphicModule(df = df, centroid = centroid, col.per.group = col.per.group, title = title,
