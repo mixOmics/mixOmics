@@ -2,6 +2,7 @@
 # Author: Florian Rohart
 #purpose: test the background.predict function
 
+opar <- par(no.readonly = TRUE)
 
 library(mixOmics)
 data(breast.tumors)
@@ -64,3 +65,6 @@ for(j in 1:2)
     plotIndiv(plsda.liver, background = out,legend=T,title = paste0("mahalanobis.dist, pred.comp=",j))
 
 }
+
+par(opar)
+par(mfrow=c(1,1))

@@ -15,6 +15,24 @@ data = list(gene = nutrimouse$gene, outcome=Y, lipid = nutrimouse$lipid)
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 
 
+if(FALSE)
+{ #error
+    ind = c(which(Y == "coc"), c(4,9))
+    data = list(gene = nutrimouse$gene[ind,], outcome=factor(nutrimouse$diet[ind]), lipid = nutrimouse$lipid[ind,])
+    design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+
+    nutrimouse.sgccda <- wrapper.sgccda(X=data,
+    indY = 2,
+    design = design,
+    ncomp = 1,#c(2, 2),
+    scheme = "centroid",
+    verbose = FALSE,
+    bias = FALSE,
+    tol=1e-30)
+}
+
+
+
 nutrimouse.sgccda <- wrapper.sgccda(X=data,
 indY = 2,
 design = design,
@@ -48,7 +66,7 @@ design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 nutrimouse.sgccda <- wrapper.sgccda(X=data,
 Y = Y,
 design = design,
-keepX = list(gene=c(10,10), lipid=c(15,15)),
+#keepX = list(gene=c(10,10), lipid=c(15,15)),
 ncomp = 2,#c(2, 2),
 scheme = "centroid",
 verbose = FALSE,
@@ -71,22 +89,22 @@ bias = FALSE,
 tol=1e-30)
 
 set.seed(43)
-a=perf(nutrimouse.sgccda,nrepeat=3)
+a=perf(nutrimouse.sgccda,nrepeat=3, progressBar = FALSE)
 plot(a)
 
 set.seed(43)
-a2=perf(nutrimouse.sgccda,nrepeat=3, constraint = TRUE)
+a2=perf(nutrimouse.sgccda,nrepeat=3, constraint = TRUE, progressBar = FALSE)
 plot(a2)
 
 
 
 set.seed(43)
-a=perf(nutrimouse.sgccda)
+a=perf(nutrimouse.sgccda, progressBar = FALSE)
 plot(a)
 
 
 set.seed(43)
-a2=perf(nutrimouse.sgccda,cpus=4)
+a2=perf(nutrimouse.sgccda,cpus=4, progressBar = FALSE)
 
 
 res = all.equal(a[-which(names(a)=="call")],a2[-which(names(a2)=="call")])
@@ -147,10 +165,10 @@ plotVar(nutrimouse.sgccda, col = color.mixo(1:2), cex = c(2,2))
 
 # perf
 
-perf=perf(nutrimouse.sgccda)
+perf=perf(nutrimouse.sgccda, progressBar = FALSE)
 perf$features$stable
 
-perf=perf(nutrimouse.sgccda,validation="loo")
+perf=perf(nutrimouse.sgccda,validation="loo", progressBar = FALSE)
 perf$features$stable
 
 

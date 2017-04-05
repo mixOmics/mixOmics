@@ -146,8 +146,17 @@ data(breast.tumors)
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
 
-#acp = pca(X)
-#plotIndiv(acp)
+acp = pca(X)
+plotIndiv(acp)
+
+pch.input = c(rep(1:4,11),1,2,3)
+levels=c("a","ab","ca","adf")
+pch.levels=levels[pch.input]
+
+plotIndiv(acp,ind.names=FALSE,col=color.jet(47),pch=pch.input,pch.levels=pch.levels, legend=T)
+#quartz()
+plotIndiv(acp,ind.names=FALSE,group=1:47,col=color.jet(47),pch=pch.input,pch.levels=pch.levels, legend=T)
+
 
 splsda.breast <- splsda(X, Y,keepX=c(10,10),ncomp=2)
 

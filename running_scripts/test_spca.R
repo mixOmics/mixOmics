@@ -71,11 +71,11 @@ if(additional.test==TRUE)
     plotIndiv(liver.spca)
     
     #test keepX
-    liver.spca<- spca(liver.toxicity$gene, keepX = rep(50, 3))
+    liver.spca<- spca(liver.toxicity$gene, keepX = rep(50, 2))
     plotIndiv(liver.spca)
-    liver.spca<- spca(liver.toxicity$gene, keepX = rep(20, 3))
+    liver.spca<- spca(liver.toxicity$gene, keepX = rep(20, 2))
     plotIndiv(liver.spca)
-    liver.spca<- spca(liver.toxicity$gene, keepX = rep(5, 3))
+    liver.spca<- spca(liver.toxicity$gene, keepX = rep(5, 2))
     plotIndiv(liver.spca)
 }
 par(opar)
