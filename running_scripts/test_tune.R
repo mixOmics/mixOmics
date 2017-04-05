@@ -45,7 +45,6 @@ plot(tune)
 #source("mixOmics/R/MCVfold.R")
 
 
-
 data(vac18)
 X <- vac18$genes
 Y <- vac18$stimulation
@@ -139,6 +138,7 @@ study.temp = exp[-ind.remove]
 
 res=mint.splsda(X=X.temp,Y=Y.temp,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=study.temp)
 tt=tune.mint.splsda(X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = TRUE,constraint=FALSE)
+tt=tune(method="mint.splsda",X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = TRUE,constraint=FALSE)
 
 
 
