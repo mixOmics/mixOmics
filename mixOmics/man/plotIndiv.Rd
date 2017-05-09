@@ -124,7 +124,7 @@ In the case where \code{pch} is a vector or length the number of groups, then we
 In the similar case where \code{pch} is a single value, then this value is used to represent all samples. See examples below for object of class plsda and splsda.
 
 In the specific case of a single `omics supervised model (\code{\link{plsda}}, \code{\link{splsda}}), users can overlay prediction results to sample plots in order to visualise the prediction areas of each class, via the \code{background} input parameter.
-Note that this functionality is only available for models with less than 2 components as the surfaces obtained for higher order components cannot be projected onto a 2D representation in a meaningful way. For more details, see \code{\link{background}}
+Note that this functionality is only available for models with less than 2 components as the surfaces obtained for higher order components cannot be projected onto a 2D representation in a meaningful way. For more details, see \code{\link{background.predict}}
 
 
 For customized plots (i.e. adding points, text), use the style = 'graphics' (default is ggplot2).
@@ -134,7 +134,7 @@ Note: the ellipse options were borrowed from the \pkg{ellipse}.
 
 \author{Ignacio Gonzalez, Benoit Gautier, Francois Bartolo, Florian Rohart}
 
-\seealso{\code{\link{text}}, \code{\link{background}}, \code{\link{points}} and http://mixOmics.org/graphics for more details.}
+\seealso{\code{\link{text}}, \code{\link{background.predict}}, \code{\link{points}} and http://mixOmics.org/graphics for more details.}
 
 
 \examples{
@@ -180,14 +180,17 @@ keepY = c(10, 10, 10))
 #default
 plotIndiv(toxicity.spls)
 
-# two layers legend: created a first grouping with Time.Group and 'group' and a second with Dose.Group and 'pch'
+\dontrun{
+# two layers legend: a first grouping with Time.Group and 'group'
+# and a second with Dose.Group and 'pch'
 plotIndiv(toxicity.spls, rep.space="X-variate", ind.name = FALSE,
 group = liver.toxicity$treatment[, 'Time.Group'], # first factor
 pch = as.numeric(factor(liver.toxicity$treatment$Dose.Group)), #second factor
 pch.levels =liver.toxicity$treatment$Dose.Group, #levels of the second factor, for the legend
 legend = TRUE)
+}
 
-\dontrun{
+
 # indicating the centroid
 plotIndiv(toxicity.spls, rep.space= 'X-variate', ind.names = FALSE,
           group = liver.toxicity$treatment[, 'Time.Group'], centroid = TRUE)
@@ -209,7 +212,7 @@ plotIndiv(toxicity.spls, rep.space= 'X-variate', ind.names = FALSE,
     group = liver.toxicity$treatment[, 'Time.Group'],
     ind.names = liver.toxicity$treatment[, 'Dose.Group'],
     legend = TRUE)
-}
+
 
 ## plot of individuals for objects of class 'plsda' or 'splsda'
 # ----------------------------------------------------
@@ -221,6 +224,9 @@ splsda.breast <- splsda(X, Y,keepX=c(10,10),ncomp=2)
 
 # default option: note the outcome color is included by default!
 plotIndiv(splsda.breast)
+
+# also check ?background.predict for to visualise the prediction
+# area with a plsda or splsda object!
 
 
 \dontrun{
@@ -240,7 +246,8 @@ plotIndiv(splsda.breast)
     plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2),
     pch = c(15,16), legend = TRUE)
 
-    # creating a second grouping factor with a pch of length 3, which is recycled to obtain a vector of length n
+    # creating a second grouping factor with a pch of length 3,
+    #  which is recycled to obtain a vector of length n
     plotIndiv(splsda.breast, ind.names = FALSE, comp = c(1, 2),
     pch = c(15,16,17), legend = TRUE)
 

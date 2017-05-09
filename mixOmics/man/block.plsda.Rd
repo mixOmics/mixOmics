@@ -2,9 +2,9 @@
 \encoding{latin1}
 \alias{block.plsda}
 
-\title{Horizontal Partial Least Squares - Discriminant Analysis (PLS-DA) integration}
+\title{N-integration with Projection to Latent Structures models (PLS) with Discriminant Analysis}
 
-\description{Integration of multiple data sets measured on the same samples to classify a discrete outcome, ie. Horizontal Partial Least Squares - Discriminant Analysis (PLS-DA) integration.}
+\description{Integration of multiple data sets measured on the same samples or observations to classify a discrete outcome, ie. N-integration with Discriminant Analysis. The method is partly based on Generalised Canonical Correlation Analysis.}
 
 
 \usage{
@@ -94,7 +94,11 @@ Gunther O., Shin H., Ng R. T. , McMaster W. R., McManus B. M. , Keown P. A. , Te
 
 On multiple integration with sPLS-DA and 4 data blocks
 Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
-DIABLO - multi omics integration for biomarker discovery. BioRxiv available here: \url{http://biorxiv.org/content/early/2016/08/03/067611}
+DIABLO:  multi omics integration for biomarker discovery. BioRxiv available here: \url{http://biorxiv.org/content/early/2016/08/03/067611}
+
+mixOmics manuscript
+Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration. BioRxiv available here: \url{http://biorxiv.org/content/early/2017/02/14/108597}
+
 
 }
 

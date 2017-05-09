@@ -38,6 +38,13 @@ Also note that the white frontier that defines the predicted areas when plotting
 }
 
 
+\references{
+
+mixOmics manuscript
+Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration. BioRxiv available here: \url{http://biorxiv.org/content/early/2017/02/14/108597}
+}
+
+
 
 \author{Florian Rohart}
 
@@ -70,7 +77,7 @@ data(liver.toxicity)
 X = liver.toxicity$gene
 Y = as.factor(liver.toxicity$treatment[, 4])
 
-plsda.liver <- plsda(X, Y, ncomp = 4)
+plsda.liver <- plsda(X, Y, ncomp = 2)
 
 # calculating background for the two first components, and the mahalanobis distance
 background = background.predict(plsda.liver, comp.predicted = 2, dist = "mahalanobis.dist")

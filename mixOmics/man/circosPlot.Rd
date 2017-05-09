@@ -49,11 +49,20 @@ If \code{ncomp} is specified, then only the variables selected on that component
 }
 
 
+\value{
+If saved in an object, the circos plot will output the similarity matrix and the names of the variables displayed on the plot (see \code{attributes(object)}).
+}
+
+
 
 
 \references{
 Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
-DIABLO - multi omics integration for biomarker discovery.  BioRxiv \url{http://dx.doi.org/10.1101/067611}
+DIABLO:  multi omics integration for biomarker discovery. BioRxiv available here: \url{http://biorxiv.org/content/early/2016/08/03/067611}
+
+mixOmics manuscript:
+Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration. BioRxiv available here: \url{http://biorxiv.org/content/early/2017/02/14/108597}
+
 
 Gonzalez I., Le Cao K.A., Davis M.J., Dejean S. (2012). Visualising associations between
 paired 'omics' data sets. \emph{BioData Mining}; \bold{5}(1).
@@ -62,7 +71,7 @@ paired 'omics' data sets. \emph{BioData Mining}; \bold{5}(1).
 
 \author{Michael Vacher, Amrit Singh, Florian Rohart, Kim-Anh Le Cao}
 
-\seealso{\code{\link{block.splsda}} and http://www.mixOmics.org/mixDIABLO for more details.}
+\seealso{\code{\link{block.splsda}}, references and http://www.mixOmics.org/mixDIABLO for more details.}
 
 \examples{
 data(nutrimouse)

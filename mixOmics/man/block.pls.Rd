@@ -2,9 +2,9 @@
 \encoding{latin1}
 \alias{block.pls}
 
-\title{Horizontal Partial Least Squares (PLS) integration}
+\title{N-integration with Projection to Latent Structures models (PLS)}
 
-\description{Integration of multiple data sets measured on the same samples, ie. Horizontal integration.}
+\description{Integration of multiple data sets measured on the same samples or observations, ie. N-integration. The method is partly based on Generalised Canonical Correlation Analysis. }
 
 \usage{
 block.pls(X,

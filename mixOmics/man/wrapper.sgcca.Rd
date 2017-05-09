@@ -90,8 +90,11 @@ that contains the following components:
 \seealso{\code{\link{wrapper.sgcca}}, \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{wrapper.rgcca}} and \url{http://www.mixOmics.org} for more details.}
 
 \examples{
+\dontrun{
 data(nutrimouse)
-# need to unmap the Y factor diet
+# need to unmap the Y factor diet if you pretend this is not a classification pb.
+# see also the function block.splsda for discriminant analysis  where you dont
+# need to unmap Y.
 Y = unmap(nutrimouse$diet)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 # with this design, gene expression and lipids are connected to the diet factor
@@ -112,6 +115,7 @@ wrap.result.sgcca = wrapper.sgcca(X = data, design = design, penalty = c(.3,.5, 
 wrap.result.sgcca
 #did the algo converge?
 wrap.result.sgcca$crit  # yes
+}
 }
 
 
