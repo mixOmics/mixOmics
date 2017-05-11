@@ -59,7 +59,7 @@ multiplied by the rotation/loadings matrix), also called the principal component
 }
 
 \references{
-Rohart F, Eslami A, Matigian, N, Bougeard S, Le Cao K-A (2017). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. BMC Bioinformatics 18:128.
+Rohart F, Eslami A, Matigian, N, Bougeard S, Le Cao K-A (2017). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. BMC Bioinformatics 18:128.
 
 Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2014). Algorithms for multi-group PLS. J. Chemometrics, 28(3), 192-201.
 }

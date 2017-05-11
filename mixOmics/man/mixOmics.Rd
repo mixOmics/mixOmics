@@ -83,7 +83,7 @@ Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feat
 
 
 MINT models:
-Rohart F, Eslami A, Matigian, N, Bougeard S, Le Cao K-A (2017). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. BMC Bioinformatics 18:128.
+Rohart F, Eslami A, Matigian, N, Bougeard S, Le Cao K-A (2017). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. BMC Bioinformatics 18:128.
 
 Multi-group PLS
 Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2013). Multi-group PLS Regression: Application to Epidemiology.
