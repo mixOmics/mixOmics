@@ -33,12 +33,13 @@ Now setup wordpress details
 # Set your WP username, password, and your site URL
 options(WordpressLogin = c(your.username = 'your.password'), #update these
         WordpressURL = 'https://mixomics.org/xmlrpc.ph')
+# note from KA: I had an issue with an SSL connection and changed to  'http://mixomics.org/xmlrpc.php'
 ```
 #Step 4
 Post a new blog post 
 ```{r}
 knit2wp(input = 'your Rmd File.Rmd', title = 'The title of your post',shortcode = FALSE ,publish = FALSE)
-
+# also note the option action = c("newPage") which I recommend (KA)
 #publish = FALSE this keeps the post as a draft so you can check it on wordpress before publishing 
 ```
 
