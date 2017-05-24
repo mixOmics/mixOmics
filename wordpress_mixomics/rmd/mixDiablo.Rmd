@@ -1,6 +1,6 @@
 ---
 title: "mixDIABLO"
-date: "22 November 2016"
+date: "24 May 2017"
 output:
   html_document:
     code_folding: show
@@ -14,7 +14,7 @@ knitr::opts_chunk$set(dpi = 100, echo= FALSE, warning=FALSE, message=FALSE, #dev
                       fig.show=TRUE, fig.keep = 'all', fig.width= 6)
 ```
 
-**mixDIABLO** is a novel mixOmics framework for the integration of multiple data sets in a supervised analysis. DIABLO stands for Data Integration Analysis for Biomarker discovery using Latent variable approaches for Omics studies.
+**mixDIABLO** is our novel mixOmics framework for the integration of multiple data sets in a supervised analysis. DIABLO stands for Data Integration Analysis for Biomarker discovery using Latent variable approaches for ‘Omics studies.
 
 ```{r, out.width = "400px"}
 knitr::include_graphics("Images/diabloframework.png")
@@ -22,7 +22,7 @@ knitr::include_graphics("Images/diabloframework.png")
 
 # Context
 
-The integration of multiple ‘omics data sets is topical to study biological systems. Such analysis aims to extract complementary information from several data sets measured on the same N individuals (or biological samples) but across multiple data sets generated using different (omics) platforms, to gain a better understanding of the interplay between the different levels of data that are measured. We call our generic framework ‘N-integration‘.
+The integration of multiple ‘omics data sets is topical to study biological systems. Such analysis aims to extract complementary information from several data sets measured on the same N individuals (or biological samples) but across multiple data sets generated using different (omics) platforms, to gain a better understanding of the interplay between the different levels of data that are measured. We call our generic framework ‘N-integration' (as opposed to P-integration, see [mixMINT](http://mixomics.org/mixmint/)).
 
 ```{r, out.width = "400px"}
 knitr::include_graphics("Images/Nintegration.png")
@@ -30,15 +30,27 @@ knitr::include_graphics("Images/Nintegration.png")
 
 # Background
 
-The core DIABLO method builds on the Generalised Canonical Correlation Analysis [1], (R package RGCCA) which contrary to what its name suggests, generalises PLS for multiple matching datasets,  and the sparse sGCCA method [2]. The aim is to identify correlated (or co-expressed) variables measured on heterogeneous data sets which also explain the categorical outcome of interest (supervised analysis). The multiple data integration task is not easy, as the analysis can be strongly affected by the variation between manufacturers or ‘omics technological platforms despite being measured on the same biological samples.
+The core DIABLO method builds on the Generalised Canonical Correlation Analysis [1], which contrary to what its name suggests, generalises PLS for multiple matching datasets,  and the sparse sGCCA method [2]. Starting from the R package RGCCA from Tenenhaus et al, we subtantially improved the method and code for different types of analyses, including unsupervised N-integration ( <tt>block.pls</tt>,  <tt>block.spls</tt>) and supervised analyses ( <tt>block.plsda</tt>,  <tt>block.splsda</tt>).
+
+The aim of N-integration with our sparse methods is to identify correlated (or co-expressed) variables measured on heterogeneous data sets which also explain the categorical outcome of interest (supervised analysis). The multiple data integration task is not trivial, as the analysis can be strongly affected by the variation between manufacturers or ‘omics technological platforms despite being measured on the same biological samples. In addition, to avoid a 'fishing omics expedition', it is better to analyse each data separately first to understand well where the major sources of variation come from, and also to guide specifically the integration process.
 
 In a preliminary study [3] we integrated transcriptomics and proteomics data in a kidney rejection study, while explaining the rejection status of the patients.
 
 # mixDIABLO method
 
-We further extended sGCCA for Discriminant Analysis, substantially improved the  R code and developed innovative graphical outputs to interpret the DIABLO results, which we present in the next page (see tabs).
+We further extended sGCCA for Discriminant Analysis, substantially improved the  R code and developed innovative graphical outputs to interpret the DIABLO results, which we present in the next page (see [tab](http://mixomics.org/mixdiablo/example-of-mixdiablo-analysis/)).
 
-Our [manuscript](https://scholar.google.com/scholar_url?url=http://www.biorxiv.org/content/biorxiv/early/2016/08/03/067611.full.pdf&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=9PJFWKrBEZCxmAGFmYKQBg&scisig=AAGBfm3iG_i1eg3qvaDrd8JOciOvicXIRw) is a collaborative work between the core team (Drs Florian Rohart, Kim-Anh Lê Cao), key contributors (Amrit Singh, Benoît Gautier) as a result of a long term collaboration with University of British Columbia. Feel free to contact us at mixomics [at] math.univ-toulouse.fr if you have any questions.
+Our [manuscript](https://scholar.google.com/scholar_url?url=http://www.biorxiv.org/content/biorxiv/early/2016/08/03/067611.full.pdf&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=9PJFWKrBEZCxmAGFmYKQBg&scisig=AAGBfm3iG_i1eg3qvaDrd8JOciOvicXIRw) is a collaborative work between the core team (Drs Florian Rohart, Kim-Anh Lê Cao), key contributors (Dr Amrit Singh, Benoît Gautier) as a result of a long term collaboration with University of British Columbia. 
+
+
+# What is next?
+The manuscript is still in progress as we are including additional examples. 
+
+After discussion with several users (thank you!), we may extend our N-integration framework to the [Multi-Block PLS](https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/bts476) and whose [algorithms](http://onlinelibrary.wiley.com/doi/10.1002/cem.652/abstract) differs from our DIABLO method.
+
+We are also investigating an N-integration method based on kernels (see our [example here with mixKernel](http://mixomics.org/mixkernel/)), which has currently been developed for unsupervised analysis.
+
+Feel free to contact us at mixomics [at] math.univ-toulouse.fr if you have any questions or comments.
 
 # References
 
