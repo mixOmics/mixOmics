@@ -1,10 +1,10 @@
 ---
 title: "mixOmics 6.1.2"
 author: "F.Rohart"
-date: "23 January 2017"
+date: "25 January 2017"
 output: pdf_document
 ---
-```{r global_options, include=TRUE,echo=TRUE}
+```{r global_options, include=TRUE,echo=FALSE}
 rm(list=ls())
 #setwd("~/Work/git/package-mixOmicsv6")
 
@@ -30,17 +30,6 @@ library(knitr)
 
 This go through all the scripts in "running_scripts/" and outputs graphics and errors, if any. 
 
-```{r,echo=TRUE,fig.width=8, fig.height=6,include=FALSE,eval=FALSE}
-library(mixOmics)
-
-source("mixOmics/R/plotContrib.R")
-scripts.files=list.files("running_scripts/")
-scripts.files=scripts.files[grep(".R",scripts.files)]
-
-source("running_scripts//test_plotContrib.R")
-library(knitr)
-```
-
 
 ```{r,fig.width=8.5, fig.height=7}
 library(mixOmics)
@@ -54,7 +43,7 @@ additional.test=TRUE
 #source("running_scripts//test_plotContrib.R")
 
 scripts.files=list.files("running_scripts/")
-scripts.files=scripts.files[grep(".R",scripts.files)][1]#[1:15]#[c(3,4,5,8,15,16,17,20,22)]
+scripts.files=scripts.files[grep(".R",scripts.files)]#[1:15]#[c(3,4,5,8,15,16,17,20,22)]
 scripts.files
 
 out=lapply(1:length(scripts.files),function(x){print(scripts.files[x]);try(suppressMessages(source(paste0("running_scripts/",scripts.files[x]))),silent=TRUE)})

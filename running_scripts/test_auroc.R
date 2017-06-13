@@ -400,7 +400,7 @@ for(validation in c("Mfold","loo"))
 {
   for(nrepeat in 1:2)
   {
-    print(paste("validation ",validation, "nrepeat", nrepeat, "\n"))
+      #print(paste("validation ",validation, "nrepeat", nrepeat, "\n"))
     e<-perf(res.plsda,dist = c("max.dist"), auc = TRUE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
     e<-perf(res.plsda,dist = c("max.dist"),
             auc = FALSE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
@@ -421,7 +421,7 @@ for(validation in c("Mfold","loo"))
 {
   for(nrepeat in 1:2)
   {
-    print(paste("validation ",validation, "nrepeat", nrepeat, "\n"))
+      #print(paste("validation ",validation, "nrepeat", nrepeat, "\n"))
     e<-perf(res.plsda,dist = c("max.dist"),
             auc = TRUE,validation = validation,nrepeat=nrepeat, progressBar = FALSE)
     e<-perf(res.plsda,dist = c("max.dist"),
@@ -586,14 +586,23 @@ e<-perf(res.plsda,dist = c("mahalanobis.dist"),
         constraint = FALSE,auc = FALSE, progressBar = FALSE)
 
 
+
+
 ############################ simulating data to check AUC <0.5
 
 X = matrix(rnorm(50*100), nrow=50)
 Y = factor(c(rep("a",25),rep("b",25)))
 
 mod = plsda(X,Y,ncomp=2)
-cv <- perf(mod, validation = "loo", auc = TRUE)
+cv <- perf(mod, validation = "loo", auc = TRUE, progressBar = FALSE)
+
+par(opar)
+par(mfrow=c(1,1))
+par(new=FALSE)
+plot(1:10)
+plot(1:10)
 
 cv$auc #should be <0.5
 if(cv$auc[[2]][1]>=0.5)
 stop("random AUC should be less than 0.5. This is a extra check -see last line of R code")
+
