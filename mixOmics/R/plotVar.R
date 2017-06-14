@@ -550,7 +550,7 @@ label.axes.box = "both"  )
         df = df[abs(df$x) > cutoff | abs(df$y) > cutoff | abs(df$z) > cutoff, ,drop = FALSE]
         else
         df = df[abs(df$x) > cutoff | abs(df$y) > cutoff, ,drop = FALSE]
-        ind.group = c(0, cumsum(table(df$Block)))
+        ind.group = c(0, cumsum(table(df$Block)[unique(df$Block)])) # add unique to have names of cumsum matching the order of the blocks in df
     }
     
     if (nrow(df) == 0)
