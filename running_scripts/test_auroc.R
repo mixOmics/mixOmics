@@ -469,6 +469,11 @@ A.light=list(X=data.light,Y=Y.mat.light)
 
 res.plsda=mint.splsda(X=data,Y=type.id,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=exp)
 
+
+auroc(res.plsda,plot = TRUE,roc.comp = 1)
+auroc(res.plsda,plot = TRUE,roc.comp = 1, roc.study = 3)
+
+
 e<-perf(res.plsda,dist = c("max.dist"),
         constraint = TRUE,auc = FALSE, progressBar = FALSE)
 e<-perf(res.plsda,dist = c("max.dist"),
