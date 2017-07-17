@@ -35,7 +35,6 @@
 
 perf.sgccda = function (object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
-constraint = FALSE,
 validation = c("Mfold", "loo"),
 folds = 10,
 nrepeat = 1,
@@ -77,7 +76,10 @@ cpus,
         
     }
     
+    
     #-- tells which variables are selected in the blocks --#
+    
+    constraint = FALSE # kept in the code so far, will probably get remove later on
     if(constraint)
     {
         loadingsX = object$loadings[-object$indY]

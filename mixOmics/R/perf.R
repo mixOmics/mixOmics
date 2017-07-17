@@ -354,7 +354,6 @@ progressBar = TRUE,
 # ---------------------------------------------------
 perf.splsda = perf.plsda = function(object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
-constraint = FALSE,
 validation = c("Mfold", "loo"),
 folds = 10,
 nrepeat = 1,
@@ -379,6 +378,7 @@ cpus,
     multilevel = object$multilevel # repeated measurement and Y
     near.zero.var = !is.null(object$nzv) # if near.zero.var was used, we set it to TRUE. if not used, object$nzv is NULL
     
+    constraint = FALSE # kept in the code so far, will probably get remove later on
     if(any(class(object) == "plsda") & constraint == TRUE)
     {
         constraint = FALSE #no need as all variable will be included
@@ -572,7 +572,7 @@ cpus,
         # estimate performance of the model for each component
         result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = comp,
         choice.keepX = if(constraint){NULL}else{choice.keepX},
-        choice.keepX.constraint = if(constraint){choice.keepX.constraint}else{NULL},
+        #choice.keepX.constraint = if(constraint){choice.keepX.constraint}else{NULL},
         test.keepX = test.keepX, measure = measure, dist = dist, near.zero.var = near.zero.var,
         auc = auc, progressBar = progressBar, class.object = class(object), cl = cl)
 

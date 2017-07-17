@@ -349,7 +349,7 @@ label.axes.box = "both"  )
     # output a message if some variates are anti correlated among blocks
     if (any(class.object %in%  object.blocks))
     {
-        VarX = lapply(comp, function(j){do.call(cbind, lapply(object$variates, function(i) i[, comp[j]]))})
+        VarX = lapply(1:2, function(j){do.call(cbind, lapply(object$variates, function(i) i[, comp[j]]))})
         corX = lapply(VarX, cor)
         if(any(sapply(corX, function(j){any(j < 0)})))
         warning("We detected negative correlation between the variates of some blocks, which means that some clusters of variables observed on the correlation circle plot are not necessarily positively correlated.")

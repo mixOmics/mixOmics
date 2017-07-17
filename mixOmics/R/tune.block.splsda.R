@@ -53,7 +53,6 @@ indY,
 ncomp = 2,
 test.keepX,
 already.tested.X,
-constraint = FALSE, #if TRUE, expect a list in already.tested.X, otherwise a number(keepX)
 validation = "Mfold",
 folds = 10,
 dist = "max.dist",
@@ -153,6 +152,9 @@ name.save = NULL)
     
     
     #-- already.tested.X
+    constraint = FALSE # kept in the code so far, will probably get remove later on
+    #if TRUE, expect a list in already.tested.X, otherwise a number(keepX)
+
     if (missing(already.tested.X))
     {
         if(constraint == TRUE)
@@ -181,7 +183,7 @@ name.save = NULL)
             #print(paste("A total of",lapply(already.tested.X, function(x){sapply(x,length)}),collapse=" "),"specific variables ('already.tested.X') were selected on the first ", length(already.tested.X[[1]]), "component(s)"))
         } else {
             if(any(sapply(already.tested.X, function(x) is.list(x))) == TRUE)
-            stop(" Each entry of 'already.tested.X' must be a vector of keepX values since 'constraint' is set to FALSE")
+            stop(" Each entry of 'already.tested.X' must be a vector of keepX values")# since 'constraint' is set to FALSE")
             
             #print(paste("Number of variables selected on the first", length(already.tested.X), "component(s):", paste(already.tested.X,collapse = " ")))
         }
@@ -438,7 +440,7 @@ name.save = NULL)
             error.rate.sd = mat.sd.error,
             error.rate.all = mat.error.rate,
             choice.keepX = if(constraint){lapply(already.tested.X, function(x){sapply(x,length)})}else{already.tested.X},
-            choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
+            #choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
             error.rate.class = error.per.class.keepX.opt)
             
             result$measure = measure.input
@@ -473,7 +475,7 @@ name.save = NULL)
     error.rate.sd = mat.sd.error,
     error.rate.all = mat.error.rate,
     choice.keepX = if(constraint){lapply(already.tested.X, function(x){sapply(x,length)})}else{already.tested.X},
-    choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
+    #choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
     error.rate.class = error.per.class.keepX.opt)
     
     result$measure = measure.input
