@@ -25,11 +25,11 @@ PLS-DA, sparse PLS-DA, MINT (mint.splsda) and DIABLO (block.splsda) models using
 
 \method{perf}{plsda}(object,
           dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
-          constraint = FALSE, validation = c("Mfold", "loo"), 
+          validation = c("Mfold", "loo"),
           folds = 10, nrepeat =1, auc = FALSE, progressBar = TRUE, cpus, \ldots)
 
 \method{perf}{splsda}(object, 
-dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), constraint = FALSE,
+dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
 validation = c("Mfold", "loo"),
 folds = 10, nrepeat =1, auc = FALSE, progressBar = TRUE, cpus, \ldots)
 
@@ -39,7 +39,7 @@ folds = 10, nrepeat =1, auc = FALSE, progressBar = TRUE, cpus, \ldots)
 
 \method{perf}{sgccda}(object,
             dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
-            constraint = FALSE, validation = c("Mfold", "loo"),
+            validation = c("Mfold", "loo"),
             folds = 10, nrepeat =1, cpus, \ldots)
 
 }
@@ -48,7 +48,7 @@ folds = 10, nrepeat =1, auc = FALSE, progressBar = TRUE, cpus, \ldots)
   \item{object}{object of class inheriting from \code{"pls"}, \code{"plsda"},
     \code{"spls"}, \code{"splsda"} or  \code{"mint.splsda"}. The function will retrieve some key parameters stored in that object.}
 \item{dist}{only applies to an object inheriting from \code{"plsda"}, \code{"splsda"} or \code{"mint.splsda"} to evaluate the classification performance of the model. Should be a subset of \code{"max.dist"}, \code{"centroids.dist"}, \code{"mahalanobis.dist"}. Default is \code{"all"}. See \code{\link{predict}}.}
-\item{constraint}{Indicate whether the performance of the model should be evaluated w.r.t the number of variables selected (keepX, default constraint = FALSE) or w.r.t the specific variables selected by the model (keepX.constraint, constraint = TRUE). See details. }
+\item{constraint}{Indicate whether the performance of the model should be evaluated w.r.t the number of variables selected (keepX, constraint = FALSE) or w.r.t the specific variables selected by the model (keepX.constraint, constraint = TRUE). See details. }
 \item{validation}{character.  What kind of (internal) validation to use, matching one of \code{"Mfold"} or
     \code{"loo"} (see below). Default is \code{"Mfold"}.}
   \item{folds}{the folds in the Mfold cross-validation. See Details.}
@@ -81,7 +81,7 @@ Sparse methods. The sPLS, sPLS-DA and sgccda functions are run on several and di
 Note that for PLS-DA and sPLS-DA objects, perf is performed on the original data, i.e. before the pre-processing step of the log ratio transform and multilevel analysis, if any. In addition for these methods, the classification error rate is averaged across all folds.
 
 
-Constraint model. To improve performance, a constraint model is now implemented (\code{constraint=TRUE)}. The performance is assessed on same list of selected features from the previous components in the different CV folds, as opposed to considering only the number of features. Our experience has shown that the constraint model can improve the performance of the methods.
+Constraint model. The performance is assessed on same list of selected features from the previous components in the different CV folds, as opposed to considering only the number of features. Our experience has shown that the constraint model can improve the performance of the methods with the MINT approach.
 
 
 The mint.sPLS-DA function estimates errors based on Leave-one-group-out cross validation (where each levels of object$study is left out (and predicted) once) and provides study-specific outputs (\code{study.specific.error}) as well as global outputs (\code{global.error}).

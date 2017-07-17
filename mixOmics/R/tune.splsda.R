@@ -50,7 +50,6 @@ tune.splsda = function (X, Y,
 ncomp = 1,
 test.keepX = c(5, 10, 15),
 already.tested.X,
-constraint = FALSE, #if TRUE, expect a list in already.tested.X, otherwise a number(keepX)
 validation = "Mfold",
 folds = 10,
 dist = "max.dist",
@@ -143,6 +142,7 @@ cpus
     #if ((!is.null(already.tested.X)) && (length(already.tested.X) != (ncomp - 1)) )
     #stop("The number of already tested parameters should be NULL or ", ncomp - 1, " since you set ncomp = ", ncomp)
     
+    constraint = FALSE # kept in the code so far, will probably get remove later on
     if (missing(already.tested.X))
     {
         if(constraint == TRUE)
@@ -396,7 +396,7 @@ cpus
         error.rate.sd = mat.sd.error,
         error.rate.all = mat.error.rate,
         choice.keepX = if(constraint){sapply(already.tested.X, length)}else{already.tested.X},
-        choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
+        #choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
         choice.ncomp = list(ncomp = ncomp_opt, values = error.keepX),
         error.rate.class = error.per.class.keepX.opt.mean,
         error.rate.class.all = error.per.class.keepX.opt)

@@ -11,6 +11,7 @@
 #######################################################################################################
 opar <- par(no.readonly = TRUE)
 
+progressBar = FALSE
 
 # splsda
 # ----
@@ -28,8 +29,6 @@ tune= tune.splsda(X,Y,ncomp=4,nrepeat=5,logratio="none",test.keepX = seq(1,100,5
 
 
 tune= tune.splsda(X,Y,ncomp=3,nrepeat=5,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist", progressBar = FALSE, already.tested.X = c(5,10))
-
-tune= tune.splsda(X,Y,ncomp=3,nrepeat=5,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist", progressBar = FALSE, already.tested.X = list(comp1=c(5,10)), constraint=TRUE)
 
 
 tune= tune.splsda(X,Y,ncomp=3,nrepeat=5,logratio="none",test.keepX = c(5, 10, 15),folds=10,dist="max.dist", progressBar = FALSE, light.output=FALSE)
@@ -59,24 +58,15 @@ keepX = c(30, 137, 123))
 tune= tune.splsda(X,Y=design[,2],ncomp=3,nrepeat=5,logratio="none",test.keepX = c(5,50,100),folds=10,dist="max.dist", progressBar = FALSE, multilevel = design[,1])
 
 tune= tune.splsda(X,Y=design[,2],ncomp=3,nrepeat=5,logratio="none",test.keepX = c(5,10,15),folds=10,dist="max.dist", progressBar = FALSE, multilevel = design[,1])
-
-tune= tune.splsda(X,Y=design[,2],ncomp=3,nrepeat=5,logratio="none",test.keepX = c(5,10,15),folds=10,dist="max.dist", progressBar = FALSE, multilevel = design[,1],constraint=FALSE)
 tune$choice.keepX
-tune$choice.keepX.constraint
 
-tune= tune.splsda(X,Y=design[,2],ncomp=3,nrepeat=5,logratio="none",test.keepX = c(5,10,15),folds=10,dist="max.dist", progressBar = FALSE, multilevel = design[,1],constraint=TRUE)
-tune$choice.keepX
-tune$choice.keepX.constraint
 
-tune= tune.splsda(X,Y=design[,2],ncomp=3,nrepeat=5,logratio="none",test.keepX = c(5,10,15),folds=10,dist="max.dist",already.tested.X=c(5,10), progressBar = FALSE, multilevel = design[,1],constraint=FALSE)
+tune= tune.splsda(X,Y=design[,2],ncomp=3,nrepeat=5,logratio="none",test.keepX = c(5,10,15),folds=10,dist="max.dist",already.tested.X=c(5,10), progressBar = FALSE, multilevel = design[,1])
 tune$choice.keepX
-tune$choice.keepX.constraint
 
 
 # justified error
 #tune= tune.splsda(X,Y=design[,2],ncomp=3,nrepeat=5,logratio="none",test.keepX = c(5,10,15),folds=10,dist="max.dist",already.tested.X=c(5,10), progressBar = FALSE, multilevel = design[,1],constraint=TRUE)
-
-tune= tune.splsda(X,Y=design[,2],ncomp=3,nrepeat=5,logratio="none",test.keepX = c(5,10,15),folds=10,dist="max.dist",already.tested.X=list(compA=c(1,3,6)), progressBar = FALSE, multilevel = design[,1],constraint=TRUE)
 
 plot(tune)
 
@@ -108,7 +98,7 @@ plot(out,study="global", overlay="measure")
 plot(out,study="1", overlay="measure")
 
 
-tt=tune.mint.splsda(X=data,Y=type.id,ncomp=2,near.zero.var=FALSE,study=exp,test.keepX=seq(1,100,10), progressBar = FALSE,constraint=FALSE)
+tt=tune.mint.splsda(X=data,Y=type.id,ncomp=2,near.zero.var=FALSE,study=exp,test.keepX=seq(1,100,10), progressBar = FALSE)
 
 
 tt=tune(method="mint.splsda",X=data,Y=type.id,ncomp=2,near.zero.var=FALSE,study=exp,test.keepX=seq(1,10,1), progressBar = FALSE)
@@ -125,7 +115,7 @@ Y.temp = factor(type.id[-ind.remove])
 study.temp = exp[-ind.remove]
 
 res=mint.splsda(X=X.temp,Y=Y.temp,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=study.temp)
-tt=tune.mint.splsda(X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = TRUE,constraint=FALSE)
+tt=tune.mint.splsda(X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = progressBar,constraint=FALSE)
 
 
 # create a study with missing levels of Y to test tune.mint.splsda
@@ -137,8 +127,8 @@ Y.temp = factor(type.id[-ind.remove])
 study.temp = exp[-ind.remove]
 
 res=mint.splsda(X=X.temp,Y=Y.temp,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=study.temp)
-tt=tune.mint.splsda(X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = TRUE,constraint=FALSE)
-tt=tune(method="mint.splsda",X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = TRUE,constraint=FALSE)
+tt=tune.mint.splsda(X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = progressBar,constraint=FALSE)
+tt=tune(method="mint.splsda",X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = progressBar,constraint=FALSE)
 
 
 

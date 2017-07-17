@@ -126,7 +126,6 @@ light.output = TRUE # mint, splsda
             ncomp = ncomp,
             test.keepX = test.keepX,
             already.tested.X = already.tested.X,
-            constraint = constraint,
             validation = validation,
             folds = folds,
             dist = dist ,
@@ -147,7 +146,7 @@ light.output = TRUE # mint, splsda
             multilevel = multilevel,
             ncomp = ncomp, test.keepX = test.keepX, dist = dist,
             already.tested.X = already.tested.X,
-            constraint = constraint, validation = validation, folds = folds,
+            validation = validation, folds = folds,
             measure = measure, auc = auc,
             progressBar = progressBar, near.zero.var = near.zero.var,
             logratio = logratio, nrepeat = nrepeat)
