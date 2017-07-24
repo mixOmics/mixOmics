@@ -4,7 +4,7 @@ Changes in 6.2.0 (improvements and bug fixes)
 
 New features:
 -------------
-Removal of the constraint argument for perf.plsda, perf.splsda, perf.diablo, tune, tune.block.splsda, tune.multilevel, tune.splsda, 
+Removal of the constraint argument for perf.plsda, perf.splsda, perf.diablo, tune.block.splsda, tune.multilevel, tune.splsda, 
 
 Enhancements:
 -------------
