@@ -42,9 +42,9 @@ multilevel, \ldots)
 
 \details{
 \code{predict} produces predicted values, obtained by evaluating the PLS-derived methods, returned by \code{(mint).(block).(s)pls(da)} in the frame \code{newdata}.
-Variates for \code{newdata} are also returned. Please note that this method does not perform multilevel decomposition or log ratio transformations, which need to be processed beforehand.
+Variates for \code{newdata} are also returned. Please note that this method performs multilevel decomposition and/or log ratio transformations if needed (\code{multilevel} is an input parameter while \code{logratio} is extracted from \code{object}).
 
-Different prediction distances are proposed for discriminant analysis. The reason is that our supervised models work with a dummy indicator matrix of \code{Y} to indicate the class membership of each sample and the prediction on a new observation results in a prediction score for each outcome category (see output \code{object$predict}). Therefore, the scores across all classes need to be combined to obtain the final prediction of a given test sample using a distance of some sort. We propose distances such as `maximum distance', `Mahalanobis distance' and `Centroids distance'.
+Different prediction distances are proposed for discriminant analysis. The reason is that our supervised models work with a dummy indicator matrix of \code{Y} to indicate the class membership of each sample and the prediction on a new observation results in a prediction score for each outcome category and each component of the model (see output \code{object$predict}). Therefore, for a given component, the scores across all classes need to be combined to obtain the final prediction of a given test sample using a distance of some sort. We propose distances such as `maximum distance', `Mahalanobis distance' and `Centroids distance'.
 
 \code{"max.dist"} is the simplest method to predict the class of a test sample. For each new individual, the class with the largest predicted score is the predicted class.
 

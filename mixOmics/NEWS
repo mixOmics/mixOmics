@@ -1,4 +1,16 @@
 
+Changes in 6.2.0 (improvements and bug fixes)
+================
+
+New features:
+-------------
+Removal of the constraint argument for perf.plsda, perf.splsda, perf.diablo, tune.block.splsda, tune.multilevel, tune.splsda, 
+
+Enhancements:
+-------------
+add a ROC per study output for MINT objects, auroc( .., roc.study = "study4") 
+
+
 
 Changes in 6.1.3 (patch and enhancements)
 ================
