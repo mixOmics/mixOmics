@@ -8,7 +8,7 @@ Removal of the constraint argument for perf.plsda, perf.splsda, perf.diablo, tun
 
 Enhancements:
 -------------
-add a ROC per study for MINT object (auroc( .., roc.study = "study4")) 
+add a ROC per study output for MINT objects, auroc( .., roc.study = "study4") 
 
 
 
