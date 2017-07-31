@@ -455,7 +455,7 @@ name.save = NULL)
         
         if (progressBar ==  TRUE)
         setTxtProgressBar(pb, 1)
-        save(list=ls(),file="temp.Rdata")
+        #save(list=ls(),file="temp.Rdata")
 
         error.opt.per.comp[,comp] = mat.error.rate[[comp]][min.keepX[ind.opt],]
 
