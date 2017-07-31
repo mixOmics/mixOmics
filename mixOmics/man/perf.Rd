@@ -129,6 +129,7 @@ For sgccda models, \code{perf} produces the following outputs:
 \item{WeightedVote}{if more than one block, returns the weighted majority class over the blocks. NA for a sample means that there is no consensus on the predicted class for this particular sample over the blocks.}
 \item{WeightedVote.error.rate}{if more than one block, returns the error rate of the \code{WeightedVote} output}
 \item{weights}{Returns the weights of each block used for the weighted predictions, for each nrepeat and each fold}
+\item{choice.ncomp}{For sPLS-Da models; returns the optimal number of components for the model for each prediction distance. For more thatn on block, an optimal ncomp is returned for each prediction framework}
 }
 
 \references{
@@ -224,7 +225,7 @@ data(srbct)
 X <- srbct$gene
 Y <- srbct$class
 
-ncomp = 5
+ncomp = 2
 
 srbct.splsda <- splsda(X, Y, ncomp = ncomp, keepX = rep(10, ncomp))
 
@@ -236,7 +237,7 @@ dist = "all", auc = TRUE)
 error
 error$auc
 
-plot(error, type = "l")
+plot(error)
 
 # parallel code
 set.seed(45)
@@ -244,14 +245,35 @@ error <- perf(srbct.splsda, validation = "Mfold", folds = 8,
 dist = "all", auc = TRUE, cpus =2)
 
 
+
+
+\dontrun{
+# with 5 components and nrepeat =5, to get a $choice.ncomp
+ncomp = 5
+srbct.splsda <- splsda(X, Y, ncomp = ncomp, keepX = rep(10, ncomp))
+
+set.seed(45)
+error <- perf(srbct.splsda, validation = "Mfold", folds = 8,
+dist = "all", nrepeat =5)
+error
+
+plot(error)
+
+# parallel code
+set.seed(45)
+error <- perf(srbct.splsda, validation = "Mfold", folds = 8,
+dist = "all", auc = TRUE, cpus =2)
+
+}
+
 ## validation for objects of class 'mint.splsda' (classification)
 # ----------------------------------------
 
 data(stemcells)
 res = mint.splsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3, keepX = c(10, 5, 15),
-study = stemcells$study, auc = TRUE)
+study = stemcells$study)
 
-out = perf(res)
+out = perf(res, auc = TRUE)
 out
 
 out$auc
@@ -265,7 +287,6 @@ Y = nutrimouse$diet
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 
-
 nutrimouse.sgccda <- block.splsda(X=data,
 Y = Y,
 design = design,
@@ -277,7 +298,24 @@ bias = FALSE)
 
 perf = perf(nutrimouse.sgccda)
 perf
-perf$WeightedVote.error.rate
+
+
+\dontrun{
+#with 5 components and nrepeat=5 to get $choice.ncomp
+nutrimouse.sgccda <- block.splsda(X=data,
+Y = Y,
+design = design,
+keepX = list(gene=c(10,10), lipid=c(15,15)),
+ncomp = 5,
+scheme = "horst",
+verbose = FALSE,
+bias = FALSE)
+
+perf = perf(nutrimouse.sgccda, folds = 5, nrepeat = 5)
+perf
+
+perf$choice.ncomp
+}
 }
 
 }

@@ -320,6 +320,7 @@ name.save = NULL)
     keepX = error.rate = mat.sd.error = NULL
     mat.error.rate = list()
     error.per.class.keepX.opt=list()
+    error.opt.per.comp = matrix(nrow = nrepeat, ncol = length(comp.real), dimnames=list(paste("nrep",1:nrepeat,sep="."), paste("comp", comp.real, sep='')))
     # successively tune the components until ncomp: comp1, then comp2, ...
     for(comp in 1:length(comp.real))
     {
@@ -393,6 +394,7 @@ name.save = NULL)
         error.per.class.keepX.opt[[comp]] = error.per.class[, , which.min(error.mean)] # error for the optimal keepXs
         error.rate = cbind(error.rate, error.mean)
         mat.sd.error = cbind(mat.sd.error, error.sd)
+        rownames(mat.error.rate.keepX) = rownames(error.rate)
         mat.error.rate [[comp]] = mat.error.rate.keepX
         
         if(!constraint)
@@ -453,6 +455,9 @@ name.save = NULL)
         
         if (progressBar ==  TRUE)
         setTxtProgressBar(pb, 1)
+        save(list=ls(),file="temp.Rdata")
+
+        error.opt.per.comp[,comp] = mat.error.rate[[comp]][min.keepX[ind.opt],]
 
     }
     #close the cluster after ncomp
@@ -470,11 +475,23 @@ name.save = NULL)
     colnames(mat.sd.error) = paste("comp", comp.real, sep='')
     
     
+    # calculating the number of optimal component based on t.tests and the error.rate.all, if more than 3 error.rates(repeat>3)
+    if(nrepeat > 2 & length(comp.real) >1)
+    {
+       error.keepX = error.opt.per.comp
+       opt = t.test.process(error.opt.per.comp)
+       ncomp_opt = comp.real[opt]
+    } else {
+       ncomp_opt = error.keepX = NULL
+    }
+
+
     result = list(
     error.rate = error.rate,
     error.rate.sd = mat.sd.error,
     error.rate.all = mat.error.rate,
     choice.keepX = if(constraint){lapply(already.tested.X, function(x){sapply(x,length)})}else{already.tested.X},
+    choice.ncomp = list(ncomp = ncomp_opt, values = error.keepX),
     #choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
     error.rate.class = error.per.class.keepX.opt)
     

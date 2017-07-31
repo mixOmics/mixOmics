@@ -40,7 +40,6 @@ test.keepX = c(5, 10, 15), # all but pca, rcc
 test.keepY = NULL, # rcc, multilevel
 already.tested.X, # all but pca, rcc
 already.tested.Y, #multilevel
-constraint,
 mode = "regression", # multilevel
 nrepeat = 1, #multilevel, splsda
 grid1 = seq(0.001, 1, length = 5), # rcc
@@ -68,15 +67,12 @@ light.output = TRUE # mint, splsda
 
         if (missing(ncomp))
         ncomp = 1
-        if(missing(constraint))
-        constraint = TRUE
         
         result = tune.mint.splsda(X = X, Y = Y,
         ncomp = ncomp,
         study = study,
         test.keepX = test.keepX,
         already.tested.X = already.tested.X,
-        constraint = constraint,
         dist = dist,
         measure = measure,
         auc = auc,
@@ -119,8 +115,6 @@ light.output = TRUE # mint, splsda
 
             if (missing(ncomp))
             ncomp = 1
-            if(missing(constraint))
-            constraint = FALSE
             
             result = tune.splsda (X = X, Y = Y,
             ncomp = ncomp,
