@@ -20,7 +20,6 @@ test.keepX = c(5, 10, 15), # all but pca, rcc
 test.keepY = NULL, # rcc, multilevel
 already.tested.X, # all but pca, rcc
 already.tested.Y, #multilevel
-constraint,
 mode = "regression", # multilevel
 nrepeat = 1, #multilevel, splsda
 grid1 = seq(0.001, 1, length = 5), # rcc
@@ -53,9 +52,8 @@ light.output = TRUE # mint, splsda
 \item{study}{grouping factor indicating which samples are from the same study}
 \item{test.keepX}{numeric vector for the different number of variables to test from the \eqn{X} data set}
 \item{test.keepY}{If \code{method = 'spls'}, numeric vector for the different number of variables to test from the \eqn{Y} data set}
-\item{already.tested.X}{if \code{ncomp > 1} A list containing which variables of X are to be kept on each of the first PLS-components (if \code{constraint=TRUE}) or a numeric vector indicating the number of variables to select from the \eqn{X} data set on the firsts components (if \code{constraint = FALSE})}
+\item{already.tested.X}{Optional, if \code{ncomp > 1} A numeric vector indicating the number of variables to select from the \eqn{X} data set on the firsts components.}
 \item{already.tested.Y}{if \code{method = 'spls'} and \code{if(ncomp > 1)} numeric vector indicating the number of variables to select from the \eqn{Y} data set on the first components}
-\item{constraint}{Indicate whether the performance of the model should be evaluated w.r.t the number of variables selected (keepX, default constraint = FALSE) or w.r.t the specific variables selected by the model (keepX.constraint, constraint = TRUE), see details in the specific tune.model help function. }
 \item{mode}{character string. What type of algorithm to use, (partially) matching
 one of \code{"regression"}, \code{"canonical"}, \code{"invariant"} or \code{"classic"}.
 See Details.}
@@ -97,7 +95,6 @@ Depending on the type of analysis performed and the input arguments, a list that
 
 \item{error.rate}{returns the prediction error for each \code{test.keepX} on each component, averaged across all repeats and subsampling folds. Standard deviation is also output. All error rates are also available as a list.}
 \item{choice.keepX}{returns the number of variables selected (optimal keepX) on each component.}
-\item{choice.keepX.constraint}{returns the variables selected by the optimal keepX on each component. only if constraint=TRUE.}
 \item{choice.nconp}{returns the optimal number of components in a Discriminant Analysis model}
 \item{error.rate.class}{returns the error rate for each level of \code{Y} and for each component computed with the optimal keepX}
 
@@ -145,7 +142,7 @@ type.id = stemcells$celltype
 exp = stemcells$study
 
 out = tune(method="mint.splsda", X=data,Y=type.id, ncomp=2, study=exp, test.keepX=seq(1,10,1))
-out$choice.keepX.constraint
+out$choice.keepX
 
 plot(out)
 
