@@ -93,6 +93,8 @@ If \code{validation = "loo"}, leave-one-out cross-validation is performed. By de
 
 All combination of test.keepX values are tested. A message informs how many will be fitted on each component for a given test.keepX.
 
+
+More details about the prediction distances in \code{?predict} and the referred publication.
 }
 
 \value{
@@ -111,10 +113,10 @@ A list that contains:
 
 
 \references{
-Method: Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
-DIABLO:  multi omics integration for biomarker discovery. BioRxiv available here: \url{http://biorxiv.org/content/early/2016/08/03/067611}
+Method: Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016). DIABLO:  multi omics integration for biomarker discovery.
 
-mixOmics manuscript: Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration. BioRxiv available here: \url{http://biorxiv.org/content/early/2017/02/14/108597}
+
+mixOmics manuscript: Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration.
 }
 
 
