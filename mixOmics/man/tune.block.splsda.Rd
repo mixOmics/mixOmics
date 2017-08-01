@@ -47,7 +47,7 @@ name.save=NULL
 \item{ncomp}{the number of components to include in the model.}
 \item{test.keepX}{A list of length the number of blocks in X (without the outcome). Each entry of this list is a numeric vector for the different keepX values to test for that specific block.}
 
-\item{already.tested.X}{Optional, only if \code{ncomp > 1}. A list of length the number of blocks in X (without the outcome). Each entry contains a numeric vector indicating the number of variables to select from the \eqn{X} data set on the firsts components, see examples.}
+\item{already.tested.X}{Optional, if \code{ncomp > 1} A numeric vector indicating the number of variables to select from the \eqn{X} data set on the firsts components.}
 
 \item{validation}{character.  What kind of (internal) validation to use, matching one of \code{"Mfold"} or
 \code{"loo"} (see below). Default is \code{"Mfold"}.}
@@ -99,6 +99,7 @@ All combination of test.keepX values are tested. A message informs how many will
 A list that contains:
 \item{error.rate}{returns the prediction error for each \code{test.keepX} on each component, averaged across all repeats and subsampling folds. Standard deviation is also output. All error rates are also available as a list.}
 \item{choice.keepX}{returns the number of variables selected (optimal keepX) on each component, for each block.}
+\item{choice.ncomp}{returns the optimal number of components for the model fitted with \code{$choice.keepX}. }
 \item{error.rate.class}{returns the error rate for each level of \code{Y} and for each component computed with the optimal keepX}
 
 \item{predict}{Prediction values for each sample, each \code{test.keepX}, each comp and each repeat. Only if light.output=FALSE}
@@ -135,7 +136,7 @@ design = matrix(1, ncol = length(data), nrow = length(data),
 diag(design) =  0
 design
 # set number of component per data set
-ncomp = 2
+ncomp = 5
 
 # Tuning the first two components
 # -------------
@@ -147,22 +148,23 @@ test.keepX = list(mrna = seq(10,40,20), mirna = seq(10,30,10), protein = seq(1,1
 # the following may take some time to run, note that for through tuning
 # nrepeat should be > 1
 tune = tune.block.splsda(X = data, Y = breast.TCGA$data.train$subtype,
-ncomp = ncomp, test.keepX = test.keepX, design = design, nrepeat = 1)
+ncomp = ncomp, test.keepX = test.keepX, design = design, nrepeat = 3)
 
+tune$choice.ncomp
 tune$choice.keepX
 
 
 # Only tuning the second component
 # -------------
 
-constraint.mrna = 4 # 4 variables selected on comp1 for mrna
-constraint.mirna  = 2 # 2 variables selected on comp1 for mirna
-constraint.prot  = 1 # 1 variables selected on comp1 for protein
+already.mrna = 4 # 4 variables selected on comp1 for mrna
+already.mirna  = 2 # 2 variables selected on comp1 for mirna
+already.prot  = 1 # 1 variables selected on comp1 for protein
 
-already.tested.X = list(mrna = constraint.mrna, mirna = constraint.mirna, prot = constraint.prot)
+already.tested.X = list(mrna = already.mrna, mirna = already.mirna, prot = already.prot)
 
 tune = tune.block.splsda(X = data, Y = breast.TCGA$data.train$subtype,
-ncomp = ncomp, test.keepX = test.keepX, design = design,
+ncomp = 2, test.keepX = test.keepX, design = design,
 already.tested.X = already.tested.X)
 
 tune$choice.keepX

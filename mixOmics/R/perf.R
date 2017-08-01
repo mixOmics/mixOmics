@@ -616,14 +616,28 @@ cpus,
 
     names(prediction.all) = paste('comp', 1:ncomp)
     
+    
+    # calculating the number of optimal component based on t.tests and the error.rate.all, if more than 3 error.rates(repeat>3)
+    ncomp_opt = matrix(NA, nrow = length(measure), ncol = length(dist),
+    dimnames = list(measure, dist))
+    if(nrepeat > 2 & ncomp >1)
+    {
+        for (measure_i in measure)
+        {
+            for (ijk in dist)
+            ncomp_opt[measure, ijk] = t.test.process(t(mat.error.rate[[measure_i]][[ijk]]))
+        }
+    }
+
     result = list(error.rate = mat.mean.error,
     error.rate.sd = mat.sd.error,
     error.rate.all = mat.error.rate,
     error.rate.class = error.per.class.keepX.opt.mean[[1]],
     error.rate.class.all = error.per.class.keepX.opt[[1]],
     predict = prediction.all,
-    class = class.all)
-    
+    class = class.all,
+    choice.ncomp = ncomp_opt)
+
     if(auc)
     {
         names(auc.mean) = c(paste('comp', 1:ncomp))

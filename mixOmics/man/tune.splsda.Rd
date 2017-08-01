@@ -73,7 +73,7 @@ If \code{auc = TRUE} and there are more than 2 categories in \code{Y}, the Area 
 Depending on the type of analysis performed, a list that contains:
 \item{error.rate}{returns the prediction error for each \code{test.keepX} on each component, averaged across all repeats and subsampling folds. Standard deviation is also output. All error rates are also available as a list.}
 \item{choice.keepX}{returns the number of variables selected (optimal keepX) on each component.}
-\item{choice.nconp}{returns the optimal number of components in the sPLS-DA model}
+\item{choice.ncomp}{returns the optimal number of components for the model fitted with \code{$choice.keepX} }
 \item{error.rate.class}{returns the error rate for each level of \code{Y} and for each component computed with the optimal keepX}
 
 \item{predict}{Prediction values for each sample, each \code{test.keepX}, each comp and each repeat. Only if light.output=FALSE}
@@ -106,11 +106,13 @@ tune = tune.splsda(X, Y, ncomp = 1, nrepeat = 10, logratio = "none",
     test.keepX = c(5, 10, 15), folds = 10, dist = "max.dist",
     progressBar = TRUE)
 
-# 2 components, optimising 'keepX'
-tune = tune.splsda(X, Y, ncomp = 2, test.keepX = c(5, 10, 15),
-folds = 10, dist = "max.dist", progressBar = TRUE)
-tune$choice.keepX
+# 5 components, optimising 'keepX' and 'ncomp'
+tune = tune.splsda(X, Y, ncomp = 5, test.keepX = c(5, 10, 15),
+folds = 10, dist = "max.dist", nrepeat = 5, progressBar = TRUE)
 
+tune$choice.ncomp
+tune$choice.keepX
+plot(tune)
 }
 
 ## only tune component 3 and 4
