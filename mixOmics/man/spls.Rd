@@ -119,7 +119,7 @@ low rank matrix approximation. \emph{Journal of Multivariate Analysis} \bold{99}
 PLS methods:
 Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic. Chapters 9 and 11.
 
-Abdi H (2010). Partial least squares regression and projection on latent structure regression (PLS Regression). \emph{Wiley Interdisciplinary Reviews: Computational Statistics}, 2(1), 97-106}.
+Abdi H (2010). Partial least squares regression and projection on latent structure regression (PLS Regression). \emph{Wiley Interdisciplinary Reviews: Computational Statistics}, 2(1), 97-106.
 
 Wold H. (1966). Estimation of principal components and related models by iterative least squares. In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N.Y., 391-420.
 

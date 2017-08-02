@@ -89,7 +89,7 @@ Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Edit
 
 Wold H. (1966). Estimation of principal components and related models by iterative least squares. In: Krishnaiah, P. R. (editors), \emph{Multivariate Analysis}. Academic Press, N.Y., 391-420.
 
-Abdi H (2010). Partial least squares regression and projection on latent structure regression (PLS Regression). \emph{Wiley Interdisciplinary Reviews: Computational Statistics}, 2(1), 97-106}.
+Abdi H (2010). Partial least squares regression and projection on latent structure regression (PLS Regression). \emph{Wiley Interdisciplinary Reviews: Computational Statistics}, 2(1), 97-106.
 }
 
 \author{Sebastien Dejean and Ignacio Gonzalez and Kim-Anh Le Cao.}

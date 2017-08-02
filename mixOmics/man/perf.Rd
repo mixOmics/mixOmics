@@ -87,7 +87,7 @@ AUROC. For PLS-DA, sPLS-DA, mint.PLS-DA and mint.sPLS-DA methods: if \code{auc=T
 
 Prediction distances. See details from \code{?predict}.
 
-Repeats of the CV-folds. Repeated cross-validation implies that the whole CV process is repeated a number of times (\code{nrepeat}) to reduce variability across the different subset partitions. In the case of Leave-One-Out CV (\code{validation = 'loo''}), each sample is left out once (\code{folds = N} is set internally) and therefore nrepeat is by default 1.
+Repeats of the CV-folds. Repeated cross-validation implies that the whole CV process is repeated a number of times (\code{nrepeat}) to reduce variability across the different subset partitions. In the case of Leave-One-Out CV (\code{validation = 'loo'}), each sample is left out once (\code{folds = N} is set internally) and therefore nrepeat is by default 1.
 
 
 }
@@ -131,7 +131,7 @@ For sgccda models, \code{perf} produces the following outputs:
 \item{WeightedVote}{if more than one block, returns the weighted majority class over the blocks. NA for a sample means that there is no consensus on the predicted class for this particular sample over the blocks.}
 \item{WeightedVote.error.rate}{if more than one block, returns the error rate of the \code{WeightedVote} output}
 \item{weights}{Returns the weights of each block used for the weighted predictions, for each nrepeat and each fold}
-\item{choice.ncomp}{For sPLS-Da models; returns the optimal number of components for the model for each prediction distance. For more thatn on block, an optimal ncomp is returned for each prediction framework}
+\item{choice.ncomp}{For sPLS-DA models; returns the optimal number of components for the model for each prediction distance using t-tests that test for a significant difference in the mean error rate between each component. For more than one block, an optimal ncomp is returned for each prediction framework. }
 }
 
 \references{
