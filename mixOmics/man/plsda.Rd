@@ -65,6 +65,7 @@ that contains the following components:
    \item{tol}{the tolerance used in the iterative algorithm, used for subsequent S3 methods}
   \item{max.iter}{the maximum number of iterations, used for subsequent S3 methods}
 \item{iter}{Number of iterations of the algorthm for each component}
+  \item{explained_variance}{amount of variance explained per component (note that contrary to PCA, this amount may not decrease as the aim of the method is not to maximise the variance, but the covariance between X and the dummy matrix Y).}
 
 }
 

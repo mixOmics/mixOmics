@@ -51,7 +51,7 @@ folds = 10, nrepeat =1, auc = FALSE, progressBar = TRUE, cpus, \ldots)
 \item{validation}{character.  What kind of (internal) validation to use, matching one of \code{"Mfold"} or
     \code{"loo"} (see below). Default is \code{"Mfold"}.}
   \item{folds}{the folds in the Mfold cross-validation. See Details.}
-\item{nrepeat}{Number of times the Cross-Validation process is repeated.}
+\item{nrepeat}{Number of times the Cross-Validation process is repeated. This is an important argument to ensure the estimation of the performance to be as accurate as possible.}
 \item{auc}{if \code{TRUE} calculate the Area Under the Curve (AUC) performance of the model.}
   \item{progressBar}{by default set to \code{TRUE} to output the progress bar of the computation.}
 \item{cpus}{Number of cpus to use when running the code in parallel.}
@@ -86,6 +86,10 @@ The mint.sPLS-DA function estimates errors based on Leave-one-group-out cross va
 AUROC. For PLS-DA, sPLS-DA, mint.PLS-DA and mint.sPLS-DA methods: if \code{auc=TRUE}, Area Under the Curve (AUC) values are calculated from the predicted scores obtained from the \code{predict} function applied to the internal test sets in the cross-validation process, either for all samples or for study-specific samples (for mint models). Therefore we minimise the risk of overfitting. See \code{\link{auroc}} for more details. Our multivariate supervised methods already use a prediction threshold based on distances (see \code{predict}) that optimally determine class membership of the samples tested. As such AUC and ROC are not needed to estimate the performance of the model. We provide those outputs as complementary performance measures. See more details in our mixOmics article.
 
 Prediction distances. See details from \code{?predict}.
+
+Repeats of the CV-folds. Repeated cross-validation implies that the whole CV process is repeated a number of times (\code{nrepeat}) to reduce variability across the different subset partitions. In the case of Leave-One-Out CV (\code{validation = 'loo''}), each sample is left out once (\code{folds = N} is set internally) and therefore nrepeat is by default 1.
+
+
 }
 
 \value{

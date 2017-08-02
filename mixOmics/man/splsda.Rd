@@ -72,7 +72,7 @@ that contains the following components:
     \item{max.iter}{the maximum number of iterations, used for subsequent S3 methods}
     \item{scale}{boolean indicating whether the data were scaled in MINT S3 methods}
     \item{logratio}{whether logratio transformations were used for compositional data}
-    \item{explained_variance}{explained variance from the multivariate model, used for plotIndiv}
+  \item{explained_variance}{amount of variance explained per component (note that contrary to PCA, this amount may not decrease as the aim of the method is not to maximise the variance, but the covariance between X and the dummy matrix Y).}
 }
 
 \references{

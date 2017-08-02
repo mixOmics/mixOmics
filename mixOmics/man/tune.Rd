@@ -88,6 +88,8 @@ columns of \code{X} can be supplied. The value is passed to \code{\link{scale}}.
 \details{
 For more details, please see the help file corresponding to your \code{method}, e.g. \code{tune.splsda}.
 Note that only the arguments used in the tune function corresponding to \code{method} are passed on.
+
+Some details on the use of the nrepeat argument are provided in \code{?perf}.
 }
 
 \value{
