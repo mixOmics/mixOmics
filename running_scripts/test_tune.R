@@ -115,7 +115,7 @@ Y.temp = factor(type.id[-ind.remove])
 study.temp = exp[-ind.remove]
 
 res=mint.splsda(X=X.temp,Y=Y.temp,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=study.temp)
-tt=tune.mint.splsda(X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = progressBar,constraint=FALSE)
+tt=tune.mint.splsda(X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = progressBar)
 
 
 # create a study with missing levels of Y to test tune.mint.splsda
@@ -127,8 +127,8 @@ Y.temp = factor(type.id[-ind.remove])
 study.temp = exp[-ind.remove]
 
 res=mint.splsda(X=X.temp,Y=Y.temp,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=study.temp)
-tt=tune.mint.splsda(X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = progressBar,constraint=FALSE)
-tt=tune(method="mint.splsda",X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = progressBar,constraint=FALSE)
+tt=tune.mint.splsda(X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = progressBar,)
+tt=tune(method="mint.splsda",X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = progressBar)
 
 
 
@@ -159,7 +159,7 @@ levels(experiment.id.learn);levels(experiment.id.test)
 tt=tune.mint.splsda(X=data.learn,Y=type.id.learn,ncomp=3,near.zero.var=FALSE,study=experiment.id.learn,test.keepX=seq(1,20,1))
 
 res=mint.splsda(X=data.learn,Y=type.id.learn,ncomp=2,near.zero.var=FALSE,
-keepX.constraint=tt$choice.keepX.constraint[1:2],keepX=NULL,study=experiment.id.learn)
+keepX=tt$choice.keepX[1:2],keepX=NULL,study=experiment.id.learn)
 
 out=perf(res)
 }
