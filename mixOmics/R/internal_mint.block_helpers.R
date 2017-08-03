@@ -405,6 +405,8 @@ defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical
             pdefl[[q]]   =  rep(0,NCOL(rr[[q]]))
         }
     }
+    names(resdefl) = names(pdefl) = names(rr)
+    
     return(list(resdefl=resdefl,pdefl=pdefl))
 }
 
