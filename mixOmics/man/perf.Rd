@@ -131,29 +131,40 @@ For sgccda models, \code{perf} produces the following outputs:
 \item{WeightedVote}{if more than one block, returns the weighted majority class over the blocks. NA for a sample means that there is no consensus on the predicted class for this particular sample over the blocks.}
 \item{WeightedVote.error.rate}{if more than one block, returns the error rate of the \code{WeightedVote} output}
 \item{weights}{Returns the weights of each block used for the weighted predictions, for each nrepeat and each fold}
-\item{choice.ncomp}{For sPLS-DA models; returns the optimal number of components for the model for each prediction distance using t-tests that test for a significant difference in the mean error rate between each component. For more than one block, an optimal ncomp is returned for each prediction framework. }
+\item{choice.ncomp}{For supervised models; returns the optimal number of components for the model for each prediction distance using one-sided t-tests that test for a significant difference in the mean error rate (gain in prediction) when components are added to the model. See more details in Rohart et al 2016 Suppl. For more than one block, an optimal ncomp is returned for each prediction framework.}
 }
 
 \references{
+DIABLO:
+
 Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
 DIABLO - multi omics integration for biomarker discovery.
 
+mixOmics main publication:
+
 Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration.
 
+MINT:
 
-Rohart F. et al (2016, submitted). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms.
+Rohart F, Eslami A, Matigian, N, Bougeard S, Le Cao K-A (2017). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. BMC Bioinformatics 18:128.
 
+PLS and PLS citeria for PLS regression:
 Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.
 
 Chavent, Marie and Patouille, Brigitte (2003). Calcul des coefficients de r{e}gression et du PRESS en r{e}gression PLS1. \emph{Modulad n}, \bold{30} 1-11. (this is the formula we use to calculate the Q2 in perf.pls and perf.spls)
+
+Mevik, B.-H., Cederkvist, H. R. (2004). Mean Squared Error of Prediction (MSEP) Estimates for Principal Component
+Regression (PCR) and Partial Least Squares Regression (PLSR). \emph{Journal of Chemometrics} \bold{18}(9), 422-429.
+
+sparse PLS regression mode:
 
 Le Cao, K. A., Rossouw D., Robert-Granie, C. and Besse, P. (2008). A sparse PLS for variable 
 selection when integrating Omics data. \emph{Statistical Applications in Genetics and Molecular 
 Biology} \bold{7}, article 35.
 
-Mevik, B.-H., Cederkvist, H. R. (2004). Mean Squared Error of Prediction (MSEP) Estimates for Principal Component 
-Regression (PCR) and Partial Least Squares Regression (PLSR). \emph{Journal of Chemometrics} \bold{18}(9), 422-429.
+One-sided t-tests (suppl material):
 
+Rohart F, Mason EA, Matigian N, Mosbergen R, Korn O, Chen T, Butcher S, Patel J, Atkinson K, Khosrotehrani K, Fisk NM, Le Cao K-A&, Wells CA& (2016). A Molecular Classification of Human Mesenchymal Stromal Cells. PeerJ 4:e1845.
 }
 
 \author{Ignacio Gonzalez, Amrit Singh, Kim-Anh Le Cao, Benoit Gautier, Florian Rohart.}
