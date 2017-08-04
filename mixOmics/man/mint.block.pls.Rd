@@ -68,7 +68,7 @@ that contains the following components:
 \item{Y}{the centered and standardized original response vector or matrix.}
 \item{ncomp}{the number of components included in the model for each block.}
 \item{mode}{the algorithm used to fit the model.}
-\item{mat.c}{matrix of coefficients to be used internally by \code{predict}.}
+\item{mat.c}{matrix of coefficients from the regression of X / residual matrices X on the X-variates, to be used internally by \code{predict}.}
 \item{variates}{list containing the \eqn{X} and \eqn{Y} variates.}
 \item{loadings}{list containing the estimated loadings for the variates.}
 \item{names}{list containing the names to be used for individuals and variables.}
