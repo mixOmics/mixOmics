@@ -57,7 +57,7 @@ Multi (continuous)response are supported. \code{X} and \code{Y} can contain miss
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis
 \code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS
-algorithm \code{("classic")} (see References).
+algorithm \code{("classic")} (see References and more details in \code{?pls}).
 }
 
 \value{

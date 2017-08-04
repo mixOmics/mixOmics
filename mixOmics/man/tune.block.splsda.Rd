@@ -93,8 +93,7 @@ If \code{validation = "loo"}, leave-one-out cross-validation is performed. By de
 
 All combination of test.keepX values are tested. A message informs how many will be fitted on each component for a given test.keepX.
 
-
-More details about the prediction distances in \code{?predict} and the referred publication.
+More details about the prediction distances in \code{?predict}. More details about the PLS modes in \code{?pls}.
 }
 
 \value{

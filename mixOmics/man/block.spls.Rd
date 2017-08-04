@@ -61,7 +61,7 @@ Multi (continuous)response are supported. \code{X} and \code{Y} can contain miss
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis
 \code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS
-algorithm \code{("classic")} (see References and \code{?predict} for more details).
+algorithm \code{("classic")} (see References and \code{?pls} for more details).
 
 Note that our method is partly based on sparse Generalised Canonical Correlation Analysis and differs from the MB-PLS approaches proposed by Kowalski et al., 1989, J Chemom 3(1), Westerhuis et al., 1998, J Chemom, 12(5) and Karaman et al (2014), Metabolomics, 11(2) (sparse MB-PLS).
 

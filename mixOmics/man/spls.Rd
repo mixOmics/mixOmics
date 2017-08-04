@@ -56,11 +56,7 @@ can contain missing values.
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis
 \code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS
-algorithm \code{("classic")} (see References). Different modes relate on how the Y matrix is deflated across the iterations of the algorithms - i.e. the different components.
-- Invariant mode: the Y matrix is not deflated
-- Regression mode: the Y matrix is deflated with respect to the information extracted/modelled from the local regression on X. Here the goal is to predict Y from X (Y and X play an assymetric role). Consequently the latent variables computed to predict Y from X are different from those computed to preict X from Y.
-- Canonical mode: the Y matrix is deflated to the information extracted/modelled from the local regression on Y. Here X and Y play a symetric role and the goal is similar to a Canonical Correlation type of analysis.
-Note that in all cases the results are the same on the first component as deflation only start after component 1.
+algorithm \code{("classic")} (see References and \code{?pls} for more details).
 
 The estimation of the missing values can be performed 
 by the reconstitution of the data matrix using the \code{nipals} function. Otherwise, missing 

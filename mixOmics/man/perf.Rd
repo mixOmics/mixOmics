@@ -89,6 +89,7 @@ Prediction distances. See details from \code{?predict}.
 
 Repeats of the CV-folds. Repeated cross-validation implies that the whole CV process is repeated a number of times (\code{nrepeat}) to reduce variability across the different subset partitions. In the case of Leave-One-Out CV (\code{validation = 'loo'}), each sample is left out once (\code{folds = N} is set internally) and therefore nrepeat is by default 1.
 
+More details about the PLS modes in \code{?pls}.
 
 }
 

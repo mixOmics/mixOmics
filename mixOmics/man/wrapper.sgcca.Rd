@@ -54,6 +54,9 @@ to zero means and unit variances (default: TRUE)}
 	More details can be found on the package \pkg{RGCCA}.
 
 Note that this function is the same as \code{\link{block.spls}} with different default arguments.
+
+More details about the PLS modes in \code{?pls}.
+
 }
 
 \value{

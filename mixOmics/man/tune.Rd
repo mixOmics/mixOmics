@@ -90,6 +90,8 @@ For more details, please see the help file corresponding to your \code{method}, 
 Note that only the arguments used in the tune function corresponding to \code{method} are passed on.
 
 Some details on the use of the nrepeat argument are provided in \code{?perf}.
+
+More details about the prediction distances in \code{?predict}. More details about the PLS modes in \code{?pls}.
 }
 
 \value{

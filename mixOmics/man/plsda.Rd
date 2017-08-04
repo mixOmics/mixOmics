@@ -47,6 +47,8 @@ logratio transform and multilevel analysis are performed sequentially as interna
 
 Logratio can only be applied if the data do not contain any 0 value (for count data, we thus advise the normalise raw data with a 1 offset).
 
+More details about the PLS modes in \code{?pls}.
+
 }
 
 \value{

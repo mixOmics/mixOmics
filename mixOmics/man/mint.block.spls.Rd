@@ -65,7 +65,7 @@ Multi (continuous)response are supported. \code{X} and \code{Y} can contain miss
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis
 \code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS
-algorithm \code{("classic")} (see References).
+algorithm \code{("classic")} (see References and more details in \code{?pls}).
 
 Constraint model (\code{constraint=TRUE)}. The model is run on the optimal list of selected features \code{keepX.constraint} from the previous components, as opposed to considering only a specified number of features \code{keepX}.
 }

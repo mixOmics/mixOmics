@@ -62,7 +62,7 @@ A factor indicating the discrete outcome needs to be provided, either by \code{Y
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis
 \code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS
-algorithm \code{("classic")} (see References).
+algorithm \code{("classic")} (see References and more details in \code{?pls}).
 
 Constraint model. To improve performance, a new argument was recently added to fit a constraint model (\code{constraint=TRUE)}. The model is run on the optimal list of selected features \code{keepX.constraint} from the previous components, as opposed to considering only a specified number of features \code{keepX}. Such strategy was implemented in the sister package bootPLS and successfully applied in our recent integrative study (Rohart et al., 2016). Our experience has shown that the constraint model can substantially improve the performance of the method ).
 }

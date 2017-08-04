@@ -83,9 +83,7 @@ If \code{validation = "loo"}, leave-one-out cross-validation is performed. By de
 
 If \code{auc = TRUE} and there are more than 2 categories in \code{Y}, the Area Under the Curve is averaged using one-vs-all comparison. Note however that the AUC criteria may not be particularly insightful as the prediction threshold we use in sPLS-DA differs from an AUC threshold (sPLS-DA relies on prediction distances for predictions, see details in \code{?predict.splsda}).
 
-More details about the prediction distances in \code{?predict} and the referred publication.
-
-
+More details about the prediction distances in \code{?predict}. More details about the PLS modes in \code{?pls}.
 }
 
 \value{

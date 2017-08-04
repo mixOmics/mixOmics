@@ -59,7 +59,7 @@ A factor indicating the discrete outcome needs to be provided, either by \code{Y
 The type of algorithm to use is specified with the \code{mode} argument. Four PLS
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis
 \code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS
-algorithm \code{("classic")} (see References).
+algorithm \code{("classic")} (see References and more details in \code{?pls}).
 
 }
 
