@@ -57,7 +57,6 @@ that contains the following components:
   \item{Y}{the centered and standardized indicator response vector or matrix.}
   \item{ind.mat}{the indicator matrix.}
   \item{ncomp}{the number of components included in the model.}
-  \item{mat.c}{matrix of coefficients to be used internally by \code{predict}.}
   \item{variates}{list containing the \code{X} and \code{Y} variates.}
   \item{loadings}{list containing the estimated loadings for the variates.}
   \item{names}{list containing the names to be used for individuals and variables.}
@@ -66,6 +65,8 @@ that contains the following components:
   \item{max.iter}{the maximum number of iterations, used for subsequent S3 methods}
 \item{iter}{Number of iterations of the algorthm for each component}
   \item{explained_variance}{amount of variance explained per component (note that contrary to PCA, this amount may not decrease as the aim of the method is not to maximise the variance, but the covariance between X and the dummy matrix Y).}
+\item{mat.c}{matrix of coefficients from the regression of X / residual matrices X on the X-variates, to be used internally by \code{predict}.}
+\item{defl.matrix}{residual matrices X for each dimension.}
 
 }
 

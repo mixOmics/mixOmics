@@ -61,7 +61,6 @@ that contains the following components:
   \item{ind.mat}{the indicator matrix.}
   \item{ncomp}{the number of components included in the model.}
   \item{keepX}{number of \eqn{X} variables kept in the model on each component.}
-  \item{mat.c}{matrix of coefficients to be used internally by \code{predict}.}
   \item{variates}{list containing the variates.}
   \item{loadings}{list containing the estimated loadings for the \code{X} and 
 	\code{Y} variates.}
@@ -73,6 +72,8 @@ that contains the following components:
     \item{scale}{boolean indicating whether the data were scaled in MINT S3 methods}
     \item{logratio}{whether logratio transformations were used for compositional data}
   \item{explained_variance}{amount of variance explained per component (note that contrary to PCA, this amount may not decrease as the aim of the method is not to maximise the variance, but the covariance between X and the dummy matrix Y).}
+\item{mat.c}{matrix of coefficients from the regression of X / residual matrices X on the X-variates, to be used internally by \code{predict}.}
+\item{defl.matrix}{residual matrices X for each dimension.}
 }
 
 \references{

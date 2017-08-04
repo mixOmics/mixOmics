@@ -69,7 +69,6 @@ that contains the following components:
   \item{Y}{the centered and standardized original response vector or matrix.}
   \item{ncomp}{the number of components included in the model.}
   \item{mode}{the algorithm used to fit the model.}
-  %\item{mat.c}{matrix of coefficients to be used internally by \code{predict}.}
   \item{variates}{list containing the variates.}
   \item{loadings}{list containing the estimated loadings for the \eqn{X} and 
 	\eqn{Y} variates.}
@@ -82,6 +81,8 @@ that contains the following components:
   \item{logratio}{whether log ratio transformation for relative proportion data was applied, and if so, which type of transformation.}
   \item{explained_variance}{amount of variance explained per component (note that contrary to PCA, this amount may not decrease as the aim of the method is not to maximise the variance, but the covariance between data sets).}
   \item{input.X}{numeric matrix of predictors in X that was input, before any saling / logratio / multilevel transformation.}
+  \item{mat.c}{matrix of coefficients from the regression of X / residual matrices X on the X-variates, to be used internally by \code{predict}.}
+  \item{defl.matrix}{residual matrices X for each dimension.}
 }
 
 \references{
