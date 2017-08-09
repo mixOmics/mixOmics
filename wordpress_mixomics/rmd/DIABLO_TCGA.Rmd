@@ -23,10 +23,12 @@ The full data set for this example (also including methylation data and 4 breast
 
 Load the latest version of [mixOmics](https://cran.r-project.org/web/packages/mixOmics/index.html) (chek the version!).
 
-```{r}
+```{r message = TRUE}
 library(mixOmics)
 ```
 
+# Rscript
+The R script is available at [this link (R script and RData)]() 
 
 # Data
 
@@ -34,19 +36,19 @@ library(mixOmics)
 
 The data for mixDIABLO need to be set up as a list of data matrices matching the same samples. The **blocks:** are 'omics data sets, where each row matches to the same biological sample from one data set to another. The outcome Y is set as a factor for the supervised analysis. Here Y corresponds to the PAM50 classification.
 
-The data for *DIABLO* need to be set up as a list of data matrices matching the same samples in rows.
+The data for **DIABLO** need to be set up as a list of data matrices matching the same samples in rows.
 
 ```{r}
 data('breast.TCGA')
 # extract training data
-data = list(mrna = breast.TCGA$data.train$mrna, 
-            mirna = breast.TCGA$data.train$mirna, 
-            prot = breast.TCGA$data.train$protein)
+data = list(mRNA = breast.TCGA$data.train$mrna, 
+            miRNA = breast.TCGA$data.train$mirna, 
+            proteomics = breast.TCGA$data.train$protein)
 
 # check dimension
 lapply(data, dim)
 
-# outcome is a factor
+# outcome
 Y = breast.TCGA$data.train$subtype
 summary(Y)
 ```
@@ -55,13 +57,12 @@ summary(Y)
 # Parameter choice
 
 ## Design
-The matrix *design* determines which blocks should be connected to maximize the correlation or covariance between components. the values may range between 0 (no correlation) to 1 (correlation to maximize) and is a symmetrical matrix. The design can be chosen based on prior knowledge (‘I expect mRNA and miRNA to be highly correlated’) or data-driven (e.g. based on a prior analysis, such as a non sparse analysis with block.pls to examine the correlation between the different blocks via the modelled components). 
+The matrix **design** determines which blocks should be connected to maximize the correlation or covariance between components. the values may range between 0 (no correlation) to 1 (correlation to maximize) and is a symmetrical matrix. The design can be chosen based on prior knowledge (‘I expect mRNA and miRNA to be highly correlated’) or data-driven (e.g. based on a prior analysis, such as a non sparse analysis with block.pls to examine the correlation between the different blocks via the modelled components). 
 Our experience has shown that a compromise between maximising the correlation between blocks, and discriminating the outcome needed to be achieved, and that the weight in the design matrix could be set to < 1 between blocks (see an example in our vignette and information in supplemental material in [4]).
 
 Here we choose a design where all the blocks are connected with a link of 0.1 (see Supplemental Information S3). We set the number of components to K-1, where K is the number of categories in the Y outcome.
 
 ```{r}
-ncomp = 2
 design = matrix(0.1, ncol = length(data), nrow = length(data), 
                 dimnames = list(names(data), names(data)))
 diag(design) = 0
@@ -81,39 +82,39 @@ set.seed(123) # for reproducibility, only when the `cpus' argument is not used
 perf.diablo = perf(sgccda.res, validation = 'Mfold', M = 5, nrepeat = 10)
 
 #perf.diablo  # lists the different outputs
-plot(perf.diablo) # from the $WeightedVote.error.rate output
+plot(perf.diablo) 
 ```
 
-From the performance plot above we observe that both overall and balanced error rate (BER) decrease from 1 to 2 components. The standard deviation indicates a potential slight gain in adding more components. The centroids.dist distance seem to give the best accuracy (see Supplemental Material \citep{Roh17}). Considering this distance and the BER, the output **$choice.ncomp** indicates an optimal number of components for the final DIABLO model.
+From the performance plot above we observe that both overall and balanced error rate (BER) decrease from 1 to 2 components. The standard deviation indicates a potential slight gain in adding more components. The centroids.dist distance seem to give the best accuracy (see Supplemental Material in [6]). Considering this distance and the BER, the output **$choice.ncomp** indicates an optimal number of components for the final DIABLO model.
 
 
 ```{r}
-##perf.diablo$choice.ncomp$WeightedVote
-ncomp = 2##perf.diablo$choice.ncomp$WeightedVote["Overall.BER", "centroids.dist"]
+perf.diablo$choice.ncomp$WeightedVote
+ncomp = perf.diablo$choice.ncomp$WeightedVote["Overall.BER", "centroids.dist"]
 ```
 
 
 ## Tuning keepX
 
-This tuning function should be used to tune the **keepX** parameters in the *block.splsda* function. 
+This tuning function should be used to tune the **keepX** parameters in the **block.splsda** function. 
 
-We choose the optimal number of variables to select in each data set using the *tune* function, for a grid of **keepX** values. Note that the function has been set to favor the small-ish signature while allowing to obtain a sufficient number of variables for downstream validation / interpretation. See *?tune.block.splsda*.
+We choose the optimal number of variables to select in each data set using the **tune** function, for a grid of **keepX** values. Note that the function has been set to favor the small-ish signature while allowing to obtain a sufficient number of variables for downstream validation / interpretation. See **?tune.block.splsda**.
 
-We choose the optimal number of variables to select in each data set using the *tune.block.splsda* function, to which we provide a grid of **keepX** values for each type of `omics. Note that the function has been set to favour the small-ish signature while allowing to obtain a sufficient number of variables for downstream validation / interpretation.
+We choose the optimal number of variables to select in each data set using the **tune.block.splsda** function, to which we provide a grid of **keepX** values for each type of `omics. Note that the function has been set to favour the small-ish signature while allowing to obtain a sufficient number of variables for downstream validation / interpretation.
 
 The function **tune** is run with 5-fold cross validation, but repeated only once. Note that for a more thorough tuning process, provided sufficient computational time, we could increase the **nrepeat** argument.
 
 
 ```{r, eval=FALSE, include = FALSE}
 #set.seed(123) # for reproducibility, only when the `cpus' argument is not used
-test.keepX = list ("mRNA" = c(5:9, seq(10, 18, 2), seq(20,30,5)),
-                   "miRNA" = c(5:9, seq(10, 18, 2), seq(20,30,5)),
-                   "proteomics" = c(5:9, seq(10, 18, 2), seq(20,30,5)))
+test.keepX = list (mRNA = c(5:9, seq(10, 18, 2), seq(20,30,5)),
+                   miRNA = c(5:9, seq(10, 18, 2), seq(20,30,5)),
+                   proteomics = c(5:9, seq(10, 18, 2), seq(20,30,5)))
 
 t1 = proc.time()
 tune.TCGA = tune.block.splsda(X = data, Y = Y, ncomp = ncomp, 
                               test.keepX = test.keepX, design = design,
-                              validation = 'Mfold', M = 5, nrepeat = 1,
+                              validation = 'Mfold', folds = 5, nrepeat = 1,
                               cpus = 2, dist = "centroids.dist")
 t2 = proc.time()
 running_time = t2 - t1; running_time
@@ -127,14 +128,16 @@ save(tune.TCGA,list.keepX, running_time, file = 'RData/result-TCGA-diablo_design
 
 
 ```{r, include =TRUE, eval=FALSE}
-test.keepX = list ("mRNA" = c(5:9, seq(10, 18, 2), seq(20,30,5)),
-                   "miRNA" = c(5:9, seq(10, 18, 2), seq(20,30,5)),
-                   "proteomics" = c(5:9, seq(10, 18, 2), seq(20,30,5)))
+#set.seed(123) # for reproducibility, only when the `cpus' argument is not used
+test.keepX = list (mRNA = c(5:9, seq(10, 18, 2), seq(20,30,5)),
+                   miRNA = c(5:9, seq(10, 18, 2), seq(20,30,5)),
+                   proteomics = c(5:9, seq(10, 18, 2), seq(20,30,5)))
+
 t1 = proc.time()
 tune.TCGA = tune.block.splsda(X = data, Y = Y, ncomp = ncomp, 
-                              test.keepX = test.keepX, design = design, 
-                              validation = 'Mfold', M = 5, nrepeat = 1, 
-                              dist = "centroids.dist", cpus = 2)
+                              test.keepX = test.keepX, design = design,
+                              validation = 'Mfold', folds = 5, nrepeat = 1,
+                              cpus = 2, dist = "centroids.dist")
 t2 = proc.time()
 running_time = t2 - t1; running_time
 
@@ -152,7 +155,7 @@ tune.TCGA$choice.keepX
 ```
 
 ```{r}
-list.keepX = list("mrna" = c(6,14), "mirna" = c(5,18), "prot" = c(6,7)) # from tuning step
+list.keepX = list(mRNA = c(6,14), miRNA = c(5,18), proteomics = c(6,7)) # from tuning step
 ```
 
 
@@ -172,16 +175,16 @@ The warning message informs that the outcome Y has been included automatically i
 sgccda.res$design
 ```
 
-The selected variables can be extracted with the function *selectVar*, for example in the mRNA block:
+The selected variables can be extracted with the function **selectVar**, for example in the mRNA block:
 
 ```{r}
 # mrna variables selected on component 1
-selectVar(sgccda.res, block = 'mrna', comp = 1)$mrna$name 
+selectVar(sgccda.res, block = 'mRNA', comp = 1)$mRNA$name 
 ```
 
 # Sample plots
 
-*plotDIABLO* is a diagnostic plot to check whether the correlation between components from each data set has been maximized as specified in the design matrix. We specify which dimension to be assessed with the **ncomp** argument.
+**plotDIABLO** is a diagnostic plot to check whether the correlation between components from each data set has been maximized as specified in the design matrix. We specify which dimension to be assessed with the **ncomp** argument.
 
 ```{r}
 plotDiablo(sgccda.res, ncomp = 1)
@@ -246,13 +249,13 @@ write.graph(my.network$gR, file = "myNetwork.gml", format = "gml")
 ```
 
 
-**plotLoadings()** visualizes the loading weights of each selected variables on each component and each data set. The color indicates the class in which the variable has the maximum level of expression (*contrib = 'max'*), on average (*method = 'mean'*) or using the median (*method = 'median'*).
+**plotLoadings()** visualizes the loading weights of each selected variables on each component and each data set. The color indicates the class in which the variable has the maximum level of expression (**contrib = 'max'**), on average (**method = 'mean'**) or using the median (**method = 'median'**).
 
 ```{r}
 plotLoadings(sgccda.res, comp = 2, contrib = 'max', method = 'median')
 ```
 
-The *cimDIABLO()* function is a clustered image map specifically implemented to represent the multi-`omics molecular signature expression for each sample. 
+The **cimDIABLO()** function is a clustered image map specifically implemented to represent the multi-`omics molecular signature expression for each sample. 
 
 ```{r}
 cimDiablo(sgccda.res)
@@ -284,7 +287,7 @@ In addition to the usual (balanced) classification error rates, predicted dummy 
 
 Since the **tune** function was used with the **centroid.dist** argument, we examine the outputs of the **perf** function for that same distance. 
 
-An AUC plot per block can also be obtained using the function **auroc**.
+An AUC plot per block can also be obtained using the function **auroc**. Refer to [5] for the interpretation of such output as the ROC and AUC criteria are not particularly insightful in relation to the performance evaluation of our methods, but can complement the statistical analysis.
 
 ```{r}
 auc.splsda = auroc(sgccda.res, roc.block = "miRNA", roc.comp = 2)
@@ -293,7 +296,7 @@ auc.splsda = auroc(sgccda.res, roc.block = "miRNA", roc.comp = 2)
 
 
 # Prediction on an external test set
-The **predict** function predicts the class of samples from a test set. In our specific case, one data set is missing in the test set but the method can still be applied. 
+The **predict** function predicts the class of samples from a test set. In our specific case, one data set is missing in the test set but the method can still be applied. Make sure the name of the blocks correspond exactly.
 
 ```{r}
 # prepare test set data: here one block (proteins) is missing
@@ -318,6 +321,12 @@ get.BER(confusion.mat)
 # Session information of this code
 ```{r}
 sessionInfo()
+```
+
+
+```{r, include = FALSE}
+# extract R code
+purl("DIABLO_TCGA.Rmd")
 ```
 
 
