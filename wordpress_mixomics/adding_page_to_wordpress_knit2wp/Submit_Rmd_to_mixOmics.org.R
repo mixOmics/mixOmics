@@ -18,6 +18,8 @@ opts_knit$set(upload.fun = imgur_upload, base.url = NULL)
 options(WordpressLogin = c(your.username = 'your.password'), #update these
         WordpressURL = 'http://mixomics.org/xmlrpc.php')
 
+options(WordpressLogin = c(klecao = 'mixOmics8'), #update these
+        WordpressURL = 'http://mixomics.org/xmlrpc.php')
 
 
 
@@ -27,7 +29,28 @@ options(WordpressLogin = c(your.username = 'your.password'), #update these
 #         mixDIABLO tab: first trash the existing files!
 # ======================================
 # intro
-knit2wp(input = 'mixDIABLO.Rmd', title = 'mixDIABLO',  shortcode = FALSE ,publish = FALSE, action = c("newPage"))
+knit2wp(input = 'DIABLO.Rmd', title = 'DIABLO',  shortcode = FALSE ,publish = FALSE, action = c("newPage"))
 
 # analysis example with TCGA: make sure the parent is from mixDIABLO!
-knit2wp(input = 'mixDIABLO_TCGA_example.Rmd', title = 'Example of mixDIABLO analysis',  shortcode = FALSE ,publish = FALSE, action = c("newPage"))
+knit2wp(input = 'DIABLO_TCGA.Rmd', title = 'TCGA example',  shortcode = FALSE ,publish = FALSE, 
+        action = c("newPage"))
+
+
+
+# ======================================
+#         MINT tab: first trash the existing files!
+# ======================================
+
+# analysis example with stem cells: make sure the parent is from MINT!
+knit2wp(input = 'MINT_stemcells.Rmd', title = 'Stemcells example',  shortcode = FALSE ,publish = FALSE, 
+        action = c("newPage"))
+
+
+
+# ======================================
+#         Case studies tab: first trash the existing files!
+# ======================================
+
+# analysis example with stem cells: make sure the parent is from MINT!
+knit2wp(input = 'PLSDA_SRBCT.Rmd', title = 'SRBCT example',  shortcode = FALSE ,publish = FALSE, 
+        action = c("newPage"))

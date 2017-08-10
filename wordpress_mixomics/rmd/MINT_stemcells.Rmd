@@ -1,0 +1,288 @@
+---
+title: "MINT_stemcells"
+author: "Kim-Anh Lê Cao, Florian Rohart, Danielle Davenport"
+date: "10 August 2017"
+output:
+  html_document:
+    code_folding: show
+    highlight: haddock
+    df_print: kable
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
+                      fig.show=TRUE, fig.keep = 'all', fig.height= 8, fig.width=9)
+```
+
+
+# P-integration across independent studies with MINT
+
+Here, we illustrate a supervised MINT analysis on a subset of stem cells transcriptomics data, see *?stemcells*.  The full data set was analysed in [1].
+
+
+Load the latest version of [mixOmics](https://cran.r-project.org/web/packages/mixOmics/index.html) (check the version!).
+
+```{r message = TRUE}
+library(mixOmics)
+```
+
+# Rscript
+The R script is available at [this link (R script and RData)](http://mixomics.org/wp-content/uploads/2017/08/MINT_stemcells.zip) 
+
+
+#Data
+In our original study we integrated 15 transcriptomics microarray stem cells datasets to classify three types of human cells: human Fibroblasts (Fib), human Embryonic Stem Cells (hESC) and human induced Pluripotent Stem Cells (hiPSC). Here we illustrate only a subset of those data, including 4 transcriptomics studies (125 samples in total) and the levels of expression of 400 transcripts. The data were obtained from the Stemformatics database (\url{www.stemformatics.org}, [2]). 
+There exists a biological hierarchy among the three cell types. On the one hand, differences between pluripotent (hiPSC and hESC) and non-pluripotent cells (Fib) are well-characterised and are expected to contribute to the main biological variation. On the other hand, hiPSC are genetically reprogrammed to behave like hESC and both cell types are commonly assumed to be alike. However, differences have been reported in the literature [3-5]. The MINT analysis presented below addresses both subclassification problems in a single analysis. 
+
+We first load the data from **mixOmics** and set up the categorical outcome y and the study membership:
+
+```{r}
+data(stemcells)
+
+#the combined data set X
+X = stemcells$gene
+dim(X) 
+
+# the outcome vector Y:  
+Y = stemcells$celltype 
+length(Y) 
+summary(Y)
+
+# the vector indicating each independent study
+study = stemcells$study
+# number of samples per study:
+summary(study)
+
+# experimental design
+table(Y,study)
+```
+
+# MINT PLS-DA
+We first perform a MINT PLS-DA with all variables included in the model and **ncomp = 5** components. The **perf** function is used to estimate the performance of the model and choose the optimal number of components in **$choice.ncomp** for our final model.
+
+Elapsed running time is reported in seconds. 
+
+```{r}
+mint.plsda.res.perf = mint.plsda(X = X, Y = Y, study = study, ncomp = 5)
+
+set.seed(2543)  # for reproducible result in this example
+perf.mint.plsda.cell <- perf(mint.plsda.res.perf, validation = "Mfold", folds = 5, 
+                  progressBar = FALSE, auc = TRUE) 
+```
+
+```{r}
+plot(perf.mint.plsda.cell, col = color.mixo(5:7))
+```
+
+Based on the performance plot above, **ncomp = 1** seems the achieve the best performance for both maximum and centroids distances in terms of BER (see supplemental information from [1] for more details about the prediction distances). 
+
+Additional numerical outputs such as the BER and overall error rates per component, and the error rates per class and per prediction distance can be output.
+
+```{r}
+perf.mint.plsda.cell$global.error
+```
+
+The optimal number of components: 
+```{r}
+perf.mint.plsda.cell$choice.ncomp
+```
+
+Despite having to choose `r perf.mint.plsda.cell$choice.ncomp` component, we run a final MINT PLS-DA model for **ncomp = 2** in order to obtain 2D graphical outputs. 
+
+```{r}
+mint.plsda.res = mint.plsda(X = X, Y = Y, study = study, ncomp = 2)
+#mint.plsda.res # lists the different functions
+plotIndiv(mint.plsda.res, legend = TRUE, title = 'MINT PLS-DA', 
+          subtitle = 'stem cell study', ellipse = T)
+```
+
+The sample plot shows that fibroblasts are separated on the first MINT PLS-DA component. We observe that while deemed not crucial for an optimal discrimination, the second component seems to discriminate hESC and hiPSC.
+
+# MINT sparse PLS-DA
+
+The MINT PLS-DA model is built on all `r ncol(X)` genes in X, many of which may be uninformative to characterise the different classes. The MINT sPLS-DA analysis aims to identify a small subset of genes that best discriminate the classes. 
+
+## Choice of parameters
+We first tune the **keepX** parameter using the **tune** function for a MINT object. The function performs Leave-One-Group-Out-Cross-Validation (LOGOCV) for different values of **test.keepX** provided on each component, therefore no repeated CV is needed. Based on the mean classification error rate (overall error rate or BER), it will output the optimal number of component **ncomp** and the optimal **keepX** to be included in the final model. 
+
+The tuning takes about 35s to run.
+
+```{r, eval = TRUE, include = TRUE}
+tune.mint = tune(X = X, Y = Y, study = study, ncomp = 2, test.keepX = seq(1, 100, 1), 
+method = 'mint.splsda', dist = "max.dist", progressBar = FALSE)
+
+# tune.mint   # lists the different types of outputs
+
+# mean error rate per component and per tested keepX value
+# tune.mint$error.rate
+```
+
+
+```{r}
+# optimal number of components
+tune.mint$choice.ncomp #tune.mint$choice.ncomp # tell us again than ncomp=1 is sufficient
+
+# optimal keepX
+tune.mint$choice.keepX
+
+plot(tune.mint, col = color.jet(2))
+```
+
+
+# Final MINT sPLS-DA model and outputs
+Following the tuning results, our final MINT sPLS-DA model is as follows. Note that we still chose a model with 2 components in order to obtain 2D graphics.
+
+```{r}
+mint.splsda.res = mint.splsda(X = X, Y = Y, study = study, ncomp = 2,  
+                              keepX = tune.mint$choice.keepX)
+
+#mint.splsda.res   # lists useful functions that can be used with a MINT object
+```
+
+The **selectVar** function outputs the selected transcripts on the first component along with their loading weight value. We consider variables as important in the model when their absolute loading weight value is high. In addition to this output, we could compare the stability of the selected features across studies (see Example in the PLS-DA analysis in [1]).
+
+```{r}
+selectVar(mint.splsda.res, comp = 1)
+```
+
+
+## Sample plots
+The samples can be projected on the global components:
+
+```{r}
+plotIndiv(mint.splsda.res, study = 'global', legend = TRUE, title = 'MINT sPLS-DA', 
+          subtitle = 'Global', ellipse=T)
+```
+
+Or, alternatively using the MINT PLS-component from each study. This options allows us to examine each study individually.
+
+```{r}
+plotIndiv(mint.splsda.res, study = 'all.partial',  title = 'MINT sPLS-DA', 
+          subtitle = paste("Study",1:4))
+```
+
+
+
+Additionally, the **plotArrow** function displays each sample from the X-components (start of the arrow) to the Y-components (end of the arrow):
+```{r}
+plotArrow(mint.splsda.res)
+```
+
+## Correlation circle plots
+We can have a look at our molecular signature selected with MINT sPLS-DA. Our favourite correlation circle plot highlights the contribution of each selected transcripts to each component (close to the large circle). See also more examples [here](http://mixomics.org/graphics/sample-plot/plotvar/).
+
+```{r}
+plotVar(mint.splsda.res, cex = 4)
+```
+
+
+## CIM
+A Clustered Image Map including the final gene signature is plotted (default values to Euclidian distance and Complete linkage). Specific component can be also be chosen.
+
+```{r}
+cim(mint.splsda.res, comp = 1, margins=c(10,5), 
+    row.sideColors = color.mixo(as.numeric(Y)), row.names = FALSE,
+    title = "MINT sPLS-DA, component 1")
+```
+
+Have a look at **?cim** for more options on cim, or [here](http://mixomics.org/graphics/variable-plots/cim/).
+
+## Relevance networks
+There is also a relevant network option to visualise the relationship between the selected variables and the outcome of each category. The argument ‘comp’ specifies which variables are selected (only 1 integer allowed).
+
+```{r}
+network(mint.splsda.res, color.node = c(color.mixo(1), color.mixo(2)), comp = 1,
+ shape.node = c("rectangle", "circle"),
+ color.edge = color.jet(50),
+ lty.edge = "solid", lwd.edge = 2,
+ show.edge.labels = FALSE, interactive = FALSE,
+ #,save = 'jpeg',    #uncomment the following if you experience margin issues with RStudio
+#name.save = network
+ )
+```
+
+For more details on how to interpret a correlation circle plot, a Clustered Image Map or a network, see our pedagogical examples in this [article](http://biodatamining.biomedcentral.com/articles/10.1186/1756-0381-5-19).
+
+## Loading plots
+Finally the **plotLoadings** function displays the coefficient weight of each selected variable in each study and shows the agreement of the gene signature across studies. Colors indicate the class in which the mean expression value of each selected gene is maximal. For component 1:
+
+```{r}
+plotLoadings(mint.splsda.res, contrib="max", method = 'mean', comp=1, 
+             study="all.partial", legend=FALSE, title="Contribution on comp 1", 
+             subtitle = paste("Study",1:4))
+```
+
+Other useful variable outputs include **plotVar** to display the selected variables on a correlation circle plot (see also [4]). 
+
+
+
+## Performance assessment
+The performance of the MINT sPLS-DA model can be assessed with the **perf** function. Since the previous tuning of the MINT sPLS-DA model was conducted with the distance **max.dist**, the same distance is used to assess the performance of the final model.
+
+
+```{r}
+set.seed(123)  # for reproducibility of the results
+perf.mint = perf(mint.splsda.res, progressBar = FALSE, dist = 'max.dist')
+
+perf.mint$global.error
+```
+
+
+```{r}
+plot(perf.mint, col = color.mixo(5))
+```
+
+
+## Prediction
+A **predict** function is also available to predict the class membership of new test samples from an external study.
+
+```{r}
+# we predict on study 3
+ind.test = which(study == "3")
+test.predict <- predict(mint.splsda.res, newdata = X[ind.test, ], dist = "max.dist",
+                        study.test = factor(study[ind.test]))
+Prediction <- test.predict$class$max.dist[, 2]
+
+# the confusion table compares the real subtypes with the predicted subtypes
+get.confusion_matrix(truth = Y[ind.test],
+                     predicted = Prediction)
+```
+
+
+
+
+An AUC plot for the integrated data can be obtained using the function **auroc**.
+
+```{r}
+auc.mint.splsda = auroc(mint.splsda.res, roc.comp = 2)
+```
+
+
+We can also obtain an AUC plot per study.
+```{r}
+auc.mint.splsda = auroc(mint.splsda.res, roc.comp = 2, roc.study = '2')
+```
+
+# Session information of this Sweave code
+```{r}
+sessionInfo()
+```
+
+```{r, include = FALSE}
+# extract R code
+#purl("MINT_stemcells.Rmd")
+```
+
+
+# References
+1. [Rohart F,  Gautier, B, Singh, A and Lê Cao, KA. mixOmics: an R package for ‘omics feature selection and multiple data integration.](http://biorxiv.org/content/early/2017/02/14/108597) On bioRxiv. [Pdf, Sweave and R scripts available here](http://mixomics.org/wp-content/uploads/2012/03/mixOmicsRscripts.zip).
+
+2. Christine A Wells, Rowland Mosbergen, Othmar Korn, Jarny Choi, Nick Seidenman, Nicholas A Matigian, Alejandra M Vitale, and Jill Shepherd. Stemformatics: visualisation and sharing of stem cell gene expression. Stem Cell Res., 10(3):387–395, 2013.
+
+
+3. Josipa Bilic and Juan Carlos Izpisua Belmonte. Concise review: Induced pluripotent stem cells versus embryonic stem cells: close enough or yet too far apart? Stem Cells, 30(1):33–41, 2012.
+
+4. Mark H Chin, Mike J Mason, Wei Xie, Stefano Volinia, Mike Singer, Cory Peterson, Gayane Ambartsumyan, Otaren Aimiuwu, Laura Richter, Jin Zhang, et al. Induced pluripotent stem cells and embryonic stem cells are distinguished by gene expression signatures. Cell stem cell, 5(1): 111–123, 2009.
+
+5. Aaron M Newman and James B Cooper. Lab-specific gene expression signatures in pluripotent stem cells. Cell stem cell, 7(2):258–262, 2010.
