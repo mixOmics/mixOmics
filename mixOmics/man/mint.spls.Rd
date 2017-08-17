@@ -1,5 +1,5 @@
 \name{mint.spls}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{mint.spls}
 
 \title{P-integration with variable selection}

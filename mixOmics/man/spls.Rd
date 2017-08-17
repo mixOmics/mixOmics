@@ -1,5 +1,5 @@
 \name{spls}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{spls}
 
 \title{Sparse Partial Least Squares (sPLS)}

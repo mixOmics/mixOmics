@@ -1,5 +1,5 @@
 \name{plsda}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{plsda}
 
 \title{Partial Least Squares Discriminant Analysis (PLS-DA).}
@@ -83,10 +83,10 @@ least squares using microarray gene expression data. \emph{Bioinformatics}
 \bold{18}, 39-50.
 On log ratio transformation:
 Filzmoser, P., Hron, K., Reimann, C.: Principal component analysis for compositional data with outliers. Environmetrics 20(6), 621-632 (2009)
-K-A. L\^{e} Cao, ME Costello,  VA Lakis, F Bartolo, XY Chua, R Brazeilles, P Rondeau. MixMC: Multivariate insights into Microbial Communities. PLoS ONE, 11(8): e0160169 (2016).
+L\^{e} Cao K.-A., Costello ME,  Lakis VA, Bartolo, F,Chua XY, Brazeilles R, Rondeau P. MixMC: Multivariate insights into Microbial Communities. PLoS ONE, 11(8): e0160169 (2016).
 On multilevel decomposition:
 Westerhuis, J.A., van Velzen, E.J., Hoefsloot, H.C., Smilde, A.K.: Multivariate paired data analysis: multilevel plsda versus oplsda. Metabolomics 6(1), 119-128 (2010)
-Liquet, B., Lê Cao, K.-A., Hocini, H., Thiébaut, R.: A novel approach for biomarker selection and the integration of repeated measures experiments from two assays. BMC bioinformatics 13(1), 325 (2012)
+Liquet, B., L\^{e} Cao K.-A., Hocini, H., Thiebaut, R.: A novel approach for biomarker selection and the integration of repeated measures experiments from two assays. BMC bioinformatics 13(1), 325 (2012)
 }
 
 \author{Ignacio Gonzalez, Kim-Anh Le Cao.}

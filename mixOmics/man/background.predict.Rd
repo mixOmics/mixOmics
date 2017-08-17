@@ -1,5 +1,5 @@
 \name{background.predict}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{background.predict}
 
 \title{Calculate prediction areas}

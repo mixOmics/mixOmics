@@ -1,5 +1,5 @@
 \name{mint.block.splsda}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{mint.block.splsda}
 
 \title{NP-integration with Discriminant Analysis and variable selection}
@@ -103,6 +103,7 @@ Tenenhaus A., Philippe C., Guillemot V, Le Cao K.A., Grill J, Frouin V. Variable
 Gunther O., Shin H., Ng R. T. , McMaster W. R., McManus B. M. , Keown P. A. , Tebbutt S.J. , Le Cao K-A. ,  (2014) Novel multivariate methods for integration of genomics and proteomics data: Applications in a kidney transplant rejection study, OMICS: A journal of integrative biology, 18(11), 682-95.
 
 mixOmics manuscript:
+
 Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration. BioRxiv available here: \url{http://biorxiv.org/content/early/2017/02/14/108597}
 
 }

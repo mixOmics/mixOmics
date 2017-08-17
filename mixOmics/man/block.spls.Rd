@@ -1,5 +1,5 @@
 \name{block.spls}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{block.spls}
 
 \title{N-integration and feature selection with sparse Projection to Latent Structures models (sPLS)}

@@ -1,5 +1,5 @@
 \name{perf}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{perf}
 \alias{perf.pls}
 \alias{perf.spls}
@@ -147,7 +147,7 @@ Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feat
 
 MINT:
 
-Rohart F, Eslami A, Matigian, N, Bougeard S, Le Cao K-A (2017). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. BMC Bioinformatics 18:128.
+Rohart F, Eslami A, Matigian, N, Bougeard S, Le Cao K-A (2017). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. BMC Bioinformatics 18:128.
 
 PLS and PLS citeria for PLS regression:
 Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.

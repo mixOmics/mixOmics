@@ -1,5 +1,5 @@
 \name{network}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{network.default}
 \alias{network.rcc}
 \alias{network.pls}

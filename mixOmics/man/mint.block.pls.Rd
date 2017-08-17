@@ -1,5 +1,5 @@
 \name{mint.block.pls}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{mint.block.pls}
 
 \title{NP-integration}

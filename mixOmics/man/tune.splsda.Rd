@@ -1,5 +1,5 @@
 \name{tune.splsda}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{tune.splsda}
 
 
@@ -88,7 +88,9 @@ Depending on the type of analysis performed, a list that contains:
 }
 
 \references{
-mixOmics manuscript: Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration. 
+mixOmics manuscript:
+
+Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration.
 
 }
 

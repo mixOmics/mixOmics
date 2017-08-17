@@ -1,5 +1,5 @@
 \name{auroc}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{auroc}
 \alias{auroc.plsda}
 \alias{auroc.splsda}

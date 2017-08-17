@@ -1,5 +1,5 @@
 \name{mint.plsda}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{mint.plsda}
 
 \title{P-integration with Projection to Latent Structures models (PLS) with Discriminant Analysis}
@@ -77,7 +77,8 @@ Rohart F, Eslami A, Matigian, N, Bougeard S, Le Cao K-A (2017). MINT: A multivar
 
 Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2014). Algorithms for multi-group PLS. J. Chemometrics, 28(3), 192-201.
 
-mixOmics manuscript
+mixOmics manuscript:
+
 Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration. BioRxiv available here: \url{http://biorxiv.org/content/early/2017/02/14/108597}
 
 }

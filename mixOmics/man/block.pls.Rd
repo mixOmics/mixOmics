@@ -1,5 +1,5 @@
 \name{block.pls}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{block.pls}
 
 \title{N-integration with Projection to Latent Structures models (PLS)}

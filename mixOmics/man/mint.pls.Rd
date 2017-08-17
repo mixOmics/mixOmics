@@ -1,5 +1,5 @@
 \name{mint.pls}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{mint.pls}
 
 \title{P-integration}

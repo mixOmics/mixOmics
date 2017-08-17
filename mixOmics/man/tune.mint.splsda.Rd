@@ -1,5 +1,5 @@
 \name{tune.mint.splsda}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{tune.mint.splsda}
 
 \title{Estimate the parameters of mint.splsda method}
@@ -61,7 +61,9 @@ The returned value is a list with components:
 \references{
 Rohart F, Eslami A, Matigian, N, Bougeard S, Le Cao K-A (2017). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. BMC Bioinformatics 18:128.
 
-mixOmics manuscript: Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration.
+mixOmics manuscript:
+
+Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration.
 }
 
 

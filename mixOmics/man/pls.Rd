@@ -1,5 +1,5 @@
 \name{pls}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{pls}
 
 \title{Partial Least Squares (PLS) Regression}

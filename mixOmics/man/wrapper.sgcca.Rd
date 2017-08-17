@@ -1,5 +1,5 @@
 \name{wrapper.sgcca}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{wrapper.sgcca}
 
 \title{mixOmics wrapper for Sparse Generalised Canonical Correlation Analysis (sgcca)}

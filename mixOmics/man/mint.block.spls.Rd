@@ -1,5 +1,5 @@
 \name{mint.block.spls}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{mint.block.spls}
 
 \title{NP-integration for integration with variable selection}

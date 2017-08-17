@@ -1,5 +1,5 @@
 \name{tune.multilevel}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{tune.multilevel}
 \alias{tune.splslevel}
 
@@ -111,7 +111,9 @@ platforms. \emph{BMC Bioinformatics} \bold{13}:325.
 
 Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010). Multivariate paired data analysis: multilevel PLSDA versus OPLSDA. \emph{Metabolomics}, \bold{6}(1), 119-128.
 
-mixOmics manuscript: Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration.
+mixOmics manuscript:
+
+Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration.
 
 }
 

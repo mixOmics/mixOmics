@@ -1,5 +1,5 @@
 \name{tune.block.splsda}
-\encoding{latin1}
+\encoding{UTF-8}
 \alias{tune.block.splsda}
 
 
@@ -112,10 +112,14 @@ A list that contains:
 
 
 \references{
-Method: Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016). DIABLO:  multi omics integration for biomarker discovery.
+Method:
+
+Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016). DIABLO:  multi omics integration for biomarker discovery.
 
 
-mixOmics manuscript: Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration.
+mixOmics manuscript:
+
+Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration.
 }
 
 
