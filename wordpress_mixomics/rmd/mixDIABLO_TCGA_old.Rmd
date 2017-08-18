@@ -1,0 +1,211 @@
+---
+title: "mixDIABLO - Example TCGA Study"
+date: "22 November 2016"
+output:
+  html_document:
+    code_folding: show
+    highlight: haddock
+    df_print: kable
+
+---
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
+                      fig.show=TRUE, fig.keep = 'all', fig.width= 6)
+```
+
+
+```{r}
+library(mixOmics)
+```
+
+# Multi ‘omics data: Human Breast Cancer TCGA study
+
+The Human Breast Cancer TCGA data presented here is a small subset of the full data set from [The Cancer Genome Atlas](http://cancergenome.nih.gov/) that can be analysed using **mixDiablo** . It contains the expression/abundance of three matching omics data sets: mRNA, miRNA and proteomics for breast cancer samples ( *PAM50 classificiation*: Basal, Her2, Luminal A) 
+
+For this example, the data were normalised and prefiltered and then divided into a training set, that includes a subset of 150 samples (out of our original 379) from the mRNA, miRNA and proteomics data, and the test set includes 70 (of of the original 610) samples, but only from the mRNA, miRNA and methylation data (proteomics missing). The aim is to identify a highly correlated multi-`omics signature discriminating the PAM50 subgroups.
+
+Below we set up the data as a list of ‘blocks‘ (`omics data sets, each row should match to the same biological sample from one data set to another) and the outcome Y as a factor.
+The training data include four ‘omics (mRNA, miRNA, methylation and proteomics) measured on 379 samples classified into four breast cancer subtypes.
+
+# Data
+
+Download zip file with full data set and R script [here](http://mixomics.org/wp-content/uploads/2016/08/TCGA.normalised.mixDIABLO.RData_.zip). 
+
+```{r}
+load('Rdata/TCGA.normalised.mixDIABLO')
+```
+
+```{r}
+data = list(mrna = data.train$mrna, mirna = data.train$mirna, 
+            prot = data.train$protein)
+
+# check dimension
+lapply(data, dim)
+
+#outcome
+Y = data.train$subtype
+summary(Y)
+```
+
+# Design
+
+The design matrix **design** determines which blocks should be connected to maximise the correlation or covariance between components
+
+The number of components **ncomp** . The deflation performed in the algorithm is set internally to ‘canonical’ (a specific deflation step also performed in PLS).
+
+In the sparse approaches sGCCA and sGCC-DA, the number of variables to select **keepX, keepY** for each data block and each component of each data block must be specified.
+
+
+```{r}
+# set up a full design where every block is connected
+design = matrix(1, ncol = length(data), nrow = length(data),
+dimnames = list(names(data), names(data)))
+diag(design) =  0
+design
+# set number of component per data set
+ncomp = 2
+```
+
+## Tuning 
+
+This tuning function should be used to tune the keepX parameters in the *block.splsda* function. 
+
+**Note:** The grid of possible keepX values must be set up with care in order to limit the number of combination to test. So far our experience showed that a small number of variables for each component and each block seemed to achieve best performance.
+
+```{r, eval = FALSE}
+set.seed(123) # for reproducibility
+
+# definition of the keepX value to be tested for each block mRNA miRNA and protein
+test.keepX = list(mrna = seq(10,100,20), mirna = seq(10,100,10), protein = seq(1,20,5))
+
+# the following may take some time to run, note that for through tuning
+# nrepeat should be > 1
+tune = tune.block.splsda(X = data, Y, ncomp = ncomp, test.keepX = test.keepX, design = design, nrepeat = 1)
+
+tune$choice.keepX.constraint # NULL as constraint = FALSE per default
+tune$choice.keepX
+``` 
+
+```{r, echo= FALSE, eval= FALSE}
+save(tune, 'Rdata/tune.mixDiablo.TCGAStudy.RData')
+```
+
+```{r, include=FALSE}
+load('Rdata/tune.mixDiablo.TCGAStudy.RData')
+```
+
+```{r}
+choice.keepX = list(mrna = seq(10,10), mirna = seq(10,70), protein = seq(11,16))
+ncomp = 2
+sgccda.res = block.splsda(X = data, Y = Y, ncomp = ncomp, 
+                          keepX = tune$choice.keepX, design = design)
+ #sgccda.res   # list the different functions of interest related to that object
+```
+
+```{r}
+sgccda.res$design
+```
+
+```{r}
+# indicates the mrna variables selected on component 1
+selectVar(sgccda.res, block = 'mrna', comp = 1)$mrna$name 
+```
+
+# Plots 
+
+## Plot Diablo 
+
+plotDIABLO() is a diagnostic plot that allows to check whether the correla- tion between components of each data set has been maximised. We specify which dimension to be assessed with the ncomp argument.
+
+```{r}
+plotDiablo(sgccda.res, ncomp = 1)
+```
+
+We can observe that the first components associated to each data set are highly (either negatively, or positively) correlated to each others. The colors and ellipses also indicate the discriminative power of each component to discriminate the different tumour subtypes.
+
+## plotIndiv
+
+plotIndiv() projects each sample into the space spanned by the com- ponents of each block. The argument blocks can output a specific data set. 
+
+```{r}
+plotIndiv(sgccda.res, ind.names = FALSE, legend = TRUE, 
+          title = 'DIABLO')
+```
+
+
+## Variable Plots
+
+The correlation circle plot highlights the contribution of each selected transcripts to each component (close to the large circle, see González et al. 2012). plotVar() displays the variables from all blocks, selected on component 1 and 2. Clusters of points indicate a strong correlation between variables.
+
+
+```{r}
+plotVar(sgccda.res, var.names = FALSE, style = 'graphics', 
+        legend = TRUE, pch = c(16, 17, 18))
+```
+
+The circos plot represents the correlations between variables of different types, represented on the side quadrants. Several display options are possible, to show within and between connexions between blocks, expression levels of each variable according to each class (argument line = TRUE ).
+
+```{r}
+circosPlot(sgccda.res, cutoff = 0.7, line = FALSE)
+```
+
+## plotLoadings
+
+plotLoadings() visualises the loading weights of each selected variables on each component on each data set. The color indicates the class in which the variable has the maximum level of expres- sion (contrib = ’max’), on average (method = ’mean’) or using the median (method = ’median’).
+
+```{r}
+plotLoadings(sgccda.res, comp = 1, contrib = 'max', method = 'median')
+```
+
+## CIM plots
+
+The cimDIABLO() function is a clustered image map specifically implemented to represent the multi-‘omics molecular signature expression for each sample. 
+
+```{r, fig.height= 8, fig.width=9}
+cimDiablo(sgccda.res)
+```
+
+# Performance
+
+Below the performance of the model using 10-fold cross-validation is repeated 10 times using the function perf() . The method runs a block.splsda() model on the pre-specified arguments input in our sgccda.res object but on cross-validated samples. We
+then assess the accuracy of the prediction on the left out samples.
+
+In addition to the usual (balanced) classification error rates, perf() outputs the performance based on Majority Vote (each data set votes for a prediction for a particular test sample), or based on a Weighted Vote (each data set is weighted according to its correlation with the outcome in the DIABLO model), see ?perf for more details. The stability of the features selected across the different folds and repeat is also output.
+
+```{r}
+set.seed(123) # for reproducibility
+perf.diablo = perf(sgccda.res, validation = 'Mfold', nrepeat = 10,
+                   M = 10, dist = 'mahalanobis.dist')
+#perf.diablo  # lists the different outputs
+# using Majority vote
+perf.diablo$MajorityVote.error.rate
+# using the error rate based on the weighted vote
+perf.diablo$WeightedPredict.error.rate
+```
+
+# Prediction on an external test set
+
+The predict function predicts the class of samples from a test set.
+
+Class prediction is performed using the DIABLO predicted scores associated to each data set. The predicted class is returned for each block and the specified distance. These predictions are combined either by majority vote ( predict.diablo$MajorityVote$mahalanobis.dist ) or weighted majority vote ( predict.diablo$WeightedVote$mahalanobis.dist ) where the weights of the blocks that are calculated as the correlation between a block’s components and the outcome’s components, and the specified distance is used. NA means that there is no consensus among the block.
+
+```{r}
+# prepare test set data: here one block (proteins) is missing
+data.test.TCGA = list(mrna = data.test$mrna, 
+                      mirna = data.test$mirna)
+
+predict.diablo = predict(sgccda.res, newdata = data.test.TCGA, 
+                         dist = 'mahalanobis.dist')
+
+# the warning message will inform us that one block is missing
+#predict.diablo # list the different outputs
+```
+
+```{r}
+# the confusion table compares the real subtypes with the predicted subtypes 
+# for a 2 component model using weighted vote prediction
+table(predict.diablo$WeightedVote$mahalanobis.dist[,2],
+      data.test$subtype)
+```
+
