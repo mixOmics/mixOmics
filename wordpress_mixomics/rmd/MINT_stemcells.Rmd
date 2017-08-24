@@ -11,8 +11,8 @@ output:
 
 ```{r global_options, include=FALSE}
 library(knitr)
-knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
-                      fig.show=TRUE, fig.keep = 'all', fig.height= 8, fig.width=9)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, fig.align = 'center', 
+                      fig.show=TRUE, fig.keep = 'all', out.width = '50%') 
 ```
 
 
@@ -276,7 +276,7 @@ sessionInfo()
 
 
 # References
-1. [Rohart F,  Gautier, B, Singh, A and Lê Cao, KA. mixOmics: an R package for ‘omics feature selection and multiple data integration.](http://biorxiv.org/content/early/2017/02/14/108597) On bioRxiv. [Pdf, Sweave and R scripts available here](http://mixomics.org/wp-content/uploads/2012/03/mixOmicsRscripts.zip).
+1. [Rohart F, Gautier B, Singh A, Lê Cao K-A (2017). mixOmics: an R package for 'omics feature selection and multiple data integration.](http://mixomics.org/a-propos/publications/)
 
 2. Christine A Wells, Rowland Mosbergen, Othmar Korn, Jarny Choi, Nick Seidenman, Nicholas A Matigian, Alejandra M Vitale, and Jill Shepherd. Stemformatics: visualisation and sharing of stem cell gene expression. Stem Cell Res., 10(3):387–395, 2013.
 

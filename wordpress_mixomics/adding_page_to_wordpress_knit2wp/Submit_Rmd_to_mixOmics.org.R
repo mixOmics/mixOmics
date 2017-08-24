@@ -25,24 +25,40 @@ options(WordpressLogin = c(klecao = 'mixOmics8'), #update these
 
 
 
-# ======================================
-#         mixDIABLO tab: first trash the existing files!
-# ======================================
-# intro
-knit2wp(input = 'DIABLO.Rmd', title = 'DIABLO',  shortcode = FALSE ,publish = FALSE, action = c("newPage"))
 
-# analysis example with TCGA: make sure the parent is from mixDIABLO!
-knit2wp(input = 'DIABLO_TCGA.Rmd', title = 'TCGA example',  shortcode = FALSE ,publish = FALSE, 
+
+
+
+
+
+# ======================================
+#         Methods tab: first trash the existing files!
+# ======================================
+
+knit2wp(input = 'PCA.Rmd', title = 'PCA',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+knit2wp(input = 'sIPCA.Rmd', title = 'IPCA',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+knit2wp(input = 'rCCA.Rmd', title = 'rCCA',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+knit2wp(input = 'sPLS.Rmd', title = 'sPLS',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+knit2wp(input = 'PLS-DA.Rmd', title = 'PLS-DA',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+knit2wp(input = 'Multilevel.Rmd', title = 'Multilevel',  shortcode = FALSE, publish = FALSE, 
         action = c("newPage"))
 
 
-
 # ======================================
-#         MINT tab: first trash the existing files!
+#         Graphics tab: first trash the existing files!
 # ======================================
 
-# analysis example with stem cells: make sure the parent is from MINT!
-knit2wp(input = 'MINT_stemcells.Rmd', title = 'Stemcells example',  shortcode = FALSE ,publish = FALSE, 
+knit2wp(input = 'plotIndiv.Rmd', title = 'plotIndiv',  shortcode = FALSE, publish = FALSE, 
         action = c("newPage"))
 
 
@@ -51,6 +67,30 @@ knit2wp(input = 'MINT_stemcells.Rmd', title = 'Stemcells example',  shortcode = 
 #         Case studies tab: first trash the existing files!
 # ======================================
 
-# analysis example with stem cells: make sure the parent is from MINT!
-knit2wp(input = 'PLSDA_SRBCT.Rmd', title = 'SRBCT example',  shortcode = FALSE ,publish = FALSE, 
+knit2wp(input = 'PLSDA_SRBCT.Rmd', title = 'sPLSDA: SRBCT',  shortcode = FALSE ,publish = FALSE, 
         action = c("newPage"))
+
+
+# ======================================
+#         DIABLO tab: first trash the existing files!
+# ======================================
+# intro
+# somehow struggles to get the link diablo instead of diablo-2
+# check in the appearance ->menu first
+knit2wp(input = 'Diablo.Rmd', title = 'DIABLO',  shortcode = FALSE ,publish = FALSE, action = c("newPage"))
+
+# analysis example with TCGA: 
+# !!! set to 'tcga-example in the quick edit slug; and set no parents, this is important for our publications links
+knit2wp(input = 'DIABLO_TCGA.Rmd', title = 'Case study: TCGA',  shortcode = FALSE ,publish = FALSE, 
+        action = c("newPage"))
+
+# ======================================
+#         MINT tab: first trash the existing files!
+# ======================================
+
+# analysis example with stem cells
+# !!!! set to 'stemcells-example in the quick edit slug; and set no parents, this is important for our publications links
+knit2wp(input = 'MINT_stemcells.Rmd', title = 'Case study: stem cells',  shortcode = FALSE ,publish = FALSE, 
+        action = c("newPage"))
+
+

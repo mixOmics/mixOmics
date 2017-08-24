@@ -11,8 +11,8 @@ output:
 
 ```{r global_options, include=FALSE}
 library(knitr)
-knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
-                      fig.show=TRUE, fig.keep = 'all', fig.height= 8, fig.width=9)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, fig.align = 'center', 
+                      fig.show=TRUE, fig.keep = 'all', out.width = '50%') 
 ```
 
 # N-Integration discriminant analysis with DIABLO
@@ -346,7 +346,7 @@ Have a look at our reference [4] and [5] and the supplemental of [5] in particul
 
 4. [Singh, A, Gautier, B, Shannon, CP, Vacher, M, Rohart, F, Tebutt, SJ. and Le Cao, KA, 2016. DIABLO-an integrative, multi-omics, multivariate method for multi-group classification. bioRxiv, p.067611.](https://scholar.google.com/scholar_url?url=http://www.biorxiv.org/content/biorxiv/early/2016/08/03/067611.full.pdf&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=9PJFWKrBEZCxmAGFmYKQBg&scisig=AAGBfm3iG_i1eg3qvaDrd8JOciOvicXIRw)
 
-5. [Rohart F,  Gautier, B, Singh, A and Lê Cao, KA. mixOmics: an R package for ‘omics feature selection and multiple data integration.](http://biorxiv.org/content/early/2017/02/14/108597) On bioRxiv. [Pdf, Sweave and R scripts available here](http://mixomics.org/wp-content/uploads/2012/03/mixOmicsRscripts.zip).
+5. [Rohart F, Gautier B, Singh A, Lê Cao K-A (2017). mixOmics: an R package for 'omics feature selection and multiple data integration.](http://mixomics.org/a-propos/publications/)
 
 6. [Rohart F, Mason EA, Matigian N, Mosbergen R, Korn O, Chen T, Butcher S, Patel J, Atkinson K, Khosrotehrani K, Fisk NM, Lê Cao K-A&, Wells CA& (2016). A Molecular Classification of Human Mesenchymal Stromal Cells, PeerJ 4:e1845](https://peerj.com/articles/1845/)
 
