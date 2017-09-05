@@ -1,7 +1,7 @@
 ---
-title: "mixOmics 6.1.2"
+title: "mixOmics 6.2.0"
 author: "F.Rohart"
-date: "25 January 2017"
+date: "24 July 2017"
 output: pdf_document
 ---
 ```{r global_options, include=TRUE,echo=FALSE}
@@ -82,4 +82,4 @@ if(length(ind.error)>0)
 
 ```
 
-Note: this pdf is a light version of all the tests. If you want more, you need to change additional.test=TRUE
+%Note: this pdf is a light version of all the tests. If you want more, you need to change additional.test=TRUE

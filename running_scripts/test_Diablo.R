@@ -92,11 +92,6 @@ set.seed(43)
 a=perf(nutrimouse.sgccda,nrepeat=3, progressBar = FALSE)
 plot(a)
 
-set.seed(43)
-a2=perf(nutrimouse.sgccda,nrepeat=3, constraint = TRUE, progressBar = FALSE)
-plot(a2)
-
-
 
 set.seed(43)
 a=perf(nutrimouse.sgccda, progressBar = FALSE)
@@ -228,17 +223,15 @@ scale=TRUE
 tol = 1e-06
 weighted = TRUE
 progressBar = TRUE
-constraint = FALSE
 weighted = TRUE
 parallel=FALSE
 
 
-    # tune with constraint
+    # tune
     tune = tune.block.splsda(
     X=data,
     Y = Y,
     design = design,
-    constraint=TRUE,
     nrepeat=4,
     ncomp = 2,#c(2, 2),
     scheme = "centroid",
@@ -247,26 +240,24 @@ parallel=FALSE
     )
     tune
     
-    # tune with constraint, with test.keepX as input
+    # tune with test.keepX as input
     tune = tune.block.splsda(
     X = data,
     Y = Y,
     design = design,
     ncomp = 2,#c(2, 2),
     test.keepX = list(gene=c(1,5,10,4),lipid=c(1,2,3)),
-    constraint = TRUE,
     scheme = "centroid",
     verbose = FALSE,
     bias = FALSE
     )
     tune
 
-    # tune without constraint, but only component 2
+    # tune, but only component 2
     tune = tune.block.splsda(
     X=data,
     Y = Y,
     design = design,
-    constraint = FALSE,
     already.tested.X = list(gene=c(10), lipid=c(15)),
     nrepeat=4,
     ncomp = 2,#c(2, 2),
@@ -276,21 +267,6 @@ parallel=FALSE
     )
     tune
 
-
-    # tune with constraint, and only component 2 and 3
-    tune = tune.block.splsda(
-    X=data,
-    Y = Y,
-    design = design,
-    constraint=TRUE,
-    already.tested.X = list(gene=list(comp1=sample(colnames(data$gene),10)), lipid=list(comp1=sample(colnames(data$lipid),5))),
-    nrepeat=4,
-    ncomp = 3,#c(2, 2),
-    scheme = "centroid",
-    verbose = FALSE,
-    bias = FALSE
-    )
-    tune
     
     # tune with saving a file
     tune = tune.block.splsda(
@@ -303,7 +279,6 @@ parallel=FALSE
     bias = FALSE,
     nrepeat = 2,
     name.save="try",
-    constraint=TRUE,
     cpus=4
     )
 
