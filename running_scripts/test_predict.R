@@ -37,7 +37,7 @@ test <- which(samp == 1)   # testing on the first fold
 train <- setdiff(1:nrow(X), test)
 
 plsda.train <- plsda(X[train, ], Y[train], ncomp = 2)
-test.predict <- predict(plsda.train, X[test, ], method = "max.dist")
+test.predict <- predict(plsda.train, X[test, ], dist = "max.dist")
 
 Prediction <- test.predict$class$max.dist[, 2]
 cbind(Y = as.character(Y[test]), Prediction)
@@ -53,7 +53,7 @@ c(paste0("new ind",1:length(test))), pos = 3)
 # ------------------
 splsda.train <- splsda(X[train, ], Y[train], ncomp = 2, keepX = c(30, 30))
 
-test.predict <- predict(splsda.train, X[test, ], method = "max.dist")
+test.predict <- predict(splsda.train, X[test, ], dist = "max.dist")
 Prediction <- test.predict$class$max.dist[, 2]
 cbind(Y = as.character(Y[test]), Prediction)
 
@@ -102,7 +102,7 @@ data.test=list(gene=gene.test,lipid=lipid.test)
 # example with block.pls
 # ------------------
 res.train=block.pls(X=data.train,indY=3,ncomp = 3)
-test.predict <- predict(res.train, newdata=data.test, method = "max.dist")
+test.predict <- predict(res.train, newdata=data.test, dist = "max.dist")
 
 par(mfrow=c(1,2))
 plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction block.PLS",blocks="gene")
@@ -119,7 +119,7 @@ c(paste0("new ind",1:nrow(data.test[[1]]))), pos = 3)
 # example with block.spls
 # ------------------
 res.train=block.spls(X=data.train,indY=3,ncomp = 3,keepX=list(gene=c(10,10,10),lipid=c(5,5,5)))
-test.predict <- predict(res.train, newdata=data.test, method = "max.dist")
+test.predict <- predict(res.train, newdata=data.test, dist = "max.dist")
 
 par(mfrow=c(1,2))
 plotIndiv(res.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction block.sPLS",blocks="gene")
@@ -136,7 +136,7 @@ c(paste0("new ind",1:nrow(data.test[[1]]))), pos = 3)
 # example with block.plsda
 # ------------------
 res.train=block.plsda(X=list(gene=gene.train,lipid=lipid.train),Y=Y.train,ncomp = 3)
-test.predict <- predict(res.train, newdata=data.test, method = "max.dist")
+test.predict <- predict(res.train, newdata=data.test, dist = "max.dist")
 
 Prediction <- test.predict$WeightedVote$max.dist[, 3]
 color.test=color.mixo(as.numeric(factor(Prediction,levels=levels(Y.train))))
@@ -163,7 +163,7 @@ c(paste0("new ind",1:nrow(data.test[[1]]))), pos = 3)
 # example with block.splsda=diablo=sgccda
 # ------------------
 res.train=block.splsda(X=list(gene=gene.train,lipid=lipid.train),Y=Y.train,ncomp = 3,keepX=list(gene=c(10,10,10),lipid=c(5,5,5)))
-test.predict <- predict(res.train, newdata=data.test, method = "max.dist")
+test.predict <- predict(res.train, newdata=data.test, dist = "max.dist")
 
 Prediction <- test.predict$WeightedVote$max.dist[, 3]
 color.test=color.mixo(as.numeric(factor(Prediction,levels=levels(Y.train))))
@@ -184,7 +184,7 @@ c(paste0("new ind",1:nrow(data.test[[1]]))), pos = 3)
 
 # example with block.splsda=diablo=sgccda and a missing block
 res.train=block.splsda(X=list(gene=gene.train,lipid=lipid.train),Y=Y.train,ncomp = 3,keepX=list(gene=c(10,10,10),lipid=c(5,5,5)))
-test.predict <- predict(res.train, newdata=data.test[2], method = "max.dist")
+test.predict <- predict(res.train, newdata=data.test[2], dist = "max.dist")
 
 Prediction <- test.predict$MajorityVote$max.dist[, 3]
 color.test=color.mixo(as.numeric(factor(Prediction,levels=levels(Y.train))))
@@ -224,7 +224,7 @@ par(mfrow=c(1,1))
 # ------------------
 mint.train=mint.pls(X=gene.train,Y=Y.mat.train,ncomp=3,near.zero.var=FALSE,study=study.train)
 
-test.predict <- predict(mint.train, gene.test, method = "max.dist",study.test=study.test)
+test.predict <- predict(mint.train, gene.test, dist = "max.dist",study.test=study.test)
 
 plotIndiv(mint.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction mint.PLS",xlim=c(-20,50))
 points(test.predict$variates[, 1], test.predict$variates[, 2], pch = 19, cex = 1.2)
@@ -236,7 +236,7 @@ c(paste0("new ind",1:length(study.test))), pos = 3)
 # ------------------
 mint.train=mint.spls(X=gene.train,Y=Y.mat.train,ncomp=3,near.zero.var=FALSE,study=study.train,keepX=c(10,10,10))
 
-test.predict <- predict(mint.train, gene.test, method = "max.dist",study.test=study.test)
+test.predict <- predict(mint.train, gene.test, dist = "max.dist",study.test=study.test)
 
 plotIndiv(mint.train, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE,title="Prediction mint.sPLS",xlim=c(-3,6))
 points(test.predict$variates[, 1], test.predict$variates[, 2], pch = 19, cex = 1.2)
@@ -249,7 +249,7 @@ c(paste0("new ind",1:length(study.test))), pos = 3)
 # ------------------
 mint.train=mint.plsda(X=gene.train,Y=celltype.train,ncomp=3,near.zero.var=FALSE,study=study.train)
 
-test.predict <- predict(mint.train, gene.test, method = "max.dist",study.test=study.test)
+test.predict <- predict(mint.train, gene.test, dist = "max.dist",study.test=study.test)
 Prediction <- test.predict$class$max.dist[, 2]
 cbind(Y = as.character(celltype.test), Prediction)
 
@@ -264,7 +264,7 @@ points(test.predict$variates[, 1], test.predict$variates[, 2], pch = 19, cex = 1
 # ------------------
 mint.train=mint.splsda(X=gene.train,Y=celltype.train,ncomp=3,near.zero.var=FALSE,study=study.train,keepX=c(10,10,10))
 
-test.predict <- predict(mint.train, gene.test, method = "max.dist",study.test=study.test)
+test.predict <- predict(mint.train, gene.test, dist = "max.dist",study.test=study.test)
 Prediction <- test.predict$class$max.dist[, 2]
 cbind(Y = as.character(celltype.test), Prediction)
 

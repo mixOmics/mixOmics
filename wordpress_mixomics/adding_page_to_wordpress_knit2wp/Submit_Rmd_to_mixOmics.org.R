@@ -18,16 +18,79 @@ opts_knit$set(upload.fun = imgur_upload, base.url = NULL)
 options(WordpressLogin = c(your.username = 'your.password'), #update these
         WordpressURL = 'http://mixomics.org/xmlrpc.php')
 
+options(WordpressLogin = c(klecao = 'mixOmics8'), #update these
+        WordpressURL = 'http://mixomics.org/xmlrpc.php')
+
+
+
+
+
+
 
 
 
 
 
 # ======================================
-#         mixDIABLO tab: first trash the existing files!
+#         Methods tab: first trash the existing files!
+# ======================================
+
+knit2wp(input = 'PCA.Rmd', title = 'PCA',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+knit2wp(input = 'sIPCA.Rmd', title = 'IPCA',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+knit2wp(input = 'rCCA.Rmd', title = 'rCCA',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+knit2wp(input = 'sPLS.Rmd', title = 'sPLS',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+knit2wp(input = 'PLS-DA.Rmd', title = 'PLS-DA',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+knit2wp(input = 'Multilevel.Rmd', title = 'Multilevel',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+
+# ======================================
+#         Graphics tab: first trash the existing files!
+# ======================================
+
+knit2wp(input = 'plotIndiv.Rmd', title = 'plotIndiv',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+
+
+# ======================================
+#         Case studies tab: first trash the existing files!
+# ======================================
+
+knit2wp(input = 'PLSDA_SRBCT.Rmd', title = 'sPLSDA: SRBCT',  shortcode = FALSE ,publish = FALSE, 
+        action = c("newPage"))
+
+
+# ======================================
+#         DIABLO tab: first trash the existing files!
 # ======================================
 # intro
-knit2wp(input = 'mixDIABLO.Rmd', title = 'mixDIABLO',  shortcode = FALSE ,publish = FALSE, action = c("newPage"))
+# somehow struggles to get the link diablo instead of diablo-2
+# check in the appearance ->menu first
+knit2wp(input = 'Diablo.Rmd', title = 'DIABLO',  shortcode = FALSE ,publish = FALSE, action = c("newPage"))
 
-# analysis example with TCGA: make sure the parent is from mixDIABLO!
-knit2wp(input = 'mixDIABLO_TCGA_example.Rmd', title = 'Example of mixDIABLO analysis',  shortcode = FALSE ,publish = FALSE, action = c("newPage"))
+# analysis example with TCGA: 
+# !!! set to 'tcga-example in the quick edit slug; and set no parents, this is important for our publications links
+knit2wp(input = 'DIABLO_TCGA.Rmd', title = 'Case study: TCGA',  shortcode = FALSE ,publish = FALSE, 
+        action = c("newPage"))
+
+# ======================================
+#         MINT tab: first trash the existing files!
+# ======================================
+
+# analysis example with stem cells
+# !!!! set to 'stemcells-example in the quick edit slug; and set no parents, this is important for our publications links
+knit2wp(input = 'MINT_stemcells.Rmd', title = 'Case study: stem cells',  shortcode = FALSE ,publish = FALSE, 
+        action = c("newPage"))
+
+

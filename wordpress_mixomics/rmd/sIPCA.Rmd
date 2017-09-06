@@ -1,16 +1,17 @@
 ---
-title: "(s)IPCA"
-date: "20 January 2017"
+title: "IPCA"
+author: "KA Le Cao"
+date: "18 August 2017"
 output: html_document
 ---
 ```{r global_options, include=FALSE}
 library(knitr)
-knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
-                      fig.show=TRUE, fig.keep = 'all')
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, fig.align = 'center', 
+                      fig.show=TRUE, fig.keep = 'all', out.width = '50%') 
 ```
 
 
-# Independant Principle Component Analysis 
+# Independant Principal Component Analysis 
 
 In some case studies, we have identified some limitations when using PCA:
 
@@ -34,7 +35,7 @@ IPCA offers a better visualization of the data than ICA and with a smaller numbe
 
 ## Choosing the optimal parameters
 
-The number of variables to select is still an open issue. In [1] we proposed to use the Davies Bouldin measure which is an index of crisp cluster validity. This index compares the within-cluster scatter with the between-cluster separation.
+The number of variables to select is still an open issue. In Yao et al (2012) we proposed to use the Davies Bouldin measure which is an index of crisp cluster validity. This index compares the within-cluster scatter with the between-cluster separation.
 
 # IPCA
 
@@ -44,11 +45,11 @@ IPCA is of class sPCA and PCA, and most of the PCA graphical methods can be appl
 library(mixOmics)
 data("liver.toxicity")
 ipca.res <- ipca(liver.toxicity$gene, ncomp = 3, mode="deflation")
-ipca.res
+#ipca.res
 ```
 
 
-See See [Case Study: IPCA Liver Toxicity](http://mixomics.org/case-studies/ipca-liver-toxicity/) for plotting options. 
+See [Case Study: IPCA Liver Toxicity](http://mixomics.org/case-studies/ipca-liver-toxicity/) for plotting options. 
 
 # Kurtosis
 
@@ -58,12 +59,14 @@ The kurtosis measure is used to order the loading vectors to order the Independe
 ipca.res$kurtosis
 ```
 
-
+# Case study
+ See [Case Study: IPCA Liver toxicity](http://mixomics.org/case-studies/ipca-liver-toxicity/) for more examples and plotting options.
+ 
 
 # References 
 
 1. [Yao, F., Coquery, J. and Lê Cao, K.A., 2012. Independent principal component analysis for biologically meaningful dimension reduction of large biological data sets. BMC bioinformatics, 13(1), p.24.](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-13-24)
 
-2. [Comon, P., 1994. Independent component analysis, a new concept?. Signal processing, 36(3), pp.287-314.](Yao, F., Coquery, J. and Lê Cao, K.A., 2012. Independent principal component analysis for biologically meaningful dimension reduction of large biological data sets. BMC bioinformatics, 13(1), p.24.)
+2. [Comon, P., 1994. Independent component analysis, a new concept?. Signal processing, 36(3), pp.287-314.](http://www.gipsa-lab.grenoble-inp.fr/~pierre.comon/FichiersPdf/como94-SP.pdf)
 
 3. [Hyvärinen, A. and Oja, E., 2000. Independent component analysis: algorithms and applications. Neural networks, 13(4), pp.411-430.](http://mlsp.cs.cmu.edu/courses/fall2012/lectures/ICA_Hyvarinen.pdf)
