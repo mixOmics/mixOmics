@@ -63,10 +63,21 @@ keepA.constraint = NULL, penalty = NULL)
     # keepA is updated to be of length length(A) now, the first entries correspond to the keepA.constraint if it was provided
     for (q in 1:length(A))
     keepA[[q]] = c(unlist(lapply(keepA.constraint[[q]], length)), keepA[[q]]) #of length ncomp, can contains 0
-
+    
+    #save(list=ls(),file="temp.Rdata")
+    time1=proc.time()
     # center the data per study, per matrix of A, scale if scale=TRUE, option bias
     mean_centered = lapply(A, function(x){mean_centering_per_study(x, study, scale, bias)})
+    time1bis=proc.time()
+    print("scaling part1")
+    print(time1bis-time1)
+
     A = lapply(mean_centered, function(x){as.matrix(x$concat.data)})
+    time2 = proc.time()
+    print("scaling")
+    print(time2-time1bis)
+    time2 = proc.time()
+    
     ni = table(study) #number of samples per study
     
     ### Start: Initialization parameters
@@ -104,10 +115,17 @@ keepA.constraint = NULL, penalty = NULL)
     tau = matrix(rep(tau, N), nrow = N, ncol = length(tau), byrow = TRUE)
     ### End: Initialization parameters
     
+    #save(list=ls(),file="temp.Rdata")
+    time3 = proc.time()
+    print("stuff")
+    print(time3-time2)
+    time3 = proc.time()
     
     iter=NULL
     for (n in 1 : N)
     {
+        time3 = proc.time()
+
         ### Start: Estimation ai
         if (is.null(tau))
         {
@@ -123,6 +141,12 @@ keepA.constraint = NULL, penalty = NULL)
         }
         ### End: Estimation ai
         
+        time4 = proc.time()
+        print("one comp")
+        print(time4-time3)
+        time4 = proc.time()
+    
+    
         if(is.null(tau))
         {
             #recording loadings.partials, $Ai$study[,ncomp]
@@ -153,6 +177,10 @@ keepA.constraint = NULL, penalty = NULL)
             defl.matrix[[n + 1]] = R
         }
         
+        time5 = proc.time()
+        print("deflation")
+        print(time5-time4)
+        
         for (k in 1 : J)
         {
             if (N != 1)
@@ -171,8 +199,14 @@ keepA.constraint = NULL, penalty = NULL)
             loadings.Astar[[k]][, n] = mint.block.result$loadings.A[[k]] - loadings.Astar[[k]][, (1 : n - 1), drop = F] %*% drop(t(loadings.A[[k]][, n]) %*% P[[k]][, 1 : (n - 1), drop = F])
         }
         iter = c(iter, mint.block.result$iter)
+        
+        time6 = proc.time()
+        print("stuff_comp")
+        print(time6-time5)
+        
     }
-    
+    time7 = proc.time()
+
     if (verbose)
     cat(paste0("Computation of the SGCCA block components #", N , " is under progress...\n"))
     
@@ -192,7 +226,7 @@ keepA.constraint = NULL, penalty = NULL)
             {
                 rownames(loadings.partial.A[[k]][[m]]) = colnames(A[[k]])
                 colnames(loadings.partial.A[[k]][[m]]) = paste0("comp ", 1:max(ncomp))
-                rownames(variates.partial.A[[k]][[m]]) = rownames(mean_centered[[1]]$rownames.study[[m]])
+                rownames(variates.partial.A[[k]][[m]]) = mean_centered[[1]]$rownames.study[[m]]
                 colnames(variates.partial.A[[k]][[m]]) = paste0("comp ", 1:max(ncomp))
             }
         }
@@ -234,6 +268,10 @@ keepA.constraint = NULL, penalty = NULL)
     names(names) = names(A)
     names[[length(names) + 1]] = row.names(A[[1]])
     names(names)[length(names)] = "indiv"
+    
+    time8 = proc.time()
+    print("final stuff")
+    print(time7-time6)
     
     out = list(X = A, indY = indY, ncomp = ncomp, mode = mode,
     keepA = keepA, keepA.constraint = keepA.constraint,
@@ -298,6 +336,9 @@ penalty=NULL)
     nlevels_study = nlevels(study)
     ### End: Initialization parameters
     
+    
+    time1 = proc.time()
+    
     ### Start: Initialisation "loadings.A" vector
     if (init == "svd")
     {
@@ -333,6 +374,13 @@ penalty=NULL)
     } else {
         stop("init should be either 'svd' or 'svd.single'.")
     }
+    
+    time2 = proc.time()
+    print("svd")
+    print(time2-time1)
+    time2 = proc.time()
+    
+    
     ### End: Initialisation "a" vector
     variates.partial.A.comp = NULL
     loadings.partial.A.comp = list()
@@ -359,6 +407,11 @@ penalty=NULL)
     }
     loadings.A_old = loadings.A
     
+    time3 = proc.time()
+    print("loadings")
+    print(time3-time2)
+    print("repeat")
+    #save(list=ls(),file="temp2.Rdata")
     
     ### Start Algorithm 1 Sparse generalized canonical analysis (See Variable selection for generalized canonical correlation analysis (Tenenhaus))
     repeat {
@@ -366,6 +419,10 @@ penalty=NULL)
         variates.Aold = variates.A
         for (q in 1:J)
         {
+            print(paste("repeat, block",q))
+
+            time4 = proc.time()
+            
             ### Start : !!! Impact of the diag of the design matrix !!! ###
             if (scheme == "horst")
             CbyCovq = design[q, ]
@@ -382,9 +439,14 @@ penalty=NULL)
             Z_split = study_split(Z[,q,drop=FALSE],study)  # split Z by the study factor
             ### Step A end: Compute the inner components
             
-            
+            time5 = proc.time()
+            print("Zsplit")
+            print(time5-time4)
+            time5 = proc.time()
+
             ### Step B start: Computer the outer weight ###
             # possibility of removing NA (replacing by 0) and use crossprod, further development
+            #time5 = proc.time()
             temp=0
             for (m in 1:nlevels_study)
             {
@@ -392,13 +454,18 @@ penalty=NULL)
                 {
                     loadings.partial.A.comp[[q]][[m]] = apply(t(A_split[[q]][[m]]), 1, miscrossprod, Z_split[[m]])
                 }else{
-                    loadings.partial.A.comp[[q]][[m]] = t(A_split[[q]][[m]])%*%Z_split[[m]]
+                    # faster to do the calculation on the transpose t( t(Z)%*%A ) than t(A)%*%Z if p>n
+                    loadings.partial.A.comp[[q]][[m]] = t(t(Z_split[[m]])%*%A_split[[q]][[m]])#t(A_split[[q]][[m]])%*%Z_split[[m]]
                 }
                 temp=temp+loadings.partial.A.comp[[q]][[m]]
             }
             loadings.A[[q]] = temp
             
-            
+            time6 = proc.time()
+            print("loadings")
+            print(time6-time5)
+            time6 = proc.time()
+
             # sparse using keepA / penalty
             if (!is.null(penalty))
             {
@@ -409,6 +476,12 @@ penalty=NULL)
             
             loadings.A[[q]]=l2.norm(as.vector(loadings.A[[q]]))
             
+            time7 = proc.time()
+            print("penalty")
+            print(time7-time6)
+            time7 = proc.time()
+
+
             ### Step B end: Computer the outer weight ###
             if(misdata)
             {
@@ -428,6 +501,10 @@ penalty=NULL)
                 variates.A[, q] =  A[[q]]%*%loadings.A[[q]]
             }
             
+            time8 = proc.time()
+            print("variates")
+            print(time8-time7)
+
         }
         
         crit[iter] = sum(design * g(cov2(variates.A, bias = bias)))
@@ -448,28 +525,34 @@ penalty=NULL)
     
     
     #calculation variates.partial.A.comp
-    variates.partial.A.comp = lapply(1 : J, function(x){
-        lapply(1 : nlevels_study, function(y){
-            if(misdata)
-            {
-                #apply(A_split[[x]][[y]], 1, miscrossprod, loadings.A[[x]])
-                A.temp = replace(A_split[[x]][[y]], is.na.A_split[[x]][[y]], 0) # replace NA in A_split[[x]][[y]] by 0
-                variates.part.A.temp = A.temp %*% loadings.A[[x]]
-                temp = drop(loadings.A[[x]]) %o% rep(1, nrow(A_split[[x]][[y]]))
-                temp[(t(is.na.A[[x]][[y]]))] = 0
-                loadings.A.norm = crossprod(temp)
-                variates.part.A = variates.part.A.temp / diag(loadings.A.norm)
-                # we can have 0/0, so we put 0
-                a = is.na(variates.part.A)
-                if (any(a))
-                variates.part.A[a] = 0
-                
-                return(variates.part.A)
-            }else{
-                A_split[[x]][[y]] %*% loadings.A[[x]]
-            }
+    if(FALSE)
+    {
+        variates.partial.A.comp = lapply(1 : J, function(x){
+            lapply(1 : nlevels_study, function(y){
+                if(misdata)
+                {
+                    #apply(A_split[[x]][[y]], 1, miscrossprod, loadings.A[[x]])
+                    A.temp = replace(A_split[[x]][[y]], is.na.A_split[[x]][[y]], 0) # replace NA in A_split[[x]][[y]] by 0
+                    variates.part.A.temp = A.temp %*% loadings.A[[x]]
+                    temp = drop(loadings.A[[x]]) %o% rep(1, nrow(A_split[[x]][[y]]))
+                    temp[(t(is.na.A[[x]][[y]]))] = 0
+                    loadings.A.norm = crossprod(temp)
+                    variates.part.A = variates.part.A.temp / diag(loadings.A.norm)
+                    # we can have 0/0, so we put 0
+                    a = is.na(variates.part.A)
+                    if (any(a))
+                    variates.part.A[a] = 0
+                    
+                    return(variates.part.A)
+                }else{
+                    A_split[[x]][[y]] %*% loadings.A[[x]]
+                }
+            })
         })
-    })
+    }
+    
+    variates.partial.A.comp = apply(variates.A, 2, study_split, study)
+    
     
     if (verbose)
     plot(crit, xlab = "iteration", ylab = "criteria")

@@ -149,7 +149,7 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
 
     #---------------------------------------------------------------------------#
     #-- pls approach ----------------------------------------------------#
-    
+    #save(list=ls(),file="temp.Rdata")
     result = internal_mint.block(A = list(X = X, Y = Y), indY = 2, mode = mode, ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
     design = design, keepA = list(keepX, keepY), keepA.constraint = list(keepX.constraint, keepY.constraint),
     scale = scale, scheme = "horst",init="svd", study = study)

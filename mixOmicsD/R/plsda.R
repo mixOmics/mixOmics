@@ -1,14 +1,13 @@
 #############################################################################################################
 # Authors:
-#   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #   Kim-Anh Le Cao, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 
 #
-# created: 2009
+# created: 22-04-2015
 # last modified: 24-05-2016
 #
-# Copyright (C) 2009
+# Copyright (C) 2015
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -27,12 +26,12 @@
 
 
 # ========================================================================================================
-# pls: perform a PLS
+# plsda: perform a PLS-DA
 # this function is a particular setting of internal_mint.block, the formatting of the input is checked in internal_wrapper.mint
 # ========================================================================================================
 
 # X: numeric matrix of predictors
-# Y: numeric vector or matrix of responses
+# Y: a factor or a class vector for the discrete outcome
 # ncomp: the number of components to include in the model. Default to 2.
 # scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
 # tol: Convergence stopping value.
@@ -40,7 +39,7 @@
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
 
-pls = function(X,
+plsda = function(X,
 Y,
 ncomp = 2,
 scale = TRUE,
@@ -49,18 +48,63 @@ tol = 1e-06,
 max.iter = 100,
 near.zero.var = FALSE,
 logratio = "none",   # one of "none", "CLR"
-multilevel = NULL)    # multilevel is passed to multilevel(design = ) in withinVariation. Y is ommited and shouldbe included in multilevel design
+multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVariation. Y is ommited and shouldbe included in multilevel design
 {
     
+    #-- validation des arguments --#
+    # most of the checks are done in the wrapper.mint.spls.hybrid function
+    if (is.null(multilevel))
+    {
+        if (is.null(Y))
+        stop("'Y' has to be something else than NULL.")
+        
+        if (is.null(dim(Y)))
+        {
+            Y = factor(Y)
+        } else {
+            stop("'Y' should be a factor or a class vector.")
+        }
+        
+        if (nlevels(Y) == 1)
+        stop("'Y' should be a factor with more than one level")
+        
+        Y.mat = unmap(Y)
+        colnames(Y.mat) = levels(Y)
+        
+    } else {
+        # we expect a vector or a 2-columns matrix in 'Y' and the repeated measurements in 'multilevel'
+        multilevel = data.frame(multilevel)
+        
+        if ((nrow(X) != nrow(multilevel)))
+        stop("unequal number of rows in 'X' and 'multilevel'.")
+        
+        if (ncol(multilevel) != 1)
+        stop("'multilevel' should have a single column for the repeated measurements, other factors should be included in 'Y'.")
+        
+        if (!is.null(ncol(Y)) && !ncol(Y) %in% c(0,1,2))# multilevel 1 or 2 factors
+        stop("'Y' should either be a factor, a single column data.frame containing a factor, or a 2-columns data.frame containing 2 factors.")
+        multilevel = data.frame(multilevel, Y)
+        multilevel[, 1] = as.numeric(factor(multilevel[, 1])) # we want numbers for the repeated measurements
+        
+        Y.mat = NULL
+    }
+
+    
     # call to 'internal_wrapper.mint'
-    result = internal_wrapper.mint(X = X, Y = Y,ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
-        max.iter = max.iter, tol = tol, logratio = logratio, multilevel = multilevel, DA = FALSE)
+    result = internal_wrapper.mint(X = X, Y = Y.mat, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
+    max.iter = max.iter, tol = tol, logratio = logratio, multilevel = multilevel, DA = TRUE)
 
     # choose the desired output from 'result'
     out = list(
         call = match.call(),
         X = result$X[-result$indY][[1]],
-        Y = result$X[result$indY][[1]],
+        Y = if (is.null(multilevel))
+            {
+                Y
+            } else {
+                result$Y.factor
+            },
+        ind.mat = result$X[result$indY][[1]],
         ncomp = result$ncomp,
         mode = result$mode,
         variates = result$variates,
@@ -72,20 +116,20 @@ multilevel = NULL)    # multilevel is passed to multilevel(design = ) in withinV
         nzv = result$nzv,
         scale = scale,
         logratio = logratio,
-        explained_variance = result$explained_variance,
+        explained_variance = result$explained_variance,#[-result$indY],
         input.X = result$input.X,
-        mat.c = result$mat.c,
-        defl.matrix = result$defl.matrix
+        mat.c = result$mat.c#,
+        #defl.matrix = result$defl.matrix
         )
-     
-    class(out) = c("pls")
+    
+    class(out) = c("plsda","pls","DA")
     # output if multilevel analysis
     if (!is.null(multilevel))
     {
         out$multilevel = multilevel
-        class(out) = c("mlpls",class(out))
+        class(out) = c("mlplsda",class(out))
     }
-    
-    return(invisible(out))
 
+    return(invisible(out))
 }
+

@@ -75,20 +75,24 @@ study_split = function(data, study)
     P = ncol(data)
     
     #---------------------- split data
-    data.list.study = split(data,study)
-    if (!is.null(rownames(data)))
-    study.name = split(rownames(data),study)
-    
-    for(m in 1:M)
+    if(M>1)
     {
-        data.list.study[[m]] = matrix(data.list.study[[m]], ncol=P)
-        
-        if (!is.null(colnames(data)))
-        colnames(data.list.study[[m]]) = colnames(data)
-        
+        data.list.study = split(data,study)
         if (!is.null(rownames(data)))
-        rownames(data.list.study[[m]]) = study.name[[m]]
+        {
+            study.name = split(rownames(data),study)
+        } else {
+            study.name=NULL
+        }
+        
+        for(m in 1:M)
+        data.list.study[[m]] = matrix(data.list.study[[m]], ncol=P, dimnames = list(study.name[[m]], colnames(data)))
+        
+    } else {
+        data.list.study = list(matrix(data, ncol=P,dimnames = list(rownames(data), colnames(data))))
+        names(data.list.study) = levels(study)
     }
+    
     result = data.list.study
     return(invisible(result))
 }
@@ -201,7 +205,7 @@ scale.function=function(temp, scale = TRUE, bias = FALSE)
         sqrt.sdX = NULL
     }
     
-    is.na.data = is.na(data.list.study.scale_i)
+    #is.na.data = is.na(data.list.study.scale_i)
     #if (sum(is.na.data) > 0)
     #data.list.study.scale_i[is.na.data] = 0
     
@@ -221,18 +225,23 @@ mean_centering_per_study=function(data, study, scale, bias=FALSE)
 
     # center and scale data per group, and concatene the data
     res = lapply(data.list.study, scale.function, scale = scale, bias = bias)
-    concat.data = do.call("rbind", lapply(res,function(x){x[[1]]}))
+    
     meanX = lapply(res, function(x){x[[2]]})
     sqrt.sdX = lapply(res, function(x){x[[3]]})
     rownames.study = lapply(res, function(x){rownames(x[[1]])})
 
     #rename rows and cols of concatenated centered (and/or scaled) data
-    colnames(concat.data) = colnames(data)
+    #colnames(concat.data) = colnames(data) #already done
     
     #sort the samples as in the original X
-    indice.match = match(rownames(data),rownames(concat.data))
-    concat.data = concat.data[indice.match, ,drop=FALSE]
-    
+    if(M>1) # otherwise already same order
+    {
+        concat.data = do.call("rbind", lapply(res,function(x){x[[1]]}))
+        indice.match = match(rownames(data),rownames(concat.data))
+        concat.data = concat.data[indice.match, ,drop=FALSE]
+    } else{
+        concat.data = res[[1]][[1]]
+    }
     if (M > 1)
     {
         for (m in 1:M)
@@ -368,7 +377,9 @@ deflation = function(X, y){
         p[a] = 0
         
     } else {
-        p = t(X)%*%y/as.vector(crossprod(y))
+        #p = t(X)%*%y/as.vector(crossprod(y))
+        # faster to do the calculation on the transpose t( t(y)%*%X ) than t(X)%*%y if p>n
+        p = t(t(y)%*%X)/as.vector(crossprod(y))
     }
     
     R = X - y%*%t(p)

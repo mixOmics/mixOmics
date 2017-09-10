@@ -144,6 +144,8 @@ Y <- liver.toxicity$clinic
 toxicity.spls <- spls(X, Y, ncomp = 2, keepX = c(50, 50), 
                       keepY = c(10, 10))
 
+toxicity.spls <- spls(X, Y[,1:2,drop=FALSE], ncomp = 5, keepX = c(50, 50))#,  mode="canonical")
+
 ## Second example: one-factor multilevel analysis with sPLS, selecting a subset of variables
 #--------------------------------------------------------------
 \dontrun{

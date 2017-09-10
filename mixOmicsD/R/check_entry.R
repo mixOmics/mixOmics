@@ -396,6 +396,10 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.co
     if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0 || length(ncomp)>1)
     stop("invalid number of variates, 'ncomp'.")
     
+    if(mode == "canonical" & ncomp>ncol(Y))
+    stop("For `canonical mode', 'ncomp' needs to be lower than ncol(Y)= ",ncol(Y))
+
+
     ncomp = round(ncomp)
     if(ncomp > P)
     {
