@@ -36,7 +36,11 @@ importFrom("dplyr","group_by")
 
 importFrom("tidyr","gather")
 
+importFrom("matrixStats","colSds")
+
 importFrom("reshape2","melt","dcast")
+
+importFrom("rARPACK","svds")
 
 export(
 auroc,

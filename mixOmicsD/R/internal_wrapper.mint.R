@@ -156,16 +156,23 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
     
     #-- pls approach ----------------------------------------------------#
     #---------------------------------------------------------------------------#
-
+    
+    
+    #save(list=ls(),file="temp.Rdata")
+    
     # calculating mat.c
+    if(FALSE)
+    {
     R = lapply(result$defl.matrix, function(x){x$X}) # list of length ncomp, containing the deflated blocks
     variates = result$variates$X
     
-    is.na.X = is.na(X)
-    if(sum(is.na.X)>0)
+    is.na.X <- anyNA(X)
+
+    if(is.na.X)
     {
         p.ones = rep(1, ncol(X))
-
+        
+        is.na.X = is.na(X)
         mat.c = matrix(0, nrow = ncol(X), ncol = ncomp)
         for(comp in 1:ncomp)
         {
@@ -179,13 +186,21 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
             mat.c[,comp] = c
         }
     } else {
-        mat.c = sapply(1:ncol(variates), function(x){crossprod(R[[x]], variates[,x]) / drop(crossprod (variates[,x]))})
+        mat.c <- sapply(1:ncol(variates), function(x){t(crossprod(variates[,x], R[[x]])) / drop(crossprod (variates[,x]))})
+        
+        #mat.c = matrix(0,nrow=ncol(X), ncol=ncol(variates))
+        #for(x in 1:ncol(variates))
+        #{
+        #    mat.c[,x] = crossprod(R[[x]], variates[,x]) / drop(crossprod (variates[,x]))
+        #}
 
     }
 
+
     rownames(mat.c) = colnames(X)
     colnames(mat.c) = paste0("comp ", 1:max(ncomp))
-    result$mat.c = mat.c
+    }
+    
 
     result$ncomp = ncomp
     if(near.zero.var)

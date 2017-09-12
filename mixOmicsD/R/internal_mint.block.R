@@ -39,7 +39,7 @@ internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)), t
 ncomp = rep(1, length(A)), scheme = "horst", scale = TRUE,  bias = FALSE,
 init = "svd.single", tol = 1e-06, verbose = FALSE,
 mode = "canonical", max.iter = 100,study = NULL, keepA = NULL,
-keepA.constraint = NULL, penalty = NULL)
+keepA.constraint = NULL, penalty = NULL, all.outputs = FALSE)
 {
     # A: list of matrices
     # indY: integer, pointer to one of the matrices of A
@@ -66,17 +66,13 @@ keepA.constraint = NULL, penalty = NULL)
     
     #save(list=ls(),file="temp.Rdata")
     time1=proc.time()
-    # center the data per study, per matrix of A, scale if scale=TRUE, option bias
-    mean_centered = lapply(A, function(x){mean_centering_per_study(x, study, scale, bias)})
+    # center the data per study, per matrix of A, scale if scale=TRUE, option
+    mean_centered = lapply(A, function(x){mean_centering_per_study(x, study, scale)})
     time1bis=proc.time()
     print("scaling part1")
     print(time1bis-time1)
 
     A = lapply(mean_centered, function(x){as.matrix(x$concat.data)})
-    time2 = proc.time()
-    print("scaling")
-    print(time2-time1bis)
-    time2 = proc.time()
     
     ni = table(study) #number of samples per study
     
@@ -88,14 +84,19 @@ keepA.constraint = NULL, penalty = NULL)
     N = max(ncomp)
     
     AVE_inner = AVE_outer = rep(NA, max(ncomp))
-    defl.matrix = AVE_X = crit = loadings.partial.A = variates.partial.A = tau.rgcca = list()
-    P = loadings.A = loadings.Astar = c = t = b = variates.A = vector("list", J)
+    #defl.matrix =
+    AVE_X = crit = loadings.partial.A = variates.partial.A = tau.rgcca = list()
+    P = loadings.A = loadings.Astar = variates.A = vector("list", J)
     
     for (k in 1:J)
-    t[[k]] = variates.A[[k]] = matrix(NA, nb_ind, N)
+    variates.A[[k]] = matrix(NA, nb_ind, N)
     
     for (k in 1:J)
-    P[[k]] = loadings.A[[k]] = loadings.Astar[[k]]= matrix(NA, pjs[[k]], N)
+    {
+        P[[k]] = loadings.A[[k]] = matrix(NA, pjs[[k]], N)
+        if(all.outputs)
+        loadings.Astar[[k]]= matrix(NA, pjs[[k]], N)
+    }
     
     for (k in 1:J)
     {
@@ -107,7 +108,7 @@ keepA.constraint = NULL, penalty = NULL)
         }
     }
     
-    defl.matrix[[1]] = A
+    #defl.matrix[[1]] = A
     ndefl = ncomp - 1
     J2 = J-1
     
@@ -116,11 +117,23 @@ keepA.constraint = NULL, penalty = NULL)
     ### End: Initialization parameters
     
     #save(list=ls(),file="temp.Rdata")
-    time3 = proc.time()
-    print("stuff")
-    print(time3-time2)
-    time3 = proc.time()
+    misdata = any(sapply(A, anyNA)) # Detection of missing data
     
+    print(misdata)
+    
+    if (misdata)
+    is.na.A = lapply(A, is.na)
+    
+    if(all.outputs & J==2 & nlevels(study) == 1) #(s)pls(da)
+    {
+        if(misdata)
+        {
+            p.ones = rep(1, ncol(A[[1]]))
+            is.na.X = is.na.A[[1]]
+        }
+        mat.c = matrix(0, nrow = ncol(A[[1]]), ncol = N, dimnames = list(colnames(A[[1]],  paste0("comp ", 1:N))))
+    } else {mat.c = NULL}
+
     iter=NULL
     for (n in 1 : N)
     {
@@ -132,12 +145,13 @@ keepA.constraint = NULL, penalty = NULL)
             mint.block.result = sparse.mint.block_iteration(R, design, study = study,
             keepA.constraint = if (!is.null(keepA.constraint)) {lapply(keepA.constraint, function(x){unlist(x[n])})} else {NULL} ,
             keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL},
-            scheme = scheme, init = init, max.iter = max.iter, tol = tol, verbose = verbose,penalty = penalty)
+            scheme = scheme, init = init, max.iter = max.iter, tol = tol, verbose = verbose,penalty = penalty, misdata=misdata, is.na.A=is.na.A,
+            all.outputs = all.outputs)
         } else {
             mint.block.result = sparse.rgcca_iteration(R, design, tau = if (is.matrix(tau)){tau[n, ]} else {"optimal"},
             scheme = scheme, init = init, tol = tol,
             verbose = verbose, max.iter = max.iter, penalty = penalty,
-            keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL})
+            keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL}, all.outputs = all.outputs)
         }
         ### End: Estimation ai
         
@@ -161,52 +175,78 @@ keepA.constraint = NULL, penalty = NULL)
                 #variates.partial.A[[k]][,n]=matrix(unlist(mint.block.result$variates.partial.A.comp[[k]]),ncol=1)
             }
         }
-        
-        AVE_inner[n] = mint.block.result$AVE_inner
         crit[[n]] = mint.block.result$crit
         tau.rgcca[[n]] = mint.block.result$tau
+        if(all.outputs)
+        AVE_inner[n] = mint.block.result$AVE_inner
         
         for (k in 1:J)
         variates.A[[k]][, n] = mint.block.result$variates.A[, k]
         
+        if(all.outputs & J==2 & nlevels(study) == 1)# mat.c, (s)pls(da)
+        {
+            if(misdata)
+            {
+                R.temp = R[[1]]
+                R.temp[is.na.X] = 0
+                c = crossprod(R.temp, variates.A[[1]][,n])
+                T = drop(variates[,n]) %o% p.ones
+                T[is.na.X] = 0
+                t.norm = crossprod(T)
+                c = c / diag(t.norm)
+                mat.c[,n] = c
+            } else {
+                mat.c[,n] <- t(crossprod(variates.A[[1]][,n], R[[1]])) / drop(crossprod (variates.A[[1]][,n]))
+            }
+        } else {
+            mat.c = NULL
+        }
         # deflation if there are more than 1 component and if we haven't reach the max number of component (N)
         if (N != 1 & n != N)
         {
-            defla.result = defl.select(mint.block.result$variates.A, R, ndefl, n, nbloc = J, indY = indY, mode = mode, aa = mint.block.result$loadings.A)
+            #save(list=ls(),file="temp.Rdata")
+            time4 = proc.time()
+
+            defla.result = defl.select(mint.block.result$variates.A, R, ndefl, n, nbloc = J, indY = indY, mode = mode, aa = mint.block.result$loadings.A,
+            misdata=misdata, is.na.A=is.na.A)
+            
             R = defla.result$resdefl
-            defl.matrix[[n + 1]] = R
+            #defl.matrix[[n + 1]] = R
+            time5 = proc.time()
+            print("deflation")
+            print(time5-time4)
         }
         
-        time5 = proc.time()
-        print("deflation")
-        print(time5-time4)
+
         
         for (k in 1 : J)
         {
-            if (N != 1)
-            {
-                P[[k]][, n - 1] = defla.result$pdefl[[k]]
-            }
+            #if (N != 1)
+            #{
+            #    P[[k]][, n - 1] = defla.result$pdefl[[k]]
+            #}
             loadings.A[[k]][, n] = mint.block.result$loadings.A[[k]]
         }
         
-        if (n == 1)
+        if(all.outputs) #loadings.Astar
         {
-            for (k in 1 : J)
-            loadings.Astar[[k]][, n] = mint.block.result$loadings.A[[k]]
+            if (n == 1)
+            {
+                for (k in 1 : J)
+                loadings.Astar[[k]][, n] = mint.block.result$loadings.A[[k]]
+            } else {
+                for (k in 1 : J)
+                loadings.Astar[[k]][, n] = mint.block.result$loadings.A[[k]] - loadings.Astar[[k]][, (1 : n - 1), drop = F] %*% drop(t(loadings.A[[k]][, n]) %*% P[[k]][, 1 : (n - 1), drop = F])
+            }
         } else {
-            for (k in 1 : J)
-            loadings.Astar[[k]][, n] = mint.block.result$loadings.A[[k]] - loadings.Astar[[k]][, (1 : n - 1), drop = F] %*% drop(t(loadings.A[[k]][, n]) %*% P[[k]][, 1 : (n - 1), drop = F])
+            loadings.Astar = NULL
         }
         iter = c(iter, mint.block.result$iter)
         
-        time6 = proc.time()
-        print("stuff_comp")
-        print(time6-time5)
-        
     }
-    time7 = proc.time()
-
+    
+    #save(list=ls(),file="temp.Rdata")
+    
     if (verbose)
     cat(paste0("Computation of the SGCCA block components #", N , " is under progress...\n"))
     
@@ -215,10 +255,16 @@ keepA.constraint = NULL, penalty = NULL)
     
     for (k in 1:J)
     {
-        rownames(loadings.A[[k]]) = rownames(loadings.Astar[[k]])=colnames(A[[k]])
+        rownames(loadings.A[[k]]) = colnames(A[[k]])
+        
+        if(all.outputs)
+        rownames(loadings.Astar[[k]]) = colnames(A[[k]])
+        
         rownames(variates.A[[k]]) = rownames(A[[k]])
         colnames(variates.A[[k]]) = colnames(loadings.A[[k]]) = paste0("comp ", 1:max(ncomp))
+        if(all.outputs)
         AVE_X[[k]] = apply(cor(A[[k]], variates.A[[k]])^2, 2, mean)
+        
         if (is.null(tau))
         {
             names(loadings.partial.A[[k]]) = names(variates.partial.A[[k]]) = levels(study)
@@ -231,33 +277,43 @@ keepA.constraint = NULL, penalty = NULL)
             }
         }
     }
-    
-    outer = matrix(unlist(AVE_X), nrow = max(ncomp))
-    for (j in 1 : max(ncomp))
-    AVE_outer[j] = sum(pjs * outer[j, ])/sum(pjs)
+    if(all.outputs)
+    {
+        outer = matrix(unlist(AVE_X), nrow = max(ncomp))
+        for (j in 1 : max(ncomp))
+        AVE_outer[j] = sum(pjs * outer[j, ])/sum(pjs)
+        AVE_X = shave.veclist(AVE_X, ncomp)
+        AVE = list(AVE_X = AVE_X, AVE_outer = AVE_outer, AVE_inner = AVE_inner)
+        names(AVE$AVE_X) = names(A)
+        
+        loadings.Astar = shave.matlist(loadings.Astar, ncomp)
+        
+    }else {AVE = NULL}
     
     variates.A = shave.matlist(variates.A, ncomp)
-    AVE_X = shave.veclist(AVE_X, ncomp)
-    AVE = list(AVE_X = AVE_X, AVE_outer = AVE_outer, AVE_inner = AVE_inner)
-    names(AVE$AVE_X) = names(A)
-    
-    #calcul explained variance
-    A_split=lapply(A, study_split, study) #split the data per study
 
-    expl.A=lapply(1:length(A),function(x){
-        if (nlevels(study) == 1)
-        {
-            temp = suppressWarnings(explained_variance(A[[x]], variates = variates.A[[x]], ncomp = ncomp[[x]]))
-        }else{
-            temp = lapply(1:nlevels(study), function(y){
-                suppressWarnings(explained_variance(A_split[[x]][[y]], variates = variates.partial.A[[x]][[y]], ncomp = ncomp[[x]]))})
-            temp[[length(temp)+1]] = explained_variance(A[[x]], variates = variates.A[[x]], ncomp = ncomp[[x]])
-            names(temp) = c(levels(study), "all data")
-        }
-        temp
-        })
-    names(expl.A) = names(A)
-    names(defl.matrix) = paste0("comp ", 1:max(ncomp))
+    
+    if(all.outputs)#calcul explained variance
+    {
+        A_split=lapply(A, study_split, study) #split the data per study
+
+        expl.A=lapply(1:length(A),function(x){
+            if (nlevels(study) == 1)
+            {
+                temp = suppressWarnings(explained_variance(A[[x]], variates = variates.A[[x]], ncomp = ncomp[[x]]))
+            }else{
+                temp = lapply(1:nlevels(study), function(y){
+                    suppressWarnings(explained_variance(A_split[[x]][[y]], variates = variates.partial.A[[x]][[y]], ncomp = ncomp[[x]]))})
+                temp[[length(temp)+1]] = explained_variance(A[[x]], variates = variates.A[[x]], ncomp = ncomp[[x]])
+                names(temp) = c(levels(study), "all data")
+            }
+            temp
+            })
+        names(expl.A) = names(A)
+    } else {
+        expl.A = NULL
+    }
+    #names(defl.matrix) = paste0("comp ", 1:max(ncomp))
     ### Start: output
     names(loadings.A) = names(variates.A) = names(A)
     
@@ -269,23 +325,20 @@ keepA.constraint = NULL, penalty = NULL)
     names[[length(names) + 1]] = row.names(A[[1]])
     names(names)[length(names)] = "indiv"
     
-    time8 = proc.time()
-    print("final stuff")
-    print(time7-time6)
-    
     out = list(X = A, indY = indY, ncomp = ncomp, mode = mode,
     keepA = keepA, keepA.constraint = keepA.constraint,
     variates = variates.A, loadings = shave.matlist(loadings.A, ncomp),
     variates.partial= if(is.null(tau)) {variates.partial.A} ,loadings.partial= if(is.null(tau)) {loadings.partial.A},
-    loadings.star = shave.matlist(loadings.Astar, ncomp),
+    loadings.star = loadings.Astar,
     names = list(sample = row.names(A[[1]]), colnames = lapply(A, colnames), blocks = names(A)),
     tol = tol, iter=iter, max.iter=max.iter,
     design = design,
-    scheme = scheme,  crit = crit, AVE = AVE, defl.matrix = defl.matrix,
+    scheme = scheme,  crit = crit, AVE = AVE, mat.c = mat.c, #defl.matrix = defl.matrix,
     init = init, bias = bias,
     scale = scale, tau = if(!is.null(tau)) tau.rgcca, study = study,
     explained_variance = expl.A)
     ### End: Output
+
     
     return(out)
 }
@@ -299,8 +352,8 @@ keepA.constraint = NULL, penalty = NULL)
 # ----------------------------------------------------------------------------------------------------------
 
 sparse.mint.block_iteration = function (A, design, study = NULL, keepA.constraint = NULL, keepA = NULL,
-scheme = "horst", init = "svd", max.iter = 100, tol = 1e-06, verbose = TRUE, bias = FALSE,
-penalty=NULL)
+scheme = "horst", init = "svd", max.iter = 100, tol = 1e-06, verbose = TRUE, bias = FALSE, misdata = NULL, is.na.A = NULL,
+penalty=NULL, all.outputs = FALSE)
 {
     
     # keepA.constraint is a list of positions in A of the variables to keep on the component
@@ -320,23 +373,21 @@ penalty=NULL)
     iter = 1
     converg = crit = numeric()
     variates.A = Z = matrix(0, NROW(A[[1]]), J)
-    misdata = any(sapply(A, function(x){any(is.na(x))})) # Detection of missing data
-    
-    if (misdata)
-    is.na.A = lapply(A, is.na)
-    
+
     g = function(x) switch(scheme, horst = x, factorial = x^2, centroid = abs(x))
     
     
     # study split
     A_split = lapply(A, study_split, study)
-    if (misdata)
-    is.na.A_split = lapply(is.na.A, study_split, study)
+    
+    n = lapply(A_split, function(x){lapply(x,nrow)})
+    p = lapply(A,ncol)
     
     nlevels_study = nlevels(study)
     ### End: Initialization parameters
     
     
+    #save(A,file="temp.Rdata")
     time1 = proc.time()
     
     ### Start: Initialisation "loadings.A" vector
@@ -345,17 +396,26 @@ penalty=NULL)
         ### Start: Change initialization of loadings.A
         if (misdata)
         {
-            M = lapply(c(1:(J-1)), function(x){crossprod(replace(A[[x]], is.na(A[[x]]), 0), replace(A[[J]], is.na(A[[J]]), 0))})
+            M = lapply(c(1:(J-1)), function(x){crossprod(replace(A[[x]], is.na.A[[x]], 0), replace(A[[J]], is.na.A[[J]], 0))})
         } else {
             M = lapply(c(1:(J-1)), function(x){crossprod(A[[x]], A[[J]])})
         }
         
-        svd.M = lapply(M, function(x){svd(x, nu = 1, nv = 1)})
+        #svd.M = lapply(M, function(x){svd(x, nu = 1, nv = 1)})
+        svd.M = lapply(M, function(x){if(ncol(x)>3) {svds(x, k=1, nu = 1, nv = 1)} else {svd(x, nu = 1, nv = 1)}})
+        
         loadings.A = lapply(c(1:(J-1)), function(x){svd.M[[x]]$u})
         loadings.A[[J]] = svd.M[[1]]$v
+
     } else if (init=="svd.single") {
-        alpha =  lapply(1 : J, function(y){initsvd(lapply(y, function(x) {replace(A[[x]], is.na(A[[x]]), 0)})[[1]])})
         
+        
+        if (misdata)
+        {
+            alpha =  lapply(1 : J, function(y){initsvd(replace(A[[y]], is.na(A[[y]]), 0))})
+        } else {
+            alpha =  lapply(1 : J, function(y){initsvd(A[[y]])})
+        }
         loadings.A = list()
         for (j in 1:J)
         {
@@ -363,10 +423,13 @@ penalty=NULL)
             {
                 loadings.A[[j]] = alpha[[j]]
             } else {
-                K = as.matrix(A[[j]]) %*% as.matrix(t(A[[j]]))
-                N = ifelse(bias, nrow(A[[j]]), nrow(A[[j]]) - 1)
-                alpha[[j]] = drop(1/sqrt(t(alpha[[j]]) %*% K %*% alpha[[j]])) * alpha[[j]]
-                loadings.A[[j]] = t(A[[j]]) %*% alpha[[j]]
+                #K = tcrossprod(A[[j]])#as.matrix(A[[j]]) %*% as.matrix(t(A[[j]]))
+                #N = ifelse(bias, nrow(A[[j]]), nrow(A[[j]]) - 1)
+                #alpha[[j]] = drop(1/sqrt(t(alpha[[j]]) %*% K %*% alpha[[j]])) * alpha[[j]]
+                
+                alpha[[j]] = drop(1/sqrt( t(alpha[[j]]) %*% A[[j]] %*% (t(A[[j]]) %*% alpha[[j]]))) * alpha[[j]]
+                
+                loadings.A[[j]] = crossprod(A[[j]],alpha[[j]])#)t(A[[j]]) %*% alpha[[j]]
             }
         }
         
@@ -420,8 +483,6 @@ penalty=NULL)
         for (q in 1:J)
         {
             print(paste("repeat, block",q))
-
-            time4 = proc.time()
             
             ### Start : !!! Impact of the diag of the design matrix !!! ###
             if (scheme == "horst")
@@ -439,9 +500,7 @@ penalty=NULL)
             Z_split = study_split(Z[,q,drop=FALSE],study)  # split Z by the study factor
             ### Step A end: Compute the inner components
             
-            time5 = proc.time()
-            print("Zsplit")
-            print(time5-time4)
+
             time5 = proc.time()
 
             ### Step B start: Computer the outer weight ###
@@ -454,8 +513,7 @@ penalty=NULL)
                 {
                     loadings.partial.A.comp[[q]][[m]] = apply(t(A_split[[q]][[m]]), 1, miscrossprod, Z_split[[m]])
                 }else{
-                    # faster to do the calculation on the transpose t( t(Z)%*%A ) than t(A)%*%Z if p>n
-                    loadings.partial.A.comp[[q]][[m]] = t(t(Z_split[[m]])%*%A_split[[q]][[m]])#t(A_split[[q]][[m]])%*%Z_split[[m]]
+                    loadings.partial.A.comp[[q]][[m]] = crossprod(A_split[[q]][[m]],Z_split[[m]])
                 }
                 temp=temp+loadings.partial.A.comp[[q]][[m]]
             }
@@ -465,6 +523,7 @@ penalty=NULL)
             print("loadings")
             print(time6-time5)
             time6 = proc.time()
+
 
             # sparse using keepA / penalty
             if (!is.null(penalty))
@@ -477,10 +536,6 @@ penalty=NULL)
             loadings.A[[q]]=l2.norm(as.vector(loadings.A[[q]]))
             
             time7 = proc.time()
-            print("penalty")
-            print(time7-time6)
-            time7 = proc.time()
-
 
             ### Step B end: Computer the outer weight ###
             if(misdata)
@@ -525,32 +580,6 @@ penalty=NULL)
     
     
     #calculation variates.partial.A.comp
-    if(FALSE)
-    {
-        variates.partial.A.comp = lapply(1 : J, function(x){
-            lapply(1 : nlevels_study, function(y){
-                if(misdata)
-                {
-                    #apply(A_split[[x]][[y]], 1, miscrossprod, loadings.A[[x]])
-                    A.temp = replace(A_split[[x]][[y]], is.na.A_split[[x]][[y]], 0) # replace NA in A_split[[x]][[y]] by 0
-                    variates.part.A.temp = A.temp %*% loadings.A[[x]]
-                    temp = drop(loadings.A[[x]]) %o% rep(1, nrow(A_split[[x]][[y]]))
-                    temp[(t(is.na.A[[x]][[y]]))] = 0
-                    loadings.A.norm = crossprod(temp)
-                    variates.part.A = variates.part.A.temp / diag(loadings.A.norm)
-                    # we can have 0/0, so we put 0
-                    a = is.na(variates.part.A)
-                    if (any(a))
-                    variates.part.A[a] = 0
-                    
-                    return(variates.part.A)
-                }else{
-                    A_split[[x]][[y]] %*% loadings.A[[x]]
-                }
-            })
-        })
-    }
-    
     variates.partial.A.comp = apply(variates.A, 2, study_split, study)
     
     
@@ -574,7 +603,7 @@ penalty=NULL)
 
 
 sparse.rgcca_iteration = function (A, design, tau = "optimal", scheme = "horst", scale = FALSE, max.iter = 100,
-verbose = FALSE, init = "svd.single", bias = FALSE, tol = .Machine$double.eps, keepA = NULL, penalty = NULL)
+verbose = FALSE, init = "svd.single", bias = FALSE, tol = .Machine$double.eps, keepA = NULL, penalty = NULL, all.outputs = FALSE)
 {
     ### Start: Initialisation parameters
     A = lapply(A, as.matrix)

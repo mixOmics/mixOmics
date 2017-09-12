@@ -188,18 +188,13 @@ sparsity=function(loadings.A, keepA, keepA.constraint=NULL, penalty=NULL)
 # --------------------------------------
 # scaling with or without bias: used in mean_centering_per_study (below)
 # --------------------------------------
-scale.function=function(temp, scale = TRUE, bias = FALSE)
+scale.function_old=function(temp, scale = TRUE)
 {
     meanX = colMeans(temp, na.rm = TRUE)
     data.list.study.scale_i = t(t(temp) - meanX)
     if (scale)
     {
-        if (bias)
-        {
-            sqrt.sdX = sqrt(colSums(data.list.study.scale_i^2, na.rm = TRUE) / (nrow(temp)))
-        } else {
-            sqrt.sdX = sqrt(colSums(data.list.study.scale_i^2, na.rm = TRUE) / (nrow(temp) - 1))
-        }
+        sqrt.sdX = sqrt(colSums(data.list.study.scale_i^2, na.rm = TRUE) / (nrow(temp) - 1))
         data.list.study.scale_i = t(t(data.list.study.scale_i) / sqrt.sdX)
     } else {
         sqrt.sdX = NULL
@@ -214,9 +209,33 @@ scale.function=function(temp, scale = TRUE, bias = FALSE)
 }
 
 # --------------------------------------
+# scaling with or without bias: used in mean_centering_per_study (below)
+# --------------------------------------
+scale.function=function(temp, scale = TRUE)
+{
+    meanX = colMeans(temp, na.rm = TRUE)
+    
+    if (scale)
+    {
+        sqrt.sdX = colSds(temp, center = meanX)
+        data.list.study.scale_i = t( (t(temp)-meanX) / sqrt.sdX)
+    } else {
+        sqrt.sdX = NULL
+        data.list.study.scale_i = t( (t(temp)-meanX))
+    }
+    
+    #is.na.data = is.na(data.list.study.scale_i)
+    #if (sum(is.na.data) > 0)
+    #data.list.study.scale_i[is.na.data] = 0
+    
+    out = list(data_scale=data.list.study.scale_i, meanX=meanX, sqrt.sdX=sqrt.sdX)
+    return(out)
+}
+
+# --------------------------------------
 # Mean centering/scaling per study: used in 'internal_mint.block.R'
 # --------------------------------------
-mean_centering_per_study=function(data, study, scale, bias=FALSE)
+mean_centering_per_study=function(data, study, scale)
 {
     
     M = length(levels(study))   # number of groups
@@ -224,7 +243,7 @@ mean_centering_per_study=function(data, study, scale, bias=FALSE)
     data.list.study = study_split(data, study)
 
     # center and scale data per group, and concatene the data
-    res = lapply(data.list.study, scale.function, scale = scale, bias = bias)
+    res = lapply(data.list.study, scale.function, scale = scale)
     
     meanX = lapply(res, function(x){x[[2]]})
     sqrt.sdX = lapply(res, function(x){x[[3]]})
@@ -338,7 +357,15 @@ cov2 = function (x, y = NULL, bias = TRUE) {
 initsvd = function (X) {
     n = NROW(X)
     p = NCOL(X)
-    ifelse(n >= p, return(svd(X, nu = 0, nv = 1)$v), return(svd(X, nu = 1, nv = 0)$u))
+    
+    if(p>3) #use svds
+    {
+        ifelse(n >= p, return(svds(X, k=1, nu = 1, nv = 1)$v), return(svds(X, k=1, nu = 1, nv = 1)$u))
+
+    } else {
+        ifelse(n >= p, return(svd(X, nu = 0, nv = 1)$v), return(svd(X, nu = 1, nv = 0)$u))
+
+    }
 }
 
 # ----------------------------------------------------------------------------------------------------------
@@ -356,12 +383,14 @@ miscrossprod = function (x, y) {
 # deflation()
 # ----------------------------------------------------------------------------------------------------------
 # used in defl.select (below)
-deflation = function(X, y){
+deflation = function(X, y, misdata, is.na.A.q){
     # Computation of the residual matrix R
     # Computation of the vector p.
-    is.na.tX = is.na(t(X))
-    if (any(is.na.tX))
+
+    #is.na.tX <- is.na(t(X))
+    if (misdata)
     {
+        is.na.tX = t(is.na.A.q)
         #p = apply(t(X),1,miscrossprod,y)/as.vector(crossprod(y))
         
         #variates.A[, q] =  apply(A[[q]], 1, miscrossprod, loadings.A[[q]])
@@ -377,12 +406,10 @@ deflation = function(X, y){
         p[a] = 0
         
     } else {
-        #p = t(X)%*%y/as.vector(crossprod(y))
-        # faster to do the calculation on the transpose t( t(y)%*%X ) than t(X)%*%y if p>n
-        p = t(t(y)%*%X)/as.vector(crossprod(y))
+        p <- crossprod(X,y) / as.vector(crossprod(y))
     }
     
-    R = X - y%*%t(p)
+    R <- X - tcrossprod(y,p)
     return(list(p=p,R=R))
 }
 
@@ -390,14 +417,20 @@ deflation = function(X, y){
 # defl.select() - computes residual matrices
 # ----------------------------------------------------------------------------------------------------------
 # used in 'internal_mint.block.R'
-defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical", aa = NULL) { ### Start: Add new parameter for estimation classic mode
+defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical", aa = NULL, misdata, is.na.A) { ### Start: Add new parameter for estimation classic mode
     resdefl = NULL
     pdefl = NULL
     for (q in 1 : nbloc) {
+        if(misdata)
+        {
+            is.na.A.q = is.na.A[[q]]
+        } else {
+            is.na.A.q = NULL
+        }
         ### Start: insertion of new deflations (See La regression PLS Theorie et pratique p204 (Chap 11))
         if ( nn <= nncomp[q] ) {
             if ((mode == "canonical") || (q != indY)) { #deflation of each block independently from the others, except indY
-                defltmp = deflation(rr[[q]], yy[ , q])
+                defltmp = deflation(rr[[q]], yy[ , q], misdata, is.na.A.q)
                 resdefl[[q]] = defltmp$R
                 pdefl[[q]]   = defltmp$p
             } else if (mode == "classic") {
@@ -407,7 +440,7 @@ defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical
                 resdefl[[q]] = rr[[q]]
                 pdefl[[q]]   =  rep(0,NCOL(rr[[q]]))
             } else if (mode == "regression") {
-                resdefl[[q]] = Reduce("+", lapply(c(1:nbloc)[-q], function(x) {deflation(rr[[q]],yy[, x])$R}))/(nbloc-1)
+                resdefl[[q]] = Reduce("+", lapply(c(1:nbloc)[-q], function(x) {deflation(rr[[q]],yy[, x], misdata, is.na.A.q)$R}))/(nbloc-1)
                 pdefl[[q]]   =  rep(0,NCOL(rr[[q]]))
             }
             ### End: insertion of new deflations
