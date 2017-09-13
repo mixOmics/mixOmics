@@ -52,7 +52,9 @@ tol = 1e-06,
 max.iter = 100,
 near.zero.var = FALSE,
 logratio = "none",   # one of "none", "CLR"
-multilevel = NULL)    # multilevel is passed to multilevel(design = ) in withinVariation. Y is ommited and shouldbe included in multilevel design
+multilevel = NULL,
+init = "svd", # "svd", "svd.single" or a list of loadings (length 2)
+all.outputs = TRUE)    # multilevel is passed to multilevel(design = ) in withinVariation. Y is ommited and shouldbe included in multilevel design
 {
     
     

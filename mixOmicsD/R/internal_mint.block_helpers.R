@@ -188,7 +188,7 @@ sparsity=function(loadings.A, keepA, keepA.constraint=NULL, penalty=NULL)
 # --------------------------------------
 # scaling with or without bias: used in mean_centering_per_study (below)
 # --------------------------------------
-scale.function_old=function(temp, scale = TRUE)
+scale.function_old=function(temp, scale = TRUE) # problem: divide by n instead of n-#NA
 {
     meanX = colMeans(temp, na.rm = TRUE)
     data.list.study.scale_i = t(t(temp) - meanX)
@@ -217,7 +217,7 @@ scale.function=function(temp, scale = TRUE)
     
     if (scale)
     {
-        sqrt.sdX = colSds(temp, center = meanX)
+        sqrt.sdX = colSds(temp, center = meanX, na.rm=TRUE)
         data.list.study.scale_i = t( (t(temp)-meanX) / sqrt.sdX)
     } else {
         sqrt.sdX = NULL
@@ -350,23 +350,6 @@ cov2 = function (x, y = NULL, bias = TRUE) {
     return(C)
 }
 
-# ----------------------------------------------------------------------------------------------------------
-# initsvd() - performs SVD on matrix X
-# ----------------------------------------------------------------------------------------------------------
-# used in 'internal_mint.block.R'
-initsvd = function (X) {
-    n = NROW(X)
-    p = NCOL(X)
-    
-    if(p>3) #use svds
-    {
-        ifelse(n >= p, return(svds(X, k=1, nu = 1, nv = 1)$v), return(svds(X, k=1, nu = 1, nv = 1)$u))
-
-    } else {
-        ifelse(n >= p, return(svd(X, nu = 0, nv = 1)$v), return(svd(X, nu = 1, nv = 0)$u))
-
-    }
-}
 
 # ----------------------------------------------------------------------------------------------------------
 # miscrossprod() - Compute cross-product between vectors x and y
@@ -454,4 +437,77 @@ defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical
     return(list(resdefl=resdefl,pdefl=pdefl))
 }
 
+# ----------------------------------------------------------------------------------------------------------
+# initsvd() - performs SVD on matrix X
+# ----------------------------------------------------------------------------------------------------------
+# used in 'internal_mint.block.R'
+initsvd = function (X) {
+    n = NROW(X)
+    p = NCOL(X)
+    
+    if(p>3) #use svds
+    {
+        ifelse(n >= p, return(svds(X, k=1, nu = 1, nv = 1)$v), return(svds(X, k=1, nu = 1, nv = 1)$u))
+        
+    } else {
+        ifelse(n >= p, return(svd(X, nu = 0, nv = 1)$v), return(svd(X, nu = 1, nv = 0)$u))
+        
+    }
+}
+
+# ----------------------------------------------------------------------------------------------------------
+# init svd
+# ----------------------------------------------------------------------------------------------------------
+initialisation_by_svd = function(A, indY = NULL, misdata, is.na.A = NULL, init = "svd")
+{
+    
+    J = length(A)
+    loadings.A = vector("list",length=J)
+    
+    if (init == "svd")
+    {
+        
+        ### Start: Change initialization of loadings.A
+        if (misdata)
+        {
+            M = lapply(c(1:J)[-indY], function(x){crossprod(replace(A[[x]], is.na.A[[x]], 0), replace(A[[indY]], is.na.A[[indY]], 0))})
+        } else {
+            M = lapply(c(1:J)[-indY], function(x){crossprod(A[[x]], A[[indY]])})
+        }
+        
+        #svd.M = lapply(M, function(x){svd(x, nu = 1, nv = 1)})
+        svd.M = lapply(M, function(x){if(ncol(x)>3) {svds(x, k=1, nu = 1, nv = 1)} else {svd(x, nu = 1, nv = 1)}})
+        
+        loadings.A[c(1:J)[-indY]] = lapply(c(1:J)[-indY], function(x){svd.M[[x]]$u})
+        loadings.A[[indY]] = svd.M[[1]]$v
+        
+    } else if (init=="svd.single") {
+        
+        
+        if (misdata)
+        {
+            alpha =  lapply(1 : J, function(y){initsvd(replace(A[[y]], is.na.A[[y]], 0))})
+        } else {
+            alpha =  lapply(1 : J, function(y){initsvd(A[[y]])})
+        }
+        for (j in 1:J)
+        {
+            if (nrow(A[[j]]) >= ncol(A[[j]]))
+            {
+                loadings.A[[j]] = alpha[[j]]
+            } else {
+                alpha[[j]] = drop(1/sqrt( t(alpha[[j]]) %*% A[[j]] %*% (t(A[[j]]) %*% alpha[[j]]))) * alpha[[j]]
+                
+                loadings.A[[j]] = crossprod(A[[j]],alpha[[j]])#)t(A[[j]]) %*% alpha[[j]]
+            }
+        }
+        
+        ### End: Change initialization of a
+    } else {
+        stop("init should be either 'svd' or 'svd.single'.")
+    }
+
+    return(loadings.A)
+
+}
 

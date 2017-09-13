@@ -83,7 +83,7 @@ stratified.subsampling = function(Y, folds = 10)
 }
 
 
-MCVfold.splsda = function(
+MCVfold.splsda_old = function(
 X,
 Y,
 multilevel = NULL, # repeated measurement only
@@ -114,9 +114,8 @@ cl
         pb = FALSE
     }
     
-    design = matrix(c(0,1,1,0), ncol = 2, nrow = 2, byrow = TRUE)
 
-
+    
     M = length(folds)
     features = features.j = NULL
     auc.all = prediction.comp = class.comp = list()
@@ -184,7 +183,7 @@ cl
         stop.user = FALSE
 
         # function instead of a loop so we can use lapply and parLapply. Can't manage to put it outside without adding all the arguments
-        for (j in 1:M)#fonction.j.folds = function(j)#for (j in 1:M)
+        fonction.j.folds = function(j)#for (j in 1:M)
         {
             if (progressBar ==  TRUE)
             setTxtProgressBar(pb, (M*(nrep-1)+j-1)/(M*nrepeat))
@@ -293,8 +292,6 @@ cl
             
             #-- near.zero.var ----------------------#
             #---------------------------------------#
-            
-            
             prediction.comp.j = array(0, c(length(omit), nlevels(Y), length(test.keepX)), dimnames = list(rownames(X.test), levels(Y), names(test.keepX)))
             
             
@@ -303,17 +300,6 @@ cl
             class.comp.j[[ijk]] = matrix(0, nrow = length(omit), ncol = length(test.keepX))# prediction of all samples for each test.keepX and  nrep at comp fixed
             
             
-            # scaling for all test.keepX
-            A = list(X=X.train, Y=Y.train)
-            study = factor(rep(1,nrow(X.train)))
-
-            A = lapply(A, function(x){mean_centering_per_study(x, study, scale=TRUE)$concat.data})
-            
-            #svd for all test.keepX
-            
-            
-            #loop on test.keepX
-
             for (i in 1:length(test.keepX))
             {
                 if (progressBar ==  TRUE)
@@ -323,13 +309,6 @@ cl
                 # if it's from perf, then it's only either keepX or keepX.constraint
                 # if it's from tune, then it's either keepX, or a combination of keepX.constraint and keepX
                 # we know if it's perf+constraint or tune+constraint depending on the test.keepX that is either a vector or a list
-                keepX = if(is.null(choice.keepX.constraint) & !is.list(test.keepX)){c(choice.keepX, test.keepX[i])}else if(!is.list(test.keepX)){test.keepX[i]} else {NULL}
-
-                result = internal_mint.block(A = A, indY = 2, mode = "regression", ncomp = c(ncomp, ncomp), max.iter = max.iter,
-                design = design, keepA = list(keepX, keepY), keepA.constraint = list(keepX.constraint, keepY.constraint),
-                scale = scale, scheme = "horst",init="svd", study = study)
-                
-                
                 object.res = mixOmics::splsda(X.train, Y.train, ncomp = ncomp,
                 keepX = if(is.null(choice.keepX.constraint) & !is.list(test.keepX)){c(choice.keepX, test.keepX[i])}else if(!is.list(test.keepX)){test.keepX[i]} else {NULL} ,
                 keepX.constraint = if(is.null(choice.keepX.constraint)& !is.list(test.keepX)){NULL}else if(!is.list(test.keepX)){choice.keepX.constraint} else {c(choice.keepX.constraint, test.keepX)},
