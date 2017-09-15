@@ -117,12 +117,22 @@ keepA.constraint = NULL, penalty = NULL, all.outputs = FALSE)
     ### End: Initialization parameters
     
     #save(list=ls(),file="temp2.Rdata")
-    misdata = any(sapply(A, anyNA)) # Detection of missing data
+    misdata = sapply(A, anyNA) # Detection of missing data
+    misdata.all = any(misdata)
     
-    print(misdata)
+    print(misdata.all)
     
-    if (misdata)
-    is.na.A = lapply(A, is.na)
+    if (misdata.all)
+    {
+        is.na.A = lapply(A, is.na)
+        
+        ind.NA = list()
+        for(q in 1:J)
+        ind.NA[[q]] = which(apply(is.na.A[[q]], 1, sum) == 1) # calculated only once
+    } else {
+        is.na.A = NULL
+        ind.NA = NULL
+    }
     
     if(all.outputs & J==2 & nlevels(study) == 1) #(s)pls(da)
     {
@@ -134,12 +144,17 @@ keepA.constraint = NULL, penalty = NULL, all.outputs = FALSE)
         mat.c = matrix(0, nrow = ncol(A[[1]]), ncol = N, dimnames = list(colnames(A[[1]],  paste0("comp ", 1:N))))
     } else {mat.c = NULL}
     
+    
+    save(list=ls(),file="temp.Rdata")
+    
     iter=NULL
     for (comp in 1 : N)
     {
-        
+        if(misdata.all)# replace NA in A[[q]] by 0
+        R = lapply(1:J, function(q){replace(R[[q]], is.na.A[[q]], 0)}) # if missing data, R is the one replace by 0 where NA are supposed to be
+
         # initialisation_by_svd, get the loadings.A
-        loadings.A = initialisation_by_svd(A, indY, misdata, is.na.A, init = init)
+        loadings.A = initialisation_by_svd(R, indY, misdata, is.na.A, init = init)
         
         # loop on keepA[[comp]]: multiple values per block and we go through them. Need to have the same number of values per block.
         # we assume keepA[[comp]] is a grid here: columns are the blocks, rows are the different keepX
@@ -153,7 +168,8 @@ keepA.constraint = NULL, penalty = NULL, all.outputs = FALSE)
                 mint.block.result = sparse.mint.block_iteration(R, design, study = study, loadings.A = loadings.A,
                 #keepA.constraint = if (!is.null(keepA.constraint)) {lapply(keepA.constraint, function(x){unlist(x[n])})} else {NULL} ,
                 keepA = keepA.ijk, #if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL}, #keepA is one value per block
-                scheme = scheme, init = init, max.iter = max.iter, tol = tol, verbose = verbose,penalty = penalty, misdata=misdata, is.na.A=is.na.A,
+                scheme = scheme, init = init, max.iter = max.iter, tol = tol, verbose = verbose,penalty = penalty,
+                misdata=misdata, is.na.A=is.na.A, ind.NA = ind.NA,
                 all.outputs = all.outputs)
             } else {
                 mint.block.result = sparse.rgcca_iteration(R, design, tau = if (is.matrix(tau)){tau[n, ]} else {"optimal"},
@@ -202,8 +218,8 @@ keepA.constraint = NULL, penalty = NULL, all.outputs = FALSE)
                 {
                     for(m in 1:nlevels(study))
                     {
-                        loadings.partial.A[[k]][[m]][, comp] = matrix(mint.block.result$loadings.partial.A.comp[[k]][[m]], ncol=1)
-                        variates.partial.A[[k]][[m]][, comp] = matrix(mint.block.result$variates.partial.A.comp[[k]][[m]], ncol=1)
+                        loadings.partial.A[[comp]][[ijk.keepA]][[k]][[m]] = matrix(mint.block.result$loadings.partial.A.comp[[k]][[m]], ncol=1)
+                        variates.partial.A[[comp]][[ijk.keepA]][[k]][[m]] = matrix(mint.block.result$variates.partial.A.comp[[k]][[m]], ncol=1)
                     }
                     #variates.partial.A[[k]][,n]=matrix(unlist(mint.block.result$variates.partial.A.comp[[k]]),ncol=1)
                 }
@@ -240,8 +256,8 @@ keepA.constraint = NULL, penalty = NULL, all.outputs = FALSE)
                 #save(list=ls(),file="temp.Rdata")
                 time4 = proc.time()
                 
-                defla.result = defl.select(mint.block.result$variates.A, R, ndefl, comp, nbloc = J, indY = indY, mode = mode, aa = mint.block.result$loadings.A,
-                misdata=misdata, is.na.A=is.na.A)
+                defla.result = defl.select(yy=mint.block.result$variates.A, rr=R, nncomp=ndefl, nn=n, nbloc = J, indY = indY, mode = mode, aa = mint.block.result$loadings.A,
+                misdata=misdata, is.na.A=is.na.A, ind.NA = ind.NA)
                 
                 R = defla.result$resdefl
                 #defl.matrix[[n + 1]] = R
@@ -422,19 +438,36 @@ penalty=NULL, all.outputs = FALSE)
     loadings.partial.A.comp = list()
     for (q in 1:J)
     {
-        if(misdata)
+        if(misdata[q])
         {
+            loadings.temp = loadings.A[[q]]
             #variates.A[, q] =  apply(A[[q]], 1, miscrossprod, loadings.A[[q]])
-            A.temp = replace(A[[q]], is.na.A[[q]], 0) # replace NA in A[[q]] by 0
-            variates.A.temp = A.temp %*% loadings.A[[q]]
-            temp = drop(loadings.A[[q]]) %o% rep(1, nrow(A[[q]]))
-            temp[(t(is.na.A[[q]]))] = 0
-            loadings.A.norm = crossprod(temp)
-            variates.A[, q] = variates.A.temp / diag(loadings.A.norm)
+            #A.temp = replace(A[[q]], is.na.A[[q]], 0) # replace NA in A[[q]] by 0
+            variates.A.temp = A[[q]] %*% loadings.temp
+            #temp = drop(loadings.A[[q]]) %o% rep(1, nrow(A[[q]]))
+            #temp[(t(is.na.A[[q]]))] = 0
+            
+            # we only want the diagonal, which is the norm of each column of temp
+            # loadings.A.norm = crossprod(temp)
+            # variates.A[, q] = variates.A.temp / diag(loadings.A.norm)
+            #only calculating the ones where there's a NA
+            d.variates.A.norm = rep(crossprod(loadings.temp), length(variates.A.temp))
+            #ind.NA[[q]] = which(apply(is.na.A[[q]], 1, sum) == 1) # calculated only once, then reused in the repeat step
+            
+            if(length(ind.NA[[q]])>0) # should always be true
+            {
+                temp = drop(loadings.temp) %o% rep(1, length(ind.NA[[q]]))
+                temp[t(is.na.A[[q]][ind.NA[[q]],,drop=FALSE])] = 0
+                d.variates.A.norm[ind.NA[[q]]] = apply(temp,2, crossprod)
+            }
+            
+            variates.A[, q] = variates.A.temp / d.variates.A.norm
+            
             # we can have 0/0, so we put 0
             a = is.na(variates.A[, q])
             if (any(a))
             variates.A[a, q] = 0
+            
         }else{
             variates.A[, q] = A[[q]]%*%loadings.A[[q]]
         }
@@ -482,12 +515,12 @@ penalty=NULL, all.outputs = FALSE)
             temp=0
             for (m in 1:nlevels_study)
             {
-                if(misdata)
-                {
-                    loadings.partial.A.comp[[q]][[m]] = apply(t(A_split[[q]][[m]]), 1, miscrossprod, Z_split[[m]])
-                }else{
-                    loadings.partial.A.comp[[q]][[m]] = crossprod(A_split[[q]][[m]],Z_split[[m]])
-                }
+                #if(misdata[q])
+                #{
+                #    loadings.partial.A.comp[[q]][[m]] = crossprod(A_split_temp[[q]][[m]],Z_split[[m]])#apply(t(A_split[[q]][[m]]), 1, miscrossprod, Z_split[[m]])
+                #}else{
+                loadings.partial.A.comp[[q]][[m]] = crossprod(A_split[[q]][[m]],Z_split[[m]])
+                #}
                 temp=temp+loadings.partial.A.comp[[q]][[m]]
             }
             loadings.A[[q]] = temp
@@ -511,15 +544,31 @@ penalty=NULL, all.outputs = FALSE)
             time7 = proc.time()
             
             ### Step B end: Computer the outer weight ###
-            if(misdata)
+            if(misdata[q])
             {
                 #variates.A[, q] =  apply(A[[q]], 1, miscrossprod, loadings.A[[q]])
-                A.temp = replace(A[[q]], is.na.A[[q]], 0) # replace NA in A[[q]] by 0
-                variates.A.temp = A.temp %*% loadings.A[[q]]
-                temp = drop(loadings.A[[q]]) %o% rep(1, nrow(A[[q]]))
-                temp[(t(is.na.A[[q]]))] = 0
-                loadings.A.norm = crossprod(temp)
-                variates.A[, q] = variates.A.temp / diag(loadings.A.norm)
+                #A.temp = replace(A[[q]], is.na.A[[q]], 0) # replace NA in A[[q]] by 0
+                variates.A.temp = A[[q]] %*% loadings.A[[q]]
+                #temp = drop(loadings.A[[q]]) %o% rep(1, nrow(A[[q]]))
+                #temp[(t(is.na.A[[q]]))] = 0
+                
+                # we only want the diagonal, which is the norm of each column of temp
+                # loadings.A.norm = crossprod(temp)
+                # variates.A[, q] = variates.A.temp / diag(loadings.A.norm)
+                #d.loadings.A.norm = apply(temp,2, crossprod)
+                #only calculating the ones where there's a NA
+                d.variates.A.norm = rep(crossprod(loadings.A[[q]]), length(variates.A.temp))
+                #ind.NA = which(apply(is.na.A.q, 2, sum) == 1)
+                
+                if(length(ind.NA[[q]])>0)
+                {
+                    temp = drop(loadings.A[[q]]) %o% rep(1, length(ind.NA[[q]]))
+                    temp[t(is.na.A[[q]][ind.NA[[q]],,drop=FALSE])] = 0
+                    d.variates.A.norm[ind.NA[[q]]] = apply(temp,2, crossprod)
+                }
+                variates.A[, q] = variates.A.temp / d.variates.A.norm
+                
+                
                 # we can have 0/0, so we put 0
                 a = is.na(variates.A[, q])
                 if (any(a))

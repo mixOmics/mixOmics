@@ -366,23 +366,40 @@ miscrossprod = function (x, y) {
 # deflation()
 # ----------------------------------------------------------------------------------------------------------
 # used in defl.select (below)
-deflation = function(X, y, misdata, is.na.A.q){
+deflation = function(X, y, misdata.q, is.na.A.q, ind.NA){
     # Computation of the residual matrix R
     # Computation of the vector p.
-
+    
     #is.na.tX <- is.na(t(X))
-    if (misdata)
+    #save(list=ls(),file="temp3.Rdata")
+    if (misdata.q)
     {
-        is.na.tX = t(is.na.A.q)
+        #is.na.tX = t(is.na.A.q)
         #p = apply(t(X),1,miscrossprod,y)/as.vector(crossprod(y))
         
         #variates.A[, q] =  apply(A[[q]], 1, miscrossprod, loadings.A[[q]])
-        A.temp = replace(t(X), is.na.tX, 0) # replace NA in A[[q]] by 0
-        variates.A.temp = A.temp %*% y
-        temp = drop(y) %o% rep(1, nrow(A.temp))
-        temp[(t(is.na.tX))] = 0
-        loadings.A.norm = crossprod(temp)
-        p = variates.A.temp / diag(loadings.A.norm)
+        #A.temp = replace(t(X), is.na.tX, 0) # replace NA in A[[q]] by 0
+        loadings.A.temp = crossprod(X, y)
+        #temp = drop(y) %o% rep(1, ncol(A.temp.q))
+        #temp[is.na.A.q] = 0
+        # we only want the diagonal, which is the norm of each column of temp
+        #loadings.A.norm = crossprod(temp)
+        #p = variates.A.temp / diag(loadings.A.norm)
+        
+        #d.loadings.A.norm = apply(temp,2, crossprod)
+        #only calculating the ones where there's a NA
+        d.loadings.A.norm = rep(crossprod(y), ncol(X))
+        #ind.NA = which(apply(is.na.A.q, 2, sum) == 1)
+        
+        
+        if(length(ind.NA)>0)
+        {
+            temp = drop(y) %o% rep(1, length(ind.NA))
+            temp[is.na.A.q[,ind.NA,drop=FALSE]] = 0
+            d.loadings.A.norm[ind.NA] = apply(temp,2, crossprod)
+        }
+        
+        p = loadings.A.temp / d.loadings.A.norm
         # we can have 0/0, so we put 0
         a = is.na(p)
         if (any(a))
@@ -396,15 +413,17 @@ deflation = function(X, y, misdata, is.na.A.q){
     return(list(p=p,R=R))
 }
 
+
 # ----------------------------------------------------------------------------------------------------------
 # defl.select() - computes residual matrices
 # ----------------------------------------------------------------------------------------------------------
 # used in 'internal_mint.block.R'
-defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical", aa = NULL, misdata, is.na.A) { ### Start: Add new parameter for estimation classic mode
+defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical", aa = NULL, misdata, is.na.A, ind.NA) { ### Start: Add new parameter for estimation classic mode
+    #save(list=ls(),file="temp2.Rdata")
     resdefl = NULL
     pdefl = NULL
     for (q in 1 : nbloc) {
-        if(misdata)
+        if(misdata[q])
         {
             is.na.A.q = is.na.A[[q]]
         } else {
@@ -413,7 +432,7 @@ defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical
         ### Start: insertion of new deflations (See La regression PLS Theorie et pratique p204 (Chap 11))
         if ( nn <= nncomp[q] ) {
             if ((mode == "canonical") || (q != indY)) { #deflation of each block independently from the others, except indY
-                defltmp = deflation(rr[[q]], yy[ , q], misdata, is.na.A.q)
+                defltmp = deflation(rr[[q]], yy[ , q], misdata[q], is.na.A.q, ind.NA[[q]])
                 resdefl[[q]] = defltmp$R
                 pdefl[[q]]   = defltmp$p
             } else if (mode == "classic") {
@@ -423,7 +442,7 @@ defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical
                 resdefl[[q]] = rr[[q]]
                 pdefl[[q]]   =  rep(0,NCOL(rr[[q]]))
             } else if (mode == "regression") {
-                resdefl[[q]] = Reduce("+", lapply(c(1:nbloc)[-q], function(x) {deflation(rr[[q]],yy[, x], misdata, is.na.A.q)$R}))/(nbloc-1)
+                resdefl[[q]] = Reduce("+", lapply(c(1:nbloc)[-q], function(x) {deflation(rr[[q]],yy[, x], misdata[q], is.na.A.q, ind.NA[[q]])$R}))/(nbloc-1)
                 pdefl[[q]]   =  rep(0,NCOL(rr[[q]]))
             }
             ### End: insertion of new deflations
@@ -468,13 +487,13 @@ initialisation_by_svd = function(A, indY = NULL, misdata, is.na.A = NULL, init =
     {
         
         ### Start: Change initialization of loadings.A
-        if (misdata)
-        {
-            M = lapply(c(1:J)[-indY], function(x){crossprod(replace(A[[x]], is.na.A[[x]], 0), replace(A[[indY]], is.na.A[[indY]], 0))})
-        } else {
+        #if (misdata)
+        #{
+        #    M = lapply(c(1:J)[-indY], function(x){crossprod(replace(A[[x]], is.na.A[[x]], 0), replace(A[[indY]], is.na.A[[indY]], 0))})
+        #} else {
             M = lapply(c(1:J)[-indY], function(x){crossprod(A[[x]], A[[indY]])})
-        }
-        
+            #}
+    
         #svd.M = lapply(M, function(x){svd(x, nu = 1, nv = 1)})
         svd.M = lapply(M, function(x){if(ncol(x)>3) {svds(x, k=1, nu = 1, nv = 1)} else {svd(x, nu = 1, nv = 1)}})
         
@@ -484,12 +503,12 @@ initialisation_by_svd = function(A, indY = NULL, misdata, is.na.A = NULL, init =
     } else if (init=="svd.single") {
         
         
-        if (misdata)
-        {
-            alpha =  lapply(1 : J, function(y){initsvd(replace(A[[y]], is.na.A[[y]], 0))})
-        } else {
+        #if (misdata)
+        #{
+        #    alpha =  lapply(1 : J, function(y){initsvd(replace(A[[y]], is.na.A[[y]], 0))})
+        #} else {
             alpha =  lapply(1 : J, function(y){initsvd(A[[y]])})
-        }
+            #}
         for (j in 1:J)
         {
             if (nrow(A[[j]]) >= ncol(A[[j]]))
