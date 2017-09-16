@@ -203,7 +203,7 @@ cpus
     # we can do logratio and multilevel on the whole data as these transformation are done per sample
     X = logratio.transfo(X = X, logratio = logratio)
     
-    if (!is.null(multilevel) & logratio == "none") # if no logratio, we can do multilevel on the whole data; otherwise it needs to be done after each logratio inside the CV
+    if (!is.null(multilevel)) # logratio is applied per sample, multilevel as well, so both can be done on the whole data
     {
 
         Xw = withinVariation(X, design = multilevel)

@@ -167,13 +167,10 @@ norm2 = function(vec)
 # --------------------------------------
 # sparsity function: used in 'internal_mint.block.R'
 # --------------------------------------
-sparsity=function(loadings.A, keepA, keepA.constraint=NULL, penalty=NULL)
+sparsity=function(loadings.A, keepA, penalty=NULL)
 {
     
-    if (!is.null(keepA.constraint))
-    {
-        loadings.A[-keepA.constraint] = 0
-    } else if (!is.null(keepA)) {
+    if (!is.null(keepA)) {
         nx = length(loadings.A) - keepA
         loadings.A = soft_thresholding_L1(loadings.A, nx = nx)
     } else if (!is.null(penalty)) {
@@ -371,7 +368,7 @@ deflation = function(X, y, misdata.q, is.na.A.q, ind.NA){
     # Computation of the vector p.
     
     #is.na.tX <- is.na(t(X))
-    #save(list=ls(),file="temp3.Rdata")
+    save(list=ls(),file="temp3.Rdata")
     if (misdata.q)
     {
         #is.na.tX = t(is.na.A.q)
@@ -419,7 +416,7 @@ deflation = function(X, y, misdata.q, is.na.A.q, ind.NA){
 # ----------------------------------------------------------------------------------------------------------
 # used in 'internal_mint.block.R'
 defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical", aa = NULL, misdata, is.na.A, ind.NA) { ### Start: Add new parameter for estimation classic mode
-    #save(list=ls(),file="temp2.Rdata")
+    save(list=ls(),file="temp2.Rdata")
     resdefl = NULL
     pdefl = NULL
     for (q in 1 : nbloc) {

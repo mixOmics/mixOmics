@@ -35,7 +35,7 @@
 #   defl.select(),
 #############################################################################################################
 
-internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)), tau=NULL,#rep(1, length(A)),
+internal_mint.block_old = function (A, indY = NULL,  design = 1 - diag(length(A)), tau=NULL,#rep(1, length(A)),
 ncomp = rep(1, length(A)), scheme = "horst", scale = TRUE,  bias = FALSE,
 init = "svd.single", tol = 1e-06, verbose = FALSE,
 mode = "canonical", max.iter = 100,study = NULL, keepA = NULL,

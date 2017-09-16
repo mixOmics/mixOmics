@@ -303,6 +303,72 @@ cl
             class.comp.j[[ijk]] = matrix(0, nrow = length(omit), ncol = length(test.keepX))# prediction of all samples for each test.keepX and  nrep at comp fixed
             
             
+            
+            
+            internal_wrapper.mint # shape input for `internal_mint.block' (keepA, test.keepA, etc)
+            
+            
+            #needs to be done somewhere prior to here, in the tune.splsda.R for instance
+            check = Check.entry.pls(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.constraint, mode=mode, scale=scale,
+            near.zero.var=near.zero.var, max.iter=max.iter ,tol=tol ,logratio=logratio ,DA=DA, multilevel=multilevel)
+            X = check$X
+            input.X = X # save the checked X, before logratio/multileve/scale
+            Y = check$Y
+            ncomp = check$ncomp
+            mode = check$mode
+            keepX.constraint = check$keepX.constraint
+            keepY.constraint = check$keepY.constraint
+            keepX = check$keepX
+            keepY = check$keepY
+            nzv.A = check$nzv.A
+
+
+
+            result = internal_mint.block(A = list(X = X, Y = Y), indY = 2, mode = mode, ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
+            design = design, keepA = list(keepX, keepY), keepA.constraint = list(keepX.constraint, keepY.constraint),
+            scale = scale, scheme = "horst",init="svd", study = study)
+    
+    
+            result = internal_mint.block(A = A, indY = 2, mode = "regression", ncomp = c(ncomp, ncomp), max.iter = max.iter,
+            design = design, keepA = list(keepX, keepY), keepA.constraint = list(keepX.constraint, keepY.constraint),
+            scale = scale, scheme = "horst",init="svd", study = study)
+            
+            # return loadings and variates for all test.keepX on the ncomp component
+            for(i in 1:length(test.keepX))
+            {
+                # creates temporary splsda object to use the predict function
+                object.splsda.temp = result
+                # only pick the loadings and variates relevant to that test.keepX
+                # add the "splsda" class
+                
+                
+                test.predict.sw <- predict(object.splsda.temp, newdata = X.test, dist = dist)
+                prediction.comp.j[, , i] =  test.predict.sw$predict[, , ncomp]
+                
+                for(ijk in dist)
+                class.comp.j[[ijk]][, i] =  test.predict.sw$class[[ijk]][, ncomp] #levels(Y)[test.predict.sw$class[[ijk]][, ncomp]]
+                
+                
+            }
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+
             # scaling for all test.keepX
             A = list(X=X.train, Y=Y.train)
             study = factor(rep(1,nrow(X.train)))
