@@ -435,9 +435,11 @@ deflation = function(X, y, misdata.q, is.na.A.q, ind.NA){
 # ----------------------------------------------------------------------------------------------------------
 # used in 'internal_mint.block.R'
 defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical", aa = NULL, misdata, is.na.A, ind.NA) { ### Start: Add new parameter for estimation classic mode
+    #print(mode)
     #save(list=ls(),file="temp2.Rdata")
-    resdefl = NULL
-    pdefl = NULL
+    
+    resdefl = vector("list", length = length(rr))
+    pdefl = vector("list", length = length(rr))
     for (q in 1 : nbloc) {
         if(misdata[q])
         {
