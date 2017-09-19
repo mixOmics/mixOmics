@@ -39,7 +39,7 @@ internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)), t
 ncomp = rep(1, length(A)), scheme = "horst", scale = TRUE,  bias = FALSE,
 init = "svd.single", tol = 1e-06, verbose = FALSE,
 mode = "canonical", max.iter = 100,study = NULL, keepA = NULL,
-penalty = NULL, all.outputs = FALSE)
+penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NULL)
 {
     # A: list of matrices
     # indY: integer, pointer to one of the matrices of A
@@ -82,26 +82,10 @@ penalty = NULL, all.outputs = FALSE)
     AVE_inner = AVE_outer = rep(NA, max(ncomp))
 
 
-    
-    # shaping keepA, will need to be done somewhere before eventually
-    
-    keepX = keepA # keepA[[block]][1:ncomp]  # keepA[[block]][ all test.keepX]
-    
-    test.keepA = lapply(test.keepA,sort) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
-    grid = expand.grid (test.keepA[length(test.keepA):1])[length(test.keepA):1] # each row is to be tested, the reordering is just a personal preference, works
-    
-    keepAA=vector("list", length = N) # one keepA per comp
-    names(keepAA) = paste0("comp",1:N)
-    for(comp in 1:(N-1)) # keepA[[block]] [1:ncomp]
-    {
-        keepAA[[comp]] = lapply(keepA, function(x) x[comp])
-    }
-    keepAA[[N]] = test.keepA
-    
-    keepAA = lapply(keepAA, expand.grid)
-    
+    # keepA[[comp]] is a matrix where each row is all the keepX the test over the block (each block is a column)
+
     #number of models to be tested
-    number.models.per.comp = sapply(keepAA,nrow)
+    number.models.per.comp = sapply(keepA,nrow)
     one.model = !any( number.models.per.comp !=1)
 
 
@@ -159,22 +143,29 @@ penalty = NULL, all.outputs = FALSE)
     ### End: Initialization parameters
     
     #save(list=ls(),file="temp2.Rdata")
-    misdata = sapply(A, anyNA) # Detection of missing data
-    misdata.all = any(misdata)
-    
-    print(misdata.all)
-    
-    if (misdata.all)
+    if(is.null(misdata) &  is.null(is.na.A) & is.null(ind.NA))
     {
-        is.na.A = lapply(A, is.na)
+        misdata = sapply(A, anyNA) # Detection of missing data
+        misdata.all = any(misdata)
         
-        ind.NA = list()
-        for(q in 1:J)
-        ind.NA[[q]] = which(apply(is.na.A[[q]], 1, sum) == 1) # calculated only once
-    } else {
-        is.na.A = NULL
-        ind.NA = NULL
+        print(misdata.all)
+        
+        if (misdata.all)
+        {
+            is.na.A = lapply(A, is.na)
+            
+            ind.NA = list()
+            for(q in 1:J)
+            ind.NA[[q]] = which(apply(is.na.A[[q]], 1, sum) == 1) # calculated only once
+        } else {
+            is.na.A = NULL
+            ind.NA = NULL
+        }
+    } else{
+        misdata.all = any(misdata)
     }
+    
+    print(misdata)
     
     if(all.outputs & J==2 & nlevels(study) == 1 & one.model) #(s)pls(da)
     {
@@ -187,7 +178,7 @@ penalty = NULL, all.outputs = FALSE)
     } else {mat.c = NULL}
     
     
-    save(list=ls(),file="temp.Rdata")
+    #save(list=ls(),file="temp.Rdata")
     
     
     iter=NULL
@@ -206,14 +197,14 @@ penalty = NULL, all.outputs = FALSE)
         
         # loop on keepA[[comp]]: multiple values per block and we go through them. Need to have the same number of values per block.
         # we assume keepA[[comp]] is a grid here: columns are the blocks, rows are the different keepX
-        for(ijk.keepA in 1:nrow(keepAA[[comp]]))
+        for(ijk.keepA in 1:nrow(keepA[[comp]]))
         {
             compteur = compteur +1
             cat("---------------------------------------------------------\n")
             print(paste0("keepA ", ijk.keepA))
             cat("---------------------------------------------------------\n")
 
-            keepA.ijk = keepAA[[comp]][ijk.keepA,]
+            keepA.ijk = keepA[[comp]][ijk.keepA,]
             
             ### start - repeat/convergence
             if (is.null(tau))
@@ -376,16 +367,16 @@ penalty = NULL, all.outputs = FALSE)
 
 
 
-    #save(list=ls(),file="temp.Rdata")
+#save(list=ls(),file="temp.Rdata")
     
     if (verbose)
     cat(paste0("Computation of the SGCCA block components #", N , " is under progress...\n"))
     
-    
-    if(one.model)
+     if(one.model)
     {
         shave.matlist = function(mat_list, nb_cols) mapply(function(m, nbcomp) m[, 1:nbcomp, drop = FALSE], mat_list, nb_cols, SIMPLIFY = FALSE)
         shave.veclist = function(vec_list, nb_elts) mapply(function(m, nbcomp) m[1:nbcomp], vec_list, nb_elts, SIMPLIFY = FALSE)
+        
         
         for (k in 1:J)
         {
@@ -473,7 +464,7 @@ penalty = NULL, all.outputs = FALSE)
 
 
         keepA.names = unlist(lapply(1:N, function(x){
-            paste(paste0("comp",x),apply(keepAA[[x]],1,function(x) paste(x,collapse="_")), sep=":")
+            paste(paste0("comp",x),apply(keepA[[x]],1,function(x) paste(x,collapse="_")), sep=":")
             
         }))
 
@@ -481,13 +472,16 @@ penalty = NULL, all.outputs = FALSE)
         colnames(loadings.A[[k]]) = colnames(variates.A[[k]]) = keepA.names
 
         names(loadings.A) =  names(variates.A) = names(iter) = names(A)
+        
+        expl.A = NULL
+        AVE = NULL
 
     }
     
     
-    out = list(X = A, indY = indY, ncomp = ncomp, mode = mode,
-    keepA = keepA, keepA.constraint = keepA.constraint,
-    variates = variates.A, loadings = shave.matlist(loadings.A, ncomp),
+    out = list(A = A, indY = indY, ncomp = ncomp, mode = mode,
+    keepA = keepA,
+    variates = variates.A, loadings = loadings.A,#shave.matlist(loadings.A, ncomp),
     variates.partial= if(is.null(tau)) {variates.partial.A} ,loadings.partial= if(is.null(tau)) {loadings.partial.A},
     loadings.star = loadings.Astar,
     names = list(sample = row.names(A[[1]]), colnames = lapply(A, colnames), blocks = names(A)),

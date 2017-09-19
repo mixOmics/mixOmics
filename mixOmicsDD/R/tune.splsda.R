@@ -54,6 +54,7 @@ validation = "Mfold",
 folds = 10,
 dist = "max.dist",
 measure = "BER", # one of c("overall","BER")
+scale = TRUE,
 auc = FALSE,
 progressBar = TRUE,
 max.iter = 100,
@@ -145,29 +146,17 @@ cpus
     constraint = FALSE # kept in the code so far, will probably get remove later on
     if (missing(already.tested.X))
     {
-        if(constraint == TRUE)
-        {
-            already.tested.X = list()
-        } else {
-            already.tested.X = NULL
-        }
+        already.tested.X = NULL
     } else {
         if(is.null(already.tested.X) | length(already.tested.X)==0)
-        stop("''already.tested.X' must be a vector of keepX values (if 'constraint'= FALSE) or a list (if'constraint'= TRUE) ")
+        stop("''already.tested.X' must be a vector of keepX values")
 
-        if(constraint == TRUE)
-        {
-            if(!is.list(already.tested.X))
-            stop("''already.tested.X' must be a list since 'constraint' is set to TRUE")
-            
-            message(paste("A total of",paste(lapply(already.tested.X,length),collapse=" and "),"specific variables ('already.tested.X') were selected on the first ", length(already.tested.X), "component(s)"))
-        } else {
-            if(is.list(already.tested.X))
-            stop("''already.tested.X' must be a vector of keepX values since 'constraint' is set to FALSE")
+        if(is.list(already.tested.X))
+        stop("''already.tested.X' must be a vector of keepX values since 'constraint' is set to FALSE")
 
-            message(paste("Number of variables selected on the first", length(already.tested.X), "component(s):", paste(already.tested.X,collapse = " ")))
-        }
+        message(paste("Number of variables selected on the first", length(already.tested.X), "component(s):", paste(already.tested.X,collapse = " ")))
     }
+    
     if(length(already.tested.X) >= ncomp)
     stop("'ncomp' needs to be higher than the number of components already tuned, which is length(already.tested.X)=",length(already.tested.X) , call. = FALSE)
     
@@ -194,6 +183,28 @@ cpus
         parallel = FALSE
         cl = NULL
     }
+    
+    # add colnames and rownames if missing
+    X.names = dimnames(X)[[2]]
+    if (is.null(X.names))
+    {
+        X.names = paste("X", 1:ncol(X), sep = "")
+        dimnames(X)[[2]] = X.names
+    }
+    
+    ind.names = dimnames(X)[[1]]
+    if (is.null(ind.names))
+    {
+        ind.names = 1:nrow(X)
+        rownames(X)  = ind.names
+    }
+    
+    if (length(unique(rownames(X))) != nrow(X))
+    stop("samples should have a unique identifier/rowname")
+    if (length(unique(X.names)) != ncol(X))
+    stop("Unique indentifier is needed for the columns of X")
+
+
     #-- end checking --#
     #------------------#
     
@@ -218,6 +229,24 @@ cpus
     }
     #-- multilevel approach ----------------------------------------------------#
     #---------------------------------------------------------------------------#
+    
+    
+    #---------------------------------------------------------------------------#
+    #-- NA calculation      ----------------------------------------------------#
+    
+    misdata = c(X=anyNA(X), Y=FALSE) # Detection of missing data. we assume no missing values in the factor Y
+    
+    if (any(misdata))
+    {
+        is.na.A = is.na(X)
+        
+        ind.NA = which(apply(is.na.A, 1, sum) == 1) # calculated only once
+    } else {
+        is.na.A = NULL
+        ind.NA = NULL
+    }
+    #-- NA calculation      ----------------------------------------------------#
+    #---------------------------------------------------------------------------#
 
 
     #-- cross-validation approach  ---------------------------------------------#
@@ -229,14 +258,6 @@ cpus
     if ((!is.null(already.tested.X)))
     {
         comp.real = (length(already.tested.X) + 1):ncomp
-        #check and match already.tested.X to X
-        if(constraint == TRUE)
-        {
-            already.tested.X = get.keepA.and.keepA.constraint (X = list(X=X), keepX.constraint = list(X=already.tested.X), ncomp = length(already.tested.X))$keepA.constraint$X
-            #transform already.tested.X to characters
-            already.tested.X = relist(colnames(X), skeleton = already.tested.X)
-        }
-
     } else {
         comp.real = 1:ncomp
     }
@@ -294,6 +315,7 @@ cpus
         error.per.class.keepX.opt.mean = matrix(0, nrow = nlevels(Y), ncol = length(comp.real),
         dimnames = list(c(levels(Y)), c(paste('comp', comp.real, sep=''))))
         # successively tune the components until ncomp: comp1, then comp2, ...
+        #save(list=ls(),file="temp.Rdata")
         for(comp in 1:length(comp.real))
         {
 
@@ -301,10 +323,10 @@ cpus
             cat("\ncomp",comp.real[comp], "\n")
             
             result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = 1 + length(already.tested.X),
-            choice.keepX = if(constraint){NULL}else{already.tested.X},
-            choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
-            test.keepX = test.keepX, measure = measure, dist = dist,
-            near.zero.var = near.zero.var, progressBar = progressBar, class.object = "splsda", max.iter = max.iter, auc = auc, cl = cl)
+            choice.keepX = already.tested.X,
+            test.keepX = test.keepX, measure = measure, dist = dist, scale=scale,
+            near.zero.var = near.zero.var, progressBar = progressBar, max.iter = max.iter, auc = auc, cl = cl,
+            misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA)
             
             # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
             mat.error.rate[[comp]] = result[[measure]]$mat.error.rate[[1]]
@@ -318,16 +340,8 @@ cpus
 
 
             # best keepX
-            if(!constraint)
-            {
-                already.tested.X = c(already.tested.X, result[[measure]]$keepX.opt[[1]])
-            } else {
-                fit = mixOmics::splsda(X, Y, ncomp = 1 + length(already.tested.X),
-                keepX.constraint = already.tested.X, keepX = result[[measure]]$keepX.opt[[1]], near.zero.var = near.zero.var, mode = "regression")
-                
-                already.tested.X[[paste("comp",comp.real[comp],sep="")]] = selectVar(fit, comp = 1 + length(already.tested.X))$name
-            }
-            
+            already.tested.X = c(already.tested.X, result[[measure]]$keepX.opt[[1]])
+             
             if(light.output == FALSE)
             {
                 #prediction of each samples for each fold and each repeat, on each comp
@@ -356,7 +370,7 @@ cpus
         # calculating the number of optimal component based on t.tests and the error.rate.all, if more than 3 error.rates(repeat>3)
         if(nrepeat > 2 & length(comp.real) >1)
         {
-            keepX = if(constraint){lapply(already.tested.X, length)}else{already.tested.X}
+            keepX = already.tested.X
             error.keepX = NULL
             for(comp in 1:length(comp.real))
             {
@@ -376,8 +390,7 @@ cpus
         error.rate = mat.mean.error,
         error.rate.sd = mat.sd.error,
         error.rate.all = mat.error.rate,
-        choice.keepX = if(constraint){sapply(already.tested.X, length)}else{already.tested.X},
-        #choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
+        choice.keepX = already.tested.X,
         choice.ncomp = list(ncomp = ncomp_opt, values = error.keepX),
         error.rate.class = error.per.class.keepX.opt.mean,
         error.rate.class.all = error.per.class.keepX.opt)

@@ -343,7 +343,7 @@ Check.entry.single = function(X,  ncomp, q)
 # multilevel: whether a multilevel analysis will be performed (repeated measurements)
 
 
-Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.constraint, mode, scale,
+Check.entry.pls = function(X, Y, ncomp, keepX, keepY, test.keepX, test.keepY, mode, scale,
      near.zero.var, max.iter, tol, logratio, DA, multilevel)
 {
 
@@ -461,63 +461,27 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.co
     stop("Unique indentifier is needed for the columns of Y")
     
     
-    # check on keepX and keepX.constraint
-    if (missing(keepX.constraint))
+    # check keepX
+    if (missing(keepX))
     {
-        if (missing(keepX))
-        {
-            keepX = rep(P, ncomp)
-        } else {
-            if (length(keepX)<ncomp)
-            keepX = c(keepX, rep(P, ncomp - length(keepX))) #complete (with ncomp) the keepX already provided
-        }
-        keepX.constraint=list()
+        keepX = rep(P, ncomp)
     } else {
-        if (length(keepX.constraint)>ncomp)
-        stop(paste0("You should have length(keepX.constraint) lower or equal to 'ncomp' = ", ncomp, "."))
-        
-        if (missing(keepX))
-        {
-            keepX = rep(P, ncomp - length(keepX.constraint))
-        } else {
-            
-            if ((length(keepX.constraint) + length(keepX)) < ncomp)
-            keepX = c(keepX, rep(P, ncomp - length(keepX) - length(keepX.constraint)))
-            
-            if ((length(keepX.constraint) + length(keepX)) > ncomp)
-            stop(paste0("length (keepX.constraint) + length(keepX) should be lower than 'ncomp' = ", ncomp, "."))
-            
-        }
+        if (length(keepX)<ncomp)
+        keepX = c(keepX, rep(P, ncomp - length(keepX))) #complete (with ncomp) the keepX already provided
     }
-    
-    # check on keepY and keepY.constraint
-    if (missing(keepY.constraint))
+    keepX.constraint=list()
+       
+    # check keepY
+    if (missing(keepY))
     {
-        if (missing(keepY))
-        {
-            keepY = rep(Q, ncomp)
-        } else {
-            if (length(keepY) < ncomp)
-            keepY = c(keepY, rep(Q, ncomp - length(keepY))) #complete the keepY already provided
-        }
-        keepY.constraint = list()
+        keepY = rep(Q, ncomp)
     } else {
-        if (length(keepY.constraint)>ncomp)
-        stop(paste0("you should have length(keepY.constraint) lower or equal to 'ncomp' = ", ncomp, "."))
-        
-        if (missing(keepY))
-        {
-            keepY = rep(Q, ncomp - length(keepY.constraint))
-        } else {
-            
-            if ((length(keepY.constraint) + length(keepY)) < ncomp)
-            keepY = c(keepY, rep(Q, ncomp - length(keepY) - length(keepY.constraint)))
-            
-            if ((length(keepY.constraint) + length(keepY)) > ncomp)
-            stop(paste0("length (keepY.constraint) + length(keepY) should be lower than 'ncomp' = ", ncomp,"."))
-        }
+        if (length(keepY) < ncomp)
+        keepY = c(keepY, rep(Q, ncomp - length(keepY))) #complete the keepY already provided
     }
-    
+    keepY.constraint = list()
+
+
     
     
     if (any(keepX<0))
@@ -530,43 +494,12 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.co
     if (any(keepY > ncol(Y)))
     stop("each component of 'keepY' must be lower or equal than ", Q, ".")
     
-    if (is.numeric(unlist(keepX.constraint)) && any(unlist(keepX.constraint) > ncol(X)))
-    stop("each entry of 'keepX.constraint' must be lower or equal than ", P, ".")
-    if ( is.numeric(unlist(keepY.constraint)) && any(unlist(keepY.constraint) > ncol(Y)))
-    stop("each entry of 'keepY.constraint' must be lower or equal than ", Q, ".")
-    
+
     if (!is.logical(scale))
     stop("'scale' must be either TRUE or FALSE")
     
     if (!is.logical(near.zero.var))
     stop("'near.zero.var' must be either TRUE or FALSE")
-    
-    # match keepX.constraint and the colnames of X in order for keepX.constraint to be a list of character
-    # safety if keepX.constraint contains a mixed of character/numeric. It should one or the other, not a mix
-    if (length(keepX.constraint) > 0)
-    {
-        if (!is.numeric(unlist(keepX.constraint)))
-        {
-            ind = match(unlist(keepX.constraint), colnames(X))
-            if (sum(is.na(ind)) > 0)
-            stop("'keepX.constraint' must contain a subset of colnames(X) or the position of the X-variables you wish to keep.")
-        }
-        X.indice = X[, unlist(keepX.constraint), drop=FALSE]
-        keepX.constraint = relist(colnames(X.indice), skeleton=keepX.constraint)
-    }
-    
-    # same for keepY.constraint
-    if (length(keepY.constraint) > 0)
-    {
-        if (!is.numeric(unlist(keepY.constraint)))
-        {
-            ind = match(unlist(keepY.constraint),colnames(Y))
-            if (sum(is.na(ind)) > 0)
-            stop("'keepY.constraint' must contain a subset of colnames(Y) or the position of the Y-variables you wish to keep.")
-        }
-        Y.indice = Y[, unlist(keepY.constraint), drop=FALSE]
-        keepY.constraint = relist(colnames(Y.indice), skeleton=keepY.constraint)
-    }
     
 
     # at this stage keepA.constraint needs to be character, to easily remove variables with near zero variance
@@ -583,12 +516,6 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.co
             if (ncol(X) == 0)
             stop("No more variables in X")
             
-            # at this stage, keepA.constraint needs to be numbers
-            if (length(keepX.constraint) > 0)
-            {
-                #remove the variables from keepA.constraint if removed by near.zero.var
-                keepX.constraint = match.keepX.constraint(names.remove.X, keepX.constraint)
-            }
             #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
             if (any(keepX > ncol(X)))
             {
@@ -599,12 +526,9 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, keepX.constraint, keepY.co
         
     }else{nzv.A=NULL}
     
-    # we need numbers in keepX.constraint from now on
-    keepX.constraint = lapply(keepX.constraint,function(x){match(x, colnames(X))})
-    keepY.constraint = lapply(keepY.constraint,function(x){match(x, colnames(Y))})
-    
-    return(list(X=X, Y=Y, ncomp=ncomp, X.names=X.names, Y.names=Y.names, ind.names=ind.names, mode=mode, keepX.constraint=keepX.constraint,
-    keepY.constraint=keepY.constraint, keepX=keepX, keepY=keepY, nzv.A=nzv.A))
+
+    return(list(X=X, Y=Y, ncomp=ncomp, X.names=X.names, Y.names=Y.names, ind.names=ind.names, mode=mode,
+        keepX=keepX, keepY=keepY, nzv.A=nzv.A))
 }
 
 

@@ -46,14 +46,12 @@ Y,
 ncomp = 2,
 mode = c("regression", "canonical", "invariant", "classic"),
 keepX,
-keepX.constraint=NULL,
 scale = TRUE,
 tol = 1e-06,
 max.iter = 100,
 near.zero.var = FALSE,
 logratio = "none",   # one of "none", "CLR"
 multilevel = NULL,
-init = "svd", # "svd", "svd.single" or a list of loadings (length 2)
 all.outputs = TRUE)    # multilevel is passed to multilevel(design = ) in withinVariation. Y is ommited and shouldbe included in multilevel design
 {
     
@@ -98,27 +96,27 @@ all.outputs = TRUE)    # multilevel is passed to multilevel(design = ) in within
     
     # call to 'internal_wrapper.mint'
     result = internal_wrapper.mint(X = X, Y = Y.mat, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
-    keepX = keepX, keepX.constraint = keepX.constraint, max.iter = max.iter, tol = tol, logratio = logratio,
+    keepX = keepX, max.iter = max.iter, tol = tol, logratio = logratio,
     multilevel = multilevel, DA = TRUE)
     
 
     # choose the desired output from 'result'
     out = list(
         call = match.call(),
-        X = result$X[-result$indY][[1]],
+        X = result$A[-result$indY][[1]],
         Y = if (is.null(multilevel))
             {
                 Y
             } else {
                 result$Y.factor
             },
-        ind.mat = result$X[result$indY][[1]],
+        ind.mat = result$A[result$indY][[1]],
         ncomp = result$ncomp,
         mode = result$mode,
         keepX = result$keepA[[1]],
         keepY = result$keepA[[2]],
-        keepX.constraint = result$keepA.constraint[[1]],
-        keepY.constraint = result$keepA.constraint[[2]],
+        #keepX.constraint = result$keepA.constraint[[1]],
+        #keepY.constraint = result$keepA.constraint[[2]],
         variates = result$variates,
         loadings = result$loadings,
         names = result$names,
