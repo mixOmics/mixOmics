@@ -87,8 +87,9 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
     #number of models to be tested
     number.models.per.comp = sapply(keepA,nrow)
     one.model = !any( number.models.per.comp !=1)
-
-
+    
+    print("one.model")
+    print(one.model)
 
     AVE_X = crit = loadings.partial.A = variates.partial.A = tau.rgcca = list()
     
@@ -169,7 +170,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
     
     if(all.outputs & J==2 & nlevels(study) == 1 & one.model) #(s)pls(da)
     {
-        if(misdata)
+        if(misdata.all)
         {
             p.ones = rep(1, ncol(A[[1]]))
             is.na.X = is.na.A[[1]]
@@ -294,7 +295,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
             
             if(all.outputs & J==2 & nlevels(study) == 1 & one.model)# mat.c, (s)pls(da)
             {
-                if(misdata)
+                if(misdata.all)
                 {
                     R.temp = R[[1]]
                     R.temp[is.na.X] = 0
@@ -340,8 +341,9 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
                     for (k in 1 : J)
                     loadings.Astar[[k]][, comp] = mint.block.result$loadings.A[[k]]
                 } else {
+                    #save(list=ls(),file="temp.Rdata")
                     for (k in 1 : J)
-                    loadings.Astar[[k]][, comp] = mint.block.result$loadings.A[[k]] - loadings.Astar[[k]][, (1 : comp - 1), drop = F] %*% drop(t(loadings.A[[k]][, n]) %*% defla.result$pdefl[[k]][, 1 : (comp - 1), drop = F])
+                    loadings.Astar[[k]][, comp] = mint.block.result$loadings.A[[k]] - loadings.Astar[[k]][, (1 : comp - 1), drop = F] %*% drop(t(loadings.A[[k]][, comp]) %*% defla.result$pdefl[[k]])#[, 1 : (comp - 1), drop = F])
                 }
             } else {
                 loadings.Astar = NULL
@@ -406,9 +408,10 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
         
         variates.A = shave.matlist(variates.A, ncomp)
 
-        
+        print("bla")
         if(all.outputs)
         {
+            print("bla2")
             # AVE
             outer = matrix(unlist(AVE_X), nrow = max(ncomp))
             for (j in 1 : max(ncomp))

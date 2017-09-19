@@ -63,7 +63,8 @@ tol = 1e-06,
 logratio = "none",   # one of "none", "CLR"
 DA = FALSE,           # indicate whether it's a DA analysis, only used for the multilvel approach with withinVariation
 multilevel = NULL,   # multilevel is passed to multilevel(design=) in withinVariation. Y is ommited and should be included in multilevel design
-misdata = NULL, is.na.A = NULL, ind.NA = NULL
+misdata = NULL, is.na.A = NULL, ind.NA = NULL,
+all.outputs=TRUE
 )
 {
     
@@ -181,7 +182,7 @@ misdata = NULL, is.na.A = NULL, ind.NA = NULL
     #save(list=ls(),file="temp.Rdata")
     result = internal_mint.block(A = list(X = X, Y = Y), indY = 2, mode = mode, ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
     design = design, keepA = keepA,#list(keepX, keepY), test.keepA = list(test.keepX, test.keepY),
-    scale = scale, scheme = "horst",init="svd", study = study, misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA)
+    scale = scale, scheme = "horst",init="svd", study = study, misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA, all.outputs= all.outputs)
     
     #-- pls approach ----------------------------------------------------#
     #---------------------------------------------------------------------------#
