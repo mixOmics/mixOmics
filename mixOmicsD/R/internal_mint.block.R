@@ -58,6 +58,8 @@ keepA.constraint = NULL, penalty = NULL, all.outputs = FALSE)
     # keepA.constraint: keepX.constraint, which variables are kept on the first num.comp-1 components. It is a list of characters
     # near.zero.var: do you want to remove variables with very small variance
     
+    time=FALSE
+    
     names(ncomp) = names(A)
     
     # keepA is updated to be of length length(A) now, the first entries correspond to the keepA.constraint if it was provided
@@ -65,12 +67,12 @@ keepA.constraint = NULL, penalty = NULL, all.outputs = FALSE)
     keepA[[q]] = c(unlist(lapply(keepA.constraint[[q]], length)), keepA[[q]]) #of length ncomp, can contains 0
     
     #save(list=ls(),file="temp.Rdata")
-    time1=proc.time()
+    if(time) time1=proc.time()
     # center the data per study, per matrix of A, scale if scale=TRUE, option
     mean_centered = lapply(A, function(x){mean_centering_per_study(x, study, scale)})
-    time1bis=proc.time()
-    print("scaling part1")
-    print(time1bis-time1)
+    if(time) time1bis=proc.time()
+    if(time) print("scaling part1")
+    if(time) print(time1bis-time1)
 
     A = lapply(mean_centered, function(x){as.matrix(x$concat.data)})
     
@@ -120,7 +122,7 @@ keepA.constraint = NULL, penalty = NULL, all.outputs = FALSE)
     misdata = sapply(A, anyNA) # Detection of missing data
     misdata.all = any(misdata)
     
-    print(misdata.all)
+    if(time) print(misdata.all)
     
     if (misdata.all)
     {
@@ -170,10 +172,10 @@ keepA.constraint = NULL, penalty = NULL, all.outputs = FALSE)
         }
         ### End: Estimation ai
         
-        time4 = proc.time()
-        print("one comp")
-        print(time4-time3)
-        time4 = proc.time()
+        if(time) time4 = proc.time()
+        if(time) print("one comp")
+        if(time) print(time4-time3)
+        if(time) time4 = proc.time()
     
     
         if(is.null(tau))
@@ -227,9 +229,9 @@ keepA.constraint = NULL, penalty = NULL, all.outputs = FALSE)
             
             R = defla.result$resdefl
             #defl.matrix[[n + 1]] = R
-            time5 = proc.time()
-            print("deflation")
-            print(time5-time4)
+            if(time) time5 = proc.time()
+            if(time) print("deflation")
+            if(time) print(time5-time4)
         }
         
 
@@ -383,7 +385,8 @@ scheme = "horst", init = "svd", max.iter = 100, tol = 1e-06, verbose = TRUE, bia
 misdata = NULL, is.na.A = NULL, ind.NA = NULL,
 penalty=NULL, all.outputs = FALSE)
 {
-    
+    time=FALSE
+
     # keepA.constraint is a list of positions in A of the variables to keep on the component
     # keepA is a vector of numbers
     # study is a vector
@@ -415,7 +418,7 @@ penalty=NULL, all.outputs = FALSE)
     ### End: Initialization parameters
     
     #save(A,file="temp.Rdata")
-    time1 = proc.time()
+    if(time) time1 = proc.time()
     
     ### Start: Initialisation "loadings.A" vector
     if (init == "svd")
@@ -465,9 +468,9 @@ penalty=NULL, all.outputs = FALSE)
         stop("init should be either 'svd' or 'svd.single'.")
     }
     
-    time2 = proc.time()
-    print("svd")
-    print(time2-time1)
+    if(time) time2 = proc.time()
+    if(time) print("svd")
+    if(time) print(time2-time1)
     #save(list=ls(),file="temp.Rdata")
 
     time2 = proc.time()
@@ -516,10 +519,10 @@ penalty=NULL, all.outputs = FALSE)
     }
     loadings.A_old = loadings.A
     
-    time3 = proc.time()
-    print("loadings")
-    print(time3-time2)
-    print("repeat")
+    if(time) time3 = proc.time()
+    if(time) print("loadings")
+    if(time) print(time3-time2)
+    if(time) print("repeat")
     #save(list=ls(),file="temp2.Rdata")
     
     ### Start Algorithm 1 Sparse generalized canonical analysis (See Variable selection for generalized canonical correlation analysis (Tenenhaus))
@@ -528,7 +531,7 @@ penalty=NULL, all.outputs = FALSE)
         variates.Aold = variates.A
         for (q in 1:J)
         {
-            print(paste("repeat, block",q))
+            if(time) print(paste("repeat, block",q))
             
             ### Start : !!! Impact of the diag of the design matrix !!! ###
             if (scheme == "horst")
@@ -547,7 +550,7 @@ penalty=NULL, all.outputs = FALSE)
             ### Step A end: Compute the inner components
             
 
-            time5 = proc.time()
+            if(time) time5 = proc.time()
 
             ### Step B start: Computer the outer weight ###
             # possibility of removing NA (replacing by 0) and use crossprod, further development
@@ -565,10 +568,10 @@ penalty=NULL, all.outputs = FALSE)
             }
             loadings.A[[q]] = temp
             
-            time6 = proc.time()
-            print("loadings")
-            print(time6-time5)
-            time6 = proc.time()
+            if(time) time6 = proc.time()
+            if(time) print("loadings")
+            if(time) print(time6-time5)
+            if(time) time6 = proc.time()
 
 
             # sparse using keepA / penalty
@@ -618,9 +621,9 @@ penalty=NULL, all.outputs = FALSE)
                 variates.A[, q] =  A[[q]]%*%loadings.A[[q]]
             }
             
-            time8 = proc.time()
-            print("variates")
-            print(time8-time7)
+            if(time) time8 = proc.time()
+            if(time) print("variates")
+            if(time) print(time8-time7)
 
         }
         

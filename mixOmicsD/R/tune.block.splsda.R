@@ -115,7 +115,7 @@ name.save = NULL)
     
     #-- dist
     dist = match.arg(dist, choices = c("max.dist", "centroids.dist", "mahalanobis.dist"), several.ok = FALSE)
-
+    
     #-- progressBar
     if (!is.logical(progressBar))
     stop("'progressBar' must be a logical constant (TRUE or FALSE).", call. = FALSE)
@@ -315,8 +315,7 @@ name.save = NULL)
         
         return(cvPerf2)
     }
-    
-    
+        
     keepX = error.rate = mat.sd.error = NULL
     mat.error.rate = list()
     error.per.class.keepX.opt=list()
@@ -348,8 +347,6 @@ name.save = NULL)
             
         }
         names(cvPerf3) = paste("indice.grid",1:nrow(grid),sep="")
-        
-
         
         
         for(indice.grid in 1 : nrow(grid))

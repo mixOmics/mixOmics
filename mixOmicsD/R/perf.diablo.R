@@ -58,11 +58,10 @@ cpus,
     }
     ### End: Initialization parameters
     
-    dist = match.arg(dist, choices = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), several.ok = TRUE)
+    dist = match.arg(dist.select, choices = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), several.ok = TRUE)
     
     ### Start: Check parameter validation / set up sample
-    
-    
+        
     if (length(validation) > 1 )
     validation = validation [1]
     
@@ -283,6 +282,8 @@ cpus,
         })
         ## End: retrieve score for each component
         
+        save(list=ls(),file="temp.Rdata")
+        
         ## Start: retrieve class for each component
         # Reorganization input data / folds / dist.select
         Y.predict[[nrep]] = lapply(1 : J, function(x)
@@ -474,7 +475,7 @@ cpus,
             ###------------------------------------------------------------###
             ## Start: retrieve (weighted) vote for each component
             # Reorganization dist.select / folds
-            Y.weighted.vote[[nrep]] = lapply(1 : length(dist.select), function(x)
+            Y.weighted.vote[[nrep]] = lapply(dist.select, function(x)
             {
                 lapply(1 : M, function(y)
                 {
@@ -527,7 +528,7 @@ cpus,
             ###------------------------------------------------------------###
             ## Start: retrieve Majority Vote (non weighted) for each component
             # Reorganization dist.select / folds
-            Y.vote[[nrep]] = lapply(1 : length(dist.select), function(x)
+            Y.vote[[nrep]] = lapply(dist.select, function(x)
             {
                 lapply(1 : M, function(y)
                 {
