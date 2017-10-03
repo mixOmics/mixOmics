@@ -171,7 +171,7 @@ res=mint.spls(X=data,Y=Y.mat,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=
 
 #######  wraper.block.pls
 res=block.pls(list(X=data),Y=Y.mat,ncomp=2)
-res2=block.pls(list(X=data),Y=Y.mat,ncomp=2,bias=TRUE)
+res2=block.pls(list(X=data),Y=Y.mat,ncomp=2)
 res3=block.pls(list(X=data),Y=Y.mat,ncomp=2,scale=FALSE)
 
 selectVar(res,block=2)

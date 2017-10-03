@@ -152,8 +152,7 @@ Y = Y,
 design = design,
 keepX = list(gene=c(10,10), lipid=c(15,15)),
 ncomp = 3,
-scheme = "centroid",
-bias = FALSE)
+scheme = "centroid")
 
 perf = perf(nutrimouse.sgccda, nrepeat = 5 , folds = 5)
 for(di in c("all","max.dist","centroids.dist","mahalanobis.dist"))

@@ -343,8 +343,7 @@ nutrimouse.sgccda <- wrapper.sgccda(X = data,
                                     design = design,
                                     keepX = list(gene = c(10,10), lipid = c(15,15)),
                                     ncomp = 3,
-                                    scheme = "centroid",
-                                    bias = FALSE)
+                                    scheme = "centroid")
 
 auroc(nutrimouse.sgccda,plot = TRUE,roc.block = 1,roc.comp = 1)
 auroc(nutrimouse.sgccda,plot = TRUE,roc.block = 2,roc.comp = 1)

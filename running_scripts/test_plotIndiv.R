@@ -271,8 +271,7 @@ nutrimouse.sgcca <- wrapper.sgcca(X = data,
 design = design1,
 penalty = c(0.3, 0.5, 1),
 ncomp = 3,
-scheme = "centroid",
-bias = FALSE)
+scheme = "centroid")
 
 # default style: one panel for each block
 plotIndiv(nutrimouse.sgcca)
@@ -313,7 +312,7 @@ design = design1,
 ncomp = 2,
 keepX = list(gene=c(10,10), lipid = c(15,15)),
 scheme = "centroid",mode="regression",
-bias = TRUE,scale=TRUE,tol=1e-6)
+scale=TRUE,tol=1e-6)
 nutrimouse.sgccda1$loadings$Y
 
 

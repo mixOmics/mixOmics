@@ -27,7 +27,6 @@ design = design,
 keepX = list(gene=c(10,10), lipid=c(15,15)),
 ncomp = 2,#c(2, 2),
 scheme = "centroid",
-bias = FALSE,
 tol=1e-30)
 
 
@@ -56,7 +55,6 @@ design = design,
 #keepX = list(gene=c(10,10), lipid=c(15,15)),
 ncomp = 2,#c(2, 2),
 scheme = "centroid",
-bias = FALSE,
 tol=1e-30)
 }
 #source("mixOmicsDD/R/predict.mint.block.pls.R")
@@ -76,7 +74,6 @@ pred2=predict(nutrimouse.sgccda, data,weight=c(1,2))
 #keepX = list(gene=c(10,10), lipid=c(15,15)),
 #ncomp = 2,#c(2, 2),
 #scheme = "centroid",
-#bias = FALSE,
 #tol=1e-30)
 
 set.seed(43)
@@ -178,7 +175,6 @@ if(additional.test==TRUE)
     design = design,
     ncomp = 2,#c(2, 2),
     scheme = "centroid",
-    bias = FALSE,
     nrepeat = 11
     )
     tune
@@ -192,7 +188,6 @@ if(additional.test==TRUE)
     ncomp = 2,#c(2, 2),
     test.keepX = list(gene=c(1,5,10,4),lipid=c(1,2,3)),
     scheme = "centroid",
-    bias = FALSE,
     weighted=FALSE
     )
     tune2
@@ -242,8 +237,7 @@ if(additional.test==TRUE)
     design = design,
     nrepeat=4,
     ncomp = 2,#c(2, 2),
-    scheme = "centroid",
-    bias = FALSE
+    scheme = "centroid"
     )
     tune
     
@@ -254,8 +248,7 @@ if(additional.test==TRUE)
     design = design,
     ncomp = 2,#c(2, 2),
     test.keepX = list(gene=c(1,5,10,4),lipid=c(1,2,3)),
-    scheme = "centroid",
-    bias = FALSE
+    scheme = "centroid"
     )
     tune
 
@@ -267,8 +260,7 @@ if(additional.test==TRUE)
     already.tested.X = list(gene=c(10), lipid=c(15)),
     nrepeat=4,
     ncomp = 2,#c(2, 2),
-    scheme = "centroid",
-    bias = FALSE
+    scheme = "centroid"
     )
     tune
 
@@ -279,7 +271,6 @@ if(additional.test==TRUE)
     design = design,
     ncomp = 2,#c(2, 2),
     scheme = "centroid",
-    bias = FALSE,
     nrepeat = 2,
     name.save="try",
     cpus=4

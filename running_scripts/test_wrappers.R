@@ -105,8 +105,7 @@ nutrimouse.sgcca <- wrapper.sgcca(X = data,
 design = design,
 penalty = c(0.3, 0.5, 1),
 ncomp = 3,
-scheme = "centroid",
-bias = FALSE)
+scheme = "centroid")
 
 # In plotIndiv we indicate the diet variable colors and the blocks to be plotted
 # (only blocks with comp  >=2!)
@@ -131,8 +130,7 @@ ncomp = 2,
 # for keep: each element of the list corresponds to a block
 # and is of length the # comp per block
 keepX = list(gene = c(10,10), lipid = c(15,15), Y = c(ncol(Y))),
-scheme = "centroid",
-bias = FALSE)
+scheme = "centroid")
 
 
 # In plotIndiv we indicate the diet variable colors and the blocks to be plotted
@@ -157,8 +155,7 @@ Y = Y,
 design = design,
 keepX = list(gene = c(10,10), lipid = c(15,15)),
 ncomp = 3,
-scheme = "centroid",
-bias = FALSE)
+scheme = "centroid")
 
 
 
