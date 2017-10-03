@@ -57,8 +57,6 @@ all.outputs=TRUE
 {
     if (missing(scheme))
     scheme= "horst"
-
-    
     
     if (missing(mode))
     mode="regression"
@@ -86,8 +84,6 @@ all.outputs=TRUE
     #-- keepA ----------------------------------------------------#
     
     # shaping keepA, will need to be done somewhere before eventually
-    #print("bla")
-    #print(keepA)
     
     if(!is.null(test.keepX) & !is.null(test.keepY))
     {

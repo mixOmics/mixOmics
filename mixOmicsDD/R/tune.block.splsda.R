@@ -211,7 +211,6 @@ name.save = NULL)
     #-- NA calculation      ----------------------------------------------------#
     
     misdata = c(sapply(X,anyNA), Y=FALSE) # Detection of missing data. we assume no missing values in the factor Y
-    #print(misdata)
     
     is.na.A = ind.NA = vector("list", length = length(X))
     for(q in 1:length(X))
@@ -228,7 +227,6 @@ name.save = NULL)
 
     #-- NA calculation      ----------------------------------------------------#
     #---------------------------------------------------------------------------#
-    
     
     
     # if some components have already been tuned (eg comp1 and comp2), we're only tuning the following ones (comp3 comp4 .. ncomp)
@@ -305,22 +303,16 @@ name.save = NULL)
         if (progressBar == TRUE)
         cat("\ncomp",comp.real[comp], "\n")
         
-        #save(list=ls(),file="temp1.Rdata")
         result = MCVfold.block.splsda (X, Y, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = 1 + length(already.tested.X[[1]]),
         choice.keepX = already.tested.X, scheme = scheme, design=design, init=init, tol=tol,
         test.keepX = test.keepX, measure = measure, dist = dist, scale=scale, weighted=weighted,
         near.zero.var = near.zero.var, progressBar = progressBar, max.iter = max.iter, cl = cl,
         misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA, class.object="block.splsda", parallel = parallel, name.save= name.save)
         
-        
         #returns error.rate for all test.keepX
     
-
-#save(list=ls(),file="temp12.Rdata")
         
-        
-        
-        # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
+        # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.block.splsda' can work with multiple distances
         mat.error.rate[[comp]] = result[[measure]]$mat.error.rate[[1]]
         mat.mean.error[, comp]=result[[measure]]$error.rate.mean[[1]]
         if (!is.null(result[[measure]]$error.rate.sd[[1]]))
@@ -333,7 +325,6 @@ name.save = NULL)
         # error rate for best keepX
         error.opt.per.comp[,comp] = mat.error.rate[[comp]][result[[measure]]$ind.keepX.opt[[1]],]
         
-        
         # best keepX
         already.tested.X = result[[measure]]$choice.keepX
         
@@ -344,8 +335,6 @@ name.save = NULL)
             #prediction.all[[comp]] = result$prediction.comp
         }
         
-        
-        #save(list=ls(),file="temp.Rdata")
         # prepping the results and save a file, if necessary
         if(!is.null(name.save))
         {
@@ -365,7 +354,6 @@ name.save = NULL)
             error.rate.sd = mat.sd.error,
             error.rate.all = mat.error.rate,
             choice.keepX = already.tested.X,
-            #choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
             error.rate.class = error.per.class.keepX.opt)
             
             result$measure = measure.input
@@ -376,11 +364,7 @@ name.save = NULL)
             save(result, file = paste0(name.save,".comp",comp.real[1],"to",comp.real[comp],".Rdata"))
         }
 
-        #save(list=ls(),file="temp.Rdata")
-
     }
-    #save(list=ls(),file="temp13.Rdata")
-
     rownames(mat.mean.error) = rownames(result[[measure]]$mat.error.rate[[1]])
     colnames(mat.mean.error) = paste("comp", comp.real, sep='')
     names(mat.error.rate) = c(paste("comp", comp.real, sep=''))
@@ -397,9 +381,6 @@ name.save = NULL)
     
     cat("\n")
     
-    #mat.error.rate = lapply(mat.error.rate, function(x) {colnames(x) = paste("nrep",1:nrepeat,sep="."); rownames(x) = rownames(error.rate);x})
-    
-
     
     # calculating the number of optimal component based on t.tests and the error.rate.all, if more than 3 error.rates(repeat>3)
     if(nrepeat > 2 & length(comp.real) >1)
@@ -418,7 +399,6 @@ name.save = NULL)
     error.rate.all = mat.error.rate,
     choice.keepX = already.tested.X,
     choice.ncomp = list(ncomp = ncomp_opt, values = error.keepX),
-    #choice.keepX.constraint = if(constraint){already.tested.X}else{NULL},
     error.rate.class = error.per.class.keepX.opt)
     
     result$measure = measure.input

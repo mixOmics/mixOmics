@@ -44,6 +44,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
     # A: list of matrices
     # indY: integer, pointer to one of the matrices of A
     # design: design matrix, links between matrices. Diagonal must be 0
+    # tau: numeric vector of length the number of blocks in \code{X}. Each regularization parameter will be applied on each block and takes the value between 0 (no regularisation) and 1. If tau = "optimal" the shrinkage paramaters are estimated for each block and
     # ncomp: vector of ncomp, per matrix
     # scheme: a function "g", refer to the article (thanks Benoit)
     # scale: do you want to scale ? mean is done by default and cannot be changed (so far)
@@ -53,15 +54,19 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
     # max.iter: nobody cares about this
     # study: factor for each matrix of A, must be a vector
     # keepA: keepX of spls for each matrix of A. must be a list. Each entry must be of the same length (max ncomp)
-    # keepA.constraint: keepX.constraint, which variables are kept on the first num.comp-1 components. It is a list of characters
-    # near.zero.var: do you want to remove variables with very small variance
+    # penalty: numeric vector of length the number of blocks in \code{X}. Each penalty parameter will be applied on each block and takes the value between 0 (no variable selected) and 1 (all variables included).
+    # all.outputs: calculation of non-essential outputs (e.g. explained variance, loadings.Astar, etc)
+    # misdata: optional. any missing values in the data? list, misdata[[q]] for each data set
+    # is.na.A: optional. where are the missing values? list, is.na.A[[q]] for each data set (if misdata[[q]] == TRUE)
+    # ind.NA: optional. which rows have missing values? list, ind.NA[[q]] for each data set.
+    
     
     names(ncomp) = names(A)
     
     time = FALSE
     
-    #(list=ls(),file="temp.Rdata")
-    time1=proc.time()
+    if(time) time1=proc.time()
+    
     # center the data per study, per matrix of A, scale if scale=TRUE, option
     mean_centered = lapply(A, function(x){mean_centering_per_study(x, study, scale)})
     if(time) time1bis=proc.time()
@@ -91,16 +96,10 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
     if(time) print(one.model)
 
     AVE_X = crit = loadings.partial.A = variates.partial.A = tau.rgcca = list()
-    
-    #save(list=ls(),file="temp.Rdata")
-
     P = loadings.A = loadings.Astar = variates.A =  vector("list", J)
 
     if(one.model)
     {
-
-
-
         for (k in 1:J)
         variates.A[[k]] = matrix(NA, nb_ind, N)
 
@@ -120,30 +119,23 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
                 variates.partial.A[[k]][[m]] = matrix(nrow = ni[m], ncol = N)
             }
         }
-
-
     } else {
         for (k in 1:J)
         {
             variates.A[[k]] = matrix(NA, nb_ind, sum(number.models.per.comp))
             loadings.A[[k]] = matrix(NA, pjs[[k]], sum(number.models.per.comp))
         }
-        
         loadings.partial.A = variates.partial.A = NULL
-
     }
     
     
-    
-    #defl.matrix[[1]] = A
     ndefl = ncomp - 1
     J2 = J-1
     
     if (is.vector(tau))
     tau = matrix(rep(tau, N), nrow = N, ncol = length(tau), byrow = TRUE)
-    ### End: Initialization parameters
     
-    #save(list=ls(),file="temp2.Rdata")
+    # if missing values are not given as input, we search for them here (takes time)
     if(is.null(misdata) &  is.null(is.na.A) & is.null(ind.NA))
     {
         misdata = sapply(A, anyNA) # Detection of missing data
@@ -178,10 +170,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
         mat.c = matrix(0, nrow = ncol(A[[1]]), ncol = N, dimnames = list(colnames(A[[1]],  paste0("comp ", 1:N))))
     } else {mat.c = NULL}
     
-    
-    #if(time)
-    #save(list=ls(),file="temp2.Rdata")
-    
+    ### End: Initialization parameters
     
     iter=NULL
     compteur = 0
@@ -224,32 +213,13 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
                 keepA = keepA.ijk, all.outputs = all.outputs)
             }
             ### end - repeat/convergence
-            
-            #       mint.block.result$ = list(variates.A = variates.A, loadings.A = loadings.A, crit = crit[which(crit != 0)],
-            #       AVE_inner = AVE_inner, loadings.partial.A.comp = loadings.partial.A.comp, variates.partial.A.comp = variates.partial.A.comp, iter = iter)
-            #       return(result)
-            
-            
+
             if(time) time3 = proc.time()
-            
-            
-            
             if(time) time4 = proc.time()
             if(time) print("one comp")
             if(time) print(time4-time3)
             if(time) time4 = proc.time()
-            
-            
-            
-            #if(comp < N)
-            #{
-                # on all component <ncomp, we only have one single keepA, we save only loadings.A, variates.A
-                #    loadings.A.all.comp[[comp]][[ijk.keepA]] = mint.block.result$loadings.A # loadings.A.all.comp[[comp]][[block]]
-                #variates.A.all.comp[[comp]][[ijk.keepA]] = mint.block.result$variates.A # variates.A.all.comp[[comp]][1:n, 1:block]
-                #} else {
-                # on the ncomp component, we can have multilple keepA to test: we save loadings.A.for.all.keepA, variates.A.for.all.keepA
-                #}
-            
+
             if(one.model)
             {
                 # reshape outputs
@@ -260,7 +230,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
                     
                     if(is.null(tau))
                     {
-                        #recording loadings.partials, $Ai$study[,ncomp]
+                        # recording loadings.partials, $Ai$study[,ncomp]
                         # recording variates.partials, $Ai[,ncomp]
                         for(k in 1:J)
                         {
@@ -271,28 +241,20 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
                             }
                         }
                     }
-
                 }
-               
-
             } else {
+                # no record of partial component for multilple models, for gain of memory
                 for (k in 1 : J)
                 {
                     loadings.A[[k]][, compteur] = mint.block.result$loadings.A[[k]]
                     variates.A[[k]][, compteur] = mint.block.result$variates.A[, k]
                 }
-                #loadings.A[[comp]][[ijk.keepA]] = mint.block.result$loadings.A # loadings.A.all.comp[[comp]][[ijk.keepA]][[block]]
-                #variates.A[[comp]][[ijk.keepA]] = mint.block.result$variates.A #  variates.A.all.comp[[comp]][[ijk.keepA]][1:n, 1:block]
-                
-                # no record of partial component for multilple models, for gain of memory
             }
             
-         
             crit[[comp]] = mint.block.result$crit
             tau.rgcca[[comp]] = mint.block.result$tau
             if(all.outputs)
             AVE_inner[comp] = mint.block.result$AVE_inner
-            
             
             if(all.outputs & J==2 & nlevels(study) == 1 & one.model)# mat.c, (s)pls(da)
             {
@@ -316,23 +278,17 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
             # deflation if there are more than 1 component and if we haven't reach the max number of component (N)
             if (N != 1 & comp != N)
             {
-                #save(list=ls(),file="temp.Rdata")
-                time4 = proc.time()
+                if(time) time4 = proc.time()
                 
                 defla.result = defl.select(yy=mint.block.result$variates.A, rr=R, nncomp=ndefl, nn=comp, nbloc = J, indY = indY, mode = mode, aa = mint.block.result$loadings.A,
                 misdata=misdata, is.na.A=is.na.A, ind.NA = ind.NA)
                 
                 R = defla.result$resdefl
-                #defl.matrix[[n + 1]] = R
+                
                 if(time) time5 = proc.time()
                 if(time) print("deflation")
                 if(time) print(time5-time4)
             }
-            
-            
-            
-            #for (k in 1 : J)
-            #loadings.A[[k]][, comp] = mint.block.result$loadings.A[[k]]
             
             
             if(all.outputs & one.model) #loadings.Astar
@@ -348,7 +304,6 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
                     for (k in 1 : J)
                     loadings.Astar[[k]][, comp] = mint.block.result$loadings.A[[k]]
                 } else {
-                    #save(list=ls(),file="temp.Rdata")
                     for (k in 1 : J)
                     loadings.Astar[[k]][, comp] = mint.block.result$loadings.A[[k]] - loadings.Astar[[k]][, (1 : comp - 1), drop = F] %*% drop(t(loadings.A[[k]][, comp]) %*% P[[k]][, 1 : (comp - 1), drop = F])
                 }
@@ -357,12 +312,8 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
             }
             iter = c(iter, mint.block.result$iter)
             
-     
         } ### End loop on keepA
-        
-
-        
-     } ### End loop on ncomp
+    } ### End loop on ncomp
     
 
     #### any model
@@ -373,15 +324,8 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
     # loadings.partial.A[[block]][[study]][, 1:ncomp]
     # variates.partial.A[[block]][[study]][, 1:ncomp]
     # loadings.Astar[[block]][, 1:ncomp]
-
-
-
-#save(list=ls(),file="temp.Rdata")
     
-    #if (verbose)
-    #cat(paste0("Computation of the SGCCA block components #", N , " is under progress...\n"))
-    
-     if(one.model)
+    if(one.model)
     {
         shave.matlist = function(mat_list, nb_cols) mapply(function(m, nbcomp) m[, 1:nbcomp, drop = FALSE], mat_list, nb_cols, SIMPLIFY = FALSE)
         shave.veclist = function(vec_list, nb_elts) mapply(function(m, nbcomp) m[1:nbcomp], vec_list, nb_elts, SIMPLIFY = FALSE)
@@ -415,10 +359,8 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
         
         variates.A = shave.matlist(variates.A, ncomp)
 
-#print("bla")
         if(all.outputs)
         {
-            #print("bla2")
             # AVE
             outer = matrix(unlist(AVE_X), nrow = max(ncomp))
             for (j in 1 : max(ncomp))
@@ -428,8 +370,6 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
             names(AVE$AVE_X) = names(A)
             
             loadings.Astar = shave.matlist(loadings.Astar, ncomp)
-
-
 
             #calcul explained variance
             A_split=lapply(A, study_split, study) #split the data per study
@@ -461,7 +401,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
         names[[length(names) + 1]] = row.names(A[[1]])
         names(names)[length(names)] = "indiv"
     } else {
-        # ?
+        # multiple models (tune)
         
         #### any model
         # loadings.A[[block]][1:p, all.keepA.tested]
@@ -488,8 +428,6 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
 
     }
     
-    #save(list=ls(),file="temp.Rdata")
-    
     out = list(A = A, indY = indY, ncomp = ncomp, mode = mode,
     keepA = keepA,
     variates = variates.A, loadings = loadings.A,#shave.matlist(loadings.A, ncomp),
@@ -503,7 +441,6 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
     scale = scale, tau = if(!is.null(tau)) tau.rgcca, study = study,
     explained_variance = expl.A)
     ### End: Output
-    
     
     return(out)
 }
@@ -527,7 +464,6 @@ penalty=NULL, all.outputs = FALSE)
     # == == == == no check needed as this function is only used in internal_mint.block, in which the checks are conducted
     
     time=FALSE
-    #if(time) save(list=ls(),file="temp3.Rdata")
     
     ### Start: Initialization parameters
     J = length(A)
@@ -537,13 +473,11 @@ penalty=NULL, all.outputs = FALSE)
     if (!is.null(penalty))
     penalty = penalty * sqrt(pjs)
     
-    
     iter = 1
     converg = crit = numeric()
     variates.A = Z = matrix(0, NROW(A[[1]]), J)
     
     g = function(x) switch(scheme, horst = x, factorial = x^2, centroid = abs(x))
-    
     
     # study split
     A_split = lapply(A, study_split, study)
@@ -564,18 +498,13 @@ penalty=NULL, all.outputs = FALSE)
         if(misdata[q])
         {
             loadings.temp = loadings.A[[q]]
-            #variates.A[, q] =  apply(A[[q]], 1, miscrossprod, loadings.A[[q]])
-            #A.temp = replace(A[[q]], is.na.A[[q]], 0) # replace NA in A[[q]] by 0
             variates.A.temp = A[[q]] %*% loadings.temp
-            #temp = drop(loadings.A[[q]]) %o% rep(1, nrow(A[[q]]))
-            #temp[(t(is.na.A[[q]]))] = 0
             
             # we only want the diagonal, which is the norm of each column of temp
             # loadings.A.norm = crossprod(temp)
             # variates.A[, q] = variates.A.temp / diag(loadings.A.norm)
             #only calculating the ones where there's a NA
             d.variates.A.norm = rep(crossprod(loadings.temp), length(variates.A.temp))
-            #ind.NA[[q]] = which(apply(is.na.A[[q]], 1, sum) == 1) # calculated only once, then reused in the repeat step
             
             if(length(ind.NA[[q]])>0) # should always be true
             {
@@ -603,7 +532,6 @@ penalty=NULL, all.outputs = FALSE)
     if(time) print("loadings")
     if(time) print(time3-time2)
     if(time) print("repeat")
-    #save(list=ls(),file="temp2.Rdata")
     
     ### Start Algorithm 1 Sparse generalized canonical analysis (See Variable selection for generalized canonical correlation analysis (Tenenhaus))
     repeat {
@@ -638,12 +566,7 @@ penalty=NULL, all.outputs = FALSE)
             temp=0
             for (m in 1:nlevels_study)
             {
-                #if(misdata[q])
-                #{
-                #    loadings.partial.A.comp[[q]][[m]] = crossprod(A_split_temp[[q]][[m]],Z_split[[m]])#apply(t(A_split[[q]][[m]]), 1, miscrossprod, Z_split[[m]])
-                #}else{
                 loadings.partial.A.comp[[q]][[m]] = crossprod(A_split[[q]][[m]],Z_split[[m]])
-                #}
                 temp=temp+loadings.partial.A.comp[[q]][[m]]
             }
             loadings.A[[q]] = temp
@@ -669,19 +592,8 @@ penalty=NULL, all.outputs = FALSE)
             ### Step B end: Computer the outer weight ###
             if(misdata[q])
             {
-                #variates.A[, q] =  apply(A[[q]], 1, miscrossprod, loadings.A[[q]])
-                #A.temp = replace(A[[q]], is.na.A[[q]], 0) # replace NA in A[[q]] by 0
                 variates.A.temp = A[[q]] %*% loadings.A[[q]]
-                #temp = drop(loadings.A[[q]]) %o% rep(1, nrow(A[[q]]))
-                #temp[(t(is.na.A[[q]]))] = 0
-                
-                # we only want the diagonal, which is the norm of each column of temp
-                # loadings.A.norm = crossprod(temp)
-                # variates.A[, q] = variates.A.temp / diag(loadings.A.norm)
-                #d.loadings.A.norm = apply(temp,2, crossprod)
-                #only calculating the ones where there's a NA
                 d.variates.A.norm = rep(crossprod(loadings.A[[q]]), length(variates.A.temp))
-                #ind.NA = which(apply(is.na.A.q, 2, sum) == 1)
                 
                 if(length(ind.NA[[q]])>0)
                 {
@@ -690,7 +602,6 @@ penalty=NULL, all.outputs = FALSE)
                     d.variates.A.norm[ind.NA[[q]]] = apply(temp,2, crossprod)
                 }
                 variates.A[, q] = variates.A.temp / d.variates.A.norm
-                
                 
                 # we can have 0/0, so we put 0
                 a = is.na(variates.A[, q])
@@ -723,13 +634,8 @@ penalty=NULL, all.outputs = FALSE)
     }
     ### End Algorithm 1 (See Variable selection for generalized canonical correlation analysis (Tenenhaus))
     
-    
     #calculation variates.partial.A.comp
     variates.partial.A.comp = apply(variates.A, 2, study_split, study)
-    
-    
-    #if (verbose)
-    #plot(crit, xlab = "iteration", ylab = "criteria")
     
     if(all.outputs){
         AVE_inner = sum(design * cor(variates.A)^2/2)/(sum(design)/2)

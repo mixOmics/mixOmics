@@ -80,11 +80,9 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
     
     if(hasArg(newdata.scale)) # if an input `newdata.scale' is given, we use that one and we don't scale the data and don't do the logratio or multilevel
     {
-        #print("a")
         newdata = list(...)$newdata.scale
         object$logratio = NULL
         multilevel = NULL
-        #print("b")
     }
     
     ### if the object is a block, the input newdata is different, we check newdata, make sure it's a list and check newdata/X
@@ -241,7 +239,6 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
     
     scale = object$scale # X and Y are both mean centered by groups and if scale=TRUE they are scaled by groups
     
-    #save(list=ls(),file="temp.Rdata")
 
     ### if the object is not a mint analysis, the input study.test is missing and we can go faster to scale the data
     
@@ -417,7 +414,6 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         # if misdata.all and ind.na.X are provided, we don't calculate the is.na(X) as it takes time. Used in tune functions.
         concat.newdata = lapply(1:J, function(q){replace(concat.newdata[[q]], list(...)$is.na.newdata[[q]], 0)})
     } else {
-        #print("d")
         # replace NA by 0
         concat.newdata = lapply(concat.newdata,function(x)
         {
@@ -428,9 +424,8 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         })
 
     }
-    #save(list=ls(),file="temp4.Rdata")
     
-      # replace NA by 0 in Y
+    # replace NA by 0 in Y
     Y[is.na(Y)] = 0
     
     if(time) time3 = proc.time()
@@ -484,7 +479,6 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
     #-- valeurs sortantes --#
     names(Y.hat)=names(t.pred)=names(B.hat)=names(object$X)
 
-#save(list=ls(),file="temp.Rdata")
     if(time) time4 = proc.time()
 
     # basic prediction results
@@ -534,7 +528,6 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
     if(time) print("Y.hat")
     if(time) print(time5-time4)
 
-#save(list=ls(),file="temp.Rdata")
     
     # get the classification for each new sample if the object is a DA
     if(any(class(object)=="DA")) # a DA analysis (mint).(block).(s)plsda

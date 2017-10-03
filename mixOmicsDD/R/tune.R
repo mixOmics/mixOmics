@@ -33,7 +33,7 @@
 tune = function (method, # choice of "spls", "splsda", "mint.splsda", "rcc", "pca"
 X,
 Y,
-multilevel,
+multilevel = NULL,
 ncomp,
 study, # mint.splsda
 test.keepX = c(5, 10, 15), # all but pca, rcc
