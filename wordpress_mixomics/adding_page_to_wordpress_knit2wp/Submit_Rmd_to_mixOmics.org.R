@@ -94,3 +94,13 @@ knit2wp(input = 'MINT_stemcells.Rmd', title = 'Case study: stem cells',  shortco
         action = c("newPage"))
 
 
+
+# ======================================
+#         mixMC tab: first trash the existing files!
+# ======================================
+
+knit2wp(input = 'mixMC_Multilevel_HMP_16S_Data.Rmd', title = 'Case study: HMP bodysites repeated measures',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+
+
