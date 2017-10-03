@@ -304,7 +304,6 @@ cpus
         error.per.class.keepX.opt.mean = matrix(0, nrow = nlevels(Y), ncol = length(comp.real),
         dimnames = list(c(levels(Y)), c(paste('comp', comp.real, sep=''))))
         # successively tune the components until ncomp: comp1, then comp2, ...
-        #save(list=ls(),file="temp.Rdata")
         for(comp in 1:length(comp.real))
         {
 
@@ -415,7 +414,7 @@ cpus
 
         for (i in 1:length(test.keepX))
         {
-            spls.train = mixOmics::splsda(X, Y, ncomp = ncomp, keepX = c(already.tested.X, test.keepX[i]), logratio = logratio, near.zero.var = FALSE, mode = "regression")
+            spls.train = mixOmicsDD::splsda(X, Y, ncomp = ncomp, keepX = c(already.tested.X, test.keepX[i]), logratio = logratio, near.zero.var = FALSE, mode = "regression")
             
             # Note: this is performed on the full data set
             # (could be done with resampling (bootstrap) (option 1) and/or prediction (option 2))

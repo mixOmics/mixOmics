@@ -43,6 +43,9 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
 {
     time=FALSE
     
+    # pass R check
+    newdata.scale = misdata.all = is.na.X = is.na.newdata = noAveragePredict = NULL
+    
     # input parameter: noAveragePredict=> no averagePredict calculation, used in tune.block.splsda
     
     if(any(class(object)%in%c("rgcca","sparse.rgcca")))

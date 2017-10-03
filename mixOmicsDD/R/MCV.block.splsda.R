@@ -354,7 +354,7 @@ name.save
             
             clusterExport(cl, ls(), envir=environment())
             #print("bla3")
-            clusterExport(cl, c("design"), envir=.GlobalEnv)
+            #clusterExport(cl, c("design"), envir=.GlobalEnv)
             #print("bla2")
             
            result.all = parLapply(cl, 1: M, fonction.j.folds)

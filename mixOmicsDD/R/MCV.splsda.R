@@ -191,6 +191,9 @@ parallel
         stop.user = FALSE
 
         # function instead of a loop so we can use lapply and parLapply. Can't manage to put it outside without adding all the arguments
+        
+        #result.all=list()
+
         fonction.j.folds = function(j)#for (j in 1:M)#for (j in 1:M)#fonction.j.folds = function(j)#for (j in 1:M)
         {
             if (progressBar ==  TRUE)
@@ -346,7 +349,7 @@ parallel
                 
                 # do the prediction, we are passing to the function some invisible parameters:
                 # the scaled newdata and the missing values
-                test.predict.sw <- predict(object.splsda.temp, newdata.scale = X.test, dist = dist, misdata.all=any(misdata), is.na.X = is.na.A.train, is.na.newdata = is.na.A.test)
+                test.predict.sw <- predict(object.splsda.temp, newdata.scale = X.test, dist = dist, misdata.all=any(misdata), is.na.X = list(X=is.na.A.train), is.na.newdata = list(X=is.na.A.test))
                 prediction.comp.j[, , i] =  test.predict.sw$predict[, , ncomp]
                 
                 for(ijk in dist)
@@ -354,10 +357,10 @@ parallel
             } # end i
             
             return(list(class.comp.j = class.comp.j, prediction.comp.j = prediction.comp.j, features = features.j, omit = omit))
+            #result.all[[j]] = list(class.comp.j = class.comp.j,  prediction.comp.j = prediction.comp.j, features = features.j, omit = omit)
 
         } # end fonction.j.folds
         
-            
             
         if (parallel == TRUE)
         {
@@ -375,7 +378,6 @@ parallel
             result.all = lapply(1: M, fonction.j.folds)
             
         }
-
         #save(list=ls(), file="temp2.Rdata")
         
         # combine the results
