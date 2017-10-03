@@ -48,7 +48,8 @@ study,
 scale = TRUE,
 tol = 1e-06,
 max.iter = 100,
-near.zero.var = FALSE)
+near.zero.var = FALSE,
+all.outputs = TRUE)
 {
     
     
@@ -70,15 +71,15 @@ near.zero.var = FALSE)
 
     # call to 'internal_wrapper.mint'
     result = internal_wrapper.mint(X = X, Y = Y.mat, study = study, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
-    max.iter = max.iter, tol = tol)
+    max.iter = max.iter, tol = tol, all.outputs = all.outputs)
 
 
     # choose the desired output from 'result'
     out = list(
         call = match.call(),
-        X = result$X[-result$indY][[1]],
+        X = result$A[-result$indY][[1]],
         Y = Y,
-        ind.mat = result$X[result$indY][[1]],
+        ind.mat = result$A[result$indY][[1]],
         ncomp = result$ncomp,
         study = result$study,
         mode = result$mode,

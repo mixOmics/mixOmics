@@ -45,7 +45,6 @@
 # bias: boleean. A logical value for biaised or unbiaised estimator of the var/cov (defaults to FALSE).
 # init: intialisation of the algorithm, one of "svd" or "svd.single". Default to "svd"
 # tol: Convergence stopping value.
-# verbose: if set to \code{TRUE}, reports progress on computing.
 # max.iter: integer, the maximum number of iterations.
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
@@ -54,7 +53,6 @@ block.splsda = wrapper.sgccda = function(X,
 Y,
 indY,
 ncomp = 2,
-keepX.constraint,
 keepX,
 design,
 scheme,
@@ -63,9 +61,9 @@ scale = TRUE,
 bias,
 init ,
 tol = 1e-06,
-verbose,
 max.iter = 100,
-near.zero.var = FALSE)
+near.zero.var = FALSE,
+all.outputs = TRUE)
 {
     # check inpuy 'Y' and transformation in a dummy matrix
     if(!missing(Y))
@@ -108,23 +106,21 @@ near.zero.var = FALSE)
     
     # call to 'internal_wrapper.mint.block'
     result = internal_wrapper.mint.block(X=X, Y=Y, indY=indY, ncomp=ncomp,
-    keepX.constraint=keepX.constraint, keepX=keepX, design=design, scheme=scheme, mode=mode, scale=scale,
-    bias=bias, init=init, tol=tol, verbose=verbose, max.iter=max.iter, near.zero.var=near.zero.var)
+    keepX=keepX, design=design, scheme=scheme, mode=mode, scale=scale,
+    bias=bias, init=init, tol=tol, max.iter=max.iter, near.zero.var=near.zero.var, all.outputs = all.outputs)
     
     # calculate weights for each dataset
     weights = get.weights(result$variates, indY = result$indY)
-
+    
     # choose the desired output from 'result'
     out=list(call=match.call(),
-        X = result$X[-result$indY],
+        X = result$A[-result$indY],
         Y = Y.input,
-        ind.mat = result$X[result$indY][[1]],
+        ind.mat = result$A[result$indY][[1]],
         ncomp = result$ncomp,
         mode = result$mode,
-        keepX = result$keepA[-result$indY],
-        keepY = result$keepA[result$indY][[1]],
-        keepX.constraint = result$keepA.constraint[-result$indY],
-        keepY.constraint = result$keepA.constraint[result$indY][[1]],
+        keepX = result$keepX[-result$indY],
+        keepY = result$keepX[result$indY][[1]],
         variates = result$variates,
         loadings = result$loadings,
         crit = result$crit,

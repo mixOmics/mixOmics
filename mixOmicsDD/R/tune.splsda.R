@@ -43,8 +43,6 @@
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 # nrepeat: number of replication of the Mfold process
 # logratio = c('none','CLR'). see splsda
-# verbose: if TRUE, shows component and nrepeat being tested.
-
 
 tune.splsda = function (X, Y,
 ncomp = 1,
@@ -240,7 +238,7 @@ cpus
     {
         is.na.A = is.na(X)
         
-        ind.NA = which(apply(is.na.A, 1, sum) == 1) # calculated only once
+        ind.NA = which(apply(is.na.A, 1, sum) > 0) # calculated only once
     } else {
         is.na.A = NULL
         ind.NA = NULL
@@ -266,9 +264,6 @@ cpus
     choices = c("all", "max.dist", "centroids.dist", "mahalanobis.dist")
     dist = match.arg(dist, choices, several.ok = TRUE)
     
-    mat.error = matrix(nrow = length(test.keepX), ncol = nrepeat,
-    dimnames = list(test.keepX,c(paste('repeat', 1:nrepeat))))
-    rownames(mat.error) = test.keepX
     
     mat.error.rate = list()
     error.per.class = list()
@@ -276,13 +271,7 @@ cpus
     mat.sd.error = matrix(0,nrow = length(test.keepX), ncol = ncomp-length(already.tested.X),
     dimnames = list(c(test.keepX), c(paste('comp', comp.real, sep=''))))
     mat.mean.error = matrix(nrow = length(test.keepX), ncol = ncomp-length(already.tested.X),
-    dimnames = list(c(test.keepX), c(paste('comp', comp.real, sep=''))))
-
-    error.per.class.mean = matrix(nrow = nlevels(Y), ncol = ncomp-length(already.tested.X),
-        dimnames = list(c(levels(Y)), c(paste('comp', comp.real, sep=''))))
-    error.per.class.sd = matrix(0,nrow = nlevels(Y), ncol = ncomp-length(already.tested.X),
-        dimnames = list(c(levels(Y)), c(paste('comp', comp.real, sep=''))))
-        
+    dimnames = list(c(test.keepX), c(paste('comp', comp.real, sep=''))))        
    
     # first: near zero var on the whole data set
     if(near.zero.var == TRUE)
@@ -325,8 +314,8 @@ cpus
             result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = 1 + length(already.tested.X),
             choice.keepX = already.tested.X,
             test.keepX = test.keepX, measure = measure, dist = dist, scale=scale,
-            near.zero.var = near.zero.var, progressBar = progressBar, max.iter = max.iter, auc = auc, cl = cl,
-            misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA)
+            near.zero.var = near.zero.var, progressBar = progressBar, max.iter = max.iter, auc = auc, cl = cl, parallel = parallel,
+            misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA, class.object="splsda")
             
             # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
             mat.error.rate[[comp]] = result[[measure]]$mat.error.rate[[1]]

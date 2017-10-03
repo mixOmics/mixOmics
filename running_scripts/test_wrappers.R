@@ -7,7 +7,7 @@ opar <- par(no.readonly = TRUE)
 
 ## RGCCA
 # --------------
-library(mixOmics)
+#library(mixOmics)
 data(nutrimouse)
 # need to unmap Y for an unsupervised analysis, where Y is included as a data block in data
 Y = unmap(nutrimouse$diet)
@@ -20,8 +20,7 @@ nutrimouse.rgcca <- wrapper.rgcca(X = data,
 #design = design,
 tau = "optimal",
 ncomp = 2,
-scheme = "centroid",
-verbose = FALSE)
+scheme = "centroid")
 
 # blocks should specify the block data set where the sample plot can be performed
 # (ideally when there are >= 2 components!)
@@ -69,8 +68,7 @@ nutrimouse.srgcca <- wrapper.rgcca(X = data,
 #design = design,
 tau = "optimal",
 ncomp = 2,
-scheme = "centroid",
-verbose = FALSE)
+scheme = "centroid")
 
 # blocks should specify the block data set where the sample plot can be performed
 # (ideally when there are >= 2 components!)
@@ -90,8 +88,7 @@ nutrimouse.srgcca2 <- wrapper.rgcca(X = data,
 tau = "optimal",
 ncomp = 2,
 keepX=NULL,
-scheme = "centroid",
-verbose = FALSE)
+scheme = "centroid")
 # have a look at the looadings
 head(nutrimouse.srgcca2$loadings[[1]])
 head(nutrimouse.srgcca2$loadings[[2]])
@@ -109,7 +106,6 @@ design = design,
 penalty = c(0.3, 0.5, 1),
 ncomp = 3,
 scheme = "centroid",
-verbose = FALSE,
 bias = FALSE)
 
 # In plotIndiv we indicate the diet variable colors and the blocks to be plotted
@@ -136,7 +132,6 @@ ncomp = 2,
 # and is of length the # comp per block
 keepX = list(gene = c(10,10), lipid = c(15,15), Y = c(ncol(Y))),
 scheme = "centroid",
-verbose = FALSE,
 bias = FALSE)
 
 
@@ -163,7 +158,6 @@ design = design,
 keepX = list(gene = c(10,10), lipid = c(15,15)),
 ncomp = 3,
 scheme = "centroid",
-verbose = FALSE,
 bias = FALSE)
 
 

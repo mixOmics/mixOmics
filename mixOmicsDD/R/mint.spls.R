@@ -49,33 +49,30 @@ Y,
 ncomp = 2,
 mode = c("regression", "canonical", "invariant", "classic"),
 study,
-keepX.constraint=NULL,
-keepY.constraint=NULL,
 keepX=rep(ncol(X), ncomp),
 keepY=rep(ncol(Y), ncomp),
 scale = TRUE,
 tol = 1e-06,
 max.iter = 100,
-near.zero.var = FALSE)
+near.zero.var = FALSE,
+all.outputs = TRUE)
 {
 
     # call to 'internal_wrapper.mint'
     result = internal_wrapper.mint(X = X, Y = Y, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, study = study, mode = mode,
-    keepX = keepX, keepY = keepY, keepX.constraint = keepX.constraint, keepY.constraint = keepY.constraint,
-    max.iter = max.iter, tol = tol)
+    keepX = keepX, keepY = keepY,
+    max.iter = max.iter, tol = tol, all.outputs = all.outputs)
     
     # choose the desired output from 'result'
     out = list(
         call = match.call(),
-        X = result$X[-result$indY][[1]],
-        Y = result$X[result$indY][[1]],
+        X = result$A[-result$indY][[1]],
+        Y = result$A[result$indY][[1]],
         ncomp = result$ncomp,
         study = result$study,
         mode = result$mode,
-        keepX = result$keepA[[1]],
-        keepY = result$keepA[[2]],
-        keepX.constraint = result$keepA.constraint[[1]],
-        keepY.constraint = result$keepA.constraint[[2]],
+        keepX = result$keepX,
+        keepY = result$keepY,
         variates = result$variates,
         loadings = result$loadings,
         variates.partial = result$variates.partial,

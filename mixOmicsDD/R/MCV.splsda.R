@@ -42,7 +42,6 @@
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 # nrepeat: number of replication of the Mfold process
 # logratio = c('none','CLR'). see splsda
-# verbose: if TRUE, shows component and nrepeat being tested.
 
 
 stratified.subsampling = function(Y, folds = 10)
@@ -99,11 +98,13 @@ auc = FALSE,
 max.iter = 100,
 near.zero.var = FALSE,
 progressBar = TRUE,
+class.object,
 cl,
 scale,
 misdata,
 is.na.A,
-ind.NA
+ind.NA,
+parallel
 )
 {    #-- checking general input parameters --------------------------------------#
     #---------------------------------------------------------------------------#
@@ -211,11 +212,12 @@ ind.NA
             # split the NA in training and testing
             if(any(misdata))
             {
-                is.na.A.train = list(X = is.na.A[-omit,])
-                is.na.A.test = list(X = is.na.A[omit,])
+                is.na.A.train = is.na.A[-omit,, drop=FALSE]
+                is.na.A.test = is.na.A[omit,, drop=FALSE]
                 
-                ind.NA.train = list(X=ind.NA[which(!ind.NA%in% omit)])
-                ind.NA.test = list(X=ind.NA[which(ind.NA%in%omit)])
+                ind.NA.train = which(apply(is.na.A.train, 1, sum) > 0) # calculated only once
+                ind.NA.test = which(apply(is.na.A.test, 1, sum) > 0) # calculated only once
+
             } else {
                 is.na.A.train = is.na.A.test =NULL
                 ind.NA.train = ind.NA.test = NULL
@@ -277,13 +279,13 @@ ind.NA
             for(ijk in dist)
             class.comp.j[[ijk]] = matrix(0, nrow = length(omit), ncol = length(test.keepX))# prediction of all samples for each test.keepX and  nrep at comp fixed
             
-            
+            #save(list=ls(),file="temp4.Rdata")
             # shape input for `internal_mint.block' (keepA, test.keepA, etc)
             result = internal_wrapper.mint(X=X.train, Y=Y.train.mat, study=factor(rep(1,length(Y.train))), ncomp=ncomp,
             keepX=choice.keepX, keepY=rep(ncol(Y.train.mat), ncomp-1), test.keepX=test.keepX, test.keepY=ncol(Y.train.mat),
             mode="regression", scale=scale, near.zero.var=near.zero.var,
             max.iter=max.iter, logratio="none", DA=TRUE, multilevel=NULL,
-            misdata = misdata, is.na.A = list(X=is.na.A.train, Y=NULL), ind.NA = list(X=ind.NA.train, Y=NULL))
+            misdata = misdata, is.na.A = list(X=is.na.A.train, Y=NULL), ind.NA = list(X=ind.NA.train, Y=NULL), all.outputs=FALSE)
             
             # `result' returns loadings and variates for all test.keepX on the ncomp component
             
@@ -302,7 +304,6 @@ ind.NA
             {sigma.Y = matrix(attr(result$A[[2]], "scaled:scale"),nrow=nrow(X.test),ncol=q,byrow=TRUE)}else{sigma.Y=matrix(1,nrow=nrow(X.test),ncol=q)}
             
             
-            # looking for the NA
  
             
             # record prediction results for each test.keepX
@@ -311,7 +312,7 @@ ind.NA
             
             for(i in 1:nrow(test.keepA))
             {
-                print(i)
+                #print(i)
                 # creates temporary splsda object to use the predict function
                 object.splsda.temp = result
                 # add the "splsda" class
@@ -335,13 +336,11 @@ ind.NA
 
 
                 
-                object.splsda.temp$variates = lapply(result$variates, function(x){x[,colnames(x)%in%names.to.pick, drop=FALSE]})
-                object.splsda.temp$loadings = lapply(result$loadings, function(x){x[,colnames(x)%in%names.to.pick, drop=FALSE]})
-
-
+                object.splsda.temp$variates = lapply(result$variates, function(x){if(ncol(x)!=ncomp) {x[,colnames(x)%in%names.to.pick, drop=FALSE]}else{x}})
+                object.splsda.temp$loadings = lapply(result$loadings, function(x){if(ncol(x)!=ncomp) {x[,colnames(x)%in%names.to.pick, drop=FALSE]}else{x}})
                 
                 # added: record selected features
-                if (length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
+                if (any(class.object == "splsda") & length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
                 # note: if plsda, 'features' includes everything: to optimise computational time, we don't evaluate for plsda object
                 features.j = selectVar(object.splsda.temp, comp = ncomp)$name
                 
@@ -359,23 +358,32 @@ ind.NA
         } # end fonction.j.folds
         
             
-   
-        if (FALSE & !is.null(cl) == TRUE)
+            
+        if (parallel == TRUE)
         {
-            result = parLapply(cl, 1: M, fonction.j.folds)
+            clusterEvalQ(cl, library(mixOmicsDD))
+            #print("bla")
+            
+            clusterExport(cl, ls(), envir=environment())
+            #print("bla3")
+            #print(ls())
+            #clusterExport(cl, c("internal_wrapper.mint","Check.entry.pls","internal_mint.block","mean_centering_per_study","scale.function"), envir=.GlobalEnv)
+            #print("bla2")
+            
+            result.all = parLapply(cl, 1: M, fonction.j.folds)
         } else {
-            result = lapply(1: M, fonction.j.folds)
+            result.all = lapply(1: M, fonction.j.folds)
             
         }
-        
+
         #save(list=ls(), file="temp2.Rdata")
         
         # combine the results
         for(j in 1:M)
         {
-            omit = result[[j]]$omit
-            prediction.comp.j = result[[j]]$prediction.comp.j
-            class.comp.j = result[[j]]$class.comp.j
+            omit = result.all[[j]]$omit
+            prediction.comp.j = result.all[[j]]$prediction.comp.j
+            class.comp.j = result.all[[j]]$class.comp.j
 
             prediction.comp[[nrep]][omit, , ] = prediction.comp.j
             
@@ -383,7 +391,7 @@ ind.NA
             class.comp[[ijk]][omit,nrep, ] = class.comp.j[[ijk]]
             
             if (length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
-            features = c(features, result[[j]]$features)
+            features = c(features, result.all[[j]]$features)
 
         }
         
@@ -436,7 +444,7 @@ ind.NA
     
     result = list()
     error.mean = error.sd = error.per.class.keepX.opt.comp = keepX.opt = test.keepX.out = mat.error.final = choice.keepX.out = list()
-    
+
     if (any(measure == "overall"))
     {
         for(ijk in dist)
@@ -537,7 +545,6 @@ ind.NA
         
         
     }
-    
     
     result$prediction.comp = prediction.comp
     result$auc = auc.mean.sd

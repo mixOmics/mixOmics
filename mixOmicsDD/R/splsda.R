@@ -97,7 +97,7 @@ all.outputs = TRUE)    # multilevel is passed to multilevel(design = ) in within
     # call to 'internal_wrapper.mint'
     result = internal_wrapper.mint(X = X, Y = Y.mat, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
     keepX = keepX, max.iter = max.iter, tol = tol, logratio = logratio,
-    multilevel = multilevel, DA = TRUE)
+    multilevel = multilevel, DA = TRUE, all.outputs = all.outputs)
     
 
     # choose the desired output from 'result'
@@ -113,12 +113,14 @@ all.outputs = TRUE)    # multilevel is passed to multilevel(design = ) in within
         ind.mat = result$A[result$indY][[1]],
         ncomp = result$ncomp,
         mode = result$mode,
-        keepX = result$keepA[[1]],
-        keepY = result$keepA[[2]],
+        keepA=result$keepA,
+        keepX = result$keepX,
+        keepY = result$keepY,
         #keepX.constraint = result$keepA.constraint[[1]],
         #keepY.constraint = result$keepA.constraint[[2]],
         variates = result$variates,
         loadings = result$loadings,
+        loadings.star = result$loadings.star,
         names = result$names,
         tol = result$tol,
         iter = result$iter,

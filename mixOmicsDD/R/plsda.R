@@ -48,7 +48,8 @@ tol = 1e-06,
 max.iter = 100,
 near.zero.var = FALSE,
 logratio = "none",   # one of "none", "CLR"
-multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVariation. Y is ommited and shouldbe included in multilevel design
+multilevel = NULL,
+all.outputs = TRUE)    # multilevel is passed to multilevel(design=) in withinVariation. Y is ommited and shouldbe included in multilevel design
 {
     
     #-- validation des arguments --#
@@ -92,23 +93,24 @@ multilevel = NULL)    # multilevel is passed to multilevel(design=) in withinVar
     
     # call to 'internal_wrapper.mint'
     result = internal_wrapper.mint(X = X, Y = Y.mat, ncomp = ncomp, scale = scale, near.zero.var = near.zero.var, mode = mode,
-    max.iter = max.iter, tol = tol, logratio = logratio, multilevel = multilevel, DA = TRUE)
+    max.iter = max.iter, tol = tol, logratio = logratio, multilevel = multilevel, DA = TRUE, all.outputs=all.outputs)
 
     # choose the desired output from 'result'
     out = list(
         call = match.call(),
-        X = result$X[-result$indY][[1]],
+        X = result$A[-result$indY][[1]],
         Y = if (is.null(multilevel))
             {
                 Y
             } else {
                 result$Y.factor
             },
-        ind.mat = result$X[result$indY][[1]],
+        ind.mat = result$A[result$indY][[1]],
         ncomp = result$ncomp,
         mode = result$mode,
         variates = result$variates,
         loadings = result$loadings,
+        loadings.star = result$loadings.star,
         names = result$names,
         tol = result$tol,
         iter = result$iter,

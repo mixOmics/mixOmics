@@ -35,8 +35,6 @@ Y,
 indY, #only use if Y not provided
 study, #mint
 ncomp,
-keepX.constraint, #hybrid
-keepY.constraint, #hybrid
 keepX, #sparse
 keepY, #sparse
 design, #block
@@ -44,10 +42,8 @@ tau = NULL,# rgcca, number between 0,1 or "optimal"
 scheme, #block
 mode,
 scale,
-bias,
 init,
 tol =  1e-06,
-verbose = FALSE,
 max.iter = 100,
 near.zero.var = FALSE)
 
@@ -91,7 +87,7 @@ near.zero.var = FALSE)
             if (isfactorY)# either block.plsda/block.splsda/mint.block.plsda/mint.block.splsda
             {
                 
-                if (missing(keepX) & missing(keepX.constraint))
+                if (missing(keepX))
                 {
                     if (missing(study)) #block.plsda
                     {
@@ -100,7 +96,7 @@ near.zero.var = FALSE)
                         
                         message("a block Partial Least Squares - Discriminant Analysis is being performed (block.PLS-DA)")
                         res = block.plsda(X = X, Y = Y, indY = indY, ncomp = ncomp,design = design,scheme = scheme,
-                        mode = mode,scale = scale,bias = bias,init = init,tol = tol,verbose = verbose,max.iter = max.iter,near.zero.var = near.zero.var)
+                        mode = mode,scale = scale, init = init,tol = tol, max.iter = max.iter,near.zero.var = near.zero.var)
                         
                     } else {# mint.block.plsda
                         if (missing(scale))
@@ -108,7 +104,7 @@ near.zero.var = FALSE)
                         
                         message("a mint block Partial Least Squares - Discriminant Analysis is being performed (mint.block.PLS-DA)")
                         res = mint.block.plsda(X = X, Y = Y, indY = indY,study = study, ncomp = ncomp,design = design,scheme = scheme,
-                        mode = mode,scale = scale,bias = bias,init = init,tol = tol,verbose = verbose,max.iter = max.iter,near.zero.var = near.zero.var)
+                        mode = mode,scale = scale, init = init,tol = tol, max.iter = max.iter,near.zero.var = near.zero.var)
                     }
                     
                     
@@ -119,8 +115,8 @@ near.zero.var = FALSE)
                         scale = FALSE
                         
                         message("a block sparse Partial Least Squares - Discriminant Analysis is being performed (block.sPLS-DA)")
-                        res = mint.block.splsda(X = X, Y = Y, indY = indY, ncomp = ncomp,keepX = keepX,keepX.constraint = keepX.constraint,
-                        design = design,scheme = scheme,mode =  mode,scale = scale,bias = bias,init = init,tol = tol,verbose = verbose,
+                        res = mint.block.splsda(X = X, Y = Y, indY = indY, ncomp = ncomp,keepX = keepX,
+                        design = design,scheme = scheme,mode =  mode,scale = scale, init = init,tol = tol,
                         max.iter = max.iter,near.zero.var = near.zero.var)
                         
                         
@@ -129,8 +125,8 @@ near.zero.var = FALSE)
                         scale = FALSE
                        
                         message("a mint block sparse Partial Least Squares - Discriminant Analysis is being performed (mint.block.sPLS-DA)")
-                        res = mint.block.splsda(X = X, Y = Y, indY = indY, ncomp = ncomp,study = study,keepX = keepX,keepX.constraint = keepX.constraint,
-                        design = design,scheme = scheme,mode =  mode,scale = scale,bias = bias,init = init,tol = tol,verbose = verbose,
+                        res = mint.block.splsda(X = X, Y = Y, indY = indY, ncomp = ncomp,study = study,keepX = keepX,
+                        design = design,scheme = scheme,mode =  mode,scale = scale, init = init,tol = tol,
                         max.iter = max.iter,near.zero.var = near.zero.var)
                     }
                     
@@ -139,7 +135,7 @@ near.zero.var = FALSE)
             } else { # either block.pls/block.spls/mint.block.pls/mint.block.spls
                 
                 
-                if (missing(keepX) & missing(keepX.constraint))
+                if (missing(keepX) )
                 {
                     if (missing(study)) #block.pls
                     {
@@ -148,7 +144,7 @@ near.zero.var = FALSE)
                         
                         message("a block Partial Least Squares is being performed (block.PLS)")
                         res = block.pls(X = X, Y = Y, indY = indY, ncomp = ncomp,design = design,scheme = scheme,
-                        mode = mode,scale = scale,bias = bias,init = init,tol = tol,verbose = verbose,max.iter = max.iter,near.zero.var = near.zero.var)
+                        mode = mode,scale = scale, init = init,tol = tol, max.iter = max.iter,near.zero.var = near.zero.var)
                         
                     } else {# mint.block.pls
                         if (missing(scale))
@@ -156,7 +152,7 @@ near.zero.var = FALSE)
                         
                         message("a mint block Partial Least Squares is being performed (mint.block.PLS)")
                         res = mint.block.pls(X = X, Y = Y, indY = indY,study = study, ncomp = ncomp,design = design,scheme = scheme,
-                        mode = mode,scale = scale,bias = bias,init = init,tol = tol,verbose = verbose,max.iter = max.iter,near.zero.var = near.zero.var)
+                        mode = mode,scale = scale, init = init,tol = tol, max.iter = max.iter,near.zero.var = near.zero.var)
                     }
                     
                     
@@ -167,8 +163,8 @@ near.zero.var = FALSE)
                         scale = FALSE
                         
                         message("a block sparse Partial Least Squares is being performed (block.sPLS)")
-                        res = block.spls(X = X, Y = Y, indY = indY, ncomp = ncomp,keepX = keepX,keepX.constraint = keepX.constraint,
-                        design = design,scheme = scheme,mode =  mode,scale = scale,bias = bias,init = init,tol = tol,verbose = verbose,
+                        res = block.spls(X = X, Y = Y, indY = indY, ncomp = ncomp,keepX = keepX,
+                        design = design,scheme = scheme,mode =  mode,scale = scale, init = init,tol = tol,
                         max.iter = max.iter,near.zero.var = near.zero.var)
                         
                         
@@ -177,8 +173,8 @@ near.zero.var = FALSE)
                         scale = FALSE
                         
                         message("a mint block sparse Partial Least Squares is being performed (mint.block.sPLS)")
-                        res = mint.block.spls(X = X, Y = Y, indY = indY, ncomp = ncomp,study = study,keepX = keepX,keepX.constraint = keepX.constraint,
-                        design = design,scheme = scheme,mode =  mode,scale = scale,bias = bias,init = init,tol = tol,verbose = verbose,
+                        res = mint.block.spls(X = X, Y = Y, indY = indY, ncomp = ncomp,study = study,keepX = keepX,
+                        design = design,scheme = scheme,mode =  mode,scale = scale, init = init,tol = tol,
                         max.iter = max.iter,near.zero.var = near.zero.var)
                         
                     }
@@ -192,22 +188,22 @@ near.zero.var = FALSE)
             
             if (!missing(study)) {message("'study' is not used")}
             
-            if (missing(keepX) & missing(keepX.constraint)) #RGCCA
+            if (missing(keepX) ) #RGCCA
             {
                 message("A RGCCA analysis is being performed")
                 if (missing(scale))
                 scale = FALSE
                 
                 res = wrapper.rgcca(X = X,design = design,tau = tau,ncomp = ncomp,
-                max.iter = max.iter,scheme = scheme,scale = scale,init = init,bias = bias,tol = tol,verbose = verbose)
+                max.iter = max.iter,scheme = scheme,scale = scale,init = init, tol = tol)
                 
             } else { #sparse RGCCA
                 if (missing(scale))
                 scale = FALSE
                 
                 message("A sparse RGCCA analysis is being performed")
-                res = wrapper.rgcca(X = X,design = design,tau = tau,ncomp = ncomp,keepX = keepX,keepX.constraint = keepX.constraint,
-                max.iter = max.iter,scheme = scheme,scale = scale,init = init,bias = bias,tol = tol,verbose = verbose)
+                res = wrapper.rgcca(X = X,design = design,tau = tau,ncomp = ncomp,keepX = keepX,
+                max.iter = max.iter,scheme = scheme,scale = scale,init = init, tol = tol)
                 
                 
             }
@@ -224,7 +220,7 @@ near.zero.var = FALSE)
         
         if (missing(mode)) mode = "regression"
         #check for unused inputs (scheme, etc etc)
-        if (!is.null(tau) | !missing(design) | !missing(init) | !missing(scheme) | !missing(bias) | !missing(verbose))
+        if (!is.null(tau) | !missing(design) | !missing(init) | !missing(scheme))
         {
             if (!is.null(tau))
             message("'tau' is not used")
@@ -234,10 +230,6 @@ near.zero.var = FALSE)
             message("'init' is not used")
             if (!missing(scheme))
             message("'scheme' is not used")
-            if (!missing(bias))
-            message("'bias' is not used")
-            if (!missing(verbose))
-            message("'verbose' is not used")
             
             stop("unused input parameters")
         }
@@ -250,7 +242,7 @@ near.zero.var = FALSE)
             if (length(Y)!=nrow(X))
             stop("unequal number of rows in 'X' and 'Y'.")
             
-            if (missing(keepX) & missing(keepX.constraint) & missing(keepY) & missing(keepY.constraint))  #plsda, mint.plsda
+            if (missing(keepX) & missing(keepY))  #plsda, mint.plsda
             {
                 if (missing(study))
                 {
@@ -278,15 +270,14 @@ near.zero.var = FALSE)
                     scale = TRUE
                     
                     message("a sparse Partial Least Squares - Discriminant Analysis is being performed (sPLS-DA)")
-                    res = splsda(X = X, Y = Y, ncomp = ncomp, mode = mode, keepX = keepX,keepX.constraint = keepX.constraint,
-                    max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
+                    res = splsda(X = X, Y = Y, ncomp = ncomp, mode = mode, keepX = keepX,                     max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
                     
                 } else {# mint
                     if (missing(scale))
                     scale = FALSE
                     
                     message("a mint sparse Partial Least Squares - Discriminant Analysis is being performed (mint.sPLS-DA)")
-                    res = mint.splsda(X = X, Y = Y, ncomp = ncomp, mode = mode, study = study,keepX = keepX,keepX.constraint = keepX.constraint,
+                    res = mint.splsda(X = X, Y = Y, ncomp = ncomp, mode = mode, study = study,keepX = keepX,
                     max.iter = max.iter, tol = tol, near.zero.var = near.zero.var,scale = scale)
                 }
                 
@@ -297,7 +288,7 @@ near.zero.var = FALSE)
             
             #Check.entry.pls(X, Y, ncomp, keepX, keepY,keepX.constraint,keepY.constraint) # to have the warnings relative to X and Y, instead of blocks
             
-            if (missing(keepX) & missing(keepX.constraint) & missing(keepY) & missing(keepY.constraint))  #pls, mint.pls
+            if (missing(keepX) & missing(keepY))  #pls, mint.pls
             {
                 if (missing(study))
                 {
@@ -325,7 +316,7 @@ near.zero.var = FALSE)
                     
                     message("a sparse Partial Least Squares is being performed (sPLS)")
                     res = spls(X = X, Y = Y, ncomp = ncomp, mode = mode, keepX = keepX,keepY = keepY,
-                    keepX.constraint = keepX.constraint,keepY.constraint = keepY.constraint,max.iter = max.iter, tol = tol,
+                    max.iter = max.iter, tol = tol,
                     near.zero.var = near.zero.var,scale = scale)
                 } else {
                     if (missing(scale))
@@ -333,7 +324,7 @@ near.zero.var = FALSE)
                     
                     message("a mint sparse Partial Least Squares is being performed (mint.sPLS)")
                     res = mint.spls(X = X, Y = Y, ncomp = ncomp, mode = mode, study = study,keepX = keepX,keepY = keepY,
-                    keepX.constraint = keepX.constraint,keepY.constraint = keepY.constraint,max.iter = max.iter, tol = tol,
+                    max.iter = max.iter, tol = tol,
                     near.zero.var = near.zero.var,scale = scale)
                     
                 }

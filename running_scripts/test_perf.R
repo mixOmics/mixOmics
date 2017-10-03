@@ -116,7 +116,7 @@ Y <- srbct$class
 
 ncomp = 5
 
-srbct.splsda <- splsda(X, Y, ncomp = ncomp, keepX = rep(10, ncomp))
+srbct.splsda <- splsda(X, Y, ncomp = ncomp, keepX = rep(10, ncomp))#, all.outputs=FALSE)
 
 # with Mfold
 # ---------

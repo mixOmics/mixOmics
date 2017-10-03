@@ -55,7 +55,6 @@ nutrimouse.sgcca <- wrapper.sgcca(X = data,
                                   penalty = c(0.3, 0.5, 1),
                                   ncomp = 3,
                                   scheme = "centroid",
-                                  verbose = FALSE,
                                   bias = FALSE)
 
 # default style: same color for all samples
@@ -102,7 +101,6 @@ design = design1,
 ncomp = 2,
 keepX = list(gene = c(10,10), lipid = c(15,15)),
 scheme = "centroid",
-verbose = FALSE,
 bias = FALSE)
 
 

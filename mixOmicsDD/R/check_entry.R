@@ -548,32 +548,26 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, test.keepX, test.keepY, mo
 # init: intialisation of the algorithm, one of "svd" or "svd.single". Default to "svd"
 # scheme: the input scheme, one of "horst", "factorial" or ""centroid". Default to "centroid"
 # scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
-# bias: boleean. A logical value for biaised or unbiaised estimator of the var/cov (defaults to FALSE).
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 # mode: input mode, one of "canonical", "classic", "invariant" or "regression". Default to "regression"
 # tol: Convergence stopping value.
 # max.iter: integer, the maximum number of iterations.
-# verbose: if set to \code{TRUE}, reports progress on computing.
 
 Check.entry.wrapper.mint.block = function(X,
 Y,
 indY, #only use if Y not provided
 ncomp,
 keepX,
-keepX.constraint,
 keepY,
-keepY.constraint,
 study, #mint
 design, #block
 init,
 scheme, #block
 scale,
-bias,
 near.zero.var,
 mode,
 tol,
-max.iter,
-verbose)
+max.iter)
 {
     #need to give the default values of mint.block.spls to mixOmics
     
@@ -632,9 +626,8 @@ verbose)
     }
     
     # construction of keepA and keepA.constraint for X, we include Y later on if needed (i.e. if Y is provided, otherwise Y is in X[[indY]])
-    check = get.keepA.and.keepA.constraint(X=X, keepX=keepX, keepX.constraint=keepX.constraint, ncomp=ncomp)
+    check = get.keepA.and.keepA.constraint(X=X, keepX=keepX, ncomp=ncomp)
     keepA = check$keepA
-    keepA.constraint = check$keepA.constraint
     
     
     if (!missing(Y))# Y is not missing, so we don't care about indY
@@ -655,17 +648,11 @@ verbose)
         # if not missing, we transform keepY and keepY.constraint in list to input them in get.keepA.and.keepA.constraint
         if (!missing(keepY))
         keepY = list(Y = keepY)
-        
-        if (!missing(keepY.constraint))
-        keepY.constraint = list(Y = keepY.constraint)
-        
-        check.temp.Y = get.keepA.and.keepA.constraint(X = list(Y = Y), keepX = keepY, keepX.constraint = keepY.constraint, ncomp = ncomp)
+            
+        check.temp.Y = get.keepA.and.keepA.constraint(X = list(Y = Y), keepX = keepY, ncomp = ncomp)
         keepY.temp = check.temp.Y$keepA
-        keepY.constraint.temp = check.temp.Y$keepA.constraint
-
+            
         keepA[[length(X)+1]] = keepY.temp[[1]] #add keepY in keepA
-        keepA.constraint[[length(X)+1]] = keepY.constraint.temp[[1]] #add keepY.constraint in keepA
-
 
         # check design matrix before adding Y in
         A = X
@@ -687,7 +674,7 @@ verbose)
 
         # build the list A by adding Y, and creating indY
         A[[length(A)+1]] = Y
-        names(A)[length(A)] = names(keepA)[length(A)] = names(keepA.constraint)[length(A)] = "Y"
+        names(A)[length(A)] = names(keepA)[length(A)] = "Y"
         indY = length(A)
         
         if (mode == "canonical")
@@ -700,8 +687,6 @@ verbose)
         
         if (!missing(keepY))
         warning("indY is provided: 'keepY' is ignored and only 'keepX' is used.")
-        if (!missing(keepY.constraint))
-        warning("indY is provided: 'keepY.constraint' is ignored and only 'keepX.constraint' is used.")
 
         A = X #list provided as input
         
@@ -770,9 +755,6 @@ verbose)
     if (!(scheme %in% c("horst", "factorial", "centroid")))
     {
         stop("Choose one of the three following schemes: horst, centroid or factorial")
-    } else {
-        if (verbose)
-        cat("Computation of the SGCCA block components based on the", scheme, "scheme \n")
     }
     
     if (!is.numeric(tol) | tol <= 0)
@@ -780,12 +762,8 @@ verbose)
     if (!is.numeric(max.iter) | max.iter <= 0)
     stop("max.iter must be non negative")
     
-    if (!is.logical(verbose))
-    stop("verbose must be either TRUE or FALSE")
     if (!is.logical(scale))
     stop("scale must be either TRUE or FALSE")
-    if (!is.logical(bias))
-    stop("bias must be either TRUE or FALSE")
     if (!is.logical(near.zero.var))
     stop("near.zero.var must be either TRUE or FALSE")
     
@@ -801,19 +779,11 @@ verbose)
             {
                 names.remove.X = colnames(A[[q]])[nzv.A[[q]]$Position]
                 A[[q]] = A[[q]][, -nzv.A[[q]]$Position, drop=FALSE]
-                if (verbose)
-                warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
+                #if (verbose)
+                #warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
                 if (ncol(A[[q]]) == 0)
                 stop(paste0("No more variables in",A[[q]]))
                 
-                # at this stage, keepA.constraint need to be numbers
-                if (length(keepA.constraint[[q]]) > 0)
-                {
-                    #remove the variables from keepA.constraint if removed by near.zero.var
-                    keepA.constraint[[q]] = match.keepX.constraint(names.remove.X, keepA.constraint[[q]])
-                    # replace character by numbers
-                    keepA.constraint[[q]] = lapply(keepA.constraint[[q]], function(x){match(x, colnames(A[[q]]))})
-                }
                 #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
                 if (any(keepA[[q]] > ncol(A[[q]])))
                 {
@@ -827,7 +797,7 @@ verbose)
         nzv.A=NULL
     }
     
-    return(list(A=A, ncomp=ncomp, study=study, keepA=keepA, keepA.constraint=keepA.constraint,
+    return(list(A=A, ncomp=ncomp, study=study, keepA=keepA,
     indY=indY, design=design, init=init, nzv.A=nzv.A))
 }
 
@@ -842,9 +812,7 @@ verbose)
 # mode: input mode, one of "canonical", "classic", "invariant" or "regression". Default to "regression"
 # scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
 # init: intialisation of the algorithm, one of "svd" or "svd.single". Default to "svd"
-# bias: boleean. A logical value for biaised or unbiaised estimator of the var/cov (defaults to FALSE).
 # tol: Convergence stopping value.
-# verbose: if set to \code{TRUE}, reports progress on computing.
 # max.iter: integer, the maximum number of iterations.
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 # keepX: A vector of same length as X.  Each entry keepX[i] is the number of X[[i]]-variables kept in the model on the last components (once all keepX.constraint[[i]] are used).
@@ -857,9 +825,7 @@ scheme,
 mode,
 scale,
 init,
-bias,
 tol,
-verbose,
 max.iter,
 near.zero.var,
 keepX,
@@ -929,11 +895,7 @@ keepX.constraint)
     if (!(scheme %in% c("horst", "factorial","centroid")))
     {
         stop("Choose one of the three following schemes: horst, centroid or factorial")
-    } else {
-        if (verbose)
-        cat("Computation of the SGCCA block components based on the", scheme, "scheme \n")
     }
-    
     
     if(missing(design))
     design = 1 - diag(length(A))
@@ -945,24 +907,14 @@ keepX.constraint)
     if (nrow(design) != length(A))
     stop(paste0("'design' must be a square matrix with", length(A), "columns."))
     
-    
-    if (missing(bias))
-    bias = FALSE
-    if (missing(verbose))
-    verbose = FALSE
-    
     if (tol <= 0)
     stop("tol must be non negative")
     
     if (max.iter <= 0)
     stop("max.iter must be non negative")
     
-    if (!is.logical(verbose))
-    stop("verbose must be either TRUE or FALSE")
     if (!is.logical(scale))
     stop("scale must be either TRUE or FALSE")
-    if (!is.logical(bias))
-    stop("bias must be either TRUE or FALSE")
     if (!is.logical(near.zero.var))
     stop("near.zero.var must be either TRUE or FALSE")
     
@@ -982,8 +934,8 @@ keepX.constraint)
             {
                 names.remove.X = colnames(A[[q]])[nzv.A[[q]]$Position]
                 A[[q]] = A[[q]][, -nzv.A[[q]]$Position, drop=FALSE]
-                if (verbose)
-                warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
+                #if (verbose)
+                #warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
                 if (ncol(A[[q]]) == 0)
                 stop(paste0("No more variables in", A[[q]]))
                 
@@ -1009,7 +961,7 @@ keepX.constraint)
     }
     
     
-    return(list(A=A, ncomp=ncomp, design=design, init=init, scheme=scheme, verbose=verbose, bias=bias, nzv.A=nzv.A,
+    return(list(A=A, ncomp=ncomp, design=design, init=init, scheme=scheme, nzv.A=nzv.A,
     keepA=keepA, keepA.constraint=keepA.constraint))
     
 }
@@ -1026,9 +978,7 @@ keepX.constraint)
 # scheme: the input scheme, one of "horst", "factorial" or ""centroid". Default to "centroid"
 # scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
 # init: intialisation of the algorithm, one of "svd" or "svd.single". Default to "svd"
-# bias: boleean. A logical value for biaised or unbiaised estimator of the var/cov (defaults to FALSE).
 # tol: Convergence stopping value.
-# verbose: if set to \code{TRUE}, reports progress on computing.
 # max.iter: integer, the maximum number of iterations.
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 # keepX: A vector of same length as X.  Each entry keepX[i] is the number of X[[i]]-variables kept in the model on the last components (once all keepX.constraint[[i]] are used).
@@ -1040,9 +990,7 @@ ncomp,
 scheme,
 scale,
 init,
-bias,
 tol,
-verbose,
 max.iter,
 near.zero.var,
 keepX,
@@ -1127,9 +1075,6 @@ keepX.constraint)
     if (!(scheme %in% c("horst", "factorial", "centroid")))
     {
         stop("Choose one of the three following schemes: horst, centroid or factorial")
-    } else {
-        if (verbose)
-        cat("Computation of the SGCCA block components based on the", scheme, "scheme \n")
     }
     
     
@@ -1143,10 +1088,6 @@ keepX.constraint)
     stop(paste0("'design' must be a square matrix with", length(A), "columns."))
     
     
-    if (missing(bias))
-    bias = FALSE
-    if (missing(verbose))
-    verbose = FALSE
     if (missing(near.zero.var))
     near.zero.var = FALSE
     
@@ -1156,12 +1097,8 @@ keepX.constraint)
     if (max.iter <= 0)
     stop("max.iter must be non negative")
     
-    if (!is.logical(verbose))
-    stop("verbose must be either TRUE or FALSE")
     if (!is.logical(scale))
     stop("scale must be either TRUE or FALSE")
-    if (!is.logical(bias))
-    stop("bias must be either TRUE or FALSE")
     if (!is.logical(near.zero.var))
     stop("near.zero.var must be either TRUE or FALSE")
     
@@ -1183,8 +1120,8 @@ keepX.constraint)
             {
                 names.remove.X = colnames(A[[q]])[nzv.A[[q]]$Position]
                 A[[q]] = A[[q]][, -nzv.A[[q]]$Position, drop=FALSE]
-                if (verbose)
-                warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
+                #if (verbose)
+                #warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
                 if (ncol(A[[q]]) == 0)
                 stop(paste0("No more variables in", A[[q]]))
                 
@@ -1210,7 +1147,7 @@ keepX.constraint)
     }
     
     
-    return(list(A=A, ncomp=ncomp, design=design, init=init, scheme=scheme, verbose=verbose, bias=bias, nzv.A=nzv.A,
+    return(list(A=A, ncomp=ncomp, design=design, init=init, scheme=scheme, nzv.A=nzv.A,
     keepA=keepA, keepA.constraint=keepA.constraint))
 }
 

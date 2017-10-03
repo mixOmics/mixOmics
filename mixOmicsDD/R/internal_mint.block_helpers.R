@@ -216,6 +216,11 @@ scale.function=function(temp, scale = TRUE)
     {
         sqrt.sdX = colSds(temp, center = meanX, na.rm=TRUE)
         data.list.study.scale_i = t( (t(temp)-meanX) / sqrt.sdX)
+        
+        ind = which(sqrt.sdX==0) # creates NA
+        if(length(ind) >0)
+        data.list.study.scale_i[,ind] = 0
+        
     } else {
         sqrt.sdX = NULL
         data.list.study.scale_i = t( (t(temp)-meanX))
@@ -328,7 +333,7 @@ tau.estimate = function (x)
 # cov2() - Compute biased and unbiased covariance and variance estimates
 # ----------------------------------------------------------------------------------------------------------
 # used in 'internal_mint.block.R'
-cov2 = function (x, y = NULL, bias = TRUE) {
+cov2 = function (x, y = NULL, bias = FALSE) {
     n = NROW(x)
     if (is.null(y)) {
         x = as.matrix(x)

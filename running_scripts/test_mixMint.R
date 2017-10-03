@@ -8,7 +8,7 @@ opar <- par(no.readonly = TRUE)
 
 data(stemcells) #load gene, celltype and study
 
-library(mixOmics)
+#library(mixOmics)
 data=stemcells$gene
 type.id=stemcells$celltype
 exp=stemcells$study
@@ -124,7 +124,7 @@ par(opar)
 ## ======================================================================
 
 
-library(mixOmics)
+#library(mixOmics)
 data=stemcells$gene
 type.id=stemcells$celltype
 exp=stemcells$study
@@ -178,26 +178,26 @@ selectVar(res,block=2)
 
 #######  wraper.block.spls
 res=block.spls(X=A.light,indY=2,keepX=list(X=c(10,5,15),Y=c(3,2)),ncomp = 3)
-res=block.spls(X=A.light,indY=2,keepX=list(Y=c(3,2),X=c(10,5)),ncomp = 3,
-keepX.constraint=list(X=list(comp1=c(10,12)),Y=list(comp1=c(1,2))))
+res=block.spls(X=A.light,indY=2,keepX=list(Y=c(3,2),X=c(10,5)),ncomp = 3)#,
+#keepX.constraint=list(X=list(comp1=c(10,12)),Y=list(comp1=c(1,2))))
 
-res=block.spls(X=A.light,indY=2,keepX=list(Y=c(3,2),X=c(10,5)),ncomp = 3,
-keepX.constraint=list(Y=list(comp1=c(1,2)),X=list(comp1=c(10,12))))
+res=block.spls(X=A.light,indY=2,keepX=list(Y=c(3,2),X=c(10,5)),ncomp = 3)#,
+#keepX.constraint=list(Y=list(comp1=c(1,2)),X=list(comp1=c(10,12))))
 
-res=block.spls(X=A.light,indY=2,keepX=list(Y=c(3,2),X=c(10,5)),ncomp = 3,
-keepX.constraint=list(X=list(comp1=c(10,12))),keepY.constraint=list(Y=list(comp1=c(1,2))))
+res=block.spls(X=A.light,indY=2,keepX=list(Y=c(3,2),X=c(10,5)),ncomp = 3)#,
+#keepX.constraint=list(X=list(comp1=c(10,12))),keepY.constraint=list(Y=list(comp1=c(1,2))))
 
 
 res=block.spls(list(Y=data),Y=Y.mat,keepX=list(Y=c(10,5,15)),keepY=c(3,2),ncomp=3)# still working with two blocks Y
 res=block.spls(list(XX=data),Y=Y.mat,keepX=list(XX=c(400,400,400)),keepY=c(3,3),ncomp=3)
 
-res=block.spls(list(X=data),Y=Y.mat,ncomp=3,keepX=list(c(100)),
-keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))),
-keepY=c(2),keepY.constraint=list(comp1=c(2,3),comp2=3))
+res=block.spls(list(X=data),Y=Y.mat,ncomp=3,keepX=list(X=c(100)),
+#keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))),
+keepY=c(2))#,keepY.constraint=list(comp1=c(2,3),comp2=3))
 
-res2=block.spls(list(block1=data),Y=Y.mat,ncomp=3,keepX=list(c(100)),
-keepX.constraint=list(block1=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))),
-keepY=c(2),keepY.constraint=list(comp1=c(1),comp2=c(2)))
+res2=block.spls(list(block1=data),Y=Y.mat,ncomp=3,keepX=list(block1=c(100)),
+#keepX.constraint=list(block1=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))),
+keepY=c(2))#,keepY.constraint=list(comp1=c(1),comp2=c(2)))
 
 
 selectVar(res)
@@ -213,11 +213,11 @@ selectVar(res,block=2)
 
 #######  wraper.block.splsda
 res=block.splsda(X=list(X=data,Y=type.id),keepX=list(X=c(10,5)),indY=2,ncomp = 2)
-res=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(c(100)),
-keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
+res=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(X=c(100)))#,
+#keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
 
-res=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(X=c(100)),
-keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
+res=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(X=c(100)))#,
+#keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
 
 
 res2=block.splsda(X=list(X2=data),Y=type.id,keepX=list(X2=c(10,5,10)),ncomp=3,mode="canonical")
@@ -326,7 +326,7 @@ res=mixOmics(X=A,indY=2)
 #block.spls
 res=mixOmics(X=list(XX=data),Y=unmap(type.id),keepX=list(XX=c(10,5,15)),ncomp=3)
 res=mixOmics(X=list(data=data,Y=Y.mat),indY=2,keepX=list(data=c(10,5,15)),ncomp = 3)
-res=mixOmics(X=A,indY=2,keepX.constraint=list(X=list(1:10)),ncomp = 2)
+res=mixOmics(X=A,indY=2,ncomp = 2)
 
 # block.plsda
 res=mixOmics(X=A,Y=type.id)
@@ -359,17 +359,17 @@ sp1$iter;sp2$iter
 res=mixOmics(data,Y=Y.mat,ncomp=3,study=exp)
 
 #mint.spls
-res1=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c("ENSG00000164930","ENSG00000044090")),keepX=c(100,50),ncomp=3)#with gene names in keepX.constraint
-res2=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c(120,179)),keepX=c(100,50),ncomp=3)#with numbers in keepX.constraint
+res1=mixOmics(X=data,Y=Y.mat,study=exp,keepX=c(100,50),ncomp=3)#with gene names in keepX.constraint
+res2=mixOmics(X=data,Y=Y.mat,study=exp,keepX=c(100,50),ncomp=3)#with numbers in keepX.constraint
 all.equal(res,res1)
-res=mixOmics(X=data,Y=Y.mat,study=exp,keepX.constraint=list(c(120,179)),ncomp=3)#mint.spls missing keepX is completed by pls-like
+res=mixOmics(X=data,Y=Y.mat,study=exp,ncomp=3)#mint.spls missing keepX is completed by pls-like
 res$keepX
 
 #mint.plsda
 res=mixOmics(data,type.id,ncomp=3,study=exp)
 
 #mint.splsda
-res=mixOmics(X=data,Y=type.id,study=exp,keepX.constraint=list(c("ENSG00000164930","ENSG00000044090")),keepX=c(10,15),ncomp=3)
+res=mixOmics(X=data,Y=type.id,study=exp,keepX=c(10,15),ncomp=3)
 
 
 
@@ -379,7 +379,7 @@ res=mixOmics(X=list(XX=data),Y=unmap(type.id),study=exp)
 # mint.block.spls
 res=mixOmics(X=list(XX=data),Y=unmap(type.id),keepX=list(XX=c(10,5)),study=exp,ncomp=2)
 res=mixOmics(X=list(data=data,Y=Y.mat),indY=2,keepX=list(data=c(10,5,15)),ncomp = 3,study=exp)
-res=mixOmics(X=A,indY=2,keepX.constraint=list(X=list(1:10)),ncomp = 3) # OK
+res=mixOmics(X=A,indY=2,ncomp = 3) # OK
 
 # mint.block.plsda
 res=mixOmics(X=A,Y=type.id,study=exp)
@@ -403,14 +403,14 @@ res=mixOmics(X=A,indY=2,tau=c(1,1),ncomp = 3) #OK
 
 #sparse RGCCA
 # keep variable 5 and 10 on the 2first comp of block1, keep variable 2 on comp1 for block 2. completed by keeping all variable on comp2 for block2
-res=mixOmics(X=A,tau=c(1,1),mode="canonical",keepX.constraint=list(X=c(5,10),Y=2),ncomp = 2)
-res1=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(X=list(5,10),Y=list(2)),ncomp = 2)#same
+res=mixOmics(X=A,tau=c(1,1),mode="canonical",ncomp = 2)
+res1=mixOmics(X=A,tau=c(1,1),ncomp = 2)#same
 
 # keep variable 5 on comp1 and 10 on comp2 of block1; keep variable 2 on comp1 for block 2. completed by keeping all variable on comp3 for block1 and comp2/3 for block2
-res2=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(X=c(5,10),Y=2),ncomp = 3)
+res2=mixOmics(X=A,tau=c(1,1),ncomp = 3)
 
 # keep variable 5 and 10 on the first comp of block1, variable 3 on the second comp of block1; keep variable 2 on comp1 for block 2. completed by keeping all variable on comp3 for block1 and comp2/3 for block2
-res3=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(X=list(c(5,10),3),Y=list(2)),ncomp = 3)
+res3=mixOmics(X=A,tau=c(1,1),ncomp = 3)
 
 
 
@@ -429,15 +429,15 @@ which(res3$loadings$X[,2]!=0)
 sum(res3$loadings$X[,3]!=0)
 
 #OK keep variable 5 and 10 on the first comp of block1, variable 3 on the second comp of block1. completed by keeping all variable on comp3 for block1 and comp1/2/3 for block2
-res=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(X=list(c(5,10),3)),ncomp = 2) #OK
+res=mixOmics(X=A,tau=c(1,1),ncomp = 2) #OK
 
 #OK keep variable 5 and 10 on the first comp of block1, variable 3 on the second comp of block1. keep the 10 most important variables on comp3 of block1. completed by keeping all variable on comp3 for block1 and comp1/2/3 for block2
-res=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(X=list(c(5,10),3)),keepX=list(10),ncomp = 3) #OK
+res=mixOmics(X=A,tau=c(1,1),keepX=list(X=10),ncomp = 3) #OK
 
 
-res=mixOmics(X=A,tau=c(1,1),keepX.constraint=list(),keepX=list(X=c(10,10)),ncomp = 2)#OK
+res=mixOmics(X=A,tau=c(1,1),keepX=list(X=c(10,10)),ncomp = 2)#OK
 res=mixOmics(X=A,tau=c(1,1),keepX=list(X=c(10,10)),ncomp = 3)#OK
-res=mixOmics(X=A,tau=c(1,1),keepX=list(5,2),keepX.constraint=list(X=list(c(5,10))),ncomp = 2) #OK
+res=mixOmics(X=A,tau=c(1,1),keepX=list(X=5, Y=2),ncomp = 2) #OK
 
 
 par(opar)

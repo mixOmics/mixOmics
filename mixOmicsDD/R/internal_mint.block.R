@@ -36,8 +36,8 @@
 #############################################################################################################
 
 internal_mint.block = function (A, indY = NULL,  design = 1 - diag(length(A)), tau=NULL,#rep(1, length(A)),
-ncomp = rep(1, length(A)), scheme = "horst", scale = TRUE,  bias = FALSE,
-init = "svd.single", tol = 1e-06, verbose = FALSE,
+ncomp = rep(1, length(A)), scheme = "horst", scale = TRUE,
+init = "svd.single", tol = 1e-06,
 mode = "canonical", max.iter = 100,study = NULL, keepA = NULL,
 penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NULL)
 {
@@ -47,10 +47,8 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
     # ncomp: vector of ncomp, per matrix
     # scheme: a function "g", refer to the article (thanks Benoit)
     # scale: do you want to scale ? mean is done by default and cannot be changed (so far)
-    # bias: scale the data with n or n-1
     # init: one of "svd" or "random", initialisation of the algorithm
     # tol: nobody cares about this
-    # verbose: show the progress of the algorithm
     # mode: canonical, classic, invariant, regression
     # max.iter: nobody cares about this
     # study: factor for each matrix of A, must be a vector
@@ -60,14 +58,15 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
     
     names(ncomp) = names(A)
     
+    time = FALSE
     
-    #save(list=ls(),file="temp.Rdata")
+    #(list=ls(),file="temp.Rdata")
     time1=proc.time()
     # center the data per study, per matrix of A, scale if scale=TRUE, option
     mean_centered = lapply(A, function(x){mean_centering_per_study(x, study, scale)})
-    time1bis=proc.time()
-    print("scaling part1")
-    print(time1bis-time1)
+    if(time) time1bis=proc.time()
+    if(time) print("scaling part1")
+    if(time) print(time1bis-time1)
     
     A = lapply(mean_centered, function(x){as.matrix(x$concat.data)})
     
@@ -88,13 +87,14 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
     number.models.per.comp = sapply(keepA,nrow)
     one.model = !any( number.models.per.comp !=1)
     
-    print("one.model")
-    print(one.model)
+    if(time) print("one.model")
+    if(time) print(one.model)
 
     AVE_X = crit = loadings.partial.A = variates.partial.A = tau.rgcca = list()
     
+    #save(list=ls(),file="temp.Rdata")
 
-    loadings.A = loadings.Astar = variates.A =  vector("list", J)
+    P = loadings.A = loadings.Astar = variates.A =  vector("list", J)
 
     if(one.model)
     {
@@ -108,7 +108,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
         {
             loadings.A[[k]] = matrix(NA, pjs[[k]], N)
             if(all.outputs)
-            loadings.Astar[[k]]= matrix(NA, pjs[[k]], N)
+            P[[k]] = loadings.Astar[[k]]= matrix(NA, pjs[[k]], N)
         }
 
         for (k in 1:J)
@@ -149,7 +149,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
         misdata = sapply(A, anyNA) # Detection of missing data
         misdata.all = any(misdata)
         
-        print(misdata.all)
+        if(time) print(misdata.all)
         
         if (misdata.all)
         {
@@ -166,7 +166,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
         misdata.all = any(misdata)
     }
     
-    print(misdata)
+    if(time) print(misdata)
     
     if(all.outputs & J==2 & nlevels(study) == 1 & one.model) #(s)pls(da)
     {
@@ -179,16 +179,17 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
     } else {mat.c = NULL}
     
     
-    #save(list=ls(),file="temp.Rdata")
+    #if(time)
+    #save(list=ls(),file="temp2.Rdata")
     
     
     iter=NULL
     compteur = 0
     for (comp in 1 : N)
     {
-        cat("====================================================================================================\n")
-        print(paste0("component ", comp))
-        cat("====================================================================================================\n")
+        if(time) cat("====================================================================================================\n")
+        if(time) print(paste0("component ", comp))
+        if(time) cat("====================================================================================================\n")
 
         if(misdata.all)# replace NA in A[[q]] by 0
         R = lapply(1:J, function(q){replace(R[[q]], is.na.A[[q]], 0)}) # if missing data, R is the one replace by 0 where NA are supposed to be
@@ -201,9 +202,9 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
         for(ijk.keepA in 1:nrow(keepA[[comp]]))
         {
             compteur = compteur +1
-            cat("---------------------------------------------------------\n")
-            print(paste0("keepA ", ijk.keepA))
-            cat("---------------------------------------------------------\n")
+            if(time) cat("---------------------------------------------------------\n")
+            if(time) print(paste0("keepA ", ijk.keepA))
+            if(time) cat("---------------------------------------------------------\n")
 
             keepA.ijk = keepA[[comp]][ijk.keepA,]
             
@@ -213,14 +214,14 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
                 mint.block.result = sparse.mint.block_iteration(R, design, study = study, loadings.A = loadings.A.init,
                 #keepA.constraint = if (!is.null(keepA.constraint)) {lapply(keepA.constraint, function(x){unlist(x[n])})} else {NULL} ,
                 keepA = keepA.ijk, #if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL}, #keepA is one value per block
-                scheme = scheme, max.iter = max.iter, tol = tol, verbose = verbose,penalty = penalty,
+                scheme = scheme, max.iter = max.iter, tol = tol, penalty = penalty,
                 misdata=misdata, is.na.A=is.na.A, ind.NA = ind.NA,
                 all.outputs = all.outputs)
             } else {
-                mint.block.result = sparse.rgcca_iteration(R, design, tau = if (is.matrix(tau)){tau[n, ]} else {"optimal"},
+                mint.block.result = sparse.rgcca_iteration(R, design, tau = if (is.matrix(tau)){tau[comp, ]} else {"optimal"},
                 scheme = scheme, init = init, tol = tol,
-                verbose = verbose, max.iter = max.iter, penalty = penalty,
-                keepA = if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL}, all.outputs = all.outputs)
+                max.iter = max.iter, penalty = penalty,
+                keepA = keepA.ijk, all.outputs = all.outputs)
             }
             ### end - repeat/convergence
             
@@ -229,14 +230,14 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
             #       return(result)
             
             
-            time3 = proc.time()
+            if(time) time3 = proc.time()
             
             
             
-            time4 = proc.time()
-            print("one comp")
-            print(time4-time3)
-            time4 = proc.time()
+            if(time) time4 = proc.time()
+            if(time) print("one comp")
+            if(time) print(time4-time3)
+            if(time) time4 = proc.time()
             
             
             
@@ -300,7 +301,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
                     R.temp = R[[1]]
                     R.temp[is.na.X] = 0
                     c = crossprod(R.temp, variates.A[[1]][,comp])
-                    T = drop(variates[,comp]) %o% p.ones
+                    T = drop(variates.A[[1]][,comp]) %o% p.ones
                     T[is.na.X] = 0
                     t.norm = crossprod(T)
                     c = c / diag(t.norm)
@@ -323,9 +324,9 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
                 
                 R = defla.result$resdefl
                 #defl.matrix[[n + 1]] = R
-                time5 = proc.time()
-                print("deflation")
-                print(time5-time4)
+                if(time) time5 = proc.time()
+                if(time) print("deflation")
+                if(time) print(time5-time4)
             }
             
             
@@ -336,6 +337,12 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
             
             if(all.outputs & one.model) #loadings.Astar
             {
+                for (k in 1 : J)
+                {
+                    if (N != 1)
+                    P[[k]][, comp - 1] = defla.result$pdefl[[k]]
+                }
+                
                 if (comp == 1)
                 {
                     for (k in 1 : J)
@@ -343,7 +350,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
                 } else {
                     #save(list=ls(),file="temp.Rdata")
                     for (k in 1 : J)
-                    loadings.Astar[[k]][, comp] = mint.block.result$loadings.A[[k]] - loadings.Astar[[k]][, (1 : comp - 1), drop = F] %*% drop(t(loadings.A[[k]][, comp]) %*% defla.result$pdefl[[k]])#[, 1 : (comp - 1), drop = F])
+                    loadings.Astar[[k]][, comp] = mint.block.result$loadings.A[[k]] - loadings.Astar[[k]][, (1 : comp - 1), drop = F] %*% drop(t(loadings.A[[k]][, comp]) %*% P[[k]][, 1 : (comp - 1), drop = F])
                 }
             } else {
                 loadings.Astar = NULL
@@ -371,8 +378,8 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
 
 #save(list=ls(),file="temp.Rdata")
     
-    if (verbose)
-    cat(paste0("Computation of the SGCCA block components #", N , " is under progress...\n"))
+    #if (verbose)
+    #cat(paste0("Computation of the SGCCA block components #", N , " is under progress...\n"))
     
      if(one.model)
     {
@@ -408,10 +415,10 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
         
         variates.A = shave.matlist(variates.A, ncomp)
 
-        print("bla")
+#print("bla")
         if(all.outputs)
         {
-            print("bla2")
+            #print("bla2")
             # AVE
             outer = matrix(unlist(AVE_X), nrow = max(ncomp))
             for (j in 1 : max(ncomp))
@@ -481,6 +488,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
 
     }
     
+    #save(list=ls(),file="temp.Rdata")
     
     out = list(A = A, indY = indY, ncomp = ncomp, mode = mode,
     keepA = keepA,
@@ -491,7 +499,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
     tol = tol, iter=iter, max.iter=max.iter,
     design = design,
     scheme = scheme,  crit = crit, AVE = AVE, mat.c = mat.c, #defl.matrix = defl.matrix,
-    init = init, bias = bias,
+    init = init,
     scale = scale, tau = if(!is.null(tau)) tau.rgcca, study = study,
     explained_variance = expl.A)
     ### End: Output
@@ -509,7 +517,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
 # ----------------------------------------------------------------------------------------------------------
 
 sparse.mint.block_iteration = function (A, design, study = NULL, loadings.A, keepA = NULL,
-scheme = "horst", max.iter = 100, tol = 1e-06, verbose = TRUE, bias = FALSE,
+scheme = "horst", max.iter = 100, tol = 1e-06,
 misdata = NULL, is.na.A = NULL, ind.NA = NULL,
 penalty=NULL, all.outputs = FALSE)
 {
@@ -517,6 +525,9 @@ penalty=NULL, all.outputs = FALSE)
     # keepA is a list of length the number of blocks. Each entry is a vector of numbers: variables to select for that block (component is fixed)
     # study is a vector
     # == == == == no check needed as this function is only used in internal_mint.block, in which the checks are conducted
+    
+    time=FALSE
+    #if(time) save(list=ls(),file="temp3.Rdata")
     
     ### Start: Initialization parameters
     J = length(A)
@@ -543,7 +554,7 @@ penalty=NULL, all.outputs = FALSE)
     nlevels_study = nlevels(study)
     ### End: Initialization parameters
     
-    time2 = proc.time()
+    if(time) time2 = proc.time()
 
     ### End: Initialisation "a" vector
     variates.partial.A.comp = NULL
@@ -588,10 +599,10 @@ penalty=NULL, all.outputs = FALSE)
     }
     loadings.A_old = loadings.A
     
-    time3 = proc.time()
-    print("loadings")
-    print(time3-time2)
-    print("repeat")
+    if(time) time3 = proc.time()
+    if(time) print("loadings")
+    if(time) print(time3-time2)
+    if(time) print("repeat")
     #save(list=ls(),file="temp2.Rdata")
     
     ### Start Algorithm 1 Sparse generalized canonical analysis (See Variable selection for generalized canonical correlation analysis (Tenenhaus))
@@ -600,17 +611,17 @@ penalty=NULL, all.outputs = FALSE)
         variates.Aold = variates.A
         for (q in 1:J)
         {
-            print(paste("repeat, block",q))
+            if(time) print(paste("repeat, block",q))
             
             ### Start : !!! Impact of the diag of the design matrix !!! ###
             if (scheme == "horst")
             CbyCovq = design[q, ]
             
             if (scheme == "factorial")
-            CbyCovq = design[q, ] * cov2(variates.A, variates.A[, q], bias = bias)
+            CbyCovq = design[q, ] * cov2(variates.A, variates.A[, q])
             
             if (scheme == "centroid")
-            CbyCovq = design[q, ] * sign(cov2(variates.A, variates.A[, q], bias = bias))
+            CbyCovq = design[q, ] * sign(cov2(variates.A, variates.A[, q]))
             ### End : !!! Impact of the diag of the design matrix !!! ###
             
             ### Step A start: Compute the inner components
@@ -619,7 +630,7 @@ penalty=NULL, all.outputs = FALSE)
             ### Step A end: Compute the inner components
             
             
-            time5 = proc.time()
+            if(time) time5 = proc.time()
             
             ### Step B start: Computer the outer weight ###
             # possibility of removing NA (replacing by 0) and use crossprod, further development
@@ -637,10 +648,10 @@ penalty=NULL, all.outputs = FALSE)
             }
             loadings.A[[q]] = temp
             
-            time6 = proc.time()
-            print("loadings")
-            print(time6-time5)
-            time6 = proc.time()
+            if(time) time6 = proc.time()
+            if(time) print("loadings")
+            if(time) print(time6-time5)
+            if(time) time6 = proc.time()
             
             
             # sparse using keepA / penalty
@@ -653,7 +664,7 @@ penalty=NULL, all.outputs = FALSE)
             
             loadings.A[[q]]=l2.norm(as.vector(loadings.A[[q]]))
             
-            time7 = proc.time()
+            if(time) time7 = proc.time()
             
             ### Step B end: Computer the outer weight ###
             if(misdata[q])
@@ -690,13 +701,13 @@ penalty=NULL, all.outputs = FALSE)
                 variates.A[, q] =  A[[q]]%*%loadings.A[[q]]
             }
             
-            time8 = proc.time()
-            print("variates")
-            print(time8-time7)
+            if(time) time8 = proc.time()
+            if(time) print("variates")
+            if(time) print(time8-time7)
             
         }
         
-        crit[iter] = sum(design * g(cov2(variates.A, bias = bias)))
+        crit[iter] = sum(design * g(cov2(variates.A)))
         
         if (iter > max.iter)
         warning("The SGCCA algorithm did not converge", call. = FALSE)#cat("The SGCCA algorithm did not converge after", max.iter ,"iterations."))
@@ -717,8 +728,8 @@ penalty=NULL, all.outputs = FALSE)
     variates.partial.A.comp = apply(variates.A, 2, study_split, study)
     
     
-    if (verbose)
-    plot(crit, xlab = "iteration", ylab = "criteria")
+    #if (verbose)
+    #plot(crit, xlab = "iteration", ylab = "criteria")
     
     if(all.outputs){
         AVE_inner = sum(design * cor(variates.A)^2/2)/(sum(design)/2)
@@ -743,7 +754,7 @@ penalty=NULL, all.outputs = FALSE)
 
 
 sparse.rgcca_iteration = function (A, design, tau = "optimal", scheme = "horst", scale = FALSE, max.iter = 100,
-verbose = FALSE, init = "svd.single", bias = FALSE, tol = .Machine$double.eps, keepA = NULL, penalty = NULL, all.outputs = FALSE)
+init = "svd.single", tol = .Machine$double.eps, keepA = NULL, penalty = NULL, all.outputs = FALSE)
 {
     ### Start: Initialisation parameters
     A = lapply(A, as.matrix)
@@ -776,12 +787,12 @@ verbose = FALSE, init = "svd.single", bias = FALSE, tol = .Machine$double.eps, k
         stop("init should be 'svd.single'.")
     }
     
-    N = ifelse(bias, n, n - 1)
+    N = n
     for (j in 1 : J)
     {
         if (j %in% which.primal)
         {
-            M[[j]] = ginv(tau[j] * diag(pjs[j]) + (1 - tau[j]) * cov2(A[[j]], bias = bias))
+            M[[j]] = ginv(tau[j] * diag(pjs[j]) + (1 - tau[j]) * cov2(A[[j]]))
             loadings.A[[j]] = drop(1/sqrt(t(loadings.A[[j]]) %*% M[[j]] %*% loadings.A[[j]])) * M[[j]] %*% loadings.A[[j]]
         }
         
@@ -811,10 +822,10 @@ verbose = FALSE, init = "svd.single", bias = FALSE, tol = .Machine$double.eps, k
             CbyCovq = design[j, ]
             
             if (scheme == "factorial")
-            CbyCovq = design[j, ] * cov2(variates.A, variates.A[, j], bias = bias)
+            CbyCovq = design[j, ] * cov2(variates.A, variates.A[, j])
             
             if (scheme == "centroid")
-            CbyCovq = design[j, ] * sign(cov2(variates.A, variates.A[, j], bias = bias))
+            CbyCovq = design[j, ] * sign(cov2(variates.A, variates.A[, j]))
             
             # Compute the inner components
             Z[, j] = rowSums(mapply("*", CbyCovq, as.data.frame(variates.A)))
@@ -847,7 +858,7 @@ verbose = FALSE, init = "svd.single", bias = FALSE, tol = .Machine$double.eps, k
             variates.A[, j] = A[[j]] %*% loadings.A[[j]]
         }
         
-        crit[iter] = sum(design * g(cov2(variates.A, bias = bias)))
+        crit[iter] = sum(design * g(cov2(variates.A)))
         
         if (iter > max.iter)
         warning("The RGCCA algorithm did not converge")#"cat("The RGCCA algorithm did not converge after", max.iter ,"iterations."))
@@ -861,8 +872,8 @@ verbose = FALSE, init = "svd.single", bias = FALSE, tol = .Machine$double.eps, k
         iter = iter + 1
     }
     
-    if (verbose) 
-    plot(crit, xlab = "iteration", ylab = "criteria")
+    #if (verbose)
+    #plot(crit, xlab = "iteration", ylab = "criteria")
     
     if(all.outputs){
         AVE_inner = sum(design * cor(variates.A)^2/2)/(sum(design)/2)

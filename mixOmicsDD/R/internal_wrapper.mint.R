@@ -64,7 +64,7 @@ logratio = "none",   # one of "none", "CLR"
 DA = FALSE,           # indicate whether it's a DA analysis, only used for the multilvel approach with withinVariation
 multilevel = NULL,   # multilevel is passed to multilevel(design=) in withinVariation. Y is ommited and should be included in multilevel design
 misdata = NULL, is.na.A = NULL, ind.NA = NULL,
-all.outputs=TRUE
+all.outputs=FALSE
 )
 {
     
@@ -170,7 +170,7 @@ all.outputs=TRUE
     
     keepA = lapply(keepA, expand.grid)
     
-    print(keepA)
+    #print(keepA)
     # keepA[[comp]] is a matrix where each row is all the keepX the test over the block (each block is a column)
 
     #-- keepA ----------------------------------------------------#
@@ -191,7 +191,8 @@ all.outputs=TRUE
     # if no test.keepX and test.keepY, then it's classical outputs
     #save(list=ls(),file="temp.Rdata")
     
-
+    result$keepX = keepX
+    result$keepY = keepY
     result$ncomp = ncomp
     if(near.zero.var)
     result$nzv = nzv.A

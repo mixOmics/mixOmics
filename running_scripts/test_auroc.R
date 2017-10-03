@@ -17,7 +17,7 @@ opar <- par(no.readonly = TRUE)
 # plsda/splsda
 # ----
 
-library(mixOmics)
+#library(mixOmics)
 data(breast.tumors)
 test=sample(1:47,5,replace=FALSE)
 X <- breast.tumors$gene.exp
@@ -177,8 +177,8 @@ auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.li
 auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.light),study.test = study.light,plot = FALSE,roc.comp = 2)
 
 
-res.plsda=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(X=c(100)),
-                       keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
+res.plsda=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(X=c(100)))#,
+#keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
 
 auroc(res.plsda,plot = TRUE,roc.comp = 1)
 auroc(res.plsda,plot = TRUE,roc.comp = 2)
@@ -192,8 +192,8 @@ auroc(res.plsda,newdata = list(X=data.light),outcome.test = as.factor(type.id.li
 
 
 
-res.plsda=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(X=c(100)),
-                       keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
+res.plsda=block.splsda(X=list(X=data),Y=type.id,ncomp=3,keepX=list(X=c(100)))#,
+#keepX.constraint=list(X=list(comp1=c("ENSG00000164930","ENSG00000044090"),comp2=c("ENSG00000109819"))))
 
 auroc(res.plsda,plot = TRUE,roc.comp = 1)
 auroc(res.plsda,plot = TRUE,roc.comp = 2)
@@ -344,7 +344,6 @@ nutrimouse.sgccda <- wrapper.sgccda(X = data,
                                     keepX = list(gene = c(10,10), lipid = c(15,15)),
                                     ncomp = 3,
                                     scheme = "centroid",
-                                    verbose = FALSE,
                                     bias = FALSE)
 
 auroc(nutrimouse.sgccda,plot = TRUE,roc.block = 1,roc.comp = 1)
@@ -384,7 +383,7 @@ auroc(nutrimouse.sgccda,newdata = data.test,outcome.test = as.factor(Y.test),plo
 # plsda/splsda
 # ----
 
-library(mixOmics)
+#library(mixOmics)
 data(breast.tumors)
 test=sample(1:47,5,replace=FALSE)
 X <- breast.tumors$gene.exp

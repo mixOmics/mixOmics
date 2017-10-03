@@ -41,7 +41,10 @@ predict.block.pls <-predict.block.spls <- predict.mint.splsda <-
 predict.pls <-predict.spls <-
 function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), multilevel = NULL, ...)
 {
-
+    time=FALSE
+    
+    # input parameter: noAveragePredict=> no averagePredict calculation, used in tune.block.splsda
+    
     if(any(class(object)%in%c("rgcca","sparse.rgcca")))
     stop("no prediction for RGCCA methods")
     
@@ -69,16 +72,16 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
     }
     q=ncol(Y)
     
-    time1 = proc.time()
-    print(names(list(...)))
+    if(time) time1 = proc.time()
+    #print(names(list(...)))
     
     if(hasArg(newdata.scale)) # if an input `newdata.scale' is given, we use that one and we don't scale the data and don't do the logratio or multilevel
     {
-        print("a")
+        #print("a")
         newdata = list(...)$newdata.scale
         object$logratio = NULL
         multilevel = NULL
-        print("b")
+        #print("b")
     }
     
     ### if the object is a block, the input newdata is different, we check newdata, make sure it's a list and check newdata/X
@@ -374,9 +377,9 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         concat.newdata=newdata
         names(concat.newdata)=names(X)
     }
-    time2 = proc.time()
-    print("scaling")
-    print(time2-time1)
+    if(time) time2 = proc.time()
+    if(time) print("scaling")
+    if(time) print(time2-time1)
     
     
     ### at this stage we have
@@ -401,17 +404,17 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         })
     }
     
-    print(hasArg(misdata.all))
-    print(hasArg(is.na.newdata))
-    print(list(...)$misdata.all)
+    #print(hasArg(misdata.all))
+    #print(hasArg(is.na.newdata))
+    #print(list(...)$misdata.all)
 
     if( (hasArg(misdata.all) & hasArg(is.na.newdata)) && list(...)$misdata.all) # ind.na.newdata: all blocks of newdata
     {
-        print("c")
+        #print("c")
         # if misdata.all and ind.na.X are provided, we don't calculate the is.na(X) as it takes time. Used in tune functions.
         concat.newdata = lapply(1:J, function(q){replace(concat.newdata[[q]], list(...)$is.na.newdata[[q]], 0)})
     } else {
-        print("d")
+        #print("d")
         # replace NA by 0
         concat.newdata = lapply(concat.newdata,function(x)
         {
@@ -422,13 +425,14 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         })
 
     }
-
+    #save(list=ls(),file="temp4.Rdata")
+    
       # replace NA by 0 in Y
     Y[is.na(Y)] = 0
     
-    time3 = proc.time()
-    print("NA")
-    print(time3-time2)
+    if(time) time3 = proc.time()
+    if(time) print("NA")
+    if(time) print(time3-time2)
     
     # -----------------------
     #       prediction
@@ -470,14 +474,15 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
 
     }
     
-    time4 = proc.time()
-    print("Prediction")
-    print(time4-time3)
+    if(time) time4 = proc.time()
+    if(time) print("Prediction")
+    if(time) print(time4-time3)
     
     #-- valeurs sortantes --#
     names(Y.hat)=names(t.pred)=names(B.hat)=names(object$X)
 
-    
+#save(list=ls(),file="temp.Rdata")
+    if(time) time4 = proc.time()
 
     # basic prediction results
     if(length(grep("block",class(object)))!=0 & length(object$X)>1 )
@@ -496,19 +501,22 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         }
         names(temp.all) = paste("dim", c(1:min(ncomp[-object$indY])), sep = " ")
         
-        out$AveragedPredict = array(unlist(lapply(temp.all, function(x){apply(x, c(1,2), mean)})), dim(Y.hat[[1]]), dimnames = list(rownames(newdata[[1]]), colnames(Y), paste("dim", c(1:min(ncomp[-object$indY])), sep = " ")))
-        
-        out$WeightedPredict = array(unlist(lapply(temp.all, function(x){apply(x, c(1,2), function(z){
-            temp = aggregate(object$weights,list(z),sum)
-            ind = which(temp[,2]== max (temp[,2]))# if two max, then NA
-            if(length(ind) == 1)
-            {
-                res = temp[ind, 1]
-            } else {
-                res = NA
-            }
-            res
-        })})), dim(Y.hat[[1]]), dimnames = list(rownames(newdata[[1]]), colnames(Y), paste("dim", c(1:min(ncomp[-object$indY])), sep = " ")))
+        if(!hasArg(noAveragePredict))
+        {
+            out$AveragedPredict = array(unlist(lapply(temp.all, function(x){apply(x, c(1,2), mean)})), dim(Y.hat[[1]]), dimnames = list(rownames(newdata[[1]]), colnames(Y), paste("dim", c(1:min(ncomp[-object$indY])), sep = " ")))
+            
+            out$WeightedPredict = array(unlist(lapply(temp.all, function(x){apply(x, c(1,2), function(z){
+                temp = aggregate(object$weights,list(z),sum)
+                ind = which(temp[,2]== max (temp[,2]))# if two max, then NA
+                if(length(ind) == 1)
+                {
+                    res = temp[ind, 1]
+                } else {
+                    res = NA
+                }
+                res
+            })})), dim(Y.hat[[1]]), dimnames = list(rownames(newdata[[1]]), colnames(Y), paste("dim", c(1:min(ncomp[-object$indY])), sep = " ")))
+        }
 
 
         #out$newdata=concat.newdata
@@ -519,32 +527,40 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         out=list(predict=Y.hat[[1]],variates=t.pred[[1]],B.hat=B.hat[[1]])
     }
     
+    if(time) time5 = proc.time()
+    if(time) print("Y.hat")
+    if(time) print(time5-time4)
+
+#save(list=ls(),file="temp.Rdata")
+    
     # get the classification for each new sample if the object is a DA
     if(any(class(object)=="DA")) # a DA analysis (mint).(block).(s)plsda
     {
         
         if(length(grep("block",class(object)))!=0 & length(object$X)>1 )
         {
-
-            # predict class of AveragePredict, only with max.dist
-            out$AveragedPredict.class$max.dist = matrix(sapply(1:ncomp[1], ### List level
-                function(y){apply(out$AveragedPredict[, , y, drop = FALSE], 1,  ### component level
+            if(!hasArg(noAveragePredict))
+            {
+                # predict class of AveragePredict, only with max.dist
+                out$AveragedPredict.class$max.dist = matrix(sapply(1:ncomp[1], ### List level
+                    function(y){apply(out$AveragedPredict[, , y, drop = FALSE], 1,  ### component level
+                        function(z){
+                            paste(levels(Y.factor)[which(z == max(z))], collapse = "/")
+                        }) ### matrix level
+                    }), nrow = nrow(newdata[[1]]), ncol = ncomp[1])
+                
+                
+                # predict class of WeightedPredict, only with max.dist
+                out$WeightedPredict.class$max.dist = matrix(sapply(1:ncomp[1], ### List level
+                function(y){apply(out$WeightedPredict[, , y, drop = FALSE], 1,  ### component level
                     function(z){
                         paste(levels(Y.factor)[which(z == max(z))], collapse = "/")
                     }) ### matrix level
                 }), nrow = nrow(newdata[[1]]), ncol = ncomp[1])
-            
-            
-            # predict class of WeightedPredict, only with max.dist
-            out$WeightedPredict.class$max.dist = matrix(sapply(1:ncomp[1], ### List level
-            function(y){apply(out$WeightedPredict[, , y, drop = FALSE], 1,  ### component level
-                function(z){
-                    paste(levels(Y.factor)[which(z == max(z))], collapse = "/")
-                }) ### matrix level
-            }), nrow = nrow(newdata[[1]]), ncol = ncomp[1])
-            
-            rownames(out$AveragedPredict.class$max.dist) = rownames(out$WeightedPredict.class$max.dist) = rownames(newdata[[1]])
-            colnames(out$AveragedPredict.class$max.dist) = colnames(out$WeightedPredict.class$max.dist) = paste("dim", c(1:min(ncomp[-object$indY])), sep = " ")
+                
+                rownames(out$AveragedPredict.class$max.dist) = rownames(out$WeightedPredict.class$max.dist) = rownames(newdata[[1]])
+                colnames(out$AveragedPredict.class$max.dist) = colnames(out$WeightedPredict.class$max.dist) = paste("dim", c(1:min(ncomp[-object$indY])), sep = " ")
+            }
         }
         
 
@@ -557,18 +573,18 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         object.temp$X = object.temp$X[which(!is.na(ind.match))]
         object.temp$variates = object.temp$variates[c(which(!is.na(ind.match)),J+1)] #J+1 is Y
         
-        time4bis = proc.time()
-        print("combined prediction")
-        print(time4bis-time4)
+        #time4bis = proc.time()
+        #print("combined prediction")
+        #print(time4bis-time4)
         
         classif.DA=internal_predict.DA(object=object.temp, q=q, out=out.temp, dist=dist, weights = object$weights[which(!is.na(ind.match))])
         out=c(out,classif.DA)
         
     }
     
-    time5 = proc.time()
-    print("DA")
-    print(time5-time4)
+    if(time) time6 = proc.time()
+    if(time) print("DA")
+    if(time) print(time6-time5)
     
     out$call = match.call()
     class(out) = paste("predict")

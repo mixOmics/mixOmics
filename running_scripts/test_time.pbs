@@ -1,0 +1,33 @@
+#!/bin/bash -l
+#PBS -S /bin/bash
+
+#Give the job a name ... in the past had to start alphabetical and be < 13 chars
+#PBS -N test_time
+
+#Must have a valid account string ... a group that you belong to ... use groups command
+#PBS -A Group-Wray
+
+#Walltime is critical. If you leave it out you get it set to one hour
+#                HH:MM:SS
+#PBS -l walltime=01:00:00
+
+
+#YOU MUST include a valid resource specification .. defaults are no longer understood
+#PBS -l select=1:ncpus=1:mem=90gb
+
+
+
+echo -n "Loading module R. "
+module load R
+
+### START ###
+
+cd /shares/common/users/f.rohart/UKB/
+
+## Run
+echo "Running R"
+R -f "/shares/common/users/f.rohart/UKB/test_time.R" --no-save
+
+
+echo "All done"
+

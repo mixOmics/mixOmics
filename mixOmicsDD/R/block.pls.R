@@ -41,7 +41,6 @@
 # bias: boleean. A logical value for biaised or unbiaised estimator of the var/cov (defaults to FALSE).
 # init: intialisation of the algorithm, one of "svd" or "svd.single". Default to "svd"
 # tol: Convergence stopping value.
-# verbose: if set to \code{TRUE}, reports progress on computing.
 # max.iter: integer, the maximum number of iterations.
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
@@ -57,21 +56,21 @@ scale = TRUE,
 bias,
 init ,
 tol = 1e-06,
-verbose,
 max.iter = 100,
-near.zero.var = FALSE)
+near.zero.var = FALSE,
+all.outputs = TRUE)
 {
     
     # call to 'internal_wrapper.mint.block'
     result = internal_wrapper.mint.block(X=X, Y=Y, indY=indY, ncomp=ncomp, design=design, scheme=scheme, mode=mode, scale=scale,
-    bias=bias, init=init, tol=tol, verbose=verbose ,max.iter=max.iter ,near.zero.var=near.zero.var)
+    bias=bias, init=init, tol=tol, max.iter=max.iter ,near.zero.var=near.zero.var, all.outputs = all.outputs)
     
     # calculate weights for each dataset
     weights = get.weights(result$variates, indY = result$indY)
 
     # choose the desired output from 'result'
     out=list(call = match.call(),
-        X = result$X,
+        X = result$A,
         indY = result$indY,
         ncomp = result$ncomp,
         mode = result$mode,

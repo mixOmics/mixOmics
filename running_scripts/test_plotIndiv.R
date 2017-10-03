@@ -3,7 +3,7 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
-library(mixOmics)
+#library(mixOmics)
 opar <- par(no.readonly = TRUE)
 
 data(nutrimouse)
@@ -141,7 +141,7 @@ legend = TRUE,title="",style="graphics")
 
 ## plot of individuals for objects of class 'plsda' or 'splsda'
 # ----------------------------------------------------
-library(mixOmics)
+#library(mixOmics)
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
@@ -272,7 +272,6 @@ design = design1,
 penalty = c(0.3, 0.5, 1),
 ncomp = 3,
 scheme = "centroid",
-verbose = FALSE,
 bias = FALSE)
 
 # default style: one panel for each block
@@ -314,7 +313,6 @@ design = design1,
 ncomp = 2,
 keepX = list(gene=c(10,10), lipid = c(15,15)),
 scheme = "centroid",mode="regression",
-verbose = FALSE,
 bias = TRUE,scale=TRUE,tol=1e-6)
 nutrimouse.sgccda1$loadings$Y
 
