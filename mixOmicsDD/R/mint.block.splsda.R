@@ -64,7 +64,8 @@ scale = TRUE,
 init ,
 tol = 1e-06,
 max.iter = 100,
-near.zero.var = FALSE)
+near.zero.var = FALSE,
+all.outputs = TRUE)
 {
     if(!missing(Y))
     {
@@ -101,7 +102,7 @@ near.zero.var = FALSE)
     result = internal_wrapper.mint.block(X=X, Y=Y, indY=indY, study=study, ncomp=ncomp,
     keepX=keepX,
     design=design, scheme=scheme, mode=mode, scale=scale,
-    init=init, tol=tol, max.iter=max.iter, near.zero.var=near.zero.var)
+    init=init, tol=tol, max.iter=max.iter, near.zero.var=near.zero.var, all.outputs = all.outputs)
     
     # choose the desired output from 'result'
     out=list(

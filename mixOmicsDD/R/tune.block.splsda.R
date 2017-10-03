@@ -57,13 +57,13 @@ folds = 10,
 dist = "max.dist",
 measure = "BER", # one of c("overall","BER")
 weighted = TRUE, # optimise the weighted or not-weighted prediction
-auc=FALSE,
 progressBar = TRUE,
 max.iter = 100,
 near.zero.var = FALSE,
 nrepeat = 1,
 design,
 scheme,
+mode,
 scale = TRUE,
 init = "svd",
 tol = 1e-06,
@@ -259,7 +259,7 @@ name.save = NULL)
                 X[[q]] = X[[q]][, -nzv.A[[q]]$Position, drop=FALSE]
                 warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
                 if (ncol(X[[q]]) == 0)
-                stop(paste0("No more variables in",A[[q]]))
+                stop(paste0("No more variables in",X[[q]]))
                 
                 #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
                 if (any(test.keepX[[q]] > ncol(X[[q]])))
@@ -309,7 +309,7 @@ name.save = NULL)
         result = MCVfold.block.splsda (X, Y, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = 1 + length(already.tested.X[[1]]),
         choice.keepX = already.tested.X, scheme = scheme, design=design, init=init, tol=tol,
         test.keepX = test.keepX, measure = measure, dist = dist, scale=scale, weighted=weighted,
-        near.zero.var = near.zero.var, progressBar = progressBar, max.iter = max.iter, auc = auc, cl = cl,
+        near.zero.var = near.zero.var, progressBar = progressBar, max.iter = max.iter, cl = cl,
         misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA, class.object="block.splsda", parallel = parallel, name.save= name.save)
         
         
@@ -344,12 +344,6 @@ name.save = NULL)
             #prediction.all[[comp]] = result$prediction.comp
         }
         
-        if(auc)
-        {
-            auc.mean.sd[[comp]] = result$auc
-            if(light.output == FALSE)
-            auc.all[[comp]] = result$auc.all
-        }
         
         #save(list=ls(),file="temp.Rdata")
         # prepping the results and save a file, if necessary

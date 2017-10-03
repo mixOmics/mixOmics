@@ -47,7 +47,6 @@ design,
 scheme,
 mode,
 scale = TRUE,
-bias,
 init ,
 tol = 1e-06,
 max.iter = 100,
@@ -58,9 +57,7 @@ all.outputs=TRUE
 {
     if (missing(scheme))
     scheme= "horst"
-    
-    if (missing(bias))
-    bias= FALSE
+
     
     
     if (missing(mode))
@@ -71,7 +68,7 @@ all.outputs=TRUE
     check=Check.entry.wrapper.mint.block(X = X, Y = Y, indY = indY, ncomp = ncomp,
     keepX = keepX, keepY = keepY,
     study = study, design = design, init = init, scheme = scheme, scale = scale,
-    bias = bias, near.zero.var = near.zero.var, mode = mode, tol = tol,
+    near.zero.var = near.zero.var, mode = mode, tol = tol,
     max.iter = max.iter)
 
     # get some values after checks
@@ -120,7 +117,6 @@ all.outputs=TRUE
     # ncomp: vector of ncomp, per matrix
     # scheme: a function "g", refer to the article (thanks Benoit)
     # scale: do you want to scale ? mean is done by default and cannot be changed (so far)
-    # bias: scale the data with n or n-1
     # init: one of "svd" or "random", initialisation of the algorithm
     # tol: nobody cares about this
     # mode: canonical, classic, invariant, regression
@@ -136,7 +132,6 @@ all.outputs=TRUE
     ncomp = ncomp,
     scheme = scheme,
     scale = scale,
-    bias = bias,
     init = init,
     tol = tol,
     tau = NULL,

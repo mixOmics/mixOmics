@@ -42,7 +42,6 @@
 # scheme: the input scheme, one of "horst", "factorial" or ""centroid". Default to "centroid"
 # mode: input mode, one of "canonical", "classic", "invariant" or "regression". Default to "regression"
 # scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
-# bias: boleean. A logical value for biaised or unbiaised estimator of the var/cov (defaults to FALSE).
 # init: intialisation of the algorithm, one of "svd" or "svd.single". Default to "svd"
 # tol: Convergence stopping value.
 # max.iter: integer, the maximum number of iterations.
@@ -59,7 +58,6 @@ design,
 scheme,
 mode,
 scale = TRUE,
-bias,
 init ,
 tol = 1e-06,
 max.iter = 100,
@@ -72,7 +70,7 @@ all.outputs = TRUE)
     result = internal_wrapper.mint.block(X=X, Y=Y, indY=indY, ncomp=ncomp,
     keepX=keepX, keepY=keepY,
     design=design, scheme=scheme, mode=mode, scale=scale,
-    bias=bias, init=init, tol=tol, max.iter=max.iter, near.zero.var=near.zero.var, all.outputs = all.outputs)
+    init=init, tol=tol, max.iter=max.iter, near.zero.var=near.zero.var, all.outputs = all.outputs)
     
     # calculate weights for each dataset
     weights = get.weights(result$variates, indY = result$indY)
@@ -91,7 +89,6 @@ all.outputs = TRUE)
         AVE = result$AVE,
         names = result$names,
         init = result$init,
-        bias = result$bias,
         tol = result$tol,
         iter = result$iter,
         max.iter = result$max.iter,

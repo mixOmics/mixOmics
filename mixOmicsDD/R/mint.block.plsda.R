@@ -59,7 +59,8 @@ scale = TRUE,
 init ,
 tol = 1e-06,
 max.iter = 100,
-near.zero.var = FALSE)
+near.zero.var = FALSE,
+all.outputs = TRUE)
 {
     # checking that the outcome, either in Y or X[indY] is a factor with more than 1 level
     if(!missing(Y))
@@ -97,7 +98,7 @@ near.zero.var = FALSE)
 
     # call to 'internal_wrapper.mint.block'
     result = internal_wrapper.mint.block(X=X, Y=Y, indY=indY, study=study, ncomp=ncomp, design=design, scheme=scheme, mode=mode,
-    scale=scale, init=init, tol=tol, max.iter=max.iter, near.zero.var=near.zero.var)
+    scale=scale, init=init, tol=tol, max.iter=max.iter, near.zero.var=near.zero.var, all.outputs = all.outputs)
     
     # choose the desired output from 'result'
     out = list(

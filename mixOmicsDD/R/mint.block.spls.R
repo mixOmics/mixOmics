@@ -65,13 +65,14 @@ scale = TRUE,
 init ,
 tol = 1e-06,
 max.iter = 100,
-near.zero.var = FALSE)
+near.zero.var = FALSE,
+all.outputs = TRUE)
 {
     # call to 'internal_wrapper.mint.block'
     result = internal_wrapper.mint.block(X=X, Y=Y, indY=indY, study=study, ncomp=ncomp,
     keepX=keepX, keepY=keepY,
     design=design, scheme=scheme, mode=mode, scale=scale, init=init, tol=tol,
-    max.iter=max.iter, near.zero.var=near.zero.var)
+    max.iter=max.iter, near.zero.var=near.zero.var, all.outputs = all.outputs)
     
     # choose the desired output from 'result'
     out = list(

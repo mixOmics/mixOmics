@@ -29,10 +29,8 @@ design,
 scheme,
 mode,
 scale = TRUE,
-bias,
 init ,
 tol = 1e-06,
-verbose,
 light.output = TRUE,
 cpus,
 name.save=NULL
@@ -68,10 +66,8 @@ one of \code{"regression"}, \code{"canonical"}, \code{"invariant"} or \code{"cla
 See Details. Default = \code{regression}.}
 \item{scale}{boleean. If scale = TRUE, each block is standardized
 to zero means and unit variances. Default = \code{TRUE}.}
-\item{bias}{boleean. A logical value for biaised or unbiaised estimator of the var/cov. Default = \code{FALSE}.}
 \item{init}{Mode of initialization use in the algorithm, either by Singular Value Decompostion of the product of each block of X with Y ("svd") or each block independently ("svd.single"). Default = \code{svd}.}
 \item{tol}{Convergence stopping value.}
-\item{verbose}{if set to \code{TRUE}, reports progress on computing.}
 
 \item{light.output}{if set to FALSE, the prediction/classification of each sample for each of \code{test.keepX} and each comp is returned.}
 \item{cpus}{Number of cpus to use when running the code in parallel.}

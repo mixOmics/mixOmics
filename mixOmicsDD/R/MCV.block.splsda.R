@@ -56,9 +56,7 @@ test.keepX, # a list of value(keepX) to test on the last component. There needs 
 measure = c("overall"), # one of c("overall","BER")
 weighted = TRUE, # optimise the weighted or not-weighted prediction
 dist = "max.dist",
-auc = FALSE,
 scheme,
-bias,
 design,
 init,
 tol,
@@ -93,8 +91,7 @@ name.save
     } else {keepY = NULL}
     
     M = length(folds)
-    features = features.j = NULL
-    auc.all = prediction.comp = class.comp = list()
+    prediction.comp = class.comp = list()
     for(ijk in dist)
     class.comp[[ijk]] = array(0, c(nrow(X[[1]]), nrepeat, nrow(expand.grid(test.keepX))))# prediction of all samples for each test.keepX and  nrep at comp fixed
     folds.input = folds
@@ -103,14 +100,7 @@ name.save
         #prediction.comp[[nrep]] = array(0, c(nrow(X), nlevels(Y), length(test.keepX)), dimnames = list(rownames(X), levels(Y), names(test.keepX)))
         #rownames(prediction.comp[[nrep]]) = rownames(X)
         #colnames(prediction.comp[[nrep]]) = levels(Y)
-        
-        if(nlevels(Y)>2)
-        {
-            auc.all[[nrep]] = array(0, c(nlevels(Y),2, length(test.keepX)), dimnames = list(paste(levels(Y), "vs Other(s)"), c("AUC","p-value"), names(test.keepX)))
-        }else{
-            auc.all[[nrep]] = array(0, c(1,2, length(test.keepX)), dimnames = list(paste(levels(Y)[1], levels(Y)[2], sep = " vs "), c("AUC","p-value"), names(test.keepX)))
-        }
-        
+
         n = nrow(X[[1]])
         repeated.measure = 1:n
         #if (!is.null(multilevel))
@@ -233,7 +223,7 @@ name.save
                         #if (verbose)
                         #warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
                         if (ncol(X.train[[q]]) == 0)
-                        stop(paste0("No more variables in",A[[q]]))
+                        stop(paste0("No more variables in",X.train[[q]]))
                         
                         #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
                         if (any(test.keepX[[q]] > ncol(X.train[[q]])))
@@ -259,7 +249,7 @@ name.save
             result <- internal_wrapper.mint.block(X=X.train, Y=Y.train.mat, study=factor(rep(1,length(Y.train))), ncomp=ncomp,
             keepX=choice.keepX, keepY=rep(ncol(Y.train.mat), ncomp-1), test.keepX=test.keepX, test.keepY=ncol(Y.train.mat),
             mode="regression", scale=scale, near.zero.var=near.zero.var, design=design,
-            max.iter=max.iter, scheme =scheme, init=init, tol=tol, bias=bias,
+            max.iter=max.iter, scheme =scheme, init=init, tol=tol,
             misdata = misdata, is.na.A = c(is.na.A.train, Y=NULL), ind.NA = c(ind.NA.train, Y=NULL), all.outputs=FALSE)
             #))
             
@@ -331,12 +321,6 @@ name.save
                 
                 object.block.splsda.temp$weights = get.weights(object.block.splsda.temp$variates, indY = object.block.splsda.temp$indY)
 
-
-                # added: record selected features
-                if (any(class.object == "splsda") & length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
-                # note: if plsda, 'features' includes everything: to optimise computational time, we don't evaluate for plsda object
-                {features.j = selectVar(object.splsda.temp, comp = ncomp)$name
-                }else{features.j=NULL}
                 # do the prediction, we are passing to the function some invisible parameters:
                 # the scaled newdata and the missing values
                 #print(system.time(
@@ -357,7 +341,7 @@ name.save
             #print("prediction")
             #print(time3-time2)
 
-            return(list(class.comp.j = class.comp.j, features = features.j, omit = omit, keepA = keepA))#, prediction.comp.j = prediction.comp.j))
+            return(list(class.comp.j = class.comp.j, omit = omit, keepA = keepA))#, prediction.comp.j = prediction.comp.j))
             #result.all[[j]] = list(class.comp.j = class.comp.j, features = features.j, omit = omit, keepA = keepA)
         } # end fonction.j.folds
         
@@ -395,9 +379,6 @@ name.save
             for(ijk in dist)
             class.comp[[ijk]][omit,nrep, ] = class.comp.j[[ijk]]
             
-            if (length(test.keepA) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
-            features = c(features, result.all[[j]]$features)
-
         }
         
 
@@ -405,50 +386,15 @@ name.save
         if (progressBar ==  TRUE)
         setTxtProgressBar(pb, (M*nrep)/(M*nrepeat))
         
-        if(auc)
-        {
-            data=list()
-            for (i in 1:length(test.keepX))
-            {
-                data$outcome = Y
-                data$data = prediction.comp[[nrep]][, , i]
-                auc.all[[nrep]][, , i] = as.matrix(statauc(data))
-            }
-        }
+
         
         
         
     } #end nrep 1:nrepeat
 
     #names(prediction.comp) =
-    names (auc.all) = paste0("nrep.", 1:nrepeat)
     # class.comp[[ijk]] is a matrix containing all prediction for test.keepX, all nrepeat and all distance, at comp fixed
     
-    # average auc over the nrepeat, for each test.keepX
-    if(auc)
-    {
-        
-        if(nlevels(Y)>2)
-        {
-            auc.mean.sd =  array(0, c(nlevels(Y),2, length(test.keepA)), dimnames = list(rownames(auc.all[[1]]), c("AUC.mean","AUC.sd"), names(test.keepX)))
-        }else{
-            auc.mean.sd =  array(0, c(1,2, length(test.keepA)), dimnames = list(rownames(auc.all[[1]]), c("AUC.mean","AUC.sd"), names(test.keepX)))
-        }
-        
-        for(i in 1:length(test.keepA))
-        {
-            temp = NULL
-            for(nrep in 1:nrepeat)
-            {
-                temp = cbind(temp, auc.all[[nrep]][, 1, i])
-            }
-            auc.mean.sd[, 1, i] = apply(temp,1,mean)
-            auc.mean.sd[, 2, i] = apply(temp,1,sd)
-        }
-    } else {
-        auc.mean.sd = auc.all = NULL
-        
-    }
     
     keepA.names = apply(test.keepA[,1:length(X)],1,function(x) paste(x,collapse="_"))#, sep=":")
         
@@ -602,9 +548,6 @@ name.save
     
     
     #result$prediction.comp = prediction.comp
-    result$auc = auc.mean.sd
-    result$auc.all = auc.all
     result$class.comp = class.comp
-    result$features$stable = sort(table(as.factor(features))/M/nrepeat, decreasing = TRUE)
     return(result)
 }
