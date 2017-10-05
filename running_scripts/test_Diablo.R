@@ -181,6 +181,8 @@ if(additional.test==TRUE)
     nrepeat = 11
     )
     tune
+    
+    plot(tune)
 
     # classic tune, with test.keepX as input
     set.seed(12)
