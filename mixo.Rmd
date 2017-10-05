@@ -1,7 +1,7 @@
 ---
 title: "mixOmics 6.3.0"
 author: "F.Rohart"
-date: "03 Oct 2017"
+date: "05 Oct 2017"
 output:
   rmdformats::readthedown:
     code_folding: hide
@@ -47,7 +47,7 @@ additional.test=TRUE
 #source("running_scripts//test_plotContrib.R")
 
 scripts.files=list.files("running_scripts/")
-scripts.files=scripts.files[grep(".R",scripts.files)][-c(7,22,23,24)]#[c(3,5)]#[-c(7,22,23,24)]#[c(3,4,5,8,15,16,17,20,22)]
+scripts.files=scripts.files[grep(".R",scripts.files)]#[c(3,5)]#[-c(7,22,23,24)]#[c(3,4,5,8,15,16,17,20,22)]
 scripts.files
 
 template <- "# %s
