@@ -5,7 +5,7 @@
 #   Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 12-04-2016
+# last modified: 04-10-2017
 #
 # Copyright (C) 2015
 #
@@ -167,13 +167,10 @@ norm2 = function(vec)
 # --------------------------------------
 # sparsity function: used in 'internal_mint.block.R'
 # --------------------------------------
-sparsity=function(loadings.A, keepA, keepA.constraint=NULL, penalty=NULL)
+sparsity=function(loadings.A, keepA, penalty=NULL)
 {
     
-    if (!is.null(keepA.constraint))
-    {
-        loadings.A[-keepA.constraint] = 0
-    } else if (!is.null(keepA)) {
+    if (!is.null(keepA)) {
         nx = length(loadings.A) - keepA
         loadings.A = soft_thresholding_L1(loadings.A, nx = nx)
     } else if (!is.null(penalty)) {
@@ -188,7 +185,7 @@ sparsity=function(loadings.A, keepA, keepA.constraint=NULL, penalty=NULL)
 # --------------------------------------
 # scaling with or without bias: used in mean_centering_per_study (below)
 # --------------------------------------
-scale.function_old=function(temp, scale = TRUE)
+scale.function_old=function(temp, scale = TRUE) # problem: divide by n instead of n-#NA
 {
     meanX = colMeans(temp, na.rm = TRUE)
     data.list.study.scale_i = t(t(temp) - meanX)
@@ -209,7 +206,7 @@ scale.function_old=function(temp, scale = TRUE)
 }
 
 # --------------------------------------
-# scaling with or without bias: used in mean_centering_per_study (below)
+# scaling, using colSds from library(matrixStats), used in mean_centering_per_study (below)
 # --------------------------------------
 scale.function=function(temp, scale = TRUE)
 {
@@ -217,8 +214,13 @@ scale.function=function(temp, scale = TRUE)
     
     if (scale)
     {
-        sqrt.sdX = colSds(temp, center = meanX, na.rm = TRUE)
+        sqrt.sdX = colSds(temp, center = meanX, na.rm=TRUE)
         data.list.study.scale_i = t( (t(temp)-meanX) / sqrt.sdX)
+        
+        ind = which(sqrt.sdX == 0) # scaling can creates NA
+        if(length(ind) >0)
+        data.list.study.scale_i[,ind] = 0
+        
     } else {
         sqrt.sdX = NULL
         data.list.study.scale_i = t( (t(temp)-meanX))
@@ -331,7 +333,7 @@ tau.estimate = function (x)
 # cov2() - Compute biased and unbiased covariance and variance estimates
 # ----------------------------------------------------------------------------------------------------------
 # used in 'internal_mint.block.R'
-cov2 = function (x, y = NULL, bias = TRUE) {
+cov2 = function (x, y = NULL, bias = FALSE) {
     n = NROW(x)
     if (is.null(y)) {
         x = as.matrix(x)
@@ -350,23 +352,6 @@ cov2 = function (x, y = NULL, bias = TRUE) {
     return(C)
 }
 
-# ----------------------------------------------------------------------------------------------------------
-# initsvd() - performs SVD on matrix X
-# ----------------------------------------------------------------------------------------------------------
-# used in 'internal_mint.block.R'
-initsvd = function (X) {
-    n = NROW(X)
-    p = NCOL(X)
-    
-    if(p>3) #use svds
-    {
-        ifelse(n >= p, return(svds(X, k=1, nu = 1, nv = 1)$v), return(svds(X, k=1, nu = 1, nv = 1)$u))
-
-    } else {
-        ifelse(n >= p, return(svd(X, nu = 0, nv = 1)$v), return(svd(X, nu = 1, nv = 0)$u))
-
-    }
-}
 
 # ----------------------------------------------------------------------------------------------------------
 # miscrossprod() - Compute cross-product between vectors x and y
@@ -386,7 +371,7 @@ miscrossprod = function (x, y) {
 deflation = function(X, y, misdata.q, is.na.A.q, ind.NA){
     # Computation of the residual matrix R
     # Computation of the vector p.
-
+    
     #is.na.tX <- is.na(t(X))
     #save(list=ls(),file="temp3.Rdata")
     if (misdata.q)
@@ -402,7 +387,7 @@ deflation = function(X, y, misdata.q, is.na.A.q, ind.NA){
         # we only want the diagonal, which is the norm of each column of temp
         #loadings.A.norm = crossprod(temp)
         #p = variates.A.temp / diag(loadings.A.norm)
-
+        
         #d.loadings.A.norm = apply(temp,2, crossprod)
         #only calculating the ones where there's a NA
         d.loadings.A.norm = rep(crossprod(y), ncol(X))
@@ -430,17 +415,17 @@ deflation = function(X, y, misdata.q, is.na.A.q, ind.NA){
     return(list(p=p,R=R))
 }
 
+
 # ----------------------------------------------------------------------------------------------------------
 # defl.select() - computes residual matrices
 # ----------------------------------------------------------------------------------------------------------
 # used in 'internal_mint.block.R'
 defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical", aa = NULL, misdata, is.na.A, ind.NA) { ### Start: Add new parameter for estimation classic mode
-    #print(mode)
     #save(list=ls(),file="temp2.Rdata")
-    
-    resdefl = vector("list", length = length(rr))
-    pdefl = vector("list", length = length(rr))
+    resdefl = NULL
+    pdefl = NULL
     for (q in 1 : nbloc) {
+        # for each block we create missing data parameters to be passed to the deflation()
         if(misdata[q])
         {
             is.na.A.q = is.na.A[[q]]
@@ -474,4 +459,64 @@ defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical
     return(list(resdefl=resdefl,pdefl=pdefl))
 }
 
+# ----------------------------------------------------------------------------------------------------------
+# initsvd() - performs SVD on matrix X
+# ----------------------------------------------------------------------------------------------------------
+# used in 'internal_mint.block.R'
+initsvd = function (X) {
+    n = NROW(X)
+    p = NCOL(X)
+    
+    if(p>3) #use svds
+    {
+        ifelse(n >= p, return(svds(X, k=1, nu = 1, nv = 1)$v), return(svds(X, k=1, nu = 1, nv = 1)$u))
+        
+    } else {
+        ifelse(n >= p, return(svd(X, nu = 0, nv = 1)$v), return(svd(X, nu = 1, nv = 0)$u))
+        
+    }
+}
+
+# ----------------------------------------------------------------------------------------------------------
+# init svd
+# ----------------------------------------------------------------------------------------------------------
+initialisation_by_svd = function(A, indY = NULL, misdata, is.na.A = NULL, init = "svd")
+{
+    
+    J = length(A)
+    loadings.A = vector("list",length=J)
+    
+    if (init == "svd")
+    {
+        
+        # same step with or without NA, as they are already replaced by 0
+        M = lapply(c(1:J)[-indY], function(x){crossprod(A[[x]], A[[indY]])})
+        #ssvd faster with svds, only if more than 3 column, otherwise break down
+        svd.M = lapply(M, function(x){if(ncol(x)>3) {svds(x, k=1, nu = 1, nv = 1)} else {svd(x, nu = 1, nv = 1)}})
+        
+        loadings.A[c(1:J)[-indY]] = lapply(c(1:J)[-indY], function(x){svd.M[[x]]$u})
+        loadings.A[[indY]] = svd.M[[1]]$v
+        
+    } else if (init=="svd.single") {
+        
+        alpha =  lapply(1 : J, function(y){initsvd(A[[y]])})
+
+        for (j in 1:J)
+        {
+            if (nrow(A[[j]]) >= ncol(A[[j]]))
+            {
+                loadings.A[[j]] = alpha[[j]]
+            } else {
+                alpha[[j]] = drop(1/sqrt( t(alpha[[j]]) %*% A[[j]] %*% (t(A[[j]]) %*% alpha[[j]]))) * alpha[[j]]
+                
+                loadings.A[[j]] = crossprod(A[[j]],alpha[[j]])
+            }
+        }
+    } else {
+        stop("init should be either 'svd' or 'svd.single'.")
+    }
+
+    return(loadings.A)
+
+}
 

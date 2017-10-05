@@ -316,24 +316,24 @@ internal_getVariatesAndLabels = function(object, comp, blocks.init, blocks, rep.
             {
                 if (style == "3d")
                 {
-                    inf = round(object$explained_variance[[blocks]][c(comp[1], comp[2], comp[3])], 2)#c((object$sdev[comp[1]])^2/object$var.tot, (object$sdev[comp[2]])^2/object$var.tot, (object$sdev[comp[3]]^2)/object$var.tot)
+                    inf = 100*round(object$explained_variance[[blocks]][c(comp[1], comp[2], comp[3])], 2)#c((object$sdev[comp[1]])^2/object$var.tot, (object$sdev[comp[2]])^2/object$var.tot, (object$sdev[comp[3]]^2)/object$var.tot)
                 } else {
                     if (any(class.object%in%object.mint))
                     {
                         if (blocks%in%c("X", "Y")) # means that study == "global"
                         {
-                            inf = round(object$explained_variance[[blocks]]$"all data"[c(comp[1], comp[2])], 2)
+                            inf = 100*round(object$explained_variance[[blocks]]$"all data"[c(comp[1], comp[2])], 2)
                         } else {
-                            inf = round(object$explained_variance[[blocks.init]][[blocks]][c(comp[1], comp[2])], 2)# c((object$sdev[comp[1]])^2/object$var.tot, (object$sdev[comp[2]])^2/object$var.tot)
+                            inf = 100*round(object$explained_variance[[blocks.init]][[blocks]][c(comp[1], comp[2])], 2)# c((object$sdev[comp[1]])^2/object$var.tot, (object$sdev[comp[2]])^2/object$var.tot)
                             
                         }
                     } else {
-                        inf = round(object$explained_variance[[blocks]][c(comp[1], comp[2])], 2)
+                        inf = 100*round(object$explained_variance[[blocks]][c(comp[1], comp[2])], 2)
                         
                     }
                 }
             } else {
-                inf = NULL
+                inf = rep("NC", 3)
             }
             
             # for future development: if a label with explained variance for each blocks :
@@ -343,7 +343,7 @@ internal_getVariatesAndLabels = function(object, comp, blocks.init, blocks, rep.
             
             if (is.null(X.label))
             {
-                if(!is.null(inf)) {percentage = paste0(inf[1]*100, "% expl. var")} else {percentage = "NC"}
+                percentage = paste0(inf[1], "% expl. var")
                 if (rep.space == "multi")
                 X.label = paste0("variate ", comp[1], ": ", percentage)
                 if (rep.space == "X-variate")
@@ -355,7 +355,7 @@ internal_getVariatesAndLabels = function(object, comp, blocks.init, blocks, rep.
             }
             if (is.null(Y.label))
             {
-                if(!is.null(inf)) {percentage = paste0(inf[2]*100, "% expl. var")} else {percentage = "NC"}
+                percentage = paste0(inf[2], "% expl. var")
                 if (rep.space == "multi")
                 Y.label = paste0("variate ", comp[2], ": ", percentage)
                 if (rep.space == "X-variate")
@@ -367,7 +367,7 @@ internal_getVariatesAndLabels = function(object, comp, blocks.init, blocks, rep.
             }
             if (is.null(Z.label)&&style == "3d")
             {
-                if(!is.null(inf)) {percentage = paste0(inf[3]*100, "% expl. var")} else {percentage = "NC"}
+                percentage = paste0(inf[3], "% expl. var")
                 if (rep.space == "multi")
                 Z.label = paste0("variate ", comp[3], ": ", percentage)
                 if (rep.space == "X-variate")
