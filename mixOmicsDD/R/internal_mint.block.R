@@ -6,7 +6,7 @@
 #   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 20-07-2014
-# last modified: 12-04-2016
+# last modified: 04-10-2017
 #
 # Copyright (C) 2014
 #
@@ -88,7 +88,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
 
     # keepA[[comp]] is a matrix where each row is all the keepX the test over the block (each block is a column)
 
-    #number of models to be tested
+    #number of models to be tested: either a keepA per component, or multiple (e.g. in tune functions)
     number.models.per.comp = sapply(keepA,nrow)
     one.model = !any( number.models.per.comp !=1)
     
@@ -97,8 +97,9 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
 
     AVE_X = crit = loadings.partial.A = variates.partial.A = tau.rgcca = list()
     P = loadings.A = loadings.Astar = variates.A =  vector("list", J)
-
-    if(one.model)
+    
+    
+    if(one.model) # more outputs that what is needed for tune functions
     {
         for (k in 1:J)
         variates.A[[k]] = matrix(NA, nb_ind, N)
@@ -125,7 +126,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
             variates.A[[k]] = matrix(NA, nb_ind, sum(number.models.per.comp))
             loadings.A[[k]] = matrix(NA, pjs[[k]], sum(number.models.per.comp))
         }
-        loadings.partial.A = variates.partial.A = NULL
+        loadings.partial.A = variates.partial.A = NULL # not needed for tune functions
     }
     
     
@@ -135,21 +136,21 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
     if (is.vector(tau))
     tau = matrix(rep(tau, N), nrow = N, ncol = length(tau), byrow = TRUE)
     
-    # if missing values are not given as input, we search for them here (takes time)
+    # if missing values are not given as input (only when direct call to a (mint).(block).(s)pls(da)), we search for them here (takes time)
     if(is.null(misdata) &  is.null(is.na.A) & is.null(ind.NA))
     {
-        misdata = sapply(A, anyNA) # Detection of missing data
-        misdata.all = any(misdata)
+        misdata = sapply(A, anyNA) # Detection of missing data per block
+        misdata.all = any(misdata) # is there any missing data overall
         
         if(time) print(misdata.all)
         
         if (misdata.all)
         {
-            is.na.A = lapply(A, is.na)
+            is.na.A = lapply(A, is.na) # size n*p, which entry is na. might be none, but at least one in all the block will be a TRUE
             
             ind.NA = list()
             for(q in 1:J)
-            ind.NA[[q]] = which(apply(is.na.A[[q]], 1, sum) == 1) # calculated only once
+            ind.NA[[q]] = which(apply(is.na.A[[q]], 1, sum) == 1) # indice of the row that have missing values. used in the calculation of loadings
         } else {
             is.na.A = NULL
             ind.NA = NULL
@@ -160,7 +161,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
     
     if(time) print(misdata)
     
-    if(all.outputs & J==2 & nlevels(study) == 1 & one.model) #(s)pls(da)
+    if(all.outputs & J==2 & nlevels(study) == 1 & one.model) #(s)pls(da) models, we calculate mat.c
     {
         if(misdata.all)
         {
@@ -201,8 +202,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
             if (is.null(tau))
             {
                 mint.block.result = sparse.mint.block_iteration(R, design, study = study, loadings.A = loadings.A.init,
-                #keepA.constraint = if (!is.null(keepA.constraint)) {lapply(keepA.constraint, function(x){unlist(x[n])})} else {NULL} ,
-                keepA = keepA.ijk, #if (!is.null(keepA)) {lapply(keepA, function(x){x[n]})} else {NULL}, #keepA is one value per block
+                keepA = keepA.ijk, #keepA is one value per block
                 scheme = scheme, max.iter = max.iter, tol = tol, penalty = penalty,
                 misdata=misdata, is.na.A=is.na.A, ind.NA = ind.NA,
                 all.outputs = all.outputs)
@@ -327,6 +327,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
     
     if(one.model)
     {
+        # only one model
         shave.matlist = function(mat_list, nb_cols) mapply(function(m, nbcomp) m[, 1:nbcomp, drop = FALSE], mat_list, nb_cols, SIMPLIFY = FALSE)
         shave.veclist = function(vec_list, nb_elts) mapply(function(m, nbcomp) m[1:nbcomp], vec_list, nb_elts, SIMPLIFY = FALSE)
         

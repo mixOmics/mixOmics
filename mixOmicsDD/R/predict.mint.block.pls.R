@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 27-05-2015
-# last modified: 27-05-2016
+# last modified: 05-10-2017
 #
 # Copyright (C) 2015
 #
@@ -37,6 +37,19 @@
 
 # note FR: 27/05/16: the way I dealt with missing block to predict will probably not work for mint.block analysis
 
+
+# object: any object (mint).(block).(s)pls(da)
+# newdata: data to predict, same form as what's in object$X
+# study.test: optional, used if a mint object.  grouping factor indicating which samples of `newdata' are from the same study
+# dist: prediction distance to use
+# multilevel: if there was a multilevel in object, one should be used for `newdata'
+# newdata.scale: hidden parameter. used in tune/perf functions. pass `newdata' that has been scale already (gain in computational time)
+# misdata.all: hidden parameter. used in tune/perf functions. any missing values in object$X
+# is.na.X: hidden parameter. used in tune/perf functions. where are the missing values in object$X
+# is.na.newdata: hidden parameter. used in tune/perf functions. where are the missing values in `newdata'
+# noAveragePredict: hidden parameter. used in tune/perf functions. no calculation of Average Prediction (gain in computational time)
+
+
 predict.block.pls <-predict.block.spls <- predict.mint.splsda <-
 predict.pls <-predict.spls <-
 function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), multilevel = NULL, ...)
@@ -57,8 +70,6 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
     #end general checks
     
     ncomp = object$ncomp
-    #newdata.input=newdata
-    
     
     if(length(grep("plsda",class(object)))>0) # a DA analysis (mint).(block).(s)plsda
     {
@@ -403,14 +414,9 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
             x
         })
     }
-    
-    #print(hasArg(misdata.all))
-    #print(hasArg(is.na.newdata))
-    #print(list(...)$misdata.all)
 
     if( (hasArg(misdata.all) & hasArg(is.na.newdata)) && list(...)$misdata.all) # ind.na.newdata: all blocks of newdata
     {
-        #print("c")
         # if misdata.all and ind.na.X are provided, we don't calculate the is.na(X) as it takes time. Used in tune functions.
         concat.newdata = lapply(1:J, function(q){replace(concat.newdata[[q]], list(...)$is.na.newdata[[q]], 0)})
     } else {
@@ -568,10 +574,6 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         object.temp = object
         object.temp$X = object.temp$X[which(!is.na(ind.match))]
         object.temp$variates = object.temp$variates[c(which(!is.na(ind.match)),J+1)] #J+1 is Y
-        
-        #time4bis = proc.time()
-        #print("combined prediction")
-        #print(time4bis-time4)
         
         classif.DA=internal_predict.DA(object=object.temp, q=q, out=out.temp, dist=dist, weights = object$weights[which(!is.na(ind.match))])
         out=c(out,classif.DA)

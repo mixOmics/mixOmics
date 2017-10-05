@@ -1,12 +1,12 @@
 #############################################################################################################
 # Authors:
+#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #   Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 2013
-# last modified: 24-08-2016
+# last modified: 05-10-2017
 #
 # Copyright (C) 2013
 #
@@ -30,19 +30,29 @@
 # tune.splsda: chose the optimal number of parameters per component on a splsda method
 # ========================================================================================================
 
-# X: numeric matrix of predictors
-# Y: a factor or a class vector for the discrete outcome
-# ncomp: the number of components to include in the model. Default to 1.
-# test.keepX: grid of keepX among which to chose the optimal one
-# already.tested.X: a vector giving keepX on the components that were already tuned
+# X: a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets. \code{NA}s are not allowed.
+# Y: a factor or a class vector for the discrete outcome.
+# indY: to supply if Y is missing, indicate the position of the outcome in the list X.
+# ncomp: numeric vector of length the number of blocks in \code{X}. The number of components to include in the model for each block (does not necessarily need to take the same value for each block). By default set to 2 per block.
+# test.keepX: list of length, length(X). each test.keepX[[i]] is a grid of keepX among which to chose the optimal one
+# already.tested.X: list of length, length(X). Each already.tested.X[[i]] is a vector giving the keepX on the components that were already tuned
 # validation: Mfold or loo cross validation
 # folds: if validation=Mfold, how many folds?
 # dist: distance to classify samples. see predict
 # measure: one of c("overall","BER"). Accuracy measure used in the cross validation processs
+# weighted: optimise the weighted or not-weighted prediction
 # progressBar: show progress,
+# tol: Convergence stopping value.
+# max.iter: integer, the maximum number of iterations.
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 # nrepeat: number of replication of the Mfold process
-# logratio = c('none','CLR'). see splsda
+# design: the input design.
+# scheme: the input scheme, one of "horst", "factorial" or ""centroid". Default to "centroid"
+# scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
+# init: intialisation of the algorithm, one of "svd" or "svd.single". Default to "svd"
+# light.output: if FALSE, output the classification of each sample during each folds, on each comp, for each repeat
+# cpus: number of cpus to use. default to no parallel
+# name.save: if saving a file after each component
 
 
 tune.block.splsda = function (
@@ -58,6 +68,7 @@ dist = "max.dist",
 measure = "BER", # one of c("overall","BER")
 weighted = TRUE, # optimise the weighted or not-weighted prediction
 progressBar = TRUE,
+tol = 1e-06,
 max.iter = 100,
 near.zero.var = FALSE,
 nrepeat = 1,
@@ -66,7 +77,6 @@ scheme,
 mode,
 scale = TRUE,
 init = "svd",
-tol = 1e-06,
 light.output = TRUE, # if FALSE, output the prediction and classification of each sample during each folds, on each comp, for each repeat
 cpus,
 name.save = NULL)
@@ -156,10 +166,8 @@ name.save = NULL)
         if(length(unique(sapply(already.tested.X, length))) > 1)
         stop("The same number of components must be already tuned for each block, in 'already.tested.X'")
         
-        
-
         if(any(sapply(already.tested.X, function(x) is.list(x))) == TRUE)
-        stop(" Each entry of 'already.tested.X' must be a vector of keepX values")# since 'constraint' is set to FALSE")
+        stop(" Each entry of 'already.tested.X' must be a vector of keepX values")
 
         if(length(already.tested.X[[1]]) >= ncomp)
         stop("'ncomp' needs to be higher than the number of components already tuned, which is length(already.tested.X)=",length(already.tested.X) , call. = FALSE)
@@ -307,7 +315,7 @@ name.save = NULL)
         choice.keepX = already.tested.X, scheme = scheme, design=design, init=init, tol=tol,
         test.keepX = test.keepX, measure = measure, dist = dist, scale=scale, weighted=weighted,
         near.zero.var = near.zero.var, progressBar = progressBar, max.iter = max.iter, cl = cl,
-        misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA, class.object="block.splsda", parallel = parallel, name.save= name.save)
+        misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA, parallel = parallel)
         
         #returns error.rate for all test.keepX
     

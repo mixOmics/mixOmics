@@ -4,7 +4,7 @@
 #   Kim-Anh Le Cao, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 
 # created: 2011
-# last modified: 24-05-2016
+# last modified: 05-10-2017
 #
 # Copyright (C) 2011
 #
@@ -32,12 +32,14 @@
 # X: numeric matrix of predictors
 # Y: a factor or a class vector for the discrete outcome
 # ncomp: the number of components to include in the model. Default to 2.
-# keepX.constraint: A list containing which variables of X are to be kept on each of the first PLS-components.
 # keepX: number of \eqn{X} variables kept in the model on the last components (once all keepX.constraint[[i]] are used).
 # scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
 # tol: Convergence stopping value.
 # max.iter: integer, the maximum number of iterations.
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
+# logratio: one of "none", "CLR"
+# multilevel: repeated measurement. `multilevel' is passed to multilevel(design = ) in withinVariation. Y is ommited and shouldbe included in `multilevel'
+# all.outputs: calculation of non-essential outputs (e.g. explained variance, loadings.Astar, etc)
 
 
 
@@ -52,7 +54,7 @@ max.iter = 100,
 near.zero.var = FALSE,
 logratio = "none",   # one of "none", "CLR"
 multilevel = NULL,
-all.outputs = TRUE)    # multilevel is passed to multilevel(design = ) in withinVariation. Y is ommited and shouldbe included in multilevel design
+all.outputs = TRUE)    
 {
     
     
@@ -116,8 +118,6 @@ all.outputs = TRUE)    # multilevel is passed to multilevel(design = ) in within
         keepA=result$keepA,
         keepX = result$keepX,
         keepY = result$keepY,
-        #keepX.constraint = result$keepA.constraint[[1]],
-        #keepY.constraint = result$keepA.constraint[[2]],
         variates = result$variates,
         loadings = result$loadings,
         loadings.star = result$loadings.star,
@@ -131,7 +131,6 @@ all.outputs = TRUE)    # multilevel is passed to multilevel(design = ) in within
         explained_variance = result$explained_variance,#[-result$indY],
         input.X = result$input.X,
         mat.c = result$mat.c#,
-        #defl.matrix = result$defl.matrix
         )
     
     class(out) = c("splsda","spls","DA")

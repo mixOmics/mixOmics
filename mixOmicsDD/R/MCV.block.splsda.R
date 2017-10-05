@@ -4,8 +4,8 @@
 #   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
-# created: 2015
-# last modified: 24-08-2016
+# created: 18-09-2017
+# last modified: 05-10-2017
 #
 # Copyright (C) 2015
 #
@@ -29,19 +29,31 @@
 # tune.block.splsda: chose the optimal number of parameters per component on a splsda method
 # ========================================================================================================
 
-# X: numeric matrix of predictors
-# Y: a factor or a class vector for the discrete outcome
-# ncomp: the number of components to include in the model. Default to 1.
-# test.keepX: grid of keepX among which to chose the optimal one
-# already.tested.X: a vector giving keepX on the components that were already tuned
+# X: a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets. \code{NA}s are not allowed.
+# Y: a factor or a class vector for the discrete outcome.
 # validation: Mfold or loo cross validation
 # folds: if validation = Mfold, how many folds?
-# dist: distance to classify samples. see predict
-# measure: one of c("overall","BER"). Accuracy measure used in the cross validation processs
-# progressBar: show progress,
-# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 # nrepeat: number of replication of the Mfold process
-# logratio = c('none','CLR'). see splsda
+# ncomp: the number of components to include in the model. Default to 1.
+# choice.keepX: a list, each choice.keepX[[i]] is a vector giving keepX on the components that were already tuned for block i
+# test.keepX: grid of keepX among which to chose the optimal one
+# measure: one of c("overall","BER"). Accuracy measure used in the cross validation processs
+# weighted: optimise the weighted or not-weighted prediction
+# dist: distance to classify samples. see predict
+# scheme: the input scheme, one of "horst", "factorial" or ""centroid". Default to "centroid"
+# design: the input design.
+# init: intialisation of the algorithm, one of "svd" or "svd.single". Default to "svd"
+# tol: Convergence stopping value.
+# max.iter: integer, the maximum number of iterations.
+# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
+# progressBar: show progress,
+# cl: if parallel, the clusters
+# scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
+# misdata: optional. any missing values in the data? list, misdata[[q]] for each data set
+# is.na.A: optional. where are the missing values? list, is.na.A[[q]] for each data set (if misdata[[q]] == TRUE)
+# ind.NA: optional. which rows have missing values? list, ind.NA[[q]] for each data set.
+# parallel: logical.
+
 
 
 MCVfold.block.splsda = function(
@@ -63,14 +75,12 @@ tol,
 max.iter = 100,
 near.zero.var = FALSE,
 progressBar = TRUE,
-class.object,
 cl,
 scale,
 misdata,
 is.na.A,
 ind.NA,
-parallel,
-name.save
+parallel
 )
 {    #-- checking general input parameters --------------------------------------#
     #---------------------------------------------------------------------------#
@@ -97,6 +107,8 @@ name.save
     folds.input = folds
     for(nrep in 1:nrepeat)
     {
+        # we don't record all the prediction for all fold and all blocks, too much data
+
         #prediction.comp[[nrep]] = array(0, c(nrow(X), nlevels(Y), length(test.keepX)), dimnames = list(rownames(X), levels(Y), names(test.keepX)))
         #rownames(prediction.comp[[nrep]]) = rownames(X)
         #colnames(prediction.comp[[nrep]]) = levels(Y)
@@ -149,7 +161,7 @@ name.save
         stop.user = FALSE
         
 
-#result.all=list()
+        #result.all=list()
         fonction.j.folds =function(j)#for(j in 1:M)
         {
             if (progressBar ==  TRUE)
@@ -235,14 +247,7 @@ name.save
             #-- near.zero.var ----------------------#
             #---------------------------------------#
             
-            
             #prediction.comp.j = array(0, c(length(omit), nlevels(Y), length(test.keepX)), dimnames = list(rownames(X.test), levels(Y), names(test.keepX)))
-            #print("misdata")
-            #print(misdata)
-            #print("choice.keepX")
-            #print(choice.keepX)
-            #print("test.keepX")
-            #print(test.keepX)
             
             # shape input for `internal_mint.block' (keepA, test.keepA, etc)
             #print(system.time(
@@ -273,14 +278,6 @@ name.save
             
             names(X.test)=names(X.train)
             
-            #time1=proc.time()
-            #print("scaling")
-            #print(time1-time0)
- 
- #save(list=ls(),file="temp2.Rdata")
-
-
-
             # record prediction results for each test.keepX
             keepA = result$keepA
             test.keepA = keepA[[ncomp]]
@@ -337,9 +334,6 @@ name.save
 
                 }
             } # end i
-            #time3 = proc.time()
-            #print("prediction")
-            #print(time3-time2)
 
             return(list(class.comp.j = class.comp.j, omit = omit, keepA = keepA))#, prediction.comp.j = prediction.comp.j))
             #result.all[[j]] = list(class.comp.j = class.comp.j, features = features.j, omit = omit, keepA = keepA)
@@ -350,22 +344,14 @@ name.save
         if (parallel == TRUE)
         {
             clusterEvalQ(cl, library(mixOmicsDD))
-            #print("bla")
-            
             clusterExport(cl, ls(), envir=environment())
-            #print("bla3")
-            #clusterExport(cl, c("design"), envir=.GlobalEnv)
-            #print("bla2")
-            
            result.all = parLapply(cl, 1: M, fonction.j.folds)
         } else {
            result.all = lapply(1: M, fonction.j.folds)
-
         }
 
         keepA = result.all[[1]]$keepA
         test.keepA = keepA[[ncomp]]
-        
 
         # combine the results
         for(j in 1:M)
@@ -375,26 +361,17 @@ name.save
             class.comp.j = result.all[[j]]$class.comp.j
 
             #prediction.comp[[nrep]][omit, , ] = prediction.comp.j
-            
             for(ijk in dist)
             class.comp[[ijk]][omit,nrep, ] = class.comp.j[[ijk]]
-            
         }
         
-
-
         if (progressBar ==  TRUE)
         setTxtProgressBar(pb, (M*nrep)/(M*nrepeat))
-        
-
-        
-        
         
     } #end nrep 1:nrepeat
 
     #names(prediction.comp) =
     # class.comp[[ijk]] is a matrix containing all prediction for test.keepX, all nrepeat and all distance, at comp fixed
-    
     
     keepA.names = apply(test.keepA[,1:length(X)],1,function(x) paste(x,collapse="_"))#, sep=":")
         
@@ -447,8 +424,6 @@ name.save
             names(choice.keepX) = names(X)
             
             keepX.opt[[ijk]] = which(error.mean[[ijk]] == min.error)[ind.opt]
-            
-            
             
             
             # confusion matrix for keepX.opt
@@ -545,7 +520,6 @@ name.save
         
         
     }
-    
     
     #result$prediction.comp = prediction.comp
     result$class.comp = class.comp

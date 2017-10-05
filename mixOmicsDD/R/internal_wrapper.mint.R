@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 08-07-2016
+# last modified: 05-10-2017
 #
 # Copyright (C) 2015
 #
@@ -153,7 +153,7 @@ all.outputs=FALSE
     #---------------------------------------------------------------------------#
     #-- keepA ----------------------------------------------------#
     
-    # shaping keepA, will need to be done somewhere before eventually
+    # shaping keepA, contains all the keepX/keepY models to be constructed
     
     if(!is.null(test.keepX) & !is.null(test.keepY))
     {
@@ -170,7 +170,6 @@ all.outputs=FALSE
     
     keepA = lapply(keepA, expand.grid)
     
-    #print(keepA)
     # keepA[[comp]] is a matrix where each row is all the keepX the test over the block (each block is a column)
 
     #-- keepA ----------------------------------------------------#
@@ -179,9 +178,8 @@ all.outputs=FALSE
 
     #---------------------------------------------------------------------------#
     #-- pls approach ----------------------------------------------------#
-    #save(list=ls(),file="temp.Rdata")
     result = internal_mint.block(A = list(X = X, Y = Y), indY = 2, mode = mode, ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
-    design = design, keepA = keepA,#list(keepX, keepY), test.keepA = list(test.keepX, test.keepY),
+    design = design, keepA = keepA,
     scale = scale, scheme = "horst",init="svd", study = study, misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA, all.outputs= all.outputs)
     
     #-- pls approach ----------------------------------------------------#
@@ -189,7 +187,6 @@ all.outputs=FALSE
     
     # result contains all loadings and variates of the test.keepX and test.keepY (if not null)
     # if no test.keepX and test.keepY, then it's classical outputs
-    #save(list=ls(),file="temp.Rdata")
     
     result$keepX = keepX
     result$keepY = keepY

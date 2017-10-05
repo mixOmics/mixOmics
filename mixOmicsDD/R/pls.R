@@ -6,7 +6,7 @@
 
 #
 # created: 2009
-# last modified: 24-05-2016
+# last modified: 05-10-2017
 #
 # Copyright (C) 2009
 #
@@ -35,9 +35,13 @@
 # Y: numeric vector or matrix of responses
 # ncomp: the number of components to include in the model. Default to 2.
 # scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
+# mode: input mode, one of "canonical", "classic", "invariant" or "regression". Default to "regression"
 # tol: Convergence stopping value.
 # max.iter: integer, the maximum number of iterations.
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
+# logratio: one of "none", "CLR"
+# multilevel: repeated measurement. `multilevel' is passed to multilevel(design = ) in withinVariation. Y is ommited and shouldbe included in `multilevel'
+# all.outputs: calculation of non-essential outputs (e.g. explained variance, loadings.Astar, etc)
 
 
 pls = function(X,
@@ -49,8 +53,8 @@ tol = 1e-06,
 max.iter = 100,
 near.zero.var = FALSE,
 logratio = "none",   # one of "none", "CLR"
-multilevel = NULL,
-all.outputs = TRUE)    # multilevel is passed to multilevel(design = ) in withinVariation. Y is ommited and shouldbe included in multilevel design
+multilevel = NULL, 
+all.outputs = TRUE)
 {
     
     # call to 'internal_wrapper.mint'

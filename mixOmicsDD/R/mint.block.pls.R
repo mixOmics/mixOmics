@@ -5,7 +5,7 @@
 #   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 13-04-2016
+# last modified: 05-10-2017
 #
 # Copyright (C) 2015
 #
@@ -44,6 +44,7 @@
 # tol: Convergence stopping value.
 # max.iter: integer, the maximum number of iterations.
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
+# all.outputs: calculation of non-essential outputs (e.g. explained variance, loadings.Astar, etc)
 
 
 mint.block.pls = function(X,

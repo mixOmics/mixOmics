@@ -5,7 +5,7 @@
 #   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 13-04-2016
+# last modified: 05-10-2017
 #
 # Copyright (C) 2015
 #
@@ -29,6 +29,23 @@
 # mixOmics: perform one of the package's function depending on the input data (list or matrix, vector or categerical data, etc)
 # ========================================================================================================
 
+# X: list of numeric matrix or numeric matrix of predictors
+# Y: a factor or a class vector for the discrete outcome
+# indY: to supply if Y is missing, indicate the position of the outcome in the list X.
+# study: grouping factor indicating which samples are from the same study
+
+# ncomp: numeric vector of length the number of blocks in \code{X}. The number of components to include in the model for each block (does not necessarily need to take the same value for each block). By default set to 2 per block.
+# keepX: A vector of same length as X.  Each entry keepX[i] is the number of X[[i]]-variables kept in the model on the last components (once all keepX.constraint[[i]] are used).
+# keepY: Only used if Y is provided. Each entry keepY[i] is the number of Y-variables kept in the model on the last components.
+# design: the input design.
+# tau:
+# scheme: the input scheme, one of "horst", "factorial" or ""centroid". Default to "centroid"
+# mode: input mode, one of "canonical", "classic", "invariant" or "regression". Default to "regression"
+# scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
+# init: intialisation of the algorithm, one of "svd" or "svd.single". Default to "svd"
+# tol: Convergence stopping value.
+# max.iter: integer, the maximum number of iterations.
+# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 
 mixOmics = function(X,
 Y,

@@ -7,7 +7,7 @@
 #   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
 #
 # created: 2015
-# last modified: 24-08-2016
+# last modified: 05-10-2017
 #
 # Copyright (C) 2015
 #
@@ -560,7 +560,6 @@ cpus,
         # estimate performance of the model for each component
         result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = comp,
         choice.keepX = choice.keepX, test.keepX = test.keepX,
-        #choice.keepX.constraint = if(constraint){choice.keepX.constraint}else{NULL},
         measure = measure, dist = dist, scale=scale,
         near.zero.var = near.zero.var,
         auc = auc, progressBar = progressBar, class.object = class(object), cl = cl, parallel = parallel,

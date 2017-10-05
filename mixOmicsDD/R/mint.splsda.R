@@ -4,7 +4,7 @@
 #   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 24-02-2016
+# last modified: 05-10-2017
 #
 # Copyright (C) 2015
 #
@@ -33,13 +33,14 @@
 # X: numeric matrix of predictors
 # Y: a factor or a class vector for the discrete outcome
 # ncomp: the number of components to include in the model. Default to 2.
+# mode: input mode, one of "canonical", "classic", "invariant" or "regression". Default to "regression"
 # study: grouping factor indicating which samples are from the same study
-# keepX.constraint: A list containing which variables of X are to be kept on each of the first PLS-components.
 # keepX: number of \eqn{X} variables kept in the model on the last components (once all keepX.constraint[[i]] are used).
 # scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
 # tol: Convergence stopping value.
 # max.iter: integer, the maximum number of iterations.
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
+# all.outputs: calculation of non-essential outputs (e.g. explained variance, loadings.Astar, etc)
 
 
 mint.splsda = function(X,

@@ -3,7 +3,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 13-04-2016
+# last modified: 04-10-2017
 #
 # Copyright (C) 2015
 #
@@ -119,7 +119,6 @@ all.outputs=TRUE
     # max.iter: nobody cares about this
     # study: factor for each matrix of A, must be a vector
     # keepA: keepX of spls for each matrix of A. must be a list. Each entry must be of the same length (max ncomp)
-    # keepA.constraint: keepX.constraint, which variables are kept on the first num.comp-1 components. It is a list of characters
     # near.zero.var: do you want to remove variables with very small variance
     
     result=internal_mint.block(A = A,

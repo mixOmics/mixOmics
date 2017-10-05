@@ -4,8 +4,8 @@
 #   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
-# created: 2015
-# last modified: 24-08-2016
+# created: 24-08-2016
+# last modified: 05-10-2017
 #
 # Copyright (C) 2015
 #
@@ -31,18 +31,27 @@
 
 # X: numeric matrix of predictors
 # Y: a factor or a class vector for the discrete outcome
-# ncomp: the number of components to include in the model. Default to 1.
-# test.keepX: grid of keepX among which to chose the optimal one
-# already.tested.X: a vector giving keepX on the components that were already tuned
+# multilevel: repeated measurement only
 # validation: Mfold or loo cross validation
 # folds: if validation = Mfold, how many folds?
-# dist: distance to classify samples. see predict
-# measure: one of c("overall","BER"). Accuracy measure used in the cross validation processs
-# progressBar: show progress,
-# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 # nrepeat: number of replication of the Mfold process
-# logratio = c('none','CLR'). see splsda
-
+# ncomp: the number of components to include in the model. Default to 1.
+# choice.keepX: a vector giving keepX on the components that were already tuned
+# test.keepX: grid of keepX among which to chose the optimal one
+# measure: one of c("overall","BER"). Accuracy measure used in the cross validation processs
+# dist: distance to classify samples. see predict
+# auc:
+# tol: Convergence stopping value.
+# max.iter: integer, the maximum number of iterations.
+# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
+# progressBar: show progress,
+# class.object
+# cl: if parallel, the clusters
+# scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
+# misdata: optional. any missing values in the data? list, misdata[[q]] for each data set
+# is.na.A: optional. where are the missing values? list, is.na.A[[q]] for each data set (if misdata[[q]] == TRUE)
+# ind.NA: optional. which rows have missing values? list, ind.NA[[q]] for each data set.
+# parallel: logical.
 
 stratified.subsampling = function(Y, folds = 10)
 {
@@ -95,6 +104,7 @@ test.keepX, # a vector of value(keepX) to test on the last component. There need
 measure = c("overall"), # one of c("overall","BER")
 dist = "max.dist",
 auc = FALSE,
+tol = 1e-06,
 max.iter = 100,
 near.zero.var = FALSE,
 progressBar = TRUE,
@@ -193,14 +203,15 @@ parallel
         # function instead of a loop so we can use lapply and parLapply. Can't manage to put it outside without adding all the arguments
         
         #result.all=list()
-
-        fonction.j.folds = function(j)#for (j in 1:M)#for (j in 1:M)#fonction.j.folds = function(j)#for (j in 1:M)
+        fonction.j.folds = function(j)#for (j in 1:M)
         {
             if (progressBar ==  TRUE)
             setTxtProgressBar(pb, (M*(nrep-1)+j-1)/(M*nrepeat))
             
             #print(j)
-            #set up leave out samples.
+            #---------------------------------------#
+            #-- set up leave out samples. ----------#
+
             omit = which(repeated.measure %in% folds[[j]] == TRUE)
             
             # get training and test set
@@ -211,8 +222,11 @@ parallel
             colnames(Y.train.mat) = levels(Y.train)
             X.test = X[omit, , drop = FALSE]#matrix(X[omit, ], nrow = length(omit)) #removed to keep the colnames in X.test
             Y.test = Y[omit]
-            
-            # split the NA in training and testing
+            #-- set up leave out samples. ----------#
+            #---------------------------------------#
+
+            #------------------------------------------#
+            #-- split the NA in training and testing --#
             if(any(misdata))
             {
                 is.na.A.train = is.na.A[-omit,, drop=FALSE]
@@ -225,7 +239,9 @@ parallel
                 is.na.A.train = is.na.A.test =NULL
                 ind.NA.train = ind.NA.test = NULL
             }
-            
+            #-- split the NA in training and testing --#
+            #------------------------------------------#
+
             #---------------------------------------#
             #-- near.zero.var ----------------------#
             
@@ -282,7 +298,6 @@ parallel
             for(ijk in dist)
             class.comp.j[[ijk]] = matrix(0, nrow = length(omit), ncol = length(test.keepX))# prediction of all samples for each test.keepX and  nrep at comp fixed
             
-            #save(list=ls(),file="temp4.Rdata")
             # shape input for `internal_mint.block' (keepA, test.keepA, etc)
             result = internal_wrapper.mint(X=X.train, Y=Y.train.mat, study=factor(rep(1,length(Y.train))), ncomp=ncomp,
             keepX=choice.keepX, keepY=rep(ncol(Y.train.mat), ncomp-1), test.keepX=test.keepX, test.keepY=ncol(Y.train.mat),
@@ -293,10 +308,11 @@ parallel
             # `result' returns loadings and variates for all test.keepX on the ncomp component
             
             # need to find the best keepX/keepY among all the tested models
-            #save(list=ls(),file="temp.Rdata")
+            
+            #---------------------------------------#
+            #-- scaling X.test ---------------------#
             
             # we prep the test set for the successive prediction: scale and is.na.newdata
-            # scale X.test
             if (!is.null(attr(result$A[[1]], "scaled:center")))
             X.test = sweep(X.test, 2, STATS = attr(result$A[[1]], "scaled:center"))
             if (scale)
@@ -306,9 +322,13 @@ parallel
             if (scale)
             {sigma.Y = matrix(attr(result$A[[2]], "scaled:scale"),nrow=nrow(X.test),ncol=q,byrow=TRUE)}else{sigma.Y=matrix(1,nrow=nrow(X.test),ncol=q)}
             
-            
- 
-            
+            #-- scaling X.test ---------------------#
+            #---------------------------------------#
+
+
+            #-----------------------------------------#
+            #-- prediction on X.test for all models --#
+
             # record prediction results for each test.keepX
             keepA = result$keepA
             test.keepA = keepA[[ncomp]]
@@ -356,6 +376,10 @@ parallel
                 class.comp.j[[ijk]][, i] =  test.predict.sw$class[[ijk]][, ncomp] #levels(Y)[test.predict.sw$class[[ijk]][, ncomp]]
             } # end i
             
+            #-- prediction on X.test for all models --#
+            #-----------------------------------------#
+
+
             return(list(class.comp.j = class.comp.j, prediction.comp.j = prediction.comp.j, features = features.j, omit = omit))
             #result.all[[j]] = list(class.comp.j = class.comp.j,  prediction.comp.j = prediction.comp.j, features = features.j, omit = omit)
 
@@ -365,22 +389,15 @@ parallel
         if (parallel == TRUE)
         {
             clusterEvalQ(cl, library(mixOmicsDD))
-            #print("bla")
-            
             clusterExport(cl, ls(), envir=environment())
-            #print("bla3")
-            #print(ls())
-            #clusterExport(cl, c("internal_wrapper.mint","Check.entry.pls","internal_mint.block","mean_centering_per_study","scale.function"), envir=.GlobalEnv)
-            #print("bla2")
-            
             result.all = parLapply(cl, 1: M, fonction.j.folds)
         } else {
             result.all = lapply(1: M, fonction.j.folds)
             
         }
-        #save(list=ls(), file="temp2.Rdata")
-        
-        # combine the results
+        #---------------------------#
+        #--- combine the results ---#
+
         for(j in 1:M)
         {
             omit = result.all[[j]]$omit
@@ -396,12 +413,15 @@ parallel
             features = c(features, result.all[[j]]$features)
 
         }
+        #--- combine the results ---#
+        #---------------------------#
         
-
 
         if (progressBar ==  TRUE)
         setTxtProgressBar(pb, (M*nrep)/(M*nrepeat))
         
+        #---------------------------#
+        #----- AUC on the test -----#
         if(auc)
         {
             data=list()
@@ -412,13 +432,16 @@ parallel
                 auc.all[[nrep]][, , i] = as.matrix(statauc(data))
             }
         }
-        
+        #----- AUC on the test -----#
+        #---------------------------#
+
     } #end nrep 1:nrepeat
 
     names(prediction.comp) = names (auc.all) = paste0("nrep.", 1:nrepeat)
     # class.comp[[ijk]] is a matrix containing all prediction for test.keepX, all nrepeat and all distance, at comp fixed
     
-    # average auc over the nrepeat, for each test.keepX
+    #-------------------------------------------------------------#
+    #----- average AUC over the nrepeat, for each test.keepX -----#
     if(auc)
     {
         
@@ -443,7 +466,9 @@ parallel
         auc.mean.sd = auc.all = NULL
         
     }
-    
+    #----- average AUC over the nrepeat, for each test.keepX -----#
+    #-------------------------------------------------------------#
+
     result = list()
     error.mean = error.sd = error.per.class.keepX.opt.comp = keepX.opt = test.keepX.out = mat.error.final = choice.keepX.out = list()
 

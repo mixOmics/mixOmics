@@ -5,7 +5,7 @@
 #   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 2009
-# last modified: 24-05-2016
+# last modified: 05-10-2017
 #
 # Copyright (C) 2009
 #
@@ -41,6 +41,9 @@
 # tol: Convergence stopping value.
 # max.iter: integer, the maximum number of iterations.
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
+# logratio: one of "none", "CLR"
+# multilevel: repeated measurement. `multilevel' is passed to multilevel(design = ) in withinVariation. Y is ommited and shouldbe included in `multilevel'
+# all.outputs: calculation of non-essential outputs (e.g. explained variance, loadings.Astar, etc)
 
 
 spls = function(X,
@@ -55,7 +58,7 @@ max.iter = 100,
 near.zero.var = FALSE,
 logratio = "none",   # one of "none", "CLR"
 multilevel = NULL,
-all.outputs = TRUE)    # multilevel is passed to multilevel(design = ) in withinVariation. Y is ommited and shouldbe included in multilevel design
+all.outputs = TRUE)
 {
 
     # call to 'internal_wrapper.mint'
@@ -85,7 +88,6 @@ all.outputs = TRUE)    # multilevel is passed to multilevel(design = ) in within
         explained_variance = result$explained_variance,
         input.X = result$input.X,
         mat.c = result$mat.c#,
-        #defl.matrix = result$defl.matrix
         )
     
    

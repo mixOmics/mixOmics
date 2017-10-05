@@ -5,7 +5,7 @@
 #   Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 22-04-2015
-# last modified: 12-04-2016
+# last modified: 04-10-2017
 #
 # Copyright (C) 2015
 #
@@ -206,7 +206,7 @@ scale.function_old=function(temp, scale = TRUE) # problem: divide by n instead o
 }
 
 # --------------------------------------
-# scaling with or without bias: used in mean_centering_per_study (below)
+# scaling, using colSds from library(matrixStats), used in mean_centering_per_study (below)
 # --------------------------------------
 scale.function=function(temp, scale = TRUE)
 {
@@ -217,7 +217,7 @@ scale.function=function(temp, scale = TRUE)
         sqrt.sdX = colSds(temp, center = meanX, na.rm=TRUE)
         data.list.study.scale_i = t( (t(temp)-meanX) / sqrt.sdX)
         
-        ind = which(sqrt.sdX==0) # creates NA
+        ind = which(sqrt.sdX == 0) # scaling can creates NA
         if(length(ind) >0)
         data.list.study.scale_i[,ind] = 0
         
@@ -425,6 +425,7 @@ defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical
     resdefl = NULL
     pdefl = NULL
     for (q in 1 : nbloc) {
+        # for each block we create missing data parameters to be passed to the deflation()
         if(misdata[q])
         {
             is.na.A.q = is.na.A[[q]]
@@ -488,15 +489,9 @@ initialisation_by_svd = function(A, indY = NULL, misdata, is.na.A = NULL, init =
     if (init == "svd")
     {
         
-        ### Start: Change initialization of loadings.A
-        #if (misdata)
-        #{
-        #    M = lapply(c(1:J)[-indY], function(x){crossprod(replace(A[[x]], is.na.A[[x]], 0), replace(A[[indY]], is.na.A[[indY]], 0))})
-        #} else {
-            M = lapply(c(1:J)[-indY], function(x){crossprod(A[[x]], A[[indY]])})
-            #}
-    
-        #svd.M = lapply(M, function(x){svd(x, nu = 1, nv = 1)})
+        # same step with or without NA, as they are already replaced by 0
+        M = lapply(c(1:J)[-indY], function(x){crossprod(A[[x]], A[[indY]])})
+        #ssvd faster with svds, only if more than 3 column, otherwise break down
         svd.M = lapply(M, function(x){if(ncol(x)>3) {svds(x, k=1, nu = 1, nv = 1)} else {svd(x, nu = 1, nv = 1)}})
         
         loadings.A[c(1:J)[-indY]] = lapply(c(1:J)[-indY], function(x){svd.M[[x]]$u})
@@ -504,13 +499,8 @@ initialisation_by_svd = function(A, indY = NULL, misdata, is.na.A = NULL, init =
         
     } else if (init=="svd.single") {
         
-        
-        #if (misdata)
-        #{
-        #    alpha =  lapply(1 : J, function(y){initsvd(replace(A[[y]], is.na.A[[y]], 0))})
-        #} else {
-            alpha =  lapply(1 : J, function(y){initsvd(A[[y]])})
-            #}
+        alpha =  lapply(1 : J, function(y){initsvd(A[[y]])})
+
         for (j in 1:J)
         {
             if (nrow(A[[j]]) >= ncol(A[[j]]))
@@ -519,11 +509,9 @@ initialisation_by_svd = function(A, indY = NULL, misdata, is.na.A = NULL, init =
             } else {
                 alpha[[j]] = drop(1/sqrt( t(alpha[[j]]) %*% A[[j]] %*% (t(A[[j]]) %*% alpha[[j]]))) * alpha[[j]]
                 
-                loadings.A[[j]] = crossprod(A[[j]],alpha[[j]])#)t(A[[j]]) %*% alpha[[j]]
+                loadings.A[[j]] = crossprod(A[[j]],alpha[[j]])
             }
         }
-        
-        ### End: Change initialization of a
     } else {
         stop("init should be either 'svd' or 'svd.single'.")
     }

@@ -1,12 +1,12 @@
 #############################################################################################################
 # Authors:
+#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #   Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
 #
 # created: 2013
-# last modified: 24-08-2016
+# last modified: 05-10-2017
 #
 # Copyright (C) 2013
 #
@@ -39,10 +39,17 @@
 # folds: if validation=Mfold, how many folds?
 # dist: distance to classify samples. see predict
 # measure: one of c("overall","BER"). Accuracy measure used in the cross validation processs
+# scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
+# auc: calculate AUC
 # progressBar: show progress,
+# tol: Convergence stopping value.
+# max.iter: integer, the maximum number of iterations.
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 # nrepeat: number of replication of the Mfold process
-# logratio = c('none','CLR'). see splsda
+# logratio: one of "none", "CLR"
+# multilevel: repeated measurement. `multilevel' is passed to multilevel(design = ) in withinVariation. Y is ommited and shouldbe included in `multilevel'
+# light.output: if FALSE, output the prediction and classification of each sample during each folds, on each comp, for each repeat
+# cpus: number of cpus to use. default to no parallel
 
 tune.splsda = function (X, Y,
 ncomp = 1,
@@ -55,12 +62,13 @@ measure = "BER", # one of c("overall","BER")
 scale = TRUE,
 auc = FALSE,
 progressBar = TRUE,
+tol = 1e-06,
 max.iter = 100,
 near.zero.var = FALSE,
 nrepeat = 1,
 logratio = c('none','CLR'),
 multilevel = NULL,
-light.output = TRUE, # if FALSE, output the prediction and classification of each sample during each folds, on each comp, for each repeat
+light.output = TRUE,
 cpus
 )
 {    #-- checking general input parameters --------------------------------------#
@@ -175,7 +183,7 @@ cpus
         clusterExport(cl, c("splsda","selectVar"))
         
         if(progressBar == TRUE)
-        message(paste("As code is running in parallel, the progressBar will only show 100% upon completion of each component.",sep=""))
+        message(paste("As code is running in parallel, the progressBar will only show 100% upon completion of each nrepeat/ component.",sep=""))
 
     } else {
         parallel = FALSE
@@ -225,7 +233,7 @@ cpus
         
         Y = as.factor(Y)
     }
-    #-- multilevel approach ----------------------------------------------------#
+    #-- logration + multilevel approach ----------------------------------------#
     #---------------------------------------------------------------------------#
     
     
@@ -247,9 +255,7 @@ cpus
     #---------------------------------------------------------------------------#
 
 
-    #-- cross-validation approach  ---------------------------------------------#
-    #---------------------------------------------------------------------------#
-    
+
     test.keepX = sort(test.keepX) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
     names(test.keepX) = test.keepX
     # if some components have already been tuned (eg comp1 and comp2), we're only tuning the following ones (comp3 comp4 .. ncomp)
@@ -313,7 +319,8 @@ cpus
             result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = 1 + length(already.tested.X),
             choice.keepX = already.tested.X,
             test.keepX = test.keepX, measure = measure, dist = dist, scale=scale,
-            near.zero.var = near.zero.var, progressBar = progressBar, max.iter = max.iter, auc = auc, cl = cl, parallel = parallel,
+            near.zero.var = near.zero.var, progressBar = progressBar, tol = tol, max.iter = max.iter, auc = auc,
+            cl = cl, parallel = parallel,
             misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA, class.object="splsda")
             
             # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
