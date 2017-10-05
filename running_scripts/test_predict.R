@@ -290,7 +290,7 @@ points(test.predict$variates[, 1], test.predict$variates[, 2], pch = 19, cex = 1
 # example with mixMC
 # ------------------
 
-library(mixOmics)
+#library(mixOmics)
 data(diverse.16S)
 data.mixMC = diverse.16S$data.TSS
 Y=diverse.16S$bodysite

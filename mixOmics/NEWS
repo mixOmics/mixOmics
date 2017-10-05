@@ -1,4 +1,19 @@
 
+Changes in 6.3.0 (faster and bug fixes)
+================
+
+
+Enhancements:
+-------------
+- a huge gain in computation time for tune.splsda and tune.block.splsda. The bigger the data, the bigger the gain.
+- a plot for an object `tune.block.splsda'
+
+Bug fixes:
+----------
+- fixed reproducibility problem when using parallel coding in tune.block.splsda (via the `cpus' argument)
+
+
+
 Changes in 6.2.0 (improvements and bug fixes)
 ================
 

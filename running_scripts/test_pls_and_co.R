@@ -19,7 +19,7 @@ Y <- linnerud$physiological
 linn.pls <- pls(X, Y, mode = "classic")
 
 
-library(mixOmics)
+#library(mixOmics)
 data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
@@ -50,7 +50,7 @@ plotIndiv(toxicity.pls, group=rep(1:4,16),star=TRUE,centroid=TRUE,style="lattice
 
 # plsda
 # ----
-library(mixOmics)
+#library(mixOmics)
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
@@ -83,7 +83,7 @@ plotIndiv(toxicity.spls)
 
 # splsda
 # ----
-library(mixOmics)
+#library(mixOmics)
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 # Y will be transformed as a factor in the function,
@@ -203,10 +203,10 @@ if(additional.test==TRUE)
     res=spls(X,Y)
     res=spls(X,Y,ncomp=3,keepX=c(10,5,15))
     res=spls(X,Y,ncomp=3,keepX=c(10,5)) #complete keepX
-    res=spls(X,Y,ncomp=3,keepX=c(10),keepX.constraint=list(comp1=c(100,1,3),comp2=c(10)))
-    res=spls(X,Y,ncomp=3,keepX=c(1),keepX.constraint=list(comp1=c(100),comp2=c(10)))
-    res=spls(X,Y,ncomp=3,keepX.constraint=list(comp1=c(100),comp2=c(10)))
-    res=spls(X,Y,ncomp=3,keepY=c(3),keepY.constraint=list(comp1=c(1),comp2=c(2)))
+    res=spls(X,Y,ncomp=3,keepX=c(10))#,keepX.constraint=list(comp1=c(100,1,3),comp2=c(10)))
+    res=spls(X,Y,ncomp=3,keepX=c(1))#,keepX.constraint=list(comp1=c(100),comp2=c(10)))
+    res=spls(X,Y,ncomp=3)#,keepX.constraint=list(comp1=c(100),comp2=c(10)))
+    res=spls(X,Y,ncomp=3,keepY=c(3))#,keepY.constraint=list(comp1=c(1),comp2=c(2)))
     
     #######  wraper.plsda
     res=plsda(X,Z,ncomp=3)
@@ -216,9 +216,9 @@ if(additional.test==TRUE)
     res=splsda(X,Z)
     res=splsda(X,Z,ncomp=3,keepX=c(10,5,15))
     res=splsda(X,Z,ncomp=3,keepX=c(10,5)) #complete keepX
-    res=splsda(X,Z,ncomp=3,keepX=c(10),keepX.constraint=list(comp1=c(100,1,3),comp2=c(10)))
-    res=splsda(X,Z,ncomp=3,keepX=c(1),keepX.constraint=list(comp1=c(100),comp2=c(10)))
-    res=splsda(X,Z,ncomp=3,keepX.constraint=list(comp1=c(100),comp2=c(10)))
+    res=splsda(X,Z,ncomp=3,keepX=c(10))#,keepX.constraint=list(comp1=c(100,1,3),comp2=c(10)))
+    res=splsda(X,Z,ncomp=3,keepX=c(1))#,keepX.constraint=list(comp1=c(100),comp2=c(10)))
+    res=splsda(X,Z,ncomp=3)#,keepX.constraint=list(comp1=c(100),comp2=c(10)))
     
 
     
