@@ -19,6 +19,7 @@ opar <- par(no.readonly = TRUE)
 
 #library(mixOmics)
 data(breast.tumors)
+set.seed(1)
 test=sample(1:47,5,replace=FALSE)
 X <- breast.tumors$gene.exp
 X.test<-breast.tumors$gene.exp[test,]
@@ -58,7 +59,7 @@ auroc(res.plsda,newdata = X.test,outcome.test = as.factor(Y.test),plot = FALSE,r
 
 
 data(liver.toxicity)
-
+set.seed(1)
 test=sample(1:64,7,replace=FALSE)
 X <- liver.toxicity$gene
 X.test<-liver.toxicity$gene[test,]
@@ -328,6 +329,7 @@ auroc(res.plsda,newdata = list(XX=data.light),outcome.test = as.factor(type.id.l
 # sgccda
 # ----
 
+set.seed(12)
 data(nutrimouse)
 train=sample(1:40,40,replace=FALSE)
 test=sample(1:40,4,replace=FALSE)
@@ -343,7 +345,7 @@ nutrimouse.sgccda <- wrapper.sgccda(X = data,
                                     design = design,
                                     keepX = list(gene = c(10,10), lipid = c(15,15)),
                                     ncomp = 3,
-                                    scheme = "centroid")
+                                    scheme = "centroid", tol=1e-30, init="svd")
 
 auroc(nutrimouse.sgccda,plot = TRUE,roc.block = 1,roc.comp = 1)
 auroc(nutrimouse.sgccda,plot = TRUE,roc.block = 2,roc.comp = 1)

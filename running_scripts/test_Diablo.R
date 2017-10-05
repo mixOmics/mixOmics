@@ -30,6 +30,9 @@ scheme = "centroid",
 tol=1e-30)
 
 
+head(nutrimouse.sgccda$variates$gene)
+
+
 if(FALSE)
 {source("mixOmicsDD/R/internal_wrapper.mint.R")
 source("mixOmicsDD/R/internal_wrapper.mint.block.R")

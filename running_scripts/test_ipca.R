@@ -14,12 +14,15 @@ ipca.res
 # samples representation
 plotIndiv(ipca.res, ind.names = as.character(liver.toxicity$treatment[, 4]),
 group = as.numeric(as.factor(liver.toxicity$treatment[, 4])))
+cat("\n\n")
+
 plotIndiv(ipca.res, cex = 0.5,col = as.numeric(as.factor(liver.toxicity$treatment[, 4])),style="3d")
 
 plotIndiv(ipca.res, style="3d",col = as.numeric(as.factor(liver.toxicity$treatment[, 4])))
 
 # variables representation
 plotVar(ipca.res, cex = 0.5)
+cat("\n\n")
 
 plotVar(ipca.res, rad.in = 0.5, cex = 0.5,style="3d")
 
