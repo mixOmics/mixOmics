@@ -251,11 +251,11 @@ parallel
             
             # shape input for `internal_mint.block' (keepA, test.keepA, etc)
             #print(system.time(
-            result <- internal_wrapper.mint.block(X=X.train, Y=Y.train.mat, study=factor(rep(1,length(Y.train))), ncomp=ncomp,
+            result <- suppressMessages(internal_wrapper.mint.block(X=X.train, Y=Y.train.mat, study=factor(rep(1,length(Y.train))), ncomp=ncomp,
             keepX=choice.keepX, keepY=rep(ncol(Y.train.mat), ncomp-1), test.keepX=test.keepX, test.keepY=ncol(Y.train.mat),
             mode="regression", scale=scale, near.zero.var=near.zero.var, design=design,
             max.iter=max.iter, scheme =scheme, init=init, tol=tol,
-            misdata = misdata, is.na.A = c(is.na.A.train, Y=NULL), ind.NA = c(ind.NA.train, Y=NULL), all.outputs=FALSE)
+            misdata = misdata, is.na.A = c(is.na.A.train, Y=NULL), ind.NA = c(ind.NA.train, Y=NULL), all.outputs=FALSE))
             #))
             
             # `result' returns loadings and variates for all test.keepX on the ncomp component
@@ -343,7 +343,7 @@ parallel
 
         if (parallel == TRUE)
         {
-            clusterEvalQ(cl, library(mixOmicsDD))
+            clusterEvalQ(cl, library(mixOmics))
             clusterExport(cl, ls(), envir=environment())
            result.all = parLapply(cl, 1: M, fonction.j.folds)
         } else {

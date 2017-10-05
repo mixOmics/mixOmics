@@ -6,7 +6,7 @@ Changes in 6.3.0 (faster and bug fixes)
 Enhancements:
 -------------
 - a huge gain in computation time for tune.splsda and tune.block.splsda. The bigger the data, the bigger the gain.
-- a plot for tune.block.splsda
+- a plot for an object `tune.block.splsda'
 
 Bug fixes:
 ----------
