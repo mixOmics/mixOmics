@@ -3,7 +3,8 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
-
+if(FALSE)
+{
 library(rARPACK)
 library(matrixStats)
 library(mixOmicsDD)
@@ -203,3 +204,4 @@ tune2 = tune.block.splsda(X = data,Y = Y,design = design,ncomp = 2,test.keepX = 
 
 
 tune2
+}
