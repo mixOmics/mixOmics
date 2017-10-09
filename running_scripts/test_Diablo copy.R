@@ -7,9 +7,7 @@ opar <- par(no.readonly = TRUE)
 
 ## sGCC-DA
 # -------------
-#library(rARPACK)
-#library(matrixStats)
-#library(mixOmicsDD)
+library(mixOmics)
 #source("mixOmics/R/plotIndiv.R")
 data(nutrimouse)
 Y = nutrimouse$diet
@@ -17,67 +15,78 @@ data = list(gene = nutrimouse$gene, outcome=Y, lipid = nutrimouse$lipid)
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 
 
-data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
+if(FALSE)
+{ #error
+    ind = c(which(Y == "coc"), c(4,9))
+    data = list(gene = nutrimouse$gene[ind,], outcome=factor(nutrimouse$diet[ind]), lipid = nutrimouse$lipid[ind,])
+    design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+
+    nutrimouse.sgccda <- wrapper.sgccda(X=data,
+    indY = 2,
+    design = design,
+    ncomp = 1,#c(2, 2),
+    scheme = "centroid",
+    verbose = FALSE,
+    bias = FALSE,
+    tol=1e-30)
+}
+
+
+
+nutrimouse.sgccda <- wrapper.sgccda(X=data,
+indY = 2,
+design = design,
+keepX = list(gene=c(10), lipid=c(15)),
+ncomp = 1,#c(2, 2),
+scheme = "centroid",
+verbose = FALSE,
+bias = FALSE,
+tol=1e-30)
+
+
+data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, outcome=Y)
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 
 
-nutrimouse.sgccda <- block.splsda(X=data,
-Y = Y,
+nutrimouse.sgccda <- wrapper.sgccda(X=data,
+indY = 3,
 design = design,
 keepX = list(gene=c(10,10), lipid=c(15,15)),
 ncomp = 2,#c(2, 2),
 scheme = "centroid",
+verbose = FALSE,
+bias = FALSE,
 tol=1e-30)
 
 
-head(nutrimouse.sgccda$variates$gene)
+data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
+design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 
 
-if(FALSE)
-{source("mixOmicsDD/R/internal_wrapper.mint.R")
-source("mixOmicsDD/R/internal_wrapper.mint.block.R")
-source("mixOmicsDD/R/internal_mint.block.R")
-source("mixOmicsDD/R/internal_mint.block_helpers.R")
-source("mixOmicsDD/R/check_entry.R")
-
-source("mixOmicsDD/R/tune.splsda.R")
-source("mixOmicsDD/R/tune.block.splsda.R")
-source("mixOmicsDD/R/block.splsda.R")
-source("mixOmicsDD/R/block.spls.R")
-source("mixOmicsDD/R/splsda.R")
-source("mixOmicsDD/R/spls.R")
-source("mixOmicsDD/R/pls.R")
-source("mixOmicsDD/R/plsda.R")
-source("mixOmicsDD/R/MCV.block.splsda.R")
-source("mixOmicsDD/R/MCV.splsda.R")
-source("mixOmicsDD/R/perf.R")
-
-nutrimouse.sgccda <- block.splsda(X=data,
+nutrimouse.sgccda <- wrapper.sgccda(X=data,
 Y = Y,
 design = design,
 #keepX = list(gene=c(10,10), lipid=c(15,15)),
 ncomp = 2,#c(2, 2),
 scheme = "centroid",
+verbose = FALSE,
+bias = FALSE,
 tol=1e-30)
-}
-#source("mixOmicsDD/R/predict.mint.block.pls.R")
-#source("mixOmicsDD/R/internal_predict.DA.R")
-#source("mixOmicsDD/R/MCVfold.R")
-
-
 
 
 pred=predict(nutrimouse.sgccda, data)
 pred2=predict(nutrimouse.sgccda, data,weight=c(1,2))
 
 
-#nutrimouse.sgccda2 <- wrapper.sgccda(X=c(data[-1],data[1]),
-#Y = Y,
-#design = design,
-#keepX = list(gene=c(10,10), lipid=c(15,15)),
-#ncomp = 2,#c(2, 2),
-#scheme = "centroid",
-#tol=1e-30)
+nutrimouse.sgccda2 <- wrapper.sgccda(X=c(data[-1],data[1]),
+Y = Y,
+design = design,
+keepX = list(gene=c(10,10), lipid=c(15,15)),
+ncomp = 2,#c(2, 2),
+scheme = "centroid",
+verbose = FALSE,
+bias = FALSE,
+tol=1e-30)
 
 set.seed(43)
 a=perf(nutrimouse.sgccda,nrepeat=3, progressBar = FALSE)
@@ -169,7 +178,7 @@ if(additional.test==TRUE)
    
     #test perf diablo
     #source("mixOmics/R/tune.diablo.R")
- 
+    
     set.seed(45)
     # classic tune
     tune = tune.block.splsda(
@@ -178,61 +187,64 @@ if(additional.test==TRUE)
     design = design,
     ncomp = 2,#c(2, 2),
     scheme = "centroid",
+    verbose = FALSE,
+    bias = FALSE,
     nrepeat = 11
     )
     tune
-    
-    plot(tune)
 
     # classic tune, with test.keepX as input
-    set.seed(12)
+    set.seed(23)
     tune2 = tune.block.splsda(
     X = data,
     Y = Y,
     design = design,
-    ncomp = 2,#c(2, 2),
+    ncomp = 1,#c(2, 2),
     test.keepX = list(gene=c(1,5,10,4),lipid=c(1,2,3)),
     scheme = "centroid",
-    weighted=FALSE
+    verbose = FALSE,
+    bias = FALSE,
+    weighted=FALSE,
+    dist = "max.dist"
     )
     tune2
     
-    
-    
-    set.seed(12)
-    a = tune.block.splsda(
+    # classic tune, with test.keepX as input
+    set.seed(23)
+    tune3 = tune.block.splsda(
     X = data,
     Y = Y,
     design = design,
     ncomp = 2,#c(2, 2),
     test.keepX = list(gene=c(1,5,10,4),lipid=c(1,2,3)),
     scheme = "centroid",
-    dist="centroids.dist",
-    weighted=TRUE,
-    nrepeat=2
+    verbose = FALSE,
+    bias = FALSE,
+    weighted=FALSE,
+    dist = "centroids.dist"
     )
-    a
-    
-    set.seed(12)
-    a2 = tune.block.splsda(
-    X = data,
-    Y = Y,
-    design = design,
-    ncomp = 2,#c(2, 2),
-    test.keepX = list(gene=c(1,5,10,4),lipid=c(1,2,3)),
-    scheme = "centroid",
-    dist="centroids.dist",
-    weighted=TRUE,
-    nrepeat=2,
-    cpus=2
-    )
-    a2
-    
-    res = all.equal(a[-which(names(a)=="call")],a2[-which(names(a2)=="call")])
-    if(!isTRUE(res))
-    stop("problem parallel diablo")
-    
+    tune3
 
+
+
+X = data
+test.keepX = list(gene=c(1,5,10,4),lipid=c(1,2,3))
+scheme = "centroid"
+bias=FALSE
+ncomp=2
+measure = "BER"
+dist = "max.dist"
+validation = "Mfold"
+folds = 10
+max.iter = 100
+near.zero.var = FALSE
+nrepeat=1
+scale=TRUE
+tol = 1e-06
+weighted = TRUE
+progressBar = TRUE
+weighted = TRUE
+parallel=FALSE
 
 
     # tune
@@ -242,7 +254,9 @@ if(additional.test==TRUE)
     design = design,
     nrepeat=4,
     ncomp = 2,#c(2, 2),
-    scheme = "centroid"
+    scheme = "centroid",
+    verbose = FALSE,
+    bias = FALSE
     )
     tune
     
@@ -253,7 +267,9 @@ if(additional.test==TRUE)
     design = design,
     ncomp = 2,#c(2, 2),
     test.keepX = list(gene=c(1,5,10,4),lipid=c(1,2,3)),
-    scheme = "centroid"
+    scheme = "centroid",
+    verbose = FALSE,
+    bias = FALSE
     )
     tune
 
@@ -265,17 +281,22 @@ if(additional.test==TRUE)
     already.tested.X = list(gene=c(10), lipid=c(15)),
     nrepeat=4,
     ncomp = 2,#c(2, 2),
-    scheme = "centroid"
+    scheme = "centroid",
+    verbose = FALSE,
+    bias = FALSE
     )
     tune
 
-
- tune = tune.block.splsda(
+    
+    # tune with saving a file
+    tune = tune.block.splsda(
     X = data,
     Y = Y,
     design = design,
     ncomp = 2,#c(2, 2),
     scheme = "centroid",
+    verbose = FALSE,
+    bias = FALSE,
     nrepeat = 2,
     name.save="try",
     cpus=4

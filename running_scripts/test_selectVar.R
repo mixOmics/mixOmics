@@ -36,8 +36,7 @@ Y = srbct$class
 srbct.splsda = splsda(X, Y, ncomp = 2, keepX = c(5, 10))
 select = selectVar(srbct.splsda, comp = 2)
 select
-# this is a very specific case where a data set has no rownames.
-srbct$gene.name[substr(select$select, 2,5),]
+srbct$gene.name[select$name,]
 
 
 # example with sGCCA
@@ -55,7 +54,7 @@ design = matrix(c(0,1,1,
 #note: the penalty parameters need to be tuned
 wrap.result.sgcca = wrapper.sgcca(X = data, design = design, penalty = c(.3,.3, 1),
 ncomp = 2,
-scheme = "centroid", verbose = FALSE)
+scheme = "centroid")
 
 #variables selected and loadings values on component 1 for the two blocs
 selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))
@@ -100,7 +99,7 @@ if(additional.test==TRUE)
     srbct.splsda = splsda(X, Y, ncomp = 2, keepX = c(5, 10))
     select = selectVar(srbct.splsda, comp = 2)
     select
-    srbct$gene.name[substr(select$name, 2,5),]
+    srbct$gene.name[select$name,]
 
 
     data(nutrimouse)

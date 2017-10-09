@@ -12,10 +12,15 @@ data(multidrug)
 pca.res <- pca(multidrug$ABC.trans, ncomp = 4, scale = TRUE)
 par(mar=c(9,5,4,0))
 plot(pca.res)
+cat("\n\n")
+
 pca.res
+cat("\n\n")
+
 par(mar=c(5.1, 4.1, 4.1, 2.1))
 
 biplot(pca.res, xlabs = multidrug$cell.line$Class, cex = 0.7)
+cat("\n\n")
 
 # samples representation
 plotIndiv(pca.res, ind.names = multidrug$cell.line$Class,

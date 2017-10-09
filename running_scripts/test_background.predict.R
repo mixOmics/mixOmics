@@ -4,7 +4,7 @@
 
 opar <- par(no.readonly = TRUE)
 
-library(mixOmics)
+#library(mixOmics)
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
