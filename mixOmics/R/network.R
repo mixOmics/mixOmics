@@ -173,26 +173,49 @@ name.save = NULL)
         
         
         #-- row.names
+        row.names.plot = TRUE # whether to plot the label in the graph
         if (is.logical(row.names))
         {
-            if(isTRUE(row.names))
-            row.names = mat$names$colnames$X else row.names = rep("", p)
+            if(!isTRUE(row.names))
+            {
+                row.names.plot = FALSE
+            }
+            row.names = mat$names$colnames$X
         } else {
             row.names = as.vector(row.names)
-            if (length(row.names) != p)
-            stop("'row.names' must be a character vector of length ", p, ".",
+            if (length(unique(row.names)) != p)
+            stop("'row.names' must be a character vector of ", p, " unique entries.",
             call. = FALSE)
         }
         
+        if(row.names.plot == TRUE)
+        {
+            row.names.plot = row.names
+        }else{
+            row.names.plot = rep("",p)
+        }
+        
         #-- col.names
+        col.names.plot = TRUE # whether to plot the label in the graph
         if (is.logical(col.names))
         {
-            if(isTRUE(col.names)) col.names = mat$names$colnames$Y else col.names = rep("", q)
+            if(!isTRUE(col.names))
+            {
+                col.names.plot = FALSE
+            }
+            col.names = mat$names$colnames$Y
         } else {
             col.names = as.vector(col.names)
             if (length(col.names) != q)
-            stop("'col.names' must be a character vector of length ", q, ".",
+            stop("'col.names' must be a character vector of ", q, " unique entries.",
             call. = FALSE)
+        }
+        
+        if(col.names.plot == TRUE)
+        {
+            col.names.plot = col.names
+        }else{
+            col.names.plot = rep("",p)
         }
         
         #-- end checking --#
@@ -421,39 +444,49 @@ name.save = NULL)
         q = ncol(mat)
         
         #-- row.names
+        row.names.plot = TRUE # whether to plot the label in the graph
         if (is.logical(row.names))
         {
-            if (isTRUE(row.names))
+            if(!isTRUE(row.names))
             {
-                row.names = rownames(mat)
-                if (is.null(row.names))
-                row.names = paste0("X", 1:p)
-            } else {
-                row.names = rep("  ", p)
+                row.names.plot = FALSE
             }
+            row.names = rownames(mat)
         } else {
             row.names = as.vector(row.names)
             if (length(row.names) != p)
-            stop("'row.names' must be a character vector of length ", p, ".",
+            stop("'row.names' must be a character vector of ", p, " unique entries.",
             call. = FALSE)
         }
         
+        if(row.names.plot == TRUE)
+        {
+            row.names.plot = row.names
+        }else{
+            row.names.plot = rep("",p)
+        }
+        
         #-- col.names
+        col.names.plot = TRUE # whether to plot the label in the graph
         if (is.logical(col.names))
         {
-            if (isTRUE(col.names))
+            if(!isTRUE(col.names))
             {
-                col.names = colnames(mat)
-                if (is.null(col.names))
-                col.names = paste0("Y", 1:q)
-            } else {
-                col.names = rep("  ", q)
+                col.names.plot = FALSE
             }
+            col.names = colnames(mat)
         } else {
             col.names = as.vector(col.names)
             if (length(col.names) != q)
-            stop("'col.names' must be a character vector of length ", q, ".",
+            stop("'col.names' must be a character vector of ", q, " unique entries.",
             call. = FALSE)
+        }
+        
+        if(col.names.plot == TRUE)
+        {
+            col.names.plot = col.names
+        }else{
+            col.names.plot = rep("",p)
         }
     }
     
@@ -639,6 +672,7 @@ name.save = NULL)
     
     # Definition of nodes #
     #---------------------#
+    #save(list=ls(),file="temp.Rdata")
     if(any(class.object %in% object.blocks))
     {
         group = NULL
@@ -653,11 +687,14 @@ name.save = NULL)
     } else if(any(class.object %in% object.pls)) {
         w = as.vector(t(mat))
         
-        Xn=sum(keep.X)
-        Yn=sum(keep.Y)
-        node.X = paste0("X", 1:Xn)
-        node.Y = paste0("Y", 1:Yn)
+        Xn=sum(keep.X) #number of non-zero parameters in X (over all comp)
+        Yn=sum(keep.Y) #number of non-zero parameters in Y (over all comp)
+        node.X = row.names#[keep.X]#paste0("X", 1:Xn)
+        node.Y = col.names#[keep.Y]#paste0("Y", 1:Yn)
         
+        row.names.plot = row.names.plot[keep.X]
+        col.names.plot = col.names.plot[keep.Y]
+
         nodes = data.frame(name = c(node.X, node.Y),
         group = c(rep("x", Xn), rep("y", Yn)))
         
@@ -665,8 +702,8 @@ name.save = NULL)
         node.X = rep(node.X, each = Yn)
         node.Y = rep(node.Y, Xn)
     } else {
-        node.X = paste0("X", 1:p)
-        node.Y = paste0("Y", 1:q)
+        node.X = row.names # paste0("X", 1:p)
+        node.Y = col.names # paste0("Y", 1:q)
         
         nodes = data.frame(name = c(node.X, node.Y),
         group = c(rep("x", p), rep("y", q)))
@@ -717,7 +754,7 @@ name.save = NULL)
             j = j + 1
         }
     } else {
-        V(gR)$label = c(row.names, col.names)
+        V(gR)$label = c(row.names.plot, col.names.plot)
         V(gR)$color = color.node[1]
         V(gR)$color[V(gR)$group == "y"] = color.node[2]
         
