@@ -215,7 +215,7 @@ name.save = NULL)
         {
             col.names.plot = col.names
         }else{
-            col.names.plot = rep("",p)
+            col.names.plot = rep("",q)
         }
         
         #-- end checking --#
@@ -240,8 +240,8 @@ name.save = NULL)
                 keep.X = rep(TRUE,p)
                 keep.Y = rep(TRUE,q)
             } else {
-                keep.X = apply(abs(mat$loadings$X), 1, sum) > 0
-                keep.Y = apply(abs(mat$loadings$Y), 1, sum) > 0
+                keep.X = apply(abs(mat$loadings$X[, comp, drop=FALSE]), 1, sum) > 0
+                keep.Y = apply(abs(mat$loadings$Y[, comp, drop=FALSE]), 1, sum) > 0
                 
                 row.names = row.names[keep.X]
                 col.names = col.names[keep.Y]
@@ -486,7 +486,7 @@ name.save = NULL)
         {
             col.names.plot = col.names
         }else{
-            col.names.plot = rep("",p)
+            col.names.plot = rep("",q)
         }
     }
     
