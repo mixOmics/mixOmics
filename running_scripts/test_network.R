@@ -59,7 +59,7 @@ if(additional.test==TRUE)
     X <- liver.toxicity$gene
     Y <- liver.toxicity$clinic
     toxicity.spls <- spls(X, Y, ncomp = 3,
-    keepX = c(50, 50, 50), keepY = c(10, 10, 10))
+    keepX = c(2, 20, 50), keepY = c(10, 10, 10))
     
     network(toxicity.spls)
     
@@ -385,6 +385,32 @@ if(additional.test==TRUE)
     # test shape.node
     network(nutri.sgcca,shape.node = c(gene='none',lipid='circle',diet="rectangle"),blocks=1:3)
     network(nutri.sgcca,shape.node = c(gene='rectangle',lipid='none',diet="circle"),blocks=1:3)
+    
+    
+    
+    ### 3 blocks, keepX
+
+    data(nutrimouse)
+    Y = nutrimouse$diet
+    data = list(gene = nutrimouse$gene, outcome=Y, lipid = nutrimouse$lipid)
+    design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+    
+    
+    data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
+    design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+    
+    
+    nutrimouse.sgccda <- block.splsda(X=data,
+    Y = Y,
+    design = design,
+    keepX = list(gene=c(3,5), lipid=c(5,5)),
+    ncomp = 2,#c(2, 2),
+    scheme = "centroid",
+    tol=1e-30)
+
+    network(nutrimouse.sgccda)
+    network(nutrimouse.sgccda, comp =list(gene=1:2,lipid=1:2))
+    network(nutrimouse.sgccda, comp =list(gene=1,lipid=1))
 
 }
 
