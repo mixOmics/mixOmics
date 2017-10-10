@@ -366,13 +366,13 @@ name.save = NULL)
                     keep = abs(mat$loadings[[k]][, comp[[k]]]) > 0
                 }
                 
-                coord[[j]] = cor(mat$X[[k]][, keep], mat$variates[[k]][, comp[[k]]])
+                coord[[j]] = cor(mat$X[[k]][, keep], mat$variates[[k]][, comp[[k]]], use = "pairwise")
                 j = j + 1
             }
         } else {
             for(k in blocks)
             {
-                coord[[j]] = cor(mat$X[[k]], mat$variates[[k]][, comp[[k]]])
+                coord[[j]] = cor(mat$X[[k]], mat$variates[[k]][, comp[[k]]], use = "pairwise")
                 j = j + 1
             }
         }
