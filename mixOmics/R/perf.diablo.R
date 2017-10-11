@@ -260,7 +260,7 @@ cpus,
         })
         ## End: retrieve score for each component
         
-        save(list=ls(),file="temp.Rdata")
+        #save(list=ls(),file="temp.Rdata")
         
         ## Start: retrieve class for each component
         # Reorganization input data / folds / dist.select
