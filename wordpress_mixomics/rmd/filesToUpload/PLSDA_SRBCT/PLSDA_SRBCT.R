@@ -1,9 +1,9 @@
 ## ----global_options, include=FALSE---------------------------------------
 library(knitr)
-knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
-                      fig.show=TRUE, fig.keep = 'all', fig.height= 8, fig.width=9)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, fig.align = 'center', 
+                      fig.show=TRUE, fig.keep = 'all', out.width = '50%') 
 
-## ----message = TRUE------------------------------------------------------
+## ----message = FALSE-----------------------------------------------------
 library(mixOmics)
 
 ## ------------------------------------------------------------------------

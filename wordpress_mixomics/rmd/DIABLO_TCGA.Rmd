@@ -21,14 +21,14 @@ Human breast cancer is a heterogeneous disease in terms of molecular alterations
 
 The full data set for this example (also including methylation data and 4 breast cancer subtypes) can be downloaded [here](http://mixomics.org/wp-content/uploads/2016/08/TCGA.normalised.mixDIABLO.RData_.zip). In the example below illustrate an analysis on a smaller data set that is stored in the mixOmics package. 
 
-Load the latest version of [mixOmics](https://cran.r-project.org/web/packages/mixOmics/index.html) (check the version!).
+Load the latest version of [mixOmics](https://cran.r-project.org/web/packages/mixOmics/index.html) (check the version ad the sessionInfo() output at the end of this page).
 
-```{r message = TRUE}
+```{r message = FALSE}
 library(mixOmics)
 ```
 
 # Rscript
-The R script is available at [this link (R script and RData)](http://mixomics.org/wp-content/uploads/2017/08/DIABLO_TCGA.zip) 
+The R script is available at [this link](http://mixomics.org/wp-content/uploads/2017/10/DIABLO_TCGA.zip) 
 
 # Data
 
@@ -136,13 +136,11 @@ test.keepX = list (mRNA = c(5:9, seq(10, 18, 2), seq(20,30,5)),
                    miRNA = c(5:9, seq(10, 18, 2), seq(20,30,5)),
                    proteomics = c(5:9, seq(10, 18, 2), seq(20,30,5)))
 
-t1 = proc.time()
 tune.TCGA = tune.block.splsda(X = data, Y = Y, ncomp = ncomp, 
                               test.keepX = test.keepX, design = design,
                               validation = 'Mfold', folds = 10, nrepeat = 1,
                               cpus = 2, dist = "centroids.dist")
-t2 = proc.time()
-running_time = t2 - t1; running_time
+
 
 list.keepX = tune.TCGA$choice.keepX
 list.keepX
@@ -236,7 +234,7 @@ Note that sometimes the output may not show with Rstudio because of margin issue
 
 
 
-```{r}
+```{r, eval = TRUE}
 network(sgccda.res, blocks = c(1,2,3),
         color.node = c('darkorchid', 'brown1', 'lightgreen'), cutoff = 0.4)
 ```
@@ -260,7 +258,7 @@ plotLoadings(sgccda.res, comp = 2, contrib = 'max', method = 'median')
 
 The **cimDIABLO()** function is a clustered image map specifically implemented to represent the multi-`omics molecular signature expression for each sample. 
 
-```{r}
+```{r, eval = TRUE}
 cimDiablo(sgccda.res)
 ```
 

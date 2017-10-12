@@ -1,7 +1,7 @@
 ## ----global_options, include=FALSE---------------------------------------
 library(knitr)
-knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
-                      fig.show=TRUE, fig.keep = 'all', fig.height= 8, fig.width=9)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, fig.align = 'center', 
+                      fig.show=TRUE, fig.keep = 'all', out.width = '50%') 
 
 ## ----message = TRUE------------------------------------------------------
 library(mixOmics)
@@ -33,7 +33,7 @@ sgccda.res = block.splsda(X = data, Y = Y, ncomp = 5,
 
 set.seed(123) # for reproducibility, only when the `cpus' argument is not used
 # this code takes a couple of min to run
-perf.diablo = perf(sgccda.res, validation = 'Mfold', M = 5, nrepeat = 10)
+perf.diablo = perf(sgccda.res, validation = 'Mfold', folds = 10, nrepeat = 10)
 
 #perf.diablo  # lists the different outputs
 plot(perf.diablo) 
@@ -51,7 +51,7 @@ ncomp = perf.diablo$choice.ncomp$WeightedVote["Overall.BER", "centroids.dist"]
 ## t1 = proc.time()
 ## tune.TCGA = tune.block.splsda(X = data, Y = Y, ncomp = ncomp,
 ##                               test.keepX = test.keepX, design = design,
-##                               validation = 'Mfold', folds = 5, nrepeat = 1,
+##                               validation = 'Mfold', folds = 10, nrepeat = 1,
 ##                               cpus = 2, dist = "centroids.dist")
 ## t2 = proc.time()
 ## running_time = t2 - t1; running_time
@@ -67,13 +67,11 @@ ncomp = perf.diablo$choice.ncomp$WeightedVote["Overall.BER", "centroids.dist"]
 ##                    miRNA = c(5:9, seq(10, 18, 2), seq(20,30,5)),
 ##                    proteomics = c(5:9, seq(10, 18, 2), seq(20,30,5)))
 ## 
-## t1 = proc.time()
 ## tune.TCGA = tune.block.splsda(X = data, Y = Y, ncomp = ncomp,
 ##                               test.keepX = test.keepX, design = design,
-##                               validation = 'Mfold', folds = 5, nrepeat = 1,
+##                               validation = 'Mfold', folds = 10, nrepeat = 1,
 ##                               cpus = 2, dist = "centroids.dist")
-## t2 = proc.time()
-## running_time = t2 - t1; running_time
+## 
 ## 
 ## list.keepX = tune.TCGA$choice.keepX
 ## list.keepX
@@ -116,7 +114,7 @@ circosPlot(sgccda.res, cutoff = 0.7, line = TRUE,
            color.blocks= c('darkorchid', 'brown1', 'lightgreen'),
            color.cor = c("chocolate3","grey20"), size.labels = 1.5)
 
-## ------------------------------------------------------------------------
+## ---- eval = TRUE--------------------------------------------------------
 network(sgccda.res, blocks = c(1,2,3),
         color.node = c('darkorchid', 'brown1', 'lightgreen'), cutoff = 0.4)
 
@@ -130,12 +128,12 @@ network(sgccda.res, blocks = c(1,2,3),
 ## ------------------------------------------------------------------------
 plotLoadings(sgccda.res, comp = 2, contrib = 'max', method = 'median')
 
-## ------------------------------------------------------------------------
+## ---- eval = TRUE--------------------------------------------------------
 cimDiablo(sgccda.res)
 
 ## ------------------------------------------------------------------------
 set.seed(123)# for reproducibility, only when the `cpus' argument is not used
-perf.diablo = perf(sgccda.res, validation = 'Mfold', M = 5, nrepeat = 10, 
+perf.diablo = perf(sgccda.res, validation = 'Mfold', M = 10, nrepeat = 10, 
                    dist = 'centroids.dist')
 #perf.diablo  # lists the different outputs
 
@@ -168,5 +166,5 @@ sessionInfo()
 
 ## ---- include = FALSE----------------------------------------------------
 # extract R code
-purl("DIABLO_TCGA.Rmd")
+#purl("DIABLO_TCGA.Rmd")
 
