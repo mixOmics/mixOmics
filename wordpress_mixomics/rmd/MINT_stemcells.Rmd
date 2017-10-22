@@ -22,7 +22,7 @@ knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, fig.a
 Here, we illustrate a supervised MINT analysis on a subset of stem cells transcriptomics data, see *?stemcells*.  The full data set was analysed in [1].
 
 
-Load the latest version of [mixOmics](https://cran.r-project.org/web/packages/mixOmics/index.html) (check the version ad the sessionInfo() output at the end of this page).
+Load the latest version of [mixOmics](https://cran.r-project.org/web/packages/mixOmics/index.html) (check the version at the sessionInfo() output at the end of this page).
 
 ```{r message = FALSE}
 library(mixOmics)
