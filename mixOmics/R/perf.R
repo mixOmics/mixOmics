@@ -491,9 +491,10 @@ cpus,
         is.na.A = is.na(X)
         
         ind.NA = which(apply(is.na.A, 1, sum) > 0) # calculated only once
+        ind.NA.col = which(apply(is.na.A, 2, sum) > 0) # calculated only once
     } else {
         is.na.A = NULL
-        ind.NA = NULL
+        ind.NA = ind.NA.col = NULL
     }
     #-- NA calculation      ----------------------------------------------------#
     #---------------------------------------------------------------------------#
@@ -563,7 +564,7 @@ cpus,
         measure = measure, dist = dist, scale=scale,
         near.zero.var = near.zero.var,
         auc = auc, progressBar = progressBar, class.object = class(object), cl = cl, parallel = parallel,
-        misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA)
+        misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA, ind.NA.col = ind.NA.col)
 
         # ---- extract stability of features ----- # NEW
         if (any(class(object) == "splsda"))
