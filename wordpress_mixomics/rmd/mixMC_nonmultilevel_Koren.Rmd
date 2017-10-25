@@ -1,21 +1,23 @@
 ---
-title: "mixMC Non-Multilevel KOREN DATASET"
-date: "24 November 2016"
+title: "mixMC Non-Multilevel Koren dataset"
+date: "20 October 2017"
 output:
   html_document:
     code_folding: show
     highlight: haddock
 ---
-# Koren Data 16s
-
-Here we apply mixMC to the 16S study of Koren et al. (2011) who examined the link between oral, gut and plaque microbial communities in patients with atherosclerosis and controls. Only healthy individuals were retained in the analysis. This study contained partially repeated measures from multiple sites including 15 unique patients samples from saliva and stool, and 13 unique patients only sampled from arterial plaque samples and we therefore considered a non multilevel analysis for that experimental design (i.e. no repeated measurements). The data were downloaded from the Qiita database. After pre-filtering, the data included 973 OTU for 43 samples.  Data were TSS normalized and log ratio transformations are applied in PCA and PLS-DA.
-
-Load the latest version of [mixOmics](https://www.rdocumentation.org/link/%20www.mixOmics.org%2FmixMC?package=mixOmics&version=6.0.0).
 
 ```{r global_options, include=FALSE}
 library(knitr)
-knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, fig.align = 'center', 
+                      fig.show=TRUE, out.width = '50%') 
 ```
+
+
+Here we apply mixMC to the 16S study of Koren et al. (2011) who examined the link between oral, gut and plaque microbial communities in patients with atherosclerosis and controls. Only healthy individuals were retained in the analysis. This study contained partially repeated measures from multiple sites including 15 unique patients samples from saliva and stool, and 13 unique patients only sampled from arterial plaque samples and we therefore considered a non multilevel analysis for that experimental design (i.e. no repeated measurements). The data were downloaded from the Qiita database. After pre-filtering, the data included 973 OTU for 43 samples.  Data were TSS normalized and log ratio transformations are applied in PCA and PLS-DA.
+
+Load the latest version of [mixOmics](https://cran.r-project.org/web/packages/mixOmics/index.html).
+
 
 ```{r}
 library(mixOmics)
@@ -23,7 +25,7 @@ library(mixOmics)
 
 # Data: Koren Data Set
 
-Using the Koren data in this example we assume the data are prefiltered and normalised with TSS, as described in [mixMC normalisation](http://mixomics.org/mixmc/filtering-normalisation/).
+Using the Koren data in this example we assume the data are prefiltered and normalised with TSS, as described in [mixMC pre-processing steps](http://mixomics.org/mixmc/pre-processing//).
 
 ```{r inputdata}
 # normalised data
@@ -32,69 +34,83 @@ data("Koren.16S")
 koren.TSS= Koren.16S$data.TSS
 ```
 
-```{r saving files, echo = FALSE}
-# create the following folder where the files will be saved 
-path.output = 'Koren/'
-```
 
-We set up the outcome "Y" as a factor indicating the body sites of each sample. A repeated measures design is not nessessary as each sample is not repeated more then once. 
+We set up the outcome **Y** as a factor indicating the body sites of each sample. A repeated measures design is not nessessary as each sample is not repeated more then once. 
 
 ```{r, echo=TRUE, results= "hide"}
 Y  =  Koren.16S$indiv$body_site
 summary(Y)
 ```
 
-# Unsupervised Analsysis with Principal Component Analysis
+# Unsupervised Analysis with Principal Component Analysis
 
-PCA enables visualisation of diversity patterns in an unsupervised analysis. We need to specify the log ratio transformation (choose between ‘CLR’ or ‘ILR’) and specify a sufficient number of components to understand how the variation in the data is explained per component.
+PCA allows for dimension reduction of the data and visualisation of diversity patterns in microbiome studies. Because we are dealing with proportions, the data are compositional and spurious results can arise if the data are not transformed into an Euclidean space. Therefore the Total Sum Scaling normalised data must be transformed using either [ILR or CLR](http://mixomics.org/mixmc/pre-processing/). 
 
-```{r pca, fig.width= 4}
-pca.res = pca(koren.TSS, ncomp = 10, logratio = 'CLR')
-plot(pca.res)
+Here we chose the ILR transformation as advised by Filmozer *et al* [1]. We generally prefer the ‘CLR’ log ratio transformation as it is faster and can be used all throughout our framework (from PCA to sPLSDA), using the argument **logratio = 'CLR'**). We first run a PCA with a sufficiently large number of components **ncomp** to choose the final reduced dimension of the model.
+
+```{r pca}
+koren.pca = pca(koren.TSS, ncomp = 10, logratio = 'CLR')
+plot(koren.pca)
 ```
 
 The barplot above depicts the percentage of explained variance per component for a PCA with 10 components. It is a good indicator of how many components to retain in the final PCA model (here two components will be sufficient).
 
 The sample plot below displays the samples colored according to Y, but note that PCA does not take Y into account in the analysis!
 
-```{r plotIndiv PCA, fig.keep='all'}
-#plot first component
-plotIndiv(pca.res,  comp = c(1,2),
-          pch = 16, ind.names = F, group = Y, col.per.group = color.mixo(1:3),
-          legend = TRUE)
+```{r plotIndiv PCA}
+plotIndiv(koren.pca, 
+          comp = c(1,2), # the components to plot
+          pch = 16, 
+          ind.names = F, 
+          group = Y, 
+          col.per.group = color.mixo(1:3),
+          legend = TRUE,
+          title = 'Koren, PCA comp 1 - 2')
 ```
 
 # Supervised Analysis and Selection of Discriminative OTUs with sPLS-DA
 
-sPLS-DA performs variable (OTU) selection on each component, [see sPLS-DA](http://mixomics.org/methods/spls-da/) for details.
+The mixMC frameworks uses the sPLS-DA multivariate analysis from mixOmics[3]. The sPLS-DA selects the most discriminative OTUs that best characterise each body site, [see sPLS-DA](http://mixomics.org/methods/spls-da/). 
 
-Firstly, to choose the number of components for sPLS_DA we run the function perf() for a **PLS-DA** model with no variable selection (often, ncomp = K-1 where K is the number of categories in the outcome Y is sufficient, but depends on the data). We choose 5-fold cross-validation repeated 10 times. To obtain a more reliable estimation of the error rate, the number of repeats should be increased (between 50 to 100). 
+Note that with PLS-DA and sPLS-DA we can only choose a CLR transformation (see details [here](http://journals.plos.org/plosone/article/metrics?id=10.1371/journal.pone.0160169).
+
+We first run the **perf** function with a **PLS-DA** model with no variable selection. Often **ncomp = K-1** where K is the number of categories in the outcome Y is sufficient, but it depends on the data. We choose 5-fold cross-validation repeated 10 times. To obtain a more reliable estimation of the error rate, the number of repeats should be increased (between 50 to 100). 
+
+Here we assess the performance of the PLSDA on `r nlevels(Y)` components.
 
 ```{r plsda}
-koren.plsda <- plsda(X = koren.TSS, Y, ncomp = nlevels(Y) - 1)
+koren.plsda = plsda(X = koren.TSS, Y, ncomp = nlevels(Y), logratio = 'CLR')
 
-koren.perf.plsda <- perf(koren.plsda, validation = 'Mfold', folds = 5,
+koren.perf.plsda = perf(koren.plsda, validation = 'Mfold', folds = 5,
                     progressBar = FALSE, nrepeat = 10)
 
 plot(koren.perf.plsda, overlay = 'measure', sd=TRUE)
 ```
 
-Above is the plot of the classification error rate averaged across 5 folds and the 10 repeated CV for all prediction distances. BER stands for balanced error rate, which accounts for unbalanced number of samples per class. This step allows to choose the best prediction distance that will be input in the tune sPLS-DA step below.
+The plot indicates a decrease in the classification error rate (i.e. an increase in classification performance) from one component to 3 components in the model. The BER stands for Balanced Error Rate and should be considered when we have an unbalanced number of samples per group. Here the number of samples per group is very similar, which explains why both overall and BER are overlapping. The performance reaches its best for 3 components, which suggest **ncomp = 3** for a final PLSDA model. Note that for the sparse PLSDA we may obtain a different ncomp.
+
+For more details on the prediction distances, refer to Suppl info in Rohart et al. 2017 [4]. Here all distances are similar, we choose 'max.dist'  for sPLSDA.
+
 
 ```{r plot plsda}
 #First two components
 plotIndiv(koren.plsda , comp = c(1,2),
           group = Y, ind.names = FALSE, 
-          ellipse = TRUE, legend = TRUE, title = 'KOREN-16S, PLSDA comp 1 - 2')
+          ellipse = TRUE, legend = TRUE, title = 'Koren, PLSDA comp 1 - 2')
 ```
+
+*It is possible that the third component may not visually add much to the model and could be ignored.*
 
 ## Tuning sPLS-DA
 
-Secondly, we tune keepX in sPLSDA with the chosen number of components + 1 (to double check our choice from the step above) using tune.splsda. We choose 5-fold cross-validation repeated 10 times in this example. To ensure a stable result we advise to set nrepeat = 50-100)
+The parameters to choose in sPLS-DA are the number of variables to select (**keepX**) and the number of components (**ncomp**). To do this we use the function **tune.splsda**. In this example the sPLS-DA tuning step is performed on 3 components, using 5-fold validation repeated 10 times.
 
-```{r tune splsda, eval = FALSE, message=FALSE}
-# this chunk takes ~ 12 min to run
-splsda.tune = tune.splsda(koren.TSS, 
+tune.splsda needs to be performed prior to the sPLS-DA analysis to choose the parameters on a grid of keepX values (make sure you choose the appropriate M fold cross-validation and provide sufficient **nrepeat** in the evaluation model, except for **‘loo’** where it can only be run on 1 repeat), also check the stability of the features selected during the cross-validation process.
+
+```{r tune splsda}
+# this chunk takes ~2 min to run with 6.3.0
+set.seed(33)  # for reproducible results for this code
+koren.tune.splsda = tune.splsda(koren.TSS, 
                           Y = Y, 
                           ncomp = 3, 
                           multilevel = NULL, 
@@ -103,125 +119,152 @@ splsda.tune = tune.splsda(koren.TSS,
                           validation = c('Mfold'), 
                           folds = 5, 
                           dist = 'max.dist', # prediction distance can be chosen according to tune.plsda results
-                          nrepeat = 10)
+                          nrepeat = 10,
+                          progressBar = FALSE)
 # may show some convergence issues for some of the cases, it is ok for tuning
 ```
 
-```{r some splsda outputs, include=FALSE}
-# To gain some computing time on the tuning, directly load the data
-load('Koren/KOREN-tune-SPLSDA.RData')
+
+```{r echo=FALSE}
+kable(head(koren.tune.splsda$error.rate), caption = 'sPLSDA tuning: Balanced Error rate per tested keepX on each component')
 ```
 
-Our tuning indicate the following optimal keepX to select on each component:
-
 ```{r}
-splsda.tune$choice.keepX
+plot(koren.tune.splsda)
 ```
 
-The following command line will output the error rate according to the number of variable selected:
+The graphic above shows that the error rate decreases when 2 components are included in sPLS-DA, wherea the third component seems to add noise. The diamonds indicate the optimal **keepX** variables to select on each component based on the balanced error rate. 
 
 ```{r}
-kable(head(splsda.tune$error.rate))
-
-# The plot will show the average error rate with respect to the keepX values tested:
-plot(splsda.tune)
+# optimal number of variables to select on 2 comps:
+select.keepX = koren.tune.splsda$choice.keepX[1:2]
+select.keepX
 ```
 
 ## sPLS-DA
 
-We now run a sPLS-DA **non-multilevel** analysis. Note: with sPLS-DA we can only choose a CLR transformation (see details in our manuscript [here](http://mixomics.org/mixmc/multi-level-example/(https://scholar.google.com/scholar_url?url=http://biorxiv.org/content/biorxiv/early/2016/03/16/044206.full.pdf&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=0dA7WPvyNIKvjAHq1LHYDw&scisig=AAGBfm04GmTLnXd5EizkZPC1ZlPH9IRsfA))). 
+We now run a classic sPLS-DA.
+
+Note: if you have not tuned your sPLSDA model (or you are unhappy with the size of the selection) you can set the optimal keepX manually, e.g.:
+```{r}
+# select.keepX = c(150, 15) # manually choose size of selection
+```
 
 
 ```{r}
-# input parameters for sPLS-DA
-# if you have not tuned the model,  you can set the optimal keepX to our results:
-
-choice.keepX = c(150, 15, 145) # optimal keepX values according to the tuning criterion above.
-
-choice.ncomp = length(choice.keepX) # the number of components
-
-
 # the sPLS-DA
-res.splsda = splsda(X = koren.TSS, 
-                    Y = Y,
-                    ncomp = choice.ncomp,
-                    keepX = choice.keepX,
-                    logratio= "CLR")
+koren.splsda = splsda(X = koren.TSS,  Y = Y, ncomp = 2, keepX = select.keepX, logratio= "CLR")
 ```
 
 ## sPLS-DA plots 
 
-The sample plot below shows the sPLS-DA  first two components. The ellipse are 0.95 confidence interval ellipse for each body site.
+The sample plot below shows the sPLS-DA first two components. The ellipse are 0.95 confidence interval ellipse for each body site.
 
 ```{r splsda-plot, echo= TRUE}
-#for component 1 & 2
-plotIndiv(res.splsda, 
+plotIndiv(koren.splsda, 
           ind.names = F, 
           col.per.group = color.mixo(1:3), 
           comp = c(1,2),
           pch = 16, 
           ellipse = TRUE,
-          legend = TRUE)
+          legend = TRUE,
+          title = 'Koren, sPLS-DA comp 1-2')
 ```
 
-The code below outputs the first selected OTUs and their coefficient (from the loading vector) on the first component:
-
-```{r,, echo=TRUE}
-head(selectVar(res.splsda, comp = 1)$value)  # just a head
-```
-
-```{r, echo= FALSE}
-# save the OTU selected on each component
-list.splsda = list()
-for(k in 1:choice.ncomp){
-  list.splsda[[k]] = selectVar(res.splsda, comp = k)$name
-}
-```
 
 ## Evaluating sPLS-DA
-The classification performance of the final sPLS-DA model can be assessed using the function *perf()*. The mean error rates per component and per prediction distance are output.The prediction distance can also be specified, see **?perf**. 
 
-``` {r, inlcude = TRUE}
-splsda.perf = perf(res.splsda, validation = 'Mfold', folds = 5, 
-                   progressBar = FALSE, nrepeat = 10)
+The classification performance of the sPLS-DA multilevel model can be assessed using the function **perf**. The mean error rates per component are output and type of distance are output. Here do not hesitate to increase the number of repeats for accurate estimations.
 
-splsda.perf$error.rate
 
-head(splsda.perf$error.rate.class)
 
-plot(splsda.perf)
+```{r Evaluating sPLS-DA, echo=TRUE}
+set.seed(34)  # for reproducible results for this code
+
+koren.perf.splsda = perf(koren.splsda, validation = 'Mfold', folds = 5, 
+                   progressBar = FALSE, nrepeat = 10, dist = 'max.dist')
+```
+The mean overall and Balanced Error Rate are output for each component.
+
+```{r}
+koren.perf.splsda$error.rate
+
+plot(koren.perf.splsda)
 ```
 
-## Clustered Image maps
+## OTU selection and plots
 
-We represent clustered image maps (with Euclidian distance, Ward linkage set by default) for the OTU selected on each sPLS-DA component. The abundance values that are displayed are the normalised, log ratio transformed values. All OTUs selected by the sPLS-DA model are displayed, other options can include a specific component, see ?cim
+The sPLS-DA selects the most discriminative OTUs that best characterize each body site. The contribution plots below display the abundance of each OTU (large abundance = large absolute value) and in which body site they are the most abundant for each sPLS-DA component. The contribution plots need to be interpreted in combination with the sample plot below to understand the similarities between body sites, in addition to answer the question 'which bacteria characterise those body sites?'
 
-```{r include= FALSE}
-dev.off()
+<br>
+The code below outputs the first selected OTUs and their coefficient (from the loading vector) on the first component. Consider the absolute value as an indication of the importance of the OTU in the microbial signature, while the sign generally indicates positive / negative correlations between the OTUs, relatively to the proportions of the others (see also with a **plotVar** output).
+
+For example on comp 2:
+
+```{r}
+head(selectVar(koren.splsda, comp = 2)$value) 
 ```
 
-```{r echo=TRUE, fig.height= 8, fig.width=9}
-cim(res.splsda, comp = 1, row.sideColors = color.mixo(Y))
+To this list of selected OTU displayed from the most important to the least important we can combine their stability measure from the **perf** output (i.e. how often were they selected across the different CV runs).
+
+```{r, results='hide'}
+selected.OTU.comp2 = selectVar(koren.splsda, comp = 2)$name
+# stability of OTUs selected on comp 2
+koren.perf.splsda$features$stable[[2]][selected.OTU.comp2]
 ```
 
-## Contribution plots
 
-The sPLS-DA selects the most discriminative OTUs that best characterize each body site indicated in Y. The contribution plots below displays the importance of each OTU in the sPLS-DA model and in which body site they are the most abundant (contrib = 'max'), according to the median (method = 'median'). Other options are available, see ?plotLoadings. 
+```{r, echo = FALSE}
+kable(as.data.frame(koren.perf.splsda$features$stable[[2]][selected.OTU.comp2][1:15]), caption = 'Stability of OTUs selected on comp 2, ranked by decreasing importance in sPLS-DA (only the top 15 are output).')
 
-
-```{r echo= TRUE}
-#for component 1
-plotLoadings(res.splsda, comp = 1, method = 'mean', contrib = 'max')
 ```
+
+The plotLoadings shows that all OTUs selected on the first component are mostly highly abundant in faecal (based on their mean per body site). Let's display only the top 50 selected OTUs
+
+```{r}
+plotLoadings(koren.splsda, comp = 1, method = 'mean', contrib = 'max',
+             size.title = 1, ndisplay = 50, size.name = 0.5, size.legend = 0.3)
+
+```
+
+The plotLoadings shows that all OTUs selected on the second component are highly abundant in the tow other bodysites. The sign indicates the opposition between body sites.
+
+```{r}
+plotLoadings(koren.splsda, comp = 2, method = 'mean', contrib = 'max',
+             size.title = 1, size.name = 0.5, size.legend = 0.3)
+
+```
+
+We could improve the plot by showing only the top OTUs, and with their names at the Family level, followed by their OTU ID
+```{r}
+name.var = paste(Koren.16S$taxonomy[, 'Family'], colnames(koren.TSS), sep = '|')
+
+plotLoadings(koren.splsda, comp = 2, method = 'mean', contrib = 'max', name.var = name.var, size.title = 1, size.name = 0.5, size.legend = 0.3)
+
+```
+
+
+## Clustered Image Map 
+A heatmap will also help understanding the microbial signature. 
+We represent clustered image maps (with Euclidian distance, Ward linkage set by default) for the OTUs selected on each sPLS-DA component. The abundance values that are displayed are the normalised, log ratio transformed values. All OTUs selected by the sPLS-DA model are displayed, other options can include a specific component, or a specific cutoff of 'association', see ?cim.
+
+
+```{r CIM, fig.height= 8, fig.width= 8}
+#CIM plot
+cim(koren.splsda, row.sideColors = color.mixo(Y))
+```
+
 
 # References
 
 1. [Koren, O., Knights, D., Gonzalez, A., Waldron, L., Segata, N., Knight, R., Huttenhower, C. and Ley, R.E., 2013. A guide to enterotypes across the human body: meta-analysis of microbial community structures in human microbiome datasets. PLoS Comput Biol, 9(1), p.e1002863](https://scholar.google.com/scholar_url?url=http://journals.plos.org/ploscompbiol/article%3Fid%3D10.1371/journal.pcbi.1002863&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=bYQ_WKrEOsyT2AaftoLgDw&scisig=AAGBfm1kEjjIPN3hqJ9-wahg1glEXmYm_A)
 
-2. [Lê Cao, K.-A., Boitard, S., Besse, P.: Sparse PLS Discriminant Analysis: biologically relevant feature selection and graphical displays for multiclass problems. BMC bioinformatics 12(1), 253 (2011)](https://scholar.google.com/scholar_url?url=http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-253&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=y-g8WO2YMoKvjAHq1LHYDw&scisig=AAGBfm36JhKbmj5fZ9yykLKRPPqXYmyvPg)
 
-3. [Lê Cao KA, Costello ME, Lakis VA, Bartolo F, Chua XY, et al. (2016) MixMC: A Multivariate Statistical Framework to Gain Insight into Microbial Communities. PLOS ONE 11(8): e0160169. doi: 10.1371/journal.pone.0160169](http://journals.plos.org/plosone/article/metrics?id=10.1371/journal.pone.0160169)
+2. [Lê Cao KA, Costello ME, Lakis VA, Bartolo F, Chua XY, et al. (2016) MixMC: A Multivariate Statistical Framework to Gain Insight into Microbial Communities. PLOS ONE 11(8): e0160169. doi: 10.1371/journal.pone.0160169](http://journals.plos.org/plosone/article/metrics?id=10.1371/journal.pone.0160169)
 
-4. [Asnicar, F., Weingart, G., Tickle, T.L., Huttenhower, C. and Segata, N., 2015. Compact graphical representation of phylogenetic data and metadata with GraPhlAn. PeerJ, 3, p.e1029.](https://scholar.google.com/scholar_url?url=https://peerj.com/articles/1029/&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=EtlAWM2XI46SjAGO2Jm4CQ&scisig=AAGBfm2IvCuL0Bjd50u1GMsL3UJhsF6JPQ)
+3. [Lê Cao, K.-A., Boitard, S., Besse, P.: Sparse PLS Discriminant Analysis: biologically relevant feature selection and graphical displays for multiclass problems. BMC bioinformatics 12(1), 253 (2011)](https://scholar.google.com/scholar_url?url=http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-253&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=y-g8WO2YMoKvjAHq1LHYDw&scisig=AAGBfm36JhKbmj5fZ9yykLKRPPqXYmyvPg)
+
+
+4. [Rohart F, Gautier B, Singh A, Lê Cao K-A (2017). mixOmics: an R package for 'omics feature selection and multiple data integration.](http://mixomics.org/a-propos/publications/)
 
 

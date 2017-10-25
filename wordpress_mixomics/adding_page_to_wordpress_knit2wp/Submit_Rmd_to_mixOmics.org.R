@@ -99,8 +99,19 @@ knit2wp(input = 'MINT_stemcells.Rmd', title = 'Case study: stem cells',  shortco
 #         mixMC tab: first trash the existing files!
 # ======================================
 
+knit2wp(input = 'mixMC_parent.Rmd', title = 'mixMC',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+knit2wp(input = 'mixMC_Normalisation.Rmd', title = 'Pre-processing',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+knit2wp(input = 'mixMC_nonmultilevel_Koren.Rmd', title = 'Case study: Koren diverse bodysites',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
 knit2wp(input = 'mixMC_Multilevel_HMP_16S_Data.Rmd', title = 'Case study: HMP bodysites repeated measures',  shortcode = FALSE, publish = FALSE, 
         action = c("newPage"))
 
 
+knit2wp(input = 'mixKernelUsersGuide.Rmd', title = 'Case study: Tara ocean with mixKernel',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
 
