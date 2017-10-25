@@ -247,9 +247,10 @@ cpus
         is.na.A = is.na(X)
         
         ind.NA = which(apply(is.na.A, 1, sum) > 0) # calculated only once
+        ind.NA.col = which(apply(is.na.A, 2, sum) >0) # indice of the col that have missing values. used in the deflation
     } else {
         is.na.A = NULL
-        ind.NA = NULL
+        ind.NA = ind.NA.col = NULL
     }
     #-- NA calculation      ----------------------------------------------------#
     #---------------------------------------------------------------------------#
@@ -321,7 +322,7 @@ cpus
             test.keepX = test.keepX, measure = measure, dist = dist, scale=scale,
             near.zero.var = near.zero.var, progressBar = progressBar, tol = tol, max.iter = max.iter, auc = auc,
             cl = cl, parallel = parallel,
-            misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA, class.object="splsda")
+            misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA, ind.NA.col = ind.NA.col, class.object="splsda")
             
             # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
             mat.error.rate[[comp]] = result[[measure]]$mat.error.rate[[1]]
