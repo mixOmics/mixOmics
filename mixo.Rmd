@@ -1,7 +1,7 @@
 ---
 title: "mixOmics 6.3.0"
 author: "F.Rohart"
-date: "05 Oct 2017"
+date: "25 Oct 2017"
 output:
   rmdformats::readthedown:
     code_folding: hide
