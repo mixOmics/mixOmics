@@ -31,7 +31,7 @@ all.outputs = TRUE)
 \item{Y}{A factor or a class vector indicating the discrete outcome of each sample.}
 \item{indY}{To be supplied if Y is missing, indicates the position of the factor / class vector outcome in the list \code{X}}
 \item{ncomp}{the number of components to include in the model. Default to 2. Applies to all blocks.}
-\item{keepX}{A list of same length as X.  Each entry is the number of variables to select in each of the blocks of X for each component. In the case where keepX.constraint is specified it should indicate the number of variables to select on the remaining components. By default all variables are kept in the model.}
+\item{keepX}{A list of same length as X.  Each entry is the number of variables to select in each of the blocks of X for each component. By default all variables are kept in the model.}
 \item{design}{numeric matrix of size (number of blocks in X) x (number of blocks in X) with values between 0 and 1. Each value indicates the strenght of the relationship to be modelled between two blocks; a value of 0 indicates no relationship, 1 is the maximum value. If \code{Y} is provided instead of \code{indY}, the \code{design} matrix is changed to include relationships to \code{Y}. }
 \item{scheme}{Either "horst", "factorial" or "centroid". Default = \code{horst}, see reference.}
 \item{mode}{character string. What type of algorithm to use, (partially) matching
@@ -65,10 +65,8 @@ algorithm \code{("classic")} (see References and \code{?pls} for more details).
 Note that our method is partly based on sparse Generalised Canonical Correlation Analysis and differs from the MB-PLS approaches proposed by Kowalski et al., 1989, J Chemom 3(1), Westerhuis et al., 1998, J Chemom, 12(5) and sparse variants Li et al., 2012, Bioinformatics 28(19); Karaman et al (2014), Metabolomics, 11(2);
 Kawaguchi et al., 2017, Biostatistics.
 
-Constraint model. To improve performance, a new argument was recently added to fit a constraint model (\code{constraint=TRUE)}. The model is run on the optimal list of selected features \code{keepX.constraint} from the previous components, as opposed to considering only a specified number of features \code{keepX}.Our experience has shown that the constraint tuning and models can substantially improve the performance of the methods (see also \code{\link{tune.block.splsda}})
 
-
-Variable selection is performed on each component for each block of \code{X} if specified, via input parameter \code{keepX} and \code{keepX.constraint}for a constraint model. \code{keepX.constraint} specifies variable names to be selected in the previous components of the model (see example).
+Variable selection is performed on each component for each block of \code{X} if specified, via input parameter \code{keepX}.
 }
 
 
@@ -81,7 +79,6 @@ that contains the following components:
 \item{ncomp}{the number of components included in the model for each block.}
 \item{mode}{the algorithm used to fit the model.}
 \item{keepX}{Number of variables used to build each component of each block}
-\item{keepX.constraint}{list indicating which variables (indices) where constrained to be used to build the first component for each block}
 \item{variates}{list containing the variates of each block of X.}
 \item{loadings}{list containing the estimated loadings for the variates.}
 \item{names}{list containing the names to be used for individuals and variables.}

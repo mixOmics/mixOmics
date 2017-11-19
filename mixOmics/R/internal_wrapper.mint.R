@@ -34,9 +34,7 @@
 # Y: numeric vector or matrix of responses
 # ncomp: the number of components to include in the model. Default to 2.
 # study: grouping factor indicating which samples are from the same study
-# keepX.constraint: A list containing which variables of X are to be kept on each of the first PLS-components.
-# keepY.constraint: A list containing which variables of Y are to be kept on each of the first PLS-components
-# keepX: number of \eqn{X} variables kept in the model on the last components (once all keepX.constraint[[i]] are used).
+# keepX: number of \eqn{X} variables kept in the model on the last components.
 # keepY: number of \eqn{Y} variables kept in the model on the last components.
 # mode: input mode, one of "canonical", "classic", "invariant" or "regression". Default to "regression"
 # scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).

@@ -54,9 +54,9 @@ to zero means and unit variances (default: TRUE)}
 \details{
 This function performs one of the PLS derived methods included in the mixOmics package that is the most appropriate for your input data, one of (mint).(block).(s)pls(da).
 
-If your input data \code{X} is a matrix, then the algorithm is directed towards one of (mint).(s)pls(da) depending on your input data \code{Y} (factor for the discrete outcome directs the algorithm to DA analysis) and whether you input a \code{study} parameter (MINT analysis) or a \code{keepX}/\code{keepX.constraint} parameter (sparse analysis).
+If your input data \code{X} is a matrix, then the algorithm is directed towards one of (mint).(s)pls(da) depending on your input data \code{Y} (factor for the discrete outcome directs the algorithm to DA analysis) and whether you input a \code{study} parameter (MINT analysis) or a \code{keepX} parameter (sparse analysis).
 
-If your input data \code{X} is a list of matrices, then the algorithm is directed towards one of (mint).block.(s)pls(da) depending on your input data \code{Y} (factor for the discrete outcome directs the algorithm to DA analysis) and whether you input a \code{study} parameter (MINT analysis) or a \code{keepX}/\code{keepX.constraint} parameter (sparse analysis).
+If your input data \code{X} is a list of matrices, then the algorithm is directed towards one of (mint).block.(s)pls(da) depending on your input data \code{Y} (factor for the discrete outcome directs the algorithm to DA analysis) and whether you input a \code{study} parameter (MINT analysis) or a \code{keepX} parameter (sparse analysis).
 
 More details about the PLS modes in \code{?pls}.
 

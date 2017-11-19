@@ -515,7 +515,7 @@ penalty=NULL, all.outputs = FALSE)
             
             if(length(ind.NA[[q]])>0) # should always be true
             {
-                temp = drop(loadings.temp) %o% rep(1, length(ind.NA[[q]]))
+                temp = drop(loadings.temp) %o% rep(1, length(ind.NA[[q]])) #p*n -> p * where there are NA
                 temp[t(is.na.A[[q]][ind.NA[[q]],,drop=FALSE])] = 0
                 d.variates.A.norm[ind.NA[[q]]] = apply(temp,2, crossprod)
             }

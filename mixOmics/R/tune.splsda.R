@@ -149,7 +149,6 @@ cpus
     #if ((!is.null(already.tested.X)) && (length(already.tested.X) != (ncomp - 1)) )
     #stop("The number of already tested parameters should be NULL or ", ncomp - 1, " since you set ncomp = ", ncomp)
     
-    constraint = FALSE # kept in the code so far, will probably get remove later on
     if (missing(already.tested.X))
     {
         already.tested.X = NULL
@@ -158,7 +157,7 @@ cpus
         stop("''already.tested.X' must be a vector of keepX values")
 
         if(is.list(already.tested.X))
-        stop("''already.tested.X' must be a vector of keepX values since 'constraint' is set to FALSE")
+        stop("''already.tested.X' must be a vector of keepX values")
 
         message(paste("Number of variables selected on the first", length(already.tested.X), "component(s):", paste(already.tested.X,collapse = " ")))
     }
