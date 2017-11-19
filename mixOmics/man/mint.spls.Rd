@@ -33,8 +33,8 @@ all.outputs = TRUE)
 one of \code{"regression"}, \code{"canonical"}, \code{"invariant"} or \code{"classic"}.
 See Details.}
 \item{study}{grouping factor indicating which samples are from the same study}
-\item{keepX}{numeric vector indicating the number of variables to select in \code{X} on each component, or remaining components should \code{keepX.constraint} be provided. By default all variables are kept in the model.}
-\item{keepY}{numeric vector indicating the number of variables to select in \code{Y} on each component, or remaining components should \code{keepY.constraint} be provided. By default all variables are kept in the model.}
+\item{keepX}{numeric vector indicating the number of variables to select in \code{X} on each component. By default all variables are kept in the model.}
+\item{keepY}{numeric vector indicating the number of variables to select in \code{Y} on each component. By default all variables are kept in the model.}
 \item{scale}{boleean. If scale = TRUE, each block is standardized
 to zero means and unit variances. Default = \code{TRUE}.}
 \item{tol}{Convergence stopping value.}
@@ -55,12 +55,10 @@ algorithms are available: PLS regression \code{("regression")}, PLS canonical an
 \code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS
 algorithm \code{("classic")} (see References and more details in \code{?pls}).
 
-Constraint model (\code{constraint=TRUE)}. The model is run on the optimal list of selected features \code{keepX.constraint} from the previous components, as opposed to considering only a specified number of features \code{keepX}.
 
 
-Variable selection is performed on each component for each block of \code{X}, and for \code{Y} if specified, via input parameter \code{keepX} and \code{keepY}, and \code{keepX.constraint} and \code{keepY.constraint} for a constraint model. \code{keepX.constraint} and \code{keepY.constraint} specify variable names to be selected in the previous components of the model.
+Variable selection is performed on each component for each block of \code{X}, and for \code{Y} if specified, via input parameter \code{keepX} and \code{keepY}.
 
-Note that both \code{keepX.constraint} and \code{keepY.constraint} must have same length.
 
 Useful graphical outputs are available, e.g. \code{\link{plotIndiv}}, \code{\link{plotLoadings}}, \code{\link{plotVar}}.
 }

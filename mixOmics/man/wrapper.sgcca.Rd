@@ -28,7 +28,7 @@ all.outputs = TRUE)
 \item{design}{numeric matrix of size (number of blocks in X) x (number of blocks in X) with values between 0 and 1. Each value indicates the strenght of the relationship to be modelled between two blocks using sGCCA; a value of 0 indicates no relationship, 1 is the maximum value. If \code{Y} is provided instead of \code{indY}, the \code{design} matrix is changed to include relationships to \code{Y}. }
   \item{penalty}{numeric vector of length the number of blocks in \code{X}. Each penalty parameter will be applied on each block and takes the value between 0 (no variable selected) and 1 (all variables included).}
 \item{ncomp}{the number of components to include in the model. Default to 1.}
-\item{keepX}{ A vector of same length as X.  Each entry keepX[i] is the number of X[[i]]-variables kept in the model on the last components (once all keepX.constraint[[i]] are used).}
+\item{keepX}{ A vector of same length as X.  Each entry keepX[i] is the number of X[[i]]-variables kept in the model.}
 \item{scheme}{Either "horst", "factorial" or "centroid"
   (Default: "horst").}
 \item{mode}{character string. What type of algorithm to use, (partially) matching

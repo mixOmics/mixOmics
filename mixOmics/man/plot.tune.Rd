@@ -65,7 +65,7 @@ type.id = stemcells$celltype
 exp = stemcells$study
 
 out = tune(method="mint.splsda", X=data,Y=type.id, ncomp=2, study=exp, test.keepX=seq(1,10,1))
-out$choice.keepX.constraint
+out$choice.keepX
 
 plot(out)
 

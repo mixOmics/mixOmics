@@ -380,7 +380,6 @@ cpus,
     
     #-- tells which variables are selected in X and in Y --#
 
-    #keepX.constraint = NULL
     if (any(class(object) == "splsda"))
     {
         keepX = object$keepX
@@ -605,7 +604,6 @@ cpus,
     stopCluster(cl)
 
     names(prediction.all) = paste('comp', 1:ncomp)
-    
     
     # calculating the number of optimal component based on t.tests and the error.rate.all, if more than 3 error.rates(repeat>3)
     ncomp_opt = matrix(NA, nrow = length(measure), ncol = length(dist),
