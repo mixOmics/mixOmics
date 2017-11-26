@@ -37,7 +37,7 @@ A circle highlights the optimal number of variables oneach component.
 
 }
 
-\author{Kim-Anh Le Cao, Florian Rohart, Francois Bartolo.}
+\author{Kim-Anh Lê Cao, Florian Rohart, Francois Bartolo.}
 
 \seealso{ \code{\link{tune.mint.splsda}}, \code{\link{tune.splsda}} \code{\link{tune.block.splsda}} and http://www.mixOmics.org for more details.}
 

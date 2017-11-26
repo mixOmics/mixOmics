@@ -81,10 +81,10 @@ that contains the following components:
   Generalized Canonical Correlation Analysis,
   Psychometrika, Vol. 76, Nr 2, pp 257-284.
   
-  Tenenhaus A., Phillipe C., Guillemot, V., Le Cao K-A., Grill J., Frouin, V. Variable Selection For Generalized Canonical Correlation Analysis. 2013. (in revision)
+  Tenenhaus A., Phillipe C., Guillemot, V., Lê Cao K-A., Grill J., Frouin, V. Variable Selection For Generalized Canonical Correlation Analysis. 2013. (in revision)
 }
 
-\author{Arthur Tenenhaus, Vincent Guillemot and Kim-Anh Le Cao.}
+\author{Arthur Tenenhaus, Vincent Guillemot and Kim-Anh Lê Cao.}
 
 \seealso{\code{\link{wrapper.sgcca}}, \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{wrapper.rgcca}} and \url{http://www.mixOmics.org} for more details.}
 
