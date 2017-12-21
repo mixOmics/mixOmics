@@ -99,6 +99,7 @@ splsda,
 study_split,
 tune,
 tune.mint.splsda,
+tune.spls,
 tune.splsda,
 tune.block.splsda,
 tune.splslevel,
@@ -139,6 +140,7 @@ S3method(plot, perf.sgccda.mthd)
 S3method(plot, rcc)
 S3method(plot, pca)
 S3method(plot, sgccda)
+S3method(plot, tune.spls)
 S3method(plot, tune.splsda)
 S3method(plot, tune.block.splsda)
 
