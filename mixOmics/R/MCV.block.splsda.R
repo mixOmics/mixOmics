@@ -209,7 +209,7 @@ parallel
             #-- near.zero.var ----------------------#
             
             # first remove variables with no variance inside each X.train/X.test
-            var.train = lapply(X, function(x){apply(x, 2, var)})
+            var.train = lapply(X.train, function(x){apply(x, 2, var)})
             for(q in 1:length(X))
             {
                 ind.var = which(var.train[[q]] == 0)
