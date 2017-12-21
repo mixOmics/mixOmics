@@ -18,7 +18,8 @@ tol = 1e-06,
 max.iter = 100,
 near.zero.var = FALSE,
 logratio="none",
-multilevel=NULL)  
+multilevel=NULL,
+all.outputs = TRUE)
 }
 
 \arguments{
@@ -36,6 +37,7 @@ to zero means and unit variances (default: TRUE)}
 \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations. Default value is FALSE}
 \item{logratio}{one of ('none','CLR'). Default to 'none'}
 \item{multilevel}{Design matrix for repeated measurement analysis, where multlevel decomposition is required. For a one factor decomposition, the repeated measures on each individual, i.e. the individuals ID is input as the first column. For a 2 level factor decomposition then 2nd AND 3rd columns indicate those factors. See examples in \code{?spls}).}
+\item{all.outputs}{boolean. Computation can be faster when some specific (and non-essential) outputs are not calculated. Default = \code{TRUE}.}
 }
 
 \details{
@@ -47,10 +49,15 @@ The type of algorithm to use is specified with the \code{mode} argument. Four PL
 algorithms are available: PLS regression \code{("regression")}, PLS canonical analysis 
 \code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS 
 algorithm \code{("classic")} (see References). Different modes relate on how the Y matrix is deflated across the iterations of the algorithms - i.e. the different components.
-- Regression mode: the Y matrix is deflated with respect to the information extracted/modelled from the local regression on X. Here the goal is to predict Y from X (Y and X play an assymetric role). Consequently the latent variables computed to predict Y from X are different from those computed to preict X from Y.
-- Canonical mode: the Y matrix is deflated to the information extracted/modelled from the local regression on Y. Here X and Y play a symetric role and the goal is similar to a Canonical Correlation type of analysis.
+
+- Regression mode: the Y matrix is deflated with respect to the information extracted/modelled from the local regression on X. Here the goal is to predict Y from X (Y and X play an asymmetric role). Consequently the latent variables computed to predict Y from X are different from those computed to predict X from Y.
+
+- Canonical mode: the Y matrix is deflated to the information extracted/modelled from the local regression on Y. Here X and Y play a symmetric role and the goal is similar to a Canonical Correlation type of analysis.
+
 - Invariant mode: the Y matrix is not deflated
+
 - Classic mode: is similar to a regression mode. It gives identical results for the variates and loadings associated to the X data set, but differences for the loadings vectors associated to the Y data set (different normalisations are used). Classic mode is the PLS2 model as defined by Tenenhaus (1998), Chap 9.
+
 Note that in all cases the results are the same on the first component as deflation only starts after component 1.
 
 The estimation of the missing values can be performed 
@@ -94,7 +101,7 @@ Wold H. (1966). Estimation of principal components and related models by iterati
 Abdi H (2010). Partial least squares regression and projection on latent structure regression (PLS Regression). \emph{Wiley Interdisciplinary Reviews: Computational Statistics}, 2(1), 97-106.
 }
 
-\author{Sebastien Dejean and Ignacio Gonzalez and Kim-Anh Le Cao.}
+\author{Sébastien Déjean and Ignacio González and Kim-Anh Lê Cao.}
 
 \seealso{\code{\link{spls}}, \code{\link{summary}}, 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org for more details.}

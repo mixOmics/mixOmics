@@ -3,10 +3,11 @@ title: "MINT_stemcells"
 author: "Kim-Anh Lê Cao, Florian Rohart, Danielle Davenport"
 date: "10 August 2017"
 output:
+  pdf_document: default
   html_document:
     code_folding: show
-    highlight: haddock
     df_print: kable
+    highlight: haddock
 ---
 
 ```{r global_options, include=FALSE}
@@ -21,14 +22,14 @@ knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, fig.a
 Here, we illustrate a supervised MINT analysis on a subset of stem cells transcriptomics data, see *?stemcells*.  The full data set was analysed in [1].
 
 
-Load the latest version of [mixOmics](https://cran.r-project.org/web/packages/mixOmics/index.html) (check the version!).
+Load the latest version of [mixOmics](https://cran.r-project.org/web/packages/mixOmics/index.html) (check the version at the sessionInfo() output at the end of this page).
 
-```{r message = TRUE}
+```{r message = FALSE}
 library(mixOmics)
 ```
 
 # Rscript
-The R script is available at [this link (R script and RData)](http://mixomics.org/wp-content/uploads/2017/08/MINT_stemcells.zip) 
+The R script is available at [this link](http://mixomics.org/wp-content/uploads/2017/10/MINT_stemcells.zip) 
 
 
 #Data

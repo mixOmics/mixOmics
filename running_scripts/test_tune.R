@@ -15,6 +15,7 @@ progressBar = FALSE
 
 # splsda
 # ----
+#library(mixOmicsDD)
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 # Y will be transformed as a factor in the function,
@@ -23,7 +24,20 @@ Y <- as.factor(breast.tumors$sample$treatment)
 
 res <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 
-tune= tune.splsda(X,Y,ncomp=1,nrepeat=5,logratio="none",test.keepX = c(5,10),folds=10,dist="max.dist", progressBar = FALSE)
+set.seed(12)
+tune= tune.splsda(X,Y,ncomp=1,nrepeat=5,logratio="none",test.keepX = c(5,10),folds=10,dist="max.dist", progressBar = TRUE)
+
+set.seed(1)
+system.time(tune1 <- tune.splsda(X,Y,ncomp=3,nrepeat=5,logratio="none",test.keepX = seq(5,100,5),folds=10,dist="max.dist", progressBar = TRUE,cpus=4))
+
+set.seed(1)
+system.time(tune2 <- tune.splsda(X,Y,ncomp=3,nrepeat=5,logratio="none",test.keepX = seq(5,100,5),folds=10,dist="max.dist", progressBar = TRUE))
+
+res = all.equal(tune1[-which(names(tune1)=="call")],tune2[-which(names(tune2)=="call")])
+if(!isTRUE(res))
+stop("problem parallel splsda")
+
+
 
 tune= tune.splsda(X,Y,ncomp=4,nrepeat=5,logratio="none",test.keepX = seq(1,100,5),folds=10,dist="max.dist", progressBar = FALSE, light.output=FALSE)
 
@@ -72,7 +86,7 @@ plot(tune)
 
 # mint.splsda
 # ----
-library(mixOmics)
+#library(mixOmics)
 data=stemcells$gene
 type.id=stemcells$celltype
 exp=stemcells$study
@@ -127,7 +141,7 @@ Y.temp = factor(type.id[-ind.remove])
 study.temp = exp[-ind.remove]
 
 res=mint.splsda(X=X.temp,Y=Y.temp,ncomp=3,near.zero.var=FALSE,keepX=c(10,5,15),study=study.temp)
-tt=tune.mint.splsda(X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = progressBar,)
+tt=tune.mint.splsda(X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = progressBar)
 tt=tune(method="mint.splsda",X=X.temp,Y=Y.temp,ncomp=2,near.zero.var=FALSE,study=study.temp,test.keepX=seq(1,100,10), progressBar = progressBar)
 
 

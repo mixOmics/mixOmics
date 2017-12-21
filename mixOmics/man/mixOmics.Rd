@@ -13,8 +13,6 @@ Y,
 indY,
 study,
 ncomp,
-keepX.constraint,
-keepY.constraint,
 keepX,
 keepY,
 design,
@@ -22,10 +20,8 @@ tau = NULL,# rgcca, number between 0,1 or "optimal"
 scheme, 
 mode,
 scale,
-bias,
 init,
 tol =  1e-06,
-verbose = FALSE,
 max.iter = 100,
 near.zero.var = FALSE)
 
@@ -37,8 +33,6 @@ near.zero.var = FALSE)
 \item{indY}{To supply if Y is missing, indicates the position of the outcome in the list X}
 \item{study}{grouping factor indicating which samples are from the same study}
 \item{ncomp}{If \code{X} is a data matrix, \code{ncomp} is a single value. If \code{X} is a list of data sets, \code{ncomp} is a numeric vector of length the number of blocks in \code{X}. The number of components to include in the model for each block (does not necessarily need to take the same value for each block).}
-\item{keepX.constraint}{A list containing which variables of X are to be kept on each of the first PLS-components}
-\item{keepY.constraint}{A list containing which variables of Y are to be kept on each of the first PLS-components}
 \item{keepX}{Number of variables to keep in the \eqn{X}-loadings}
 \item{keepY}{Number of variables to keep in the \eqn{Y}-loadings}
 \item{design}{numeric matrix of size (number of blocks) x (number of blocks) with only 0 or 1 values. A value of 1 (0) indicates a relationship (no relationship) between the blocks to be modelled. If \code{Y} is provided instead of \code{indY}, the \code{design} matrix is changed to include relationships to \code{Y}. }
@@ -51,10 +45,8 @@ one of \code{"regression"}, \code{"canonical"}, \code{"invariant"} or \code{"cla
 See Details.}
 \item{scale}{boleean. If scale = TRUE, each block is standardized
 to zero means and unit variances (default: TRUE)}
-\item{bias}{boleean. A logical value for biaised or unbiaised estimator of the var/cov (defaults to FALSE).}
 \item{init}{Mode of initialization use in the algorithm, either by Singular Value Decompostion of the product of each block of X with Y ("svd") or each block independently ("svd.single") . Default to "svd".}
 \item{tol}{Convergence stopping value.}
-\item{verbose}{if set to \code{TRUE}, reports progress on computing.}
 \item{max.iter}{integer, the maximum number of iterations.}
 \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations. Default value is FALSE}
 }
@@ -62,9 +54,9 @@ to zero means and unit variances (default: TRUE)}
 \details{
 This function performs one of the PLS derived methods included in the mixOmics package that is the most appropriate for your input data, one of (mint).(block).(s)pls(da).
 
-If your input data \code{X} is a matrix, then the algorithm is directed towards one of (mint).(s)pls(da) depending on your input data \code{Y} (factor for the discrete outcome directs the algorithm to DA analysis) and whether you input a \code{study} parameter (MINT analysis) or a \code{keepX}/\code{keepX.constraint} parameter (sparse analysis).
+If your input data \code{X} is a matrix, then the algorithm is directed towards one of (mint).(s)pls(da) depending on your input data \code{Y} (factor for the discrete outcome directs the algorithm to DA analysis) and whether you input a \code{study} parameter (MINT analysis) or a \code{keepX} parameter (sparse analysis).
 
-If your input data \code{X} is a list of matrices, then the algorithm is directed towards one of (mint).block.(s)pls(da) depending on your input data \code{Y} (factor for the discrete outcome directs the algorithm to DA analysis) and whether you input a \code{study} parameter (MINT analysis) or a \code{keepX}/\code{keepX.constraint} parameter (sparse analysis).
+If your input data \code{X} is a list of matrices, then the algorithm is directed towards one of (mint).block.(s)pls(da) depending on your input data \code{Y} (factor for the discrete outcome directs the algorithm to DA analysis) and whether you input a \code{study} parameter (MINT analysis) or a \code{keepX} parameter (sparse analysis).
 
 More details about the PLS modes in \code{?pls}.
 
@@ -79,30 +71,31 @@ More details about the PLS modes in \code{?pls}.
 
 \references{
 
-mixOmics manuscript:
+mixOmics article:
 
-Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration. 
+Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration. PLoS Comput Biol 13(11): e1005752
+
 
 
 MINT models:
 
-Rohart F, Eslami A, Matigian, N, Bougeard S, Le Cao K-A (2017). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. BMC Bioinformatics 18:128.
+Rohart F, Eslami A, Matigian, N, Bougeard S, Lê Cao K-A (2017). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. BMC Bioinformatics 18:128.
 
 Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2013). Multi-group PLS Regression: Application to Epidemiology. In New Perspectives in Partial Least Squares and Related Methods, pages 243-255. Springer.
 
 
 Integration of omics data sets:
 
-Singh A, Gautier B, Shannon C, Vacher M, Rohart F, Tebbutt S, Le Cao K-A. DIABLO: an integrative, multi-omics, multivariate method for multi-group classification. \url{http://biorxiv.org/content/early/2016/08/03/067611}
+Singh A, Gautier B, Shannon C, Vacher M, Rohart F, Tebbutt S, Lê Cao K-A. DIABLO: an integrative, multi-omics, multivariate method for multi-group classification. \url{http://biorxiv.org/content/early/2016/08/03/067611}
 
-Le Cao, K.-A., Martin, P.G.P., Robert-Granie, C. and Besse, P. (2009). Sparse canonical methods
+Lê Cao, K.-A., Martin, P.G.P., Robert-Granie, C. and Besse, P. (2009). Sparse canonical methods
 for biological data integration: application to a cross-platform study. \emph{BMC Bioinformatics} \bold{10}:34.
 
-Le Cao, K.-A., Rossouw, D., Robert-Granie, C. and Besse, P. (2008). A sparse PLS for variable
+Lê Cao, K.-A., Rossouw, D., Robert-Granie, C. and Besse, P. (2008). A sparse PLS for variable
 selection when integrating Omics data. \emph{Statistical Applications in Genetics and Molecular
 Biology} \bold{7}, article 35.
 
-Tenenhaus A., Phillipe C., Guillemot V., Le Cao K-A. , Grill J. , Frouin V.  (2014), Variable selection for generalized canonical correlation analysis, \emph{Biostatistics}, doi: 10.1093/biostatistics. PMID: 24550197.
+Tenenhaus A., Phillipe C., Guillemot V., Lê Cao K-A. , Grill J. , Frouin V.  (2014), Variable selection for generalized canonical correlation analysis, \emph{Biostatistics}, doi: 10.1093/biostatistics. PMID: 24550197.
 
 Sparse SVD:
 
@@ -112,7 +105,7 @@ low rank matrix approximation. \emph{Journal of Multivariate Analysis} \bold{99}
 
 PLS-DA:
 
-Le Cao K-A, Boitard S and Besse P (2011). Sparse PLS Discriminant Analysis: biologically relevant feature selection and graphical displays for multiclass problems. BMC Bioinformatics 12:253.
+Lê Cao K-A, Boitard S and Besse P (2011). Sparse PLS Discriminant Analysis: biologically relevant feature selection and graphical displays for multiclass problems. BMC Bioinformatics 12:253.
 
 
 PLS:
@@ -125,7 +118,7 @@ Abdi H (2010). Partial least squares regression and projection on latent structu
 
 On multilevel analysis:
 
-Liquet, B., Le Cao, K.-A., Hocini, H. and Thiebaut, R. (2012) A novel approach for
+Liquet, B., Lê Cao, K.-A., Hocini, H. and Thiebaut, R. (2012) A novel approach for
 biomarker selection and the integration of repeated measures experiments from two
 platforms. \emph{BMC Bioinformatics} \bold{13}:325.
 
@@ -134,7 +127,7 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
 
 Visualisations:
 
-Gonzalez I., Le Cao K.-A., Davis, M.D. and Dejean S. (2013) Insightful graphical outputs to explore relationships between two omics data sets. BioData Mining 5:19.
+González I., Lê Cao K.-A., Davis, M.D. and Déjean S. (2013) Insightful graphical outputs to explore relationships between two omics data sets. BioData Mining 5:19.
 }
 
 \examples{

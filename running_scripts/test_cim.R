@@ -10,6 +10,7 @@ X <- nutrimouse$lipid
 Y <- nutrimouse$gene
 
 cim(cor(X, Y), cluster = "none")
+cat("\n\n")
 
 
 ## CIM representation for objects of class 'rcc'
@@ -17,6 +18,7 @@ cim(cor(X, Y), cluster = "none")
 nutri.rcc <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 
 cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6))
+cat("\n\n")
 
 #-- interactive 'zoom' available as below
 #cim(nutri.rcc, xlab = "genes", ylab = "lipids", margins = c(5, 6),
@@ -29,6 +31,7 @@ diet.col <- palette()[as.numeric(nutrimouse$diet)]
 cim(nutri.rcc, mapping = "X", row.names = nutrimouse$diet,
 row.sideColors = diet.col, xlab = "lipids",
 clust.method = c("ward", "ward"), margins = c(6, 4))
+cat("\n\n")
 
 #-- cim from Y matrix with a side bar to indicate the genotype
 geno.col = color.mixo(as.numeric(nutrimouse$genotype))

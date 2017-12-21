@@ -21,14 +21,14 @@ knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, fig.a
 Here, we illustrate PCA and sPLS-DA using the SRBCT data set, see *?srbct*.  
 
 
-Load the latest version of [mixOmics](https://cran.r-project.org/web/packages/mixOmics/index.html) (check the version!).
+Load the latest version of [mixOmics](https://cran.r-project.org/web/packages/mixOmics/index.html) (check the version ad the sessionInfo() output at the end of this page).
 
-```{r message = TRUE}
+```{r message = FALSE}
 library(mixOmics)
 ```
 
 # Rscript
-The R script is available at [this link (R script and RData)](http://mixomics.org/wp-content/uploads/2017/08/PLSDA_SRBCT.zip) 
+The R script is available at [this link](http://mixomics.org/wp-content/uploads/2017/10/PLSDA_SRBCT.zip) 
 
 
 # Data

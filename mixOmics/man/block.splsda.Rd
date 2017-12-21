@@ -14,18 +14,16 @@ block.splsda(X,
 Y,
 indY,
 ncomp = 2,
-keepX.constraint,
 keepX,
 design,
 scheme,
 mode,
 scale = TRUE,
-bias,
-init ,
+init = "svd",
 tol = 1e-06,
-verbose,
 max.iter = 100,
-near.zero.var = FALSE)
+near.zero.var = FALSE,
+all.outputs = TRUE)
 }
 
 \arguments{
@@ -33,8 +31,7 @@ near.zero.var = FALSE)
 \item{Y}{A factor or a class vector indicating the discrete outcome of each sample.}
 \item{indY}{To be supplied if Y is missing, indicates the position of the factor / class vector outcome in the list \code{X}}
 \item{ncomp}{the number of components to include in the model. Default to 2. Applies to all blocks.}
-\item{keepX.constraint}{A list of same length as X. Each entry indicates specific variables to be selected in each of the blocks of X for the first PLS-components. See details and example.}
-\item{keepX}{A list of same length as X.  Each entry is the number of variables to select in each of the blocks of X for each component. In the case where keepX.constraint is specified it should indicate the number of variables to select on the remaining components. By default all variables are kept in the model.}
+\item{keepX}{A list of same length as X.  Each entry is the number of variables to select in each of the blocks of X for each component. By default all variables are kept in the model.}
 \item{design}{numeric matrix of size (number of blocks in X) x (number of blocks in X) with values between 0 and 1. Each value indicates the strenght of the relationship to be modelled between two blocks; a value of 0 indicates no relationship, 1 is the maximum value. If \code{Y} is provided instead of \code{indY}, the \code{design} matrix is changed to include relationships to \code{Y}. }
 \item{scheme}{Either "horst", "factorial" or "centroid". Default = \code{horst}, see reference.}
 \item{mode}{character string. What type of algorithm to use, (partially) matching
@@ -42,12 +39,11 @@ one of \code{"regression"}, \code{"canonical"}, \code{"invariant"} or \code{"cla
 See Details. Default = \code{regression}.}
 \item{scale}{boleean. If scale = TRUE, each block is standardized
 to zero means and unit variances. Default = \code{TRUE}.}
-\item{bias}{boleean. A logical value for biaised or unbiaised estimator of the var/cov. Default = \code{FALSE}.}
-\item{init}{Mode of initialization use in the algorithm, either by Singular Value Decompostion of the product of each block of X with Y ("svd") or each block independently ("svd.single"). Default = \code{svd.single}.}
+\item{init}{Mode of initialization use in the algorithm, either by Singular Value Decompostion of the product of each block of X with Y ("svd") or each block independently ("svd.single"). Default = \code{svd}.}
 \item{tol}{Convergence stopping value.}
-\item{verbose}{if set to \code{TRUE}, reports progress on computing.}
 \item{max.iter}{integer, the maximum number of iterations.}
 \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Default = \code{FALSE}.}
+\item{all.outputs}{boolean. Computation can be faster when some specific (and non-essential) outputs are not calculated. Default = \code{TRUE}.}
 }
 
 
@@ -69,10 +65,8 @@ algorithm \code{("classic")} (see References and \code{?pls} for more details).
 Note that our method is partly based on sparse Generalised Canonical Correlation Analysis and differs from the MB-PLS approaches proposed by Kowalski et al., 1989, J Chemom 3(1), Westerhuis et al., 1998, J Chemom, 12(5) and sparse variants Li et al., 2012, Bioinformatics 28(19); Karaman et al (2014), Metabolomics, 11(2);
 Kawaguchi et al., 2017, Biostatistics.
 
-Constraint model. To improve performance, a new argument was recently added to fit a constraint model (\code{constraint=TRUE)}. The model is run on the optimal list of selected features \code{keepX.constraint} from the previous components, as opposed to considering only a specified number of features \code{keepX}.Our experience has shown that the constraint tuning and models can substantially improve the performance of the methods (see also \code{\link{tune.block.splsda}})
 
-
-Variable selection is performed on each component for each block of \code{X} if specified, via input parameter \code{keepX} and \code{keepX.constraint}for a constraint model. \code{keepX.constraint} specifies variable names to be selected in the previous components of the model (see example).
+Variable selection is performed on each component for each block of \code{X} if specified, via input parameter \code{keepX}.
 }
 
 
@@ -85,7 +79,6 @@ that contains the following components:
 \item{ncomp}{the number of components included in the model for each block.}
 \item{mode}{the algorithm used to fit the model.}
 \item{keepX}{Number of variables used to build each component of each block}
-\item{keepX.constraint}{list indicating which variables (indices) where constrained to be used to build the first component for each block}
 \item{variates}{list containing the variates of each block of X.}
 \item{loadings}{list containing the estimated loadings for the variates.}
 \item{names}{list containing the names to be used for individuals and variables.}
@@ -99,22 +92,23 @@ that contains the following components:
 \references{
 On multiple integration with sPLS-DA and 4 data blocks:
 
-Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Le Cao K.A. (2016).
+Singh A., Gautier B., Shannon C., Vacher M., Rohart F., Tebbutt S. and Lê Cao K.A. (2016).
 DIABLO:  multi omics integration for biomarker discovery. BioRxiv available here: \url{http://biorxiv.org/content/early/2016/08/03/067611}
 
 On data integration:
 
-Tenenhaus A., Philippe C., Guillemot V, Le Cao K.A., Grill J, Frouin V. Variable selection for generalized canonical correlation analysis. \emph{Biostatistics}. kxu001
+Tenenhaus A., Philippe C., Guillemot V, Lê Cao K.A., Grill J, Frouin V. Variable selection for generalized canonical correlation analysis. \emph{Biostatistics}. kxu001
 
-Gunther O., Shin H., Ng R. T. , McMaster W. R., McManus B. M. , Keown P. A. , Tebbutt S.J. , Le Cao K-A. ,  (2014) Novel multivariate methods for integration of genomics and proteomics data: Applications in a kidney transplant rejection study, OMICS: A journal of integrative biology, 18(11), 682-95.
+Gunther O., Shin H., Ng R. T. , McMaster W. R., McManus B. M. , Keown P. A. , Tebbutt S.J. , Lê Cao K-A. ,  (2014) Novel multivariate methods for integration of genomics and proteomics data: Applications in a kidney transplant rejection study, OMICS: A journal of integrative biology, 18(11), 682-95.
 
-mixOmics manuscript:
+mixOmics article:
 
-Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration. BioRxiv available here: \url{http://biorxiv.org/content/early/2017/02/14/108597}
+Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration. PLoS Comput Biol 13(11): e1005752
+
 
 }
 
-\author{Florian Rohart, Benoit Gautier, Kim-Anh Le Cao}
+\author{Florian Rohart, Benoit Gautier, Kim-Anh Lê Cao}
 
 \seealso{\code{\link{plotIndiv}}, \code{\link{plotArrow}}, \code{\link{plotLoadings}}, \code{\link{plotVar}},
 \code{\link{predict}}, \code{\link{perf}}, \code{\link{selectVar}}, \code{\link{block.plsda}}, \code{\link{block.spls}} and http://www.mixOmics.org/mixDIABLO for more details and examples.}
@@ -146,28 +140,6 @@ plotIndiv(TCGA.block.splsda, ind.names = FALSE)
 plotLoadings(TCGA.block.splsda, ncomp = 1, contrib = 'max')
 plotVar(TCGA.block.splsda, style = 'graphics', legend = TRUE)
 
-
-# block.splsda constraint
-# -------------
-# using the data and design from example above
-## we force the first PLS-component of X to be built with only a few variables
-# selected in the earlier example
-
-constraint.mrna.comp1 = c("EPHB3", "CBR1", "BSPRY")
-constraint.mirna.comp1  = c("hsa-mir-128-2", "hsa-mir-196b")
-constraint.prot.comp1  = c("Paxillin")
-
-TCGA.block.splsda.constraint = block.splsda(X = data, Y = breast.TCGA$data.train$subtype, ncomp = 2,
-keepX = list(mrna = 20, mirna = 20, protein = 10),
-keepX.constraint = list(mrna = list(constraint.mrna.comp1), mirna = list(constraint.mirna.comp1),
-protein =  list(constraint.prot.comp1)))
-
-# see if that subset contraint on comp 1 affected the variables selected in comp 2:
-intersect(selectVar(TCGA.block.splsda.constraint, comp = 2)$mrna$name,
-selectVar(TCGA.block.splsda, comp = 2)$mrna$name)
-
-# indices of the constraint variables on the first component
-TCGA.block.splsda.constraint$keepX.constraint
 }
 
 \keyword{regression}

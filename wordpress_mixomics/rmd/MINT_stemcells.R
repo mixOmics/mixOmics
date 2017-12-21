@@ -1,9 +1,9 @@
 ## ----global_options, include=FALSE---------------------------------------
 library(knitr)
-knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, #dev = 'jpeg',
-                      fig.show=TRUE, fig.keep = 'all', fig.height= 8, fig.width=9)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, fig.align = 'center', 
+                      fig.show=TRUE, fig.keep = 'all', out.width = '50%') 
 
-## ----message = TRUE------------------------------------------------------
+## ----message = FALSE-----------------------------------------------------
 library(mixOmics)
 
 ## ------------------------------------------------------------------------
@@ -87,9 +87,22 @@ plotIndiv(mint.splsda.res, study = 'all.partial',  title = 'MINT sPLS-DA',
 plotArrow(mint.splsda.res)
 
 ## ------------------------------------------------------------------------
+plotVar(mint.splsda.res, cex = 4)
+
+## ------------------------------------------------------------------------
 cim(mint.splsda.res, comp = 1, margins=c(10,5), 
     row.sideColors = color.mixo(as.numeric(Y)), row.names = FALSE,
     title = "MINT sPLS-DA, component 1")
+
+## ------------------------------------------------------------------------
+network(mint.splsda.res, color.node = c(color.mixo(1), color.mixo(2)), comp = 1,
+ shape.node = c("rectangle", "circle"),
+ color.edge = color.jet(50),
+ lty.edge = "solid", lwd.edge = 2,
+ show.edge.labels = FALSE, interactive = FALSE,
+ #,save = 'jpeg',    #uncomment the following if you experience margin issues with RStudio
+#name.save = network
+ )
 
 ## ------------------------------------------------------------------------
 plotLoadings(mint.splsda.res, contrib="max", method = 'mean', comp=1, 

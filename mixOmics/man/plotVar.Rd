@@ -107,9 +107,9 @@ A list containing the following components:
   \item{names}{the name of each variable, matching their coordinates values.}
 }
 
-\author{Ignacio Gonzalez, Kim-Anh Le Cao, Benoit Gautier, Florian Rohart, Francois Bartolo.}
+\author{Ignacio González, Kim-Anh Lê Cao, Benoit Gautier, Florian Rohart, Francois Bartolo.}
 
-\references{Gonzalez I., Le Cao K-A., Davis, M.J. and Dejean, S. (2012). Visualising associations between paired 'omics data sets. J. Data Mining 5:19. \url{http://www.biodatamining.org/content/5/1/19/abstract}}
+\references{González I., Lê Cao K-A., Davis, M.J. and Déjean, S. (2012). Visualising associations between paired 'omics data sets. J. Data Mining 5:19. \url{http://www.biodatamining.org/content/5/1/19/abstract}}
 
 
 \seealso{\code{\link{cim}}, \code{\link{network}}, \code{\link{par}} and http://www.mixOmics.org for more details.}
@@ -177,7 +177,7 @@ design = matrix(c(0,1,1,
 #note: the penalty parameters will need to be tuned
 wrap.result.sgcca = wrapper.sgcca(X = data, design = design, penalty = c(.3,.3, 1),
                                   ncomp = 2,
-                                  scheme = "centroid", verbose = FALSE)
+                                  scheme = "centroid")
 wrap.result.sgcca
 
 #variables selected on component 1 for each block
@@ -215,8 +215,7 @@ nutrimouse.rgcca <- wrapper.rgcca(X = data,
                                          design = design,
                                          tau = "optimal",
                                          ncomp = 2,
-                                         scheme = "centroid",
-                                         verbose = FALSE)
+                                         scheme = "centroid")
 
 plotVar(nutrimouse.rgcca, comp = c(1,2), block = c(1,2), cex = c(1.5, 1.5))
 
@@ -239,7 +238,7 @@ data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y =Y)
     #note: the tau parameter is the regularization parameter
     wrap.result.rgcca = wrapper.rgcca(X = data, design = design, tau = c(1, 1, 0),
                                       ncomp = 2,
-                                      scheme = "centroid", verbose = FALSE)
+                                      scheme = "centroid")
     #wrap.result.rgcca
     plotVar(wrap.result.rgcca, comp = c(1,2), block = c(1,2))
 }

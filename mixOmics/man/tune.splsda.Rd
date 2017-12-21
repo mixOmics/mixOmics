@@ -13,9 +13,9 @@ grid to determine optimal values for the sparsity parameters in \code{splsda}.
 \usage{
 tune.splsda(X, Y, ncomp = 1,
 test.keepX = c(5, 10, 15), already.tested.X, validation = "Mfold",
-folds = 10, dist = "max.dist", measure = "BER", auc = FALSE,
-progressBar = TRUE, max.iter = 100, near.zero.var = FALSE, nrepeat = 1,
-logratio = c('none','CLR'), multilevel = NULL, light.output = TRUE, cpus)
+folds = 10, dist = "max.dist", measure = "BER", scale = TRUE, auc = FALSE,
+progressBar = TRUE, tol = 1e-06,max.iter = 100, near.zero.var = FALSE,
+nrepeat = 1, logratio = c('none','CLR'), multilevel = NULL, light.output = TRUE, cpus)
 
 }	
 
@@ -31,8 +31,11 @@ logratio = c('none','CLR'), multilevel = NULL, light.output = TRUE, cpus)
 \item{dist}{distance metric to use for \code{splsda} to estimate the classification error rate,
 should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \code{"max.dist"} (see Details).}
 \item{measure}{Two misclassification measure are available: overall misclassification error \code{overall} or the Balanced Error Rate \code{BER}}
+\item{scale}{boleean. If scale = TRUE, each block is standardized
+to zero means and unit variances (default: TRUE)}
 \item{auc}{if \code{TRUE} calculate the Area Under the Curve (AUC) performance of the model.}
 \item{progressBar}{by default set to \code{TRUE} to output the progress bar of the computation.}
+\item{tol}{Convergence stopping value.}
 \item{max.iter}{integer, the maximum number of iterations.}
 \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Default value is FALSE}
 \item{nrepeat}{Number of times the Cross-Validation process is repeated.}
@@ -52,7 +55,7 @@ For a sPLS-DA, M-fold or LOO cross-validation is performed with stratified subsa
 
 If \code{validation = "loo"}, leave-one-out cross-validation is performed. By default \code{folds} is set to the number of unique individuals.
 
-The function outputs the optimal number of components that achieve the best performance based on the overall error rate or BER. The assessment is data-driven and similar to the process detailed in (Rohart et al., 2016), where one-sided t-tests assess whether there is a gain in performance when adding a component to the model. Our experience has shown that in most case, the optimal number of components is the number of categories in \code{Y} - 1.
+The function outputs the optimal number of components that achieve the best performance based on the overall error rate or BER. The assessment is data-driven and similar to the process detailed in (Rohart et al., 2016), where one-sided t-tests assess whether there is a gain in performance when adding a component to the model. Our experience has shown that in most case, the optimal number of components is the number of categories in \code{Y} - 1, but it is worth tuning a few extra components to check (see our website and case studies for more details).
 
 
 For sPLS-DA multilevel one-factor analysis, M-fold or LOO cross-validation is performed where all repeated measurements of one sample are in the same fold. Note that logratio transform and the multilevel analysis are performed internally and independently on the training and test set.
@@ -65,9 +68,12 @@ If \code{validation = "Mfold"}, M-fold cross-validation is performed.
 How many folds to generate is selected by specifying the number of folds in \code{folds}.
 
 
-If \code{auc = TRUE} and there are more than 2 categories in \code{Y}, the Area Under the Curve is averaged using one-vs-all comparison. Note however that the AUC criteria may not be particularly insightful as the prediction threshold we use in sPLS-DA differs from an AUC threshold (sPLS-DA relies on prediction distances for predictions, see \code{?predict.splsda} for more details).
+If \code{auc = TRUE} and there are more than 2 categories in \code{Y}, the Area Under the Curve is averaged using one-vs-all comparison. Note however that the AUC criteria may not be particularly insightful as the prediction threshold we use in sPLS-DA differs from an AUC threshold (sPLS-DA relies on prediction distances for predictions, see \code{?predict.splsda} for more details) and the supplemental material of the mixOmics article (Rohart et al. 2017).
 
-More details about the prediction distances in \code{?predict} and the referred publication.
+
+BER is appropriate in case of an unbalanced number of samples per class as it calculates the average proportion of wrongly classified samples in each class, weighted by the number of samples in each class. BER is less biased towards majority classes during the performance assessment.
+
+More details about the prediction distances in \code{?predict} and the supplemental material of the mixOmics article (Rohart et al. 2017).
 
 }
 
@@ -88,15 +94,15 @@ Depending on the type of analysis performed, a list that contains:
 }
 
 \references{
-mixOmics manuscript:
+mixOmics article:
 
-Rohart F, Gautier B, Singh A, Le Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration.
+Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration. PLoS Comput Biol 13(11): e1005752
 
 }
 
 
 
-\author{Kim-Anh Le Cao, Benoit Gautier, Francois Bartolo, Florian Rohart.}
+\author{Kim-Anh Lê Cao, Benoit Gautier, Francois Bartolo, Florian Rohart.}
 
 \seealso{\code{\link{splsda}}, \code{\link{predict.splsda}} and http://www.mixOmics.org for more details.}
 

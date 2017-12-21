@@ -15,14 +15,13 @@ Y,
 ncomp = 2,
 mode = c("regression", "canonical", "invariant", "classic"),
 study,
-keepX.constraint = NULL,
-keepY.constraint = NULL,
 keepX = rep(ncol(X), ncomp),
 keepY = rep(ncol(Y), ncomp),
 scale = TRUE,
 tol = 1e-06,
 max.iter = 100,
-near.zero.var = FALSE)
+near.zero.var = FALSE,
+all.outputs = TRUE)
 
 }	
 
@@ -34,15 +33,14 @@ near.zero.var = FALSE)
 one of \code{"regression"}, \code{"canonical"}, \code{"invariant"} or \code{"classic"}.
 See Details.}
 \item{study}{grouping factor indicating which samples are from the same study}
-\item{keepX.constraint}{A list of vectors. Each vector entry indicates specific variables to be selected in \code{X} for each previous PLS component. See details. }
-\item{keepY.constraint}{A list of vectors. Each vector entry indicates specific variables to be selected  in \code{Y} for each previous PLS component. See details. }
-\item{keepX}{numeric vector indicating the number of variables to select in \code{X} on each component, or remaining components should \code{keepX.constraint} be provided. By default all variables are kept in the model.}
-\item{keepY}{numeric vector indicating the number of variables to select in \code{Y} on each component, or remaining components should \code{keepY.constraint} be provided. By default all variables are kept in the model.}
+\item{keepX}{numeric vector indicating the number of variables to select in \code{X} on each component. By default all variables are kept in the model.}
+\item{keepY}{numeric vector indicating the number of variables to select in \code{Y} on each component. By default all variables are kept in the model.}
 \item{scale}{boleean. If scale = TRUE, each block is standardized
 to zero means and unit variances. Default = \code{TRUE}.}
 \item{tol}{Convergence stopping value.}
 \item{max.iter}{integer, the maximum number of iterations.}
 \item{near.zero.var}{boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Default = \code{FALSE}.}
+\item{all.outputs}{boolean. Computation can be faster when some specific (and non-essential) outputs are not calculated. Default = \code{TRUE}.}
 
 }
 
@@ -57,12 +55,10 @@ algorithms are available: PLS regression \code{("regression")}, PLS canonical an
 \code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS
 algorithm \code{("classic")} (see References and more details in \code{?pls}).
 
-Constraint model (\code{constraint=TRUE)}. The model is run on the optimal list of selected features \code{keepX.constraint} from the previous components, as opposed to considering only a specified number of features \code{keepX}.
 
 
-Variable selection is performed on each component for each block of \code{X}, and for \code{Y} if specified, via input parameter \code{keepX} and \code{keepY}, and \code{keepX.constraint} and \code{keepY.constraint} for a constraint model. \code{keepX.constraint} and \code{keepY.constraint} specify variable names to be selected in the previous components of the model.
+Variable selection is performed on each component for each block of \code{X}, and for \code{Y} if specified, via input parameter \code{keepX} and \code{keepY}.
 
-Note that both \code{keepX.constraint} and \code{keepY.constraint} must have same length.
 
 Useful graphical outputs are available, e.g. \code{\link{plotIndiv}}, \code{\link{plotLoadings}}, \code{\link{plotVar}}.
 }
@@ -79,8 +75,6 @@ that contains the following components:
 \item{mode}{the algorithm used to fit the model.}
 \item{keepX}{Number of variables used to build each component of X}
 \item{keepY}{Number of variables used to build each component of Y}
-\item{keepX.constraint}{list indicating which variables where constrained to be used to build the first component of X}
-\item{keepY.constraint}{list indicating which variables where constrained to be used to build the first component of Y}
 \item{variates}{list containing the variates of X - global variates.}
 \item{loadings}{list containing the estimated loadings for the variates - global loadings.}
 \item{variates.partial}{list containing the variates of X relative to each study - partial variates.}
@@ -94,12 +88,12 @@ that contains the following components:
 
 
 \references{
-Rohart F, Eslami A, Matigian, N, Bougeard S, Le Cao K-A (2017). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. BMC Bioinformatics 18:128.
+Rohart F, Eslami A, Matigian, N, Bougeard S, Lê Cao K-A (2017). MINT: A multivariate integrative approach to identify a reproducible biomarker signature across multiple experiments and platforms. BMC Bioinformatics 18:128.
 
 Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2014). Algorithms for multi-group PLS. J. Chemometrics, 28(3), 192-201.
 }
 
-\author{Florian Rohart, Kim-Anh Le Cao}
+\author{Florian Rohart, Kim-Anh Lê Cao}
 
 \seealso{\code{\link{spls}}, \code{\link{summary}},
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}}, \code{\link{mint.pls}}, \code{\link{mint.plsda}}, \code{\link{mint.splsda}} and http://www.mixOmics.org/mixMINT for more details.}

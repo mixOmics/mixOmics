@@ -19,7 +19,7 @@ options(WordpressLogin = c(your.username = 'your.password'), #update these
         WordpressURL = 'http://mixomics.org/xmlrpc.php')
 
 options(WordpressLogin = c(klecao = 'mixOmics8'), #update these
-        WordpressURL = 'http://mixomics.org/xmlrpc.php')
+        WordpressURL = 'https://mixomics.org/xmlrpc.php')
 
 
 
@@ -93,4 +93,25 @@ knit2wp(input = 'DIABLO_TCGA.Rmd', title = 'Case study: TCGA',  shortcode = FALS
 knit2wp(input = 'MINT_stemcells.Rmd', title = 'Case study: stem cells',  shortcode = FALSE ,publish = FALSE, 
         action = c("newPage"))
 
+
+
+# ======================================
+#         mixMC tab: first trash the existing files!
+# ======================================
+
+knit2wp(input = 'mixMC_parent.Rmd', title = 'mixMC',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+knit2wp(input = 'mixMC_Normalisation.Rmd', title = 'Pre-processing',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+knit2wp(input = 'mixMC_nonmultilevel_Koren.Rmd', title = 'Case study: Koren diverse bodysites',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+knit2wp(input = 'mixMC_Multilevel_HMP_16S_Data.Rmd', title = 'Case study: HMP bodysites repeated measures',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
+
+# make sure the link is mixOmics.org/mixkernel!
+knit2wp(input = 'mixKernelUsersGuide.Rmd', title = 'Case study: Tara ocean with mixKernel',  shortcode = FALSE, publish = FALSE, 
+        action = c("newPage"))
 

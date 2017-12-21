@@ -1,0 +1,265 @@
+---
+title: "mixMC Multilevel HMP 16S Data"
+output:
+  pdf_document: default
+  html_document:
+    code_folding: show
+    df_print: kable
+    highlight: haddock
+date: "20 October 2017"
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, fig.align = 'center', 
+                      fig.show=TRUE, out.width = '50%') 
+```
+
+Here we apply the mixMC framework on the Human Microbiome Most Diverse 16S data set, which includes OTU counts on the three most diverse bodysites: Subgingival plaque (Oral), Antecubital fossa (Skin) and Stool sampled from 54 unique individuals for a total of 162 samples.  The prefiltered dataset includes 1,674 OTU counts. The data were downloaded from the [Human Microbiome Project](http://hmpdacc.org/HMQCP/all/). The original data contained 43,146 OTU counts for 2,911 samples measured from 18 different body sites.
+
+We focus here on the statistical exploration and analysis of the **repeated measurement** data set using multivariate projection-based approaches such as Principal Component Analysis (PCA) (data mining and exploration) and sparse Partial Least Squares Discriminant Analysis (sPLS-DA) (for identification of indicator species characterising each body site).
+
+Load the latest version of [mixOmics](https://cran.r-project.org/web/packages/mixOmics/index.html).
+
+
+```{r echo=TRUE, warning=FALSE, message=FALSE}
+library(mixOmics)
+```
+
+# Data: Most Diverse Data Set
+
+Using the NIH Human Microbial Project 16S data in this example we assume the data are prefiltered and normalised with TSS,  as described in [mixMC pre-processing steps](http://mixomics.org/mixmc/pre-processing/).
+
+```{r echo=TRUE}
+data("diverse.16S")
+
+# the 16S normalised data
+diverse.TSS = diverse.16S$data.TSS
+```
+
+We set up the outcome **Y** which is a factor indicating the body sites of each sample and **sample** which indicates the unique ID of each unique individual (repeated measures design).
+
+```{r echo=TRUE, results="hide"}
+# the outcome 
+Y = diverse.16S$bodysite
+# unique ID of each individual for multilevel analysis
+sample = diverse.16S$sample
+```
+
+# Unsupervised Analsysis with PCA
+
+PCA allows for dimension reduction of the data and visualisation of diversity patterns in microbiome studies. Because we are dealing with proportions, the data are compositional and spurious results can arise if the data are not transformed into an Euclidean space. Therefore the Total Sum Scaling normalised data must be transformed using either [ILR or CLR](http://mixomics.org/mixmc/pre-processing/).
+
+Here we chose the ILR transformation as advised by Filmozer et al [1]. We generally prefer the 'CLR’ log ratio transformation as it is faster and can be used all throughout our framework (from PCA to sPLSDA), using the argument **logratio = 'CLR'**). We first run a PCA with a sufficiently large number of components ncomp to choose the final reduced dimension of the model.
+
+
+```{r echo=TRUE,results = 'hide'}
+diverse.pca = pca(diverse.TSS, ncomp = 10, logratio = 'CLR', multilevel = sample)
+#diverse.pca
+plot(diverse.pca)
+```
+
+The PCA plot indicates that 2 components are sufficient to explain most of the variation in the data.
+
+*You could test different log ratio transformations or use different types of normalisation, multilevel vs non multilevel to see the benefit of taking into account the repeated measures design in the PCA model.* Our team favours the normalisation TSS followed by CLR transformation.
+
+```{r echo=TRUE}
+plotIndiv(diverse.pca, 
+          comp = c(1,2), # the components to plot
+          pch = 16, 
+          ind.names = F, 
+          group = Y, 
+          col.per.group = color.mixo(1:3),
+          legend = TRUE,
+          title = 'HMP most diverse, PCA comp 1 - 2')
+```
+
+We observe a natural separation between those (very diverse) body sites. In the next steps we run sPLSDA to identify which OTUs may drive this separation.
+
+# Supervised Analysis and Selection of Discriminative OTUs with sPLS-DA
+
+The mixMC frameworks uses the sPLS-DA multivariate analysis from mixOmics[3]. The sPLS-DA selects the most discriminative OTUs that best characterize each body site, [see sPLS-DA](http://mixomics.org/methods/spls-da/). 
+
+Note that with PLS-DA and sPLS-DA we can only choose a CLR transformation (see details [here](http://journals.plos.org/plosone/article/metrics?id=10.1371/journal.pone.0160169)).
+
+We first run the **perf** function with a **PLS-DA** model with no variable selection. Often **ncomp = K-1** where K is the number of categories in the outcome Y is sufficient, but it depends on the data. We choose 5-fold cross-validation repeated 10 times. To obtain a more reliable estimation of the error rate, the number of repeats should be increased (between 50 to 100).
+
+Here we assess the performance of the PLSDA on 3 components.
+
+```{r}
+diverse.plsda = plsda(X = diverse.TSS, Y, ncomp = nlevels(Y), logratio = 'CLR', multilevel = sample)
+
+diverse.perf.plsda = perf(diverse.plsda, validation = 'Mfold', folds = 5,
+                    progressBar = FALSE, nrepeat = 10)
+
+plot(diverse.perf.plsda, overlay = 'measure', sd = TRUE)
+```
+
+The plot indicates a decrease in the classification error rate (i.e. an increase in classification performance) from one component to 2 components in the model. The BER stands for Balanced Error Rate and should be considered when we have an unbalanced number of samples per group. Here this is not the case so both overall and BER are overlapping. The performance does not increase after 2 components, which suggest **ncomp = 2** for a final PLSDA model. Note that for the sparse PLSDA we may obtain a different ncomp.
+
+For more details on the prediction distances, refer to Suppl info in Rohart et al. 2017 [4]. The distance ‘max.dist’ seems to give the best performance and will be our distance of choice for sPLSDA.
+
+```{r}
+plotIndiv(diverse.plsda , comp = c(1,2), ind.names = FALSE, 
+          ellipse = TRUE, legend = TRUE, title = 'HMP Most Diverse, PLSDA comp 1 - 2')
+```
+
+Here we could check that the third component does not add additional information for the discrimination of the body sites.
+
+```{r}
+plotIndiv(diverse.plsda, comp = c(1,3), ind.names = FALSE, 
+          ellipse = TRUE, legend = TRUE, title = 'HMP Most Diverse, PLSDA comp 1 - 3')
+```
+
+
+## Tuning sPLS-DA
+
+The parameters to choose in sPLS-DA are the number of variables to select (**keepX**) and the number of components (**ncomp**). To do this we use the function tune.splsda. In this example the sPLS-DA tuning step is performed on 3 components, using 5-fold validation repeated 10 times.
+
+**tune.splsda** needs to be performed prior to the sPLS-DA analysis to choose the parameters on a grid of keepX values (make sure you choose the appropriate M fold cross-validation and provide sufficient **nrepeat** in the evaluation model, except for **'loo'** where it can only be run on 1 repeat), also check the stability of the features selected during the cross-validation process.
+
+```{r tune splsda, eval = TRUE, echo = TRUE}
+# this chunk takes ~2 min to run with 6.3.0
+set.seed(33)  # for reproducible results for this code
+diverse.tune.splsda = tune.splsda(diverse.TSS, Y, ncomp = 3, 
+                           logratio = 'CLR',
+                            multilevel = sample,
+                           test.keepX = c(seq(5,150, 5)), validation = 'Mfold', 
+                           folds = 5, dist = 'max.dist', nrepeat = 10,
+                           progressBar = FALSE)
+# may show some convergence issues for some of the CV-runs, it is ok for tuning
+```
+
+
+```{r, echo = FALSE}
+kable(diverse.tune.splsda$error.rate[1:5,], caption = 'sPLSDA tuning example output: Balanced Error rate per tested keepX on each component')
+```
+
+
+```{r}
+plot(diverse.tune.splsda)
+```
+
+The graphic above shows that the error rate decreases when more components are included in sPLS-DA. The diamonds indicate the optimal **keepX** variables to select on each component based on the balanced error rate. The addtion of the third component may marginally improve the perfomance: our final sPLS-DA model will be run with 3 components.
+
+```{r}
+# optimal number of variables to select on 3 comps:
+select.keepX = diverse.tune.splsda$choice.keepX[1:3]
+select.keepX
+```
+
+## sPLS-DA
+
+We now run a sPLS-DA multilevel analysis. Note: if you have not tuned your sPLSDA model (or you are unhappy with the size of the selection) you can set the optimal keepX manually, e.g.:
+
+```{r}
+# select.keepX = c(50, 15, 40) # to manually choose size of selection
+```
+
+
+```{r, echo=TRUE}
+diverse.splsda = splsda(diverse.TSS, Y, ncomp = 3, logratio = 'CLR', multilevel = sample, keepX = select.keepX) 
+
+plotIndiv(diverse.splsda, comp = c(1,2),
+          ind.names = FALSE, 
+          ellipse = TRUE, legend = TRUE,
+          title = 'HMP Most Diverse, sPLSDA comp 1 - 2')
+```
+
+When we look however at the addition of the third component, it does not seem to discriminate the groups further. Therefore we can focus primarily on the OTUs selected on the first 2 components.
+
+```{r}
+plotIndiv(diverse.splsda, comp = c(1,3),
+          ind.names = FALSE, 
+          ellipse = TRUE, legend = TRUE,
+          title = 'HMP Most Diverse, sPLSDA comp 1 - 3')
+```
+## Evaluating sPLS-DA
+
+The classification performance of the sPLS-DA multilevel model can be assessed using the function **perf**. The mean error rates per component are output and type of distance are output. Here do not hesitate to increase the number of repeats for accurate estimations.
+
+```{r Evaluating sPLS-DA, echo=TRUE}
+set.seed(34)  # for reproducible results for this code
+
+diverse.perf.splsda = perf(diverse.splsda, validation = 'Mfold', folds = 5, 
+                   progressBar = FALSE, nrepeat = 10, dist = 'max.dist')
+```
+
+The mean overall and Balanced Error Rate are output for each component.
+
+```{r}
+diverse.perf.splsda$error.rate
+
+plot(diverse.perf.splsda)
+```
+
+The performance plot confirms that 2 components are sufficient in the sPLS-DA model.
+
+## Contribution plots
+
+The sPLS-DA selects the most discriminative OTUs that best characterize each body site. The contribution plots below display the abundance of each OTU (large abundance = large absolute value) and in which body site they are the most abundant for each sPLS-DA component. The contribution plots need to be interpreted in combination with the sample plot below to understand the similarities between body sites, in addition to answer the question ‘which bacteria characterise those body sites?’
+
+
+The code below outputs the first selected OTUs and their coefficient (from the loading vector) on the first component. Consider the absolute value as an indication of the importance of the OTU in the microbial signature, while the sign generally indicates positive / negative correlations between the OTUs, relatively to the proportions of the others (see also with a [**plotVar** output](http://mixomics.org/graphics/variable-plots/plotvar/)).
+
+```{r echo=TRUE, include= TRUE}
+head(selectVar(diverse.splsda, comp = 1)$value) 
+```
+
+
+To this list of selected OTU displayed from the most important to the least important we can combine their stability measure from the perf output (i.e. how often were they selected across the different CV runs).
+
+```{r, results='hide'}
+selected.OTU.comp1 = selectVar(diverse.splsda, comp = 1)$name
+# stability of OTUs selected on comp 1
+diverse.perf.splsda$features$stable[[1]][selected.OTU.comp1]
+```
+
+```{r}
+kable(data.frame(diverse.perf.splsda$features$stable[[1]][selected.OTU.comp1]), caption = '
+Stability of OTUs selected on comp 1, ranked by decreasing importance in sPLS-DA.')
+```
+
+The **plotLoadings** shows that all OTUs selected on the first component are highly abundant in plaque (based on their mean per body site).
+
+```{r}
+plotLoadings(diverse.splsda, comp = 1, method = 'mean', contrib = 'max',
+             size.title = 1)
+```
+
+The plotLoadings shows that all OTUs selected on the second component below are primarily highly abundant in the skin bodysites. The sign indicates the opposition between body sites.
+
+```{r}
+plotLoadings(diverse.splsda, comp = 2, method = 'mean', contrib = 'max',
+             size.title = 1)
+```
+
+We could improve the plot by showing only the top OTUs, and with their names at the Family level, , followed by their OTU ID.
+
+```{r}
+name.var = paste(diverse.16S$taxonomy[, 'Family'], rownames(diverse.TSS), sep = '|')
+
+plotLoadings(diverse.splsda, comp = 2, method = 'mean', contrib = 'max', ndisplay = 30, name.var = name.var, size.title = 1, size.name = 0.5, size.legend = 0.5)
+```
+
+
+## Clustered Image Map 
+
+A heatmap will also help understanding the microbial signature. We represent clustered image maps (with Euclidian distance, Ward linkage set by default) for the OTUs selected on each sPLS-DA component. The abundance values that are displayed are the normalised, log ratio transformed values. All OTUs selected by the sPLS-DA model are displayed, other options can include a specific component, or a specific cutoff of ‘association’, see **?cim**.
+
+```{r CIM, fig.height= 8, fig.width= 8}
+#CIM plot
+cim(diverse.splsda, row.sideColors = color.mixo(Y))
+```
+
+# References
+
+1. [Filzmoser, P., Hron, K., Reimann, C.: Principal component analysis for compositional data with outliers. Environmetrics 20(6), 621–632 (2009)](https://scholar.google.com/scholar_url?url=https://www.researchgate.net/profile/Peter_Filzmoser/publication/227528968_Principal_component_analysis_of_compositional_data_with_outliers/links/09e4151129a8c792bd000000.pdf&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=4ZA7WO-bGMyT2AaosKqwDQ&scisig=AAGBfm1mB8frALUL699TNp-vVgk-XzGhOg)
+
+2. [Lê Cao KA, Costello ME, Lakis VA, Bartolo F, Chua XY, et al. (2016) MixMC: A Multivariate Statistical Framework to Gain Insight into Microbial Communities. PLOS ONE 11(8): e0160169. doi: 10.1371/journal.pone.0160169](http://journals.plos.org/plosone/article/metrics?id=10.1371/journal.pone.0160169)
+
+
+3. [Lê Cao, K.A., Boitard, S. and Besse, P., 2011. Sparse PLS discriminant analysis: biologically relevant feature selection and graphical displays for multiclass problems. BMC bioinformatics, 12(1), p.1.](https://scholar.google.com/scholar_url?url=http://bmcbioinformatics.biomedcentral.com/articles/10.1186/1471-2105-12-253&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=7dA7WJCXNI6SjAHp3L6IAg&scisig=AAGBfm36JhKbmj5fZ9yykLKRPPqXYmyvPg)
+
+4. [Rohart F, Gautier B, Singh A, Lê Cao K-A (2017). mixOmics: an R package for 'omics feature selection and multiple data integration.](http://mixomics.org/a-propos/publications/)
+

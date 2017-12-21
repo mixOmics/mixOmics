@@ -1,34 +1,41 @@
 ---
 title: "mixMC_normalisation_prefiltering"
-date: "24 November 2016"
+date: "20 October 2017"
 output:
   html_document:
     code_folding: show
     highlight: haddock
 ---
-```{r setup, include=FALSE, echo=TRUE, warning=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+
+```{r global_options, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(dpi = 100, echo= TRUE, warning=FALSE, message=FALSE, fig.align = 'center', 
+                      fig.show=TRUE, out.width = '50%') 
 ```
-# mixMC: Pre-Filtering and Normalisation 
-Here we use the Human Microbiome Most Diverse 16S data set as a worked example for **Prefiltering** and **Normalisation** as the first step in data analysis using **mixMC**.
 
-The Human Microbiome Most Diverse 16S (HMP) data setincludes OTU counts on the three most diverse bodysites: Subgingival plaque (Oral), Antecubital fossa (Skin) and Stool sampled from 54 unique individuals for a total of 162 samples. The pre-filtering code below is from [1,4].
 
-The HMP data is implemented in mixOmics via diverse.16S:
+Here we use the Human Microbiome Most Diverse 16S data set as a worked example for **Prefiltering** and **Normalisation** as the first step in data analysis using our mixOmics framework for microbial communities analysis **mixMC**.
 
-```{r}
+The Human Microbiome Most Diverse 16S (HMP) data set includes OTU counts on the three most diverse bodysites: Subgingival plaque (Oral), Antecubital fossa (Skin) and Stool sampled from 54 unique individuals for a total of 162 samples. 
+
+The HMP data set is directly available from the mixOmics package:
+
+```{r, message = FALSE}
 library(mixOmics)
-```
-
-```{r}
 data(diverse.16S)
-data.raw = diverse.16S$data.raw #the diverse.16s raw data include an offset of 1
+data.raw = diverse.16S$data.raw 
+```
+Here the raw data include an offset of 1. The Total Sum Scaling normalisation is OK with 0 data, but not the log ratio transformation. Therefore we set **data.raw = data.raw+1**. Note that the offset will not circumvent the zero values issue, as after log ratio transformation we will still have zero values.
+
+You can check that the offset was applied:
+```{r}
+sum(which(data.raw == 0))
 ```
 
-Ensure to include an offset of 1 to raw data to enable log ratio transformation after the TSS normalisation.
 
-## Prefiltering 
-The prefiltering steps outlined in the example below describe the pre-filtering process of raw microbiome sequencing data counts.
+# Prefiltering 
+We use a prefiltering step to remove OTUs for which the sum of counts are below a certain threshold compared to the total sum of all counts. The function to prefilter is given below, and was adapted from Arumugam *et al.* (2011) [0]. 
 
 ```{r Pre Filtering Function, echo=TRUE}
 # function to perform pre-filtering
@@ -48,49 +55,96 @@ data.filter = result.filter$data.filter
 length(result.filter$keep.otu) # check the number of variables kept after filtering
 ```
 
-In our HMP example we started from 43,146 OTUs and ended with 1,674 OTUs after prefiltering. While this prefiltering may appear drastic, it is the default value adopted by [QIIME](https://www.google.com.au/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0ahUKEwjJiOzHgsPQAhWLpI8KHRDtBWQQFggbMAA&url=http%3A%2F%2Fqiime.org%2F&usg=AFQjCNFQrBS2CXBbSNQUE0wyEZ9DHdlJbA&sig2=0UrnjluJKsh-dZ-UNjbusQ) and in other studies. The prefiltering step will avoid spurious results in the downstream statistical analysis. Feel free to increase that threshold for your own needs.
+In our HMP example we started from 43,146 OTUs and ended with 1,674 OTUs after prefiltering. While this prefiltering may appear drastic (and is highly dependent on the bioinformatics steps performed beforehand such as OTU picking), it will avoid spurious results in the downstream statistical analysis. Feel free to increase that threshold for your own needs, or not use it at all if you prefer.
 
-# The Details...
 
-### At the sample level...
-The first step in pre-filtering is to ensure that the number of counts is sufficiently high in each sample. We therefore removed samples that fell below an arbitrary cutoff. 
+## Check your library size
+At this stage you may want to ensure that the number of counts for each sample is `relatively' similar and that there is no obvious outlier sample. Those samples may also appear as outliers in PCA plots downstream. As for any sample outlier removal, ensure that you have a good reason to remove them!
 
-### At the variable level...
-Pre-filtering OTUs can improve alpha diversity measures [5] and may also counteract sequencing errors. For example sequencing errors Illumina MiSeq are estimated to be ~ 1/1000 [6,7]. We propose to remove OTUs if their proportional counts across all samples is below 0.01%. This prefiltering step avoids spurious results in the downstream statistical analysis. The threshold used is the default value in QIIME and is also used in other microbiome studies (e.g. [9,10]).
 
 # Normalisation 
 
-One of the characteristics of microbiome sequencing data is sparse counts, which need to be accounted for during normalisation. Two types of normalisation are considered in mixMC methodologies, **Total Sum Scaling normalisation (TSS)** with a suitable log ratio transformation and **Cumulative Sum Scaling normalisation (CSS)** followed by log transformation. Because we are using compositional data; a vector containing strictly positive components which sum to a constant (microbial relative abundance within a sample sum to one), results in the data reside in simplex space rather than Euclidian space. Using standard statistical methods on such data leads to spurious results [10] and therefore the data must be transformed. 
+Because of uneven sequencing depths, library sizes often differ from one sample to another. Two types of scaling / normalisation currently exist to accommodate for library size:
 
-### TSS & Log Transformation
-TSS normalisation is a popular approach to accommodate for varying sampling and sequencing depth. In TSS the variable read count is divided by the total number of read counts in each individual sample. TSS normalisation reflects relative information, and the resulting normalised data reside in a simplex rather than an Euclidian space which may lead to spurious false discoveries if standard statistical methods are applied [10]. Transforming compositional data using log ratios such as Isometric Log Ratio (ILR) or Centered Log Ratio transformation (CLR) allows us to circumvent this issue as proposed by [1] and [2]. 
+- **Total Sum Scaling normalisation (TSS)** which needs to be followed by log ratio transformation, see below
 
-*See [here](http://mixomics.org/mixmc-mixomics-for-16s-microbial-communities/pre-filtering-normalisation/tss-normalisation/) for an example*
+- **Cumulative Sum Scaling normalisation (CSS)** followed by log transformation.
 
-### CSS & Log Transformation
+TSS results in compositional data (or proportions) that are restricted to a space where the sum of all OTU proportions for a given sample sums to 1. Using standard statistical methods on such data may lead to spurious results [1] and therefore the data must be further transformed.
 
-CSS normalisation was specifically developed for sparse microbiome data counts by Paulson et al., [3, 4]. CSS can be considered as an extension of the quantile normalisation approach and consists of cumulative sum up to a percentile determined using a data-driven approach. CSS corrects the bias in the assessment of differential abundance introduced by TSS and, according to the authors, would partially account for compositional data. Therefore, for CSS normalised data, no ILR transformation is applied as we consider that this normalisation method does not produce pure compositional data. A simple log transformation is applied.
 
-*See [here](http://mixomics.org/mixmc-mixomics-for-16s-microbial-communities/pre-filtering-normalisation/css-normalisation/) for an example*
+## TSS
+TSS normalisation is a popular approach to accommodate for varying sampling and sequencing depth. In TSS the variable read count is divided by the total number of read counts in each individual sample.
 
-### Transformation
+Here is a simple function to TSS, the raw data (with an offset of 1) have samples in rows and OTUs in columns.
+```{r TSS Normalisation, warning=FALSE, message=FALSE, echo=TRUE}
+# each variable read count is divided by the total number of read counts
+TSS.divide = function(x){
+ x/sum(x)
+}
+# function is applied to each row (i.e. each sample)
+data.TSS = t(apply(data.filter, 1, TSS.divide))
+```
 
-If normalisation = 'TSS', then a ILR transformation follows to account for compositional data inside the pca.R function. The components and loading vectors are back transformed inside the function to a CLR space.
+TSS normalisation reflects relative information, and the resulting normalised data reside in a simplex (bounded) rather than an Euclidian space. Transforming compositional data using log ratios such as Isometric Log Ratio (ILR) or Centered Log Ratio transformation (CLR) allows us to circumvent this issue as proposed by [1] and [2]. 
 
-If normalisation = 'CSS' then no further transformation is necessary (the log transformation is applied implicitly when using the metagenomeSeq package).
+### Log ratio transformation
 
-**Note:** Normalisation is data specific and needs to be carefully chosen prior to statistical analysis. We recommend using ILR transformation with PCA to overcome the CLR limitation that may lead to singular covariance matrices, and a CLR transformation with sPLS-DA. 
-<br>
-For consistency in analysis, you can choose to use CLR transformation for both PCA and sPLS-DA analysis but understand that there will be a difference in the result. Indeed as outlined in the [mixMC manuscript](https://scholar.google.com/scholar_url?url=http://biorxiv.org/content/biorxiv/early/2016/03/16/044206.full.pdf&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=Nqc7WJDTDdfUjAHA9LKABg&scisig=AAGBfm04GmTLnXd5EizkZPC1ZlPH9IRsfA) using the HMP most diverse data showed that both TSS and CSS normalisations identified the same bacteria families. However in the more complex Oral case study we observed differences as TSS+CLR led to the identification of a greater number of families than CSS. 
+ILR and CLR transformations are implemented directly into our multivariate methods **pca**, **plsda** and **splsda**, for example (see the Tab for the Koren data analysis):
+```{r, eval = FALSE}
+koren.pca = pca(koren.TSS, ncomp = 10, logratio = 'CLR')
+
+koren.pca = pca(koren.TSS, ncomp = 10, logratio = 'ILR')
+```
+
+**Which log ratio transformation to use?**
+
+According to Filmozer *et al* [2], ILR transformation is best for a PCA analysis. However, for a PLS-DA and sPLS-DA analysis, **logratio = 'CLR'** is necessary for OTU selection (see details in Lê Cao *et al.* 2016 [3]). Generally speaking, a PCA with either TSS+CLR or TSS+ILR may not make much differences visually, but the transformed data will be different. We generally prefer the ‘CLR’ log ratio transformation as it is faster and can be used consistent throughout our mixMC framework (from PCA to sPLSDA).
+
+**What if I want to apply another method (multivariate or univariate) on the ILR or CLR data?**
+
+In that case you can use our external function **logratio.transfo**, see ?logratio.transfo. Make sure you apply it to the TSS(data.raw +1) first, it will be easier than having to add a small offset by using the loratio.transfo function. **The log ratio transformation is crucial when dealing with proportional data!**, unless the compositional nature of the data is accounted for directly in the statistical methods. See also the very good reference form Pawlowsky-Glahn *et al.* 2015 [4].
+
+
+## CSS & Log Transformation
+
+CSS normalisation was specifically developed for sparse sequencing count data by Paulson et al., [5, 6]. CSS can be considered as an extension of the quantile normalisation approach and consists of cumulative sum up to a percentile determined using a data-driven approach. CSS corrects the bias in the assessment of differential abundance introduced by TSS and, according to the authors, would partially account for compositional data. Therefore, for CSS normalised data, no ILR transformation is applied as we consider that this normalisation method does not produce compositional data per say. A simple log transformation is then applied.
+
+We give below the R script for CSS. 
+
+```{r CSS Normalisation, warning=FALSE, message=FALSE}
+# source("http://bioconductor.org/biocLite.R")
+# biocLite("metagenomeSeq")
+library(metagenomeSeq)
+
+data.metagenomeSeq = newMRexperiment(t(data.filter), #phenoData=phenotypeData, 
+                      featureData=NULL, libSize=NULL, normFactors=NULL) #using filtered data 
+p = cumNormStat(data.metagenomeSeq) #default is 0.5
+data.cumnorm = cumNorm(data.metagenomeSeq, p=p)
+#data.cumnorm
+data.CSS = t(MRcounts(data.cumnorm, norm=TRUE, log=TRUE)) 
+dim(data.CSS)  # make sure the data are in a correct formal: number of samples in rows
+```
+
+**Note however that in our mixMC examples presented here we favoured the TSS normalisation.  **.
+
 
 # References
+
+
+0. [Arumugam M., Raes J., Pelletier E., Le Paslier D., Yamada T., Mende D.R., et al.: Enterotypes of the human gut microbiome. Nature 473 (7346), 174–180 (2011)](https://scholar.google.com/scholar_url?url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3728647/&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=CZY7WMygMYLijAGxrrvwCw&scisig=AAGBfm3QzTS3LjicS0HkAiNMXVHEahB4pA)
+
+
 1. [Aitchison, J.: The statistical analysis of compositional data. Journal of the Royal Statistical Society. Series B (Methodological), 139-177 (1982)](https://scholar.google.com/scholar_url?url=http://www.jstor.org/stable/2345821&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=0ZI7WIiGIYKvjAHq1LHYDw&scisig=AAGBfm29rId6wbzZnTe7T-ST4HCF0U4O4g)
 2. [Filzmoser, P., Hron, K., Reimann, C.: Principal component analysis for compositional data with outliers. Environmetrics 20(6), 621–632 (2009)](https://scholar.google.com/scholar_url?url=https://www.researchgate.net/profile/Peter_Filzmoser/publication/227528968_Principal_component_analysis_of_compositional_data_with_outliers/links/09e4151129a8c792bd000000.pdf&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=4ZA7WO-bGMyT2AaosKqwDQ&scisig=AAGBfm1mB8frALUL699TNp-vVgk-XzGhOg)
-3. [Paulson, J.N., Stine, O.C.,Bravo, H.C., Pop, M.: Differential abundance analysis for microbial marker-gene surveys. Nature methods 10(12), 1200–1202 (2013)](https://scholar.google.com/scholar_url?url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4010126/&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=mJI7WMPtOIahjAHSwYSoAw&scisig=AAGBfm1fyLHA-6ERYM0zWC3IG5LnXL78HA)
-4. [Paulson, J.N., Pop, M., Bravo, H.C.: metagenomeSeq : Statistical analysis for sparse high-throughput sequencing. Bioconductor package: 1.6.0. (2015). http://cbcb.umd.edu/software/metagenomeSeq](https://scholar.google.com/scholar_url?url=http://bioconductor.jp/packages/3.0/bioc/vignettes/metagenomeSeq/inst/doc/metagenomeSeq.pdf&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=Z5I7WNP-F4K_jAHDyIawCQ&scisig=AAGBfm0OogJCyrTPj60IdHKQwRzwffz_OA)
-5. [Bokulich, N.A., Subramanian, S., Faith, J.J., Gevers, D., Gordon, J.I., Knight, R., Mills, D.A., Caporaso, J.G.: Quality-filtering vastly improves diversity estimates from illumina amplicon sequencing. Nature methods 10(1), 57-59 (2013).](https://scholar.google.com/scholar_url?url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3531572/&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=trg3WKytLoKvjAHq1LHYDw&scisig=AAGBfm1WQExa5CIvDWGhTlAYC7NY4aAMzg)
-6. [Kunin V, Engelbrektson A, Ochman H, Hugenholtz P. Wrinkles in the rare biosphere: pyrosequencing errors can lead to artificial inflation of diversity estimates. Environmental Microbiology12(1):118-23 (2010)](https://scholar.google.com/scholar_url?url=http://escholarship.org/uc/item/8fw1t30k.pdf&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=_rg3WMbzDdfUjAHA9LKABg&scisig=AAGBfm2R6Sh13sfRIaTpZEi9Q7GL5GQ0Wg)
-7. [Huse SM, Welch DM, Morrison HG, Sogin ML. Ironing out the wrinkles in the rare biosphere through improved OTU clustering. Environmental Microbiolog 12(7):1889-98 ( 2010)](https://scholar.google.com/scholar_url?url=http://onlinelibrary.wiley.com/doi/10.1111/j.1462-2920.2010.02193.x/full&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=uLo3WID5CNfUjAHA9LKABg&scisig=AAGBfm2AMpiPH6xfsnTR4fEQRx9qfz0nJQ)
-8. [Knights D., Parfrey L.W., Zaneveld J., Lozupone C., Knight R.: Human-associated microbial signatures: examining their predictive value. Cell host & microbe 10(4), 292–296 (2011)](https://scholar.google.com/scholar_url?url=http://www.sciencedirect.com/science/article/pii/S1931312811002873&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=IZY7WIrgEIK_jAHDyIawCQ&scisig=AAGBfm2ECqAkeztooAqd5_Ao0NaSz4itqg)
-9. [Arumugam M., Raes J., Pelletier E., Le Paslier D., Yamada T., Mende D.R., et al.: Enterotypes of the human gut microbiome. Nature 473 (7346), 174–180 (2011)](https://scholar.google.com/scholar_url?url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3728647/&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=CZY7WMygMYLijAGxrrvwCw&scisig=AAGBfm3QzTS3LjicS0HkAiNMXVHEahB4pA)
-10. [Mandal, S., Van Treuren, W., White, R.A., Eggesbø, M., Knight, R. and Peddada, S.D., 2015. Analysis of composition of microbiomes: a novel method for studying microbial composition. Microbial ecology in health and disease, 26](https://scholar.google.com/scholar_url?url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4450248/&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=A687WJDDE4LijAGxrrvwCw&scisig=AAGBfm3IxAV3_TvlOPnXzMgseY-nqck1sg)
+
+3. [Lê Cao KA, Costello ME, Lakis VA, Bartolo F, Chua XY, et al. (2016) MixMC: A Multivariate Statistical Framework to Gain Insight into Microbial Communities. PLOS ONE 11(8): e0160169. doi: 10.1371/journal.pone.0160169](http://journals.plos.org/plosone/article/metrics?id=10.1371/journal.pone.0160169)
+
+4. Pawlowsky-Glahn V, Egozcue J, Tolosana-Delgado R (2015) Modeling and Analysis of Compositional Data, Wiley
+
+5. [Paulson, J.N., Stine, O.C.,Bravo, H.C., Pop, M.: Differential abundance analysis for microbial marker-gene surveys. Nature methods 10(12), 1200–1202 (2013)](https://scholar.google.com/scholar_url?url=http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4010126/&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=mJI7WMPtOIahjAHSwYSoAw&scisig=AAGBfm1fyLHA-6ERYM0zWC3IG5LnXL78HA)
+
+6. [Paulson, J.N., Pop, M., Bravo, H.C.: metagenomeSeq : Statistical analysis for sparse high-throughput sequencing. Bioconductor package: 1.6.0. (2015). http://cbcb.umd.edu/software/metagenomeSeq](https://scholar.google.com/scholar_url?url=http://bioconductor.jp/packages/3.0/bioc/vignettes/metagenomeSeq/inst/doc/metagenomeSeq.pdf&hl=en&sa=T&oi=gsb-gga&ct=res&cd=0&ei=Z5I7WNP-F4K_jAHDyIawCQ&scisig=AAGBfm0OogJCyrTPj60IdHKQwRzwffz_OA)
+
+
+
