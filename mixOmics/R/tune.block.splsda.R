@@ -225,7 +225,7 @@ name.save = NULL)
         if(misdata[q])
         {
             is.na.A[[q]] = is.na(X[[q]])
-            ind.NA[[q]] = which(apply(is.na.A, 1, sum) > 0) # calculated only once
+            ind.NA[[q]] = which(apply(is.na.A[[q]], 1, sum) > 0) # calculated only once
             ind.NA.col[[q]] = which(apply(is.na.A[[q]], 2, sum) >0) # indice of the col that have missing values. used in the deflation
         } else {
             is.na.A[[q]] = NULL
