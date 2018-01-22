@@ -162,6 +162,7 @@ parallel
         # perform loocv
         stop.user = FALSE
         
+        #save(list=ls(),file="temp22.Rdata")
 
         #result.all=list()
         fonction.j.folds =function(j)#for(j in 1:M)
@@ -185,24 +186,26 @@ parallel
             # split the NA in training and testing
             if(any(misdata))
             {
+                is.na.A.train = ind.NA.train = ind.NA.col.train = vector("list", length = length(X))
+                
+                is.na.A.train= lapply(is.na.A, function(x){x[-omit,, drop=FALSE]})
+                is.na.A.test = lapply(is.na.A, function(x){x[omit,,drop=FALSE]})
                 for(q in 1:length(X))
                 {
                     if(misdata[q])
                     {
-                        is.na.A.train = lapply(is.na.A, function(x){x[-omit,, drop=FALSE]})
-                        is.na.A.test = lapply(is.na.A, function(x){x[omit,,drop=FALSE]})
+                        ind.NA.train[[q]] = which(apply(is.na.A.train[[q]], 1, sum) > 0) # calculated only once
+                        #ind.NA.test = which(apply(is.na.A.test, 1, sum) > 0) # calculated only once
                         
-                        ind.NA.train = lapply(is.na.A.train, function(x){which(apply(x, 1, sum) > 0)})#list(X=ind.NA[which(!ind.NA%in% omit)])
-                        #ind.NA.test = lapply(is.na.A.test, function(x){which(apply(x, 1, sum) > 0)})#list(X=ind.NA[which(ind.NA%in%omit)])
-
-                        ind.NA.col.train = lapply(is.na.A.train, function(x){which(apply(x, 2, sum) > 0)})#list(X=ind.NA[which(!ind.NA%in% omit)])
-                        #ind.NA.col.test = lapply(is.na.A.test, function(x){which(apply(x, 2, sum) > 0)})#list(X=ind.NA[which(ind.NA%in%omit)])
+                        ind.NA.col.train[[q]] = which(apply(is.na.A.train[[q]], 2, sum) > 0) # calculated only once
                     }
+                    
                 }
+
             } else {
                 is.na.A.train = is.na.A.test = NULL
-                ind.NA.train =NULL
-                ind.NA.col.train =NULL
+                ind.NA.train = NULL
+                ind.NA.col.train = NULL
             }
             
             #---------------------------------------#
@@ -252,15 +255,15 @@ parallel
             
             #-- near.zero.var ----------------------#
             #---------------------------------------#
+            #save(list=ls(), file="temp2.Rdata")
+            #stop("blaa")
             
             #prediction.comp.j = array(0, c(length(omit), nlevels(Y), length(test.keepX)), dimnames = list(rownames(X.test), levels(Y), names(test.keepX)))
             is.na.A.temp = ind.NA.temp = ind.NA.col.temp = vector("list", length = length(X)+1)
             is.na.A.temp[1:length(X)] = is.na.A.train
             ind.NA.temp[1:length(X)] = ind.NA.train
             ind.NA.col.temp[1:length(X)] = ind.NA.col.train
-            
-            is.na.A.temp[length(X)+1] = ind.NA.temp[length(X)+1] = ind.NA.col.temp[length(X)+1] = NULL
-            
+                        
             # shape input for `internal_mint.block' (keepA, test.keepA, etc)
             #print(system.time(
             result <- suppressMessages(internal_wrapper.mint.block(X=X.train, Y=Y.train.mat, study=factor(rep(1,length(Y.train))), ncomp=ncomp,
