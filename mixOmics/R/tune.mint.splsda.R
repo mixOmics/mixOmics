@@ -149,8 +149,8 @@ light.output = TRUE # if FALSE, output the prediction and classification of each
     stop("At least one study only contains a single level of the multi-levels outcome Y. The MINT algorithm cannot be computed.")
     
     if(sum(apply(table(Y,study)!=0,2,sum)>0) >0)
-    warning("At least one study does not contain all the level of the the outcome Y. The MINT algorithm might not do as expected.")
-    
+    warning("At least one study does not contain all the levels of the outcome Y. The MINT algorithm might not perform as expected.")
+
 
     #-- dist
     
