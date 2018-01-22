@@ -137,7 +137,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
     if (is.vector(tau))
     tau = matrix(rep(tau, N), nrow = N, ncol = length(tau), byrow = TRUE)
     
-    #save(list=ls(),file="temp.Rdata")
+    save(list=ls(),file="temp.Rdata")
 
     # if missing values are not given as input (only when direct call to a (mint).(block).(s)pls(da)), we search for them here (takes time)
     if(is.null(misdata) &  is.null(is.na.A) & is.null(ind.NA) & is.null(ind.NA.col))

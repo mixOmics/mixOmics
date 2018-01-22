@@ -254,6 +254,12 @@ parallel
             #---------------------------------------#
             
             #prediction.comp.j = array(0, c(length(omit), nlevels(Y), length(test.keepX)), dimnames = list(rownames(X.test), levels(Y), names(test.keepX)))
+            is.na.A.temp = ind.NA.temp = ind.NA.col.temp = vector("list", length = length(X)+1)
+            is.na.A.temp[1:length(X)] = is.na.A.train
+            ind.NA.temp[1:length(X)] = ind.NA.train
+            ind.NA.col.temp[1:length(X)] = ind.NA.col.train
+            
+            is.na.A.temp[length(X)+1] = ind.NA.temp[length(X)+1] = ind.NA.col.temp[length(X)+1] = NULL
             
             # shape input for `internal_mint.block' (keepA, test.keepA, etc)
             #print(system.time(
@@ -261,8 +267,8 @@ parallel
             keepX=choice.keepX, keepY=rep(ncol(Y.train.mat), ncomp-1), test.keepX=test.keepX, test.keepY=ncol(Y.train.mat),
             mode="regression", scale=scale, near.zero.var=near.zero.var, design=design,
             max.iter=max.iter, scheme =scheme, init=init, tol=tol,
-            misdata = misdata, is.na.A = c(is.na.A.train, Y=NULL), ind.NA = c(ind.NA.train, Y=NULL),
-            ind.NA.col = c(ind.NA.col.train, Y=NULL), all.outputs=FALSE))
+            misdata = misdata, is.na.A = is.na.A.temp, ind.NA = ind.NA.temp,
+            ind.NA.col = ind.NA.col.temp, all.outputs=FALSE))
             #))
             
             # `result' returns loadings and variates for all test.keepX on the ncomp component

@@ -494,7 +494,7 @@ initialisation_by_svd = function(A, indY = NULL, misdata, is.na.A = NULL, init =
         #ssvd faster with svds, only if more than 3 column, otherwise break down
         svd.M = lapply(M, function(x){if(ncol(x)>3) {svds(x, k=1, nu = 1, nv = 1)} else {svd(x, nu = 1, nv = 1)}})
         
-        loadings.A[c(1:J)[-indY]] = lapply(c(1:J)[-indY], function(x){svd.M[[x]]$u})
+        loadings.A[c(1:J)[-indY]] = lapply(1:length(M), function(x){svd.M[[x]]$u})
         loadings.A[[indY]] = svd.M[[1]]$v
         
     } else if (init=="svd.single") {
