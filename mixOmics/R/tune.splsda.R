@@ -256,7 +256,7 @@ cpus
 
 
 
-    test.keepX = sort(test.keepX) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
+    test.keepX = sort(unique(test.keepX)) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
     names(test.keepX) = test.keepX
     # if some components have already been tuned (eg comp1 and comp2), we're only tuning the following ones (comp3 comp4 .. ncomp)
     if ((!is.null(already.tested.X)))
