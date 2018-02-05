@@ -18,12 +18,6 @@ opts_knit$set(upload.fun = imgur_upload, base.url = NULL)
 options(WordpressLogin = c(your.username = 'your.password'), #update these
         WordpressURL = 'http://mixomics.org/xmlrpc.php')
 
-options(WordpressLogin = c(klecao = 'mixOmics8'), #update these
-        WordpressURL = 'https://mixomics.org/xmlrpc.php')
-
-
-
-
 
 
 
