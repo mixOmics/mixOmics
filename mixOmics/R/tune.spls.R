@@ -144,7 +144,7 @@ cpus
         
         parallel = TRUE
         cl = makeCluster(cpus, type = "SOCK")
-        clusterExport(cl, c("splsda","selectVar"))
+        clusterExport(cl, c("spls","selectVar"))
         
         if(progressBar == TRUE)
         message(paste("As code is running in parallel, the progressBar will only show 100% upon completion of each nrepeat/ component.",sep=""))
@@ -260,7 +260,7 @@ cpus
             cl = cl, parallel = parallel,
             misdata = misdata, is.na.A = is.na.A, class.object="spls")
             
-            save(list=ls(),file="temp.Rdata")
+            #save(list=ls(),file="temp.Rdata")
             # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
             mat.error.rate[[comp]] = result[[measure]]$mat.error.rate[[1]]
             mat.mean.error[, comp]=result[[measure]]$error.rate.mean[[1]]

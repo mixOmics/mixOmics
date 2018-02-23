@@ -359,7 +359,7 @@ parallel
         #---------------------------#
         #--- combine the results ---#
         
-        save(list=ls(),file="temp33.Rdata")
+        #save(list=ls(),file="temp33.Rdata")
 
         for(j in 1:M)
         {
@@ -439,7 +439,7 @@ parallel
     }
     #----- average AUC over the nrepeat, for each test.keepX -----#
     #-------------------------------------------------------------#
-    save(list=ls(),file="temp3.Rdata")
+    #save(list=ls(),file="temp3.Rdata")
 
     result = list()
     error.mean = error.sd = error.per.class.keepX.opt.comp = keepX.opt = test.keepX.out = mat.error.final = choice.keepX.out = list()
