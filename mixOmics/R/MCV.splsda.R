@@ -436,7 +436,7 @@ parallel
             {
                 data$outcome = Y
                 data$data = prediction.comp[[nrep]][, , i]
-                auc.all[[nrep]][, , i] = as.matrix(statauc(data))
+                auc.all[[nrep]][, , i] = as.matrix(statauc(data)[[1]]) # [[1]] because [[2]] is the graph
             }
         }
         #----- AUC on the test -----#

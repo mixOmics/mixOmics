@@ -176,6 +176,7 @@ S3method(predict, block.spls)
 S3method(summary, pls)
 S3method(summary, spls)
 S3method(summary, rcc)
+S3method(summary, pca)
 
 S3method(print, pls)
 S3method(print, spls)
