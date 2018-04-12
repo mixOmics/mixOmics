@@ -44,19 +44,22 @@ roc.comp = 1,
     stop("Factor outcome.test must be a factor with ",dim(newdata)[[1]], " elements.",call. = FALSE)
     
     data=list()
-    statauc=list()
+    statauc = graph = list()
     data$outcome=factor(outcome.test)
     
     # note here: the dist does not matter as we used the predicted scores only
     res.predict  =  predict(object, newdata = newdata, dist = "max.dist", multilevel = multilevel)$predict
-    
+
     for (i in 1:object$ncomp)
     {
         data$data=res.predict[,,i]
         title=paste("ROC Curve Comp",i)
-        statauc[[paste("Comp", i, sep = "")]]=statauc(data, plot = ifelse(i%in%roc.comp,plot,FALSE), title = title)
+        temp = statauc(data, plot = ifelse(i%in%roc.comp,plot,FALSE), title = title)
+        statauc[[paste("Comp", i, sep = "")]] = temp[[1]]
+        graph[[paste("Comp", i, sep = "")]] = temp$graph
     }
-    return(statauc)
+    print(statauc)
+    return(invisible(c(statauc,graph=graph)))
 }
 
 
@@ -100,7 +103,7 @@ roc.study = "global",
     }
     
     data=list()
-    statauc=list()
+    statauc = graph = list()
     data$outcome=factor(outcome.test)
     
     # note here: the dist does not matter as we used the predicted scores only
@@ -110,11 +113,12 @@ roc.study = "global",
     {
         data$data=res.predict[,,i]
         title=paste0("ROC Curve Comp ",i, title.temp)
-        statauc[[paste("Comp", i, sep = "")]]=statauc(data, plot = ifelse(i%in%roc.comp,plot,FALSE), title = title)
+        temp = statauc(data, plot = ifelse(i%in%roc.comp,plot,FALSE), title = title)
+        statauc[[paste("Comp", i, sep = "")]] = temp[[1]]
+        graph[[paste("Comp", i, sep = "")]] = temp$graph
     }
-    return(statauc)
-    
-    
+    print(statauc)
+    return(invisible(c(statauc,graph=graph)))
 
 }
 
@@ -133,7 +137,7 @@ roc.comp = 1,
 {
     
     data=list()
-    auc.mean=list()
+    auc.mean = graph=list()
     data$outcome=factor(outcome.test)
     
     # note here: the dist does not matter as we used the predicted scores only
@@ -149,11 +153,15 @@ roc.comp = 1,
             title=paste("ROC Curve\nBlock: ", names(res.predict)[j], ", comp: ",i, sep="")
             
             plot.temp = ifelse(i%in%roc.comp && names(res.predict)[j]%in%block.temp, plot, FALSE)
-            auc.mean[[names(res.predict)[j]]][[paste("comp",i,sep = "")]] = statauc(data, plot = plot.temp, title = title)
-            
+            temp = statauc(data, plot = plot.temp, title = title)
+            auc.mean[[names(res.predict)[j]]][[paste("comp",i,sep = "")]] = temp[[1]]
+            graph[[names(res.predict)[j]]][[paste("comp",i,sep = "")]] = temp$graph
+
         }
+        out = c(auc.mean,graph=graph)
     }
-    return(auc.mean)
+    print(auc.mean)
+    return(invisible(out))
 }
 
 # mint.block.splsda object
@@ -172,7 +180,7 @@ roc.comp = 1,
 {
     
     data=list()
-    auc.mean=list()
+    auc.mean = graph=list()
     data$outcome=factor(outcome.test)
     study.test=factor(study.test)
     
@@ -189,10 +197,14 @@ roc.comp = 1,
             title=paste("ROC Curve\nBlock: ", names(res.predict)[j], ", comp: ",i, sep="")
             
             plot.temp = ifelse(i%in%roc.comp && names(res.predict)[j]%in%block.temp, plot, FALSE)
-            auc.mean[[names(res.predict)[j]]][[paste("comp",i,sep = "")]] = statauc(data, plot = plot.temp, title = title)
-            
+            temp = statauc(data, plot = plot.temp, title = title)
+            auc.mean[[names(res.predict)[j]]][[paste("comp",i,sep = "")]] = temp[[1]]
+            graph[[names(res.predict)[j]]][[paste("comp",i,sep = "")]] = temp$graph
+
         }
+        out = c(auc.mean,graph=graph)
     }
-    return(auc.mean)
+    print(auc.mean)
+    return(invisible(out))
 }
 
