@@ -241,6 +241,8 @@ parallel
                     {
                         names.remove.X = colnames(X.train[[q]])[nzv.A[[q]]$Position]
                         X.train[[q]] = X.train[[q]][, -nzv.A[[q]]$Position, drop=FALSE]
+                        X.test[[q]] = X.test[[q]][, -nzv.A[[q]]$Position,drop = FALSE]
+                        
                         #if (verbose)
                         #warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
                         if (ncol(X.train[[q]]) == 0)
