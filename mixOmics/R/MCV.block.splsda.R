@@ -339,7 +339,7 @@ parallel
                 # do the prediction, we are passing to the function some invisible parameters:
                 # the scaled newdata and the missing values
                 #print(system.time(
-                test.predict.sw <- predict(object.block.splsda.temp, newdata.scale = X.test, dist = dist, misdata.all=any(misdata), is.na.X = is.na.A.train, is.na.newdata = is.na.A.test, noAveragePredict=FALSE)
+                test.predict.sw <- predict.block.spls(object.block.splsda.temp, newdata.scale = X.test, dist = dist, misdata.all=any(misdata), is.na.X = is.na.A.train, is.na.newdata = is.na.A.test, noAveragePredict=FALSE)
                 #))
                 #prediction.comp.j[, , i] =  test.predict.sw$predict[, , ncomp]
                 if(weighted ==TRUE) #WeightedVote
