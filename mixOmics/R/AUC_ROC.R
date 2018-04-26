@@ -48,7 +48,7 @@ roc.comp = 1,
     data$outcome=factor(outcome.test)
     
     # note here: the dist does not matter as we used the predicted scores only
-    res.predict  =  predict(object, newdata = newdata, dist = "max.dist", multilevel = multilevel)$predict
+    res.predict  =  predict.spls(object, newdata = newdata, dist = "max.dist", multilevel = multilevel)$predict
 
     for (i in 1:object$ncomp)
     {
@@ -107,7 +107,7 @@ roc.study = "global",
     data$outcome=factor(outcome.test)
     
     # note here: the dist does not matter as we used the predicted scores only
-    res.predict  =  predict(object, newdata = newdata, dist = "max.dist", multilevel = multilevel, study.test = study.test)$predict
+    res.predict  =  predict.spls(object, newdata = newdata, dist = "max.dist", multilevel = multilevel, study.test = study.test)$predict
     
     for (i in 1:object$ncomp)
     {
@@ -141,7 +141,7 @@ roc.comp = 1,
     data$outcome=factor(outcome.test)
     
     # note here: the dist does not matter as we used the predicted scores only
-    res.predict  =  predict(object, newdata = newdata, dist = "max.dist", multilevel = multilevel)$predict
+    res.predict  =  predict.block.spls(object, newdata = newdata, dist = "max.dist", multilevel = multilevel)$predict
     block.all = names(res.predict)
     block.temp = names(res.predict[roc.block])
     
@@ -185,7 +185,7 @@ roc.comp = 1,
     study.test=factor(study.test)
     
     # note here: the dist does not matter as we used the predicted scores only
-    res.predict  =  predict(object, newdata = newdata, study.test=study.test,dist = "max.dist", multilevel = multilevel)$predict
+    res.predict  =  predict.spls(object, newdata = newdata, study.test=study.test,dist = "max.dist", multilevel = multilevel)$predict
     block.all = names(res.predict)
     block.temp = names(res.predict[roc.block])
     
