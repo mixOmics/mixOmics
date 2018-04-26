@@ -361,11 +361,10 @@ parallel
                     
                 }))
                 
-                names.to.pick.ncomp = paste(paste0("comp",ncomp),paste(keepA[[ncomp]][i,],collapse="_"), sep=":")
+                names.to.pick.ncomp = paste(paste0("comp",ncomp),paste(as.numeric(keepA[[ncomp]][i,]),collapse="_"), sep=":")
                 names.to.pick = c(names.to.pick, names.to.pick.ncomp)
 
 
-                
                 object.splsda.temp$variates = lapply(result$variates, function(x){if(ncol(x)!=ncomp) {x[,colnames(x)%in%names.to.pick, drop=FALSE]}else{x}})
                 object.splsda.temp$loadings = lapply(result$loadings, function(x){if(ncol(x)!=ncomp) {x[,colnames(x)%in%names.to.pick, drop=FALSE]}else{x}})
                 
@@ -373,7 +372,7 @@ parallel
                 if (any(class.object == "splsda") & length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
                 # note: if plsda, 'features' includes everything: to optimise computational time, we don't evaluate for plsda object
                 features.j = selectVar(object.splsda.temp, comp = ncomp)$name
-                
+
                 # do the prediction, we are passing to the function some invisible parameters:
                 # the scaled newdata and the missing values
                 test.predict.sw <- predict.spls(object.splsda.temp, newdata.scale = X.test, dist = dist, misdata.all=any(misdata), is.na.X = list(X=is.na.A.train), is.na.newdata = list(X=is.na.A.test))
