@@ -376,7 +376,7 @@ parallel
                 
                 # do the prediction, we are passing to the function some invisible parameters:
                 # the scaled newdata and the missing values
-                test.predict.sw <- predict(object.splsda.temp, newdata.scale = X.test, dist = dist, misdata.all=any(misdata), is.na.X = list(X=is.na.A.train), is.na.newdata = list(X=is.na.A.test))
+                test.predict.sw <- predict.spls(object.splsda.temp, newdata.scale = X.test, dist = dist, misdata.all=any(misdata), is.na.X = list(X=is.na.A.train), is.na.newdata = list(X=is.na.A.test))
                 prediction.comp.j[, , i] =  test.predict.sw$predict[, , ncomp]
                 
                 for(ijk in dist)

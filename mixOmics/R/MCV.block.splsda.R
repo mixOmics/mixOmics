@@ -241,6 +241,8 @@ parallel
                     {
                         names.remove.X = colnames(X.train[[q]])[nzv.A[[q]]$Position]
                         X.train[[q]] = X.train[[q]][, -nzv.A[[q]]$Position, drop=FALSE]
+                        X.test[[q]] = X.test[[q]][, -nzv.A[[q]]$Position,drop = FALSE]
+                        
                         #if (verbose)
                         #warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
                         if (ncol(X.train[[q]]) == 0)
@@ -337,7 +339,7 @@ parallel
                 # do the prediction, we are passing to the function some invisible parameters:
                 # the scaled newdata and the missing values
                 #print(system.time(
-                test.predict.sw <- predict(object.block.splsda.temp, newdata.scale = X.test, dist = dist, misdata.all=any(misdata), is.na.X = is.na.A.train, is.na.newdata = is.na.A.test, noAveragePredict=FALSE)
+                test.predict.sw <- predict.block.spls(object.block.splsda.temp, newdata.scale = X.test, dist = dist, misdata.all=any(misdata), is.na.X = is.na.A.train, is.na.newdata = is.na.A.test, noAveragePredict=FALSE)
                 #))
                 #prediction.comp.j[, , i] =  test.predict.sw$predict[, , ncomp]
                 if(weighted ==TRUE) #WeightedVote
