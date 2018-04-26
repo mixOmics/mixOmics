@@ -268,8 +268,7 @@ if(additional.test==TRUE)
     design = design,
     keepX = list(gene = c(10,10), lipid = c(15,15)),
     ncomp = 2,
-    scheme = "centroid",
-    bias = FALSE)
+    scheme = "centroid")
 
     plotLoadings(nutrimouse.sgccda,block=1, legend = FALSE)
     plotLoadings(nutrimouse.sgccda,block=2, legend = FALSE)

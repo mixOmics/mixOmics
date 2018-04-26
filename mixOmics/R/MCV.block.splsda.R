@@ -326,7 +326,7 @@ parallel
                     
                 }))
                 
-                names.to.pick.ncomp = paste(paste0("comp",ncomp),paste(keepA[[ncomp]][i,],collapse="_"), sep=":")
+                names.to.pick.ncomp = paste(paste0("comp",ncomp),paste(as.numeric(keepA[[ncomp]][i,]),collapse="_"), sep=":")
                 names.to.pick = c(names.to.pick, names.to.pick.ncomp)
                 
                 
