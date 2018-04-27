@@ -225,13 +225,9 @@ name.save = NULL)
         if(misdata[q])
         {
             is.na.A[[q]] = is.na(X[[q]])
-            ind.NA[[q]] = which(apply(is.na.A, 1, sum) > 0) # calculated only once
+            ind.NA[[q]] = which(apply(is.na.A[[q]], 1, sum) > 0) # calculated only once
             ind.NA.col[[q]] = which(apply(is.na.A[[q]], 2, sum) >0) # indice of the col that have missing values. used in the deflation
-        } else {
-            is.na.A[[q]] = NULL
-            ind.NA[[q]] = NULL
-            ind.NA.col[[q]] = NULL
-        }
+       }
     }
 
     #-- NA calculation      ----------------------------------------------------#
@@ -305,7 +301,7 @@ name.save = NULL)
     if(light.output == FALSE)
     prediction.all = class.all = list()
 
-
+    #save(list=ls(),file="temp3.Rdata")
     # successively tune the components until ncomp: comp1, then comp2, ...
     for(comp in 1:length(comp.real))
     {

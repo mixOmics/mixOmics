@@ -33,6 +33,22 @@ tol=1e-30)
 head(nutrimouse.sgccda$variates$gene)
 
 
+
+## add variables with 0 variance
+data(nutrimouse)
+Y = nutrimouse$diet
+
+data = list(gene = cbind(nutrimouse$gene,V1=0,V2=1), lipid = cbind(nutrimouse$lipid,"V5"=c(rep(1,38),rep(2,2))))
+design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+
+nutrimouse.sgccda <- block.splsda(X=data,Y = Y,design = design,keepX = list(gene=c(10,10), lipid=c(15,15)),ncomp = 2,scheme = "centroid",tol=1e-30, near.zero.var=TRUE)
+
+nutrimouse.sgccda$nzv
+
+tune = tune.block.splsda(data,Y,ncomp=2,design=design)
+tune = tune.block.splsda(data,Y,ncomp=2,design=design,near.zero.var=TRUE,validation="loo")
+
+
 if(FALSE)
 {source("mixOmicsDD/R/internal_wrapper.mint.R")
 source("mixOmicsDD/R/internal_wrapper.mint.block.R")

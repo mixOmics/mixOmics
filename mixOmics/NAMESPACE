@@ -1,5 +1,5 @@
 
-import(MASS, lattice, igraph, ggplot2,corpcor,parallel, RColorBrewer, plyr)
+import(MASS, lattice, igraph, ggplot2,corpcor,parallel, RColorBrewer)
 
 importFrom(rgl, axes3d, bbox3d, box3d, cube3d, dodecahedron3d,
             ellipse3d, icosahedron3d, layout3d, legend3d, mtext3d,
@@ -32,7 +32,7 @@ importFrom("grDevices","rainbow")
 
 importFrom("methods", "hasArg", "is")
 
-importFrom("dplyr","group_by")
+importFrom("dplyr","group_by", "mutate", "summarise", "arrange")
 
 importFrom("tidyr","gather")
 
@@ -178,6 +178,7 @@ S3method(predict, block.spls)
 S3method(summary, pls)
 S3method(summary, spls)
 S3method(summary, rcc)
+S3method(summary, pca)
 
 S3method(print, pls)
 S3method(print, spls)

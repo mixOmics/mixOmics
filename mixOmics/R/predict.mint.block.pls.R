@@ -208,10 +208,6 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
             dim(newdata) = c(1, p) #don't understand that, Benoit?
         }
         
-        if (any(sapply(newdata, function(x){any(is.na(x))})))
-        stop("Some missing data are present in the matrix")
-        
-        
         #check dimnames and ncomp per block of A
         for(q in 1:length(newdata))
         {
@@ -430,6 +426,10 @@ function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist"
         })
 
     }
+    
+    if (any(sapply(concat.newdata, function(x){any(is.na(x))})))
+    stop("Some missing values are present in the test data")
+    
     
     # replace NA by 0 in Y
     Y[is.na(Y)] = 0
