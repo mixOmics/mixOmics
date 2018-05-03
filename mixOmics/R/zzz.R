@@ -28,6 +28,7 @@
     
     "\n\nVisit http://www.mixOmics.org for more details about our methods.",
     "\nAny bug reports or comments? Notify us at mixomics at math.univ-toulouse.fr or https://bitbucket.org/klecao/package-mixomics/issues",
+    "\nSee citation('mixOmics') to cite us",
     "\n\nThank you for using mixOmics!"
     
     )}
