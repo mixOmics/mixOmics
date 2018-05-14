@@ -16,11 +16,14 @@ progressBar = FALSE
 # splsda
 # ----
 #library(mixOmicsDD)
+progressBar = TRUE
+library(mixOmics)
 data(breast.tumors)
 X <- breast.tumors$gene.exp
-# Y will be transformed as a factor in the function,
-# but we set it as a factor to set up the colors.
 Y <- as.factor(breast.tumors$sample$treatment)
+
+ system.time(tune1 <- tune.splsda(X,Y,ncomp=3,nrepeat=1,logratio="none",test.keepX = seq(5,100,5),folds=3,dist="max.dist", progressBar = progressBar,cpus=4))
+
 
 res <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 

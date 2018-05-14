@@ -3,18 +3,20 @@
 #                                           from help file
 #######################################################################################################
 #######################################################################################################
-library(rARPACK)
-library(matrixStats)
-library(mixOmics)
+progressBar = FALSE
+
+#library(rARPACK)
+#library(matrixStats)
+#library(mixOmics)
 
 
 data(liver.toxicity)
-X <- liver.toxicity$gene
-Y <- liver.toxicity$clinic
+X <- as.matrix(liver.toxicity$gene)
+Y <- as.matrix(liver.toxicity$clinic)
 
 toxicity.pls <- pls(X, Y, ncomp = 3)
 
-Y=Y[,9]
+Y=Y[,9,drop=FALSE]
 tox=spls(X,Y, keepX=c(1,10))
 p=predict(tox,X)
 plot(Y,p$predict[,,1])
@@ -34,104 +36,57 @@ selectVar(tox)
 
 
 
+data(liver.toxicity)
+X <- as.matrix(liver.toxicity$gene)
+Y <- as.matrix(liver.toxicity$clinic)
 
-if(FALSE)
-{
-source("mixOmics/R/internal_wrapper.mint.R")
-source("mixOmics/R/internal_wrapper.mint.block.R")
-source("mixOmics/R/internal_mint.block.R")
-source("mixOmics/R/internal_mint.block_helpers.R")
-source("mixOmics/R/check_entry.R")
-source("mixOmics/R/t.test.process.R")
+tun = tune.spls(X,Y,ncomp=4, test.keepX = c(5,10,15), nrepeat=5, test.keepY=(1:10), progressBar = progressBar)
+plot(tun,keepY=5)
+plot(tun,keepY=10)
 
-#source("mixOmicsDD/R/tune.splsda.R")
-source("mixOmics/R/tune.spls.R")
-source("mixOmics/R/MCV.spls.R")
-source("mixOmics/R/internal_graphic.perf.R")
-
-
-tun = tune.spls(X,Y,ncomp=1, test.keepX = c(5,10,15), nrepeat=5)
+Y=Y[,9,drop=FALSE]
+tun = tune.spls(X,Y,ncomp=1, test.keepX = c(5,10,15), nrepeat=5, progressBar = progressBar)
 
 par(mfrow=c(2,2))
 set.seed(12)
-tun = tune.spls(X,Y,ncomp=2, test.keepX = c(5,10,15), nrepeat=5, measure = "MSE")
+tun = tune.spls(X,Y,ncomp=2, test.keepX = c(5,10,15), nrepeat=5, measure = "MSE", progressBar = progressBar)
 plot(tun)
 set.seed(12)
-tun2 = tune.spls(X,Y,ncomp=2, test.keepX = c(5,10,15), nrepeat=5, measure = "MAE")
+tun2 = tune.spls(X,Y,ncomp=2, test.keepX = c(5,10,15), nrepeat=5, measure = "MAE", progressBar = progressBar)
 plot(tun2)
 set.seed(12)
-tun3 = tune.spls(X,Y,ncomp=2, test.keepX = c(5,10,15), nrepeat=5, measure = "Bias")
+tun3 = tune.spls(X,Y,ncomp=2, test.keepX = c(5,10,15), nrepeat=5, measure = "Bias", progressBar = progressBar)
 plot(tun3)
-
-
-tun = tune.spls(X,Y,ncomp=5, test.keepX = c(1:10,15,seq(20,200,10),250,seq(300,3100,100),3116), nrepeat=10)
-
-plot(tun)
-plot(tun,sd=FALSE)
-
-
-par(mfrow=c(3,2))
 set.seed(12)
-tun = tune.spls(X,Y,ncomp=5, test.keepX = c(1:10,15,seq(20,200,10),250,seq(300,3100,100),3116), nrepeat=10, measure = "MSE")
-plot(tun)
-plot(tun,sd=FALSE)
+tun4 = tune.spls(X,Y,ncomp=2, test.keepX = c(5,10,15), nrepeat=5, measure = "R2", progressBar = progressBar)
+plot(tun4)
+
+
+
+par(mfrow=c(2,2))
 set.seed(12)
-tun2 = tune.spls(X,Y,ncomp=5, test.keepX = c(1:10,15,seq(20,200,10),250,seq(300,3100,100),3116), nrepeat=10, measure = "MAE")
-plot(tun2)
-plot(tun2,sd=FALSE)
+tun = tune.spls(X,Y,ncomp=5, test.keepX = c(1:10,15,seq(20,200,10),250,seq(300,3100,100),3116), nrepeat=10, measure = "MSE", progressBar = progressBar)
+plot(tun,legend.position = "topleft")
+plot(tun,sd=FALSE,legend.position = "topleft")
 set.seed(12)
-tun3 = tune.spls(X,Y,ncomp=5, test.keepX = c(1:10,15,seq(20,200,10),250,seq(300,3100,100),3116), nrepeat=10, measure = "Bias")
-plot(tun3)
-plot(tun3,sd=FALSE)
-
-
-
-
-
-
-# gives same results )where X.test is not scaled
-object=spls(X.train,Y.train.mat, ncomp=2, keepX=c(10,10))
-p=predict(object, X.test)
-
-
-
-
-load("temp.Rdata")
-
-
-source("mixOmics/R/block.splsda.R")
-source("mixOmics/R/block.spls.R")
-source("mixOmics/R/splsda.R")
-source("mixOmics/R/spls.R")
-source("mixOmics/R/pls.R")
-source("mixOmics/R/plsda.R")
-source("mixOmics/R/MCV.spls.R")
-source("mixOmics/R/MCV.splsda.R")
-source("mixOmics/R/perf.R")
-source("mixOmics/R/tune.block.splsda.R")
-source("mixOmics/R/MCV.block.splsda.R")
-source("mixOmics/R/internal_wrapper.mint.block.R")
-source("mixOmics/R/internal_mint.block.R")
-source("mixOmics/R/predict.mint.block.pls.R")
-source("mixOmics/R/internal_predict.DA.R")
-
-
-nutrimouse.sgccda <- block.splsda(X=data,
-Y = Y,
-design = design,
-#keepX = list(gene=c(10,10), lipid=c(15,15)),
-ncomp = 2,#c(2, 2),
-scheme = "centroid",
-verbose = FALSE,
-bias = FALSE,
-tol=1e-30)
-
-
-
-
+tun2 = tune.spls(X,Y,ncomp=5, test.keepX = c(1:10,15,seq(20,200,10),250,seq(300,3100,100),3116), nrepeat=10, measure = "MAE", progressBar = progressBar)
+plot(tun2,legend.position = "topleft")
+plot(tun2,sd=FALSE,legend.position = "topleft")
 set.seed(12)
-tune2 = tune.block.splsda(X = data,Y = Y,design = design,ncomp = 2,test.keepX = list(gene=c(1,5,10,4),lipid=c(1,2,3)),scheme = "centroid",bias = FALSE,weighted=FALSE, measure="overall", init="svd")
+tun3 = tune.spls(X,Y,ncomp=5, test.keepX = c(1:10,15,seq(20,200,10),250,seq(300,3100,100),3116), nrepeat=10, measure = "Bias", progressBar = progressBar)
+plot(tun3,legend.position = "bottomright")
+plot(tun3,sd=FALSE,legend.position = "bottomright")
+set.seed(12)
+tun4 = tune.spls(X,Y,ncomp=5, test.keepX = c(1:10,15,seq(20,200,10),250,seq(300,3100,100),3116), nrepeat=10, measure = "R2", progressBar = progressBar)
+plot(tun4,legend.position = "bottomleft")
+plot(tun4,sd=FALSE,legend.position = "bottomleft")
 
 
-tune2
-}
+### with NA
+n=nrow(X)
+p=ncol(X)
+system.time(tun <- tune.spls(X,Y,ncomp=3, test.keepX = c(5,10,15), nrepeat=1, test.keepY=(5:10), folds=3, progressBar = progressBar))
+
+X[sample(1:(n*p),100)]=NA
+system.time(tun2 <- tune.spls(X,Y,ncomp=3, test.keepX = c(5,10,15), nrepeat=1, test.keepY=(5:10), folds=3, progressBar = progressBar))
+
