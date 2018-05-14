@@ -32,11 +32,11 @@ importFrom("grDevices","rainbow")
 
 importFrom("methods", "hasArg", "is")
 
-importFrom("dplyr","group_by", "mutate", "summarise", "arrange")
+importFrom("dplyr","group_by", "mutate", "summarise", "arrange","row_number","filter")
 
 importFrom("tidyr","gather")
 
-importFrom("matrixStats","colSds")
+importFrom("matrixStats","colSds","colVars")
 
 importFrom("reshape2","melt","dcast")
 
