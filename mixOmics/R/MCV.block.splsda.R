@@ -182,35 +182,10 @@ parallel
             X.test = lapply(X, function(x){x[omit, , drop = FALSE]}) #matrix(X[omit, ], nrow = length(omit)) #removed to keep the colnames in X.test
             Y.test = Y[omit]
 
-            # split the NA in training and testing
-            if(any(misdata))
-            {
-                is.na.A.train = ind.NA.train = ind.NA.col.train = vector("list", length = length(X))
-                
-                is.na.A.train= lapply(is.na.A, function(x){x[-omit,, drop=FALSE]})
-                is.na.A.test = lapply(is.na.A, function(x){x[omit,,drop=FALSE]})
-                for(q in 1:length(X))
-                {
-                    if(misdata[q])
-                    {
-                        
-                        temp = which(is.na.A.train[[q]], arr.ind=TRUE)
-                        ind.NA.train[[q]] = unique(temp[,1])
-                        ind.NA.col.train[[q]] = unique(temp[,2])
-                        #ind.NA.train[[q]] = which(apply(is.na.A.train[[q]], 1, sum) > 0) # calculated only once
-                        #ind.NA.test = which(apply(is.na.A.test, 1, sum) > 0) # calculated only once
-                        #ind.NA.col.train[[q]] = which(apply(is.na.A.train[[q]], 2, sum) > 0) # calculated only once
-                    }
-                }
-            } else {
-                is.na.A.train = is.na.A.test = NULL
-                ind.NA.train = NULL
-                ind.NA.col.train = NULL
-            }
-            
+
             #---------------------------------------#
             #-- near.zero.var ----------------------#
-            
+            remove = vector("list",length=length(X))
             # first remove variables with no variance inside each X.train/X.test
             #var.train = colVars(X.train, na.rm=TRUE)#apply(X.train, 2, var)
             var.train = lapply(X.train, function(x){colVars(x, na.rm=TRUE)})
@@ -219,6 +194,8 @@ parallel
                 ind.var = which(var.train[[q]] == 0)
                 if (length(ind.var) > 0)
                 {
+                    remove[[q]] = c(remove[[q]], colnames(X.train[[q]])[ind.var])
+
                     X.train[[q]] = X.train[[q]][, -c(ind.var),drop = FALSE]
                     X.test[[q]] = X.test[[q]][, -c(ind.var),drop = FALSE]
                     
@@ -229,6 +206,7 @@ parallel
                     # reduce test.keepX if needed
                     if (any(test.keepX[[q]] > ncol(X.train[[q]])))
                     test.keepX[[q]][which(test.keepX[[q]]>ncol(X.train[[q]]))] = ncol(X.train[[q]])
+                    
                 }
             }
             
@@ -241,6 +219,8 @@ parallel
                     if (length(nzv.A[[q]]$Position) > 0)
                     {
                         names.remove.X = colnames(X.train[[q]])[nzv.A[[q]]$Position]
+                        remove[[q]] = c(remove[[q]], names.remove.X)
+
                         X.train[[q]] = X.train[[q]][, -nzv.A[[q]]$Position, drop=FALSE]
                         X.test[[q]] = X.test[[q]][, -nzv.A[[q]]$Position,drop = FALSE]
                         
@@ -258,6 +238,64 @@ parallel
             
             #-- near.zero.var ----------------------#
             #---------------------------------------#
+            
+            
+            #------------------------------------------#
+            # split the NA in training and testing
+            if(any(misdata))
+            {
+                
+                is.na.A.train = is.na.A.test = ind.NA.train = ind.NA.col.train = vector("list", length = length(X))
+
+                for(q in 1:length(X))
+                {
+                    if(misdata[q])
+                    {
+                        if(length(remove[[q]])>0){
+                            ind.remove = which(colnames(X[[q]]) %in% remove[[q]])
+                            is.na.A.train[[q]] = is.na.A[[q]][-omit, -ind.remove, drop=FALSE]
+                            is.na.A.test[[q]] = is.na.A[[q]][omit, -ind.remove, drop=FALSE]
+                        } else {
+                            is.na.A.train[[q]] = is.na.A[[q]][-omit, , drop=FALSE]
+                            is.na.A.test[[q]] = is.na.A[[q]][omit, , drop=FALSE]
+                        }
+                        temp = which(is.na.A.train[[q]], arr.ind=TRUE)
+                        ind.NA.train[[q]] = unique(temp[,1])
+                        ind.NA.col.train[[q]] = unique(temp[,2])
+                    }
+                }
+                names(is.na.A.train) = names(is.na.A.test) = names(ind.NA.train) = names(ind.NA.col.train) = names(is.na.A)
+                
+                
+                if(FALSE){
+                    is.na.A.train = ind.NA.train = ind.NA.col.train = vector("list", length = length(X))
+                    
+                    is.na.A.train= lapply(is.na.A, function(x){x[-omit,, drop=FALSE]})
+                    is.na.A.test = lapply(is.na.A, function(x){x[omit,,drop=FALSE]})
+                    for(q in 1:length(X))
+                    {
+                        if(misdata[q])
+                        {
+                            
+                            temp = which(is.na.A.train[[q]], arr.ind=TRUE)
+                            ind.NA.train[[q]] = unique(temp[,1])
+                            ind.NA.col.train[[q]] = unique(temp[,2])
+                            #ind.NA.train[[q]] = which(apply(is.na.A.train[[q]], 1, sum) > 0) # calculated only once
+                            #ind.NA.test = which(apply(is.na.A.test, 1, sum) > 0) # calculated only once
+                            #ind.NA.col.train[[q]] = which(apply(is.na.A.train[[q]], 2, sum) > 0) # calculated only once
+                        }
+                    }
+                }
+            } else {
+                is.na.A.train = is.na.A.test = NULL
+                ind.NA.train = NULL
+                ind.NA.col.train = NULL
+            }
+
+            # split the NA in training and testing
+            #------------------------------------------#
+
+
             #save(list=ls(), file="temp2.Rdata")
             #stop("blaa")
             
