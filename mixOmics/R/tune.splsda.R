@@ -165,6 +165,12 @@ cpus
     if(length(already.tested.X) >= ncomp)
     stop("'ncomp' needs to be higher than the number of components already tuned, which is length(already.tested.X)=",length(already.tested.X) , call. = FALSE)
     
+    #-- measure
+    choices = c("BER", "overall")
+    measure = choices[pmatch(measure, choices)]
+    if (is.na(measure))
+    stop("'measure' must be either 'BER' or 'overall' ")
+
     if (any(is.na(validation)) || length(validation) > 1)
     stop("'validation' should be one of 'Mfold' or 'loo'.", call. = FALSE)
     
@@ -179,8 +185,9 @@ cpus
         
         parallel = TRUE
         cl = makeCluster(cpus, type = "SOCK")
-        clusterExport(cl, c("splsda","selectVar"))
-        
+        #clusterExport(cl, c("splsda","selectVar"))
+        clusterEvalQ(cl, library(mixOmics))
+
         if(progressBar == TRUE)
         message(paste("As code is running in parallel, the progressBar will only show 100% upon completion of each nrepeat/ component.",sep=""))
 
@@ -208,7 +215,8 @@ cpus
     stop("samples should have a unique identifier/rowname")
     if (length(unique(X.names)) != ncol(X))
     stop("Unique indentifier is needed for the columns of X")
-
+    
+    rm(X.names);rm(ind.names)
 
     #-- end checking --#
     #------------------#
@@ -245,11 +253,11 @@ cpus
     {
         is.na.A = is.na(X)
         
-        ind.NA = which(apply(is.na.A, 1, sum) > 0) # calculated only once
-        ind.NA.col = which(apply(is.na.A, 2, sum) >0) # indice of the col that have missing values. used in the deflation
+        #ind.NA = which(apply(is.na.A, 1, sum) > 0) # calculated only once
+        #ind.NA.col = which(apply(is.na.A, 2, sum) >0) # indice of the col that have missing values. used in the deflation
     } else {
         is.na.A = NULL
-        ind.NA = ind.NA.col = NULL
+        #ind.NA = ind.NA.col = NULL
     }
     #-- NA calculation      ----------------------------------------------------#
     #---------------------------------------------------------------------------#
@@ -306,6 +314,10 @@ cpus
             auc.all=list()
         }
         
+        class.object="splsda"
+        if(!missing(cpus))
+            clusterExport(cl, c("X","Y","is.na.A","misdata","scale","near.zero.var","class.object","test.keepX"),envir=environment())
+
         error.per.class.keepX.opt = list()
         error.per.class.keepX.opt.mean = matrix(0, nrow = nlevels(Y), ncol = length(comp.real),
         dimnames = list(c(levels(Y)), c(paste('comp', comp.real, sep=''))))
@@ -316,12 +328,12 @@ cpus
             if (progressBar == TRUE)
             cat("\ncomp",comp.real[comp], "\n")
             
-            result = MCVfold.splsda (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = 1 + length(already.tested.X),
+            result = MCVfold.spls (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = 1 + length(already.tested.X),
             choice.keepX = already.tested.X,
-            test.keepX = test.keepX, measure = measure, dist = dist, scale=scale,
+            test.keepX = test.keepX, test.keepY = nlevels(Y), measure = measure, dist = dist, scale=scale,
             near.zero.var = near.zero.var, progressBar = progressBar, tol = tol, max.iter = max.iter, auc = auc,
             cl = cl, parallel = parallel,
-            misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA, ind.NA.col = ind.NA.col, class.object="splsda")
+            misdata = misdata, is.na.A = is.na.A, class.object=class.object)
             
             # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
             mat.error.rate[[comp]] = result[[measure]]$mat.error.rate[[1]]
@@ -361,7 +373,7 @@ cpus
         
         if (progressBar == TRUE)
         cat('\n')
-        
+
         # calculating the number of optimal component based on t.tests and the error.rate.all, if more than 3 error.rates(repeat>3)
         if(nrepeat > 2 & length(comp.real) >1)
         {

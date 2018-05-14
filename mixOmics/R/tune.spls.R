@@ -58,10 +58,11 @@
 tune.spls = function (X, Y,
 ncomp = 1,
 test.keepX = c(5, 10, 15),
+test.keepY = ncol(Y),
 already.tested.X,
+already.tested.Y,
 validation = "Mfold",
 folds = 10,
-dist = "max.dist",
 measure = "MSE", # MAE (Mean Absolute Error: MSE without the square), Bias (average of the differences), MAPE (average of the absolute errors, as a percentage of the actual values)
 # can do a R2 per Y (correlation, linear regression R2),
 # need to call MSEP (see perf.spls)
@@ -81,21 +82,22 @@ cpus
     
     #------------------#
     #-- check entries --#
-    X = as.matrix(X)
-    
-    if (length(dim(X)) != 2 || !is.numeric(X))
+    if (length(dim(X)) != 2 || !is.numeric(X) || !any(class(X)=="matrix"))
     stop("'X' must be a numeric matrix.")
     
-    Y = as.matrix(Y)
-
-    if (length(dim(Y)) != 2 || !is.numeric(Y))
+    if (length(dim(Y)) != 2 || !is.numeric(Y)|| !any(class(Y)=="matrix"))
     stop("'Y' must be a numeric matrix.")
     
     #-- progressBar
     if (!is.logical(progressBar))
     stop("'progressBar' must be a logical constant (TRUE or FALSE).", call. = FALSE)
     
-    
+    #-- measure
+    choices = c("MSE", "MAE","Bias","R2")
+    measure = choices[pmatch(measure, choices)]
+    if (is.na(measure))
+    stop("'measure' must be one of 'MSE', 'MAE', 'bias' or 'R2' ")
+
     if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0)
     stop("invalid number of variates, 'ncomp'.")
     
@@ -114,6 +116,7 @@ cpus
     }
     
     
+    #-- already.tested.X
     if (missing(already.tested.X))
     {
         already.tested.X = NULL
@@ -130,12 +133,34 @@ cpus
     if(length(already.tested.X) >= ncomp)
     stop("'ncomp' needs to be higher than the number of components already tuned, which is length(already.tested.X)=",length(already.tested.X) , call. = FALSE)
     
+    #-- already.tested.Y
+    if (missing(already.tested.Y))
+    {
+        already.tested.Y = NULL
+    } else {
+        if(is.null(already.tested.Y) | length(already.tested.Y)==0)
+        stop("''already.tested.Y' must be a vector of keepY values")
+        
+        if(is.list(already.tested.Y))
+        stop("''already.tested.Y' must be a vector of keepY values")
+        
+        message(paste("Number of variables selected on the first", length(already.tested.Y), "component(s):", paste(already.tested.Y,collapse = " ")))
+    }
+    
+    if(length(already.tested.Y) != length(already.tested.X))
+    stop("'already.tested.Y' and 'already.tested.X' must be of same length", call. = FALSE)
+
+
     if (any(is.na(validation)) || length(validation) > 1)
     stop("'validation' should be one of 'Mfold' or 'loo'.", call. = FALSE)
     
     #-- test.keepX
     if (is.null(test.keepX) | length(test.keepX) == 1 | !is.numeric(test.keepX))
     stop("'test.keepX' must be a numeric vector with more than two entries", call. = FALSE)
+    
+    #-- test.keepY
+    if (is.null(test.keepY) | !is.numeric(test.keepY))
+    stop("'test.keepX' must be a numeric vector", call. = FALSE)
     
     if(!missing(cpus))
     {
@@ -144,8 +169,8 @@ cpus
         
         parallel = TRUE
         cl = makeCluster(cpus, type = "SOCK")
-        clusterExport(cl, c("spls","selectVar"))
-        
+        clusterEvalQ(cl, library(mixOmics))
+
         if(progressBar == TRUE)
         message(paste("As code is running in parallel, the progressBar will only show 100% upon completion of each nrepeat/ component.",sep=""))
 
@@ -198,8 +223,12 @@ cpus
 
 
 
-    test.keepX = sort(test.keepX) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
+    test.keepX = sort(unique(test.keepX)) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
     names(test.keepX) = test.keepX
+    test.keepY = sort(unique(test.keepY)) #sort test.keepY so as to be sure to chose the smallest in case of several minimum
+    names(test.keepY) = test.keepY
+    
+    test.keepA = expand.grid(list(X=test.keepX,Y=test.keepY))
     # if some components have already been tuned (eg comp1 and comp2), we're only tuning the following ones (comp3 comp4 .. ncomp)
     if ((!is.null(already.tested.X)))
     {
@@ -208,18 +237,15 @@ cpus
         comp.real = 1:ncomp
     }
     
-    
-    choices = c("all", "max.dist", "centroids.dist", "mahalanobis.dist")
-    dist = match.arg(dist, choices, several.ok = TRUE)
-    
-    
+    keepA.names = apply(test.keepA,1,function(x) paste(x,collapse="_"))
+
     mat.error.rate = list()
     error.per.class = list()
 
-    mat.sd.error = matrix(0,nrow = length(test.keepX), ncol = ncomp-length(already.tested.X),
-    dimnames = list(c(test.keepX), c(paste('comp', comp.real, sep=''))))
-    mat.mean.error = matrix(nrow = length(test.keepX), ncol = ncomp-length(already.tested.X),
-    dimnames = list(c(test.keepX), c(paste('comp', comp.real, sep=''))))        
+    mat.sd.error = matrix(0,nrow = nrow(test.keepA), ncol = ncomp-length(already.tested.X),
+    dimnames = list(keepA.names, c(paste('comp', comp.real, sep=''))))
+    mat.mean.error = matrix(nrow = nrow(test.keepA), ncol = ncomp-length(already.tested.X),
+    dimnames = list(keepA.names, c(paste('comp', comp.real, sep=''))))
    
     # first: near zero var on the whole data set
     if(near.zero.var == TRUE)
@@ -242,10 +268,10 @@ cpus
         prediction.all = class.all = list()
         
 
-        
-        error.per.class.keepX.opt = list()
-        error.per.class.keepX.opt.mean = matrix(0, nrow = nlevels(Y), ncol = length(comp.real),
-        dimnames = list(c(levels(Y)), c(paste('comp', comp.real, sep=''))))
+        class.object="spls"
+        if(!missing(cpus))
+        clusterExport(cl, c("X","Y","is.na.A","misdata","scale","near.zero.var","class.object","test.keepX", "test.keepY"),envir=environment())
+
         # successively tune the components until ncomp: comp1, then comp2, ...
         for(comp in 1:length(comp.real))
         {
@@ -255,10 +281,10 @@ cpus
             
             result = MCVfold.spls (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = 1 + length(already.tested.X),
             choice.keepX = already.tested.X,
-            test.keepX = test.keepX, measure = measure, dist = dist, scale=scale,
+            test.keepX = test.keepX, test.keepY = test.keepY, measure = measure, dist = NULL, auc=FALSE, scale=scale,
             near.zero.var = near.zero.var, progressBar = progressBar, tol = tol, max.iter = max.iter,
             cl = cl, parallel = parallel,
-            misdata = misdata, is.na.A = is.na.A, class.object="spls")
+            misdata = misdata, is.na.A = is.na.A, class.object=class.object)
             
             #save(list=ls(),file="temp.Rdata")
             # in the following, there is [[1]] because 'tune' is working with only 1 distance and 'MCVfold.splsda' can work with multiple distances
@@ -270,7 +296,9 @@ cpus
 
             # best keepX
             already.tested.X = c(already.tested.X, result[[measure]]$keepX.opt[[1]])
-             
+            # best keepY
+            already.tested.Y = c(already.tested.Y, result[[measure]]$keepY.opt[[1]])
+
             if(light.output == FALSE)
             {
                 #prediction of each samples for each fold and each repeat, on each comp
@@ -279,34 +307,37 @@ cpus
             }
             
 
-            
+
         } # end comp
         if (parallel == TRUE)
         stopCluster(cl)
         
         names(mat.error.rate) = c(paste('comp', comp.real, sep=''))
         names(already.tested.X) = c(paste('comp', 1:ncomp, sep=''))
-        
+        names(already.tested.Y) = c(paste('comp', 1:ncomp, sep=''))
+
         if (progressBar == TRUE)
         cat('\n')
-        
+
         # calculating the number of optimal component based on t.tests and the error.rate.all, if more than 3 error.rates(repeat>3)
         if(nrepeat > 2 & length(comp.real) >1)
         {
-            keepX = already.tested.X
-            error.keepX = NULL
+            
+            names.to.pick.from = paste0("test.keepA.",keepA.names)
+            error.keepA = NULL
             for(comp in 1:length(comp.real))
             {
-                ind.row = match(keepX[[comp.real[comp]]],test.keepX)
-                error.keepX = cbind(error.keepX, apply(matrix(mat.error.rate[[comp]][[ind.row]],nrow=ncol(Y)),2,mean)) # average MSE for all Y, per nrepeat
+                names.to.pick = paste0("test.keepA.",paste(c(already.tested.X[comp],already.tested.Y[comp]),collapse="_"))
+                ind.row = match(names.to.pick,names.to.pick.from)
+                error.keepA = cbind(error.keepA, apply(matrix(mat.error.rate[[comp]][[ind.row]],ncol=nrepeat),2,mean)) # average MSE for all Y, per nrepeat
             }
-            colnames(error.keepX) = c(paste('comp', comp.real, sep=''))
+            colnames(error.keepA) = c(paste('comp', comp.real, sep=''))
             
-            opt = t.test.process(error.keepX)
+            opt = t.test.process(error.keepA)
             
             ncomp_opt = comp.real[opt]
         } else {
-            ncomp_opt = error.keepX = NULL
+            ncomp_opt = error.keepA = NULL
         }
         
         result = list(
@@ -314,7 +345,8 @@ cpus
         error.rate.sd = mat.sd.error,
         error.rate.all = mat.error.rate,
         choice.keepX = already.tested.X,
-        choice.ncomp = list(ncomp = ncomp_opt, values = error.keepX))
+        choice.keepY = already.tested.Y,
+        choice.ncomp = list(ncomp = ncomp_opt, values = error.keepA))
         
         if(light.output == FALSE)
         {
@@ -351,96 +383,5 @@ cpus
 }
 
 
-
-plot.tune.spls = #plot.spca <- plot.ipca <- plot.sipca <-
-function(x, optimal = TRUE, sd = TRUE, legend.position = "topright", col, ...)
-{
-    
-    if (!is.logical(optimal))
-    stop("'optimal' must be logical.", call. = FALSE)
-    
-    
-    error <- x$error.rate
-    if(sd & !is.null(x$error.rate.sd))
-    {
-        error.rate.sd = x$error.rate.sd
-        ylim = range(c(error + error.rate.sd), c(error - error.rate.sd))
-    } else {
-        error.rate.sd = NULL
-        ylim = range(error)
-    }
-    
-    select.keepX <- x$choice.keepX[colnames(error)]
-    comp.tuned = length(select.keepX)
-    
-    legend=NULL
-    measure = x$measure
-    
-    if (length(select.keepX) < 10)
-    {
-        #only 10 colors in color.mixo
-        if(missing(col))
-        col = color.mixo(1:comp.tuned)
-    } else {
-        #use color.jet
-        if(missing(col))
-        col = color.jet(comp.tuned)
-    }
-    if(length(col) != comp.tuned)
-    stop("'col' should be a vector of length ", comp.tuned,".")
-    
-    if(measure == "overall")
-    {
-        ylab = "Classification error rate"
-    } else if (measure == "BER")
-    {
-        ylab = "Balanced error rate"
-    }else if (measure == "MSE"){
-        ylab = "MSE"
-    }else if (measure == "MAE"){
-        ylab = "MAE"
-    }else if (measure == "Bias"){
-        ylab = "Bias"
-    }
-    
-    #save(list=ls(),file="temp.Rdata")
-    
-    matplot(rownames(error),error, type = "l", axes = TRUE, lwd = 2, lty = 1, log = "x",
-    xlab = "Number of selected features", ylab = ylab,
-    col = col, ylim = ylim)
-    
-    if(optimal)
-    {
-        for(i in 1:comp.tuned)
-        {
-            # store coordinates of chosen keepX
-            index = which(rownames(error) == select.keepX[i])
-            # choseen keepX:
-            points(rownames(error)[index], error[index,i], col = col[i], lwd=2, cex=3, pch = 18)
-        }
-    }
-    
-    if(!is.null(error.rate.sd))
-    {
-        for(j in 1:ncol(error))
-        plot_error_bar(x = as.numeric(names(error[, j])), y =error[, j] , uiw=error.rate.sd[, j], add=T, col = rep(col[j],each=nrow(error)))#, ...)
-    }
-    
-    
-    
-    if(length(x$choice.keepX) == 1) #only first comp tuned
-    {
-        legend = "comp1"
-    } else if(length(x$choice.keepX) == comp.tuned) # all components have been tuned
-    {
-        legend = c("comp1", paste("comp1 to", colnames(error)[-1]))
-    } else { #first component was not tuned
-        legend = paste("comp1 to", colnames(error))
-    }
-    
-    legend(legend.position, lty = 1, lwd = 2, horiz = FALSE, col = col,
-    legend = legend)
-    
-}
 
 
