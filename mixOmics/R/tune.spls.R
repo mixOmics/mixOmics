@@ -46,7 +46,6 @@
 # max.iter: integer, the maximum number of iterations.
 # near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
 # nrepeat: number of replication of the Mfold process
-# logratio: one of "none", "CLR"
 # multilevel: repeated measurement. `multilevel' is passed to multilevel(design = ) in withinVariation. Y is ommited and shouldbe included in `multilevel'
 # light.output: if FALSE, output the prediction and classification of each sample during each folds, on each comp, for each repeat
 # cpus: number of cpus to use. default to no parallel
@@ -72,7 +71,6 @@ tol = 1e-06,
 max.iter = 100,
 near.zero.var = FALSE,
 nrepeat = 1,
-logratio = c('none','CLR'),
 multilevel = NULL,
 light.output = TRUE,
 cpus
@@ -265,7 +263,7 @@ cpus
     if (is.null(multilevel) | (!is.null(multilevel) && ncol(multilevel) == 2))
     {
         if(light.output == FALSE)
-        prediction.all = class.all = list()
+        prediction.all = list()
         
 
         class.object="spls"
@@ -302,7 +300,6 @@ cpus
             if(light.output == FALSE)
             {
                 #prediction of each samples for each fold and each repeat, on each comp
-                class.all[[comp]] = result$class.comp[[1]]
                 prediction.all[[comp]] = result$prediction.comp
             }
             
@@ -350,9 +347,8 @@ cpus
         
         if(light.output == FALSE)
         {
-            names(class.all) = names(prediction.all) = c(paste('comp', comp.real, sep=''))
+            names(prediction.all) = c(paste('comp', comp.real, sep=''))
             result$predict = prediction.all
-            result$class = class.all
         }
 
         result$measure = measure
@@ -365,17 +361,31 @@ cpus
         # if multilevel with 2 factors, we can not do as before because withinvariation depends on the factors, we maximase a correlation
         message("For a two-factor analysis, the tuning criterion is based on the maximisation of the correlation between the components on the whole data set")
 
-        cor.value = vector(length = length(test.keepX))
-        names(cor.value) = test.keepX
+        test.keepX = sort(unique(test.keepX)) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
+        names(test.keepX) = test.keepX
+        test.keepY = sort(unique(test.keepY)) #sort test.keepY so as to be sure to chose the smallest in case of several minimum
+        names(test.keepY) = test.keepY
+        
+        test.keepA = expand.grid(list(X=test.keepX,Y=test.keepY))
+        keepA.names = apply(test.keepA,1,function(x) paste(x,collapse="_"))
 
-        for (i in 1:length(test.keepX))
+        cor.value = vector(length = length(keepA.names))
+        names(cor.value) = keepA.names
+        
+        compteur=1
+        for (i in 1:length(test.keepY)) #could be done better by passing all the test.keepA to internal.mint.block
         {
-            spls.train = mixOmics::splsda(X, Y, ncomp = ncomp, keepX = c(already.tested.X, test.keepX[i]), logratio = logratio, near.zero.var = FALSE, mode = "regression")
-            
-            # Note: this is performed on the full data set
-            # (could be done with resampling (bootstrap) (option 1) and/or prediction (option 2))
-            cor.value[i] = cor(spls.train$variates$X[, ncomp], spls.train$variates$Y[, ncomp])
-            #
+            for(j in 1:length(test.keepX)){
+                
+                spls.train = mixOmics::spls(X, Y, ncomp = ncomp, keepX = c(already.tested.X, test.keepX[j]), keepY = c(already.tested.Y, test.keepY[i]),
+                near.zero.var = FALSE, mode = "regression")
+                
+                # Note: this is performed on the full data set
+                # (could be done with resampling (bootstrap) (option 1) and/or prediction (option 2))
+                cor.value[compteur] = cor(spls.train$variates$X[, ncomp], spls.train$variates$Y[, ncomp])
+                #
+                compteur=compteur+1
+            }
         }
         return(list(cor.value = cor.value))
 

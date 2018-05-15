@@ -4,6 +4,21 @@
 #######################################################################################################
 #######################################################################################################
 
+load("debugme.Rdata")
+n=nrow(X)
+p2=1000
+X2 = matrix(rnorm(n*p2),nrow=n)
+rownames(X2) = rownames(X)
+colnames(X2) = paste0("p2",1:p2)
+
+data=list(X=X,X2=X2)
+design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+
+tune = tune.block.splsda(X = data,Y = Y,design=design,ncomp = 1,scheme = "centroid",progressBar = TRUE,folds=3,max.iter=2)
+
+
+
+
 library(mixOmics)
 sourceDir <- function(path, trace = TRUE, ...) {
     for (nm in list.files(path, pattern = "\\.[RrSsQq]$")) {
@@ -15,6 +30,7 @@ sourceDir <- function(path, trace = TRUE, ...) {
 sourceDir("mixOmics/R/",trace=FALSE)
 library(rARPACK)
 library(matrixStats)
+library(dplyr)
 
 library(profvis)
 data(nutrimouse)

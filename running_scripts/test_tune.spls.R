@@ -40,7 +40,7 @@ data(liver.toxicity)
 X <- as.matrix(liver.toxicity$gene)
 Y <- as.matrix(liver.toxicity$clinic)
 
-tun = tune.spls(X,Y,ncomp=4, test.keepX = c(5,10,15), nrepeat=5, test.keepY=(1:10), progressBar = progressBar)
+tun = tune.spls(X,Y,ncomp=4, test.keepX = c(5,10,15), nrepeat=5, test.keepY=c(2,5,8,10), progressBar = progressBar)
 plot(tun,keepY=5)
 plot(tun,keepY=10)
 
@@ -63,21 +63,24 @@ plot(tun4)
 
 
 
+#test.keepX = c(1:10,15,seq(20,200,10),250,seq(300,3100,100),3116)
+test.keepX = c(5,10,15,100,200,300,1000)
+
 par(mfrow=c(2,2))
 set.seed(12)
-tun = tune.spls(X,Y,ncomp=5, test.keepX = c(1:10,15,seq(20,200,10),250,seq(300,3100,100),3116), nrepeat=10, measure = "MSE", progressBar = progressBar)
+tun = tune.spls(X,Y,ncomp=5, test.keepX = test.keepX, nrepeat=10, measure = "MSE", progressBar = progressBar)
 plot(tun,legend.position = "topleft")
 plot(tun,sd=FALSE,legend.position = "topleft")
 set.seed(12)
-tun2 = tune.spls(X,Y,ncomp=5, test.keepX = c(1:10,15,seq(20,200,10),250,seq(300,3100,100),3116), nrepeat=10, measure = "MAE", progressBar = progressBar)
+tun2 = tune.spls(X,Y,ncomp=5, test.keepX = test.keepX, nrepeat=10, measure = "MAE", progressBar = progressBar)
 plot(tun2,legend.position = "topleft")
 plot(tun2,sd=FALSE,legend.position = "topleft")
 set.seed(12)
-tun3 = tune.spls(X,Y,ncomp=5, test.keepX = c(1:10,15,seq(20,200,10),250,seq(300,3100,100),3116), nrepeat=10, measure = "Bias", progressBar = progressBar)
+tun3 = tune.spls(X,Y,ncomp=5, test.keepX = test.keepX, nrepeat=10, measure = "Bias", progressBar = progressBar)
 plot(tun3,legend.position = "bottomright")
 plot(tun3,sd=FALSE,legend.position = "bottomright")
 set.seed(12)
-tun4 = tune.spls(X,Y,ncomp=5, test.keepX = c(1:10,15,seq(20,200,10),250,seq(300,3100,100),3116), nrepeat=10, measure = "R2", progressBar = progressBar)
+tun4 = tune.spls(X,Y,ncomp=5, test.keepX = test.keepX, nrepeat=10, measure = "R2", progressBar = progressBar)
 plot(tun4,legend.position = "bottomleft")
 plot(tun4,sd=FALSE,legend.position = "bottomleft")
 
