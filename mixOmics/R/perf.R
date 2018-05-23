@@ -564,7 +564,7 @@ cpus,
 
         # estimate performance of the model for each component
         result = MCVfold.spls (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = comp,
-        choice.keepX = choice.keepX, test.keepX = test.keepX,
+        choice.keepX = choice.keepX, test.keepX = test.keepX, test.keepY = nlevels(Y),
         measure = measure, dist = dist, scale=scale,
         near.zero.var = near.zero.var,
         auc = auc, progressBar = progressBar, class.object = class.object, cl = cl, parallel = parallel,

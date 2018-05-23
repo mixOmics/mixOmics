@@ -314,7 +314,7 @@ cpus
             auc.all=list()
         }
         
-        class.object="splsda"
+        class.object=c("splsda","DA")
         if(!missing(cpus))
             clusterExport(cl, c("X","Y","is.na.A","misdata","scale","near.zero.var","class.object","test.keepX"),envir=environment())
 

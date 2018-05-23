@@ -133,7 +133,7 @@ parallel
     
     design = matrix(c(0,1,1,0), ncol = 2, nrow = 2, byrow = TRUE)
     
-    if(ncomp>1 &  class.object == "splsda"){keepY = rep(nlevels(Y), ncomp-1)}
+    if(ncomp>1 &  any(class.object == "DA")){keepY = rep(nlevels(Y), ncomp-1)}
     
     rownames.X = rownames(X)
     M = length(folds)
@@ -141,29 +141,27 @@ parallel
     auc.all = prediction.comp = class.comp = list()
     
 
-    if(class.object == "spls"){
-        test.keepA = expand.grid(list(X=test.keepX,Y=test.keepY))
-        keepA.names = apply(test.keepA,1,function(x) paste(x,collapse="_"))
-
-        prediction.keepX = vector("list", length=nrow(test.keepA))
-        for(i in 1:nrow(test.keepA))
-        prediction.keepX[[i]] = array(0,c(nrow(X), ncol(Y), nrepeat), dimnames = list(rownames(X), colnames(Y), paste0("nrep.", 1:nrepeat)))
-    } else if(class.object == "splsda"){
+    if(any(class.object == "DA")){
         test.keepA = test.keepX
         keepA.names = names(test.keepA)
         
         for(ijk in dist)
         class.comp[[ijk]] = array(0, c(nrow(X), nrepeat, length(test.keepX)))# prediction of all samples for each test.keepX and  nrep at comp fixed
+    } else {
+        test.keepA = expand.grid(list(X=test.keepX,Y=test.keepY))
+        keepA.names = apply(test.keepA,1,function(x) paste(x,collapse="_"))
+        
+        prediction.keepX = vector("list", length=nrow(test.keepA))
+        for(i in 1:nrow(test.keepA))
+        prediction.keepX[[i]] = array(0,c(nrow(X), ncol(Y), nrepeat), dimnames = list(rownames(X), colnames(Y), paste0("nrep.", 1:nrepeat)))
+
     }
     
     folds.input = folds # save fold number to be used for each nrepeat
     for(nrep in 1:nrepeat)
     {
         n = nrow(X)
-        if(class.object == "spls"){
-            prediction.comp[[nrep]] = array(0, c(nrow(X), ncol(Y), nrow(test.keepA)), dimnames = list(rownames(X), colnames(Y), keepA.names))
-            colnames(prediction.comp[[nrep]]) = colnames(Y)
-        } else if(class.object == "splsda"){
+        if(any(class.object == "DA")){
             prediction.comp[[nrep]] = array(0, c(n, nlevels(Y), length(test.keepX)), dimnames = list(rownames.X, levels(Y), names(test.keepX)))
             colnames(prediction.comp[[nrep]]) = levels(Y)
             
@@ -173,6 +171,9 @@ parallel
             }else{
                 auc.all[[nrep]] = array(0, c(1,2, length(test.keepX)), dimnames = list(paste(levels(Y)[1], levels(Y)[2], sep = " vs "), c("AUC","p-value"), names(test.keepX)))
             }
+        } else {
+            prediction.comp[[nrep]] = array(0, c(nrow(X), ncol(Y), nrow(test.keepA)), dimnames = list(rownames(X), colnames(Y), keepA.names))
+            colnames(prediction.comp[[nrep]]) = colnames(Y)
         }
         rownames(prediction.comp[[nrep]]) = rownames.X
         
@@ -199,14 +200,14 @@ parallel
                 M = round(folds)
                 if (is.null(multilevel))
                 {
-                    if(class.object == "spls"){
-                        folds = suppressWarnings(split(sample(1:n), rep(1:n, length = M)))
-                    } else if(class.object == "splsda"){
+                    if(any(class.object == "DA")){
                         temp = stratified.subsampling(Y, folds = M)
                         folds = temp$SAMPLE
                         if(temp$stop > 0 & nrep == 1) # to show only once
                         warning("At least one class is not represented in one fold, which may unbalance the error rate.\n  Consider a number of folds lower than the minimum in table(Y): ", min(table(Y)))
                         rm(temp)
+                    } else {
+                        folds = suppressWarnings(split(sample(1:n), rep(1:n, length = M)))
                     }
                     
                 } else {
@@ -246,17 +247,16 @@ parallel
             X.train = X[-omit, ]
             X.test = X[omit, , drop = FALSE]#matrix(X[omit, ], nrow = length(omit)) #removed to keep the colnames in X.test
             
-            if(class.object == "spls"){
-                Y.train.mat = Y[-omit, , drop = FALSE]
-                q = ncol(Y.train.mat)
-                Y.test = Y[omit, , drop = FALSE]
-
-            } else if(class.object == "splsda"){
+            if(any(class.object == "DA")){
                 Y.train = Y[-omit]
                 Y.train.mat = unmap(Y.train)
                 q = ncol(Y.train.mat)
                 colnames(Y.train.mat) = levels(Y.train)
                 Y.test = Y[omit]
+            } else {
+                Y.train.mat = Y[-omit, , drop = FALSE]
+                q = ncol(Y.train.mat)
+                Y.test = Y[omit, , drop = FALSE]
             }
             
             #-- set up leave out samples. ----------#
@@ -317,23 +317,7 @@ parallel
             #-- split the NA in training and testing --#
             if(any(misdata))
             {
-                if(class.object == "spls"){
-                    if(length(remove)>0){
-                        ind.remove = which(colnames(X) %in% remove)
-                        is.na.A.train = list(X=is.na.A[[1]][omit, -ind.remove, drop=FALSE], Y=is.na.A[[1]][omit,, drop=FALSE])
-                        #lapply(is.na.A, function(x){x[-omit,, drop=FALSE]})
-                        is.na.A.test = list(X=is.na.A[[1]][omit, -ind.remove, drop=FALSE]) #only for X
-                    }else {
-                        is.na.A.train = lapply(is.na.A, function(x){x[-omit,, drop=FALSE]})
-                        is.na.A.test = list(X=is.na.A[[1]][omit,, drop=FALSE]) #only for X
-
-                    }
-                    temp = lapply(is.na.A.train,function(x){which(x,arr.ind=TRUE)})
-                    
-                    ind.NA.train = lapply(temp,function(x){unique(x[,1])})
-                    ind.NA.col.train = lapply(temp,function(x){unique(x[,2])})
-                    
-                } else if(class.object == "splsda"){
+                if(any(class.object == "DA")){
                     if(length(remove)>0){
                         ind.remove = which(colnames(X) %in% remove)
                         is.na.A.train = is.na.A[-omit, -ind.remove, drop=FALSE]
@@ -350,6 +334,21 @@ parallel
                     is.na.A.train = list(X=is.na.A.train, Y=NULL)
                     ind.NA.train = list(X=ind.NA.train, Y=NULL)
                     ind.NA.col.train = list(X=ind.NA.col.train, Y=NULL)
+                } else{
+                    if(length(remove)>0){
+                        ind.remove = which(colnames(X) %in% remove)
+                        is.na.A.train = list(X=is.na.A[[1]][omit, -ind.remove, drop=FALSE], Y=is.na.A[[1]][omit,, drop=FALSE])
+                        #lapply(is.na.A, function(x){x[-omit,, drop=FALSE]})
+                        is.na.A.test = list(X=is.na.A[[1]][omit, -ind.remove, drop=FALSE]) #only for X
+                    }else {
+                        is.na.A.train = lapply(is.na.A, function(x){x[-omit,, drop=FALSE]})
+                        is.na.A.test = list(X=is.na.A[[1]][omit,, drop=FALSE]) #only for X
+                        
+                    }
+                    temp = lapply(is.na.A.train,function(x){which(x,arr.ind=TRUE)})
+                    
+                    ind.NA.train = lapply(temp,function(x){unique(x[,1])})
+                    ind.NA.col.train = lapply(temp,function(x){unique(x[,2])})
                 }
                 #ind.NA.train = which(apply(is.na.A.train, 1, sum) > 0) # calculated only once
                 #ind.NA.test = which(apply(is.na.A.test, 1, sum) > 0) # calculated only once
@@ -367,13 +366,13 @@ parallel
 
 
             class.comp.j = list()
-            if(class.object == "spls"){
-                prediction.comp.j = array(0, c(length(omit), ncol(Y), length(keepA.names)), dimnames = list(rownames(X.test), colnames(Y), keepA.names))
-            } else if(class.object == "splsda"){
+            if(any(class.object == "DA")){
                 prediction.comp.j = array(0, c(length(omit), nlevels(Y), length(test.keepX)), dimnames = list(rownames(X.test), levels(Y), names(test.keepX)))
                 
                 for(ijk in dist)
                 class.comp.j[[ijk]] = matrix(0, nrow = length(omit), ncol = length(test.keepX))# prediction of all samples for each test.keepX and  nrep at comp fixed
+            } else{
+                prediction.comp.j = array(0, c(length(omit), ncol(Y), length(keepA.names)), dimnames = list(rownames(X.test), colnames(Y), keepA.names))
             }
             
             
@@ -420,13 +419,13 @@ parallel
             result$X = result$A$X
             
             # add the "splsda" or "spls" class
-            if(class.object == "spls"){
-                class(result) = c("spls")
-                result$Y = result$A$Y
-            } else if(class.object == "splsda"){
+            if(any(class.object == "DA")){
                 class(result) = c("splsda","spls","DA")
                 result$ind.mat = result$A$Y
                 result$Y = factor(Y.train)
+            } else{
+                class(result) = c("spls")
+                result$Y = result$A$Y
             }
             result$A = NULL
 
@@ -467,7 +466,7 @@ parallel
                 test.predict.sw <- predict.spls(result, newdata.scale = X.test, dist = dist, misdata.all=misdata[1], is.na.X = is.na.A.train, is.na.newdata = is.na.A.test)
                 prediction.comp.j[, , i] =  test.predict.sw$predict[, , ncomp]
                 
-                if(class.object == "splsda"){
+                if(any(class.object == "DA")){
                     for(ijk in dist)
                     class.comp.j[[ijk]][, i] =  test.predict.sw$class[[ijk]][, ncomp] #levels(Y)[test.predict.sw$class[[ijk]][, ncomp]]
                 }
@@ -503,7 +502,7 @@ parallel
 
             prediction.comp[[nrep]][omit, , ] = prediction.comp.j
             
-            if(class.object == "splsda"){
+            if(any(class.object == "DA")){
                 class.comp.j = result.all[[j]]$class.comp.j
                 for(ijk in dist)
                 class.comp[[ijk]][omit,nrep, ] = class.comp.j[[ijk]]
@@ -514,7 +513,7 @@ parallel
             
 
         }
-        if(class.object == "spls"){
+        if(!any(class.object == "DA")){
             # create a array, for each keepX: n*q*nrep
             for(i in 1:length(keepA.names))
                 prediction.keepX[[i]][,,nrep] = prediction.comp[[nrep]][,,i, drop=FALSE]
@@ -839,7 +838,7 @@ parallel
 
 
     result$prediction.comp = prediction.comp
-    if(class.object == "splsda"){
+    if(any(class.object == "DA")){
         if(auc){
             result$auc = auc.mean.sd
             result$auc.all = auc.all
