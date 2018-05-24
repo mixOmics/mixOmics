@@ -79,11 +79,17 @@ cpus
     #---------------------------------------------------------------------------#
     
     #------------------#
+    if(!any(class(X)=="matrix"))
+    X= as.matrix(X)
+    
+    if(!any(class(Y)=="matrix"))
+    Y= as.matrix(Y)
+    
     #-- check entries --#
-    if (length(dim(X)) != 2 || !is.numeric(X) || !any(class(X)=="matrix"))
+    if (length(dim(X)) != 2 || !is.numeric(X))
     stop("'X' must be a numeric matrix.")
     
-    if (length(dim(Y)) != 2 || !is.numeric(Y)|| !any(class(Y)=="matrix"))
+    if (length(dim(Y)) != 2 || !is.numeric(Y))
     stop("'Y' must be a numeric matrix.")
     
     #-- progressBar

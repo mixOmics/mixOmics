@@ -132,7 +132,7 @@ function(x, optimal = TRUE, sd = TRUE, legend.position = "topright", col, keepY=
         keepY=unique(test.keepY)
         xlab = "Number of selected features"
     } else {
-        xlab = paste0("Number of selected features for keepY=",keepY)
+        xlab = paste0("Number of selected X-features for keepY=",keepY)
     }
     
     if(length(keepY)>1)
