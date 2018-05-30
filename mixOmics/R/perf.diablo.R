@@ -131,18 +131,18 @@ cpus,
         ### Estimation models
         if(missing(cpus))
         {
-            model = lapply(1 : M, function(x) {block.splsda(X = X.training[[x]], Y = Y.training[[x]], ncomp = max(object$ncomp[-indY]),
+            model = lapply(1 : M, function(x) {suppressWarnings(block.splsda(X = X.training[[x]], Y = Y.training[[x]], ncomp = max(object$ncomp[-indY]),
                 keepX = keepX,
                 design = object$design, max.iter = object$max.iter, tol = object$tol, init = object$init, scheme = object$scheme,
-                mode = object$mode)})
+                mode = object$mode))})
         } else {
             cl <- makeCluster(cpus, type = "SOCK")
             clusterExport(cl, c("block.splsda"))
             
-            model = parLapply(cl, 1 : M, function(x) {block.splsda(X = X.training[[x]], Y = Y.training[[x]], ncomp = max(object$ncomp[-indY]),
+            model = parLapply(cl, 1 : M, function(x) {suppressWarnings(block.splsda(X = X.training[[x]], Y = Y.training[[x]], ncomp = max(object$ncomp[-indY]),
                 keepX = keepX,
                 design = object$design, max.iter = object$max.iter, tol = object$tol, init = object$init, scheme = object$scheme,
-                mode = object$mode)})
+                mode = object$mode))})
             
             stopCluster(cl)
         }

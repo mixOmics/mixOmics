@@ -232,6 +232,8 @@ parallel
 
         # function instead of a loop so we can use lapply and parLapply. Can't manage to put it outside without adding all the arguments
         #result.all=list()
+        #save(list=ls(),file="temp22.Rdata")
+        
         fonction.j.folds = function(j)#for (j in 1:M)
         {
             if (progressBar ==  TRUE)
@@ -377,12 +379,12 @@ parallel
             
             
             # shape input for `internal_mint.block' (keepA, test.keepA, etc)
-            result = internal_wrapper.mint(X=X.train, Y=Y.train.mat, study=factor(rep(1,nrow(X.train))), ncomp=ncomp,
+            result = suppressWarnings(internal_wrapper.mint(X=X.train, Y=Y.train.mat, study=factor(rep(1,nrow(X.train))), ncomp=ncomp,
             keepX=choice.keepX, keepY=rep(ncol(Y.train.mat), ncomp-1), test.keepX=test.keepX, test.keepY=test.keepY,
             mode="regression", scale=scale, near.zero.var=near.zero.var,
             max.iter=max.iter, logratio="none", DA=TRUE, multilevel=NULL,
             misdata = misdata, is.na.A = is.na.A.train, ind.NA = ind.NA.train,
-            ind.NA.col = ind.NA.col.train, all.outputs=FALSE)
+            ind.NA.col = ind.NA.col.train, all.outputs=FALSE))
             
             # `result' returns loadings and variates for all test.keepX on the ncomp component
             
@@ -818,7 +820,7 @@ parallel
         if (!nrepeat ==  1)
         error.sd[[ijk]] = sapply(lapply(error, function(x){apply(matrix(x,nrow=ncol(Y)), 1, sd)}), mean)
         
-        keepX.opt[[ijk]] = which(error.mean[[ijk]] ==  min(error.mean[[ijk]]))[1] # chose the lowest keepX if several minimum
+        keepX.opt[[ijk]] = which(error.mean[[ijk]] ==  max(error.mean[[ijk]]))[1] # chose the lowest keepX if several minimum
         
         
         test.keepX.out[[ijk]] = test.keepA[keepX.opt[[ijk]],1]

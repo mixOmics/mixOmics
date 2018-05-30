@@ -89,8 +89,8 @@ Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics fea
 \examples{
 \dontrun{
 data(liver.toxicity)
-X <- as.matrix(liver.toxicity$gene)
-Y <- as.matrix(liver.toxicity$clinic)
+X <- liver.toxicity$gene
+Y <- liver.toxicity$clinic
 
 tune = tune.spls(X, Y, ncomp=4, test.keepX = c(5,10,15),
 nrepeat=3, test.keepY=c(2,5,8,10), progressBar = TRUE)
