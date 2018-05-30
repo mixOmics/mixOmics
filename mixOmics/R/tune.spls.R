@@ -57,9 +57,7 @@
 tune.spls = function (X, Y,
 ncomp = 1,
 test.keepX = c(5, 10, 15),
-test.keepY = ncol(Y),
 already.tested.X,
-already.tested.Y,
 validation = "Mfold",
 folds = 10,
 measure = "MSE", # MAE (Mean Absolute Error: MSE without the square), Bias (average of the differences), MAPE (average of the absolute errors, as a percentage of the actual values)
@@ -136,24 +134,6 @@ cpus
     
     if(length(already.tested.X) >= ncomp)
     stop("'ncomp' needs to be higher than the number of components already tuned, which is length(already.tested.X)=",length(already.tested.X) , call. = FALSE)
-    
-    #-- already.tested.Y
-    if (missing(already.tested.Y))
-    {
-        already.tested.Y = NULL
-    } else {
-        if(is.null(already.tested.Y) | length(already.tested.Y)==0)
-        stop("''already.tested.Y' must be a vector of keepY values")
-        
-        if(is.list(already.tested.Y))
-        stop("''already.tested.Y' must be a vector of keepY values")
-        
-        message(paste("Number of variables selected on the first", length(already.tested.Y), "component(s):", paste(already.tested.Y,collapse = " ")))
-    }
-    
-    if(length(already.tested.Y) != length(already.tested.X))
-    stop("'already.tested.Y' and 'already.tested.X' must be of same length", call. = FALSE)
-
 
     if (any(is.na(validation)) || length(validation) > 1)
     stop("'validation' should be one of 'Mfold' or 'loo'.", call. = FALSE)
@@ -161,10 +141,6 @@ cpus
     #-- test.keepX
     if (is.null(test.keepX) | length(test.keepX) == 1 | !is.numeric(test.keepX))
     stop("'test.keepX' must be a numeric vector with more than two entries", call. = FALSE)
-    
-    #-- test.keepY
-    if (is.null(test.keepY) | !is.numeric(test.keepY))
-    stop("'test.keepX' must be a numeric vector", call. = FALSE)
     
     if(!missing(cpus))
     {
@@ -229,10 +205,7 @@ cpus
 
     test.keepX = sort(unique(test.keepX)) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
     names(test.keepX) = test.keepX
-    test.keepY = sort(unique(test.keepY)) #sort test.keepY so as to be sure to chose the smallest in case of several minimum
-    names(test.keepY) = test.keepY
     
-    test.keepA = expand.grid(list(X=test.keepX,Y=test.keepY))
     # if some components have already been tuned (eg comp1 and comp2), we're only tuning the following ones (comp3 comp4 .. ncomp)
     if ((!is.null(already.tested.X)))
     {
@@ -241,15 +214,14 @@ cpus
         comp.real = 1:ncomp
     }
     
-    keepA.names = apply(test.keepA,1,function(x) paste(x,collapse="_"))
 
     mat.error.rate = list()
     error.per.class = list()
 
-    mat.sd.error = matrix(0,nrow = nrow(test.keepA), ncol = ncomp-length(already.tested.X),
-    dimnames = list(keepA.names, c(paste('comp', comp.real, sep=''))))
-    mat.mean.error = matrix(nrow = nrow(test.keepA), ncol = ncomp-length(already.tested.X),
-    dimnames = list(keepA.names, c(paste('comp', comp.real, sep=''))))
+    mat.sd.error = matrix(0,nrow = length(test.keepX), ncol = ncomp-length(already.tested.X),
+    dimnames = list(test.keepX, c(paste('comp', comp.real, sep=''))))
+    mat.mean.error = matrix(nrow = length(test.keepX), ncol = ncomp-length(already.tested.X),
+    dimnames = list(test.keepX, c(paste('comp', comp.real, sep=''))))
    
     # first: near zero var on the whole data set
     if(near.zero.var == TRUE)
@@ -285,7 +257,7 @@ cpus
             
             result = MCVfold.spls (X, Y, multilevel = multilevel, validation = validation, folds = folds, nrepeat = nrepeat, ncomp = 1 + length(already.tested.X),
             choice.keepX = already.tested.X,
-            test.keepX = test.keepX, test.keepY = test.keepY, measure = measure, dist = NULL, auc=FALSE, scale=scale,
+            test.keepX = test.keepX, test.keepY = ncol(Y), measure = measure, dist = NULL, auc=FALSE, scale=scale,
             near.zero.var = near.zero.var, progressBar = progressBar, tol = tol, max.iter = max.iter,
             cl = cl, parallel = parallel,
             misdata = misdata, is.na.A = is.na.A, class.object=class.object)
@@ -300,8 +272,6 @@ cpus
 
             # best keepX
             already.tested.X = c(already.tested.X, result[[measure]]$keepX.opt[[1]])
-            # best keepY
-            already.tested.Y = c(already.tested.Y, result[[measure]]$keepY.opt[[1]])
 
             if(light.output == FALSE)
             {
@@ -317,7 +287,6 @@ cpus
         
         names(mat.error.rate) = c(paste('comp', comp.real, sep=''))
         names(already.tested.X) = c(paste('comp', 1:ncomp, sep=''))
-        names(already.tested.Y) = c(paste('comp', 1:ncomp, sep=''))
 
         if (progressBar == TRUE)
         cat('\n')
@@ -325,31 +294,30 @@ cpus
         # calculating the number of optimal component based on t.tests and the error.rate.all, if more than 3 error.rates(repeat>3)
         if(nrepeat > 2 & length(comp.real) >1)
         {
-            
-            names.to.pick.from = paste0("test.keepA.",keepA.names)
-            error.keepA = NULL
+            keepX = already.tested.X
+            error.keepX = NULL
             for(comp in 1:length(comp.real))
             {
-                names.to.pick = paste0("test.keepA.",paste(c(already.tested.X[comp],already.tested.Y[comp]),collapse="_"))
-                ind.row = match(names.to.pick,names.to.pick.from)
-                error.keepA = cbind(error.keepA, apply(matrix(mat.error.rate[[comp]][[ind.row]],ncol=nrepeat),2,mean)) # average MSE for all Y, per nrepeat
+                ind.row = match(keepX[[comp.real[comp]]],test.keepX)
+                error.keepX = cbind(error.keepX, apply(matrix(mat.error.rate[[comp]][[ind.row]],ncol=nrepeat),2,mean))
             }
-            colnames(error.keepA) = c(paste('comp', comp.real, sep=''))
+            colnames(error.keepX) = c(paste('comp', comp.real, sep=''))
+            rownames(error.keepX) = c(paste('nrep.', 1:nrepeat, sep=''))
             
-            opt = t.test.process(error.keepA)
+            opt = t.test.process(error.keepX)
             
             ncomp_opt = comp.real[opt]
         } else {
-            ncomp_opt = error.keepA = NULL
+            ncomp_opt = error.keepX = NULL
         }
-        
+
+
         result = list(
         error.rate = mat.mean.error,
         error.rate.sd = mat.sd.error,
         error.rate.all = mat.error.rate,
         choice.keepX = already.tested.X,
-        choice.keepY = already.tested.Y,
-        choice.ncomp = list(ncomp = ncomp_opt, values = error.keepA))
+        choice.ncomp = list(ncomp = ncomp_opt, values = error.keepX))
         
         if(light.output == FALSE)
         {
@@ -365,37 +333,9 @@ cpus
         return(result)
     } else {
         # if multilevel with 2 factors, we can not do as before because withinvariation depends on the factors, we maximase a correlation
-        message("For a two-factor analysis, the tuning criterion is based on the maximisation of the correlation between the components on the whole data set")
+        message("Not implemented at the moment")
 
-        test.keepX = sort(unique(test.keepX)) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
-        names(test.keepX) = test.keepX
-        test.keepY = sort(unique(test.keepY)) #sort test.keepY so as to be sure to chose the smallest in case of several minimum
-        names(test.keepY) = test.keepY
-        
-        test.keepA = expand.grid(list(X=test.keepX,Y=test.keepY))
-        keepA.names = apply(test.keepA,1,function(x) paste(x,collapse="_"))
-
-        cor.value = vector(length = length(keepA.names))
-        names(cor.value) = keepA.names
-        
-        compteur=1
-        for (i in 1:length(test.keepY)) #could be done better by passing all the test.keepA to internal.mint.block
-        {
-            for(j in 1:length(test.keepX)){
-                
-                spls.train = mixOmics::spls(X, Y, ncomp = ncomp, keepX = c(already.tested.X, test.keepX[j]), keepY = c(already.tested.Y, test.keepY[i]),
-                near.zero.var = FALSE, mode = "regression")
-                
-                # Note: this is performed on the full data set
-                # (could be done with resampling (bootstrap) (option 1) and/or prediction (option 2))
-                cor.value[compteur] = cor(spls.train$variates$X[, ncomp], spls.train$variates$Y[, ncomp])
-                #
-                compteur=compteur+1
-            }
         }
-        return(list(cor.value = cor.value))
-
-    }
 }
 
 

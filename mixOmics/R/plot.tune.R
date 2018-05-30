@@ -25,7 +25,7 @@
 #############################################################################################################
 
 
-plot.tune.splsda = #plot.spca <- plot.ipca <- plot.sipca <-
+plot.tune.splsda = plot.tune.spls = #plot.spca <- plot.ipca <- plot.sipca <-
 function(x, optimal = TRUE, sd = TRUE, legend.position = "topright", col, ...)
 {
     
@@ -68,6 +68,14 @@ function(x, optimal = TRUE, sd = TRUE, legend.position = "topright", col, ...)
     } else if (measure == "BER")
     {
         ylab = "Balanced error rate"
+    } else if (measure == "MSE"){
+        ylab = "MSE"
+    }else if (measure == "MAE"){
+        ylab = "MAE"
+    }else if (measure == "Bias"){
+        ylab = "Bias"
+    }else if (measure == "R2"){
+        ylab = "R2"
     }
 
     matplot(rownames(error),error, type = "l", axes = TRUE, lwd = 2, lty = 1, log = "x",
@@ -103,112 +111,6 @@ function(x, optimal = TRUE, sd = TRUE, legend.position = "topright", col, ...)
         legend = paste("comp1 to", colnames(error))
     }
 
-    legend(legend.position, lty = 1, lwd = 2, horiz = FALSE, col = col,
-    legend = legend)
-    
-}
-
-
-plot.tune.spls = #plot.spca <- plot.ipca <- plot.sipca <-
-function(x, optimal = TRUE, sd = TRUE, legend.position = "topright", col, keepY=NULL, ...)
-{
-    
-    if (!is.logical(optimal))
-    stop("'optimal' must be logical.", call. = FALSE)
-    
-    
-    error <- x$error.rate
-    if(sd & !is.null(x$error.rate.sd))
-    {
-        error.rate.sd = x$error.rate.sd
-        ylim = range(c(error + error.rate.sd), c(error - error.rate.sd))
-    } else {
-        error.rate.sd = NULL
-        ylim = range(error)
-    }
-    
-    test.keepY = as.numeric(sapply(strsplit(rownames(error),"_"),function(x){x[2]}))
-    if(is.null(keepY)) {
-        keepY=unique(test.keepY)
-        xlab = "Number of selected features"
-    } else {
-        xlab = paste0("Number of selected X-features for keepY=",keepY)
-    }
-    
-    if(length(keepY)>1)
-    stop("Results from 'tune.spls' can only be displayed for a constant 'keepY', please choose a single 'keepY' value")
-    
-    if(! keepY%in% test.keepY)
-    stop("'keepY' must be one of the 'test.keepY' used in the 'tune.spls' call")
-    
-    ind.keepY = which(test.keepY == keepY)
-    error = error[ind.keepY,,drop=FALSE]
-    
-    # rename rownames(error)
-    rownames(error) = as.numeric(sapply(strsplit(rownames(error),"_"),function(x){x[1]}))
-    
-    select.keepX <- x$choice.keepX[colnames(error)]
-    comp.tuned = length(select.keepX)
-    
-    legend=NULL
-    measure = x$measure
-    
-    if (length(select.keepX) < 10)
-    {
-        #only 10 colors in color.mixo
-        if(missing(col))
-        col = color.mixo(1:comp.tuned)
-    } else {
-        #use color.jet
-        if(missing(col))
-        col = color.jet(comp.tuned)
-    }
-    if(length(col) != comp.tuned)
-    stop("'col' should be a vector of length ", comp.tuned,".")
-    
-    if (measure == "MSE"){
-        ylab = "MSE"
-    }else if (measure == "MAE"){
-        ylab = "MAE"
-    }else if (measure == "Bias"){
-        ylab = "Bias"
-    }else if (measure == "R2"){
-        ylab = "R2"
-    }
-    
-    matplot(rownames(error),error, type = "l", axes = TRUE, lwd = 2, lty = 1, log = "x",
-    xlab = xlab, ylab = ylab,
-    col = col, ylim = ylim)
-    
-    if(optimal)
-    {
-        for(i in 1:comp.tuned)
-        {
-            # store coordinates of chosen keepX
-            index = which(rownames(error) == select.keepX[i])
-            # choseen keepX:
-            points(rownames(error)[index], error[index,i], col = col[i], lwd=2, cex=3, pch = 18)
-        }
-    }
-    
-    if(!is.null(error.rate.sd))
-    {
-        for(j in 1:ncol(error))
-        plot_error_bar(x = as.numeric(names(error[, j])), y =error[, j] , uiw=error.rate.sd[, j], add=T, col = rep(col[j],each=nrow(error)))#, ...)
-    }
-    
-    
-    
-    if(length(x$choice.keepX) == 1) #only first comp tuned
-    {
-        legend = "comp1"
-    } else if(length(x$choice.keepX) == comp.tuned) # all components have been tuned
-    {
-        legend = c("comp1", paste("comp1 to", colnames(error)[-1]))
-    } else { #first component was not tuned
-        legend = paste("comp1 to", colnames(error))
-    }
-    
     legend(legend.position, lty = 1, lwd = 2, horiz = FALSE, col = col,
     legend = legend)
     
