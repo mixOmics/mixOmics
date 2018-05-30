@@ -5,6 +5,8 @@
 #######################################################################################################
 opar <- par(no.readonly = TRUE)
 
+progressBar = FALSE
+
 ## sGCC-DA
 # -------------
 #library(rARPACK)
@@ -31,6 +33,22 @@ tol=1e-30)
 
 
 head(nutrimouse.sgccda$variates$gene)
+
+
+
+## add variables with 0 variance
+data(nutrimouse)
+Y = nutrimouse$diet
+
+data = list(gene = cbind(nutrimouse$gene,V1=0,V2=1), lipid = cbind(nutrimouse$lipid,"V5"=c(rep(1,38),rep(2,2))))
+design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+
+nutrimouse.sgccda <- block.splsda(X=data,Y = Y,design = design,keepX = list(gene=c(10,10), lipid=c(15,15)),ncomp = 2,scheme = "centroid",tol=1e-30, near.zero.var=TRUE)
+
+nutrimouse.sgccda$nzv
+
+tune = tune.block.splsda(data,Y,ncomp=2,design=design, progressBar=progressBar)
+tune = tune.block.splsda(data,Y,ncomp=2,design=design,near.zero.var=TRUE,validation="loo",progressBar=progressBar)
 
 
 if(FALSE)
@@ -80,17 +98,17 @@ pred2=predict(nutrimouse.sgccda, data,weight=c(1,2))
 #tol=1e-30)
 
 set.seed(43)
-a=perf(nutrimouse.sgccda,nrepeat=3, progressBar = FALSE)
+a=perf(nutrimouse.sgccda,nrepeat=3, progressBar = progressBar)
 plot(a)
 
 
 set.seed(43)
-a=perf(nutrimouse.sgccda, progressBar = FALSE)
+a=perf(nutrimouse.sgccda, progressBar = progressBar)
 plot(a)
 
 
 set.seed(43)
-a2=perf(nutrimouse.sgccda,cpus=4, progressBar = FALSE)
+a2=perf(nutrimouse.sgccda,cpus=4, progressBar = progressBar)
 
 
 res = all.equal(a[-which(names(a)=="call")],a2[-which(names(a2)=="call")])
@@ -151,10 +169,10 @@ plotVar(nutrimouse.sgccda, col = color.mixo(1:2), cex = c(2,2))
 
 # perf
 
-perf=perf(nutrimouse.sgccda, progressBar = FALSE)
+perf=perf(nutrimouse.sgccda, progressBar = progressBar)
 perf$features$stable
 
-perf=perf(nutrimouse.sgccda,validation="loo", progressBar = FALSE)
+perf=perf(nutrimouse.sgccda,validation="loo", progressBar = progressBar)
 perf$features$stable
 
 
@@ -178,7 +196,7 @@ if(additional.test==TRUE)
     design = design,
     ncomp = 2,#c(2, 2),
     scheme = "centroid",
-    nrepeat = 11
+    nrepeat = 11, progressBar = progressBar
     )
     tune
     
@@ -193,7 +211,7 @@ if(additional.test==TRUE)
     ncomp = 2,#c(2, 2),
     test.keepX = list(gene=c(1,5,10,4),lipid=c(1,2,3)),
     scheme = "centroid",
-    weighted=FALSE
+    weighted=FALSE, progressBar = progressBar
     )
     tune2
     
@@ -209,7 +227,7 @@ if(additional.test==TRUE)
     scheme = "centroid",
     dist="centroids.dist",
     weighted=TRUE,
-    nrepeat=2
+    nrepeat=2, progressBar = progressBar
     )
     a
     
@@ -224,7 +242,7 @@ if(additional.test==TRUE)
     dist="centroids.dist",
     weighted=TRUE,
     nrepeat=2,
-    cpus=2
+    cpus=2, progressBar = progressBar
     )
     a2
     
@@ -242,7 +260,7 @@ if(additional.test==TRUE)
     design = design,
     nrepeat=4,
     ncomp = 2,#c(2, 2),
-    scheme = "centroid"
+    scheme = "centroid", progressBar = progressBar
     )
     tune
     
@@ -253,7 +271,7 @@ if(additional.test==TRUE)
     design = design,
     ncomp = 2,#c(2, 2),
     test.keepX = list(gene=c(1,5,10,4),lipid=c(1,2,3)),
-    scheme = "centroid"
+    scheme = "centroid", progressBar = progressBar
     )
     tune
 
@@ -265,7 +283,7 @@ if(additional.test==TRUE)
     already.tested.X = list(gene=c(10), lipid=c(15)),
     nrepeat=4,
     ncomp = 2,#c(2, 2),
-    scheme = "centroid"
+    scheme = "centroid", progressBar = progressBar
     )
     tune
 
@@ -278,7 +296,7 @@ if(additional.test==TRUE)
     scheme = "centroid",
     nrepeat = 2,
     name.save="try",
-    cpus=4
+    cpus=4, progressBar = progressBar
     )
 
 

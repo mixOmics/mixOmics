@@ -15,33 +15,41 @@ data = list(gene = nutrimouse$gene, outcome=Y, lipid = nutrimouse$lipid)
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 
 
-if(FALSE)
-{ #error
-    ind = c(which(Y == "coc"), c(4,9))
-    data = list(gene = nutrimouse$gene[ind,], outcome=factor(nutrimouse$diet[ind]), lipid = nutrimouse$lipid[ind,])
-    design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
+Y = nutrimouse$diet
+design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+set.seed(12)
+# add missing values in the data
+data[[1]][sample(1:nrow(data[[1]]),10), sample(1:ncol(data[[1]]),10)] = NA
 
-    nutrimouse.sgccda <- wrapper.sgccda(X=data,
-    indY = 2,
-    design = design,
-    ncomp = 1,#c(2, 2),
-    scheme = "centroid",
-    verbose = FALSE,
-    bias = FALSE,
-    tol=1e-30)
-}
+data[[2]][sample(1:nrow(data[[1]]),10), sample(1:ncol(data[[1]]),10)] = NA
 
+set.seed(45)
+# classic tune
+tune = tune.block.splsda(
+X = data,
+Y = Y,
+ncomp = 2,
+design = design,
+folds=5,
+test.keepX = list(gene=c(1,5,10,4),lipid=c(1,2,3)),
+)
+
+
+
+set.seed(12)
+# add missing values in the data
+data[[1]][sample(1:nrow(data[[1]]),2), sample(1:ncol(data[[1]]),2)] = NA
 
 
 nutrimouse.sgccda <- wrapper.sgccda(X=data,
 indY = 2,
 design = design,
 keepX = list(gene=c(10), lipid=c(15)),
-ncomp = 1,#c(2, 2),
+ncomp = 3,#c(2, 2),
 scheme = "centroid",
-verbose = FALSE,
-bias = FALSE,
 tol=1e-30)
+
 
 
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, outcome=Y)

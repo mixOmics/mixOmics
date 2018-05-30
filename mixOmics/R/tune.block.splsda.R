@@ -119,6 +119,14 @@ name.save = NULL)
         
     }
     
+    # there's a X and a Y, we force the data to be matrices
+    cl = lapply(X,class)
+    ind.no.matrix = which(sapply(cl, function(x) !any(x == "matrix")))
+    if(length(ind.no.matrix)>0){
+        X[ind.no.matrix] = lapply(X[ind.no.matrix], function(x) as.matrix(x))
+    }
+
+    
     #-- dist
     dist = match.arg(dist, choices = c("max.dist", "centroids.dist", "mahalanobis.dist"), several.ok = FALSE)
 
@@ -219,14 +227,14 @@ name.save = NULL)
     
     misdata = c(sapply(X,anyNA), Y=FALSE) # Detection of missing data. we assume no missing values in the factor Y
     
-    is.na.A = ind.NA = ind.NA.col = vector("list", length = length(X))
+    is.na.A = vector("list", length = length(X))
     for(q in 1:length(X))
     {
         if(misdata[q])
         {
             is.na.A[[q]] = is.na(X[[q]])
-            ind.NA[[q]] = which(apply(is.na.A[[q]], 1, sum) > 0) # calculated only once
-            ind.NA.col[[q]] = which(apply(is.na.A[[q]], 2, sum) >0) # indice of the col that have missing values. used in the deflation
+            #ind.NA[[q]] = which(apply(is.na.A[[q]], 1, sum) > 0) # calculated only once
+            #ind.NA.col[[q]] = which(apply(is.na.A[[q]], 2, sum) >0) # indice of the col that have missing values. used in the deflation
        }
     }
 
@@ -312,7 +320,7 @@ name.save = NULL)
         choice.keepX = already.tested.X, scheme = scheme, design=design, init=init, tol=tol,
         test.keepX = test.keepX, measure = measure, dist = dist, scale=scale, weighted=weighted,
         near.zero.var = near.zero.var, progressBar = progressBar, max.iter = max.iter, cl = cl,
-        misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA, ind.NA.col = ind.NA.col, parallel = parallel)
+        misdata = misdata, is.na.A = is.na.A, parallel = parallel)
         
         #returns error.rate for all test.keepX
     

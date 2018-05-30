@@ -23,7 +23,7 @@ plotIndiv(splsda.breast, background = background,legend=T, ellipse=T, title = "b
 background = background.predict(splsda.breast,comp.predicted=2, dist = "centroids.dist", xlim = c(-6,7), ylim = c(-6,6))
 plotIndiv(splsda.breast, background = background,legend=T, ellipse=T, title="now all good")
 
-background = background.predict(splsda.breast,comp.predicted=2, dist = "centroids.dist", xlim = c(-6,7), ylim = c(-6,6), resolution = 500)
+background = background.predict(splsda.breast,comp.predicted=2, dist = "centroids.dist", xlim = c(-6,7), ylim = c(-6,6), resolution = 200)
 plotIndiv(splsda.breast, background = background,legend=T, ellipse=T, title="increasing resolution")
 
 
@@ -42,7 +42,7 @@ plotIndiv(plsda.liver, background = background,legend=T,title = "good background
 plotIndiv(plsda.liver, background = background,legend=T,ellipse=T, title = "background not covering enough by default with ellipse")
 
 # increase limits
-background = background.predict(plsda.liver,comp.predicted=2, dist = "centroids.dist", xlim = c(-70,80), ylim=c(-60,80))
+background = background.predict(plsda.liver,comp.predicted=2, dist = "centroids.dist", xlim = c(-80,80), ylim=c(-60,80))
 plotIndiv(plsda.liver, background = background,legend=T, ellipse=T, title="now all good")
 plotIndiv(plsda.liver, background = background,legend=T, ellipse=T, style="lattice")
 plotIndiv(plsda.liver, background = background,legend=T, ellipse=T, style="graphics")
