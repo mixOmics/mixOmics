@@ -50,25 +50,6 @@ ncomp = 3,#c(2, 2),
 scheme = "centroid",
 tol=1e-30)
 
-source("mixOmics/R/internal_wrapper.mint.R")
-source("mixOmics/R/internal_wrapper.mint.block.R")
-source("mixOmics/R/internal_mint.block.R")
-source("mixOmics/R/internal_mint.block_helpers.R")
-source("mixOmics/R/check_entry.R")
-library(rARPACK)
-library(matrixStats)
-
-
-tune
-
-
-
-
-
-
-
-
-
 
 
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, outcome=Y)
