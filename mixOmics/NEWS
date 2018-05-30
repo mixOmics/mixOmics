@@ -1,3 +1,17 @@
+Changes in 6.3.2 (bug fixes following R CRAN release 3.5)
+================
+
+Enhancements:
+-------------
+- better memory usage 
+- faster implementation
+- warnings suppressed when performing cross-validation
+
+Bug fixes:
+----------
+- specific bug related to NA values
+
+
 
 Changes in 6.3.1 (bug fixes)
 ================
