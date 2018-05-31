@@ -11,6 +11,9 @@ Bug fixes:
 ----------
 - specific bug related to NA values
 
+New features:
+-------------
+A new tune.spls function has been deployed but is restrained for a fixed Y data set. This is function still need further developments, contact us for more details and examples. 
 
 
 Changes in 6.3.1 (bug fixes)

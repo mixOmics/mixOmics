@@ -13,7 +13,7 @@ Function to plot performance criteria, such as classification error rate or bala
 
 \usage{
 \method{plot}{tune.splsda}(x, optimal = TRUE, sd = TRUE, legend.position = "topright", col, \dots)
-\method{plot}{tune.spls}(x, optimal = TRUE, sd = TRUE, legend.position = "topright", col, keepY=NULL, \dots)
+\method{plot}{tune.spls}(x, optimal = TRUE, sd = TRUE, legend.position = "topright", col, \dots)
 
 \method{plot}{tune.block.splsda}(x, sd = TRUE, col, \dots)
 }
@@ -26,7 +26,6 @@ Function to plot performance criteria, such as classification error rate or bala
 \item{legend.position}{position of the legend, one of "bottomright", "bottom", "bottomleft",
 -"left", "topleft", "top", "topright", "right" and "center". }
 \item{col}{character (or symbol) color to be used, possibly vector. One color per component.}
-\item{keepY}{Plot the results for a given \code{keepY}, for \code{tune.spls} objects only}
   \item{\dots}{Further arguments sent to \code{\link{xyplot}} function.}
 }
 
@@ -36,7 +35,7 @@ A circle highlights the optimal number of variables oneach component.
 
 \code{plot.tune.block.splsda} plots the classification error rate or the balanced error rate from x$error.rate, for each component of the model. The error rate is ordered by increasing value, the yaxis shows the optimal combination of keepX at the top (e.g. `keepX on block 1'_`keepX on block 2'_`keepX on block 3')
 
-\code{plot.tune.spls} plots the tuning results for the measure of accuracy \code{x$measure}, for each component of the model and all \code{keepX} parameters, for a given \code{keepY}.
+\code{plot.tune.spls} plots the tuning results for the measure of accuracy \code{x$measure}, for each component of the model and any tested \code{keepX} parameters when Y is fixed (contact us for more details).
 
 }
 

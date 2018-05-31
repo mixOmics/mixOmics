@@ -51,19 +51,20 @@ If \code{validation = "loo"}, leave-one-out cross-validation is performed. By de
 If \code{validation = "Mfold"}, M-fold cross-validation is performed.
 How many folds to generate is selected by specifying the number of folds in \code{folds}.
 
-Four measure of accuracy are available: Mean Square Error(\code{MSE}), Mean Absolute Error (\code{MAE}), \code{Bias} and \code{R2}.
-
+Four measures of accuracy are available: Mean Absolute Error (\code{MAE}), Mean Square Error(\code{MSE}), \code{Bias} and \code{R2}. Both MAE and MSE average the model prediction error. MAE measures the average magnitude of the errors without considering their direction. It is the average over the fold test samples of the absolute differences between the Y predictions and the actual Y observations. The MSE also measures the average magnitude of the error. Since the errors are squared before they are averaged, the MSE tends to give a relatively high weight to large errors. The Bias is the average of the differences between the Y predictions and the actual Y observations and the R2 is the correlation between the predictions and the observations. All those measures are averaged across all Y variables in the PLS2 case. We are still improving the function to tune an sPLS2 model, contact us for more details and examples.
 
 The function outputs the optimal number of components that achieve the best performance based on the chosen measure of accuracy. The assessment is data-driven and similar to the process detailed in (Rohart et al., 2016), where one-sided t-tests assess whether there is a gain in performance when adding a component to the model.
+
+See also \code{?perf} for more details.
 
 }
 
 \value{
-Depending on the type of analysis performed, a list that contains:
+A list that contains:
 \item{error.rate}{returns the prediction error for each \code{test.keepX} on each component, averaged across all repeats and subsampling folds. Standard deviation is also output. All error rates are also available as a list.}
 \item{choice.keepX}{returns the number of variables selected (optimal keepX) on each component.}
 \item{choice.ncomp}{returns the optimal number of components for the model fitted with \code{$choice.keepX} and \code{$choice.keepY} }
-
+\item{measure}{reminds which criterion was used}
 \item{predict}{Prediction values for each sample, each \code{test.keepX,test.keepY}, each comp and each repeat. Only if light.output=FALSE}
 
 }
@@ -73,6 +74,19 @@ mixOmics article:
 
 Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration. PLoS Comput Biol 13(11): e1005752
 
+PLS and PLS citeria for PLS regression: Tenenhaus, M. (1998). La regression PLS: theorie et pratique. Paris: Editions Technic.
+
+Chavent, Marie and Patouille, Brigitte (2003). Calcul des coefficients de regression et du PRESS en regression PLS1. Modulad n, 30 1-11. (this is the formula we use to calculate the Q2 in perf.pls and perf.spls)
+
+Mevik, B.-H., Cederkvist, H. R. (2004). Mean Squared Error of Prediction (MSEP) Estimates for Principal Component Regression (PCR) and Partial Least Squares Regression (PLSR). Journal of Chemometrics 18(9), 422-429.
+
+sparse PLS regression mode:
+
+Lê Cao, K. A., Rossouw D., Robert-Granie, C. and Besse, P. (2008). A sparse PLS for variable selection when integrating Omics data. Statistical Applications in Genetics and Molecular Biology 7, article 35.
+
+One-sided t-tests (suppl material):
+
+Rohart F, Mason EA, Matigian N, Mosbergen R, Korn O, Chen T, Butcher S, Patel J, Atkinson K, Khosrotehrani K, Fisk NM, Lê Cao K-A&, Wells CA& (2016). A Molecular Classification of Human Mesenchymal Stromal Cells. PeerJ 4:e1845.
 }
 
 
@@ -87,7 +101,7 @@ data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
 
-tune = tune.spls(X, Y, ncomp=4, test.keepX = c(5,10,15),
+tune = tune.spls(X, Y, ncomp=4, test.keepX = c(5,10,15), measure = "MSE",
 nrepeat=3, progressBar = TRUE)
 
 tune$choice.ncomp
