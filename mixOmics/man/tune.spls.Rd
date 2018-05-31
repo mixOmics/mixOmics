@@ -12,7 +12,7 @@ grid to determine optimal values for the sparsity parameters in \code{spls}.
 
 \usage{
 tune.spls(X, Y, ncomp = 1,
-test.keepX = c(5, 10, 15), test.keepY = ncol(Y), already.tested.X, already.tested.Y,
+test.keepX = c(5, 10, 15), already.tested.X,
 validation = "Mfold", folds = 10, measure = "MSE", scale = TRUE,
 progressBar = TRUE, tol = 1e-06, max.iter = 100, near.zero.var = FALSE,
 nrepeat = 1, multilevel = NULL, light.output = TRUE, cpus)
@@ -24,9 +24,7 @@ nrepeat = 1, multilevel = NULL, light.output = TRUE, cpus)
     \item{Y}{\code{if(method = 'spls')} numeric vector or matrix of continuous responses (for multi-response models) \code{NA}s are allowed.}
     \item{ncomp}{the number of components to include in the model.}
     \item{test.keepX}{numeric vector for the different number of variables to test from the \eqn{X} data set}
-    \item{test.keepY}{numeric vector for the different number of variables to test from the \eqn{Y} data set}
     \item{already.tested.X}{Optional, if \code{ncomp > 1} A numeric vector indicating the number of variables to select from the \eqn{X} data set on the firsts components.}
-    \item{already.tested.Y}{Optional, if \code{ncomp > 1} A numeric vector indicating the number of variables to select from the \eqn{Y} data set on the firsts components.}
     \item{validation}{character.  What kind of (internal) validation to use, matching one of \code{"Mfold"} or
 \code{"loo"} (see below). Default is \code{"Mfold"}.}
     \item{folds}{the folds in the Mfold cross-validation. See Details.}
@@ -47,7 +45,7 @@ to zero means and unit variances (default: TRUE)}
 
 \details{
 
-This tuning function should be used to tune the parameters in the \code{spls} function (number of components and both the number of variables in \code{keepX} and \code{keepY} to select).
+This tuning function should be used to tune the parameters in the \code{spls} function (number of components and the number of variables in \code{keepX} to select).
 
 If \code{validation = "loo"}, leave-one-out cross-validation is performed. By default \code{folds} is set to the number of unique individuals.
 If \code{validation = "Mfold"}, M-fold cross-validation is performed.
@@ -64,12 +62,9 @@ The function outputs the optimal number of components that achieve the best perf
 Depending on the type of analysis performed, a list that contains:
 \item{error.rate}{returns the prediction error for each \code{test.keepX} on each component, averaged across all repeats and subsampling folds. Standard deviation is also output. All error rates are also available as a list.}
 \item{choice.keepX}{returns the number of variables selected (optimal keepX) on each component.}
-\item{choice.keepY}{returns the number of variables selected (optimal keepY) on each component.}
 \item{choice.ncomp}{returns the optimal number of components for the model fitted with \code{$choice.keepX} and \code{$choice.keepY} }
 
 \item{predict}{Prediction values for each sample, each \code{test.keepX,test.keepY}, each comp and each repeat. Only if light.output=FALSE}
-
-\item{cor.value}{only if multilevel analysis with 2 factors: correlation between latent variables.}
 
 }
 
@@ -93,15 +88,13 @@ X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
 
 tune = tune.spls(X, Y, ncomp=4, test.keepX = c(5,10,15),
-nrepeat=3, test.keepY=c(2,5,8,10), progressBar = TRUE)
+nrepeat=3, progressBar = TRUE)
 
 tune$choice.ncomp
 tune$choice.keepX
-tune$choice.keepY
 
-# plot only for a specific keepY
-plot(tune, keepY = 10)
-plot(tune, keepY = 5)
+# plot the results
+plot(tune)
 }
 
 

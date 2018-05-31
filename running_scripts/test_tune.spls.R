@@ -11,12 +11,12 @@ progressBar = FALSE
 
 
 data(liver.toxicity)
-X <- as.matrix(liver.toxicity$gene)
-Y <- as.matrix(liver.toxicity$clinic)
+X <- liver.toxicity$gene
+Y <- liver.toxicity$clinic
 
 toxicity.pls <- pls(X, Y, ncomp = 3)
 
-Y=Y[,9,drop=FALSE]
+Y=as.matrix(Y[,9,drop=FALSE])
 tox=spls(X,Y, keepX=c(1,10))
 p=predict(tox,X)
 plot(Y,p$predict[,,1])
@@ -37,10 +37,10 @@ selectVar(tox)
 
 
 data(liver.toxicity)
-X <- as.matrix(liver.toxicity$gene)
-Y <- as.matrix(liver.toxicity$clinic)
+X <- liver.toxicity$gene
+Y <- liver.toxicity$clinic
 
-tun = tune.spls(X,Y,ncomp=4, test.keepX = c(5,10,15), nrepeat=5, test.keepY=c(2,5,8,10), progressBar = progressBar)
+tun = tune.spls(X,Y,ncomp=4, test.keepX = c(5,10,15), nrepeat=5,  progressBar = progressBar)
 plot(tun,keepY=5)
 plot(tun,keepY=10)
 
@@ -88,8 +88,9 @@ plot(tun4,sd=FALSE,legend.position = "bottomleft")
 ### with NA
 n=nrow(X)
 p=ncol(X)
-system.time(tun <- tune.spls(X,Y,ncomp=3, test.keepX = c(5,10,15), nrepeat=1, test.keepY=(5:10), folds=3, progressBar = progressBar))
+system.time(tun <- tune.spls(X,Y,ncomp=3, test.keepX = c(5,10,15), nrepeat=1,  folds=3, progressBar = progressBar))
 
+X=as.matrix(X)
 X[sample(1:(n*p),100)]=NA
-system.time(tun2 <- tune.spls(X,Y,ncomp=3, test.keepX = c(5,10,15), nrepeat=1, test.keepY=(5:10), folds=3, progressBar = progressBar))
+system.time(tun2 <- tune.spls(X,Y,ncomp=3, test.keepX = c(5,10,15), nrepeat=1,  folds=3, progressBar = progressBar))
 

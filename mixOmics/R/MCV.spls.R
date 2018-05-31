@@ -101,9 +101,8 @@ folds,
 nrepeat = 1,
 ncomp,
 choice.keepX = NULL, # keepX chosen on the first components
-choice.keepY = NULL, # keepX chosen on the first components
 test.keepX, # a vector of value(keepX) to test on the last component. There needs to be names(test.keepX)
-test.keepY, # a vector of value(keepY) to test on the last component. There needs to be names(test.keepY)
+test.keepY, # a vector of value(keepX) to test on the last component. There needs to be names(test.keepX)
 measure = c("overall"), # one of c("overall","BER")
 dist = "max.dist",
 auc = FALSE,
@@ -133,7 +132,7 @@ parallel
     
     design = matrix(c(0,1,1,0), ncol = 2, nrow = 2, byrow = TRUE)
     
-    if(ncomp>1 &  any(class.object == "DA")){keepY = rep(nlevels(Y), ncomp-1)}
+    if(ncomp>1 &  any(class.object == "DA")){keepY = rep(nlevels(Y), ncomp-1)} else {keepY=rep(ncol(Y),ncomp-1)}
     
     rownames.X = rownames(X)
     M = length(folds)
@@ -142,19 +141,12 @@ parallel
     
 
     if(any(class.object == "DA")){
-        test.keepA = test.keepX
-        keepA.names = names(test.keepA)
-        
         for(ijk in dist)
         class.comp[[ijk]] = array(0, c(nrow(X), nrepeat, length(test.keepX)))# prediction of all samples for each test.keepX and  nrep at comp fixed
     } else {
-        test.keepA = expand.grid(list(X=test.keepX,Y=test.keepY))
-        keepA.names = apply(test.keepA,1,function(x) paste(x,collapse="_"))
-        
-        prediction.keepX = vector("list", length=nrow(test.keepA))
-        for(i in 1:nrow(test.keepA))
+        prediction.keepX = vector("list", length=length(test.keepX))
+        for(i in 1:length(test.keepX))
         prediction.keepX[[i]] = array(0,c(nrow(X), ncol(Y), nrepeat), dimnames = list(rownames(X), colnames(Y), paste0("nrep.", 1:nrepeat)))
-
     }
     
     folds.input = folds # save fold number to be used for each nrepeat
@@ -172,7 +164,7 @@ parallel
                 auc.all[[nrep]] = array(0, c(1,2, length(test.keepX)), dimnames = list(paste(levels(Y)[1], levels(Y)[2], sep = " vs "), c("AUC","p-value"), names(test.keepX)))
             }
         } else {
-            prediction.comp[[nrep]] = array(0, c(nrow(X), ncol(Y), nrow(test.keepA)), dimnames = list(rownames(X), colnames(Y), keepA.names))
+            prediction.comp[[nrep]] = array(0, c(nrow(X), ncol(Y), length(test.keepX)), dimnames = list(rownames(X), colnames(Y), test.keepX))
             colnames(prediction.comp[[nrep]]) = colnames(Y)
         }
         rownames(prediction.comp[[nrep]]) = rownames.X
@@ -221,9 +213,9 @@ parallel
         
         M = length(folds)
         
-        error.sw = matrix(0,nrow = M, ncol = length(keepA.names))
+        error.sw = matrix(0,nrow = M, ncol = length(test.keepX))
         rownames(error.sw) = paste0("fold",1:M)
-        colnames(error.sw) = keepA.names
+        colnames(error.sw) = test.keepX
         # for the last keepX (i) tested, prediction combined for all M folds so as to extract the error rate per class
         # prediction.all = vector(length = nrow(X))
         # in case the test set only includes one sample, it is better to advise the user to
@@ -374,7 +366,7 @@ parallel
                 for(ijk in dist)
                 class.comp.j[[ijk]] = matrix(0, nrow = length(omit), ncol = length(test.keepX))# prediction of all samples for each test.keepX and  nrep at comp fixed
             } else{
-                prediction.comp.j = array(0, c(length(omit), ncol(Y), length(keepA.names)), dimnames = list(rownames(X.test), colnames(Y), keepA.names))
+                prediction.comp.j = array(0, c(length(omit), ncol(Y), length(test.keepX)), dimnames = list(rownames(X.test), colnames(Y), test.keepX))
             }
             
             
@@ -517,7 +509,7 @@ parallel
         }
         if(!any(class.object == "DA")){
             # create a array, for each keepX: n*q*nrep
-            for(i in 1:length(keepA.names))
+            for(i in 1:length(test.keepX))
                 prediction.keepX[[i]][,,nrep] = prediction.comp[[nrep]][,,i, drop=FALSE]
         }
 
@@ -685,7 +677,7 @@ parallel
     if (any(measure == "MSE"))
     {
         ijk=1 # in case more measure later on
-        names(prediction.keepX) = paste0("test.keepA.",keepA.names)
+        names(prediction.keepX) = paste0("test.keepX.",test.keepX)
         
         # MSE error for each nrep and each test.keepX: summing over all samples
         varY=apply(Y,2,var)
@@ -706,11 +698,9 @@ parallel
         keepX.opt[[ijk]] = which(error.mean[[ijk]] ==  min(error.mean[[ijk]]))[1] # chose the lowest keepX if several minimum
         
         
-        test.keepX.out[[ijk]] = test.keepA[keepX.opt[[ijk]],1]
-        test.keepY.out[[ijk]] = test.keepA[keepX.opt[[ijk]],2]
+        test.keepX.out[[ijk]] = test.keepX[keepX.opt[[ijk]]]
 
         choice.keepX.out[[ijk]] = c(choice.keepX, test.keepX.out)
-        choice.keepY.out[[ijk]] = c(choice.keepY, test.keepY.out)
 
         result$"MSE"$error.rate.mean = error.mean
         if (!nrepeat ==  1)
@@ -718,14 +708,13 @@ parallel
         
         result$"MSE"$mat.error.rate = mat.error.final
         result$"MSE"$keepX.opt = test.keepX.out
-        result$"MSE"$keepY.opt = test.keepY.out
     }
     
     if (any(measure == "MAE")) # MAE (Mean Absolute Error: MSE without the square)
     {
         ijk=1 # in case more measure later on
-        names(prediction.keepX) = paste0("test.keepA.",keepA.names)
-        
+        names(prediction.keepX) = paste0("test.keepX.",test.keepX)
+
         # MAE error for each nrep and each test.keepX: summing over all samples
         varY=apply(Y,2,var)
         error = lapply(prediction.keepX, function(z){apply(z,c(3),function(x)
@@ -745,11 +734,9 @@ parallel
         
         keepX.opt[[ijk]] = which(error.mean[[ijk]] ==  min(error.mean[[ijk]]))[1] # chose the lowest keepX if several minimum
         
-        test.keepX.out[[ijk]] = test.keepA[keepX.opt[[ijk]],1]
-        test.keepY.out[[ijk]] = test.keepA[keepX.opt[[ijk]],2]
+        test.keepX.out[[ijk]] = test.keepX[keepX.opt[[ijk]]]
         
         choice.keepX.out[[ijk]] = c(choice.keepX, test.keepX.out)
-        choice.keepY.out[[ijk]] = c(choice.keepY, test.keepY.out)
 
         result$"MAE"$error.rate.mean = error.mean
         if (!nrepeat ==  1)
@@ -757,14 +744,13 @@ parallel
         
         result$"MAE"$mat.error.rate = mat.error.final
         result$"MAE"$keepX.opt = test.keepX.out
-        result$"MAE"$keepY.opt = test.keepY.out
     }
     
     if (any(measure == "Bias")) # Bias (average of the differences)
     {
         ijk=1 # in case more measure later on
-        names(prediction.keepX) = paste0("test.keepA.",keepA.names)
-        
+        names(prediction.keepX) = paste0("test.keepX.",test.keepX)
+
         # Bias error for each nrep and each test.keepX: summing over all samples
         varY=apply(Y,2,var)
         error = lapply(prediction.keepX, function(z){apply(z,c(3),function(x)
@@ -786,11 +772,9 @@ parallel
         keepX.opt[[ijk]] = which(error.mean[[ijk]] ==  min(error.mean[[ijk]]))[1] # chose the lowest keepX if several minimum
         
         
-        test.keepX.out[[ijk]] = test.keepA[keepX.opt[[ijk]],1]
-        test.keepY.out[[ijk]] = test.keepA[keepX.opt[[ijk]],2]
+        test.keepX.out[[ijk]] = test.keepX[keepX.opt[[ijk]]]
         
         choice.keepX.out[[ijk]] = c(choice.keepX, test.keepX.out)
-        choice.keepY.out[[ijk]] = c(choice.keepY, test.keepY.out)
 
         result$"Bias"$error.rate.mean = error.mean
         if (!nrepeat ==  1)
@@ -798,14 +782,13 @@ parallel
         
         result$"Bias"$mat.error.rate = mat.error.final
         result$"Bias"$keepX.opt = test.keepX.out
-        result$"Bias"$keepY.opt = test.keepY.out
     }
     
     if (any(measure == "R2")) # R2 (square of the correlation of the truth and the predicted values, averaged over the columns of Y)
     {
         ijk=1 # in case more measure later on
-        names(prediction.keepX) = paste0("test.keepA.",keepA.names)
-        
+        names(prediction.keepX) = paste0("test.keepX.",test.keepX)
+
         # R2 error for each test.keepX (list),each Y (rows) and each nrepeat (columns)
         error = lapply(prediction.keepX, function(z){apply(z,c(3),function(x)
             {
@@ -823,11 +806,9 @@ parallel
         keepX.opt[[ijk]] = which(error.mean[[ijk]] ==  max(error.mean[[ijk]]))[1] # chose the lowest keepX if several minimum
         
         
-        test.keepX.out[[ijk]] = test.keepA[keepX.opt[[ijk]],1]
-        test.keepY.out[[ijk]] = test.keepA[keepX.opt[[ijk]],2]
+        test.keepX.out[[ijk]] = test.keepX[keepX.opt[[ijk]]]
         
         choice.keepX.out[[ijk]] = c(choice.keepX, test.keepX.out)
-        choice.keepY.out[[ijk]] = c(choice.keepY, test.keepY.out)
 
         result$"R2"$error.rate.mean = error.mean
         if (!nrepeat ==  1)
@@ -835,7 +816,6 @@ parallel
         
         result$"R2"$mat.error.rate = mat.error.final
         result$"R2"$keepX.opt = test.keepX.out
-        result$"R2"$keepY.opt = test.keepY.out
     }
 
 
