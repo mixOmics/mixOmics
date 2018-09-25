@@ -4,6 +4,134 @@
 #######################################################################################################
 #######################################################################################################
 
+
+
+
+
+#######################################################################################################
+#           splsda
+#######################################################################################################
+
+{
+library(mixOmics)
+library(profvis)
+n=1000;p=20000
+X = matrix(rnorm(n*p),nrow=n)
+rownames(X) = paste(1:n)
+colnames(X) = paste(1:p)
+Y = rbinom(n,1,0.5)
+#mod=splsda(X,Y)
+
+
+XNA=X
+XNA[sample(1:(n*p),100)]=NA
+
+
+
+profvis({
+    mod=splsda(X,Y, ncomp=2)
+})
+
+
+profvis({
+    mod=splsda(XNA,Y,ncomp=2)
+})
+
+
+profvis({
+    tune1 <- tune.splsda(X,Y,ncomp=2,nrepeat=1,logratio="none",test.keepX = c(5,10,15),folds=3,dist="max.dist", progressBar = TRUE)
+})
+
+time1=proc.time()
+profvis({
+    tune2 <- tune.splsda(XNA,Y,ncomp=2,nrepeat=1,logratio="none",test.keepX = c(5,10,15),folds=3,dist="max.dist", progressBar = TRUE)
+})
+time2=proc.time()
+print(time2-time1)
+
+
+
+#######################################################################################################
+#           block.splsda
+#######################################################################################################
+
+library(mixOmics)
+#n=1000;p1=10000;p2=20000
+n=1000;p1=10000;p2=10000
+X1 = matrix(rnorm(n*p1),nrow=n)
+X2 = matrix(rnorm(n*p2),nrow=n)
+rownames(X1) = rownames(X2) = paste0("n",1:n)
+colnames(X1) = paste0("p1",1:p1)
+colnames(X2) = paste0("p2",1:p2)
+Y = rbinom(n,1,0.5)
+XNA1=X1
+XNA1[sample(1:(n*p1),100)]=NA
+XNA2=X2
+XNA2[sample(1:(n*p2),100)]=NA
+
+data = list(X1=X1,X2=X2)
+dataNA = list(XNA1=XNA1,XNA2=XNA2)
+design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+
+test.keepX = lapply(1:length(data),function(x){c(10,15)[which(c(10,15)<ncol(data[[x]]))]})
+names(test.keepX)=names(data)
+
+{
+time1=proc.time()
+p = profvis({
+    mod <- block.splsda(X=data,Y = Y,design = design,ncomp = 2,scheme = "centroid",max.iter=2)
+})
+htmlwidgets::saveWidget(p, "blocksplsda_v6.3.2.html")
+print(p)
+time2=proc.time()
+print(time2-time1)
+
+
+time1=proc.time()
+p=profvis({
+    mod <- block.splsda(X=dataNA,Y = Y,design = design,    ncomp = 2,scheme = "centroid",max.iter=2)
+})
+htmlwidgets::saveWidget(p, "blocksplsda_NA_v6.3.2.html")
+print(p)
+time2=proc.time()
+print(time2-time1)
+
+time1=proc.time()
+p=profvis({
+    tune = tune.block.splsda(X = data,Y = Y,design = design,ncomp = 2,scheme = "centroid",progressBar = TRUE,folds=3,max.iter=2,test.keepX=list(X1=c(10,15), X2=c(10,15)))
+})
+htmlwidgets::saveWidget(p, "tuneblocksplsda_v6.3.2.html")
+print(p)
+time2=proc.time()
+print(time2-time1)
+
+time1=proc.time()
+p=profvis({
+    tune = tune.block.splsda(X = dataNA,Y = Y,design = design,ncomp = 2,scheme = "centroid",progressBar = TRUE,folds=3,max.iter=2,test.keepX=list(X1=c(10,15), X2=c(10,15)))
+})
+htmlwidgets::saveWidget(p, "tuneblocksplsda_NA_v6.3.2.html")
+print(p)
+time2=proc.time()
+print(time2-time1)
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 load("debugme.Rdata")
 n=nrow(X)
 p2=1000
