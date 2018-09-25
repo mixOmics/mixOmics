@@ -302,10 +302,10 @@ plotLoadings(splsda.srbct, comp = 1, title = 'Loadings on comp 1',
              contrib = 'max', method = 'mean')
 ```
 
-
+When there are many variables selected, we can choose to display only the top ones:
 ```{r}
 plotLoadings(splsda.srbct, comp = 2, title = 'Loadings on comp 2', 
-             contrib = 'max', method = 'mean')
+             contrib = 'max', method = 'mean', ndisplay = 50)
 ```
 
 ```{r}

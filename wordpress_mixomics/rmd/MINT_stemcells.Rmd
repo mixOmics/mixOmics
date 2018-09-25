@@ -3,11 +3,11 @@ title: "MINT_stemcells"
 author: "Kim-Anh Lê Cao, Florian Rohart, Danielle Davenport"
 date: "10 August 2017"
 output:
-  pdf_document: default
   html_document:
     code_folding: show
     df_print: kable
     highlight: haddock
+  pdf_document: default
 ---
 
 ```{r global_options, include=FALSE}
@@ -60,15 +60,14 @@ table(Y,study)
 ```
 
 # MINT PLS-DA
-We first perform a MINT PLS-DA with all variables included in the model and **ncomp = 5** components. The **perf** function is used to estimate the performance of the model and choose the optimal number of components in **$choice.ncomp** for our final model.
+We first perform a MINT PLS-DA with all variables included in the model and **ncomp = 5** components. The **perf** function is used to estimate the performance of the model and choose the optimal number of components in **$choice.ncomp** for our final model. By default it uses Leave One Group Out Cross-Validation (see [1] Supplemental material Section 5.3).
 
-Elapsed running time is reported in seconds. 
 
 ```{r}
 mint.plsda.res.perf = mint.plsda(X = X, Y = Y, study = study, ncomp = 5)
 
 set.seed(2543)  # for reproducible result in this example
-perf.mint.plsda.cell <- perf(mint.plsda.res.perf, validation = "Mfold", folds = 5, 
+perf.mint.plsda.cell <- perf(mint.plsda.res.perf,
                   progressBar = FALSE, auc = TRUE) 
 ```
 
@@ -164,12 +163,6 @@ plotIndiv(mint.splsda.res, study = 'all.partial',  title = 'MINT sPLS-DA',
 ```
 
 
-
-Additionally, the **plotArrow** function displays each sample from the X-components (start of the arrow) to the Y-components (end of the arrow):
-```{r}
-plotArrow(mint.splsda.res)
-```
-
 ## Correlation circle plots
 We can have a look at our molecular signature selected with MINT sPLS-DA. Our favourite correlation circle plot highlights the contribution of each selected transcripts to each component (close to the large circle). See also more examples [here](http://mixomics.org/graphics/sample-plot/plotvar/).
 
@@ -253,7 +246,7 @@ get.confusion_matrix(truth = Y[ind.test],
 
 
 
-An AUC plot for the integrated data can be obtained using the function **auroc**.
+An AUC plot for the integrated data can be obtained using the function **auroc**. Note our warning regarding the usage of AUC as part of sPLSDA methods in [1] 'AUC [...] incorporates the measures of sensitivity and specificity for every possible cut-off of the predicted dummy variables. However, [..] our PLS-based models rely on prediction distances, which can be seen as a determined optimal cut-off. Therefore, the ROC and AUC criteria may not be particularly insightful in relation to the performance evaluation of our supervised multivariate methods, but can complement the statistical analysis.'
 
 ```{r}
 auc.mint.splsda = auroc(mint.splsda.res, roc.comp = 2)
@@ -277,7 +270,7 @@ sessionInfo()
 
 
 # References
-1. [Rohart F, Gautier B, Singh A, Lê Cao K-A (2017). mixOmics: an R package for 'omics feature selection and multiple data integration.](http://mixomics.org/a-propos/publications/)
+1. [Rohart F, Gautier B, Singh A, Lê Cao K-A (2017). mixOmics: an R package for 'omics feature selection and multiple data integration.](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005752)
 
 2. Christine A Wells, Rowland Mosbergen, Othmar Korn, Jarny Choi, Nick Seidenman, Nicholas A Matigian, Alejandra M Vitale, and Jill Shepherd. Stemformatics: visualisation and sharing of stem cell gene expression. Stem Cell Res., 10(3):387–395, 2013.
 
