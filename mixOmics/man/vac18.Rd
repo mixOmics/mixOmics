@@ -16,13 +16,13 @@ This data set contains the expression measure of a subset of 1000 genes from pur
 
 \format{
 A list containing the following components:
-  \describe{
-    \item{\code{gene}}{data frame with 42 rows and 1000 columns.
-		The expression measure of 1000 genes for the 42 samples (PBMC cells from 12 unique subjects).}
-    \item{\code{stimulation}}{is a fctor of 42 elements indicating the type of in vitro simulation for each sample.}
-    \item{\code{sample}}{is a vector of 42 elements indicating the unique subjects (for example the value '1' correspond to the first patient PBMC cells). Note that the design of this study is unbalanced.}
-        \item{\code{tab.prob.gene}}{is a data frame with 1000 rows and 2 columns, indicating the Illumina probe ID and the gene name of the annotated genes.}
-  }
+\describe{
+\item{\code{gene}}{data frame with 42 rows and 1000 columns.
+The expression measure of 1000 genes for the 42 samples (PBMC cells from 12 unique subjects).}
+\item{\code{stimulation}}{is a fctor of 42 elements indicating the type of in vitro simulation for each sample.}
+\item{\code{sample}}{is a vector of 42 elements indicating the unique subjects (for example the value '1' correspond to the first patient PBMC cells). Note that the design of this study is unbalanced.}
+\item{\code{tab.prob.gene}}{is a data frame with 1000 rows and 2 columns, indicating the Illumina probe ID and the gene name of the annotated genes.}
+}
 }
 
 \details{
@@ -35,3 +35,4 @@ Salmon-Ceron D, Durier C, Desaint C, Cuzin L, Surenaud M, Hamouda N, Lelievre J,
 }
 
 \keyword{datasets}
+\value{none}

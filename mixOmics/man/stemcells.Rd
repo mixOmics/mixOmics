@@ -14,12 +14,12 @@ This data set contains the expression of a random subset of 400 genes in 125 sam
 
 \format{
 A list containing the following components:
-  \describe{
-    \item{\code{gene}}{data matrix with 125 rows and 400 columns. Each row represents
-      an experimental sample, and each column a single gene.}
-	\item{\code{celltype}}{a factor indicating the cell type of each sample.}
-    \item{\code{study}}{a factor indicating the study from which the sample was extracted.}
-  }
+\describe{
+\item{\code{gene}}{data matrix with 125 rows and 400 columns. Each row represents
+an experimental sample, and each column a single gene.}
+\item{\code{celltype}}{a factor indicating the cell type of each sample.}
+\item{\code{study}}{a factor indicating the study from which the sample was extracted.}
+}
 }
 
 \details{
@@ -32,3 +32,4 @@ Rohart F, Eslami A, Matigian, N, Bougeard S, Lê Cao K-A (2017). MINT: A multiva
 }
 
 \keyword{datasets}
+\value{none}

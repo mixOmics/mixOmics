@@ -16,12 +16,12 @@ The 16S data come from Koren et al. (2011) and compared the bodysites oral, gut 
 
 \format{
 A list containing two data sets, \code{data.TSS} and \code{data.raw} and some meta data information:
-  \describe{
-    \item{\code{data.TSS}}{data frame with 43 rows (samples) and 980 columns (OTUs). The prefiltered normalised data using Total Sum Scaling normalisation.}
-    \item{\code{data.raw}}{data frame with 43 rows (samples) and 980 columns (OTUs). The prefiltered raw count OTU data which include a 1 offset (i.e. no 0 values).}
-    \item{\code{taxonomy}}{data frame with 980 rows (OTUs) and 7 columns indicating the taxonomy of each OTU.}
-    \item{\code{indiv}}{data frame with 43 rows indicating sample meta data.}
-    \item{\code{bodysite}}{factor of length 43 indicating the bodysite with levels arterial plaque, saliva and stool.}
+\describe{
+\item{\code{data.TSS}}{data frame with 43 rows (samples) and 980 columns (OTUs). The prefiltered normalised data using Total Sum Scaling normalisation.}
+\item{\code{data.raw}}{data frame with 43 rows (samples) and 980 columns (OTUs). The prefiltered raw count OTU data which include a 1 offset (i.e. no 0 values).}
+\item{\code{taxonomy}}{data frame with 980 rows (OTUs) and 7 columns indicating the taxonomy of each OTU.}
+\item{\code{indiv}}{data frame with 43 rows indicating sample meta data.}
+\item{\code{bodysite}}{factor of length 43 indicating the bodysite with levels arterial plaque, saliva and stool.}
 }
 }
 
@@ -46,3 +46,4 @@ Koren, O., Spor, A., Felin, J., Fak, F., Stombaugh, J., Tremaroli, V., et al.: H
 
 \keyword{datasets}
 
+\value{none}

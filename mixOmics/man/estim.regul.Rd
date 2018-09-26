@@ -6,5 +6,6 @@
 \title{Estimate the parameters of regularization for Regularized CCA}
 
 \description{
-This function has been renamed \code{tune.rcc}, see \code{\link{tune.rcc}}. 
+This function has been renamed \code{tune.rcc}, see \code{\link{tune.rcc}}.
 }
+\value{none}

@@ -2,7 +2,6 @@
 \name{plot.tune}
 \alias{plot.tune.block.splsda}
 \alias{plot.tune.splsda}
-\alias{plot.tune.spls}
 \alias{plot.tune}
 
 \title{Plot for model performance}
@@ -13,20 +12,19 @@ Function to plot performance criteria, such as classification error rate or bala
 
 \usage{
 \method{plot}{tune.splsda}(x, optimal = TRUE, sd = TRUE, legend.position = "topright", col, \dots)
-\method{plot}{tune.spls}(x, optimal = TRUE, sd = TRUE, legend.position = "topright", col, \dots)
 
 \method{plot}{tune.block.splsda}(x, sd = TRUE, col, \dots)
 }
 
 
 \arguments{
-  \item{x}{an \code{tune.splsda} object.}
+\item{x}{an \code{tune.splsda} object.}
 \item{optimal}{If TRUE, highlights the optimal keepX per component}
 \item{sd}{If 'nrepeat' was used in the call to 'tune.splsda', error bar shows the standard deviation if sd=TRUE}
 \item{legend.position}{position of the legend, one of "bottomright", "bottom", "bottomleft",
 -"left", "topleft", "top", "topright", "right" and "center". }
 \item{col}{character (or symbol) color to be used, possibly vector. One color per component.}
-  \item{\dots}{Further arguments sent to \code{\link{xyplot}} function.}
+\item{\dots}{Further arguments sent to \code{\link{xyplot}} function.}
 }
 
 \details{
@@ -35,7 +33,7 @@ A circle highlights the optimal number of variables oneach component.
 
 \code{plot.tune.block.splsda} plots the classification error rate or the balanced error rate from x$error.rate, for each component of the model. The error rate is ordered by increasing value, the yaxis shows the optimal combination of keepX at the top (e.g. `keepX on block 1'_`keepX on block 2'_`keepX on block 3')
 
-\code{plot.tune.spls} plots the tuning results for the measure of accuracy \code{x$measure}, for each component of the model and any tested \code{keepX} parameters when Y is fixed (contact us for more details).
+
 
 }
 
@@ -44,9 +42,9 @@ A circle highlights the optimal number of variables oneach component.
 \seealso{ \code{\link{tune.mint.splsda}}, \code{\link{tune.splsda}} \code{\link{tune.block.splsda}} and http://www.mixOmics.org for more details.}
 
 \examples{
-
-## validation for objects of class 'splsda'
 \dontrun{
+## validation for objects of class 'splsda'
+
 data(breast.tumors)
 X = breast.tumors$gene.exp
 Y = as.factor(breast.tumors$sample$treatment)
@@ -57,10 +55,10 @@ progressBar = TRUE)
 
 plot(out)
 
-}
 
-## validation for objects of class 'mint.splsda'
 \dontrun{
+## validation for objects of class 'mint.splsda'
+
 data(stemcells)
 data = stemcells$gene
 type.id = stemcells$celltype
@@ -71,10 +69,10 @@ out$choice.keepX
 
 plot(out)
 
-}
+
 
 ## validation for objects of class 'mint.splsda'
-\dontrun{
+
 data("breast.TCGA")
 # this is the X data as a list of mRNA and miRNA; the Y data set is a single data set of proteins
 data = list(mrna = breast.TCGA$data.train$mrna, mirna = breast.TCGA$data.train$mirna,
@@ -105,9 +103,10 @@ tune$choice.keepX
 
 plot(tune)
 }
-
+}
 }
 
 \keyword{regression}
 \keyword{multivariate}
 \keyword{hplot}
+\value{none}

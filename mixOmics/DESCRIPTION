@@ -1,7 +1,7 @@
 Package: mixOmics
 Type: Package
 Title: Omics Data Integration Project
-Version: 6.3.2
+Version: 0.0.2
 Date: 2017-10-25
 Depends: R (>= 2.10), MASS, lattice, ggplot2
 Imports: igraph, rgl, ellipse, corpcor, RColorBrewer, parallel,
@@ -13,8 +13,10 @@ Description: Multivariate methods are well suited to large omics data sets where
 License: GPL (>= 2)
 URL: http://www.mixOmics.org
 BugReports: https://bitbucket.org/klecao/package-mixomics/issues
-Repository: CRAN
+Repository: Bioconductor
 Date/Publication: 2017-02-06 12:08:22
 Packaged: 2017-02-06 06:49:17 UTC; klecao
 NeedsCompilation: no
 LazyData: true
+biocViews: Microarray, Sequencing, Metabolomics, Metagenomics, Proteomics
+RoxygenNote: 6.0.1.9000

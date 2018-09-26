@@ -14,13 +14,13 @@ The 16S data from the Human Microbiome Project includes only the most diverse bo
 
 \format{
 A list containing two data sets, \code{data.TSS} and \code{data.raw} and some meta data information:
-  \describe{
-    \item{\code{data.TSS}}{data frame with 162 rows (samples) and 1674 columns (OTUs). The prefiltered normalised data using Total Sum Scaling normalisation.}
-    \item{\code{data.raw}}{data frame with 162 rows (samples) and 1674 columns (OTUs). The prefiltered raw count OTU data which include a 1 offset (i.e. no 0 values).}
-    \item{\code{taxonomy}}{data frame with 1674 rows (OTUs) and 6 columns indicating the taxonomy of each OTU.}
-    \item{\code{indiv}}{data frame with 162 rows indicating sample meta data.}
-    \item{\code{bodysite}}{factor of length 162 indicating the bodysite with levels "Antecubital_fossa", "Stool" and         "Subgingival_plaque".}
-    \item{\code{sample}}{vector of length 162 indicating the unique individual ID, useful for a multilevel approach to taken into account the repeated measured on each individual.}
+\describe{
+\item{\code{data.TSS}}{data frame with 162 rows (samples) and 1674 columns (OTUs). The prefiltered normalised data using Total Sum Scaling normalisation.}
+\item{\code{data.raw}}{data frame with 162 rows (samples) and 1674 columns (OTUs). The prefiltered raw count OTU data which include a 1 offset (i.e. no 0 values).}
+\item{\code{taxonomy}}{data frame with 1674 rows (OTUs) and 6 columns indicating the taxonomy of each OTU.}
+\item{\code{indiv}}{data frame with 162 rows indicating sample meta data.}
+\item{\code{bodysite}}{factor of length 162 indicating the bodysite with levels "Antecubital_fossa", "Stool" and         "Subgingival_plaque".}
+\item{\code{sample}}{vector of length 162 indicating the unique individual ID, useful for a multilevel approach to taken into account the repeated measured on each individual.}
 }
 }
 
@@ -43,3 +43,4 @@ Lê Cao K.-A., Costello ME,  Lakis VA, Bartolo, F,Chua XY, Brazeilles R, Rondeau
 }
 
 \keyword{datasets}
+\value{none}

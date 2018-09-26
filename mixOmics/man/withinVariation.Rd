@@ -10,20 +10,20 @@ This function is internally called by \code{pca}, \code{pls}, \code{spls}, \code
 
 \usage{
 withinVariation(X, design)
-}	
+}
 
 \arguments{
-  \item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
-    
-  \item{design}{a numeric matrix or data frame. The first column 
-    indicates the repeated measures on each individual, i.e. the individuals ID. The 2nd and 3rd columns are to split the variation for a 2 level factor.}
-    
+\item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
+
+\item{design}{a numeric matrix or data frame. The first column
+indicates the repeated measures on each individual, i.e. the individuals ID. The 2nd and 3rd columns are to split the variation for a 2 level factor.}
+
 }
 
 \details{
 
-\code{withinVariation} function decomposes the Within variation in the \eqn{X} data set. The resulting \eqn{Xw} matrix is then input in the 
-\code{multilevel} function. 
+\code{withinVariation} function decomposes the Within variation in the \eqn{X} data set. The resulting \eqn{Xw} matrix is then input in the
+\code{multilevel} function.
 
 One or two-factor analyses are available.
 }
@@ -47,8 +47,8 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
 
 \author{Benoit Liquet, Kim-Anh Lê Cao, Benoit Gautier, Ignacio González.}
 
-\seealso{\code{\link{spls}}, \code{\link{splsda}}, 
-\code{\link{plotIndiv}}, \code{\link{plotVar}}, 
+\seealso{\code{\link{spls}}, \code{\link{splsda}},
+\code{\link{plotIndiv}}, \code{\link{plotVar}},
 \code{\link{cim}}, \code{\link{network}}.}
 
 \examples{
@@ -64,7 +64,7 @@ Xw <- withinVariation(X = X, design = design)
 res.pca.1level <- pca(Xw, ncomp = 3)
 
 # compare a normal PCA with a multilevel PCA for repeated measurements.
-# note: PCA makes the assumptions that all samples are independent, 
+# note: PCA makes the assumptions that all samples are independent,
 # so this analysis is flawed and you should use a multilevel PCA instead
 res.pca <- pca(X, ncomp = 3)
 
@@ -77,6 +77,7 @@ plotIndiv(res.pca, ind.names = vac18$stimulation, group = col.stim)
 title(main = 'PCA ')
 plotIndiv(res.pca.1level, ind.names = vac18$stimulation, group = col.stim)
 title(main = 'PCA multilevel')
+
 }
 
 \keyword{regression}

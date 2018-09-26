@@ -10,7 +10,7 @@
 
 \usage{
 study_split(data, study)
-}	
+}
 
 \arguments{
 \item{data}{numeric matrix of predictors}

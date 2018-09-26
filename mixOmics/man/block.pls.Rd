@@ -61,15 +61,15 @@ Note that our method is partly based on Generalised Canonical Correlation Analys
 \code{block.pls} returns an object of class \code{"block.pls"}, a list
 that contains the following components:
 
-  \item{X}{the centered and standardized original predictor matrix.}
-  \item{indY}{the position of the outcome Y in the output list X.}
-  \item{ncomp}{the number of components included in the model for each block.}
-  \item{mode}{the algorithm used to fit the model.}
-  \item{variates}{list containing the variates of each block of X.}
-  \item{loadings}{list containing the estimated loadings for the variates.}
-  \item{names}{list containing the names to be used for individuals and variables.}
-  \item{nzv}{list containing the zero- or near-zero predictors information.}
-    \item{iter}{Number of iterations of the algorthm for each component}
+\item{X}{the centered and standardized original predictor matrix.}
+\item{indY}{the position of the outcome Y in the output list X.}
+\item{ncomp}{the number of components included in the model for each block.}
+\item{mode}{the algorithm used to fit the model.}
+\item{variates}{list containing the variates of each block of X.}
+\item{loadings}{list containing the estimated loadings for the variates.}
+\item{names}{list containing the names to be used for individuals and variables.}
+\item{nzv}{list containing the zero- or near-zero predictors information.}
+\item{iter}{Number of iterations of the algorthm for each component}
 \item{explained_variance}{Percentage of explained variance for each component and each block}
 
 }

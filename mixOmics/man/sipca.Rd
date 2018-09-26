@@ -4,47 +4,47 @@
 
 \title{Independent Principal Component Analysis}
 
-\description{ 
+\description{
 Performs sparse independent principal component analysis on the given data matrix to enable variable selection.
 }
 
 \usage{
 sipca(X, ncomp, mode = c("deflation","parallel"),
-          fun = c("logcosh", "exp"),
-          scale = FALSE, max.iter = 200,
-          tol = 1e-04, keepX = rep(50,ncomp),
-          w.init=NULL)
+fun = c("logcosh", "exp"),
+scale = FALSE, max.iter = 200,
+tol = 1e-04, keepX = rep(50,ncomp),
+w.init=NULL)
 }
 
 \arguments{
-  \item{X}{a numeric matrix (or data frame) which provides the 
-    data for the principal component analysis.}
-  \item{ncomp}{integer, number of independent component to choose. Set by default to 3.}	
-  \item{mode}{character string. What type of algorithm to use when estimating the unmixing matrix, (partially) matching 
-    one of \code{"deflation"}, \code{"parallel"}. Default set to \code{deflation}.}
-  \item{fun}{the function used in approximation to neg-entropy in the FastICA algorithm. Default set to \code{logcosh}, see details of FastICA.}
-  \item{scale}{a logical value indicating whether rows of the data matrix X should be standardized beforehand.}
-  \item{max.iter}{integer, maximum number of iterations to perform.}
-  \item{tol}{a positive scalar giving the tolerance at which the un-mixing matrix is considered to have converged, see fastICA package.}
-  \item{keepX}{the number of variable to keep on each dimensions.}
-  \item{w.init}{initial un-mixing matrix (unlike FastICA, this matrix is fixed here).}
+\item{X}{a numeric matrix (or data frame) which provides the
+data for the principal component analysis.}
+\item{ncomp}{integer, number of independent component to choose. Set by default to 3.}
+\item{mode}{character string. What type of algorithm to use when estimating the unmixing matrix, (partially) matching
+one of \code{"deflation"}, \code{"parallel"}. Default set to \code{deflation}.}
+\item{fun}{the function used in approximation to neg-entropy in the FastICA algorithm. Default set to \code{logcosh}, see details of FastICA.}
+\item{scale}{a logical value indicating whether rows of the data matrix X should be standardized beforehand.}
+\item{max.iter}{integer, maximum number of iterations to perform.}
+\item{tol}{a positive scalar giving the tolerance at which the un-mixing matrix is considered to have converged, see fastICA package.}
+\item{keepX}{the number of variable to keep on each dimensions.}
+\item{w.init}{initial un-mixing matrix (unlike FastICA, this matrix is fixed here).}
 }
 
 \details{
 See Details of ipca.
 
 Soft thresholding is implemented on the independent loading vectors to obtain sparse loading vectors and enable variable selection.
-}    
+}
 
 \value{
-\code{pca} returns a list with class \code{"ipca"} containing the following components: 
-  \item{ncomp}{the number of principal components used.}
-  \item{unmixing}{the unmixing matrix of size (ncomp x ncomp)} 
-  \item{mixing}{the mixing matrix of size (ncomp x ncomp}
-  \item{X}{the centered data matrix}
-  \item{x}{the principal components (with sparse independent loadings)}  
-  \item{loadings}{the sparse independent loading vectors} 
-  \item{kurtosis}{the kurtosis measure of the independent loading vectors} 
+\code{pca} returns a list with class \code{"ipca"} containing the following components:
+\item{ncomp}{the number of principal components used.}
+\item{unmixing}{the unmixing matrix of size (ncomp x ncomp)}
+\item{mixing}{the mixing matrix of size (ncomp x ncomp}
+\item{X}{the centered data matrix}
+\item{x}{the principal components (with sparse independent loadings)}
+\item{loadings}{the sparse independent loading vectors}
+\item{kurtosis}{the kurtosis measure of the independent loading vectors}
 }
 
 
@@ -60,7 +60,7 @@ J L Marchini, C Heaton and B D Ripley (2010). fastICA: FastICA Algorithms to per
 
 }
 
-\seealso{\code{\link{ipca}}, \code{\link{pca}}, 
+\seealso{\code{\link{ipca}}, \code{\link{pca}},
 \code{\link{plotIndiv}}, \code{\link{plotVar}}
 and http://www.mixOmics.org for more details.}
 
@@ -72,15 +72,16 @@ sipca.res <- sipca(liver.toxicity$gene, ncomp = 3, mode="deflation", keepX=c(50,
 sipca.res
 
 # samples representation
-plotIndiv(sipca.res, ind.names = liver.toxicity$treatment[, 4], 
-          group = as.numeric(as.factor(liver.toxicity$treatment[, 4])))
+plotIndiv(sipca.res, ind.names = liver.toxicity$treatment[, 4],
+group = as.numeric(as.factor(liver.toxicity$treatment[, 4])))
+
 \dontrun{
 plotIndiv(sipca.res, cex = 0.01,
-            col = as.numeric(as.factor(liver.toxicity$treatment[, 4])),style="3d")
-}
+col = as.numeric(as.factor(liver.toxicity$treatment[, 4])),style="3d")
+
 # variables representation
 plotVar(sipca.res, cex = 2.5)
-\dontrun{
+
 plotVar(sipca.res, rad.in = 0.5, cex = 2.5,style="3d")
 }
 }

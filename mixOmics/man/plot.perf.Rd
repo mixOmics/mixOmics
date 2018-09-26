@@ -63,12 +63,12 @@ sd = TRUE,
 }
 
 \arguments{
-  \item{x}{an \code{perf} object.}
-  \item{criterion}{character string. What type of validation criterion to plot for 
-    \code{pls} or \code{spls}. One of \code{"MSEP"}, \code{"RMSEP"}, \code{"R2"} or \code{"Q2"}. 
-	See \code{\link{perf}}.}
-  \item{dist}{prediction method applied in \code{perf} for \code{plsda} or \code{splsda}. 
-	See \code{\link{perf}}.}
+\item{x}{an \code{perf} object.}
+\item{criterion}{character string. What type of validation criterion to plot for
+\code{pls} or \code{spls}. One of \code{"MSEP"}, \code{"RMSEP"}, \code{"R2"} or \code{"Q2"}.
+See \code{\link{perf}}.}
+\item{dist}{prediction method applied in \code{perf} for \code{plsda} or \code{splsda}.
+See \code{\link{perf}}.}
 \item{measure}{Two misclassification measure are available: overall misclassification error \code{overall} or the Balanced Error Rate \code{BER}}
 \item{col}{character (or symbol) color to be used, possibly vector. One color per distance \code{dist}.}
 \item{weighted}{plot either the performance of the Majority vote or the Weighted vote.}
@@ -77,20 +77,20 @@ sd = TRUE,
 \item{legend.position}{position of the legend, one of "vertical" (only one column) or "horizontal" (two columns). }
 
 \item{xlab, ylab}{titles for \eqn{x} and \eqn{y} axes.  Typically character strings,
-    but can be expressions (e.g., \code{expression(R^2)}).}
-  \item{LimQ2}{numeric value. Signification limit for the components in the model. 
-    Default is \code{LimQ2 = 0.0975}.}
-  \item{LimQ2.col}{character string specifying the color for the \code{LimQ2} line to be plotted.
-  If \code{"none"} the line will not be plotted.
-  }	
-  \item{cTicks}{integer vector. Axis tickmark locations for the used number of components.
-    Default is \code{1:ncomp} (see \code{\link{perf}}).}
-  \item{layout}{numeric vector of length two giving the number of rows and columns in a 
-    multi panel display. If not specified, \code{plot.perf} tries to be intelligent.}
+but can be expressions (e.g., \code{expression(R^2)}).}
+\item{LimQ2}{numeric value. Signification limit for the components in the model.
+Default is \code{LimQ2 = 0.0975}.}
+\item{LimQ2.col}{character string specifying the color for the \code{LimQ2} line to be plotted.
+If \code{"none"} the line will not be plotted.
+}
+\item{cTicks}{integer vector. Axis tickmark locations for the used number of components.
+Default is \code{1:ncomp} (see \code{\link{perf}}).}
+\item{layout}{numeric vector of length two giving the number of rows and columns in a
+multi panel display. If not specified, \code{plot.perf} tries to be intelligent.}
 
 
 \item{sd}{If 'nrepeat' was used in the call to 'perf', error bar shows the standard deviation if sd=TRUE}
-  \item{\dots}{Further arguments sent to \code{\link{xyplot}} function.}
+\item{\dots}{Further arguments sent to \code{\link{xyplot}} function.}
 }
 
 \details{
@@ -113,7 +113,7 @@ Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics fea
 
 \author{Ignacio González, Florian Rohart, Francois Bartolo, Kim-Anh Lê Cao.}
 
-\seealso{\code{\link{pls}}, \code{\link{spls}}, \code{\link{plsda}}, \code{\link{splsda}}, 
+\seealso{\code{\link{pls}}, \code{\link{spls}}, \code{\link{plsda}}, \code{\link{splsda}},
 \code{\link{perf}}.}
 
 
@@ -122,19 +122,19 @@ Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics fea
 require(lattice)
 
 ## validation for objects of class 'pls' or 'spls'
-\dontrun{
+
 data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
 
 liver.pls <- pls(X, Y, ncomp = 3)
 liver.perf <- perf(liver.pls, validation = "Mfold")
-				   
-plot(liver.perf, criterion = "R2", layout = c(2, 2))
-}
 
-## validation for objects of class 'plsda' or 'splsda'
+plot(liver.perf, criterion = "R2", layout = c(2, 2))
+
 \dontrun{
+## validation for objects of class 'plsda' or 'splsda'
+
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 # Y will be transformed as a factor in the function,
@@ -154,3 +154,4 @@ plot(breast.perf, col=1:3, sd=FALSE)
 \keyword{regression}
 \keyword{multivariate}
 \keyword{hplot}
+\value{none}

@@ -13,7 +13,7 @@
 \title{Print Methods for CCA, (s)PLS, PCA and Summary objects}
 
 \description{
-Produce \code{print} methods for class \code{"rcc"}, 
+Produce \code{print} methods for class \code{"rcc"},
 \code{"pls"}, \code{"spls"}, \code{"pca"}, \code{"rgcca"}, \code{"sgcca"} and \code{"summary"}.
 }
 
@@ -36,15 +36,15 @@ Produce \code{print} methods for class \code{"rcc"},
 }
 
 \arguments{
-  \item{x}{object of class inheriting from \code{"rcc"}, \code{"pls"}, 
-    \code{"spls"}, \code{"pca"}, \code{"spca"}, \code{"rgcca"}, \code{"sgcca"}or \code{"summary"}.}
-  \item{\ldots}{not used currently.}
+\item{x}{object of class inheriting from \code{"rcc"}, \code{"pls"},
+\code{"spls"}, \code{"pca"}, \code{"spca"}, \code{"rgcca"}, \code{"sgcca"}or \code{"summary"}.}
+\item{\ldots}{not used currently.}
 }
 
 \details{
-\code{print} method for \code{"rcc"}, \code{"pls"}, \code{"spls"} \code{"pca"}, \code{"rgcca"}, \code{"sgcca"} class, 
-returns a description of the \code{x} object including: the function used, the regularization 
-parameters (if \code{x} of class \code{"rcc"}), 
+\code{print} method for \code{"rcc"}, \code{"pls"}, \code{"spls"} \code{"pca"}, \code{"rgcca"}, \code{"sgcca"} class,
+returns a description of the \code{x} object including: the function used, the regularization
+parameters (if \code{x} of class \code{"rcc"}),
 the (s)PLS algorithm used (if \code{x} of class \code{"pls"} or \code{"spls"}),
 the samples size,
 the number of variables selected on each of the sPLS components (if \code{x} of class \code{"spls"})
@@ -71,6 +71,7 @@ Y <- nutrimouse$gene
 nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 print(nutri.res)
 
+\dontrun{
 ## print for objects of class 'summary'
 more <- summary(nutri.res, cutoff = 0.65)
 print(more)
@@ -86,10 +87,12 @@ print(linn.pls)
 data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
-toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50), 
-                      keepY = c(10, 10, 10))
+toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50),
+keepY = c(10, 10, 10))
 print(toxicity.spls)
+}
 }
 
 \keyword{regression}
 \keyword{multivariate}
+\value{none}

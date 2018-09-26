@@ -91,19 +91,20 @@ scheme = "horst")
 
 circosPlot(nutrimouse.sgccda, cutoff = 0.7, ncol.legend = 2, size.legend = 1.1)
 
+\dontrun{
 circosPlot(nutrimouse.sgccda, cutoff = 0.7, ncol.legend = 2, size.legend = 1.1,
 color.Y = 1:5, color.blocks = c("green","brown"), color.cor = c("magenta", "purple"))
 
 par(mfrow=c(2,2))
 circosPlot(nutrimouse.sgccda, cutoff = 0.7, ncol.legend = 2,
-    size.legend = 1.1)
+size.legend = 1.1)
 circosPlot(nutrimouse.sgccda, cutoff = 0.7, ncol.legend = 2,
-    size.legend = 1.1, showIntraLinks = TRUE)
+size.legend = 1.1, showIntraLinks = TRUE)
 circosPlot(nutrimouse.sgccda, cutoff = 0.7, ncol.legend = 1,
-    size.legend = 1.1, showIntraLinks = TRUE)
+size.legend = 1.1, showIntraLinks = TRUE)
 circosPlot(nutrimouse.sgccda, cutoff = 0.7, ncol.legend = 2,
-    size.legend = 1.1, showIntraLinks = TRUE, line = FALSE, size.variables = 0.5)
-
+size.legend = 1.1, showIntraLinks = TRUE, line = FALSE, size.variables = 0.5)
+}
 }
 
 \keyword{regression}

@@ -20,18 +20,18 @@ scale = TRUE,
 tol = 1e-06,
 max.iter = 100,
 near.zero.var = FALSE,
-logratio="none", 
+logratio="none",
 multilevel=NULL,
 all.outputs = TRUE)
-}	
+}
 
 \arguments{
-  \item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
-  \item{Y}{numeric vector or matrix of responses (for multi-response models). 
-    \code{NA}s are allowed. For multilevel analysis, a data frame of up to two columns is accepted.}
-  \item{ncomp}{the number of components to include in the model (see Details). 
-    Default is set to from one to the rank of \code{X}.}
-  \item{mode}{character string. What type of algorithm to use, (partially) matching
+\item{X}{numeric matrix of predictors. \code{NA}s are allowed.}
+\item{Y}{numeric vector or matrix of responses (for multi-response models).
+\code{NA}s are allowed. For multilevel analysis, a data frame of up to two columns is accepted.}
+\item{ncomp}{the number of components to include in the model (see Details).
+Default is set to from one to the rank of \code{X}.}
+\item{mode}{character string. What type of algorithm to use, (partially) matching
 one of \code{"regression"}, \code{"canonical"}, \code{"invariant"} or \code{"classic"}.
 See Details.}
 \item{keepX}{numeric vector of length \code{ncomp}, the number of variables to keep in \eqn{X}-loadings. By default all variables are kept in the model.}
@@ -47,7 +47,7 @@ to zero means and unit variances (default: TRUE)}
 }
 
 \details{
-\code{spls} function fit sPLS models with \eqn{1, \ldots ,}\code{ncomp} components. 
+\code{spls} function fit sPLS models with \eqn{1, \ldots ,}\code{ncomp} components.
 Multi-response models are fully supported. The \code{X} and \code{Y} datasets
 can contain missing values.
 
@@ -56,42 +56,42 @@ algorithms are available: PLS regression \code{("regression")}, PLS canonical an
 \code{("canonical")}, redundancy analysis \code{("invariant")} and the classical PLS
 algorithm \code{("classic")} (see References and \code{?pls} for more details).
 
-The estimation of the missing values can be performed 
-by the reconstitution of the data matrix using the \code{nipals} function. Otherwise, missing 
-values are handled by casewise deletion in the \code{spls} function without having to 
+The estimation of the missing values can be performed
+by the reconstitution of the data matrix using the \code{nipals} function. Otherwise, missing
+values are handled by casewise deletion in the \code{spls} function without having to
 delete the rows with missing data.
 
 logratio transform and multilevel analysis are performed sequentially as internal pre-processing step, through \code{\link{logratio.transfo}} and \code{\link{withinVariation}} respectively.
 
-Multilevel sPLS enables the integration of data measured on two different data sets 
-on the same individuals. This approach differs from multilevel sPLS-DA as the aim is 
+Multilevel sPLS enables the integration of data measured on two different data sets
+on the same individuals. This approach differs from multilevel sPLS-DA as the aim is
 to select subsets of variables from both data sets that are highly positively or negatively correlated across samples. The approach is unsupervised, i.e. no prior knowledge about the sample groups is included.
 }
 
 
 
 \value{
-\code{spls} returns an object of class \code{"spls"}, a list 
+\code{spls} returns an object of class \code{"spls"}, a list
 that contains the following components:
 
-  \item{X}{the centered and standardized original predictor matrix.}
-  \item{Y}{the centered and standardized original response vector or matrix.}
-  \item{ncomp}{the number of components included in the model.}
-  \item{mode}{the algorithm used to fit the model.}
-  \item{keepX}{number of \eqn{X} variables kept in the model on each component.}
-  \item{keepY}{number of \eqn{Y} variables kept in the model on each component.}
-  \item{variates}{list containing the variates.}
-  \item{loadings}{list containing the estimated loadings for the \eqn{X} and 
-	\eqn{Y} variates.}
-  \item{names}{list containing the names to be used for individuals and variables.}
-  \item{tol}{the tolerance used in the iterative algorithm, used for subsequent S3 methods}
-  \item{iter}{Number of iterations of the algorthm for each component}
-  \item{max.iter}{the maximum number of iterations, used for subsequent S3 methods}
-  \item{nzv}{list containing the zero- or near-zero predictors information.}
-  \item{scale}{whether scaling was applied per predictor.}
-  \item{logratio}{whether log ratio transformation for relative proportion data was applied, and if so, which type of transformation.}
-  \item{explained_variance}{amount of variance explained per component (note that contrary to PCA, this amount may not decrease as the aim of the method is not to maximise the variance, but the covariance between data sets).}
-  \item{input.X}{numeric matrix of predictors in X that was input, before any saling / logratio / multilevel transformation.}
+\item{X}{the centered and standardized original predictor matrix.}
+\item{Y}{the centered and standardized original response vector or matrix.}
+\item{ncomp}{the number of components included in the model.}
+\item{mode}{the algorithm used to fit the model.}
+\item{keepX}{number of \eqn{X} variables kept in the model on each component.}
+\item{keepY}{number of \eqn{Y} variables kept in the model on each component.}
+\item{variates}{list containing the variates.}
+\item{loadings}{list containing the estimated loadings for the \eqn{X} and
+\eqn{Y} variates.}
+\item{names}{list containing the names to be used for individuals and variables.}
+\item{tol}{the tolerance used in the iterative algorithm, used for subsequent S3 methods}
+\item{iter}{Number of iterations of the algorthm for each component}
+\item{max.iter}{the maximum number of iterations, used for subsequent S3 methods}
+\item{nzv}{list containing the zero- or near-zero predictors information.}
+\item{scale}{whether scaling was applied per predictor.}
+\item{logratio}{whether log ratio transformation for relative proportion data was applied, and if so, which type of transformation.}
+\item{explained_variance}{amount of variance explained per component (note that contrary to PCA, this amount may not decrease as the aim of the method is not to maximise the variance, but the covariance between data sets).}
+\item{input.X}{numeric matrix of predictors in X that was input, before any saling / logratio / multilevel transformation.}
 \item{mat.c}{matrix of coefficients from the regression of X / residual matrices X on the X-variates, to be used internally by \code{predict}.}
 \item{defl.matrix}{residual matrices X for each dimension.}
 }
@@ -101,13 +101,13 @@ Sparse PLS: canonical and regression modes:
 
 Lê Cao, K.-A., Martin, P.G.P., Robert-Granie, C. and Besse, P. (2009). Sparse canonical methods for biological data integration: application to a cross-platform study. \emph{BMC Bioinformatics} \bold{10}:34.
 
-Lê Cao, K.-A., Rossouw, D., Robert-Granie, C. and Besse, P. (2008). A sparse PLS for variable 
-selection when integrating Omics data. \emph{Statistical Applications in Genetics and Molecular 
+Lê Cao, K.-A., Rossouw, D., Robert-Granie, C. and Besse, P. (2008). A sparse PLS for variable
+selection when integrating Omics data. \emph{Statistical Applications in Genetics and Molecular
 Biology} \bold{7}, article 35.
 
 Sparse SVD:
-Shen, H. and Huang, J. Z. (2008). Sparse principal component analysis via regularized 
-low rank matrix approximation. \emph{Journal of Multivariate Analysis} \bold{99}, 1015-1034.    
+Shen, H. and Huang, J. Z. (2008). Sparse principal component analysis via regularized
+low rank matrix approximation. \emph{Journal of Multivariate Analysis} \bold{99}, 1015-1034.
 
 PLS methods:
 Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic. Chapters 9 and 11.
@@ -128,8 +128,8 @@ Westerhuis, J. A., van Velzen, E. J., Hoefsloot, H. C., and Smilde, A. K. (2010)
 
 \author{Sébastien Déjean, Ignacio González and Kim-Anh Lê Cao.}
 
-\seealso{\code{\link{pls}}, \code{\link{summary}}, 
-\code{\link{plotIndiv}}, \code{\link{plotVar}}, 
+\seealso{\code{\link{pls}}, \code{\link{summary}},
+\code{\link{plotIndiv}}, \code{\link{plotVar}},
 \code{\link{cim}}, \code{\link{network}}, \code{\link{predict}}, \code{\link{perf}} and http://www.mixOmics.org for more details.}
 
 \examples{
@@ -137,14 +137,16 @@ data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
 
-toxicity.spls <- spls(X, Y, ncomp = 2, keepX = c(50, 50), 
-                      keepY = c(10, 10))
+toxicity.spls <- spls(X, Y, ncomp = 2, keepX = c(50, 50),
+keepY = c(10, 10))
 
 toxicity.spls <- spls(X, Y[,1:2,drop=FALSE], ncomp = 5, keepX = c(50, 50))#,  mode="canonical")
 
+\dontrun{
+
 ## Second example: one-factor multilevel analysis with sPLS, selecting a subset of variables
 #--------------------------------------------------------------
-\dontrun{
+
 data(liver.toxicity)
 # note: we made up those data, pretending they are repeated measurements
 repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
@@ -181,30 +183,30 @@ plotIndiv(res.spls.1level, rep.space = 'XY-variate', ind.names = FALSE,
 group = liver.toxicity$treatment$Dose.Group,
 pch = 20, main = 'Both Gene expression and Clinical subspaces',
 legend = TRUE)
-}
 
 ## Third example: two-factor multilevel analysis with sPLS, selecting a subset of variables
 #--------------------------------------------------------------
-\dontrun{
-  data(liver.toxicity)
-  dose <- as.factor(liver.toxicity$treatment$Dose.Group)
-  time <- as.factor(liver.toxicity$treatment$Time.Group)
-  # note: we made up those data, pretending they are repeated measurements
-  repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
-                    6, 5, 6, 7, 7, 8, 6, 7, 8, 7, 8, 8, 9, 10, 9, 10, 11, 9, 9,
-                    10, 11, 12, 12, 10, 11, 12, 11, 12, 13, 14, 13, 14, 13, 14,
-                    13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
-  summary(as.factor(repeat.indiv)) # 16 rats, 4 measurements each
-  design <- data.frame(sample = repeat.indiv, dose = dose, time = time)
 
-  res.spls.2level = spls(liver.toxicity$gene,
-                    Y = liver.toxicity$clinic,
-                    multilevel = design,
-                    ncomp=2,
-                    keepX = c(10,10), keepY = c(5,5))
+data(liver.toxicity)
+dose <- as.factor(liver.toxicity$treatment$Dose.Group)
+time <- as.factor(liver.toxicity$treatment$Time.Group)
+# note: we made up those data, pretending they are repeated measurements
+repeat.indiv <- c(1, 2, 1, 2, 1, 2, 1, 2, 3, 3, 4, 3, 4, 3, 4, 4, 5, 6, 5, 5,
+6, 5, 6, 7, 7, 8, 6, 7, 8, 7, 8, 8, 9, 10, 9, 10, 11, 9, 9,
+10, 11, 12, 12, 10, 11, 12, 11, 12, 13, 14, 13, 14, 13, 14,
+13, 14, 15, 16, 15, 16, 15, 16, 15, 16)
+summary(as.factor(repeat.indiv)) # 16 rats, 4 measurements each
+design <- data.frame(sample = repeat.indiv, dose = dose, time = time)
+
+res.spls.2level = spls(liver.toxicity$gene,
+Y = liver.toxicity$clinic,
+multilevel = design,
+ncomp=2,
+keepX = c(10,10), keepY = c(5,5))
+
+
+
 }
-
-
 }
 
 \keyword{regression}

@@ -23,7 +23,7 @@ max.iter = 100,
 near.zero.var = FALSE,
 all.outputs = TRUE)
 
-}	
+}
 
 \arguments{
 \item{X}{numeric matrix of predictors combining multiple independent studies on the same set of predictors. \code{NA}s are allowed.}

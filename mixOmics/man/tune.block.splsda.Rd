@@ -122,7 +122,6 @@ Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics fea
 
 \examples{
 
-\dontrun{
 data("breast.TCGA")
 # this is the X data as a list of mRNA and miRNA; the Y data set is a single data set of proteins
 data = list(mrna = breast.TCGA$data.train$mrna, mirna = breast.TCGA$data.train$mirna,
@@ -130,7 +129,7 @@ protein = breast.TCGA$data.train$protein)
 # set up a full design where every block is connected
 # could also consider other weights, see our mixOmics manuscript
 design = matrix(1, ncol = length(data), nrow = length(data),
-                dimnames = list(names(data), names(data)))
+dimnames = list(names(data), names(data)))
 diag(design) =  0
 design
 # set number of component per data set
@@ -151,6 +150,7 @@ ncomp = ncomp, test.keepX = test.keepX, design = design, nrepeat = 3)
 tune$choice.ncomp
 tune$choice.keepX
 
+\dontrun{
 
 # Only tuning the second component
 # -------------
@@ -166,10 +166,7 @@ ncomp = 2, test.keepX = test.keepX, design = design,
 already.tested.X = already.tested.X)
 
 tune$choice.keepX
-
-
 }
-
 }
 
 \keyword{regression}

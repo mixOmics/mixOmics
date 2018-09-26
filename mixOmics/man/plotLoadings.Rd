@@ -68,17 +68,17 @@ legend.title = 'Outcome', layout = NULL, border = NA, xlim = NULL, ... )
 \item{show.ties}{Boolean. If TRUE then tie groups appear in the color set by \code{col.ties}, which will appear in the legend. Ties can happen when dealing with count data type. By default set to TRUE.}
 \item{col.ties}{Color corresponding to ties, only used if \code{show.ties=TRUE} and ties are present.}
 \item{ndisplay}{integer indicating how many of the most important variables are to be plotted (ranked by decreasing weights in each PLS-component). Useful to lighten a graph.}
-  \item{size.name}{A numerical value giving the amount by which plotting the variable name text should be magnified or reduced relative to the default.}
-  \item{size.legend}{A numerical value giving the amount by which plotting the legend text should be magnified or reduced relative to the default.}
-  \item{name.var}{A character vector indicating the names of the variables. The names of the vector should match the names of the input data, see example.}
+\item{size.name}{A numerical value giving the amount by which plotting the variable name text should be magnified or reduced relative to the default.}
+\item{size.legend}{A numerical value giving the amount by which plotting the legend text should be magnified or reduced relative to the default.}
+\item{name.var}{A character vector indicating the names of the variables. The names of the vector should match the names of the input data, see example.}
 \item{name.var.complete}{Boolean. If \code{name.var} is supplied with some empty names, \code{name.var.complete} allows you to use the initial variable names to complete the graph (from colnames(X)). Defaut to FALSE. }
 \item{title}{A set of characters to indicate the title of the plot. Default value is NULL.}
 \item{subtitle}{subtitle for each plot, only used when several \code{block} or \code{study} are plotted.}
 \item{size.title}{size of the title}
 \item{size.subtitle}{size of the subtitle}
 \item{legend}{Boolean indicating if the legend indicating the group outcomes should be added to the plot. Default value is TRUE.}
-  \item{legend.color}{A color vector of length the number of group outcomes. See examples.}
-  \item{legend.title}{A set of characters to indicate the title of the legend. Default value is NULL.}
+\item{legend.color}{A color vector of length the number of group outcomes. See examples.}
+\item{legend.title}{A set of characters to indicate the title of the legend. Default value is NULL.}
 \item{layout}{Vector of two values (rows,cols) that indicates the layout of the plot. If \code{layout} is provided, the remaining empty subplots are still active}
 \item{border}{Argument from \code{\link{barplot}}: indicates whether to draw a border on the barplot.}
 \item{xlim}{Argument from \code{\link{barplot}}: limit of the x-axis. When plotting several \code{block}, a matrix is expected where each row is the \code{xlim} used for each of the blocks.}
@@ -139,6 +139,7 @@ xlim = matrix(c(-0.1,0.3, -0.4,0.6), nrow = 2, byrow = TRUE)
 plotLoadings(toxicity.spls, xlim = xlim)
 
 
+\dontrun{
 ## object of class 'splsda'
 # --------------------------
 data(liver.toxicity)
@@ -147,16 +148,16 @@ Y = as.factor(liver.toxicity$treatment[, 4])
 
 splsda.liver = splsda(X, Y, ncomp = 2, keepX = c(20, 20))
 
-# contribution on comp 1, based on the median. 
+# contribution on comp 1, based on the median.
 # Colors indicate the group in which the median expression is maximal
 plotLoadings(splsda.liver, comp = 1, method = 'median')
 plotLoadings(splsda.liver, comp = 1, method = 'median', contrib = "max")
 
-# contribution on comp 2, based on median. 
+# contribution on comp 2, based on median.
 #Colors indicate the group in which the median expression is maximal
 plotLoadings(splsda.liver, comp = 2, method = 'median', contrib = "max")
 
-# contribution on comp 2, based on median. 
+# contribution on comp 2, based on median.
 # Colors indicate the group in which the median expression is minimal
 plotLoadings(splsda.liver, comp = 2, method = 'median', contrib = 'min')
 
@@ -197,7 +198,7 @@ plotLoadings(splsda.liver, comp = 2, method = 'median', legend.color = c(1:4), c
 
 # object 'splsda multilevel'
 # -----------------
-\dontrun{
+
 data(vac18)
 X = vac18$genes
 Y = vac18$stimulation
@@ -220,11 +221,11 @@ name.var = name.var, size.name = 0.2, contrib = "max")
 plotLoadings(res.1level, comp = 2, method = 'median', legend.title = 'Stimu',
 name.var = name.var, size.name = 0.5, ndisplay = 60, contrib = "max")
 
-}
+
 
 # object 'plsda'
 # ----------------
-\dontrun{
+
 # breast tumors
 # ---
 data(breast.tumors)
@@ -237,16 +238,16 @@ name.var = as.character(breast.tumors$genes$name)
 names(name.var) = colnames(X)
 
 # with gene IDs, showing the top 60
-plotLoadings(plsda.breast, contrib = 'max', comp = 1, method = 'median', 
-            ndisplay = 60, 
-            name.var = name.var,
-            size.name = 0.6,
-            legend.color = color.mixo(1:2))
-}
+plotLoadings(plsda.breast, contrib = 'max', comp = 1, method = 'median',
+ndisplay = 60,
+name.var = name.var,
+size.name = 0.6,
+legend.color = color.mixo(1:2))
+
 
 # liver toxicity
 # ---
-\dontrun{
+
 data(liver.toxicity)
 X = liver.toxicity$gene
 Y = liver.toxicity$treatment[, 4]
@@ -258,14 +259,14 @@ plotIndiv(plsda.liver, ind.names = Y, ellipse = TRUE)
 name.var = liver.toxicity$gene.ID[, 'geneBank']
 names(name.var) = rownames(liver.toxicity$gene.ID)
 
-plotLoadings(plsda.liver, contrib = 'max', comp = 1, method = 'median', ndisplay = 100, 
-            name.var = name.var, size.name = 0.4,
-            legend.color = color.mixo(1:4))
-}
+plotLoadings(plsda.liver, contrib = 'max', comp = 1, method = 'median', ndisplay = 100,
+name.var = name.var, size.name = 0.4,
+legend.color = color.mixo(1:4))
+
 
 # object 'sgccda'
 # ----------------
-\dontrun{
+
 data(nutrimouse)
 Y = nutrimouse$diet
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid)
@@ -280,7 +281,7 @@ scheme = "centroid")
 
 plotLoadings(nutrimouse.sgccda,block=2)
 plotLoadings(nutrimouse.sgccda,block="gene")
-}
+
 
 
 # object 'mint.splsda'
@@ -301,8 +302,9 @@ plotLoadings(res, contrib = "min", study = 1:4,comp=2)
 plotLoadings(res,contrib="min",study=c(1,2,3),comp=2, layout = c(2,4))
 plotLoadings(res,contrib="min",study="global",comp=2)
 
-
+}
 }
 
 \keyword{multivariate}
 
+\value{none}

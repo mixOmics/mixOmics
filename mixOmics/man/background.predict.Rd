@@ -54,7 +54,6 @@ Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics fea
 
 # Example 1
 # -----------------------------------
-\dontrun{
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 Y <- breast.tumors$sample$treatment
@@ -67,12 +66,12 @@ background = background.predict(splsda.breast, comp.predicted = 2, dist = "centr
 
 # default option: note the outcome color is included by default!
 plotIndiv(splsda.breast, background = background)
-}
 
 
+
+\dontrun{
 # Example 2
 # -----------------------------------
-\dontrun{
 data(liver.toxicity)
 X = liver.toxicity$gene
 Y = as.factor(liver.toxicity$treatment[, 4])
@@ -83,7 +82,8 @@ plsda.liver <- plsda(X, Y, ncomp = 2)
 background = background.predict(plsda.liver, comp.predicted = 2, dist = "mahalanobis.dist")
 
 plotIndiv(plsda.liver, background = background, legend = TRUE)
-}
 
+
+}
 }
 

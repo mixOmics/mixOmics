@@ -4,7 +4,7 @@
 
 \title{Independent Principal Component Analysis}
 
-\description{ 
+\description{
 Performs independent principal component analysis on the given data matrix, a combination of Principal Component Analysis and Independent Component Analysis.
 }
 
@@ -20,45 +20,45 @@ tol = 1e-04)
 }
 
 \arguments{
-  \item{X}{a numeric matrix (or data frame) which provides the data for the principal component analysis.}
-  \item{ncomp}{integer, number of independent component to choose. Set by default to 3.}	
-  \item{mode}{character string. What type of algorithm to use when estimating the unmixing matrix, choose 
-    one of \code{"deflation"}, \code{"parallel"}. Default set to \code{deflation}.}
-  \item{fun}{the function used in approximation to neg-entropy in the FastICA algorithm. Default set to \code{logcosh}, see details of FastICA.}
-  \item{scale}{a logical value indicating whether the variables (columns) of the data matrix X should be standardized beforehand. By default, X is centered.}
-  \item{max.iter}{integer, maximum number of iterations to perform.}
-  \item{tol}{a positive scalar giving the tolerance at which the un-mixing matrix is considered to have converged, see fastICA package.}
-  \item{w.init}{initial un-mixing matrix (unlike FastICA, this matrix is fixed here).}
+\item{X}{a numeric matrix (or data frame) which provides the data for the principal component analysis.}
+\item{ncomp}{integer, number of independent component to choose. Set by default to 3.}
+\item{mode}{character string. What type of algorithm to use when estimating the unmixing matrix, choose
+one of \code{"deflation"}, \code{"parallel"}. Default set to \code{deflation}.}
+\item{fun}{the function used in approximation to neg-entropy in the FastICA algorithm. Default set to \code{logcosh}, see details of FastICA.}
+\item{scale}{a logical value indicating whether the variables (columns) of the data matrix X should be standardized beforehand. By default, X is centered.}
+\item{max.iter}{integer, maximum number of iterations to perform.}
+\item{tol}{a positive scalar giving the tolerance at which the un-mixing matrix is considered to have converged, see fastICA package.}
+\item{w.init}{initial un-mixing matrix (unlike FastICA, this matrix is fixed here).}
 }
 
 \details{
 In PCA, the loading vectors indicate the importance of the variables in the principal components. In large biological data sets, the loading vectors should only assign large weights to important variables (genes, metabolites ...). That means the distribution of any loading vector should be super-Gaussian: most of the weights are very close to zero while only a few have large (absolute) values.
 
 However, due to the existence of noise, the distribution of any loading vector is distorted and tends toward
-a Gaussian distribtion according to the Central Limit Theroem. By maximizing the non-Gaussianity 
-of the loading vectors using FastICA, we obtain more noiseless loading vectors. We then project the original data matrix on these 
+a Gaussian distribtion according to the Central Limit Theroem. By maximizing the non-Gaussianity
+of the loading vectors using FastICA, we obtain more noiseless loading vectors. We then project the original data matrix on these
 noiseless loading vectors, to obtain independent principal components, which should be also more noiseless and be able to better cluster the samples according to the biological treatment (note, IPCA is an unsupervised approach).
 
 \bold{Algorithm}
 1. The original data matrix is centered.
 
-2. PCA is used to reduce dimension and generate the loading vectors. 
+2. PCA is used to reduce dimension and generate the loading vectors.
 
-3. ICA (FastICA) is implemented on the loading vectors to generate independent loading vectors. 
+3. ICA (FastICA) is implemented on the loading vectors to generate independent loading vectors.
 
-4. The centered data matrix is projected on the independent loading vectors to obtain the independent principal 
+4. The centered data matrix is projected on the independent loading vectors to obtain the independent principal
 components.
-}    
+}
 
 \value{
-\code{ipca} returns a list with class \code{"ipca"} containing the following components: 
-  \item{ncomp}{the number of independent principal components used.}
-  \item{unmixing}{the unmixing matrix of size (ncomp x ncomp)} 
-  \item{mixing}{the mixing matrix of size (ncomp x ncomp)}
-  \item{X}{the centered data matrix}
-  \item{x}{the indepenent principal components}  
-  \item{loadings}{the independent loading vectors} 
-  \item{kurtosis}{the kurtosis measure of the independent loading vectors} 
+\code{ipca} returns a list with class \code{"ipca"} containing the following components:
+\item{ncomp}{the number of independent principal components used.}
+\item{unmixing}{the unmixing matrix of size (ncomp x ncomp)}
+\item{mixing}{the mixing matrix of size (ncomp x ncomp)}
+\item{X}{the centered data matrix}
+\item{x}{the indepenent principal components}
+\item{loadings}{the independent loading vectors}
+\item{kurtosis}{the kurtosis measure of the independent loading vectors}
 }
 
 
@@ -86,18 +86,17 @@ ipca.res
 
 # samples representation
 plotIndiv(ipca.res, ind.names = as.character(liver.toxicity$treatment[, 4]),
-          group = as.numeric(as.factor(liver.toxicity$treatment[, 4])))
-\dontrun{
+group = as.numeric(as.factor(liver.toxicity$treatment[, 4])))
+
 plotIndiv(ipca.res, cex = 0.01,
-            col = as.numeric(as.factor(liver.toxicity$treatment[, 4])),style="3d")
-}
+col = as.numeric(as.factor(liver.toxicity$treatment[, 4])),style="3d")
 
 # variables representation
 plotVar(ipca.res, cex = 0.5)
 
-\dontrun{
+
 plotVar(ipca.res, rad.in = 0.5, cex = 0.5,style="3d")
-          }
+
 }
 
 \keyword{algebra}

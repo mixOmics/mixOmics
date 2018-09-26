@@ -24,12 +24,12 @@ xlab, ylab, margins, lhei, lwid)
 }
 
 \arguments{
-  \item{X}{numeric matrix or data frame \eqn{(n} x \eqn{p)}, the observations on the \eqn{X} variables.
-    \code{NA}s are allowed.}
-  \item{Y}{numeric matrix or data frame \eqn{(n} x \eqn{q)}, the observations on the \eqn{Y} variables.
-    \code{NA}s are allowed.}
-  \item{type}{character string, (partially) maching one of \code{"combine"} or \code{"separated"}, 
-    determining the kind of plots to be produced. See Details.}	
+\item{X}{numeric matrix or data frame \eqn{(n} x \eqn{p)}, the observations on the \eqn{X} variables.
+\code{NA}s are allowed.}
+\item{Y}{numeric matrix or data frame \eqn{(n} x \eqn{q)}, the observations on the \eqn{Y} variables.
+\code{NA}s are allowed.}
+\item{type}{character string, (partially) maching one of \code{"combine"} or \code{"separated"},
+determining the kind of plots to be produced. See Details.}
 \item{X.var.names, Y.var.names}{logical, should the name of \eqn{X}- and/or \eqn{Y}-variables be shown? If
 \code{TRUE} (defaults) \code{object$names$X} and/or \code{object$names$Y} are used. Possible character
 vector with \eqn{X}- and/or \eqn{Y}-variable labels to use.}
@@ -52,21 +52,21 @@ rows and two columns, with the row-heights \code{lhei} and the column-widths \co
 
 \details{
 If \code{type="combine"}, the correlation matrix is computed of the combined
-matrices \code{cbind(X, Y)} and then plotted. If \code{type="separate"}, 
-three correlation matrices are computed, \code{cor(X)}, \code{cor(Y)} and 
-\code{cor(X,Y)} and plotted separately on a device. In both cases, 
+matrices \code{cbind(X, Y)} and then plotted. If \code{type="separate"},
+three correlation matrices are computed, \code{cor(X)}, \code{cor(Y)} and
+\code{cor(X,Y)} and plotted separately on a device. In both cases,
 a color correlation scales strip is plotted.
 
-The correlation matrices are pre-processed before calling the \code{image} 
-function in order to get, as in the numerical representation, the diagonal 
+The correlation matrices are pre-processed before calling the \code{image}
+function in order to get, as in the numerical representation, the diagonal
 from upper-left corner to bottom-right one.
 
 Missing values are handled by casewise deletion in the \code{imgCor} function.
 
-If \code{X.names = FALSE}, the name of each X-variable is hidden. 
+If \code{X.names = FALSE}, the name of each X-variable is hidden.
 Default value is \code{TRUE}.
 
-If \code{Y.names = FALSE}, the name of each Y-variable is hidden. 
+If \code{Y.names = FALSE}, the name of each Y-variable is hidden.
 Default value is \code{TRUE}.
 }
 
@@ -82,14 +82,17 @@ Y <- nutrimouse$gene
 ## 'combine' type plot (default)
 imgCor(X, Y)
 
-## 'separate' type plot
 \dontrun{
+## 'separate' type plot
+
 imgCor(X, Y, type = "separate")
 
 ## 'separate' type plot without the name of datas
-imgCor(X, Y, X.names = FALSE, Y.names = FALSE, type = "separate")
+imgCor(X, Y, X.var.names = FALSE, Y.var.names = FALSE, type = "separate")
 }
 }
 
+
 \keyword{multivariate}
 \keyword{dplot}
+\value{none}

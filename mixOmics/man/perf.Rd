@@ -16,44 +16,44 @@ PLS-DA, sparse PLS-DA, MINT (mint.splsda) and DIABLO (block.splsda) models using
 }
 
 \usage{
-           
+
 \method{perf}{pls}(object,validation = c("Mfold", "loo"),
-           folds = 10, progressBar = TRUE, \ldots)	
+folds = 10, progressBar = TRUE, \ldots)
 
 \method{perf}{spls}(object,validation = c("Mfold", "loo"),
-          folds = 10, progressBar = TRUE, \ldots)
+folds = 10, progressBar = TRUE, \ldots)
 
 \method{perf}{plsda}(object,
-          dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
-          validation = c("Mfold", "loo"),
-          folds = 10, nrepeat =1, auc = FALSE, progressBar = TRUE, cpus, \ldots)
+dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
+validation = c("Mfold", "loo"),
+folds = 10, nrepeat =1, auc = FALSE, progressBar = TRUE, cpus, \ldots)
 
-\method{perf}{splsda}(object, 
+\method{perf}{splsda}(object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
 validation = c("Mfold", "loo"),
 folds = 10, nrepeat =1, auc = FALSE, progressBar = TRUE, cpus, \ldots)
 
 \method{perf}{mint.splsda}(object,
-            dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
-            auc = FALSE, progressBar = TRUE, \ldots)
+dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
+auc = FALSE, progressBar = TRUE, \ldots)
 
 \method{perf}{sgccda}(object,
-            dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
-            validation = c("Mfold", "loo"),
-            folds = 10, nrepeat =1, cpus, \ldots)
+dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
+validation = c("Mfold", "loo"),
+folds = 10, nrepeat =1, cpus, \ldots)
 
 }
 
 \arguments{
-  \item{object}{object of class inheriting from \code{"pls"}, \code{"plsda"},
-    \code{"spls"}, \code{"splsda"} or  \code{"mint.splsda"}. The function will retrieve some key parameters stored in that object.}
+\item{object}{object of class inheriting from \code{"pls"}, \code{"plsda"},
+\code{"spls"}, \code{"splsda"} or  \code{"mint.splsda"}. The function will retrieve some key parameters stored in that object.}
 \item{dist}{only applies to an object inheriting from \code{"plsda"}, \code{"splsda"} or \code{"mint.splsda"} to evaluate the classification performance of the model. Should be a subset of \code{"max.dist"}, \code{"centroids.dist"}, \code{"mahalanobis.dist"}. Default is \code{"all"}. See \code{\link{predict}}.}
 \item{validation}{character.  What kind of (internal) validation to use, matching one of \code{"Mfold"} or
-    \code{"loo"} (see below). Default is \code{"Mfold"}.}
-  \item{folds}{the folds in the Mfold cross-validation. See Details.}
+\code{"loo"} (see below). Default is \code{"Mfold"}.}
+\item{folds}{the folds in the Mfold cross-validation. See Details.}
 \item{nrepeat}{Number of times the Cross-Validation process is repeated. This is an important argument to ensure the estimation of the performance to be as accurate as possible.}
 \item{auc}{if \code{TRUE} calculate the Area Under the Curve (AUC) performance of the model.}
-  \item{progressBar}{by default set to \code{TRUE} to output the progress bar of the computation.}
+\item{progressBar}{by default set to \code{TRUE} to output the progress bar of the computation.}
 \item{cpus}{Number of cpus to use when running the code in parallel.}
 \item{...}{not used}
 }
@@ -70,11 +70,10 @@ If \code{validation = "loo"}, leave-one-out cross-validation is performed (in th
 
 
 Measures of performance. For fitted PLS and sPLS regression models, \code{perf} estimates the
-mean squared error of prediction (MSEP), \eqn{R^2}, and \eqn{Q^2} to assess the predictive 
+mean squared error of prediction (MSEP), \eqn{R^2}, and \eqn{Q^2} to assess the predictive
 perfity of the model using M-fold or leave-one-out cross-validation. Note that only the \code{classic}, \code{regression} and  \code{invariant} modes can be applied.
 For sPLS, the MSEP, \eqn{R^2}, and \eqn{Q^2} criteria are averaged across all folds.
-The \code{Q2.total} combines the  \eqn{Q^2} values for each Y variable and provides an overall assessment of fit. According to Tenenhaus (1998) the rule of thumb to decide whether a component contributes significantly to the prediction is when its Q2.total is still greater than 0.0975. However whe dealing with a large number of variables, especially in X, we have often experienced Q2.total values that do not decrease. The sPLS method also may not reach this cutoff, depending on the type of data and problem.
-Note that for PLS and sPLS objects, perf is performed on the pre-processed data after log ratio transform and multilevel analysis, when applied.
+Note that for PLS and sPLS objects, perf is performed on the pre-processed data after log ratio transform and multilevel analysis, if any.
 
 
 Sparse methods. The sPLS, sPLS-DA and sgccda functions are run on several and different subsets of data (the cross-folds) and will certainly lead to different subset of selected features. Those are summarised in the output \code{features$stable} (see output Value below) to assess how often the variables are selected across all folds.
@@ -97,16 +96,16 @@ More details about the PLS modes in \code{?pls}.
 }
 
 \value{
-For PLS and sPLS models, \code{perf} produces a list with the following components: 
-  \item{MSEP}{Mean Square Error Prediction for each \eqn{Y} variable, only applies to object inherited from \code{"pls"}, and \code{"spls"}.}
-  \item{R2}{a matrix of \eqn{R^2} values of the \eqn{Y}-variables for models 
-    with \eqn{1, \ldots ,}\code{ncomp} components, only applies to object inherited from \code{"pls"}, and \code{"spls"}.}
-  \item{Q2}{if \eqn{Y} containts one variable, a vector of \eqn{Q^2} values else a list with 
-    a matrix of \eqn{Q^2} values for each \eqn{Y}-variable. Note that in the specific case of an sPLS model, it is better to have a look at the Q2.total criterion, only applies to object inherited from \code{"pls"}, and \code{"spls"}}	
-    \item{Q2.total}{a vector of \eqn{Q^2}-total values for models with \eqn{1, \ldots ,}\code{ncomp} components, only applies to object inherited from \code{"pls"}, and \code{"spls"}}
-    \item{features}{a list of features selected across the folds (\code{$stable.X} and \code{$stable.Y}) for the \code{keepX} and \code{keepY} parameters from the input object.}
-    \item{error.rate}{
-For PLS-DA and sPLS-DA models, \code{perf} produces a matrix of classification error rate estimation. 
+For PLS and sPLS models, \code{perf} produces a list with the following components:
+\item{MSEP}{Mean Square Error Prediction for each \eqn{Y} variable, only applies to object inherited from \code{"pls"}, and \code{"spls"}.}
+\item{R2}{a matrix of \eqn{R^2} values of the \eqn{Y}-variables for models
+with \eqn{1, \ldots ,}\code{ncomp} components, only applies to object inherited from \code{"pls"}, and \code{"spls"}.}
+\item{Q2}{if \eqn{Y} containts one variable, a vector of \eqn{Q^2} values else a list with
+a matrix of \eqn{Q^2} values for each \eqn{Y}-variable. Note that in the specific case of an sPLS model, it is better to have a look at the Q2.total criterion, only applies to object inherited from \code{"pls"}, and \code{"spls"}}
+\item{Q2.total}{a vector of \eqn{Q^2}-total values for models with \eqn{1, \ldots ,}\code{ncomp} components, only applies to object inherited from \code{"pls"}, and \code{"spls"}}
+\item{features}{a list of features selected across the folds (\code{$stable.X} and \code{$stable.Y}) for the \code{keepX} and \code{keepY} parameters from the input object.}
+\item{error.rate}{
+For PLS-DA and sPLS-DA models, \code{perf} produces a matrix of classification error rate estimation.
 The dimensions correspond to the components in the model and to the prediction method used, respectively. Note that error rates reported in any component include the performance of the model in earlier components for the specified \code{keepX} parameters (e.g. error rate reported for component 3 for \code{keepX = 20} already includes the fitted model on components 1 and 2 for  \code{keepX = 20}). For more advanced usage of the \code{perf} function, see \url{www.mixomics.org/methods/spls-da/} and consider using the \code{predict} function.}
 \item{auc}{Averaged AUC values over the \code{nrepeat}}
 
@@ -163,8 +162,8 @@ Regression (PCR) and Partial Least Squares Regression (PLSR). \emph{Journal of C
 
 sparse PLS regression mode:
 
-Lê Cao, K. A., Rossouw D., Robert-Granie, C. and Besse, P. (2008). A sparse PLS for variable 
-selection when integrating Omics data. \emph{Statistical Applications in Genetics and Molecular 
+Lê Cao, K. A., Rossouw D., Robert-Granie, C. and Besse, P. (2008). A sparse PLS for variable
+selection when integrating Omics data. \emph{Statistical Applications in Genetics and Molecular
 Biology} \bold{7}, article 35.
 
 One-sided t-tests (suppl material):
@@ -177,7 +176,7 @@ Rohart F, Mason EA, Matigian N, Mosbergen R, Korn O, Chen T, Butcher S, Patel J,
 \seealso{\code{\link{predict}}, \code{\link{nipals}}, \code{\link{plot.perf}}, \code{\link{auroc}} and \url{www.mixOmics.org} for more details.}
 
 \examples{
-\dontrun{
+
 ## validation for objects of class 'pls' (regression)
 # ----------------------------------------
 data(liver.toxicity)
@@ -206,6 +205,8 @@ legend('topright', col = c('red', 'darkgreen'),
 legend = c('Q2 total', 'threshold 0.0975'), lty = 1)
 title('Liver toxicity PLS 5-fold, Q2 total values')
 
+
+\dontrun{
 #have a look at the other criteria
 # ----------------------
 # R2
@@ -217,7 +218,6 @@ title('Liver toxicity PLS 5-fold, R2 values')
 liver.val$MSEP
 matplot(t(liver.val$MSEP), type = 'l', xlab = 'PLS components', ylab = 'MSEP for each variable')
 title('Liver toxicity PLS 5-fold, MSEP values')
-
 
 ## validation for objects of class 'spls' (regression)
 # ----------------------------------------
@@ -268,7 +268,7 @@ dist = "all", auc = TRUE, cpus =2)
 
 
 
-\dontrun{
+
 # with 5 components and nrepeat =5, to get a $choice.ncomp
 ncomp = 5
 srbct.splsda <- splsda(X, Y, ncomp = ncomp, keepX = rep(10, ncomp))
@@ -285,7 +285,7 @@ set.seed(45)
 error <- perf(srbct.splsda, validation = "Mfold", folds = 8,
 dist = "all", auc = TRUE, cpus =2)
 
-}
+
 
 ## validation for objects of class 'mint.splsda' (classification)
 # ----------------------------------------
@@ -319,7 +319,7 @@ perf = perf(nutrimouse.sgccda)
 perf
 
 
-\dontrun{
+
 #with 5 components and nrepeat=5 to get $choice.ncomp
 nutrimouse.sgccda <- block.splsda(X=data,
 Y = Y,
@@ -332,9 +332,8 @@ perf = perf(nutrimouse.sgccda, folds = 5, nrepeat = 5)
 perf
 
 perf$choice.ncomp
-}
-}
 
+}
 }
 
 \keyword{regression}

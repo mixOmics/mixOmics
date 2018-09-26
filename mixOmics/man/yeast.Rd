@@ -7,20 +7,20 @@
 \title{Yeast metabolomic study}
 
 \description{
-Two Saccharomyces Cerevisiae strains were compared under two different environmental conditions, 37 metabolites expression are measured. 
-} 
+Two Saccharomyces Cerevisiae strains were compared under two different environmental conditions, 37 metabolites expression are measured.
+}
 
 \usage{data(yeast)}
 
 \format{
 A list containing the following components:
-  \describe{
-    \item{\code{data}}{data matrix with 55 rows and 37 columns. Each row represents 
-      an experimental sample, and each column a single metabolite.}
-	\item{\code{strain}}{a factor containing the type of strain (MT or WT).}
-	\item{\code{condition}}{a factor containing the type of environmental condition (AER or ANA).}
-	\item{\code{strain.condition}}{a crossed factor between \code{strain} and \code{condition}.}
-  }
+\describe{
+\item{\code{data}}{data matrix with 55 rows and 37 columns. Each row represents
+an experimental sample, and each column a single metabolite.}
+\item{\code{strain}}{a factor containing the type of strain (MT or WT).}
+\item{\code{condition}}{a factor containing the type of environmental condition (AER or ANA).}
+\item{\code{strain.condition}}{a crossed factor between \code{strain} and \code{condition}.}
+}
 }
 
 \details{
@@ -37,3 +37,4 @@ Villas-Boas S, Moxley J, Akesson M, Stephanopoulos G, Nielsen J: High-throughput
 }
 
 \keyword{datasets}
+\value{none}

@@ -112,12 +112,13 @@ plotIndiv(res)
 #plot study-specific outputs for all studies
 plotIndiv(res, study = "all.partial")
 
+\dontrun{
 #plot study-specific outputs for study "2"
 plotIndiv(res, study = "2")
 
 #plot study-specific outputs for study "2", "3" and "4"
 plotIndiv(res, study = c(2, 3, 4))
-
+}
 }
 
 \keyword{regression}

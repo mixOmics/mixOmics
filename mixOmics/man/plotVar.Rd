@@ -76,35 +76,35 @@ or integers, can be of length 2 (one for each data set) or of length (p+q) (i.e.
 \details{
 \code{plotVar} produce a "correlation circle", i.e. the correlations
 between each variable and the selected components are plotted as scatter plot,
-with concentric circles of radius one et radius given by \code{rad.in}. Each point 
-corresponds to a variable. For (regularized) CCA the 
-components correspond to the equiangular vector between \eqn{X}- and \eqn{Y}-variates. 
+with concentric circles of radius one et radius given by \code{rad.in}. Each point
+corresponds to a variable. For (regularized) CCA the
+components correspond to the equiangular vector between \eqn{X}- and \eqn{Y}-variates.
 For (sparse) PLS regression mode the components correspond to the \eqn{X}-variates. If mode is
 canonical, the components for \eqn{X} and \eqn{Y} variables correspond to
-the \eqn{X}- and \eqn{Y}-variates respectively. 
+the \eqn{X}- and \eqn{Y}-variates respectively.
 
 For \code{plsda} and \code{splsda} objects, only the \eqn{X} variables are represented.
 
-For \code{spls} and \code{splsda} objects, only the \eqn{X} and \eqn{Y} variables selected on 
+For \code{spls} and \code{splsda} objects, only the \eqn{X} and \eqn{Y} variables selected on
 dimensions \code{comp} are represented.
 
 The arguments \code{col}, \code{pch}, \code{cex} and \code{font} can be either vectors of
-length two or a list with two vector components of length \eqn{p} and \eqn{q} respectively, 
+length two or a list with two vector components of length \eqn{p} and \eqn{q} respectively,
 where \eqn{p} is the number of \eqn{X}-variables and \eqn{q}
 is the number of \eqn{Y}-variables. In the first case, the first and second component of the
-vector determine the graphics attributes for the \eqn{X}- and \eqn{Y}-variables respectively. 
+vector determine the graphics attributes for the \eqn{X}- and \eqn{Y}-variables respectively.
 Otherwise, multiple arguments values can be specified so that each point (variable)
-can be given its own graphic attributes. In this case, the first component of the list 
-correspond to the \eqn{X} attributs and the second component correspond to 
-the \eqn{Y} attributs. Default values exist for this arguments.  
+can be given its own graphic attributes. In this case, the first component of the list
+correspond to the \eqn{X} attributs and the second component correspond to
+the \eqn{Y} attributs. Default values exist for this arguments.
 }
 
 \value{
 A list containing the following components:
-  \item{x}{a vector of coordinates of the variables on the x-axis.}
-  \item{y}{a vector of coordinates of the variables on the y-axis.}
-  \item{Block}{the data block name each variable belongs to.}
-  \item{names}{the name of each variable, matching their coordinates values.}
+\item{x}{a vector of coordinates of the variables on the x-axis.}
+\item{y}{a vector of coordinates of the variables on the y-axis.}
+\item{Block}{the data block name each variable belongs to.}
+\item{names}{the name of each variable, matching their coordinates values.}
 }
 
 \author{Ignacio González, Kim-Anh Lê Cao, Benoit Gautier, Florian Rohart, Francois Bartolo.}
@@ -124,23 +124,23 @@ nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 
 plotVar(nutri.res) #(default)
 
-\dontrun{
-plotVar(nutri.res, comp = c(1,3), cutoff = 0.5)
-}
 
+plotVar(nutri.res, comp = c(1,3), cutoff = 0.5)
+
+\dontrun{
 ## variable representation for objects of class 'pls' or 'spls'
 # ----------------------------------------------------
 data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
-toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50), 
-                      keepY = c(10, 10, 10))
-	
+toxicity.spls <- spls(X, Y, ncomp = 3, keepX = c(50, 50, 50),
+keepY = c(10, 10, 10))
+
 plotVar(toxicity.spls, cex = c(1,0.8))
 
 ## variable representation for objects of class 'splsda'
 # ----------------------------------------------------
-\dontrun{
+
 data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- as.factor(liver.toxicity$treatment[, 4])
@@ -150,7 +150,6 @@ keepX <- rep(20, ncomp)
 
 splsda.liver <- splsda(X, Y, ncomp = ncomp, keepX = keepX)
 plotVar(splsda.liver)
-}
 
 ## variable representation for objects of class 'sgcca' (or 'rgcca')
 # ----------------------------------------------------
@@ -170,14 +169,14 @@ data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 # with this design, gene expression and lipids are connected to the diet factor
 # and gene expression and lipids are also connected
 design = matrix(c(0,1,1,
-                  1,0,1,
-                  1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+1,0,1,
+1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 
 
 #note: the penalty parameters will need to be tuned
 wrap.result.sgcca = wrapper.sgcca(X = data, design = design, penalty = c(.3,.3, 1),
-                                  ncomp = 2,
-                                  scheme = "centroid")
+ncomp = 2,
+scheme = "centroid")
 wrap.result.sgcca
 
 #variables selected on component 1 for each block
@@ -191,56 +190,57 @@ selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'lipid'$name
 plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), comp.select = c(1,1),
 title = c('Variables selected on component 1 only'))
 
-\dontrun{
-    plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), comp.select = c(2,2),
-    title = c('Variables selected on component 2 only'))
 
-    # -> this one shows the variables selected on both components
-    plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2),
-    title = c('Variables selected on components 1 and 2'))
-}
+plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2), comp.select = c(2,2),
+title = c('Variables selected on component 2 only'))
+
+# -> this one shows the variables selected on both components
+plotVar(wrap.result.sgcca, comp = c(1,2), block = c(1,2),
+title = c('Variables selected on components 1 and 2'))
+
 ## variable representation for objects of class 'rgcca'
 # ----------------------------------------------------
-\dontrun{
+
 data(nutrimouse)
 # need to unmap Y for an unsupervised analysis, where Y is included as a data block in data
 Y = unmap(nutrimouse$diet)
 
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y)
 # with this design, all blocks are connected
-design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3, 
-                byrow = TRUE, dimnames = list(names(data), names(data)))
+design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3,
+byrow = TRUE, dimnames = list(names(data), names(data)))
 
 nutrimouse.rgcca <- wrapper.rgcca(X = data,
-                                         design = design,
-                                         tau = "optimal",
-                                         ncomp = 2,
-                                         scheme = "centroid")
+design = design,
+tau = "optimal",
+ncomp = 2,
+scheme = "centroid")
 
 plotVar(nutrimouse.rgcca, comp = c(1,2), block = c(1,2), cex = c(1.5, 1.5))
 
 
-    plotVar(nutrimouse.rgcca, comp = c(1,2), block = c(1,2))
+plotVar(nutrimouse.rgcca, comp = c(1,2), block = c(1,2))
 
 
-    # set up the data as list
+# set up the data as list
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y =Y)
-    # with this design, gene expression and lipids are connected to the diet factor
-    # design = matrix(c(0,0,1,
-    #                   0,0,1,
-    #                   1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+# with this design, gene expression and lipids are connected to the diet factor
+# design = matrix(c(0,0,1,
+#                   0,0,1,
+#                   1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 
-    # with this design, gene expression and lipids are connected to the diet factor
-    # and gene expression and lipids are also connected
-    design = matrix(c(0,1,1,
-                      1,0,1,
-                      1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
-    #note: the tau parameter is the regularization parameter
-    wrap.result.rgcca = wrapper.rgcca(X = data, design = design, tau = c(1, 1, 0),
-                                      ncomp = 2,
-                                      scheme = "centroid")
-    #wrap.result.rgcca
-    plotVar(wrap.result.rgcca, comp = c(1,2), block = c(1,2))
+# with this design, gene expression and lipids are connected to the diet factor
+# and gene expression and lipids are also connected
+design = matrix(c(0,1,1,
+1,0,1,
+1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
+#note: the tau parameter is the regularization parameter
+wrap.result.rgcca = wrapper.rgcca(X = data, design = design, tau = c(1, 1, 0),
+ncomp = 2,
+scheme = "centroid")
+#wrap.result.rgcca
+plotVar(wrap.result.rgcca, comp = c(1,2), block = c(1,2))
+
 }
 }
 

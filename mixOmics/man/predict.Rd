@@ -30,12 +30,12 @@ multilevel, \ldots)
 }
 
 \arguments{
-  \item{object}{object of class inheriting from \code{"(mint).(block).(s)pls(da)"}.}
+\item{object}{object of class inheriting from \code{"(mint).(block).(s)pls(da)"}.}
 \item{newdata}{data matrix in which to look for for explanatory variables to be used for prediction. Please note that this method does not perform multilevel decomposition or log ratio transformations, which need to be processed beforehand.}
 \item{study.test}{For MINT objects, grouping factor indicating which samples of \code{newdata} are from the same study. Overlap with \code{object$study} are allowed.}
-  \item{dist}{distance to be applied for discriminant methods to predict the class of new data,
-    should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \code{"max.dist"} (see Details). 
-	Defaults to \code{"all"}.}
+\item{dist}{distance to be applied for discriminant methods to predict the class of new data,
+should be a subset of \code{"centroids.dist"}, \code{"mahalanobis.dist"} or \code{"max.dist"} (see Details).
+Defaults to \code{"all"}.}
 \item{multilevel}{Design matrix for multilevel analysis (for repeated measurements). A numeric matrix or data frame. For a one level factor decomposition, the input is a vector indicating the repeated measures on each individual, i.e. the individuals ID. For a two level decomposition with splsda models, the two factors are included in Y. Finally for a two level decomposition with spls models, 2nd AND 3rd columns in design indicate those factors (see example in \code{?splsda} and \code{?spls}).}
 \item{...}{not used currently.}
 }
@@ -73,10 +73,10 @@ For discriminant analysis, the predicted class is returned for each block (\code
 }
 
 \value{
-\code{predict} produces a list with the following components: 
-  \item{predict}{predicted response values. The dimensions
-	correspond to the observations, the response variables and the model dimension, respectively. For a supervised model, it corresponds to the predicted dummy variables.}
-  \item{variates}{matrix of predicted variates.}
+\code{predict} produces a list with the following components:
+\item{predict}{predicted response values. The dimensions
+correspond to the observations, the response variables and the model dimension, respectively. For a supervised model, it corresponds to the predicted dummy variables.}
+\item{variates}{matrix of predicted variates.}
 \item{B.hat}{matrix of regression coefficients (without the intercept).}
 
 \item{AveragedPredict}{if more than one block, returns the average predicted values over the blocks (using the \code{predict} output)}
@@ -89,8 +89,8 @@ For discriminant analysis, the predicted class is returned for each block (\code
 \item{weights}{Returns the weights of each block used for the weighted predictions, for each nrepeat and each fold}
 
 \item{centroids}{matrix of coordinates for centroids.}
-  \item{dist}{type of distance requested.}
-  \item{vote}{majority vote result for multi block analysis (see details above).}
+\item{dist}{type of distance requested.}
+\item{vote}{majority vote result for multi block analysis (see details above).}
 
 }
 
@@ -99,7 +99,7 @@ For discriminant analysis, the predicted class is returned for each block (\code
 Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics feature selection and multiple data integration. PLoS Comput Biol 13(11): e1005752
 
 
-Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.  
+Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Editions Technic.
 }
 
 \author{Florian Rohart, Sébastien Déjean, Ignacio González, Kim-Anh Lê Cao}
@@ -127,16 +127,17 @@ pred <- predict(linn.pls, newdata)
 
 plotIndiv(linn.pls, comp = 1:2, rep.space = "X-variate",style="graphics",ind.names=FALSE)
 points(pred$variates[, 1], pred$variates[, 2], pch = 19, cex = 1.2)
-text(pred$variates[, 1], pred$variates[, 2], 
-     c("new ind.1", "new ind.2"), pos = 3)
-	 
+text(pred$variates[, 1], pred$variates[, 2],
+c("new ind.1", "new ind.2"), pos = 3)
+
 ## First example with plsda
 data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- as.factor(liver.toxicity$treatment[, 4])
 
+
 ## if training is perfomed on 4/5th of the original data
-samp <- sample(1:5, nrow(X), replace = TRUE)  
+samp <- sample(1:5, nrow(X), replace = TRUE)
 test <- which(samp == 1)   # testing on the first fold
 train <- setdiff(1:nrow(X), test)
 
@@ -210,6 +211,7 @@ data.frame(Truth = Y.test, prediction = pred$class$max.dist)
 
 }
 }
+
 
 \keyword{regression}
 \keyword{multivariate}

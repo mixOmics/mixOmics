@@ -10,7 +10,7 @@ This function calculates the variance explained by variates.
 
 \usage{
 explained_variance(data, variates, ncomp)
-}	
+}
 
 \arguments{
 \item{data}{numeric matrix of predictors}
@@ -31,8 +31,8 @@ explained_variance(data, variates, ncomp)
 
 \author{Florian Rohart}
 
-\seealso{\code{\link{spls}}, \code{\link{splsda}}, 
-\code{\link{plotIndiv}}, \code{\link{plotVar}}, 
+\seealso{\code{\link{spls}}, \code{\link{splsda}},
+\code{\link{plotIndiv}}, \code{\link{plotVar}},
 \code{\link{cim}}, \code{\link{network}}.}
 
 \examples{

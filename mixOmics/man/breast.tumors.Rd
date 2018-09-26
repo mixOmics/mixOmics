@@ -8,22 +8,22 @@
 
 \description{
 This data set contains the expression of 1,000 genes in 47 surgical specimens of
-human breast tumours from 17 different individuals before and after chemotherapy treatment. 
+human breast tumours from 17 different individuals before and after chemotherapy treatment.
 }
 
 \usage{data(breast.tumors)}
 
 \format{
 A list containing the following components:
-  \describe{
-    \item{\code{gene.exp}}{data matrix with 47 rows and 1000 columns. Each row represents 
-      an experimental sample, and each column a single gene.}
-	\item{\code{sample}}{a list containing two character vector components:
-		\code{name} the name of the samples, and \code{treatment} the treatment status.}
-    \item{\code{genes}}{a list containing two character vector components:
-		\code{name} the name of the genes, and \code{description} the description
-      of each gene.}
-  }
+\describe{
+\item{\code{gene.exp}}{data matrix with 47 rows and 1000 columns. Each row represents
+an experimental sample, and each column a single gene.}
+\item{\code{sample}}{a list containing two character vector components:
+\code{name} the name of the samples, and \code{treatment} the treatment status.}
+\item{\code{genes}}{a list containing two character vector components:
+\code{name} the name of the genes, and \code{description} the description
+of each gene.}
+}
 }
 
 \details{
@@ -37,21 +37,22 @@ and after treatment. For illustrative purposes we then randomly selected 1000 cD
 
 \source{
 The Human Breast Tumors dataset is a companion resource for the paper of
-Perou \emph{et al.} (2000), and was downloaded from the Stanford Genomics Breast 
-Cancer Consortium Portal 
+Perou \emph{et al.} (2000), and was downloaded from the Stanford Genomics Breast
+Cancer Consortium Portal
 \url{http://genome-www.stanford.edu/breast_cancer/molecularportraits/download.shtml}
 }
 
 \references{
-Perez-Enciso, M. and Tenenhaus, M. (2003). Prediction of clinical outcome with microarray data: 
-a partial least squares discriminant analysis (PLS-DA) approach. \emph{Human Genetics} 
+Perez-Enciso, M. and Tenenhaus, M. (2003). Prediction of clinical outcome with microarray data:
+a partial least squares discriminant analysis (PLS-DA) approach. \emph{Human Genetics}
 \bold{112}, 581-592.
 
-Perou, C. M., Sorlie, T., Eisen, M. B., van de Rijn, M., Jeffrey, S. S., Rees, C. A., 
+Perou, C. M., Sorlie, T., Eisen, M. B., van de Rijn, M., Jeffrey, S. S., Rees, C. A.,
 Pollack, J. R., Ross, D. T., Johnsen, H., Akslen, L. A., Fluge, O.,
-Pergamenschikov, A., Williams, C., Zhu, S. X., Lonning, P. E., Borresen-Dale, A. L., 
+Pergamenschikov, A., Williams, C., Zhu, S. X., Lonning, P. E., Borresen-Dale, A. L.,
 Brown, P. O. and Botstein, D. (2000). Molecular portraits
 of human breast tumours. \emph{Nature} \bold{406}, 747-752.
 }
 
 \keyword{datasets}
+\value{none}

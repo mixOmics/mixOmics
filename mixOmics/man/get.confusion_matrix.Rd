@@ -54,7 +54,6 @@ Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics fea
 
 # Example
 # -----------------------------------
-\dontrun{
 
 data(liver.toxicity)
 X <- liver.toxicity$gene
@@ -74,7 +73,6 @@ confusion.mat = get.confusion_matrix(truth = Y[test],
 predicted = Prediction)
 
 get.BER(confusion.mat)
-}
 
 }
 

@@ -48,11 +48,11 @@ ncomp = 3
 # set number of variables to select, per component and per data set (arbitrarily set)
 list.keepX = list(mrna = rep(20, 3), mirna = rep(10,3), prot = rep(10,3))
 
-# set up a full design where every block is connected 
+# set up a full design where every block is connected
 design = matrix(1, ncol = length(data), nrow = length(data),
 dimnames = list(names(data), names(data)))
 diag(design) =  0
-design  
+design
 
 BC.diablo = block.splsda(X = data, Y = Y, ncomp = ncomp, keepX = list.keepX, design = design)
 plotDiablo(BC.diablo, ncomp = 1)
@@ -60,3 +60,4 @@ plotDiablo(BC.diablo, ncomp = 1)
 
 \keyword{regression}
 \keyword{multivariate}
+\value{none}

@@ -10,7 +10,7 @@ This function applies a log transformation to the data, either CLR or ILR
 
 \usage{
 logratio.transfo(X, logratio = "none", offset = 0)
-}	
+}
 
 \arguments{
 \item{X}{numeric matrix of predictors}
@@ -23,6 +23,8 @@ logratio.transfo(X, logratio = "none", offset = 0)
 
 \code{logratio.transfo} applies a log transformation to the data, either CLR (centered log ratio transformation) or ILR (Isometric Log Ratio transformation). In the case of CLR log-transformation, X needs to be a matrix of non-negative values and \code{offset} is used to shift the values away from 0, as commonly done with counts data.
 }
+
+
 
 \references{
 Kim-Anh Lê Cao, Mary-Ellen Costello, Vanessa Anne Lakis, Francois Bartolo, Xin-Yi Chua, Remi Brazeilles, Pascale Rondeau

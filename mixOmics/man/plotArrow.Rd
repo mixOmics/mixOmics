@@ -9,22 +9,22 @@
 
 \usage{
 plotArrow(  object,
-            comp = NULL,
-            abline = FALSE,
-            xlim = NULL,
-            ylim = NULL,
-            group=NULL,
-            col,
-            cex,
-            pch,
-            title=NULL,
-            plot.arrows=TRUE,
-            legend=FALSE,
-            X.label = NULL,
-            Y.label = NULL,
-            ind.names=FALSE,
-            position.names='centroid'
-  )
+comp = NULL,
+abline = FALSE,
+xlim = NULL,
+ylim = NULL,
+group=NULL,
+col,
+cex,
+pch,
+title=NULL,
+plot.arrows=TRUE,
+legend=FALSE,
+X.label = NULL,
+Y.label = NULL,
+ind.names=FALSE,
+position.names='centroid'
+)
 
 }
 
@@ -52,9 +52,9 @@ or integers. See \code{\link{points}} for all alternatives.}
 \details{
 Graphical of the samples (individuals) is displayed in a superimposed manner where each sample will be
 indicated using an arrow. The start of the arrow indicates the location of the sample in \eqn{X} in one plot,
-and the tip the location of the sample in \eqn{Y} in the other plot. 
+and the tip the location of the sample in \eqn{Y} in the other plot.
 
-For objects of class \code{"GCCA"} and if there are more than 3 blocks, the start of the  arrow indicates the centroid between all data sets for a given individual and the tips of the arrows the location of that individual in each block. 
+For objects of class \code{"GCCA"} and if there are more than 3 blocks, the start of the  arrow indicates the centroid between all data sets for a given individual and the tips of the arrows the location of that individual in each block.
 
 Short arrows indicate a strong agreement between the matching data sets, long arrows a disagreement between the matching data sets.
 }
@@ -71,6 +71,7 @@ for biological data integration: application to a cross-platform study. \emph{BM
 \examples{
 ## plot of individuals for objects of class 'rcc'
 # ----------------------------------------------------
+dev.off()
 data(nutrimouse)
 X <- nutrimouse$lipid
 Y <- nutrimouse$gene
@@ -82,12 +83,12 @@ plotArrow(nutri.res)
 plotArrow(nutri.res,
 group = nutrimouse$genotype, ind.names = nutrimouse$genotype)
 
-\dontrun{
+
 plotArrow(nutri.res, group = nutrimouse$genotype,
 legend = TRUE)
-}
 
 
+\dontrun{
 ## plot of individuals for objects of class 'pls' or 'spls'
 # ----------------------------------------------------
 data(liver.toxicity)
@@ -99,7 +100,7 @@ keepY = c(10, 10, 10))
 #default
 plotArrow(toxicity.spls)
 
-\dontrun{
+
 # colors indicate time of necropsy, text is the dose
 plotArrow(toxicity.spls,  group = liver.toxicity$treatment[, 'Time.Group'],
 ind.names  = liver.toxicity$treatment[, 'Dose.Group'],
@@ -109,7 +110,6 @@ legend = TRUE)
 plotArrow(toxicity.spls,  group = liver.toxicity$treatment[, 'Time.Group'],
 ind.names  = liver.toxicity$treatment[, 'Dose.Group'],
 legend = TRUE, position.names = 'start')
-}
 
 ## variable representation for objects of class 'sgcca' (or 'rgcca')
 # ----------------------------------------------------
@@ -126,7 +126,7 @@ scheme = "centroid")
 # default style: same color for all samples
 plotArrow(nutrimouse.sgcca)
 
-\dontrun{
+
 plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
 title = 'my plot')
 
@@ -152,7 +152,7 @@ title = 'my plot', ind.names = TRUE, position.names   = 'start')
 # end position
 plotArrow(nutrimouse.sgcca, group = nutrimouse$diet, legend =TRUE,
 title = 'my plot', ind.names = TRUE, position.names   = 'end')
-}
+
 
 ## variable representation for objects of class 'sgccda'
 # ----------------------------------------------------
@@ -173,13 +173,15 @@ scheme = "centroid")
 #  default colors correspond to outcome Y
 plotArrow(nutrimouse.sgccda1)
 
-\dontrun{
+
 # with legend and title and indiv ID
 plotArrow(nutrimouse.sgccda1,  legend = TRUE, title = 'my sample plot',
 ind.names = TRUE, position.names = 'start')
+
 }
 }
 
 \keyword{multivariate}
 \keyword{hplot}
 \keyword{dplot}
+\value{none}

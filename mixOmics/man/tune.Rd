@@ -39,7 +39,7 @@ tol = 1e-09,
 light.output = TRUE # mint, splsda
 )
 
-}	
+}
 
 \arguments{
 \item{method}{This parameter is used to pass all other argument to the suitable function. \code{method} has to be one of the following:
@@ -154,24 +154,25 @@ Rohart F, Mason EA, Matigian N, Mosbergen R, Korn O, Chen T, Butcher S, Patel J,
 \author{Florian Rohart}
 
 \seealso{\code{\link{tune.rcc}}, \code{\link{tune.mint.splsda}},
-\code{\link{tune.pca}}, 
+\code{\link{tune.pca}},
 \code{\link{tune.splsda}}, \code{\link{tune.splslevel}} and http://www.mixOmics.org for more details.}
 
 \examples{
 ## sPLS-DA
-\dontrun{
+
 data(breast.tumors)
 X <- breast.tumors$gene.exp
 Y <- as.factor(breast.tumors$sample$treatment)
 tune= tune(method = "splsda", X, Y, ncomp=1, nrepeat=10, logratio="none",
-    test.keepX = c(5, 10, 15), folds=10, dist="max.dist", progressBar = TRUE)
+test.keepX = c(5, 10, 15), folds=10, dist="max.dist", progressBar = TRUE)
 
 plot(tune)
-}
 
 
-## mint.splsda
+
 \dontrun{
+## mint.splsda
+
 data(stemcells)
 data = stemcells$gene
 type.id = stemcells$celltype
@@ -181,11 +182,7 @@ out = tune(method="mint.splsda", X=data,Y=type.id, ncomp=2, study=exp, test.keep
 out$choice.keepX
 
 plot(out)
-
 }
-
-
-
 }
 
 \keyword{regression}

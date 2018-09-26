@@ -7,7 +7,7 @@
 \title{Linnerud Dataset}
 
 \description{
-Three physiological and three exercise variables are measured on twenty middle-aged 
+Three physiological and three exercise variables are measured on twenty middle-aged
 men in a fitness club.
 }
 
@@ -15,10 +15,10 @@ men in a fitness club.
 
 \format{
 A list containing the following components:
-  \describe{
-    \item{\code{exercise}}{data frame with 20 observations on 3 exercise variables.}
-    \item{\code{physiological}}{data frame with 20 observations on 3 physiological variables.}
-  }
+\describe{
+\item{\code{exercise}}{data frame with 20 observations on 3 exercise variables.}
+\item{\code{physiological}}{data frame with 20 observations on 3 physiological variables.}
+}
 }
 
 \source{
@@ -30,3 +30,4 @@ Tenenhaus, M. (1998). \emph{La regression PLS: theorie et pratique}. Paris: Edit
 }
 
 \keyword{datasets}
+\value{none}

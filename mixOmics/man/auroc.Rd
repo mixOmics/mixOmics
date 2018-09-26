@@ -32,7 +32,7 @@ roc.study = "global", ...)
 \method{auroc}{sgccda}(object, newdata = object$X, outcome.test = as.factor(object$Y),
 multilevel = NULL,plot = TRUE, roc.block = 1, roc.comp = 1, ...)
 
-}	
+}
 
 \arguments{
 \item{object}{Object from one of the following supervised analysis class: "plsda", "splsda", "mint.plsda", "mint.splsda", "block.splsda" or "wrapper.sgccda"}
@@ -52,7 +52,7 @@ For more than two classes in the categorical outcome Y, the AUC is calculated as
 
 The ROC and AUC are calculated based on the predicted scores obtained from the \code{predict} function applied to the multivariate methods (\code{predict(object)$predict}). Our multivariate supervised methods already use a prediction threshold based on distances (see \code{predict}) that optimally determine class membership of the samples tested. As such AUC and ROC are not needed to estimate the performance of the model (see \code{perf}, \code{tune} that report classification error rates). We provide those outputs as complementary performance measures.
 
-The pvalue is from a Wilcoxon test between the predicted scores between one class vs the others. 
+The pvalue is from a Wilcoxon test between the predicted scores between one class vs the others.
 
 
 External independent data set (\code{newdata}) and outcome (\code{outcome.test}) can be input to calculate AUROC. The external data set must have the same variables as the training data set (\code{object$X}).
@@ -66,7 +66,6 @@ Note that for mint.plsda and mint.splsda objects, if \code{roc.study} is differe
 \value{
 Depending on the type of object used, a list that contains:
 The AUC and Wilcoxon test pvalue for each 'one vs other' classes comparison performed, either per component (splsda, plsda, mint.plsda, mint.splsda), or per block and per component (wrapper.sgccda, block.plsda, blocksplsda).
-The ggplot output that can be changed by users by adding ggplot layers.
 }
 
 
@@ -84,16 +83,12 @@ Y <- breast.tumors$sample$treatment
 plsda.breast <- plsda(X, Y, ncomp = 2)
 auc.plsda.breast = auroc(plsda.breast, ncomp = 1)
 
-# changing plot title
-p = auc.plsda.breast$graph.Comp1 #saving the ggplot graph in p
-p+ggtitle("Something witty")
-
+\dontrun{
 ## example with sPLSDA
 # -----------------
 splsda.breast <- splsda(X, Y, ncomp = 2, keepX = c(25, 25))
 auroc(plsda.breast, plot = FALSE)
 
-\dontrun{
 
 ## example with sPLSDA with 4 classes
 # -----------------
@@ -140,6 +135,7 @@ block.splsda.nutri = block.splsda(X = data, Y = nutrimouse$diet, keepX = list.ke
 auc.block.splsda.nutri = auroc(block.splsda.nutri, block = 1)
 }
 }
+
 
 \keyword{regression}
 \keyword{multivariate}

@@ -17,7 +17,7 @@ test.keepY = rep(ncol(Y), ncomp),
 already.tested.X = NULL,
 already.tested.Y = NULL)
 
-}	
+}
 
 \arguments{
 \item{X}{numeric matrix of predictors. \code{NA}s are allowed.}

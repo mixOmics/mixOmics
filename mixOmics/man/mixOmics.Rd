@@ -17,14 +17,13 @@ keepX,
 keepY,
 design,
 tau = NULL,# rgcca, number between 0,1 or "optimal"
-scheme, 
+scheme,
 mode,
 scale,
 init,
 tol =  1e-06,
 max.iter = 100,
 near.zero.var = FALSE)
-
 }
 
 \arguments{
@@ -153,6 +152,7 @@ out = mixOmics(X, Y.factor, ncomp = 2)
 out = mixOmics(X, Y.factor, ncomp = 2, keepX = c(20, 20))
 
 
+\dontrun{
 ## -- directed towards block.pls framework because X is a list
 # ----------------------------------------------------
 data(nutrimouse)
@@ -196,7 +196,9 @@ study = stemcells$study)
 out = mixOmics(X = stemcells$gene, Y = stemcells$celltype, ncomp = 2,
 study = stemcells$study, keepX = c(10, 5, 15))
 }
+}
 
+\value{none}
 \keyword{multivariate}
 \keyword{hplot}
 \keyword{dplot}

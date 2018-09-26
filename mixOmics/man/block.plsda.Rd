@@ -124,11 +124,12 @@ plotVar(res)
 \dontrun{
 # when Y is provided
 res2 = block.plsda(list(gene = nutrimouse$gene, lipid = nutrimouse$lipid),
-    Y = nutrimouse$diet, ncomp = 2)
+Y = nutrimouse$diet, ncomp = 2)
 plotIndiv(res2)
 plotVar(res2)
 }
 }
+
 
 \keyword{regression}
 \keyword{multivariate}

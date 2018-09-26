@@ -4,9 +4,9 @@
 
 \title{Tune the number of principal components in PCA}
 
-\description{ 
-\code{tune.pca} can be used to quickly visualise the proportion of explained variance 
- for a large number of principal components in PCA. 
+\description{
+\code{tune.pca} can be used to quickly visualise the proportion of explained variance
+for a large number of principal components in PCA.
 }
 
 \usage{
@@ -16,20 +16,20 @@ V = NULL, multilevel = NULL)
 }
 
 \arguments{
-  \item{X}{a numeric matrix (or data frame) which provides the 
-    data for the principal components analysis. It can contain missing values.}
-  \item{ncomp}{integer, the number of components to initially analyse in \code{tune.pca} to choose a final 
-    \code{ncomp} for \code{pca}. If \code{NULL}, 
-     function sets \code{ncomp = min(nrow(X), ncol(X))}}	
-  \item{center}{a logical value indicating whether the variables should be shifted to be zero centered. 
-    Alternately, a vector of length equal the number of columns of \code{X} can be supplied. 
-    The value is passed to \code{\link{scale}}.} 
-  \item{scale}{a logical value indicating whether the variables should be scaled to have 
-    unit variance before the analysis takes place. The default is \code{FALSE} for consistency with \code{prcomp} 
-    function, but in general scaling is advisable. Alternatively, a vector of length equal the number of 
-    columns of \code{X} can be supplied. The value is passed to \code{\link{scale}}.} 
-  \item{max.iter}{integer, the maximum number of iterations for the NIPALS algorithm.}
-  \item{tol}{a positive real, the tolerance used for the NIPALS algorithm.}
+\item{X}{a numeric matrix (or data frame) which provides the
+data for the principal components analysis. It can contain missing values.}
+\item{ncomp}{integer, the number of components to initially analyse in \code{tune.pca} to choose a final
+\code{ncomp} for \code{pca}. If \code{NULL},
+function sets \code{ncomp = min(nrow(X), ncol(X))}}
+\item{center}{a logical value indicating whether the variables should be shifted to be zero centered.
+Alternately, a vector of length equal the number of columns of \code{X} can be supplied.
+The value is passed to \code{\link{scale}}.}
+\item{scale}{a logical value indicating whether the variables should be scaled to have
+unit variance before the analysis takes place. The default is \code{FALSE} for consistency with \code{prcomp}
+function, but in general scaling is advisable. Alternatively, a vector of length equal the number of
+columns of \code{X} can be supplied. The value is passed to \code{\link{scale}}.}
+\item{max.iter}{integer, the maximum number of iterations for the NIPALS algorithm.}
+\item{tol}{a positive real, the tolerance used for the NIPALS algorithm.}
 \item{logratio}{one of ('none','CLR','ILR'). Default to 'none'}
 \item{V}{Matrix used in the logratio transformation id provided.}
 \item{multilevel}{Design matrix for multilevel analysis (for repeated measurements).}
@@ -56,19 +56,19 @@ logratio transform and multilevel analysis are performed sequentially as interna
 }
 
 \value{
-\code{tune.pca} returns a list with class \code{"tune.pca"} containing the following components: 
-  \item{sdev}{the square root of the eigenvalues of the covariance/correlation matrix, though the calculation is
-actually  done with the singular values of the data matrix).} 
-  \item{explained_variance}{the proportion of explained variance accounted for by each
-	principal component is calculated using the eigenvalues}
-  \item{cum.var}{the cumulative proportion of explained variance 
-	accounted for by the sequential accumulation of principal components is calculated using the sum of the
-	proportion of explained variance}
+\code{tune.pca} returns a list with class \code{"tune.pca"} containing the following components:
+\item{sdev}{the square root of the eigenvalues of the covariance/correlation matrix, though the calculation is
+actually  done with the singular values of the data matrix).}
+\item{explained_variance}{the proportion of explained variance accounted for by each
+principal component is calculated using the eigenvalues}
+\item{cum.var}{the cumulative proportion of explained variance
+accounted for by the sequential accumulation of principal components is calculated using the sum of the
+proportion of explained variance}
 }
 
 \author{Ignacio González and Leigh Coonan}
 
-\seealso{\code{\link{nipals}}, \code{\link{biplot}}, 
+\seealso{\code{\link{nipals}}, \code{\link{biplot}},
 \code{\link{plotIndiv}}, \code{\link{plotVar}}
 and http://www.mixOmics.org for more details.}
 

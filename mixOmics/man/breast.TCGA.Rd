@@ -16,19 +16,19 @@ This data set is a small subset of the full data set from The Cancer Genome Atla
 
 \format{
 A list containing two data sets, \code{data.train} and \code{data.test} which both include:
-  \describe{
-    \item{\code{miRNA}}{data frame with 150 (70) rows and 184 columns in the training (test) data set. 
-		The expression levels of 184 miRNA.}
-    \item{\code{mRNA}}{data frame with 150 (70) rows and 520 columns in the training (test) data set. 
-  	The expression levels of 200 mRNA.}
-    \item{\code{protein}}{data frame with 150 (70) rows and 142 columns in the training  data set only. 
-  	The abundance of 142 proteins.}
-    \item{\code{subtype}}{a factor indicating the brerast cancer subtypes in the training (length of 150) and test (length of 70) sets. }
+\describe{
+\item{\code{miRNA}}{data frame with 150 (70) rows and 184 columns in the training (test) data set.
+The expression levels of 184 miRNA.}
+\item{\code{mRNA}}{data frame with 150 (70) rows and 520 columns in the training (test) data set.
+The expression levels of 200 mRNA.}
+\item{\code{protein}}{data frame with 150 (70) rows and 142 columns in the training  data set only.
+The abundance of 142 proteins.}
+\item{\code{subtype}}{a factor indicating the brerast cancer subtypes in the training (length of 150) and test (length of 70) sets. }
 }
 }
 
 \details{
-The data come from The Cancer Genome Atlas (TCGA, http://cancergenome.nih.gov/). We divided the data into a training (discovery) and test (validation) set. The protein dataset which had a limited number of subjects available was used to allocate subjects into the training  set only, while the tes set included all remaining subject. Each data set was normalised and pre-processed. For illustrative purposes we drastically filtered the data here. 
+The data come from The Cancer Genome Atlas (TCGA, http://cancergenome.nih.gov/). We divided the data into a training (discovery) and test (validation) set. The protein dataset which had a limited number of subjects available was used to allocate subjects into the training  set only, while the tes set included all remaining subject. Each data set was normalised and pre-processed. For illustrative purposes we drastically filtered the data here.
 }
 
 \source{
@@ -42,3 +42,4 @@ DIABLO - multi omics integration for biomarker discovery. Submitted.
 }
 
 \keyword{datasets}
+\value{none}

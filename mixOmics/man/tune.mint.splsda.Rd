@@ -52,14 +52,14 @@ More details about the prediction distances in \code{?predict} and the supplemen
 }
 
 \value{
-The returned value is a list with components: 
+The returned value is a list with components:
 \item{error.rate}{returns the prediction error for each \code{test.keepX} on each component, averaged across all repeats and subsampling folds. Standard deviation is also output. All error rates are also available as a list.}
 \item{choice.keepX}{returns the number of variables selected (optimal keepX) on each component.}
 \item{choice.ncomp}{returns the optimal number of components for the model fitted with \code{$choice.keepX} }
 \item{error.rate.class}{returns the error rate for each level of \code{Y} and for each component computed with the optimal keepX}
 
-  \item{predict}{Prediction values for each sample, each \code{test.keepX} and each comp.}
-  \item{class}{Predicted class for each sample, each \code{test.keepX} and each comp.}
+\item{predict}{Prediction values for each sample, each \code{test.keepX} and each comp.}
+\item{class}{Predicted class for each sample, each \code{test.keepX} and each comp.}
 }
 
 \references{
@@ -90,8 +90,9 @@ out$choice.ncomp
 out$choice.keepX
 
 \dontrun{
+
 out = tune.mint.splsda(X=data,Y=type.id,ncomp=2,near.zero.var=FALSE,
-    study=exp,test.keepX=seq(1,10,1))
+study=exp,test.keepX=seq(1,10,1))
 out$choice.keepX
 
 ## only tune component 2 and keeping 10 genes on comp1
@@ -101,7 +102,6 @@ test.keepX=seq(1,10,1))
 out$choice.keepX
 
 }
-
 }
 
 \keyword{multivariate}

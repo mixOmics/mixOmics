@@ -4,7 +4,8 @@
 
 \title{Tune the number of principal components in PCA}
 
-\description{ 
+\description{
 This function has been renamed \code{\link{tune.pca}}.
 }
 
+\value{none}

@@ -25,7 +25,7 @@ max.iter = 100,
 near.zero.var = FALSE,
 all.outputs = TRUE)
 
-}	
+}
 
 \arguments{
 \item{X}{A list of data sets (called 'blocks') measured on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets.}
@@ -67,18 +67,18 @@ algorithm \code{("classic")} (see References and more details in \code{?pls}).
 \code{mint.block.spls} returns an object of class \code{"mint.spls", "block.spls"}, a list
 that contains the following components:
 
-  \item{X}{the centered and standardized original predictor matrix.}
-  \item{Y}{the centered and standardized original response vector or matrix.}
+\item{X}{the centered and standardized original predictor matrix.}
+\item{Y}{the centered and standardized original response vector or matrix.}
 \item{ncomp}{the number of components included in the model for each block.}
-  \item{mode}{the algorithm used to fit the model.}
-  \item{mat.c}{matrix of coefficients from the regression of X / residual matrices X on the X-variates, to be used internally by \code{predict}.}
-  \item{variates}{list containing the \eqn{X} and \eqn{Y} variates.}
-  \item{loadings}{list containing the estimated loadings for the variates.}
-  \item{names}{list containing the names to be used for individuals and variables.}
-  \item{nzv}{list containing the zero- or near-zero predictors information.}
-   \item{tol}{the tolerance used in the iterative algorithm, used for subsequent S3 methods}
-  \item{max.iter}{the maximum number of iterations, used for subsequent S3 methods}
-    \item{iter}{Number of iterations of the algorthm for each component}
+\item{mode}{the algorithm used to fit the model.}
+\item{mat.c}{matrix of coefficients from the regression of X / residual matrices X on the X-variates, to be used internally by \code{predict}.}
+\item{variates}{list containing the \eqn{X} and \eqn{Y} variates.}
+\item{loadings}{list containing the estimated loadings for the variates.}
+\item{names}{list containing the names to be used for individuals and variables.}
+\item{nzv}{list containing the zero- or near-zero predictors information.}
+\item{tol}{the tolerance used in the iterative algorithm, used for subsequent S3 methods}
+\item{max.iter}{the maximum number of iterations, used for subsequent S3 methods}
+\item{iter}{Number of iterations of the algorthm for each component}
 
 }
 

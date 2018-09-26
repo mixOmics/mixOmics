@@ -12,7 +12,7 @@
 \title{Output of selected variables}
 
 \description{
-This function outputs the selected variables on each component for the sparse versions of the approaches (was also generalised to the non sparse versions for our internal functions). 
+This function outputs the selected variables on each component for the sparse versions of the approaches (was also generalised to the non sparse versions for our internal functions).
 }
 
 \usage{
@@ -24,17 +24,17 @@ This function outputs the selected variables on each component for the sparse ve
 }
 
 \arguments{
-  \item{object}{object of class inheriting from \code{"pls"}, \code{"spls"}, \code{"plsda"},\code{"splsda"}, \code{"pca"}, \code{"spca"}, \code{"sipca"}.}
-  \item{comp}{integer value indicating the component of interest.}
-  \item{block}{for an object of class \code{"sgcca"}, the block data sets can be specified as an input vector, for example \code{c(1,2)} for the first two blocks. Default to NULL (all block data sets)}
-  \item{\ldots}{other arguments.}
+\item{object}{object of class inheriting from \code{"pls"}, \code{"spls"}, \code{"plsda"},\code{"splsda"}, \code{"pca"}, \code{"spca"}, \code{"sipca"}.}
+\item{comp}{integer value indicating the component of interest.}
+\item{block}{for an object of class \code{"sgcca"}, the block data sets can be specified as an input vector, for example \code{c(1,2)} for the first two blocks. Default to NULL (all block data sets)}
+\item{\ldots}{other arguments.}
 }
 
 \details{
 \code{selectVar} provides the variables selected on a given component. \\
-  \describe{
-    \item{\code{name}}{outputs the name of the selected variables (provided that the input data have colnames) ranked in decreasing order of importance.}
-    \item{\code{value}}{outputs the loading value for each selected variable, the loadings are ranked according to their absolute value.}
+\describe{
+\item{\code{name}}{outputs the name of the selected variables (provided that the input data have colnames) ranked in decreasing order of importance.}
+\item{\code{value}}{outputs the loading value for each selected variable, the loadings are ranked according to their absolute value.}
 }
 These functions are only implemented for the sparse versions.
 }
@@ -44,6 +44,7 @@ These functions are only implemented for the sparse versions.
 \author{Kim-Anh Lê Cao, Florian Rohart.}
 
 \examples{
+
 data(liver.toxicity)
 X = liver.toxicity$gene
 Y = liver.toxicity$clinic
@@ -54,16 +55,16 @@ liver.spca <- spca(X, ncomp = 1, keepX = 10)
 selectVar(liver.spca, comp = 1)$name
 selectVar(liver.spca, comp = 1)$value
 
+\dontrun{
 #example with sIPCA
 # -----------------
-\dontrun{
+
 liver.sipca <- sipca(X, ncomp = 3, keepX = rep(10, 3))
 selectVar(liver.sipca, comp = 1)
-}
 
 # example with sPLS
 # -----------------
-\dontrun{
+
 liver.spls = spls(X, Y, ncomp = 2, keepX = c(20, 40),keepY = c(5, 5))
 selectVar(liver.spls, comp = 2)
 
@@ -75,13 +76,13 @@ Y = srbct$class
 srbct.splsda = splsda(X, Y, ncomp = 2, keepX = c(5, 10))
 select = selectVar(srbct.splsda, comp = 2)
 select
-# this is a very specific case where a data set has no rownames. 
-srbct$gene.name[substr(select$select, 2,5),]  
-}
+# this is a very specific case where a data set has no rownames.
+srbct$gene.name[substr(select$select, 2,5),]
+
 
 # example with sGCCA
 # -----------------
-\dontrun{
+
 data(nutrimouse)
 
 # ! need to unmap the Y factor
@@ -90,12 +91,12 @@ data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid,Y)
 # in this design, gene expression and lipids are connected to the diet factor
 # and gene expression and lipids are also connected
 design = matrix(c(0,1,1,
-                  1,0,1,
-                  1,1,0), ncol = 3, nrow = 3, byrow = T)
+1,0,1,
+1,1,0), ncol = 3, nrow = 3, byrow = TRUE)
 #note: the penalty parameters need to be tuned
 wrap.result.sgcca = wrapper.sgcca(X = data, design = design, penalty = c(.3,.3, 1),
-                                  ncomp = 2,
-                                  scheme = "horst")
+ncomp = 2,
+scheme = "horst")
 
 #variables selected and loadings values on component 1 for the two blocs
 selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))
@@ -104,13 +105,13 @@ selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))
 selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'gene'$name
 selectVar(wrap.result.sgcca, comp = 1, block = c(1,2))$'lipid'$name
 
-#variables selected on component 2 for each block 
+#variables selected on component 2 for each block
 selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'gene'$name
 selectVar(wrap.result.sgcca, comp = 2, block = c(1,2))$'lipid'$name
 
 # loading value of the variables selected on the first block
 selectVar(wrap.result.sgcca, comp = 1, block = 1)$'gene'$value
 }
-
 }
 
+\value{none}

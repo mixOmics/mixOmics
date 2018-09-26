@@ -97,16 +97,17 @@ Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics fea
 data(stemcells)
 
 res = mint.plsda(X = stemcells$gene, Y = stemcells$celltype, ncomp = 3,
-    study = stemcells$study)
+study = stemcells$study)
 
 plotIndiv(res)
 
 #plot study-specific outputs for all studies
 plotIndiv(res, study = "all.partial")
 
+\dontrun{
 #plot study-specific outputs for study "2"
 plotIndiv(res, study = "2", col = 1:3, legend = TRUE)
-
+}
 }
 
 \keyword{regression}

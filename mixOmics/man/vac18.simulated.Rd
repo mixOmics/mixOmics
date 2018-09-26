@@ -16,11 +16,11 @@ analysis with sPLS-DA. This data set contains the expression simulated of 500 ge
 \format{
 A list containing the following components:
 \describe{
-    \item{\code{genes}}{data frame with 48 rows and 500 columns. The simulated expression of 500 genes for
-    48 subjects.}
-    \item{\code{sample}}{a vector indicating the repeated measurements on each unique subject. See Details.}
-    \item{\code{stimulation}}{a factor indicating the stimulation condition on each sample.}
-    \item{\code{time}}{a factor indicating the time condition on each sample.}
+\item{\code{genes}}{data frame with 48 rows and 500 columns. The simulated expression of 500 genes for
+48 subjects.}
+\item{\code{sample}}{a vector indicating the repeated measurements on each unique subject. See Details.}
+\item{\code{stimulation}}{a factor indicating the stimulation condition on each sample.}
+\item{\code{time}}{a factor indicating the time condition on each sample.}
 }
 }
 
@@ -43,3 +43,4 @@ integration of repeated measures experiments from two platforms. \emph{BMC Bioin
 }
 
 \keyword{datasets}
+\value{none}

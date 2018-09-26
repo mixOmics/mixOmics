@@ -8,3 +8,4 @@
 This function has been renamed 'image.tune.rcc', see \code{\link{image.tune.rcc}}.
 }
 
+\value{none}
