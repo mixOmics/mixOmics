@@ -50,7 +50,7 @@ scale = FALSE)
     
     # Borrowed from PRCOMP
     if (ncomp < ncol(X))
-    result$v = result$v[, 1:ncomp, drop = F]
+    result$v = result$v[, 1:ncomp, drop = FALSE]
     
     result$d = result$d/sqrt(max(1, nrow(X) - 1))
     

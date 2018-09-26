@@ -627,9 +627,9 @@ plot_parameters)
         ylim = lapply(1 : length(x), function(z) {c(min(y[[z]], min.ellipse[[z]][2, ]), max(y[[z]], max.ellipse[[z]][2, ]))})
         if(style == "ggplot2") # no lists, a single vector of two values is expected
         {
-            temp = matrix(unlist(xlim),ncol=2,byrow=T)
+            temp = matrix(unlist(xlim),ncol=2,byrow=TRUE)
             xlim = c(min(temp[,1]),max(temp[,2]))
-            temp = matrix(unlist(ylim),ncol=2,byrow=T)
+            temp = matrix(unlist(ylim),ncol=2,byrow=TRUE)
             ylim = c(min(temp[,1]),max(temp[,2]))
         }
         

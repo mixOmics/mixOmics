@@ -102,7 +102,7 @@ name.save = NULL)
         stop("'name.save' must be a character.", call. = FALSE)
     } else {
         if (!is.null(save))
-        name.save = paste0("network_",gsub(".", "_", deparse(substitute(mat)) ,fixed = T))
+        name.save = paste0("network_",gsub(".", "_", deparse(substitute(mat)) ,fixed = TRUE))
     }
     
     if (!is.null(save)){

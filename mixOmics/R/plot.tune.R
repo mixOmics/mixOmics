@@ -96,7 +96,7 @@ function(x, optimal = TRUE, sd = TRUE, legend.position = "topright", col, ...)
     if(!is.null(error.rate.sd))
     {
         for(j in 1:ncol(error))
-        plot_error_bar(x = as.numeric(names(error[, j])), y =error[, j] , uiw=error.rate.sd[, j], add=T, col = rep(col[j],each=nrow(error)))#, ...)
+        plot_error_bar(x = as.numeric(names(error[, j])), y =error[, j] , uiw=error.rate.sd[, j], add=TRUE, col = rep(col[j],each=nrow(error)))#, ...)
     }
 
 

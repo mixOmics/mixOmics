@@ -123,7 +123,7 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
         Y.hat.temp = Y.hat = list()
         for(j in 1:ncomp)
         {
-            Y.hat.temp[[j]] = ((as.matrix(t.pred[[1]][,1:j, drop = FALSE])/matrix( apply(variatesX[[1]][,1:j, drop = FALSE], 2,function(y){(norm(y, type = "2"))^2}),nrow=nrow(t.pred[[1]]),ncol=j,byrow=T))%*%t(Cmat)[1:j,, drop = FALSE])
+            Y.hat.temp[[j]] = ((as.matrix(t.pred[[1]][,1:j, drop = FALSE])/matrix( apply(variatesX[[1]][,1:j, drop = FALSE], 2,function(y){(norm(y, type = "2"))^2}),nrow=nrow(t.pred[[1]]),ncol=j,byrow=TRUE))%*%t(Cmat)[1:j,, drop = FALSE])
             #                *sigma.Y+means.Y
         }
         Ypred = sapply(Y.hat.temp, function(x){x*sigma.Y + means.Y}, simplify = "array")

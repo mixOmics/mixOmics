@@ -90,7 +90,7 @@ xlim = NULL,
             par(mar = c(4, max(7, max(sapply(colnames.X, nchar),na.rm = TRUE)/3), 4, 2))
         }
 
-        mp = barplot(df$importance, horiz = T, las = 1, col = col, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(df),
+        mp = barplot(df$importance, horiz = TRUE, las = 1, col = col, axisnames = TRUE, names.arg = colnames.X, #names.arg = row.names(df),
         cex.names = size.name, cex.axis = 0.7, beside = TRUE, border = border, xlim = xlim[i,])
         
         if ( (length(block) == 1 & is.null(title)) | (length(block) > 1 & missing(subtitle)))

@@ -263,7 +263,7 @@ name.save = NULL)
         stop("'name.save' must be a character.", call. = FALSE)
     } else {
         if (!is.null(save))
-        name.save = paste0("cim_",gsub(".", "_", deparse(substitute(mat)) ,fixed = T))
+        name.save = paste0("cim_",gsub(".", "_", deparse(substitute(mat)) ,fixed = TRUE))
     }
     
     #-- end checking --#
@@ -328,7 +328,7 @@ name.save = NULL)
         # if object is a pls or spls with a univariate Y, or multivariate but only 1 variable selected on all comp, we only plot a heatmap of X
         if(any(class.object %in%  object.pls))
         {
-            temp = apply(mat$loadings$Y,2,function(x){which(x!=0, arr.ind=T)}) # gives which variables are selected
+            temp = apply(mat$loadings$Y,2,function(x){which(x!=0, arr.ind=TRUE)}) # gives which variables are selected
             num.variable.selected.Y = table(unlist(temp))
             
             if (length(num.variable.selected.Y) == 1) #only one variable in Y to plot, will raise trouble so we switch from (s)pls to (s)plsda

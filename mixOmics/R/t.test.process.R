@@ -33,7 +33,7 @@ t.test.process = function(mat.error.rate, alpha = 0.01)
     for(opt in 1:max)
     {
         j=opt+1
-        temp = try(t.test(mat.error.rate[,opt],mat.error.rate[,j],alternative="greater")$p.value, silent=T) #t.test of "is adding X comp improves the overall results"
+        temp = try(t.test(mat.error.rate[,opt],mat.error.rate[,j],alternative="greater")$p.value, silent=TRUE) #t.test of "is adding X comp improves the overall results"
         if(any(class(temp) == "try-error") || is.na(temp)) # temp can be NaN when error.keepX is constant
         {
             pval = 1
@@ -47,7 +47,7 @@ t.test.process = function(mat.error.rate, alpha = 0.01)
         while(pval> (alpha) & j<max)
         {
             j=j+1
-            temp = try(t.test(mat.error.rate[,opt],mat.error.rate[,j],alternative="greater")$p.value, silent=T) #t.test of "is adding X comp improves the overall results"
+            temp = try(t.test(mat.error.rate[,opt],mat.error.rate[,j],alternative="greater")$p.value, silent=TRUE) #t.test of "is adding X comp improves the overall results"
             if(any(class(temp) == "try-error") || is.na(temp)) # temp can be NaN when error.keepX is constant
             {
                 pval = 1

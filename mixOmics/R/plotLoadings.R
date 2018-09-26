@@ -146,7 +146,7 @@ check.input.plotLoadings = function(object, block, study, subtitle, size.name, s
             }
             
             if(nrow(xlim) != length(block)) # we complete xlim to have one xlim per block
-            xlim = matrix(rep(xlim, length(block)), nrow = length(block), byrow=T)
+            xlim = matrix(rep(xlim, length(block)), nrow = length(block), byrow=TRUE)
         }
         
     } else {

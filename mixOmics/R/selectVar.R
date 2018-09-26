@@ -40,7 +40,7 @@ get.name.and.value=function(x,comp)
 {
     if(length(x[,comp,drop=FALSE]) > 1)
     {
-        name.var = names(sort(abs(x[,comp]), decreasing = T)[1:sum(x[,comp]!=0)])
+        name.var = names(sort(abs(x[,comp]), decreasing = TRUE)[1:sum(x[,comp]!=0)])
     } else {
         name.var = rownames(x) # when only one number, sort loses the name of the variable
     }

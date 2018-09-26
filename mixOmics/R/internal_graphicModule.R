@@ -223,7 +223,7 @@ background = NULL)
                     geom_text(data = subset(df, col == i & df$Block == levels(df$Block)[j]),
                     aes(label = names),
                     color = df[df$col == i & df$Block == levels(df$Block)[j], ]$col,
-                    size = df[df$col == i & df$Block == levels(df$Block)[j], ]$cex,show.legend  = F)
+                    size = df[df$col == i & df$Block == levels(df$Block)[j], ]$cex,show.legend  = FALSE)
                 } #else {
                 #  p = p + geom_point(data = subset(df, col == i & df$Block == levels(df$Block)[j]),
                 #   color = unique(df[df$col == i & df$Block == levels(df$Block)[j], ]$col),

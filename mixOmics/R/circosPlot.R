@@ -439,8 +439,8 @@ background.lines=FALSE,axis.width=1)
         dat.i   = c(col.v:ncol(dat)) 
         dat.m   = dat.in[,dat.i] 
         dat.m   = as.matrix(dat.m) 
-        dat.min = min(as.numeric(dat.m), na.rm=T) 
-        dat.max = max(as.numeric(dat.m), na.rm=T) 
+        dat.min = min(as.numeric(dat.m), na.rm=TRUE)
+        dat.max = max(as.numeric(dat.m), na.rm=TRUE) 
         
         v1 = as.numeric(chr.po[chr.i,2]) 
         v2 = as.numeric(chr.po[chr.i,3]) 

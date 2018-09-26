@@ -770,7 +770,7 @@ label.axes.box = "both"  )
             #-- Define layout
             mat = matrix(1 : (ceiling(length(cord.X)/2) * 2), ceiling(length(cord.X)/2), min(length(cord.X), 2), byrow = TRUE)
             if (legend){
-                mat = matrix(rep(mat,each=2),nrow=nrow(mat),byrow=T)
+                mat = matrix(rep(mat,each=2),nrow=nrow(mat),byrow=TRUE)
                 mat = cbind(mat,rep(max(mat) + 1, nrow(mat)))
             }
             

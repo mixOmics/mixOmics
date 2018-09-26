@@ -338,7 +338,7 @@ penalty = NULL, all.outputs = FALSE, misdata = NULL, is.na.A = NULL, ind.NA = NU
                     loadings.Astar[[k]][, comp] = mint.block.result$loadings.A[[k]]
                 } else {
                     for (k in 1 : J)
-                    loadings.Astar[[k]][, comp] = mint.block.result$loadings.A[[k]] - loadings.Astar[[k]][, (1 : comp - 1), drop = F] %*% drop(t(loadings.A[[k]][, comp]) %*% P[[k]][, 1 : (comp - 1), drop = F])
+                    loadings.Astar[[k]][, comp] = mint.block.result$loadings.A[[k]] - loadings.Astar[[k]][, (1 : comp - 1), drop = FALSE] %*% drop(t(loadings.A[[k]][, comp]) %*% P[[k]][, 1 : (comp - 1), drop = FALSE])
                 }
             } else {
                 loadings.Astar = NULL
