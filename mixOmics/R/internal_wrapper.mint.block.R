@@ -1,6 +1,6 @@
-#############################################################################################################
+################################################################################
 # Author :
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Florian Rohart,
 #
 # created: 22-04-2015
 # last modified: 04-10-2017
@@ -20,18 +20,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+################################################################################
 
 
-# perform the mint.pls on a subset of variables on one only dimension, deflate the intial matrices X and Y (already center by study)
+# perform the mint.pls on a subset of variables on one only dimension,
+# deflate the intial matrices X and Y (already center by study)
 
-# mean centering with attach and without modify.na, need to look at how to remove some of means/sigma when nearZerVar is used
-# we can have a list of studies for Discriminant Analyses, not for pls/spls as they would be overlapping batch effects
+# mean centering with attach and without modify.na, need to look at how to
+# remove some of means/sigma when nearZerVar is used
+# we can have a list of studies for Discriminant Analyses,
+# not for pls/spls as they would be overlapping batch effects
 
-# ========================================================================================================
-# internal_wrapper.mint.block: this function is a particular setting of internal_mint.block,
+# ==============================================================================
+# internal_wrapper.mint.block: this function is a particular setting of
+#   internal_mint.block,
 # the formatting of the input is checked in internal_wrapper.mint.block
-# ========================================================================================================
+# ==============================================================================
 # used in (mint).block approaches
 
 internal_wrapper.mint.block = function(X,
@@ -63,8 +67,8 @@ all.outputs=TRUE
     
 
     # checks (near.zero.var is done there)
-    check=Check.entry.wrapper.mint.block(X = X, Y = Y, indY = indY, ncomp = ncomp,
-    keepX = keepX, keepY = keepY,
+    check=Check.entry.wrapper.mint.block(X = X, Y = Y, indY = indY,
+    ncomp = ncomp, keepX = keepX, keepY = keepY,
     study = study, design = design, init = init, scheme = scheme, scale = scale,
     near.zero.var = near.zero.var, mode = mode, tol = tol,
     max.iter = max.iter)
@@ -80,14 +84,16 @@ all.outputs=TRUE
     init = check$init
     nzv.A = check$nzv.A
     
-    #---------------------------------------------------------------------------#
+    #--------------------------------------------------------------------------#
     #-- keepA ----------------------------------------------------#
     
     # shaping keepA, will need to be done somewhere before eventually
     
     if(!is.null(test.keepX) & !is.null(test.keepY))
     {
-        test.keepA = lapply(c(test.keepX, Y=test.keepY),sort) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
+        test.keepA = lapply(c(test.keepX, Y=test.keepY),sort)
+        #sort test.keepX so as to be sure to chose the smallest in case of
+        # several minimum
     } else {test.keepA=NULL}
     
     keepAA = vector("list", length = max(ncomp)) # one keepA per comp
@@ -101,10 +107,11 @@ all.outputs=TRUE
     keepA = lapply(keepAA, expand.grid)
     
     #print(keepA)
-    # keepA[[comp]] is a matrix where each row is all the keepX the test over the block (each block is a column)
+    # keepA[[comp]] is a matrix where each row is all the keepX the test over
+    # the block (each block is a column)
     
     #-- keepA ----------------------------------------------------#
-    #---------------------------------------------------------------------------#
+    #--------------------------------------------------------------------------#
 
 
     # A: list of matrices
@@ -112,13 +119,14 @@ all.outputs=TRUE
     # design: design matrix, links between matrices. Diagonal must be 0
     # ncomp: vector of ncomp, per matrix
     # scheme: a function "g", refer to the article (thanks Benoit)
-    # scale: do you want to scale ? mean is done by default and cannot be changed (so far)
+    # scale: do you want to scale ? mean is done by default
     # init: one of "svd" or "random", initialisation of the algorithm
     # tol: nobody cares about this
     # mode: canonical, classic, invariant, regression
     # max.iter: nobody cares about this
     # study: factor for each matrix of A, must be a vector
-    # keepA: keepX of spls for each matrix of A. must be a list. Each entry must be of the same length (max ncomp)
+    # keepA: keepX of spls for each matrix of A. must be a list.
+    #   Each entry must be of the same length (max ncomp)
     # near.zero.var: do you want to remove variables with very small variance
     
     result=internal_mint.block(A = A,
@@ -134,8 +142,8 @@ all.outputs=TRUE
     max.iter = max.iter,
     study = study,
     keepA = keepA,
-    misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA, ind.NA.col = ind.NA.col,
-    all.outputs= all.outputs)
+    misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA,
+    ind.NA.col = ind.NA.col, all.outputs= all.outputs)
        
     if(near.zero.var)
     result$nzv=nzv.A

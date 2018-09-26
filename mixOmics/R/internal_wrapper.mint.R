@@ -1,6 +1,6 @@
-#############################################################################################################
+################################################################################
 # Author :
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Florian Rohart,
 #
 # created: 22-04-2015
 # last modified: 05-10-2017
@@ -20,14 +20,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+################################################################################
 
 
-# ========================================================================================================
-# internal_wrapper.mint: perform a vertical PLS on a combination of experiments, input as a matrix in X
-# this function is a particular setting of internal_mint.block, the formatting of the input is checked in Check.entry.pls
+# ==============================================================================
+# internal_wrapper.mint: perform a vertical PLS on a combination of experiments,
+#   input as a matrix in X
+# this function is a particular setting of internal_mint.block, the formatting
+#   of the input is checked in Check.entry.pls
 # internal function. Do not export in NAMESPACE.
-# ========================================================================================================
+# ==============================================================================
 # used in (mint).(s)pls(da)
 
 # X: numeric matrix of predictors
@@ -36,14 +38,19 @@
 # study: grouping factor indicating which samples are from the same study
 # keepX: number of \eqn{X} variables kept in the model on the last components.
 # keepY: number of \eqn{Y} variables kept in the model on the last components.
-# mode: input mode, one of "canonical", "classic", "invariant" or "regression". Default to "regression"
-# scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
-# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
+# mode: input mode, one of "canonical", "classic", "invariant" or "regression".
+#   Default to "regression"
+# scale: boleean. If scale = TRUE, each block is standardized to zero means and
+#   unit variances (default: TRUE).
+# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function
+#   (should be set to TRUE in particular for data with many zero values).
 # max.iter: integer, the maximum number of iterations.
 # tol: Convergence stopping value.
 # logratio: one of "none", "CLR"
-# DA: indicate whether it's a DA analysis, only used for the multilvel approach with withinVariation
-# multilevel: multilevel is passed to multilevel(design=) in withinVariation. Y is ommited and should be included in multilevel design
+# DA: indicate whether it's a DA analysis, only used for the multilvel approach
+#   with withinVariation
+# multilevel: multilevel is passed to multilevel(design=) in withinVariation.
+#   Y is ommited and should be included in multilevel design
 
 internal_wrapper.mint = function(X,
 Y,
@@ -58,9 +65,9 @@ scale = FALSE,
 near.zero.var = FALSE,
 max.iter = 100,
 tol = 1e-06,
-logratio = "none",   # one of "none", "CLR"
-DA = FALSE,           # indicate whether it's a DA analysis, only used for the multilvel approach with withinVariation
-multilevel = NULL,   # multilevel is passed to multilevel(design=) in withinVariation. Y is ommited and should be included in multilevel design
+logratio = "none", 
+DA = FALSE,
+multilevel = NULL,
 misdata = NULL, is.na.A = NULL, ind.NA = NULL, ind.NA.col = NULL,
 all.outputs=FALSE,
 remove.object=NULL
@@ -73,7 +80,8 @@ remove.object=NULL
     #-- validation des arguments --#
    
     check = Check.entry.pls(X, Y, ncomp, keepX, keepY, mode=mode, scale=scale,
-    near.zero.var=near.zero.var, max.iter=max.iter ,tol=tol ,logratio=logratio ,DA=DA, multilevel=multilevel)
+    near.zero.var=near.zero.var, max.iter=max.iter ,tol=tol ,logratio=logratio,
+        DA=DA, multilevel=multilevel)
     X = check$X
     input.X = X # save the checked X, before logratio/multileve/scale
     Y = check$Y
@@ -103,9 +111,11 @@ remove.object=NULL
     stop(paste0("'study' must be a factor of length ",nrow(X),"."))
     
     if (any(table(study) <= 1))
-    stop("At least one study has only one sample, please consider removing before calling the function again")
+    stop("At least one study has only one sample, please consider removing
+    before calling the function again")
     if (any(table(study) < 5))
-    warning("At least one study has less than 5 samples, mean centering might not do as expected")
+    warning("At least one study has less than 5 samples, mean centering might
+    not do as expected")
     
     design = matrix(c(0,1,1,0), ncol = 2, nrow = 2, byrow = TRUE)
 
@@ -117,14 +127,15 @@ remove.object=NULL
     
     #as X may have changed
     if (ncomp > min(ncol(X), nrow(X)))
-    stop("'ncomp' should be smaller than ", min(ncol(X), nrow(X)), call. = FALSE)
+    stop("'ncomp' should be smaller than ", min(ncol(X), nrow(X)),
+    call. = FALSE)
     
     #-- logratio transformation --#
     #-----------------------------#
     
     
-    #---------------------------------------------------------------------------#
-    #-- multilevel approach ----------------------------------------------------#
+    #--------------------------------------------------------------------------#
+    #-- multilevel approach ---------------------------------------------------#
     
     if (!is.null(multilevel))
     {
@@ -141,29 +152,33 @@ remove.object=NULL
             #-- Need to set Y variable for 1 or 2 factors
             Y = multilevel[, -1,drop=FALSE]
             if (ncol(Y)>0)
-            Y = apply(Y, 1, paste, collapse = ".")  #  paste is to combine in the case we have 2 levels
+            Y = apply(Y, 1, paste, collapse = ".")
+            #  paste is to combine in the case we have 2 levels
             
             Y = as.factor(Y)
             Y.factor = Y
             Y = unmap(Y)
             colnames(Y) = levels(Y)
             rownames(Y) = rownames(X)
-            # if DA keepY should be all the levels (which is not happening in the check because of multilevel
+            # if DA keepY should be all the levels
+            # (which is not happening in the check because of multilevel
             keepY = rep(ncol(Y),ncomp)
         }
     }
-    #-- multilevel approach ----------------------------------------------------#
-    #---------------------------------------------------------------------------#
+    #-- multilevel approach ---------------------------------------------------#
+    #--------------------------------------------------------------------------#
     
     
-    #---------------------------------------------------------------------------#
+    #--------------------------------------------------------------------------#
     #-- keepA ----------------------------------------------------#
     
     # shaping keepA, contains all the keepX/keepY models to be constructed
     
     if(!is.null(test.keepX) & !is.null(test.keepY))
     {
-        test.keepA = lapply(list(X=test.keepX, Y=test.keepY),sort) #sort test.keepX so as to be sure to chose the smallest in case of several minimum
+        test.keepA = lapply(list(X=test.keepX, Y=test.keepY),sort)
+        #sort test.keepX so as to be sure to chose the smallest in case of
+        # several minimum
     } else {test.keepA=NULL}
     
     keepA = vector("list", length = ncomp) # one keepA per comp
@@ -176,23 +191,26 @@ remove.object=NULL
     
     keepA = lapply(keepA, expand.grid)
     
-    # keepA[[comp]] is a matrix where each row is all the keepX the test over the block (each block is a column)
+    # keepA[[comp]] is a matrix where each row is all the keepX the test over
+    # the block (each block is a column)
 
     #-- keepA ----------------------------------------------------#
-    #---------------------------------------------------------------------------#
+    #--------------------------------------------------------------------------#
 
 
-    #---------------------------------------------------------------------------#
+    #--------------------------------------------------------------------------#
     #-- pls approach ----------------------------------------------------#
-    result = internal_mint.block(A = list(X = X, Y = Y), indY = 2, mode = mode, ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
-    design = design, keepA = keepA,
-    scale = scale, scheme = "horst",init="svd", study = study, misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA, ind.NA.col = ind.NA.col,
-    all.outputs= all.outputs, remove.object=c("X"))
+    result = internal_mint.block(A = list(X = X, Y = Y), indY = 2, mode = mode,
+    ncomp = c(ncomp, ncomp), tol = tol, max.iter = max.iter,
+    design = design, keepA = keepA, scale = scale, scheme = "horst",init="svd",
+    study = study, misdata = misdata, is.na.A = is.na.A, ind.NA = ind.NA,
+    ind.NA.col = ind.NA.col, all.outputs= all.outputs, remove.object=c("X"))
     
     #-- pls approach ----------------------------------------------------#
-    #---------------------------------------------------------------------------#
+    #--------------------------------------------------------------------------#
     
-    # result contains all loadings and variates of the test.keepX and test.keepY (if not null)
+    # result contains all loadings and variates of the test.keepX and
+    # test.keepY (if not null)
     # if no test.keepX and test.keepY, then it's classical outputs
     
     result$keepX = keepX

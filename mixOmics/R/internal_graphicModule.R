@@ -723,7 +723,7 @@ background = NULL)
             cex.axis = size.axis, cex.lab = size.xlabel, lwd = point.lwd)#,...)
             
             #-- initialise plot
-=            if (nlevels(df$Block) == 1 & !any(class.object%in%c(object.mint,
+            if (nlevels(df$Block) == 1 & !any(class.object%in%c(object.mint,
                 "sgcca", "rgcca")))
                 # avoid double title when only one block is plotted
             {

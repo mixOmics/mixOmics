@@ -1,6 +1,6 @@
-#############################################################################################################
+################################################################################
 # Author :
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Florian Rohart,
 #
 # created: 24-05-2015
 # last modified: 04-10-2017
@@ -20,11 +20,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+################################################################################
 
-# ========================================================================================================
-# internal_predict.DA: prediction module for Discriminant Analysis. Used in 'predict.mint.block.pls.R'
-# ========================================================================================================
+# ==============================================================================
+# internal_predict.DA: prediction module for Discriminant Analysis.
+#   Used in 'predict.mint.block.pls.R'
+# ==============================================================================
 
 
 
@@ -43,7 +44,8 @@
 internal_predict.DA = function(object, out, q, dist, weights)
 {
     
-    if (length(grep("plsda",class(object)))==0) # a DA analysis (mint).(block).(s)plsda
+    # a DA analysis (mint).(block).(s)plsda
+    if (length(grep("plsda",class(object)))==0)
     stop("'Object' is not from a Discriminant Analysis", call.=FALSE)
     
     out.DA = list()
@@ -60,7 +62,9 @@ internal_predict.DA = function(object, out, q, dist, weights)
     G = cls = list()
     for (i in 1 : J)
     {
-        G[[i]] = sapply(1:q, function(x) {apply(as.matrix(variatesX[[i]][Y.prim[, x] == 1,,drop=FALSE]), 2, mean)})
+        G[[i]] = sapply(1:q, function(x)
+        {apply(as.matrix(variatesX[[i]][Y.prim[, x] == 1,
+            ,drop=FALSE]), 2, mean)})
         if (ncomp[i] == 1)
         G[[i]] = t(t(G[[i]]))
         else
@@ -74,15 +78,19 @@ internal_predict.DA = function(object, out, q, dist, weights)
     ### Start: Maximum distance
     if (any(dist == "all") || any(dist == "max.dist"))
     {
-        cls$max.dist = lapply(1:J, function(x){matrix(sapply(1:ncomp[x], ### List level
-            function(y){apply(Y.hat[[x]][, , y, drop = FALSE], 1,  ### component level
+        cls$max.dist = lapply(1:J, function(x){matrix(sapply(1:ncomp[x],
+            ### List level
+            function(y){apply(Y.hat[[x]][, , y, drop = FALSE], 1,
+                ### component level
                 function(z){
                     paste(levels(Y)[which(z == max(z))], collapse = "/")
                 }) ### matrix level
             }), nrow = nrow(newdata[[x]]), ncol = ncomp[x])
         })
-        cls$max.dist = lapply(1:J, function(x){colnames(cls$max.dist[[x]]) = paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
-            rownames(cls$max.dist[[x]]) = rownames(newdata[[x]]); return(cls$max.dist[[x]])})
+        cls$max.dist = lapply(1:J, function(x){colnames(cls$max.dist[[x]]) =
+            paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
+            rownames(cls$max.dist[[x]]) = rownames(newdata[[x]]);
+            return(cls$max.dist[[x]])})
         names(cls$max.dist)=names(object$X)
     }
     
@@ -110,12 +118,14 @@ internal_predict.DA = function(object, out, q, dist, weights)
             
             for (h in 1 : ncomp[[i]])
             {
-                cl.id = apply(matrix(t.pred[[i]][, 1:h], ncol = h), 1, function(x) {centroids.fun(x = x, G = G, h = h, i = i)})
+                cl.id = apply(matrix(t.pred[[i]][, 1:h], ncol = h), 1,
+                function(x) {centroids.fun(x = x, G = G, h = h, i = i)})
                 cl[[i]][, h] = cl.id
             }
         }
         
-        cls$centroids.dist = lapply(1:J, function(x){colnames(cl[[x]]) = paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
+        cls$centroids.dist = lapply(1:J, function(x){colnames(cl[[x]]) =
+            paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
             rownames(cl[[x]]) = rownames(newdata[[x]]); return(cl[[x]])})
         names(cls$centroids.dist)=names(object$X)
     }### End: Centroids distance
@@ -146,12 +156,14 @@ internal_predict.DA = function(object, out, q, dist, weights)
             cl[[i]] = matrix(nrow = nrow(newdata[[1]]), ncol = ncomp[i])
             
             for (h in 1:ncomp[[i]]) {
-                cl.id = apply(matrix(t.pred[[i]][, 1:h], ncol = h), 1, Sr.fun, G = G, Yprim = Y.prim, h = h, i = i)
+                cl.id = apply(matrix(t.pred[[i]][, 1:h], ncol = h), 1, Sr.fun,
+                G = G, Yprim = Y.prim, h = h, i = i)
                 cl[[i]][, h] = cl.id
             }
         }
         
-        cls$mahalanobis.dist = lapply(1:J, function(x){colnames(cl[[x]]) = paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
+        cls$mahalanobis.dist = lapply(1:J, function(x){colnames(cl[[x]]) =
+            paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
             rownames(cl[[x]]) = rownames(newdata[[x]]);return(cl[[x]])})
         names(cls$mahalanobis.dist)=names(object$X)
     } ### End: Mahalanobis distance
@@ -160,8 +172,10 @@ internal_predict.DA = function(object, out, q, dist, weights)
     
     ### End if discriminant analysis is performed
     
-    # at this stage, we have the classification of each sample for each dataset of object$X
-    # now we need to combine the classification by vote (majority wins), only when more than one block, otherwise 'vote' is classic classification
+    # at this stage, we have the classification of each sample for each dataset
+    #   of object$X
+    # now we need to combine the classification by vote (majority wins),
+    #  only when more than one block, otherwise 'vote' is classic classification
     if (length(object$X)>1)
     {
         for (ijk in 1:length(out.DA$class))# loop on the dist
@@ -173,9 +187,13 @@ internal_predict.DA = function(object, out, q, dist, weights)
                 temp[, , i] = out.DA$class[[ijk]][[i]][, 1:min(ncomp)]
                 
             }
-            # look at the majority vote for all dataset of object$X (with table), if more than a unique max, we put NA
-            table.temp = apply(temp,c(1,2), function(x){a=table(x); if (length(which(a==max(a)))==1) {b=names(which.max(a))}else{b=NA}; b})
-            colnames(table.temp) = colnames(out.DA$class[[ijk]][[i]])[1:min(ncomp)]
+            # look at the majority vote for all dataset of object$X (with table)
+            #   if more than a unique max, we put NA
+            table.temp = apply(temp,c(1,2), function(x)
+            {a=table(x); if (length(which(a==max(a)))==1)
+                {b=names(which.max(a))}else{b=NA}; b})
+            colnames(table.temp) =
+            colnames(out.DA$class[[ijk]][[i]])[1:min(ncomp)]
             rownames(table.temp) = rownames(out.DA$class[[ijk]][[i]])
             out.DA$MajorityVote[[ijk]] = table.temp
         }
@@ -196,17 +214,22 @@ internal_predict.DA = function(object, out, q, dist, weights)
                 for(comp in 1:min(ncomp)){ #comp
                     data.temp=NULL
                     for(j in 1:J){ #block
-                        data.temp = rbind(data.temp,out.DA$class[[i]][[j]][,comp,drop=FALSE])
+                        data.temp = rbind(data.temp,
+                            out.DA$class[[i]][[j]][,comp,drop=FALSE])
                     }
                     colnames(data.temp)="pred"
-                    temp=data.frame(data.temp,indiv=rownames(data.temp),weights=rep(weights,each=nrow(out.DA$class[[1]][[1]])))
-                    ag = aggregate(temp$weights, by=list(temp$pred, temp$indiv), FUN=sum)
-                    data_max = ag %>% group_by(Group.2) %>% filter(row_number(x)==n())
+                    temp=data.frame(data.temp,indiv=rownames(data.temp),
+                    weights=rep(weights,each=nrow(out.DA$class[[1]][[1]])))
+                    ag = aggregate(temp$weights,
+                    by=list(temp$pred, temp$indiv), FUN=sum)
+                    data_max = ag %>% group_by(Group.2) %>%
+                    filter(row_number(x)==n())
                     out.comp = as.matrix(data_max[,1])
                     rownames(out.comp) = as.matrix(data_max[,2])
                     colnames(out.comp) = paste0("comp",comp)
                     
-                    out[,comp] = out.comp[match(rownames(out),rownames(out.comp)),]
+                    out[,comp] = out.comp[match(rownames(out),
+                    rownames(out.comp)),]
                 }
 
                 out.WeightedVote[[i]] = out
@@ -217,13 +240,20 @@ internal_predict.DA = function(object, out, q, dist, weights)
             
             
             if(FALSE){
-            out.DA$WeightedVote = lapply(out.DA$class, function(x){ # x is a distance
-                class.per.comp = lapply(1:min(ncomp), function(y) {matrix(sapply(x, function(z)  z[,y, drop = FALSE]),ncol=J)}) # combine the results per component
+            out.DA$WeightedVote = lapply(out.DA$class, function(x){
+                # x is a distance
+                class.per.comp = lapply(1:min(ncomp), function(y) {
+                    matrix(sapply(x, function(z)
+                    z[,y, drop = FALSE]),ncol=J)})
+                # combine the results per component
                 names(class.per.comp) = paste0("comp",1:min(ncomp))
-                class.weighted.per.comp = sapply(class.per.comp, function(y){ # for each component
-                    apply(y,1,function(z){  # we aggregate the results of each individuals using the 'weights'
+                class.weighted.per.comp = sapply(class.per.comp, function(y){
+                    # for each component
+                    apply(y,1,function(z){
+            # we aggregate the results of each individuals using the 'weights'
                         temp = aggregate(weights,list(as.character(z)),sum)
-                        ind = which(temp[,2]== max (temp[,2]))# if two max, then NA
+                        ind = which(temp[,2]== max (temp[,2]))
+                        # if two max, then NA
                         if(length(ind) == 1)
                         {
                             res = as.character(temp[ind, 1])
@@ -235,11 +265,12 @@ internal_predict.DA = function(object, out, q, dist, weights)
                     })
                     
                 })
-                class.weighted.per.comp = matrix(class.weighted.per.comp, nrow = nrow(class.per.comp[[1]]))
+                class.weighted.per.comp = matrix(class.weighted.per.comp,
+                nrow = nrow(class.per.comp[[1]]))
                 colnames(class.weighted.per.comp) = names(class.per.comp)
-                rownames(class.weighted.per.comp) = rownames(out.DA$MajorityVote[[1]])
+                rownames(class.weighted.per.comp) =
+                rownames(out.DA$MajorityVote[[1]])
                 class.weighted.per.comp
-                #class.per.comp = lapply(class.per.comp, function(y){rownames(y) = rownames(out.DA$MajorityVote[[1]]); colnames(y) = names(x); y})
 
             })
             }

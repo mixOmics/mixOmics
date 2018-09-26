@@ -317,11 +317,9 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist",
                 neighbour = contour.temp = NULL
                 # around the point that is in the contour
                 for(x in c(a-incrementx, a, a+incrementx))
-                {
-                     # around the point that is in the contour
-                     for(y in c(b-incrementy, b, b+incrementy))
-                    {
-                        # (x,y) is a neighbour of (a,b) and I want to see
+                {# around the point that is in the contour
+                    for(y in c(b-incrementy, b, b+incrementy))
+                    {# (x,y) is a neighbour of (a,b) and I want to see
                         # whether it has 8+1 neighbours or less
                         res = 0
                         for(xx in c(x-incrementx, x, x+incrementx))
