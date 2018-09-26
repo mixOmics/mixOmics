@@ -1,9 +1,9 @@
-Package: mixOmics
+Package: BiomixOmics
 Type: Package
 Title: Omics Data Integration Project
 Version: 0.0.2
 Date: 2018-09-26
-Depends: R (>= 3.50), MASS, lattice, ggplot2
+Depends: R (>= 3.5.0), MASS, lattice, ggplot2
 Imports: igraph, rgl, ellipse, corpcor, RColorBrewer, parallel,
         dplyr, tidyr, reshape2, methods, matrixStats, rARPACK, gridExtra
 Author: Kim-Anh Le Cao, Florian Rohart, Ignacio Gonzalez, Sebastien Dejean with key contributors Benoit Gautier, Francois Bartolo
