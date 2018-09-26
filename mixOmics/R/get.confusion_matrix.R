@@ -1,7 +1,6 @@
-#############################################################################################################
+################################################################################
 # Authors:
-#   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Florian Rohart,
 #
 # created: 2017
 # last modified: 31-03-2017
@@ -21,15 +20,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+################################################################################
 
 
-# ========================================================================================================
-# get.confusion_matrix: create confusion table between a vector of true classes and a vector of predicted classes
-# ========================================================================================================
+# =============================================================================
+# get.confusion_matrix: create confusion table between a vector of true classes
+#   and a vector of predicted classes
+# =============================================================================
 
 # truth: factor of true classes
-# levels: levels of the 'truth' factor. Optional parameters that can be used when there are some missing levels in `truth' compared to the fitted model
+# levels: levels of the 'truth' factor. Optional parameters that can be used
+#   when there are some missing levels in `truth' compared to the fitted model
 # predicted: vector of predicted classes. Can contain NA.
 
 get.confusion_matrix = function(truth, all.levels, predicted)
@@ -48,16 +49,19 @@ get.confusion_matrix = function(truth, all.levels, predicted)
     
     nlevels.truth = length(all.levels)
     
-    ClassifResult = array(0,c(nlevels.truth, nlevels.truth + 1)) #+1 for NA prediction
+    ClassifResult = array(0,c(nlevels.truth, nlevels.truth + 1))
+    #+1 for NA prediction
     rownames(ClassifResult) = all.levels
-    colnames(ClassifResult) = paste("predicted.as.",c(all.levels, "NA"), sep = "")
+    colnames(ClassifResult) = paste("predicted.as.",c(all.levels, "NA"),
+    sep = "")
     
     #--------record of the classification accuracy for each level of Y
     for(i in 1:nlevels.truth)
     {
         ind.i = which(truth == all.levels[i])
         for(ij in 1:nlevels.truth)
-        ClassifResult[i,ij] = sum(predicted[ind.i] == all.levels[ij], na.rm = TRUE)
+        ClassifResult[i,ij] = sum(predicted[ind.i] == all.levels[ij],
+        na.rm = TRUE)
         
         # if some NA, we add them in the last column (ij+1 = nlevels.truth + 1)
         if(sum(is.na(predicted[ind.i]))>0)
@@ -81,7 +85,8 @@ get.BER = function(confusion)
     #calculation of the BER
     ClassifResult.temp = confusion
     diag(ClassifResult.temp) = 0
-    BER = sum(apply(ClassifResult.temp,1,sum,na.rm = TRUE)/apply(confusion,1,sum,na.rm = TRUE),na.rm = TRUE)/nlev
+    BER = sum(apply(ClassifResult.temp,1,sum,na.rm = TRUE)/apply(confusion,1,
+        sum,na.rm = TRUE),na.rm = TRUE)/nlev
     return(BER)
 }
 

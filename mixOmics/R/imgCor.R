@@ -1,8 +1,8 @@
-#############################################################################################################
+###############################################################################
 # Authors:
-#   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-#   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-#   Florian Rohart, Australian Institute for Bioengineering and Nanotechnology, University of Queensland, Brisbane, QLD.
+#   Ignacio Gonzalez,
+#   Kim-Anh Le Cao,
+#   Florian Rohart,
 #
 # created: 2009
 # last modified: 2015
@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+###############################################################################
 
 
 # -----------------------------------------

@@ -1,8 +1,8 @@
-#############################################################################################################
+################################################################################
 # Author :
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-#   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-#   Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Florian Rohart,
+#   Kim-Anh Le Cao,
+#   Benoit Gautier,
 #
 # created: 22-04-2015
 # last modified: 04-10-2017
@@ -22,14 +22,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+################################################################################
 
 
-# ========================================================================================================
-# Internal helpers functions to run "mixOmics" and "internal_mint.block" functions
-# ========================================================================================================
+# =============================================================================
+# Internal helpers functions to run "mixOmics" and "internal_mint.block"
+# =============================================================================
 
-# Some of these functions have been borrowed from the RGCCA package, as indicated below
+# Some of these functions have been borrowed from the RGCCA package,
+#   as indicated below
 
 # --------------------------------------
 # study_split: used in 'internal_mint.block.R' and 'predict.mint.block.pls.R'
@@ -43,16 +44,19 @@ get.weights = function(variates, indY)
     {
         for(i in 1:length(variates)){
             corDat <- rep(0, length(variates))
-            names(corDat) <- paste("cor", names(variates)[i], names(variates), sep = "_")
+            names(corDat) <- paste("cor", names(variates)[i], names(variates),
+            sep = "_")
             for(j in 1:length(variates)){
-                corDat[j] <- as.numeric(cor(variates[[i]][,comp], variates[[j]][,comp]))
+                corDat[j] <- as.numeric(cor(variates[[i]][,comp],
+                variates[[j]][,comp]))
             }
             x.xList[[compt]] <- corDat
             compt = compt +1
         }
     }
     corMat.diablo <- do.call(rbind, x.xList)
-    rownames(corMat.diablo) <- paste(names(variates),".comp",rep(1:ncomp,each=length(variates)),sep="")
+    rownames(corMat.diablo) <- paste(names(variates),".comp",
+    rep(1:ncomp,each=length(variates)),sep="")
     colnames(corMat.diablo) <- names(variates)
     
     temp = matrix(corMat.diablo[,indY],ncol=ncomp)
@@ -105,16 +109,18 @@ soft_thresholding_L1 = function(x,nx)
         if (any(rank(absa, ties.method = "max") <= nx))
         {
             x = ifelse(rank(absa, ties.method = "max") <= nx, 0,
-                        sign(x) * (absa - max(absa[rank(absa, ties.method = "max") <= nx])))
+                        sign(x) * (absa - max(absa[rank(absa,
+                        ties.method = "max") <= nx])))
         }
     }
     
     x
 }
 
-# ----------------------------------------------------------------------------------------------------------
-# soft.threshold() - soft-thresholds a vector such that the L1-norm constraint is satisfied.
-# ----------------------------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# soft.threshold() - soft-thresholds a vector such that
+# the L1-norm constraint is satisfied.
+# -----------------------------------------------------------------------------
 soft.threshold = function (x, sumabs = 1)
 return(soft(x, BinarySearch(x, sumabs)))
 
@@ -177,13 +183,15 @@ sparsity=function(loadings.A, keepA, penalty=NULL)
 # --------------------------------------
 # scaling with or without bias: used in mean_centering_per_study (below)
 # --------------------------------------
-scale.function_old=function(temp, scale = TRUE) # problem: divide by n instead of n-#NA
+scale.function_old=function(temp, scale = TRUE)
+# problem: divide by n instead of n-#NA
 {
     meanX = colMeans(temp, na.rm = TRUE)
     data.list.study.scale_i = t(t(temp) - meanX)
     if (scale)
     {
-        sqrt.sdX = sqrt(colSums(data.list.study.scale_i^2, na.rm = TRUE) / (nrow(temp) - 1))
+        sqrt.sdX = sqrt(colSums(data.list.study.scale_i^2, na.rm = TRUE) /
+        (nrow(temp) - 1))
         data.list.study.scale_i = t(t(data.list.study.scale_i) / sqrt.sdX)
     } else {
         sqrt.sdX = NULL
@@ -193,12 +201,14 @@ scale.function_old=function(temp, scale = TRUE) # problem: divide by n instead o
     #if (sum(is.na.data) > 0)
     #data.list.study.scale_i[is.na.data] = 0
     
-    out = list(data_scale=data.list.study.scale_i, meanX=meanX, sqrt.sdX=sqrt.sdX)
+    out = list(data_scale=data.list.study.scale_i, meanX=meanX,
+    sqrt.sdX=sqrt.sdX)
     return(out)
 }
 
 # --------------------------------------
-# scaling, using colSds from library(matrixStats), used in mean_centering_per_study (below)
+# scaling, using colSds from library(matrixStats),
+# used in mean_centering_per_study (below)
 # --------------------------------------
 scale.function=function(temp, scale = TRUE)
 {
@@ -222,7 +232,8 @@ scale.function=function(temp, scale = TRUE)
     #if (sum(is.na.data) > 0)
     #data.list.study.scale_i[is.na.data] = 0
     
-    out = list(data_scale=data.list.study.scale_i, meanX=meanX, sqrt.sdX=sqrt.sdX)
+    out = list(data_scale=data.list.study.scale_i, meanX=meanX,
+    sqrt.sdX=sqrt.sdX)
     return(out)
 }
 
@@ -263,7 +274,8 @@ mean_centering_per_study=function(data, study, scale)
             attr(concat.data,paste0("means:", levels(study)[m])) = meanX[[m]]
             if(scale)
             {
-                attr(concat.data,paste0("sigma:", levels(study)[m])) = sqrt.sdX[[m]]
+                attr(concat.data,paste0("sigma:", levels(study)[m])) =
+                sqrt.sdX[[m]]
             } else {
                 attr(concat.data,paste0("sigma:", levels(study)[m])) = NULL
             }
@@ -319,12 +331,12 @@ tau.estimate = function (x)
 }
 
 
-#############################################################################################################
+################################################################################
 # Functions acquired from RGCCA R-library
-#############################################################################################################
-# ----------------------------------------------------------------------------------------------------------
+################################################################################
+# ------------------------------------------------------------------------------
 # cov2() - Compute biased and unbiased covariance and variance estimates
-# ----------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # used in 'internal_mint.block.R'
 cov2 = function (x, y = NULL, bias = FALSE) {
     n = NROW(x)
@@ -346,9 +358,9 @@ cov2 = function (x, y = NULL, bias = FALSE) {
 }
 
 
-# ----------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # miscrossprod() - Compute cross-product between vectors x and y
-# ----------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # used in 'internal_mint.block.R'
 miscrossprod = function (x, y) {
     d.p = sum(drop(x) * drop(y), na.rm = TRUE)
@@ -357,9 +369,9 @@ miscrossprod = function (x, y) {
 }
 
 
-# ----------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # deflation()
-# ----------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # used in defl.select (below)
 deflation = function(X, y, misdata.q, is.na.A.q, ind.NA){
     # Computation of the residual matrix R
@@ -389,7 +401,8 @@ deflation = function(X, y, misdata.q, is.na.A.q, ind.NA){
         
         if(length(ind.NA)>0)
         {
-            temp = drop(y) %o% rep(1, length(ind.NA)) # should be n*p, but we limit it to n* where there's NA
+            temp = drop(y) %o% rep(1, length(ind.NA))
+            # should be n*p, but we limit it to n* where there's NA
             temp[is.na.A.q[,ind.NA,drop=FALSE]] = 0
             d.loadings.A.norm[ind.NA] = apply(temp,2, crossprod)
         }
@@ -409,36 +422,46 @@ deflation = function(X, y, misdata.q, is.na.A.q, ind.NA){
 }
 
 
-# ----------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # defl.select() - computes residual matrices
-# ----------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # used in 'internal_mint.block.R'
-defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical", aa = NULL, misdata, is.na.A, ind.NA) { ### Start: Add new parameter for estimation classic mode
+defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL,
+mode = "canonical", aa = NULL, misdata, is.na.A, ind.NA) {
+    ### Start: Add new parameter for estimation classic mode
     #save(list=ls(),file="temp2.Rdata")
     resdefl = NULL
     pdefl = NULL
     for (q in 1 : nbloc) {
-        # for each block we create missing data parameters to be passed to the deflation()
+        # for each block we create missing data parameters to be passed to
+        #  deflation()
         if(misdata[q])
         {
             is.na.A.q = is.na.A[[q]]
         } else {
             is.na.A.q = NULL
         }
-        ### Start: insertion of new deflations (See La regression PLS Theorie et pratique p204 (Chap 11))
+        ### Start: insertion of new deflations
+        # (See La regression PLS Theorie et pratique p204 (Chap 11))
         if ( nn <= nncomp[q] ) {
-            if ((mode == "canonical") || (q != indY)) { #deflation of each block independently from the others, except indY
-                defltmp = deflation(rr[[q]], yy[ , q], misdata[q], is.na.A.q, ind.NA[[q]])
+            if ((mode == "canonical") || (q != indY)) {
+                #deflation of each block independently from the others,
+                # except indY
+                defltmp = deflation(rr[[q]], yy[ , q], misdata[q],
+                is.na.A.q, ind.NA[[q]])
                 resdefl[[q]] = defltmp$R
                 pdefl[[q]]   = defltmp$p
             } else if (mode == "classic") {
-                resdefl[[q]] = Reduce("+", lapply(c(1:nbloc)[-q], function(x) {rr[[q]] - yy[ ,x]%*%t(aa[[q]])}))/(nbloc-1)
+                resdefl[[q]] = Reduce("+", lapply(c(1:nbloc)[-q], function(x)
+                {rr[[q]] - yy[ ,x]%*%t(aa[[q]])}))/(nbloc-1)
                 pdefl[[q]]   =  rep(0,NCOL(rr[[q]]))
             } else if (mode == "invariant") { #no deflation
                 resdefl[[q]] = rr[[q]]
                 pdefl[[q]]   =  rep(0,NCOL(rr[[q]]))
             } else if (mode == "regression") {
-                resdefl[[q]] = Reduce("+", lapply(c(1:nbloc)[-q], function(x) {deflation(rr[[q]],yy[, x], misdata[q], is.na.A.q, ind.NA[[q]])$R}))/(nbloc-1)
+                resdefl[[q]] = Reduce("+", lapply(c(1:nbloc)[-q], function(x)
+                {deflation(rr[[q]],yy[, x], misdata[q], is.na.A.q,
+                    ind.NA[[q]])$R}))/(nbloc-1)
                 pdefl[[q]]   =  rep(0,NCOL(rr[[q]]))
             }
             ### End: insertion of new deflations
@@ -452,9 +475,9 @@ defl.select = function(yy, rr, nncomp, nn, nbloc, indY = NULL, mode = "canonical
     return(list(resdefl=resdefl,pdefl=pdefl))
 }
 
-# ----------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # initsvd() - performs SVD on matrix X
-# ----------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # used in 'internal_mint.block.R'
 initsvd = function (X) {
     n = NROW(X)
@@ -462,18 +485,21 @@ initsvd = function (X) {
     
     if(p>3) #use svds
     {
-        ifelse(n >= p, return(svds(X, k=1, nu = 1, nv = 1)$v), return(svds(X, k=1, nu = 1, nv = 1)$u))
+        ifelse(n >= p, return(svds(X, k=1, nu = 1, nv = 1)$v),
+        return(svds(X, k=1, nu = 1, nv = 1)$u))
         
     } else {
-        ifelse(n >= p, return(svd(X, nu = 0, nv = 1)$v), return(svd(X, nu = 1, nv = 0)$u))
+        ifelse(n >= p, return(svd(X, nu = 0, nv = 1)$v),
+        return(svd(X, nu = 1, nv = 0)$u))
         
     }
 }
 
-# ----------------------------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # init svd
-# ----------------------------------------------------------------------------------------------------------
-initialisation_by_svd = function(A, indY = NULL, misdata, is.na.A = NULL, init = "svd")
+# ------------------------------------------------------------------------------
+initialisation_by_svd = function(A, indY = NULL, misdata, is.na.A = NULL,
+init = "svd")
 {
     
     J = length(A)
@@ -485,9 +511,11 @@ initialisation_by_svd = function(A, indY = NULL, misdata, is.na.A = NULL, init =
         # same step with or without NA, as they are already replaced by 0
         M = lapply(c(1:J)[-indY], function(x){crossprod(A[[x]], A[[indY]])})
         #ssvd faster with svds, only if more than 3 column, otherwise break down
-        svd.M = lapply(M, function(x){if(ncol(x)>3) {svds(x, k=1, nu = 1, nv = 1)} else {svd(x, nu = 1, nv = 1)}})
+        svd.M = lapply(M, function(x){if(ncol(x)>3)
+            {svds(x, k=1, nu = 1, nv = 1)} else {svd(x, nu = 1, nv = 1)}})
         
-        loadings.A[c(1:J)[-indY]] = lapply(1:length(M), function(x){svd.M[[x]]$u})
+        loadings.A[c(1:J)[-indY]] = lapply(1:length(M), function(x)
+        {svd.M[[x]]$u})
         loadings.A[[indY]] = svd.M[[1]]$v
         
     } else if (init=="svd.single") {
@@ -500,7 +528,8 @@ initialisation_by_svd = function(A, indY = NULL, misdata, is.na.A = NULL, init =
             {
                 loadings.A[[j]] = alpha[[j]]
             } else {
-                alpha[[j]] = drop(1/sqrt( t(alpha[[j]]) %*% A[[j]] %*% (t(A[[j]]) %*% alpha[[j]]))) * alpha[[j]]
+                alpha[[j]] = drop(1/sqrt( t(alpha[[j]]) %*% A[[j]] %*%
+                (t(A[[j]]) %*% alpha[[j]]))) * alpha[[j]]
                 
                 loadings.A[[j]] = crossprod(A[[j]],alpha[[j]])
             }

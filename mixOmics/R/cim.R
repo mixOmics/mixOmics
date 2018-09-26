@@ -1,7 +1,8 @@
-#############################################################################################################
+################################################################################
 # Authors:
-#   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-#   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France#   Kim-Anh Le Cao, University of Queensland Diamantina Institute, Brisbane, Australia
+#   Ignacio Gonzalez,
+#   Francois Bartolo,
+#   Kim-Anh Le Cao,
 # created: 2013
 # last modified: 2015
 #
@@ -20,11 +21,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+################################################################################
 
 
 # --------------------------------------------
-# CIM for objects "pca","spca","ipca","sipca","mlsplsda","splsda","plsda","rcc","pls","spls","mlspls"
+# CIM for objects "pca","spca","ipca","sipca","mlsplsda","splsda","plsda","rcc",
+#   "pls","spls","mlspls"
 # --------------------------------------------
 cim =
 function(mat,
@@ -64,8 +66,8 @@ name.save = NULL)
     
     
     
-    #-- checking general input parameters --------------------------------------#
-    #---------------------------------------------------------------------------#
+    #-- checking general input parameters -------------------------------------#
+    #--------------------------------------------------------------------------#
     
     #-- check that the user did not enter extra arguments
     arg.call = match.call()
@@ -76,26 +78,7 @@ name.save = NULL)
     
     if ("simpleError" %in% class(err))
     stop(err[[1]], ".", call. = FALSE)
-    
-    #     function.arg = c(names(mget(names(formals()), sys.frame(sys.nframe()))))
-    #     not.arg = !(user.arg %in% function.arg)
-    #
-    #     if (any(not.arg)) {
-    #       unused.arg = user.arg[not.arg]
-    #       not.arg = which(not.arg) + 1
-    #       output = rep("", length(not.arg))
-    #
-    #       for (i in 1:length(not.arg)) {
-    #         output[i] = paste0(unused.arg[i], " = ", arg.call[[not.arg[i]]])
-    #       }
-    #
-    #       output = paste0("(", paste(output, collapse = ", "), ").")
-    #       msg = "unused argument "
-    #       if (length(not.arg) > 1) msg = "unused arguments "
-    #       stop(msg, output, call. = FALSE)
-    #     }
-    
-    
+
     #-- color
     if (is.null(color))
     color = color.spectral(25)
@@ -111,7 +94,8 @@ name.save = NULL)
     
     #-- cluster method
     if (!is.character(clust.method) | length(as.vector(clust.method)) != 2)
-    stop("'clust.method' must be a character vector of length 2.", call. = FALSE)
+    stop("'clust.method' must be a character vector of length 2.",
+    call. = FALSE)
     
     choices = c("ward.D", "single", "complete", "average", "mcquitty",
     "median", "centroid")
@@ -134,8 +118,8 @@ name.save = NULL)
     stop("invalid distance method.", call. = FALSE)
     
     
-    #-- checking general input arguments ---------------------------------------#
-    #---------------------------------------------------------------------------#
+    #-- checking general input arguments -------------------------------------#
+    #-------------------------------------------------------------------------#
     
     #-- color
     if (any(!sapply(color, function(color) {
@@ -146,15 +130,19 @@ name.save = NULL)
     
     #-- row.sideColors
     if (any(!sapply(row.sideColors, function(row.sideColors) {
-        tryCatch(is.matrix(col2rgb(row.sideColors)), error = function(e) FALSE) })))
-    stop("color names for vertical side bar must be a character vector of recognized colors.",
+        tryCatch(is.matrix(col2rgb(row.sideColors)),
+        error = function(e) FALSE) })))
+    stop("color names for vertical side bar must be a character vector
+    of recognized colors.",
     call. = FALSE)
     
     
     #-- col.sideColors
     if (any(!sapply(col.sideColors, function(col.sideColors) {
-        tryCatch(is.matrix(col2rgb(col.sideColors)), error = function(e) FALSE) })))
-    stop("color names for horizontal side bar must be a character vector of recognized colors.",
+        tryCatch(is.matrix(col2rgb(col.sideColors)),
+        error = function(e) FALSE) })))
+    stop("color names for horizontal side bar must be a character vector
+    of recognized colors.",
     call. = FALSE)
     
     
@@ -249,12 +237,14 @@ name.save = NULL)
     
     #-- threshold correlation
     if (!is.numeric(threshold) | (threshold > 1) | (threshold < 0))
-    stop("The value taken by 'threshold' must be between 0 and 1", call. = FALSE)
+    stop("The value taken by 'threshold' must be between 0 and 1",
+    call. = FALSE)
     
     #-- save
     if (!is.null(save)){
         if (! save %in% c("jpeg","tiff","png","pdf"))
-        stop("'save' must be one of 'jpeg', 'png', 'tiff' or 'pdf'.", call. = FALSE)
+        stop("'save' must be one of 'jpeg', 'png', 'tiff' or 'pdf'.",
+        call. = FALSE)
     }
     
     #-- name.save
@@ -263,7 +253,8 @@ name.save = NULL)
         stop("'name.save' must be a character.", call. = FALSE)
     } else {
         if (!is.null(save))
-        name.save = paste0("cim_",gsub(".", "_", deparse(substitute(mat)) ,fixed = TRUE))
+        name.save = paste0("cim_",gsub(".", "_", deparse(substitute(mat)),
+        fixed = TRUE))
     }
     
     #-- end checking --#
@@ -274,11 +265,14 @@ name.save = NULL)
         dev.off()
         
         if (save == "jpeg")
-        jpeg(filename = paste0(name.save,".jpeg"), res = 600, width = 4000, height = 4000)
+        jpeg(filename = paste0(name.save,".jpeg"), res = 600, width = 4000,
+        height = 4000)
         if (save == "png")
-        jpeg(filename = paste0(name.save,".png"), res = 600, width = 4000, height = 4000)
+        jpeg(filename = paste0(name.save,".png"), res = 600, width = 4000,
+        height = 4000)
         if (save == "tiff")
-        tiff(filename = paste0(name.save,".tiff"), res = 600, width = 4000, height = 4000)
+        tiff(filename = paste0(name.save,".tiff"), res = 600, width = 4000,
+        height = 4000)
         if (save == "pdf")
         pdf(file = paste0(name.save,".pdf"))
         
@@ -289,16 +283,19 @@ name.save = NULL)
     object.pca=c("pca","spca","ipca","sipca","mlsplsda","splsda","plsda")
     object.rcc=c("rcc")
     object.pls=c("pls","spls","mlspls")
-    object.list=c("pca","spca","ipca","sipca","mlsplsda","splsda","plsda","rcc","pls","spls","mlspls")
+    object.list=c("pca","spca","ipca","sipca","mlsplsda","splsda","plsda",
+    "rcc","pls","spls","mlspls")
     
     if (any(class.object == "block.splsda"))
-    stop("Please call the 'cimDiablo' function on your 'block.splsda' object", call. = FALSE)
-
-
+    stop("Please call the 'cimDiablo' function on your 'block.splsda' object",
+    call. = FALSE)
+    
+    
     if (!any(class.object %in% c(object.list,"matrix")))
-    stop("'mat' has to be a matrix or one of the following object: ", paste(object.list, collapse =", "), ".", call. = FALSE)
-
-
+    stop("'mat' has to be a matrix or one of the following object: ",
+    paste(object.list, collapse =", "), ".", call. = FALSE)
+    
+    
     if(any(class.object  %in%  object.list))
     {
         p = ncol(mat$X)
@@ -313,8 +310,8 @@ name.save = NULL)
             if (!is.numeric(comp) || any(comp < 1))
             stop("invalid vector for 'comp'.", call. = FALSE)
             if (any(comp > ncomp))
-            stop("the elements of 'comp' must be smaller or equal than ", ncomp, ".",
-            call. = FALSE)
+            stop("the elements of 'comp' must be smaller or equal than ",
+            ncomp, ".", call. = FALSE)
         }
         
         if (length(comp) == 1) {
@@ -325,13 +322,18 @@ name.save = NULL)
         
         comp = round(comp)
         
-        # if object is a pls or spls with a univariate Y, or multivariate but only 1 variable selected on all comp, we only plot a heatmap of X
+        # if object is a pls or spls with a univariate Y, or multivariate but
+        # only 1 variable selected on all comp, we only plot a heatmap of X
         if(any(class.object %in%  object.pls))
         {
-            temp = apply(mat$loadings$Y,2,function(x){which(x!=0, arr.ind=TRUE)}) # gives which variables are selected
+            temp = apply(mat$loadings$Y, 2,
+            function(x){which(x!=0, arr.ind=TRUE)})
+            # gives which variables are selected
             num.variable.selected.Y = table(unlist(temp))
             
-            if (length(num.variable.selected.Y) == 1) #only one variable in Y to plot, will raise trouble so we switch from (s)pls to (s)plsda
+            if (length(num.variable.selected.Y) == 1)
+            #only one variable in Y to plot, will raise trouble so we
+            # switch from (s)pls to (s)plsda
             class.object = "splsda"
         }
         
@@ -355,8 +357,8 @@ name.save = NULL)
                     row.names = rep("", p)
                 } else {
                     if (length(row.names) != p)
-                    stop("'row.names' must be a character vector of length ", p, ".",
-                    call. = FALSE)
+                    stop("'row.names' must be a character vector of length ",
+                    p, ".", call. = FALSE)
                 }
                 
                 if (is.logical(col.names))
@@ -367,22 +369,24 @@ name.save = NULL)
                     col.names = rep("", q)
                 } else {
                     if (length(col.names) != q)
-                    stop("'col.names' must be a character vector of length ", q, ".",
-                    call. = FALSE)
+                    stop("'col.names' must be a character vector of length ",
+                    q, ".", call. = FALSE)
                 }
                 
                 if (!is.null(row.sideColors))
                 {
                     row.sideColors = as.matrix(row.sideColors)
                     if (nrow(row.sideColors) != p)
-                    stop("'row.sideColors' must be a colors character vector (matrix) of length (nrow) ", p, ".",
+                    stop("'row.sideColors' must be a colors character vector
+                    (matrix) of length (nrow) ", p, ".",
                     call. = FALSE)
                 }
                 if (!is.null(col.sideColors))
                 {
                     col.sideColors = as.matrix(col.sideColors)
                     if (nrow(col.sideColors) != q)
-                    stop("'col.sideColors' must be a colors character vector (matrix) of length (nrow) ", q, ".",
+                    stop("'col.sideColors' must be a colors character vector
+                    (matrix) of length (nrow) ", q, ".",
                     call. = FALSE)
                 }
             }
@@ -393,14 +397,16 @@ name.save = NULL)
                 if (is.logical(row.names))
                 {
                     if (isTRUE(row.names)) {
-                        if (any(class.object %in% object.rcc)) row.names = mat$names$sample
+                        if (any(class.object %in% object.rcc))
+                        row.names = mat$names$sample
                         else row.names = mat$names$sample
                     }
                     else
                     row.names = rep("", n)
                 } else {
                     if (length(row.names) != n)
-                    stop("'row.names' must be a character vector of length ", n, ".",
+                    stop("'row.names' must be a character vector of length ",
+                    n, ".",
                     call. = FALSE)
                 }
                 if (is.logical(col.names))
@@ -411,7 +417,8 @@ name.save = NULL)
                     col.names = rep("", p)
                 } else {
                     if (length(col.names) != p)
-                    stop("'col.names' must be a character vector of length ", p, ".",
+                    stop("'col.names' must be a character vector of length ",
+                    p, ".",
                     call. = FALSE)
                 }
                 
@@ -419,14 +426,16 @@ name.save = NULL)
                 {
                     row.sideColors = as.matrix(row.sideColors)
                     if (nrow(row.sideColors) != n)
-                    stop("'row.sideColors' must be a colors character vector (matrix) of length (nrow) ", n, ".",
+                    stop("'row.sideColors' must be a colors character vector
+                    (matrix) of length (nrow) ", n, ".",
                     call. = FALSE)
                 }
                 if (!is.null(col.sideColors))
                 {
                     col.sideColors = as.matrix(col.sideColors)
                     if (nrow(col.sideColors) != p)
-                    stop("'col.sideColors' must be a colors character vector (matrix) of length (nrow) ", p, ".",
+                    stop("'col.sideColors' must be a colors character vector
+                    (matrix) of length (nrow) ", p, ".",
                     call. = FALSE)
                 }
             }
@@ -437,14 +446,16 @@ name.save = NULL)
                 {
                     if (isTRUE(row.names))
                     {
-                        if (any(class.object %in% object.rcc)) row.names = mat$names$sample
+                        if (any(class.object %in% object.rcc))
+                        row.names = mat$names$sample
                         else row.names = mat$names$sample
                     }
                     else
                     row.names = rep("", n)
                 } else {
                     if (length(row.names) != n)
-                    stop("'row.names' must be a character vector of length ", n, ".",
+                    stop("'row.names' must be a character vector of length ",
+                    n, ".",
                     call. = FALSE)
                 }
                 if (is.logical(col.names))
@@ -455,7 +466,8 @@ name.save = NULL)
                     col.names = rep("", q)
                 } else {
                     if (length(col.names) != q)
-                    stop("'col.names' must be a character vector of length ", q, ".",
+                    stop("'col.names' must be a character vector of length ",
+                    q, ".",
                     call. = FALSE)
                 }
                 
@@ -463,14 +475,16 @@ name.save = NULL)
                 {
                     row.sideColors = as.matrix(row.sideColors)
                     if (nrow(row.sideColors) != n)
-                    stop("'row.sideColors' must be a colors character vector (matrix) of length (nrow) ", n, ".",
+                    stop("'row.sideColors' must be a colors character vector
+                    (matrix) of length (nrow) ", n, ".",
                     call. = FALSE)
                 }
                 if (!is.null(col.sideColors))
                 {
                     col.sideColors = as.matrix(col.sideColors)
                     if (nrow(col.sideColors) != q)
-                    stop("'col.sideColors' must be a colors character vector (matrix) of length (nrow) ", q, ".",
+                    stop("'col.sideColors' must be a colors character vector
+                    (matrix) of length (nrow) ", q, ".",
                     call. = FALSE)
                 }
             }
@@ -485,7 +499,8 @@ name.save = NULL)
             {
                 row.sideColors = as.matrix(row.sideColors)
                 if (nrow(row.sideColors) != n)
-                stop("'row.sideColors' must be a colors character vector (matrix) of length (nrow) ", n, ".",
+                stop("'row.sideColors' must be a colors character vector
+                (matrix) of length (nrow) ", n, ".",
                 call. = FALSE)
             }
             
@@ -494,13 +509,14 @@ name.save = NULL)
             {
                 col.sideColors = as.matrix(col.sideColors)
                 if (nrow(col.sideColors) != p)
-                stop("'col.sideColors' must be a colors character vector (matrix) of length (nrow) ", p, ".",
+                stop("'col.sideColors' must be a colors character vector
+                (matrix) of length (nrow) ", p, ".",
                 call. = FALSE)
             }
             sample.sideColors = row.sideColors
             
-            #-- clustering -------------------------------------------------------------#
-            #---------------------------------------------------------------------------#
+            #-- clustering ---------------------------------------------------#
+            #-----------------------------------------------------------------#
             if(any(class.object %in%  c("splsda","plsda",'mlsplsda')))
             {
                 #-- row.names
@@ -516,10 +532,12 @@ name.save = NULL)
                     col.names = mat$names$colnames$X
                 }
                 if(any(class.object %in%  c("splsda",'mlsplsda')))
-                keep.X = apply(abs(mat$loadings$X[,comp, drop = FALSE]), 1, sum) > 0
+                keep.X = apply(abs(mat$loadings$X[,comp, drop = FALSE]), 1,
+                    sum) > 0
                 else
                 keep.X = apply(abs(mat$loadings$X), 1, sum) > 0
-                cord.X = cor(mat$X[, keep.X], mat$variates$X[, comp], use = "pairwise")
+                cord.X = cor(mat$X[, keep.X], mat$variates$X[, comp],
+                    use = "pairwise")
                 X.mat = as.matrix(mat$variates$X[, comp])
             }
             else{
@@ -547,12 +565,14 @@ name.save = NULL)
             #-- cheking center and scale
             if (!is.logical(center)) {
                 if (!is.numeric(center) || (length(center) != ncol(mat$X)))
-                stop("'center' should be either a logical value or a numeric vector of length equal to the number of columns of 'X'.",
+                stop("'center' should be either a logical value or a numeric
+                vector of length equal to the number of columns of 'X'.",
                 call. = FALSE)
             }
             if (!is.logical(scale)) {
                 if (!is.numeric(scale) || (length(scale) != ncol(mat$X)))
-                stop("'scale' should be either a logical value or a numeric vector of length equal to the number of columns of 'X'.",
+                stop("'scale' should be either a logical value or a numeric
+                vector of length equal to the number of columns of 'X'.",
                 call. = FALSE)
             }
             
@@ -566,7 +586,8 @@ name.save = NULL)
                 Rowv = rowMeans(X.mat)
                 
                 if (dist.method[1] == "correlation")
-                dist.mat = as.dist(1 - cor(t(as.matrix(X.mat)), method = "pearson"))
+                dist.mat = as.dist(1 - cor(t(as.matrix(X.mat)),
+                method = "pearson"))
                 else
                 dist.mat = dist(X.mat, method = dist.method[1])
                 
@@ -600,14 +621,15 @@ name.save = NULL)
                 col.sideColors = as.matrix(col.sideColors[colInd, ])
             }
             
-            #-- calling the image.map function -----------------------------------------#
-            #---------------------------------------------------------------------------#
+            #-- calling the image.map function --------------------------------#
+            #------------------------------------------------------------------#
             
             
             
-            #-- output -----------------------------------------------------------------#
-            #---------------------------------------------------------------------------#
-            res = list(mat = object, row.names = row.names, col.names = col.names)
+            #-- output --------------------------------------------------------#
+            #------------------------------------------------------------------#
+            res = list(mat = object, row.names = row.names,
+            col.names = col.names)
             
             if ((cluster == "both") || (cluster == "row")) {
                 res$rowInd = rowInd
@@ -636,22 +658,28 @@ name.save = NULL)
                 
                 cut=list()
                 if (threshold != 0) {
-                    cut[[1]] = unlist(lapply(1:nrow(object),function(x){any(abs(object[x,]) > threshold)}))
+                    cut[[1]] = unlist(lapply(1:nrow(object),
+                    function(x){any(abs(object[x,]) > threshold)}))
                     object = object[cut[[1]],]
-                    if (dist.method[1] != "correlation") cord.X = cord.X[cut[[1]],]
+                    if (dist.method[1] != "correlation")
+                    cord.X = cord.X[cut[[1]],]
                     
                     
                     if (is.null(nrow(object)) || nrow(object) == 0)
-                    stop("threshold value very high. No variable was selected.", call. = FALSE)
+                    stop("threshold value very high. No variable was selected.",
+                    call. = FALSE)
                     
                     
-                    cut[[2]] = unlist(lapply(1:ncol(object),function(x){any(abs(object[,x]) > threshold)}))
+                    cut[[2]] = unlist(lapply(1:ncol(object),
+                    function(x){any(abs(object[,x]) > threshold)}))
                     object = object[,cut[[2]]]
-                    if (dist.method[2] != "correlation") cord.Y = cord.Y[cut[[2]],]
+                    if (dist.method[2] != "correlation")
+                    cord.Y = cord.Y[cut[[2]],]
                     
                     
                     if (is.null(ncol(object)) || ncol(object) == 0)
-                    stop("threshold value very high. No variable was selected.", call. = FALSE)
+                    stop("threshold value very high. No variable was selected.",
+                    call. = FALSE)
                     
                 }
                 
@@ -660,7 +688,8 @@ name.save = NULL)
                     Rowv = rowMeans(cord.X)
                     
                     if (dist.method[1] == "correlation")
-                    dist.mat = as.dist(1 - cor(t(as.matrix(object)), method = "pearson"))
+                    dist.mat = as.dist(1 - cor(t(as.matrix(object)),
+                    method = "pearson"))
                     
                     else
                     dist.mat = dist(cord.X, method = dist.method[1])
@@ -686,7 +715,8 @@ name.save = NULL)
                     Colv = rowMeans(cord.Y)
                     
                     if (dist.method[2] == "correlation")
-                    dist.mat = as.dist(1 - cor(as.matrix(object), method = "pearson"))
+                    dist.mat = as.dist(1 - cor(as.matrix(object),
+                    method = "pearson"))
                     else
                     dist.mat = dist(cord.Y, method = dist.method[2])
                     
@@ -714,12 +744,16 @@ name.save = NULL)
                 #-- cheking center and scale
                 if (!is.logical(center)) {
                     if (!is.numeric(center) || (length(center) != ncol(mat$X)))
-                    stop("'center' should be either a logical value or a numeric vector of length equal to the number of columns of 'X'.",
+                    stop("'center' should be either a logical value or a
+                    numeric vector of length equal to the number of columns of
+                    'X'.",
                     call. = FALSE)
                 }
                 if (!is.logical(scale)) {
                     if (!is.numeric(scale) || (length(scale) != ncol(mat$X)))
-                    stop("'scale' should be either a logical value or a numeric vector of length equal to the number of columns of 'X'.",
+                    stop("'scale' should be either a logical value or a
+                    numeric vector of length equal to the number of columns of
+                    'X'.",
                     call. = FALSE)
                 }
                 
@@ -730,7 +764,8 @@ name.save = NULL)
                     Rowv = rowMeans(X.mat)
                     
                     if (dist.method[1] == "correlation")
-                    dist.mat = as.dist(1 - cor(t(as.matrix(X.mat)), method = "pearson"))
+                    dist.mat = as.dist(1 - cor(t(as.matrix(X.mat)),
+                    method = "pearson"))
                     else
                     dist.mat = dist(X.mat, method = dist.method[1])
                     
@@ -774,12 +809,14 @@ name.save = NULL)
                 #-- cheking center and scale
                 if (!is.logical(center)) {
                     if (!is.numeric(center) || (length(center) != ncol(mat$Y)))
-                    stop("'center' should be either a logical value or a numeric vector of length equal to the number of columns of 'Y'.",
+                    stop("'center' should be either a logical value or a numeric
+                    vector of length equal to the number of columns of 'Y'.",
                     call. = FALSE)
                 }
                 if (!is.logical(scale)) {
                     if (!is.numeric(scale) || (length(scale) != ncol(mat$Y)))
-                    stop("'scale' should be either a logical value or a numeric vector of length equal to the number of columns of 'Y'.",
+                    stop("'scale' should be either a logical value or a numeric
+                    vector of length equal to the number of columns of 'Y'.",
                     call. = FALSE)
                 }
                 
@@ -791,7 +828,8 @@ name.save = NULL)
                     Rowv = rowMeans(Y.mat)
                     
                     if (dist.method[1] == "correlation")
-                    dist.mat = as.dist(1 - cor(t(as.matrix(Y.mat)), method = "pearson"))
+                    dist.mat = as.dist(1 - cor(t(as.matrix(Y.mat)),
+                    method = "pearson"))
                     else
                     dist.mat = dist(Y.mat, method = dist.method[1])
                     
@@ -827,14 +865,15 @@ name.save = NULL)
                 }
             }
             
-            #-- calling the image.map function -----------------------------------------#
-            #---------------------------------------------------------------------------#
+            #-- calling the image.map function --------------------------------#
+            #------------------------------------------------------------------#
             
             
             
-            #-- output -----------------------------------------------------------------#
-            #---------------------------------------------------------------------------#
-            res = list(mat = object, row.names = row.names, col.names = col.names)
+            #-- output --------------------------------------------------------#
+            #------------------------------------------------------------------#
+            res = list(mat = object, row.names = row.names,
+            col.names = col.names)
             
             if ((cluster == "both") || (cluster == "row")) {
                 res$rowInd = rowInd
@@ -853,8 +892,10 @@ name.save = NULL)
         {
             if(any(class.object %in% c("spls","mlspls")))
             {
-                keep.X = apply(abs(mat$loadings$X[,comp, drop = FALSE]), 1, sum) > 0
-                keep.Y = apply(abs(mat$loadings$Y[,comp, drop = FALSE]), 1, sum) > 0}
+                keep.X = apply(abs(mat$loadings$X[,comp, drop = FALSE]), 1,
+                sum) > 0
+                keep.Y = apply(abs(mat$loadings$Y[,comp, drop = FALSE]), 1,
+                sum) > 0}
             else
             {
                 keep.X = apply(abs(mat$loadings$X), 1, sum) > 0
@@ -863,12 +904,16 @@ name.save = NULL)
             
             
             if (mat$mode == "canonical") {
-                cord.X = cor(mat$X[, keep.X, drop = FALSE], mat$variates$X[, comp], use = "pairwise")
-                cord.Y = cor(mat$Y[, keep.Y, drop = FALSE], mat$variates$Y[, comp], use = "pairwise")
+                cord.X = cor(mat$X[, keep.X, drop = FALSE],
+                mat$variates$X[, comp], use = "pairwise")
+                cord.Y = cor(mat$Y[, keep.Y, drop = FALSE],
+                mat$variates$Y[, comp], use = "pairwise")
             }
             else {
-                cord.X = cor(mat$X[, keep.X, drop = FALSE], mat$variates$X[, comp], use = "pairwise")
-                cord.Y = cor(mat$Y[, keep.Y, drop = FALSE], mat$variates$X[, comp], use = "pairwise")
+                cord.X = cor(mat$X[, keep.X, drop = FALSE],
+                mat$variates$X[, comp], use = "pairwise")
+                cord.Y = cor(mat$Y[, keep.Y, drop = FALSE],
+                mat$variates$X[, comp], use = "pairwise")
             }
             
             XY.mat = as.matrix(cord.X %*% t(cord.Y))
@@ -882,22 +927,28 @@ name.save = NULL)
                 
                 cut=list()
                 if (threshold != 0) {
-                    cut[[1]] = unlist(lapply(1:nrow(object),function(x){any(abs(object[x,]) > threshold)}))
+                    cut[[1]] = unlist(lapply(1:nrow(object),
+                    function(x){any(abs(object[x,]) > threshold)}))
                     object = object[cut[[1]],]
-                    if (dist.method[1] != "correlation") cord.X = cord.X[cut[[1]],]
+                    if (dist.method[1] != "correlation")
+                    cord.X = cord.X[cut[[1]],]
                     
                     
                     if (is.null(nrow(object)) || nrow(object) == 0)
-                    stop("threshold value very high. No variable was selected.", call. = FALSE)
+                    stop("threshold value very high. No variable was selected.",
+                    call. = FALSE)
                     
                     
-                    cut[[2]] = unlist(lapply(1:ncol(object),function(x){any(abs(object[,x]) > threshold)}))
+                    cut[[2]] = unlist(lapply(1:ncol(object),
+                    function(x){any(abs(object[,x]) > threshold)}))
                     object = object[,cut[[2]]]
-                    if (dist.method[2] != "correlation") cord.Y = cord.Y[cut[[2]],]
+                    if (dist.method[2] != "correlation")
+                    cord.Y = cord.Y[cut[[2]],]
                     
                     
                     if (is.null(ncol(object)) || ncol(object) == 0)
-                    stop("threshold value very high. No variable was selected.", call. = FALSE)
+                    stop("threshold value very high. No variable was selected.",
+                    call. = FALSE)
                     
                 }
                 
@@ -914,7 +965,8 @@ name.save = NULL)
                     Rowv = rowMeans(cord.X)
                     
                     if (dist.method[1] == "correlation")
-                    dist.mat = as.dist(1 - cor(t(as.matrix(object)), method = "pearson"))
+                    dist.mat = as.dist(1 - cor(t(as.matrix(object)),
+                    method = "pearson"))
                     else
                     #dist.mat = dist(mat, method = dist.method[1])
                     dist.mat = dist(cord.X, method = dist.method[1])
@@ -941,7 +993,8 @@ name.save = NULL)
                     Colv = rowMeans(cord.Y)
                     
                     if (dist.method[2] == "correlation")
-                    dist.mat = as.dist(1 - cor(as.matrix(object), method = "pearson"))
+                    dist.mat = as.dist(1 - cor(as.matrix(object),
+                    method = "pearson"))
                     else
                     #dist.mat = dist(t(mat), method = dist.method[2])
                     dist.mat = dist(cord.Y, method = dist.method[2])
@@ -970,12 +1023,14 @@ name.save = NULL)
                 #-- cheking center and scale
                 if (!is.logical(center)) {
                     if (!is.numeric(center) || (length(center) != ncol(mat$X)))
-                    stop("'center' should be either a logical value or a numeric vector of length equal to the number of columns of 'X'.",
+                    stop("'center' should be either a logical value or a numeric
+                    vector of length equal to the number of columns of 'X'.",
                     call. = FALSE)
                 }
                 if (!is.logical(scale)) {
                     if (!is.numeric(scale) || (length(scale) != ncol(mat$X)))
-                    stop("'scale' should be either a logical value or a numeric vector of length equal to the number of columns of 'X'.",
+                    stop("'scale' should be either a logical value or a numeric
+                    vector of length equal to the number of columns of 'X'.",
                     call. = FALSE)
                 }
                 
@@ -993,7 +1048,8 @@ name.save = NULL)
                     Rowv = rowMeans(X.mat)
                     
                     if (dist.method[1] == "correlation")
-                    dist.mat = as.dist(1 - cor(t(as.matrix(X.mat)), method = "pearson"))
+                    dist.mat = as.dist(1 - cor(t(as.matrix(X.mat)),
+                    method = "pearson"))
                     else
                     dist.mat = dist(X.mat, method = dist.method[1])
                     
@@ -1035,12 +1091,14 @@ name.save = NULL)
                 #-- cheking center and scale
                 if (!is.logical(center)) {
                     if (!is.numeric(center) || (length(center) != ncol(mat$Y)))
-                    stop("'center' should be either a logical value or a numeric vector of length equal to the number of columns of 'Y'.",
+                    stop("'center' should be either a logical value or a numeric
+                    vector of length equal to the number of columns of 'Y'.",
                     call. = FALSE)
                 }
                 if (!is.logical(scale)) {
                     if (!is.numeric(scale) || (length(scale) != ncol(mat$Y)))
-                    stop("'scale' should be either a logical value or a numeric vector of length equal to the number of columns of 'Y'.",
+                    stop("'scale' should be either a logical value or a numeric
+                    vector of length equal to the number of columns of 'Y'.",
                     call. = FALSE)
                 }
                 
@@ -1058,7 +1116,8 @@ name.save = NULL)
                     Rowv = rowMeans(Y.mat)
                     
                     if (dist.method[1] == "correlation")
-                    dist.mat = as.dist(1 - cor(t(as.matrix(Y.mat)), method = "pearson"))
+                    dist.mat = as.dist(1 - cor(t(as.matrix(Y.mat)),
+                    method = "pearson"))
                     else
                     dist.mat = dist(Y.mat, method = dist.method[1])
                     
@@ -1093,13 +1152,14 @@ name.save = NULL)
                 }
             }
             
-            #-- calling the image.map function -----------------------------------------#
-            #---------------------------------------------------------------------------#
+            #-- calling the image.map function --------------------------------#
+            #------------------------------------------------------------------#
             
             
-            #-- output -----------------------------------------------------------------#
-            #---------------------------------------------------------------------------#
-            res = list(mat = object, row.names = row.names, col.names = col.names)
+            #-- output --------------------------------------------------------#
+            #------------------------------------------------------------------#
+            res = list(mat = object, row.names = row.names,
+            col.names = col.names)
             
             if (!is.null(sample.sideColors)) {
                 res$sample.sideColors = sample.sideColors
@@ -1131,29 +1191,34 @@ name.save = NULL)
         q = ncol(mat)
         #-- row.names
         if (is.logical(row.names)) {
-            if(isTRUE(row.names)) row.names = rownames(mat) else row.names = rep("", p)
+            if(isTRUE(row.names)) row.names = rownames(mat) else
+            row.names = rep("", p)
         }
         else {
             row.names = as.vector(row.names)
             if (length(row.names) != p)
-            stop("'row.names' must be a character vector of length ", p, ".", call. = FALSE)
+            stop("'row.names' must be a character vector of length ", p, ".",
+            call. = FALSE)
         }
         
         #-- col.names
         if (is.logical(col.names)) {
-            if(isTRUE(col.names)) col.names = colnames(mat) else col.names = rep("", q)
+            if(isTRUE(col.names)) col.names = colnames(mat) else
+            col.names = rep("", q)
         }
         else {
             col.names = as.vector(col.names)
             if (length(col.names) != q)
-            stop("'col.names' must be a character vector of length ", q, ".", call. = FALSE)
+            stop("'col.names' must be a character vector of length ", q, ".",
+            call. = FALSE)
         }
         
         #-- row.sideColors
         if (!is.null(row.sideColors)) {
             row.sideColors = as.matrix(row.sideColors)
             if (nrow(row.sideColors) != p)
-            stop("'row.sideColors' must be a colors character vector (matrix) of length (nrow) ", p, ".",
+            stop("'row.sideColors' must be a colors character vector (matrix)
+            of length (nrow) ", p, ".",
             call. = FALSE)
         }
         
@@ -1161,12 +1226,13 @@ name.save = NULL)
         if (!is.null(col.sideColors)) {
             col.sideColors = as.matrix(col.sideColors)
             if (nrow(col.sideColors) != q)
-            stop("'col.sideColors' must be a colors character vector (matrix) of length (nrow) ", q, ".",
+            stop("'col.sideColors' must be a colors character vector (matrix)
+            of length (nrow) ", q, ".",
             call. = FALSE)
         }
         
-        #-- clustering -------------------------------------------------------------#
-        #---------------------------------------------------------------------------#
+        #-- clustering -------------------------------------------------------#
+        #---------------------------------------------------------------------#
         object=mat
         if ((cluster == "both") || (cluster == "row")) {
             Rowv = rowMeans(mat)
@@ -1183,14 +1249,14 @@ name.save = NULL)
             object = mat[rowInd, ]
             row.names = row.names[rowInd]
             
-            if (!is.null(row.sideColors)) 
+            if (!is.null(row.sideColors))
             row.sideColors = as.matrix(row.sideColors[rowInd, ])
-        }      
+        }
         
         if ((cluster == "both") || (cluster == "column")) {
             Colv = colMeans(mat)
             
-            if (dist.method[2] == "correlation") 
+            if (dist.method[2] == "correlation")
             dist.mat = as.dist(1 - cor(as.matrix(mat), method = "pearson"))
             else
             dist.mat = dist(t(mat), method = dist.method[2])
@@ -1201,21 +1267,21 @@ name.save = NULL)
             object = object[, colInd]
             col.names = col.names[colInd]
             
-            if (!is.null(col.sideColors)) 
+            if (!is.null(col.sideColors))
             col.sideColors = as.matrix(col.sideColors[colInd, ])
         }
-        #-- calling the image.map function -----------------------------------------#
+        #-- calling the image.map function ------------------------------------#
         
         
         
-        #-- output -----------------------------------------------------------------#
-        #---------------------------------------------------------------------------#
-        res = list(mat = object, row.names = row.names, col.names = col.names, 
+        #-- output ------------------------------------------------------------#
+        #----------------------------------------------------------------------#
+        res = list(mat = object, row.names = row.names, col.names = col.names,
         row.sideColors = row.sideColors, col.sideColors = col.sideColors)
         
         if ((cluster == "both") || (cluster == "row")) {
             res$rowInd = rowInd
-            res$ddr = ddr    
+            res$ddr = ddr
         }
         
         if ((cluster == "both") || (cluster == "column")) {
@@ -1226,15 +1292,15 @@ name.save = NULL)
         class(res) = "cim_default"
         
     }
-    #---------------------------------------------------------------------------#
+    #--------------------------------------------------------------------------#
     opar = par(no.readonly = TRUE)
-
+    
     imageMap(object,
     color = color,
     row.names = row.names,
     col.names = col.names,
     row.sideColors = row.sideColors,
-    col.sideColors = col.sideColors,             
+    col.sideColors = col.sideColors,
     row.cex = row.cex,
     col.cex = col.cex,
     cluster = cluster,
@@ -1242,10 +1308,10 @@ name.save = NULL)
     ddc = ddc,
     cut.tree = cut.tree,
     transpose = transpose,
-    symkey = symkey, 
+    symkey = symkey,
     keysize = keysize,
     keysize.label = keysize.label,
-    zoom = zoom, 
+    zoom = zoom,
     title = title,
     xlab = xlab,
     ylab = ylab,
@@ -1262,8 +1328,9 @@ name.save = NULL)
             
             #-- col
             if (is.null(legend$col)) {
-                if (!is.null(sample.sideColors)) 
-                legend$col = unique(as.matrix(sample.sideColors[order(map(mat$ind.mat)), 1]))
+                if (!is.null(sample.sideColors))
+                legend$col = unique(as.matrix(sample.sideColors[order(
+                map(mat$ind.mat)), 1]))
             }
             
         }
@@ -1289,13 +1356,15 @@ name.save = NULL)
             if (mapping != "XY") {
                 if (is.null(legend$legend) && is.null(legend$col)) {
                     if (ncol(mat$multilevel) >= 2) {
-                        df = data.frame(mat$multilevel[, 2], sample.sideColors[, 1])
+                        df = data.frame(mat$multilevel[, 2],
+                        sample.sideColors[, 1])
                         df = unique(df)
                         legend$legend = as.character(df[, 1])
                         legend$col = as.character(df[, 2])
                     }
                     if (ncol(mat$multilevel) == 3) {
-                        df = data.frame(mat$multilevel[, 3], sample.sideColors[, 2])
+                        df = data.frame(mat$multilevel[, 3],
+                        sample.sideColors[, 2])
                         df = unique(df)
                         legend$legend = c(legend$legend, as.character(df[, 1]))
                         legend$col = c(legend$col, as.character(df[, 2]))
@@ -1315,16 +1384,19 @@ name.save = NULL)
         
         if (!is.null(legend$title))
         {
-            legend(x = legend$x, y = legend$y, legend = legend$legend, 
-            col = legend$col, fill = legend$fill, bty = legend$bty,title=legend$title,cex=legend$cex)
+            legend(x = legend$x, y = legend$y, legend = legend$legend,
+            col = legend$col, fill = legend$fill, bty = legend$bty,
+            title=legend$title,cex=legend$cex)
         }else{
-            legend(x = legend$x, y = legend$y, legend = legend$legend, 
-            col = legend$col, fill = legend$fill, bty = legend$bty,cex=legend$cex)
+            legend(x = legend$x, y = legend$y, legend = legend$legend,
+            col = legend$col, fill = legend$fill, bty = legend$bty,
+            cex=legend$cex)
         }
         
         
     }
-    if (any(class.object %in% object.list) & !any(class.object %in% object.pca) & mapping =="XY")
+    if (any(class.object %in% object.list) & !any(class.object %in%
+    object.pca) & mapping =="XY")
     res$mat.cor=object
     
     par(opar)

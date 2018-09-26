@@ -1,8 +1,8 @@
-#############################################################################################################
+################################################################################
 # Authors:
-#   Amrit Singh, the University of British Columbia, Vancouver, Canada
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-#   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Amrit Singh,
+#   Florian Rohart,
+#   Kim-Anh Le Cao,
 #
 # created: 2015
 # last modified: 19-08-2016
@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+################################################################################
 
 
 
@@ -32,7 +32,8 @@
 #
 ################################################
 
-# This function is a small wrapper of cim. For more customisation, please use cim
+# This function is a small wrapper of cim.
+# For more customisation, please use cim
 
 cimDiablo = function(object,
 color = NULL,
@@ -52,7 +53,8 @@ size.legend=1.5)
     stop("cimDiablo is only available for 'block.splsda' objects")
 
     if (length(object$X) <= 1)
-    stop("This function is only available when there are more than 3 blocks") # so 2 blocks in X + the outcome Y
+    stop("This function is only available when there are more than 3 blocks")
+    # so 2 blocks in X + the outcome Y
     
     ncomp = min(object$ncomp)
     #-- comp
@@ -63,8 +65,8 @@ size.legend=1.5)
         if (!is.numeric(comp) || any(comp < 1))
         stop("invalid vector for 'comp'.", call. = FALSE)
         if (any(comp > ncomp))
-        stop("the elements of 'comp' must be smaller or equal than ", ncomp, ".",
-        call. = FALSE)
+        stop("the elements of 'comp' must be smaller or equal than ", ncomp,
+        ".", call. = FALSE)
     }
     
     if (length(comp) == 1) {
@@ -102,7 +104,8 @@ size.legend=1.5)
     object$loadings = c(object$loadings[-indY], object$loadings[indY])
     
     #reducing loadings for ncomp
-    object$loadings = lapply(object$loadings, function(x){x[, comp, drop=FALSE]})
+    object$loadings = lapply(object$loadings, function(x){x[, comp,
+        drop=FALSE]})
     
     keepA = lapply(object$loadings, function(i) apply(abs(i), 1, sum) > 0)
     XDatList = mapply(function(x, y){
@@ -113,10 +116,12 @@ size.legend=1.5)
     XDat[which(XDat < -2)] = -2
     
     #dark = brewer.pal(n = 12, name = 'Paired')[seq(2, 12, by = 2)]
-    VarLabels = factor(rep(names(X), lapply(keepA[-length(keepA)], sum)), levels = names(X))#[order(names(X))])
+    VarLabels = factor(rep(names(X), lapply(keepA[-length(keepA)], sum)),
+    levels = names(X))#[order(names(X))])
     
     ## Plot heatmap
-    opar = par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din", "page")]
+    opar = par()[! names(par()) %in% c("cin", "cra", "csi", "cxy", "din",
+        "page")]
     par(mfrow=c(1,1))
     cim(XDat,transpose= transpose, color = color,
     row.names = row.names, col.names = col.names,
@@ -127,7 +132,8 @@ size.legend=1.5)
     {
         legend(legend.position,
         c("Rows", c(levels(Y)[order(levels(Y))], "", "Columns", names(X))),
-        col = c(1, color.Y, 1, 1, color.blocks[1:nlevels(VarLabels)][match(levels(VarLabels), names(X))]),
+        col = c(1, color.Y, 1, 1,
+        color.blocks[1:nlevels(VarLabels)][match(levels(VarLabels), names(X))]),
         pch = c(NA, rep(19, nlevels(Y)), NA, NA, rep(19, nlevels(VarLabels))),
         bty="n",
         cex = size.legend,
@@ -136,7 +142,8 @@ size.legend=1.5)
     } else { # if transpose == TRUE, rows and columns must be switched
         legend(legend.position,
         c("Rows", names(X), "", "Columns", c(levels(Y)[order(levels(Y))])),
-        col = c(1, color.blocks[1:nlevels(VarLabels)][match(levels(VarLabels), names(X))], 1, 1, color.Y),
+        col = c(1, color.blocks[1:nlevels(VarLabels)][match(levels(VarLabels),
+        names(X))], 1, 1, color.Y),
         pch = c(NA, rep(19, nlevels(VarLabels)), NA, NA, rep(19, nlevels(Y))),
         bty="n",
         cex = size.legend,

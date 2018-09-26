@@ -1,6 +1,6 @@
-#############################################################################################################
+###############################################################################
 # Author:
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Florian Rohart
 #
 # created: 22-02-2017
 # last modified: 01-03-2017
@@ -20,11 +20,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+###############################################################################
 
-# --------------------------------------------------------------------------------------
-# calculation of the predicted area depending on a model. output to be passed to plotIndiv
-# --------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# calculation of the predicted area depending on the model.
+# output to be passed to plotIndiv
+# -----------------------------------------------------------------------------
 
 # object: plsda or splsda object
 # comp.predicted: prediction based on either component 1 or component 1:2
@@ -34,27 +35,35 @@
 # resolution: a total of resolution*resolution variates are simulated
 
 
-#can only do a 2D prediction: cannot project 3D surface on 2D because we can have multiple prediction for same point
-# ex: variateXi_1 = variateXj_1 and variateXi_3 = variateXj_3 but variateXi_2 !=variate Xj_3
-# projection on comp1 and comp3 gives the same point, but depending on variate_2, the prediction can be different
+# can only do a 2D prediction: cannot project 3D surface on 2D because we can
+#     have multiple prediction for same point
+# ex: variateXi_1 = variateXj_1 and variateXi_3 = variateXj_3 but
+#     variateXi_2 !=variate Xj_3
+# projection on comp1 and comp3 gives the same point,
+#     but depending on variate_2, the prediction can be different
 
-background.predict = function(object, comp.predicted = 1, dist = "max.dist", xlim = NULL, ylim = NULL, resolution = 100)
+background.predict = function(object, comp.predicted = 1, dist = "max.dist",
+    xlim = NULL, ylim = NULL, resolution = 100)
 {
     
     if(!any(class(object)%in%c("plsda","splsda")))
-    stop("'background.predict' can only be calculated for 'plsda' and 'splsda' objects")
+    stop("'background.predict' can only be calculated for 'plsda'
+        and 'splsda' objects")
 
     if (!any(dist %in% c("max.dist", "centroids.dist", "mahalanobis.dist")))
-    stop("Choose one of the three following distances: 'max.dist', 'centroids.dist' or 'mahalanobis.dist'")
+    stop("Choose one of the three following distances: 'max.dist',
+        'centroids.dist' or 'mahalanobis.dist'")
 
     if(!comp.predicted %in% c(1,2))
     stop("Can only show predicted background for 1 or 2 components")
     
     if(!is.null(xlim) && length(xlim)!=2)
-    stop("'xlim' must be a vector of two values, indicating the min and max of the simulated data on variates 1 (x-axis)")
+    stop("'xlim' must be a vector of two values, indicating the min
+        and max of the simulated data on variates 1 (x-axis)")
     
     if(!is.null(ylim) && length(ylim)!=2)
-    stop("'ylim' must be a vector of two values, indicating the min and max of the simulated data on variates 2 (y-axis)")
+    stop("'ylim' must be a vector of two values, indicating the min
+        and max of the simulated data on variates 2 (y-axis)")
 
     if(resolution<=0)
     stop("'resolution' must be a positive value")
@@ -87,9 +96,6 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
     
     list.grid = lapply(1:2, function(x){seq(lim[1,x],lim[2,x],increment[x])})
     grid = as.matrix(expand.grid(list.grid))
-    #grid[,1] = as.numeric(as.character(grid[,1])) # to get numbers for sure, seemed to have a problem with some numbers..
-    #grid[,2] = as.numeric(as.character(grid[,2]))
-    
     
     t.pred = list(grid)
     ncomp=comp.predicted
@@ -109,10 +115,13 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
     if(dist == "max.dist")
     {
         
-        variatesX = list(X=object$variates [-2][[1]][, 1:comp.predicted, drop = FALSE])
+        variatesX = list(X=object$variates [-2][[1]][, 1:comp.predicted,
+            drop = FALSE])
         Y=object$ind.mat
-        means.Y = matrix(attr(Y, "scaled:center"),nrow=nrow(t.pred[[1]]),ncol=q,byrow=TRUE);
-        sigma.Y = matrix(attr(Y, "scaled:scale"),nrow=nrow(t.pred[[1]]),ncol=q,byrow=TRUE)
+        means.Y = matrix(attr(Y, "scaled:center"),
+            nrow=nrow(t.pred[[1]]),ncol=q,byrow=TRUE)
+        sigma.Y = matrix(attr(Y, "scaled:scale"),
+            nrow=nrow(t.pred[[1]]),ncol=q,byrow=TRUE)
         
         Cmat = crossprod(Y, variatesX[[1]])
         
@@ -123,21 +132,30 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
         Y.hat.temp = Y.hat = list()
         for(j in 1:ncomp)
         {
-            Y.hat.temp[[j]] = ((as.matrix(t.pred[[1]][,1:j, drop = FALSE])/matrix( apply(variatesX[[1]][,1:j, drop = FALSE], 2,function(y){(norm(y, type = "2"))^2}),nrow=nrow(t.pred[[1]]),ncol=j,byrow=TRUE))%*%t(Cmat)[1:j,, drop = FALSE])
+            A = matrix(apply(variatesX[[1]][,1:j, drop = FALSE], 2,
+                function(y){(norm(y, type = "2"))^2}),
+                nrow=nrow(t.pred[[1]]),ncol=j,byrow=TRUE)
+            Y.hat.temp[[j]] = ((as.matrix(t.pred[[1]][,1:j, drop = FALSE])/A)%*%
+                t(Cmat)[1:j,, drop = FALSE])
             #                *sigma.Y+means.Y
         }
-        Ypred = sapply(Y.hat.temp, function(x){x*sigma.Y + means.Y}, simplify = "array")
+        Ypred = sapply(Y.hat.temp, function(x){x*sigma.Y + means.Y},
+            simplify = "array")
         Y.hat[[1]] = Ypred
-        
-        cls$max.dist = lapply(1:J, function(x){matrix(sapply(1:ncomp[x], ### List level
-            function(y){apply(Y.hat[[x]][, , y, drop = FALSE], 1,  ### component level
+
+        cls$max.dist = lapply(1:J, function(x){matrix(sapply(1:ncomp[x],
+            # List level
+            function(y){apply(Y.hat[[x]][, , y, drop = FALSE], 1,
+                # component level
                 function(z){
                     paste(levels(Y)[which(z == max(z))], collapse = "/")
-                }) ### matrix level
+                }) # matrix level
             }), nrow = nrow(t.pred[[x]]), ncol = ncomp[x])
         })
-        cls$max.dist = lapply(1:J, function(x){colnames(cls$max.dist[[x]]) = paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
-            rownames(cls$max.dist[[x]]) = rownames(t.pred[[x]]); return(cls$max.dist[[x]])})
+        cls$max.dist = lapply(1:J, function(x){colnames(cls$max.dist[[x]]) =
+            paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
+            rownames(cls$max.dist[[x]]) = rownames(t.pred[[x]]);
+            return(cls$max.dist[[x]])})
         names(cls$max.dist)=names(X)
         
     }
@@ -146,7 +164,9 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
     {
         for (i in 1 : J)
         {
-            G[[i]] = sapply(1:q, function(x) {apply(as.matrix(variatesX[[i]][Y.prim[, x] == 1, 1:ncomp[i] , drop=FALSE]), 2, mean)})
+            G[[i]] = sapply(1:q, function(x) {
+                apply(as.matrix(variatesX[[i]][Y.prim[, x] == 1, 1:ncomp[i] ,
+                drop=FALSE]), 2, mean)})
             if (ncomp[i] == 1)
             G[[i]] = t(t(G[[i]]))
             else
@@ -183,12 +203,14 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
                 
                 for (h in 1 : ncomp[[i]])
                 {
-                    cl.id = apply(matrix(t.pred[[i]][, 1:h], ncol = h), 1, function(x) {centroids.fun(x = x, G = G, h = h, i = i)})
+                    cl.id = apply(matrix(t.pred[[i]][, 1:h], ncol = h), 1,
+                    function(x) {centroids.fun(x = x, G = G, h = h, i = i)})
                     cl[[i]][, h] = cl.id
                 }
             }
             
-            cls$centroids.dist = lapply(1:J, function(x){colnames(cl[[x]]) = paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
+            cls$centroids.dist = lapply(1:J, function(x){colnames(cl[[x]]) =
+                paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
                 return(cl[[x]])})
             
         } else if (dist == "mahalanobis.dist") {
@@ -204,7 +226,7 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
                 Sr.inv = solve(Sr)
                 x = matrix(x, nrow = q, ncol = h, byrow = TRUE)
                 if (h > 1) {
-                    mat = (x - G[[i]][, 1:h]) %*% Sr.inv %*% t(x - G[[i]][, 1:h])
+                    mat = (x - G[[i]][, 1:h]) %*% Sr.inv %*% t(x- G[[i]][, 1:h])
                     d = apply(mat^2, 1, sum)
                 } else {
                     d = drop(Sr.inv) * (x - G[[i]][, 1])^2
@@ -216,12 +238,14 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
                 cl[[i]] = matrix(nrow = nrow(t.pred[[1]]), ncol = ncomp[i])
                 
                 for (h in 1:ncomp[[i]]) {
-                    cl.id = apply(matrix(t.pred[[i]][, 1:h], ncol = h), 1, Sr.fun, G = G, Yprim = Y.prim, h = h, i = i)
+                    cl.id = apply(matrix(t.pred[[i]][, 1:h], ncol = h), 1,
+                    Sr.fun, G = G, Yprim = Y.prim, h = h, i = i)
                     cl[[i]][, h] = cl.id
                 }
             }
             
-            cls$mahalanobis.dist = lapply(1:J, function(x){colnames(cl[[x]]) = paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
+            cls$mahalanobis.dist = lapply(1:J, function(x){colnames(cl[[x]]) =
+                paste(rep("comp", ncomp[x]), 1 : ncomp[[x]], sep = " ");
                 return(cl[[x]])})
         }
     }
@@ -229,14 +253,13 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
     for(ind.area in 1:nlevels(Y))
     {
         ind1 = which(cls[[dist]][[1]][,comp.predicted] == levels(Y)[ind.area])
-        # points(t.pred[[1]][ind1,1:2],col = adjustcolor(color.mixo(ind.area), alpha = 0.1), cex=0.1)
-        #}
         
         if(length(ind1) >0)
         {
             
             # if less than 8 direct neighbours, we keep the point => contour
-            # from one point from the contour, we can only test the direct neighbours to speed up
+            # from one point from the contour, we can only test the direct
+            # neighbours to speed up
             area = t.pred[[1]][ind1, 1:2, drop = FALSE]#can only do it in 2d
             contour = NULL
             for (i in 1: nrow(area))
@@ -254,7 +277,9 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
                 {
                     for(y in c(b-incrementy, b, b+incrementy))
                     {
-                        temp =  intersect(which(areax == as.numeric(as.character(x))), which(areay == as.numeric(as.character(y))))#which(area[,1]==as.numeric(x) & area[,2]==as.numeric(y))
+                        temp =  intersect(which(areax ==
+                            as.numeric(as.character(x))), which(areay ==
+                            as.numeric(as.character(y))))
                         if(length(temp)>0)
                         res = res + 1
                     }
@@ -267,11 +292,14 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
                 break
             }
             
-            # now that we have two point of the contour, we look for other in the direct neighbours.
+            # now that we have two point of the contour,
+            # we look for others in the direct neighbours.
             
             added = TRUE
-            while(added) # as long as we're adding a point in contour, we keep looking for another one
+            while(added)
             {
+                # as long as we're adding a point in contour,
+                # we keep looking for another one
                 added = FALSE
                 i = length(contour)
                 
@@ -283,23 +311,27 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
                 a = areax[point]#round(areax[point],7)
                 b = areay[point]#round(areay[point],7)
                 
-                # we want to add the point (x,y) that has the lowest number of neighbour (the more extreme on the edge)
-                
-                
+                # we want to add the point (x,y) that has the lowest number of
+                # neighbour (the more extreme on the edge)
                 
                 neighbour = contour.temp = NULL
-                for(x in c(a-incrementx, a, a+incrementx)) # around the point that is in the contour
+                # around the point that is in the contour
+                for(x in c(a-incrementx, a, a+incrementx))
                 {
-                    for(y in c(b-incrementy, b, b+incrementy)) # around the point that is in the contour
+                     # around the point that is in the contour
+                     for(y in c(b-incrementy, b, b+incrementy))
                     {
-                        # (x,y) is a neighbour of (a,b) and I want to see whether it has 8+1 neighbours or less
+                        # (x,y) is a neighbour of (a,b) and I want to see
+                        # whether it has 8+1 neighbours or less
                         res = 0
                         for(xx in c(x-incrementx, x, x+incrementx))
                         {
                             for(yy in c(y-incrementy, y, y+incrementy))
                             {
                                 # (xx,yy) is a neighbour of (x,y)
-                                temp =  intersect(which(abs(areax - xx)< 1e-5), which(abs(areay - yy)<1e-5))#which(area[,1]==as.numeric(x) & area[,2]==as.numeric(y))
+                                temp =  intersect(which(abs(areax - xx)< 1e-5),
+                                which(abs(areay - yy)<1e-5))
+                    #which(area[,1]==as.numeric(x) & area[,2]==as.numeric(y))
                                 #print(xx)
                                 #print(yy)
                                 #print(temp)
@@ -309,10 +341,13 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
                             }
                         }
                         #print(res)
-                        if(res!=9) # if (x,y) has less than 8+1 neighbour, then it's on the edge and I want it, only if it's not already in contour
+                        if(res!=9) # if (x,y) has less than 8+1 neighbour,
+                        # then it's on the edge and I want it,
+                        # only if it's not already in contour
                         {
                             # recover which indice in area the point is
-                            ind = intersect(which(abs(areax - x)<1e-5), which(abs(areay - y)<1e-5))
+                            ind = intersect(which(abs(areax - x)<1e-5),
+                                which(abs(areay - y)<1e-5))
                             
                             # check whether it is already in contour
                             if(length(ind)>0 && sum(contour == ind) == 0)
@@ -321,7 +356,6 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
                                 neighbour = c(neighbour, res)
                                 #contour = c(contour, ind)
                                 added = TRUE
-                                #points(area[contour,], cex = 0.1)#, col=color.mixo(ind.area))
                             }
                         }
                         
@@ -331,14 +365,11 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist", xli
                 if(length(contour.temp)>0)
                 {
                     contour = c(contour, contour.temp[which.min(neighbour)])
-                    #points3d(area[contour[length(contour)],,drop=FALSE], cex = 0.1, col= adjustcolor(color.mixo(ind.area), alpha=0.1),pch=15)
-                    #                    points(area[contour[length(contour)],,drop=FALSE], cex = 0.1, col= adjustcolor(color.mixo(ind.area), alpha=0.1))
                 } else {
                     added=FALSE
                 }
                 
             }
-            #polygon(area[contour,], col = adjustcolor(color.mixo(ind.area), alpha=0.1), border=NA)
             
             poly = area[contour,]
             poly.save[[ind.area]] = poly

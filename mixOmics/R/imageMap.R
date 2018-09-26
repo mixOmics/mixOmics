@@ -1,8 +1,8 @@
-#############################################################################################################
+###############################################################################
 # Authors:
-#   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-#   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-#   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Ignacio Gonzalez,
+#   Francois Bartolo,
+#   Kim-Anh Le Cao,
 #
 # created: 2009
 # last modified: 2015
@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+################################################################################
 
 
 # --------------------------------------------
@@ -55,7 +55,7 @@ margins = c(5, 5),
 lhei = NULL,
 lwid = NULL)
 {
-    #-- image map --------------------------------------------------------------#
+    #-- image map -------------------------------------------------------------#
     #----------
     
     if (isTRUE(symkey)) {
@@ -158,15 +158,18 @@ lwid = NULL)
     image(z, col = color, xaxt = "n", yaxt = "n")
     box()
     par(usr = c(0, 1, 0, 1))
-    lv = c(min.breaks, (3*min.breaks + max.breaks)/4, (min.breaks + max.breaks)/2,
+    lv = c(min.breaks, (3*min.breaks + max.breaks)/4,
+    (min.breaks + max.breaks)/2,
     (3*max.breaks + min.breaks)/4, max.breaks)
     xv = (as.numeric(lv) - min.mat) / (max.mat - min.mat)
     axis(1, at = xv, labels = round(lv, 2), cex.axis = keysize.label)
     title("Color key", font.main = 1, cex.main = keysize.label)
     
     #-- layout 2 --#
-    par(mar = c(ifelse(cut.tree[2] != 0, 0.5, 0), 0, ifelse(!is.null(title), 5, 0), margins[2]))
-    if ((cluster == "both") || (!transpose && cluster == "column") || (transpose && cluster == "row" )) {
+    par(mar = c(ifelse(cut.tree[2] != 0, 0.5, 0), 0,
+    ifelse(!is.null(title), 5, 0), margins[2]))
+    if ((cluster == "both") || (!transpose && cluster == "column") ||
+    (transpose && cluster == "row" )) {
         h = attr(ddc, "height")
         plot(ddc, axes = FALSE, xaxs = "i", leaflab = "none",
         ylim = c(cut.tree[2] * h, h))
@@ -184,14 +187,16 @@ lwid = NULL)
         sideColors = as.vector(col.sideColors)
         img = matrix(c(1:(n.csc * nc)), ncol = n.csc, byrow = FALSE)
         
-        image(1:nc, 1:n.csc, img, col = sideColors, axes = FALSE, xlab = "", ylab = "")
+        image(1:nc, 1:n.csc, img, col = sideColors, axes = FALSE, xlab = "",
+        ylab = "")
         abline(h = 1:(n.csc - 1) + 0.5, lwd = 2,
         col = ifelse(par("bg") == "transparent", "white", par("bg")))
     }
     
     #-- layout 4 --#
     par(mar = c(margins[1], 0, 0, ifelse(cut.tree[1] != 0, 0.5, 0)))
-    if ((cluster == "both") || (cluster == "row" & !transpose) || (cluster == "column" & transpose)) {
+    if ((cluster == "both") || (cluster == "row" & !transpose) ||
+    (cluster == "column" & transpose)) {
         h = attr(ddr, "height")
         plot(ddr, horiz = TRUE, axes = FALSE, yaxs = "i", leaflab = "none",
         xlim = c(h, cut.tree[1] * h))
@@ -208,7 +213,8 @@ lwid = NULL)
         sideColors = as.vector(r.sideColors)
         img = matrix(1:(n.rsc * nr), nrow = n.rsc, byrow = TRUE)
         
-        image(1:n.rsc, 1:nr, img, col = sideColors, axes = FALSE, xlab = "", ylab = "")
+        image(1:n.rsc, 1:nr, img, col = sideColors, axes = FALSE, xlab = "",
+        ylab = "")
         abline(v = 1:(n.rsc - 1) + 0.5, lwd = 2,
         col = ifelse(par("bg") == "transparent", "white", par("bg")))
     }
@@ -257,7 +263,8 @@ lwid = NULL)
             if (is.null(loc) & zone == TRUE) break
             
             if (!is.null(loc) & zone == TRUE) {
-                rect(xleft.old, ybottom.old, xright.old, ytop.old, border = "white")
+                rect(xleft.old, ybottom.old, xright.old, ytop.old,
+                border = "white")
                 points(x1.old, y1.old, type = "p", pch = 3,
                 cex = 2, col = "white")
             }
@@ -281,7 +288,8 @@ lwid = NULL)
                     x2 = round(loc[[1]] - 0.5) + 0.5
                     y2 = round(loc[[2]] - 0.5) + 0.5
                     
-                    if (!(x2 < 0 | x2 > nc + 0.5 | y2 < 0 | y2 > nr + 0.5)) { zone = TRUE; break }
+                    if (!(x2 < 0 | x2 > nc + 0.5 | y2 < 0 | y2 > nr + 0.5)) {
+                        zone = TRUE; break }
                 }
                 
                 if (is.null(loc) & zone == TRUE) break
@@ -319,16 +327,20 @@ lwid = NULL)
                 image(z, col = color, xaxt = "n", yaxt = "n")
                 box()
                 par(usr = c(0, 1, 0, 1))
-                lv = c(min.breaks, (3*min.breaks + max.breaks)/4, (min.breaks + max.breaks)/2,
+                lv = c(min.breaks, (3*min.breaks + max.breaks)/4,
+                (min.breaks + max.breaks)/2,
                 (3*max.breaks + min.breaks)/4, max.breaks)
                 xv = (as.numeric(lv) - min.mat) / (max.mat - min.mat)
                 axis(1, at = xv, labels = round(lv, 2))
                 title("Color key", font.main = 1)
                 
                 #-- layout 2 --#
-                par(mar = c(ifelse(cut.tree[2] != 0, 0.5, 0), 0, ifelse(!is.null(title), 5, 0), margins[2]))
-                if ((cluster == "both") || (cluster == "column" & !transpose) || (cluster == "row" & transpose)) {
-                    plot(ddc, axes = FALSE, xaxs = "i", leaflab = "none", xlim = c(xleft - 0.5, xright + 0.5))
+                par(mar = c(ifelse(cut.tree[2] != 0, 0.5, 0), 0,
+                ifelse(!is.null(title), 5, 0), margins[2]))
+                if ((cluster == "both") || (cluster == "column" & !transpose) ||
+                (cluster == "row" & transpose)) {
+                    plot(ddc, axes = FALSE, xaxs = "i", leaflab = "none",
+                    xlim = c(xleft - 0.5, xright + 0.5))
                 }
                 else {
                     plot(0, 0, axes = FALSE, type = "n", xlab = "", ylab = "")
@@ -341,17 +353,22 @@ lwid = NULL)
                 if (isTRUE(csc)) {
                     par(mar = c(0.5, 0, 0, margins[2]))
                     sideColors = as.vector(col.sideColors[xleft:xright, ])
-                    img = matrix(c(1:(n.csc * nr.zoom)), ncol = n.csc, byrow = FALSE)
+                    img = matrix(c(1:(n.csc * nr.zoom)), ncol = n.csc,
+                    byrow = FALSE)
                     
-                    image(1:nr.zoom, 1:n.csc, img, col = sideColors, axes = FALSE, xlab = "", ylab = "")
+                    image(1:nr.zoom, 1:n.csc, img, col = sideColors,
+                    axes = FALSE, xlab = "", ylab = "")
                     abline(h = 1:(n.csc - 1) + 0.5, lwd = 2,
-                    col = ifelse(par("bg") == "transparent", "white", par("bg")))
+                    col = ifelse(par("bg") == "transparent", "white",
+                    par("bg")))
                 }
                 
                 #-- layout 4 --#
                 par(mar = c(margins[1], 0, 0, ifelse(cut.tree[1] != 0, 0.5, 0)))
-                if ((cluster == "both") || (cluster == "row" & !transpose) || (cluster == "column" & transpose)) {
-                    plot(ddr, horiz = TRUE, axes = FALSE, yaxs = "i", leaflab = "none", ylim = c(ybottom - 0.5, ytop + 0.5))
+                if ((cluster == "both") || (cluster == "row" & !transpose) ||
+                (cluster == "column" & transpose)) {
+                    plot(ddr, horiz = TRUE, axes = FALSE, yaxs = "i",
+                    leaflab = "none", ylim = c(ybottom - 0.5, ytop + 0.5))
                 }
                 else {
                     plot(0, 0, axes = FALSE, type = "n", xlab = "", ylab = "")
@@ -362,11 +379,14 @@ lwid = NULL)
                     par(mar = c(margins[1], 0, 0, 0.5))
                     r.sideColors = row.sideColors[ybottom:ytop, n.rsc:1]
                     sideColors = as.vector(r.sideColors)
-                    img = matrix(1:(n.rsc * nc.zoom), nrow = n.rsc, byrow = TRUE)
+                    img = matrix(1:(n.rsc * nc.zoom), nrow = n.rsc,
+                    byrow = TRUE)
                     
-                    image(1:n.rsc, 1:nc.zoom, img, col = sideColors, axes = FALSE, xlab = "", ylab = "")
+                    image(1:n.rsc, 1:nc.zoom, img, col = sideColors,
+                    axes = FALSE, xlab = "", ylab = "")
                     abline(v = 1:(n.rsc - 1) + 0.5, lwd = 2,
-                    col = ifelse(par("bg") == "transparent", "white", par("bg")))
+                    col = ifelse(par("bg") == "transparent", "white",
+                    par("bg")))
                 }
                 
                 # layout 6

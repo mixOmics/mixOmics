@@ -1,8 +1,8 @@
-#############################################################################################################
+################################################################################
 # Authors:
-#   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
-#   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-#   Sebastien Dejean, Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
+#   Ignacio Gonzalez,
+#   Kim-Anh Le Cao,
+#   Sebastien Dejean,
 #
 # created: 2009
 # last modified: 2009
@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+################################################################################
 
 
 image.tune.rcc <-
@@ -69,7 +69,8 @@ function(x, col = heat.colors, ...)
             binwidth[length(binwidth) + 1] = nlevel
         }
 
-        axis(4, at = midpoints[binwidth], labels = round(midpoints[binwidth], 3))
+        axis(4, at = midpoints[binwidth], labels = round(midpoints[binwidth],
+        3))
 
     }
 

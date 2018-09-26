@@ -175,20 +175,21 @@ and Transcriptome in Human Hepatoma Cells. \emph{Molecular Cancer Therapeutics} 
 and http: //www.mixOmics.org for more details.}
 
 \examples{
-\dontrun{
+
 ## network representation for objects of class 'rcc'
 data(nutrimouse)
 X <- nutrimouse$lipid
 Y <- nutrimouse$gene
 nutri.res <- rcc(X, Y, ncomp = 3, lambda1 = 0.064, lambda2 = 0.008)
 
-
+\dontrun{
 # may not work on the Linux version, use Windows instead
 # sometimes with Rstudio might not work because of margin issues,
 # in that case save it as an image
 jpeg('example1-network.jpeg', res = 600, width = 4000, height = 4000)
 network(nutri.res, comp = 1:3, cutoff = 0.6)
 dev.off()
+}
 
 \dontrun{
 ## Changing the attributes of the network
@@ -227,7 +228,6 @@ color.edge = color.spectral(100),
 lty.edge = "solid", lwd.edge =  1,
 show.edge.labels = FALSE, interactive = FALSE)
 dev.off()
-}
 }
 }
 

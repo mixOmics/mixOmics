@@ -1,12 +1,12 @@
-#############################################################################################################
-# Authors:
-#   Francois Bartolo, Institut National des Sciences Appliquees et Institut de Mathematiques, Universite de Toulouse et CNRS (UMR 5219), France
-#   Benoit Gautier, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-#   Kim-Anh Le Cao, University of Queensland Diamantina Institute, Brisbane, Australia
+###############################################################################
+#Authors:
+#    Francois Bartolo,
+#    Benoit Gautier,
+#    Florian Rohart,
+#    Kim-Anh Le Cao
 #
 # created: 23-08-2016
-# last modified:  23-08-2016
+# last modified: 23-08-2016
 #
 # Copyright (C) 2016
 #
@@ -23,7 +23,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+###############################################################################
 
 auroc = function(object, ...)
 UseMethod("auroc")
@@ -40,21 +40,24 @@ plot = TRUE,
 roc.comp = 1,
 ...)
 {
-    if(dim(newdata)[[1]]!=length(outcome.test))
-    stop("Factor outcome.test must be a factor with ",dim(newdata)[[1]], " elements.",call. = FALSE)
+    if(dim(newdata)[[1]] != length(outcome.test))
+    stop("Factor outcome.test must be a factor with ",dim(newdata)[[1]],
+    " elements.",call. = FALSE)
     
-    data=list()
+    data = list()
     statauc = graph = list()
     data$outcome=factor(outcome.test)
     
     # note here: the dist does not matter as we used the predicted scores only
-    res.predict  =  predict.spls(object, newdata = newdata, dist = "max.dist", multilevel = multilevel)$predict
-
+    res.predict = predict.spls(object, newdata = newdata,
+    dist = "max.dist", multilevel = multilevel)$predict
+    
     for (i in 1:object$ncomp)
     {
         data$data=res.predict[,,i]
         title=paste("ROC Curve Comp",i)
-        temp = statauc(data, plot = ifelse(i%in%roc.comp,plot,FALSE), title = title)
+        temp = statauc(data, plot = ifelse(i%in%roc.comp,plot,FALSE),
+        title = title)
         statauc[[paste("Comp", i, sep = "")]] = temp[[1]]
         graph[[paste("Comp", i, sep = "")]] = temp$graph
     }
@@ -76,15 +79,18 @@ roc.comp = 1,
 roc.study = "global",
 ...)
 {
-    if(length(roc.study) != 1) stop("`roc.study' must be a single entry, either `global' or one of levels(object$study)")
+    if(length(roc.study) != 1)
+    stop("`roc.study' must be a single entry,
+    either `global' or one of levels(object$study)")
     
-    if(roc.study == "global")
-    {
-        if(dim(newdata)[[1]]!=length(outcome.test))
-        stop("Factor outcome.test must be a factor with ",dim(newdata)[[1]], " elements.",call. = FALSE)
+    if(roc.study == "global"){
+        if(dim(newdata)[[1]] != length(outcome.test))
+        stop("Factor outcome.test must be a factor with ",dim(newdata)[[1]],
+        " elements.",call. = FALSE)
         
         if(dim(newdata)[[1]]!=length(study.test))
-        stop("Factor study.test must be a factor with ",dim(newdata)[[1]], " elements.",call. = FALSE)
+        stop("Factor study.test must be a factor with ",dim(newdata)[[1]],
+        " elements.",call. = FALSE)
         study.test=factor(study.test)
         title.temp = NULL
         
@@ -99,7 +105,7 @@ roc.study = "global",
         outcome.test = as.factor(object$Y[ind.study])
         study.test = factor(object$study[ind.study])
         title.temp = paste0(", Study ", roc.study)
-
+        
     }
     
     data=list()
@@ -107,19 +113,21 @@ roc.study = "global",
     data$outcome=factor(outcome.test)
     
     # note here: the dist does not matter as we used the predicted scores only
-    res.predict  =  predict.spls(object, newdata = newdata, dist = "max.dist", multilevel = multilevel, study.test = study.test)$predict
+    res.predict = predict.spls(object, newdata = newdata, dist = "max.dist",
+    multilevel = multilevel, study.test = study.test)$predict
     
     for (i in 1:object$ncomp)
     {
         data$data=res.predict[,,i]
         title=paste0("ROC Curve Comp ",i, title.temp)
-        temp = statauc(data, plot = ifelse(i%in%roc.comp,plot,FALSE), title = title)
+        temp = statauc(data, plot = ifelse(i%in%roc.comp,plot,FALSE),
+        title = title)
         statauc[[paste("Comp", i, sep = "")]] = temp[[1]]
         graph[[paste("Comp", i, sep = "")]] = temp$graph
     }
     print(statauc)
     return(invisible(c(statauc,graph=graph)))
-
+    
 }
 
 
@@ -141,7 +149,8 @@ roc.comp = 1,
     data$outcome=factor(outcome.test)
     
     # note here: the dist does not matter as we used the predicted scores only
-    res.predict  =  predict.block.spls(object, newdata = newdata, dist = "max.dist", multilevel = multilevel)$predict
+    res.predict  =  predict.block.spls(object, newdata = newdata,
+        dist = "max.dist", multilevel = multilevel)$predict
     block.all = names(res.predict)
     block.temp = names(res.predict[roc.block])
     
@@ -150,13 +159,18 @@ roc.comp = 1,
         for (i in 1:object$ncomp[j])
         {
             data$data=res.predict[[j]][,,i]
-            title=paste("ROC Curve\nBlock: ", names(res.predict)[j], ", comp: ",i, sep="")
+            title=paste("ROC Curve\nBlock: ", names(res.predict)[j],
+                ", comp: ",i, sep="")
             
-            plot.temp = ifelse(i%in%roc.comp && names(res.predict)[j]%in%block.temp, plot, FALSE)
+            plot.temp =
+                ifelse(i%in%roc.comp && names(res.predict)[j]%in%block.temp,
+                plot, FALSE)
             temp = statauc(data, plot = plot.temp, title = title)
-            auc.mean[[names(res.predict)[j]]][[paste("comp",i,sep = "")]] = temp[[1]]
-            graph[[names(res.predict)[j]]][[paste("comp",i,sep = "")]] = temp$graph
-
+            auc.mean[[names(res.predict)[j]]][[paste("comp",i,sep = "")]] =
+                temp[[1]]
+            graph[[names(res.predict)[j]]][[paste("comp",i,sep = "")]] =
+                temp$graph
+            
         }
         out = c(auc.mean,graph=graph)
     }
@@ -185,7 +199,8 @@ roc.comp = 1,
     study.test=factor(study.test)
     
     # note here: the dist does not matter as we used the predicted scores only
-    res.predict  =  predict.spls(object, newdata = newdata, study.test=study.test,dist = "max.dist", multilevel = multilevel)$predict
+    res.predict  =  predict.spls(object, newdata = newdata,
+    study.test=study.test,dist = "max.dist", multilevel = multilevel)$predict
     block.all = names(res.predict)
     block.temp = names(res.predict[roc.block])
     
@@ -194,13 +209,18 @@ roc.comp = 1,
         for (i in 1:object$ncomp[j])
         {
             data$data=res.predict[[j]][,,i]
-            title=paste("ROC Curve\nBlock: ", names(res.predict)[j], ", comp: ",i, sep="")
+            title=paste("ROC Curve\nBlock: ", names(res.predict)[j],
+            ", comp: ",i, sep="")
             
-            plot.temp = ifelse(i%in%roc.comp && names(res.predict)[j]%in%block.temp, plot, FALSE)
+            plot.temp =
+                ifelse(i%in%roc.comp && names(res.predict)[j]%in%block.temp,
+                plot, FALSE)
             temp = statauc(data, plot = plot.temp, title = title)
-            auc.mean[[names(res.predict)[j]]][[paste("comp",i,sep = "")]] = temp[[1]]
-            graph[[names(res.predict)[j]]][[paste("comp",i,sep = "")]] = temp$graph
-
+            auc.mean[[names(res.predict)[j]]][[paste("comp",i,sep = "")]] =
+                temp[[1]]
+            graph[[names(res.predict)[j]]][[paste("comp",i,sep = "")]] =
+                temp$graph
+            
         }
         out = c(auc.mean,graph=graph)
     }

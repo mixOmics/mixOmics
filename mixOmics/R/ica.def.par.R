@@ -1,6 +1,7 @@
-#############################################################################################################
+################################################################################
 # Authors:
-#   The function ica.par and ica.def are borrowed from the fastICA package (see references in help file).
+#   The function ica.par and ica.def are borrowed from the fastICA package
+#   (see references in help file).
 #
 # created: 2011
 # last modified: 2011
@@ -20,7 +21,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+###############################################################################
 
 ica.def <-
     function (X, ncomp, tol, fun, alpha, max.iter, verbose, w.init)

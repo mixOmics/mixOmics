@@ -1,4 +1,4 @@
-#############################################################################################################
+################################################################################
 # Authors:
 #   Ignacio Gonzalez, Genopole Toulouse Midi-Pyrenees, France
 #
@@ -20,7 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+################################################################################
 
 
 #-- spectral colors --#
@@ -28,8 +28,8 @@
 color.spectral =
   function (n, alpha = 1) 
   {
-    #-- checking general input parameters --------------------------------------#
-    #---------------------------------------------------------------------------#
+    #-- checking general input parameters -------------------------------------#
+    #--------------------------------------------------------------------------#
     
     #-- n
     if (length(n) > 1 || !is.finite(n))

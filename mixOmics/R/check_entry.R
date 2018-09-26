@@ -1,6 +1,6 @@
-#############################################################################################################
+################################################################################
 # Authors:
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Florian Rohart,
 #
 # created: 22-04-2015
 # last modified: 05-10-2017
@@ -20,7 +20,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+################################################################################
 
 # --------------------------------------
 # check and construct keepA
@@ -44,11 +44,14 @@ get.keepA=function(X,keepX,ncomp)
         stop("'keepX' must be a list")
         
         if (length(keepX) > length(X))
-        stop(paste0("length(keepX) is higher than the number of blocks in X, which is ", length(X), "."))
+        stop(paste0("length(keepX) is higher than the number of blocks in X,
+        which is ", length(X), "."))
         
         # error if no names on keepX or not matching the names in X
-        if(length(unique(names(keepX)))!=length(keepX) | sum(is.na(match(names(keepX),names(X)))) > 0)
-        stop("Each entry of 'keepX' must have a unique name corresponding to a block of 'X'")
+        if(length(unique(names(keepX)))!=length(keepX) |
+        sum(is.na(match(names(keepX),names(X)))) > 0)
+        stop("Each entry of 'keepX' must have a unique name corresponding to
+        a block of 'X'")
         
         # I want to match keepX to X by names
         ind.match = match(names(X), names(keepX))
@@ -56,27 +59,34 @@ get.keepA=function(X,keepX,ncomp)
         for (q in 1:length(X))
         {
             
-            if (!is.na(ind.match[q])) # means there is a keepX with the same name as X[q] #(q <= length(keepX))
+            if (!is.na(ind.match[q]))
+            # means there is a keepX with the same name as X[q]
+            #(q <= length(keepX))
             {
                 #checking entries of keepX
                 if (is.list(keepX[[ind.match[q]]]))
                 stop(paste0("keepX[[",ind.match[q],"]]' must be a vector"))
                 
                 if (any(keepX[[ind.match[q]]] > ncol(X[[q]])))
-                stop(paste0("each component of 'keepX[[",ind.match[q],"]]' must be lower or equal to ncol(X[[",q,"]])=",ncol(X[[q]]),"."))
+                stop(paste0("each component of 'keepX[[",ind.match[q],"]]'
+                must be lower or equal to ncol(X[[",q,"]])=",ncol(X[[q]]),"."))
                 
                 if (any(keepX[[ind.match[q]]] < 0))
-                stop(paste0("each component of 'keepX[[",ind.match[q],"]]' must be non negative."))
+                stop(paste0("each component of 'keepX[[",ind.match[q],"]]'
+                must be non negative."))
                 
                 if (length(keepX[[ind.match[q]]]) > ncomp[q])
-                stop(paste0("length of 'keepX[[",ind.match[q],"]]' must be lower or equal to ncomp[",q,"]=",ncomp[q], "."))
+                stop(paste0("length of 'keepX[[",ind.match[q],"]]'
+                must be lower or equal to ncomp[",q,"]=",ncomp[q], "."))
                 
                 keepA[[q]] = keepX[[ind.match[q]]]
                 if (length(keepA[[q]]) < max(ncomp))
-                keepA[[q]] = c(keepA[[q]], rep(ncol(X[[q]]), max(ncomp) - length(keepA[[q]]))) #complete the keepX already provided
+                keepA[[q]] = c(keepA[[q]], rep(ncol(X[[q]]),
+                max(ncomp) - length(keepA[[q]])))
+                #complete the keepX already provided
                 
             }else{
-                keepA[[q]]=rep(ncol(X[[q]]),max(ncomp))##
+                keepA[[q]]=rep(ncol(X[[q]]),max(ncomp))
             }
         }
         
@@ -90,15 +100,17 @@ get.keepA=function(X,keepX,ncomp)
 
 
 # --------------------------------------
-# Check.entry.single: check input parameter for a single matrix that comes from a list of matrix
+# Check.entry.single: check input parameter for a single matrix that comes
+#   from a list of matrix
 # --------------------------------------
 # X: a single numeric matrix
 # ncomp: the number of components to include in the model
-# q: position of X in a list of matrix, as used in horizontal analysis (e.g. block.pls)
+# q: position of X in a list of matrix, as used in horizontal analysis
+#   (e.g. block.pls)
 
 Check.entry.single = function(X,  ncomp, q)
 {
-
+    
     #-- validation des arguments --#
     if (length(dim(X)) != 2)
     stop(paste0("'X[[", q, "]]' must be a numeric matrix."))
@@ -113,7 +125,8 @@ Check.entry.single = function(X,  ncomp, q)
     P = ncol(X)
     
     if (is.null(ncomp) || !is.numeric(ncomp) || ncomp <= 0)
-    stop(paste0("invalid number of variates 'ncomp' for matrix 'X[[", q, "]]'."))
+    stop(paste0(
+    "invalid number of variates 'ncomp' for matrix 'X[[", q, "]]'."))
     
     ncomp = round(ncomp)
     
@@ -133,9 +146,9 @@ Check.entry.single = function(X,  ncomp, q)
     }
     
     if (length(unique(rownames(X))) != nrow(X))
-        stop("samples should have a unique identifier/rowname")
+    stop("samples should have a unique identifier/rowname")
     if (length(unique(X.names)) != P)
-        stop("Unique indentifier is needed for the columns of X")
+    stop("Unique indentifier is needed for the columns of X")
     
     return(list(X=X, ncomp=ncomp, X.names=X.names, ind.names=ind.names))
 }
@@ -143,7 +156,8 @@ Check.entry.single = function(X,  ncomp, q)
 
 
 # --------------------------------------
-# Check.entry.pls: check the entry associated with (s)PLS. Usde in 'internal_wrapper.mint.R'
+# Check.entry.pls: check the entry associated with (s)PLS.
+#   Used in 'internal_wrapper.mint.R'
 # --------------------------------------
 # X: numeric matrix of predictors
 # Y: numeric vector or matrix of responses
@@ -151,17 +165,20 @@ Check.entry.single = function(X,  ncomp, q)
 # keepX: number of \eqn{X} variables kept in the model on the last components.
 # keepY: number of \eqn{Y} variables kept in the model on the last components.
 # mode: deflation mode
-# scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
-# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
+# scale: boleean. If scale = TRUE, each block is standardized to zero means and
+#   unit variances (default: TRUE).
+# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function
+#   (should be set to TRUE in particular for data with many zero values).
 # max.iter: integer, the maximum number of iterations.
 # tol: Convergence stopping value.
 # logratio: whether a log transformation will be performed, and which one,
 # DA: whether the input is used for a Discrimant Analysis
-# multilevel: whether a multilevel analysis will be performed (repeated measurements)
+# multilevel: whether a multilevel analysis will be performed
+#   (repeated measurements)
 
 
-Check.entry.pls = function(X, Y, ncomp, keepX, keepY, test.keepX, test.keepY, mode, scale,
-     near.zero.var, max.iter, tol, logratio, DA, multilevel)
+Check.entry.pls = function(X, Y, ncomp, keepX, keepY, test.keepX, test.keepY,
+mode, scale, near.zero.var, max.iter, tol, logratio, DA, multilevel)
 {
     
     if (missing(mode))
@@ -171,7 +188,8 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, test.keepX, test.keepY, mo
     mode = mode[1]
     
     if (!(mode %in% c("canonical", "invariant", "classic", "regression")))
-    stop("Choose one of the four following modes: canonical, invariant, classic or regression")
+    stop("Choose one of the four following modes: canonical, invariant,
+    classic or regression")
     
     
     #-- validation des arguments --#
@@ -180,7 +198,7 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, test.keepX, test.keepY, mo
     
     if(! any(class(X) %in% "matrix"))
     X = as.matrix(X)
-
+    
     if (!(logratio %in% c("none", "CLR")))
     stop("Choose one of the two following logratio transformation: none or CLR")
     
@@ -215,13 +233,15 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, test.keepX, test.keepY, mo
     stop("invalid number of variates, 'ncomp'.")
     
     if(mode == "canonical" & ncomp>ncol(Y))
-    stop("For `canonical mode', 'ncomp' needs to be lower than ncol(Y)= ",ncol(Y))
-
-
+    stop("For `canonical mode', 'ncomp' needs to be lower than ncol(Y)= ",
+        ncol(Y))
+    
+    
     ncomp = round(ncomp)
     if(ncomp > P)
     {
-        warning("Reset maximum number of variates 'ncomp' to ncol(X) = ", P, ".")
+        warning("Reset maximum number of variates 'ncomp' to ncol(X) = ", P,
+        ".")
         ncomp = P
     }
     
@@ -240,7 +260,7 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, test.keepX, test.keepY, mo
         dimnames(X)[[2]] = X.names
     }
     
-
+    
     
     ind.names = dimnames(X)[[1]]
     if (is.null(ind.names))
@@ -250,7 +270,7 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, test.keepX, test.keepY, mo
         {
             ind.names = 1:N
             rownames(X) = rownames(Y) = ind.names
-
+            
         } else {
             rownames(X) = ind.names
         }
@@ -290,7 +310,8 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, test.keepX, test.keepY, mo
         keepX = rep(P, ncomp)
     } else {
         if (length(keepX)<ncomp)
-        keepX = c(keepX, rep(P, ncomp - length(keepX))) #complete (with ncomp) the keepX already provided
+        keepX = c(keepX, rep(P, ncomp - length(keepX)))
+        #complete (with ncomp) the keepX already provided
     }
     
     # check keepY
@@ -299,10 +320,11 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, test.keepX, test.keepY, mo
         keepY = rep(Q, ncomp)
     } else {
         if (length(keepY) < ncomp)
-        keepY = c(keepY, rep(Q, ncomp - length(keepY))) #complete the keepY already provided
+        keepY = c(keepY, rep(Q, ncomp - length(keepY)))
+        #complete the keepY already provided
     }
-
-
+    
+    
     
     
     if (any(keepX<0))
@@ -315,14 +337,14 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, test.keepX, test.keepY, mo
     if (any(keepY > ncol(Y)))
     stop("each component of 'keepY' must be lower or equal than ", Q, ".")
     
-
+    
     if (!is.logical(scale))
     stop("'scale' must be either TRUE or FALSE")
     
     if (!is.logical(near.zero.var))
     stop("'near.zero.var' must be either TRUE or FALSE")
     
-
+    
     ### near.zero.var, remove the variables with very small variances
     if (near.zero.var == TRUE)
     {
@@ -332,11 +354,13 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, test.keepX, test.keepY, mo
         {
             names.remove.X = colnames(X)[nzv.A$Position]
             X = X[, -nzv.A$Position, drop=FALSE]
-            warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
+            warning("Zero- or near-zero variance predictors.\n Reset
+            predictors matrix to not near-zero variance predictors.\n
+            See $nzv for problematic predictors.")
             if (ncol(X) == 0)
             stop("No more variables in X")
             
-            #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
+        #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
             if (any(keepX > ncol(X)))
             {
                 ind = which(keepX > ncol(X))
@@ -346,28 +370,40 @@ Check.entry.pls = function(X, Y, ncomp, keepX, keepY, test.keepX, test.keepY, mo
         
     }else{nzv.A=NULL}
     
-
-    return(list(X=X, Y=Y, ncomp=ncomp, X.names=X.names, Y.names=Y.names, ind.names=ind.names, mode=mode,
-        keepX=keepX, keepY=keepY, nzv.A=nzv.A))
+    
+    return(list(X=X, Y=Y, ncomp=ncomp, X.names=X.names, Y.names=Y.names,
+    ind.names=ind.names, mode=mode, keepX=keepX, keepY=keepY, nzv.A=nzv.A))
 }
 
 
 # --------------------------------------
 # Check.entry.wrapper.mint.block: used in 'internal_wrapper.mint.block.R'
 # --------------------------------------
-# X: a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets. \code{NA}s are not allowed.
+# X: a list of data sets (called 'blocks') matching on the same samples.
+#   Data in the list should be arranged in samples x variables, with samples
+#   order matching in all data sets. \code{NA}s are not allowed.
 # Y: a factor or a class vector for the discrete outcome.
-# indY: to supply if Y is missing, indicate the position of the outcome in the list X.
-# ncomp: numeric vector of length the number of blocks in \code{X}. The number of components to include in the model for each block (does not necessarily need to take the same value for each block). By default set to 2 per block.
-# keepX: A vector of same length as X.  Each entry keepX[i] is the number of X[[i]]-variables kept in the model on the last components.
-# keepY: Only used if Y is provided. Each entry keepY[i] is the number of Y-variables kept in the model on the last components.
+# indY: to supply if Y is missing, indicate the position of the outcome in X.
+# ncomp: numeric vector of length the number of blocks in \code{X}.
+#   The number of components to include in the model for each block
+#   (does not necessarily need to take the same value for each block).
+#   By default set to 2 per block.
+# keepX: A vector of same length as X.  Each entry keepX[i] is the number of
+#   X[[i]]-variables kept in the model on the last components.
+# keepY: Only used if Y is provided. Each entry keepY[i] is the number of
+#   Y-variables kept in the model on the last components.
 # study: grouping factor indicating which samples are from the same study
 # design: the input design.
-# init: intialisation of the algorithm, one of "svd" or "svd.single". Default to "svd"
-# scheme: the input scheme, one of "horst", "factorial" or ""centroid". Default to "centroid"
-# scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
-# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
-# mode: input mode, one of "canonical", "classic", "invariant" or "regression". Default to "regression"
+# init: intialisation of the algorithm, one of "svd" or "svd.single".
+#   Default to "svd"
+# scheme: the input scheme, one of "horst", "factorial" or ""centroid".
+#   Default to "centroid"
+# scale: boleean. If scale = TRUE, each block is standardized to zero means
+#   and unit variances (default: TRUE).
+# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function
+#   (should be set to TRUE in particular for data with many zero values).
+# mode: input mode, one of "canonical", "classic", "invariant" or "regression".
+#   Default to "regression"
 # tol: Convergence stopping value.
 # max.iter: integer, the maximum number of iterations.
 
@@ -395,16 +431,19 @@ max.iter)
     # check names on X are unique
     if (length(unique(names(X))) != length(X))
     stop("Each block of 'X' must have a unique name.")
-    #names(X)=paste0("block", 1:length(X)) #add names to the blocks if no names or not unique name for each block
-
+    #names(X)=paste0("block", 1:length(X)) #add names to the blocks if no names
+    # or not unique name for each block
+    
     if (length(unique(unlist(lapply(X, nrow)))) != 1)
     stop("Unequal number of rows among the blocks of 'X'")
     
     #check for numeric vector instead of matrix
-    if (length(unlist(lapply(X, nrow))) != length(X)) #means there is at least one NULL
+    if (length(unlist(lapply(X, nrow))) != length(X))
+    #means there is at least one NULL
     {
         nrow.all = unlist(lapply(X, nrow)) # could be NULL
-        ind.null = which(is.na(match(names(X), names(nrow.all)))) #gives the vectors
+        ind.null = which(is.na(match(names(X), names(nrow.all))))
+        #gives the vectors
         
         # we need matrices with rownames and colnames
         stop("At least one block of 'X' is not a matrix")
@@ -422,8 +461,8 @@ max.iter)
     
     # transform ncomp to length(X)
     ncomp = rep(ncomp, length(X))
-
-
+    
+    
     #check dimnames and ncomp per block of A
     for (q in 1:length(X))
     {
@@ -438,24 +477,26 @@ max.iter)
         ncomp[q] = round(ncomp[q])
         if(ncomp[q] > ncol(X[[q]]))
         {
-            warning(paste0("Reset maximum number of variates 'ncomp[", q, "]' to ncol(X[[", q, "]])= ", ncol(X[[q]]), "."))
+            warning(paste0("Reset maximum number of variates 'ncomp[", q, "]'
+            to ncol(X[[", q, "]])= ", ncol(X[[q]]), "."))
             ncomp[q] = ncol(X[[q]])
         }
     }
     
-    # construction of keepA for X, we include Y later on if needed (i.e. if Y is provided, otherwise Y is in X[[indY]])
+    # construction of keepA for X, we include Y later on if needed (i.e. if Y is
+    #   provided, otherwise Y is in X[[indY]])
     check = get.keepA(X=X, keepX=keepX, ncomp=ncomp)
     keepA = check$keepA
     
     
     if (!missing(Y))# Y is not missing, so we don't care about indY
-    {        
+    {
         if (!missing(indY))
         warning("'Y' and 'indY' are provided, 'Y' is used.")
         
         if (is.list(Y) | length(dim(Y)) != 2 | !is.numeric(Y))
         stop("'Y' must be a numeric matrix.")
-
+        
         #check dimnames and ncomp per block of A
         check = Check.entry.single(Y, max(ncomp), q=1)
         Y = check$X
@@ -466,12 +507,12 @@ max.iter)
         # if not missing, we transform keepY in list to input them in get.keepA
         if (!missing(keepY))
         keepY = list(Y = keepY)
-            
+        
         check.temp.Y = get.keepA(X = list(Y = Y), keepX = keepY, ncomp = ncomp)
         keepY.temp = check.temp.Y$keepA
-            
+        
         keepA[[length(X)+1]] = keepY.temp[[1]] #add keepY in keepA
-
+        
         # check design matrix before adding Y in
         A = X
         ### Start check design matrix
@@ -479,17 +520,20 @@ max.iter)
         {
             design = 1 - diag(length(A)+1)
             rownames(design) = colnames(design) = c(names(A), "Y")
-        } else if (ncol(design) != nrow(design) || ncol(design) < length(X) || ncol(design) > (length(X) + 1) ){#|| any(!design %in% c(0,1))) {
-            stop(paste0("'design' must be a square matrix with ", length(X), "columns."))
+        } else if (ncol(design) != nrow(design) || ncol(design) < length(X) ||
+        ncol(design) > (length(X) + 1) ){#|| any(!design %in% c(0,1))) {
+            stop(paste0("'design' must be a square matrix with ", length(X),
+            "columns."))
         } else if (ncol(design) == length(X)) {
-            message("Design matrix has changed to include Y; each block will be linked to Y.")
+            message("Design matrix has changed to include Y; each block will be
+            linked to Y.")
             design = rbind(cbind(design, 1), 1)
             diag(design) = 0
             rownames(design) = colnames(design) = c(names(A), "Y")
         }
         rownames(design) = colnames(design) = c(names(A), "Y")
         ### End check design matrix
-
+        
         # build the list A by adding Y, and creating indY
         A[[length(A)+1]] = Y
         names(A)[length(A)] = names(keepA)[length(A)] = "Y"
@@ -504,40 +548,47 @@ max.iter)
     } else {        #missing(Y) but indY not missing
         
         if (!missing(keepY))
-        warning("indY is provided: 'keepY' is ignored and only 'keepX' is used.")
-
+        warning("indY is provided: 'keepY' is ignored and only
+            'keepX' is used.")
+        
         A = X #list provided as input
         
         ### Start check design matrix
         if (missing(design))
         {
             design = 1 - diag(length(A))
-        } else if (ncol(design) != nrow(design) || ncol(design) < length(A) || ncol(design) > (length(A) + 1) )#|| any( !design %in% c(0,1)))
+        } else if (ncol(design) != nrow(design) || ncol(design) < length(A) ||
+        ncol(design) > (length(A) + 1) )#|| any( !design %in% c(0,1)))
         {
-            stop(paste0("'design' must be a square matrix with ", length(A), "columns."))
+            stop(paste0("'design' must be a square matrix with ", length(A),
+            "columns."))
         }
         rownames(design) = colnames(design) = names(A)
         ### End check design matrix
         
         # check indY
         if (!is.numeric(indY) | indY > length(A) | length(indY) > 1)
-        stop(paste0("'indY' must be a numeric value lower or equal to ", length(A), ", the number of blocks in A."))
-
+        stop(paste0("'indY' must be a numeric value lower or equal to ",
+        length(A), ", the number of blocks in A."))
+        
     }
     
-    # --------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------
     # at this stage, we have A, indY, keepA, ncomp verified
-    # --------------------------------------------------------------------------------
+    # -----------------------------------------------------------------------
     
     # force all rownames to be the same
     ind.names=lapply(A,rownames)
-    check = sapply(1:length(A),function(j){identical(ind.names[[1]],ind.names[[j]])})
+    check = sapply(1:length(A),function(j){identical(ind.names[[1]],
+        ind.names[[j]])})
     
     if(sum(check) != length(check))
-    stop("Please check the rownames of the data, there seems to be some discrepancies")
+    stop("Please check the rownames of the data, there seems to be some
+    discrepancies")
     
     if (!(mode %in% c("canonical", "invariant", "classic", "regression")))
-    stop("Choose one of the four following modes: canonical, invariant, classic or regression")
+    stop("Choose one of the four following modes: canonical, invariant,
+    classic or regression")
     
     #set the default study factor
     if (missing(study))
@@ -550,9 +601,11 @@ max.iter)
     stop(paste0("'study' must be a factor of length ", nrow(A[[1]]), "."))
     
     if (any(table(study) <= 1))
-    stop("At least one study has only one sample, please consider removing before calling the function again")
+    stop("At least one study has only one sample, please consider removing
+        before calling the function again")
     if (any(table(study) < 5))
-    warning("At least one study has less than 5 samples, mean centering might not do as expected")
+    warning("At least one study has less than 5 samples, mean centering
+        might not do as expected")
     
     if (missing(init))
     init = "svd.single"
@@ -575,7 +628,8 @@ max.iter)
     #check scheme
     if (!(scheme %in% c("horst", "factorial", "centroid")))
     {
-        stop("Choose one of the three following schemes: horst, centroid or factorial")
+        stop("Choose one of the three following schemes: horst, centroid or
+            factorial")
     }
     
     if (!is.numeric(tol) | tol <= 0)
@@ -599,11 +653,13 @@ max.iter)
                 names.remove.X = colnames(A[[q]])[nzv.A[[q]]$Position]
                 A[[q]] = A[[q]][, -nzv.A[[q]]$Position, drop=FALSE]
                 #if (verbose)
-                #warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
+                #warning("Zero- or near-zero variance predictors.\n
+                #Reset predictors matrix to not near-zero variance predictors.\n
+                # See $nzv for problematic predictors.")
                 if (ncol(A[[q]]) == 0)
                 stop(paste0("No more variables in",A[[q]]))
                 
-                #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
+        #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
                 if (any(keepA[[q]] > ncol(A[[q]])))
                 {
                     ind = which(keepA[[q]] > ncol(A[[q]]))
@@ -624,17 +680,28 @@ max.iter)
 # --------------------------------------
 # Check.entry.sgcca: used in 'wrapper.sgcca.R'
 # --------------------------------------
-# X: a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets. \code{NA}s are not allowed.
+# X: a list of data sets (called 'blocks') matching on the same samples.
+#   Data in the list should be arranged in samples x variables, with samples
+#   order matching in all data sets. \code{NA}s are not allowed.
 # design: the input design.
-# ncomp: numeric vector of length the number of blocks in \code{X}. The number of components to include in the model for each block (does not necessarily need to take the same value for each block). By default set to 2 per block.
-# scheme: the input scheme, one of "horst", "factorial" or ""centroid". Default to "centroid"
-# mode: input mode, one of "canonical", "classic", "invariant" or "regression". Default to "regression"
-# scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
-# init: intialisation of the algorithm, one of "svd" or "svd.single". Default to "svd"
+# ncomp: numeric vector of length the number of blocks in \code{X}.
+#   The number of components to include in the model for each block
+#   (does not necessarily need to take the same value for each block).
+#   By default set to 2 per block.
+# scheme: the input scheme, one of "horst", "factorial" or ""centroid".
+#   Default to "centroid"
+# mode: input mode, one of "canonical", "classic", "invariant" or "regression".
+#   Default to "regression"
+# scale: boleean. If scale = TRUE, each block is standardized to zero means and
+#   unit variances (default: TRUE).
+# init: intialisation of the algorithm, one of "svd" or "svd.single".
+#   Default to "svd"
 # tol: Convergence stopping value.
 # max.iter: integer, the maximum number of iterations.
-# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
-# keepX: A vector of same length as X.  Each entry keepX[i] is the number of X[[i]]-variables kept in the model on the last components.
+# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function
+#   (should be set to TRUE in particular for data with many zero values).
+# keepX: A vector of same length as X.  Each entry keepX[i] is the number of
+#   X[[i]]-variables kept in the model on the last components.
 
 Check.entry.sgcca = function(X,
 design,
@@ -662,18 +729,19 @@ keepX)
     # check names on X are unique
     if (length(unique(names(X))) != length(X))
     stop("Each block of 'X' must have a unique name.")
-    #names(X)=paste0("block", 1:length(X)) #add names to the blocks if no names or not unique name for each block
-
+    #names(X)=paste0("block", 1:length(X)) #add names to the blocks if no
+    #names or not unique name for each block
+    
     if (missing(ncomp))
     ncomp = 1
-
+    
     #check length(ncomp)=1
     if (length(ncomp) != 1)
     stop("'ncomp' must be a single value")
-
+    
     # transform ncomp to length(X)
     ncomp = rep(ncomp, length(X))
-
+    
     #check dimnames and ncomp per block of A
     for (q in 1:length(X))
     {
@@ -688,7 +756,8 @@ keepX)
         ncomp[q] = round(ncomp[q])
         if(ncomp[q] > ncol(X[[q]]))
         {
-            warning(paste0("Reset maximum number of variates 'ncomp[", q, "]' to ncol(X[[", q, "]])= ", ncol(X[[q]]), "."))
+            warning(paste0("Reset maximum number of variates 'ncomp[", q,
+            "]' to ncol(X[[", q, "]])= ", ncol(X[[q]]), "."))
             ncomp[q] = ncol(X[[q]])
         }
     }
@@ -702,7 +771,8 @@ keepX)
     stop("init should be one of 'svd' or 'svd.single'")
     
     if (!(mode %in% c("canonical", "invariant", "classic", "regression")))
-    stop("Choose one of the four following modes: canonical, invariant, classic or regression")
+    stop("Choose one of the four following modes: canonical, invariant, classic
+    or regression")
     
     
     #check scheme
@@ -711,7 +781,8 @@ keepX)
     
     if (!(scheme %in% c("horst", "factorial","centroid")))
     {
-        stop("Choose one of the three following schemes: horst, centroid or factorial")
+        stop("Choose one of the three following schemes: horst, centroid or
+        factorial")
     }
     
     if(missing(design))
@@ -750,11 +821,13 @@ keepX)
                 names.remove.X = colnames(A[[q]])[nzv.A[[q]]$Position]
                 A[[q]] = A[[q]][, -nzv.A[[q]]$Position, drop=FALSE]
                 #if (verbose)
-                #warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
+                #warning("Zero- or near-zero variance predictors.\n
+                #Reset predictors matrix to not near-zero variance predictors.\n
+                #See $nzv for problematic predictors.")
                 if (ncol(A[[q]]) == 0)
                 stop(paste0("No more variables in", A[[q]]))
                 
-                  #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
+        #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
                 if (any(keepA[[q]]>ncol(A[[q]])))
                 {
                     ind = which(keepA[[q]] > ncol(A[[q]]))
@@ -768,8 +841,8 @@ keepX)
     }
     
     
-    return(list(A=A, ncomp=ncomp, design=design, init=init, scheme=scheme, nzv.A=nzv.A,
-    keepA=keepA))
+    return(list(A=A, ncomp=ncomp, design=design, init=init, scheme=scheme,
+    nzv.A=nzv.A, keepA=keepA))
     
 }
 
@@ -778,17 +851,27 @@ keepX)
 # --------------------------------------
 # Check.entry.rgcca: used in 'wrapper.rgcca.R'
 # --------------------------------------
-# X: a list of data sets (called 'blocks') matching on the same samples. Data in the list should be arranged in samples x variables, with samples order matching in all data sets. \code{NA}s are not allowed.
+# X: a list of data sets (called 'blocks') matching on the same samples.
+#   Data in the list should be arranged in samples x variables, with samples
+#   order matching in all data sets. \code{NA}s are not allowed.
 # design: the input design.
 # tau:
-# ncomp: numeric vector of length the number of blocks in \code{X}. The number of components to include in the model for each block (does not necessarily need to take the same value for each block). By default set to 2 per block.
-# scheme: the input scheme, one of "horst", "factorial" or ""centroid". Default to "centroid"
-# scale: boleean. If scale = TRUE, each block is standardized to zero means and unit variances (default: TRUE).
-# init: intialisation of the algorithm, one of "svd" or "svd.single". Default to "svd"
+# ncomp: numeric vector of length the number of blocks in \code{X}.
+#   The number of components to include in the model for each block
+#   (does not necessarily need to take the same value for each block).
+#   By default set to 2 per block.
+# scheme: the input scheme, one of "horst", "factorial" or ""centroid".
+#   Default to "centroid"
+# scale: boleean. If scale = TRUE, each block is standardized to zero means and
+#    unit variances (default: TRUE).
+# init: intialisation of the algorithm, one of "svd" or "svd.single".
+#   Default to "svd"
 # tol: Convergence stopping value.
 # max.iter: integer, the maximum number of iterations.
-# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function (should be set to TRUE in particular for data with many zero values). Setting this argument to FALSE (when appropriate) will speed up the computations
-# keepX: A vector of same length as X.  Each entry keepX[i] is the number of X[[i]]-variables kept in the model on the last components.
+# near.zero.var: boolean, see the internal \code{\link{nearZeroVar}} function
+#   (should be set to TRUE in particular for data with many zero values).
+# keepX: A vector of same length as X.  Each entry keepX[i] is the number of
+#   X[[i]]-variables kept in the model on the last components.
 Check.entry.rgcca = function(X,
 design,
 tau,
@@ -811,12 +894,13 @@ keepX)
     
     if (length(unique(unlist(lapply(X, nrow)))) != 1)
     stop("Unequal number of rows among the blocks of 'X'")
-
+    
     # check names on X are unique
     if (length(unique(names(X))) != length(X))
     stop("Each block of 'X' must have a unique name.")
-    #names(X)=paste0("block", 1:length(X)) #add names to the blocks if no names or not unique name for each block
-
+    #names(X)=paste0("block", 1:length(X)) #add names to the blocks if no names
+    #or not unique name for each block
+    
     if (is.null(tau))
     stop("'tau' is needed")
     
@@ -845,7 +929,8 @@ keepX)
         ncomp[q] = round(ncomp[q])
         if(ncomp[q] > ncol(X[[q]]))
         {
-            warning(paste0("Reset maximum number of variates 'ncomp[", q, "]' to ncol(X[[", q, "]])= ", ncol(X[[q]]), "."))
+            warning(paste0("Reset maximum number of variates 'ncomp[", q,
+                "]' to ncol(X[[", q, "]])= ", ncol(X[[q]]), "."))
             ncomp[q] = ncol(X[[q]])
         }
     }
@@ -862,7 +947,8 @@ keepX)
             if (length(tau) != length(A))
             stop(paste0("'tau' must be of length ", length(A), "."))
             
-            tau = matrix(rep(tau, max(ncomp)), nrow = max(ncomp), ncol = length(tau), byrow = TRUE)
+            tau = matrix(rep(tau, max(ncomp)), nrow = max(ncomp),
+                ncol = length(tau), byrow = TRUE)
         }
     } else {
         if (tau != "optimal")
@@ -879,7 +965,8 @@ keepX)
     if(missing(scheme)) scheme = "horst"
     if (!(scheme %in% c("horst", "factorial", "centroid")))
     {
-        stop("Choose one of the three following schemes: horst, centroid or factorial")
+        stop("Choose one of the three following schemes: horst, centroid or
+        factorial")
     }
     
     
@@ -922,11 +1009,13 @@ keepX)
                 names.remove.X = colnames(A[[q]])[nzv.A[[q]]$Position]
                 A[[q]] = A[[q]][, -nzv.A[[q]]$Position, drop=FALSE]
                 #if (verbose)
-                #warning("Zero- or near-zero variance predictors.\n Reset predictors matrix to not near-zero variance predictors.\n See $nzv for problematic predictors.")
+                #warning("Zero- or near-zero variance predictors.\n
+                #Reset predictors matrix to not near-zero variance predictors.\n
+                #See $nzv for problematic predictors.")
                 if (ncol(A[[q]]) == 0)
                 stop(paste0("No more variables in", A[[q]]))
                 
-                #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
+        #need to check that the keepA[[q]] is now not higher than ncol(A[[q]])
                 if (any(keepA[[q]] > ncol(A[[q]])))
                 {
                     ind = which(keepA[[q]] > ncol(A[[q]]))
@@ -940,8 +1029,8 @@ keepX)
     }
     
     
-    return(list(A=A, ncomp=ncomp, design=design, init=init, scheme=scheme, nzv.A=nzv.A,
-    keepA=keepA))
+    return(list(A=A, ncomp=ncomp, design=design, init=init, scheme=scheme,
+    nzv.A=nzv.A, keepA=keepA))
 }
 
 

@@ -1,9 +1,9 @@
-#############################################################################################################
+################################################################################
 # Authors:
-#   Amrit Singh, the University of British Columbia, Vancouver, Canada
-#   Michael Vacher, the University of Western Australia, Perth, Australia
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-#   Kim-Anh Le Cao, University of Queensland Diamantina Institute, Brisbane, Australia
+#   Amrit Singh,
+#   Michael Vacher,
+#   Florian Rohart,
+#   Kim-Anh Le Cao,
 #
 # created: 2015
 # last modified: 24-08-2016
@@ -23,7 +23,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program  if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+################################################################################
 
 
 circosPlot = function(object,
@@ -41,7 +41,7 @@ size.variables = 0.25,
 size.labels=1,
 legend = TRUE)
 {
-    # to satisfy R CMD check that doesn't recognise x, y and group as variable (in aes)
+    # to satisfy R CMD check that doesn't recognise x, y and group (in aes)
     Features = Exp = Dataset = Mean = linkColors = chrom = po = NULL
 
 
@@ -55,8 +55,10 @@ legend = TRUE)
     ###
     ###   Authors: Michael Vacher (minor changes by Amrit :)
     ###
-    ###   Parts of this code has been modified from the original OmicCircos package obtained from:
-    ###   Ying Hu Chunhua Yan <yanch@mail.nih.gov> (2015). OmicCircos: High-quality circular visualization of omics data. R package version 1.6.0.
+    ###   Parts of this code has been modified from the original OmicCircos
+    ###     package obtained from:
+    ###   Ying Hu Chunhua Yan <yanch@mail.nih.gov> (2015). OmicCircos:
+    ###     High-quality circular visualization of omics data. v1.6.0.
     ##############################
     
     # check input object
@@ -64,7 +66,8 @@ legend = TRUE)
     stop("circosPlot is only available for 'block.splsda' objects")
     
     if (length(object$X) < 2)
-    stop("This function is only available when there are more than 3 blocks (2 in object$X + an outcome object$Y)") # so 2 blocks in X + the outcome Y
+    stop("This function is only available when there are more than 3 blocks
+    (2 in object$X + an outcome object$Y)") # so 2 blocks in X + the outcome Y
     
     if (missing(cutoff))
     stop("'cutoff' is missing", call.=FALSE) # so 2 blocks in X + the outcome Y
@@ -85,9 +88,11 @@ legend = TRUE)
         if(length(color.blocks) != length(object$X))
         stop("'color.blocks' must be of length ", length(object$X))
         
-        color.blocks.adj = adjustcolor(color.blocks, alpha.f = 0.5) #to get two shades of the same color per block
+        color.blocks.adj = adjustcolor(color.blocks, alpha.f = 0.5)
+        #to get two shades of the same color per block
         
-        color.blocks = c(rbind(color.blocks, color.blocks.adj)) # to put the color next to its shaded color
+        color.blocks = c(rbind(color.blocks, color.blocks.adj))
+        # to put the color next to its shaded color
     }
 
     if(missing(color.cor))
@@ -109,16 +114,20 @@ legend = TRUE)
     object$ncomp = c(object$ncomp[-indY], object$ncomp[indY])
     
     #check var.names
-    sample.X = lapply(object$loadings[-length(object$loadings)], function(x){1 : nrow(x)})
+    sample.X = lapply(object$loadings[-length(object$loadings)],
+    function(x){1 : nrow(x)})
     if (is.null(var.names))
     {
-        var.names.list = unlist(sapply(object$loadings[-length(object$loadings)], rownames))
+        var.names.list = unlist(sapply(object$loadings[
+        -length(object$loadings)], rownames))
     } else if (is.list(var.names)) {
-        if (length(var.names) != length(object$loadings[-length(object$loadings)]))
+        if (length(var.names) != length(object$loadings[
+        -length(object$loadings)]))
         stop.message('var.names', sample.X)
         
         if(sum(sapply(1 : length(var.names), function(x){
-            length(var.names[[x]]) == length(sample.X[[x]])})) != length(var.names))
+            length(var.names[[x]]) == length(sample.X[[x]])})) !=
+        length(var.names))
         stop.message('var.names', sample.X)
         
         var.names.list = var.names
@@ -129,16 +138,19 @@ legend = TRUE)
 
     if(any(comp > min(object$ncomp)))
     {
-        warning("Limitation to ",min(object$ncomp), " components, as determined by min(object$ncomp)")
+        warning("Limitation to ",min(object$ncomp),
+        " components, as determined by min(object$ncomp)")
         comp[which(comp > min(object$ncomp))] = min(object$ncomp)
     }
     comp = unique(sort(comp))
 
     
-    keepA = lapply(object$loadings, function(i) apply(abs(i)[, comp, drop = FALSE], 1, sum) > 0)
+    keepA = lapply(object$loadings, function(i)
+    apply(abs(i)[, comp, drop = FALSE], 1, sum) > 0)
     cord = mapply(function(x, y, keep){
         cor(x[, keep], y[, comp], use = "pairwise")
-    }, x=object$X, y=object$variates[-length(object$variates)], keep = keepA[-length(keepA)],SIMPLIFY = FALSE)
+    }, x=object$X, y=object$variates[-length(object$variates)],
+    keep = keepA[-length(keepA)],SIMPLIFY = FALSE)
     
     simMatList = vector("list", length(X))
     for(i in 1:length(cord))
@@ -156,9 +168,10 @@ legend = TRUE)
     AvgFeatExp0 = Xdat %>% mutate(Y = Y) %>% gather(Features, Exp, -Y) %>%
     group_by(Y, Features) %>% dplyr::summarise(Mean = mean(Exp), SD = sd(Exp))
     AvgFeatExp0$Dataset = factor(rep(names(X), unlist(lapply(cord, nrow))),
-    levels = names(X))[match(AvgFeatExp0$Features,colnames(Xdat))] # to match Xdat that is reordered in AvgFeatExp0
+    levels = names(X))[match(AvgFeatExp0$Features,colnames(Xdat))]
+    # to match Xdat that is reordered in AvgFeatExp0
     featExp = AvgFeatExp0 %>% group_by(Dataset, Y) %>% arrange(Mean)
-    # Generate a circular plot (circos like) from a correlation matrix (pairwise)
+    #Generate a circular plot (circos like) from a correlation matrix (pairwise)
     #
     # Args:
     #   corMat: the main correlation matrix.
@@ -182,7 +195,8 @@ legend = TRUE)
     # 2) Generate Links
     links = genLinks(chr, corMat, threshold=cutoff)
     if (nrow(links) < 1)
-    warning("Choose a lower correlation threshold to highlight links between datasets")
+    warning("Choose a lower correlation threshold to highlight
+    links between datasets")
     
     # 3) Plot
     # Calculate parameters
@@ -193,25 +207,33 @@ legend = TRUE)
     
     # replace chr$name by the ones in var.names (matching)
     # matching var.names.list with object$loadings
-    ind.match = match(chr$name, unlist(sapply(object$loadings[-length(object$loadings)],rownames)))
+    ind.match = match(chr$name, unlist(sapply(object$loadings[
+    -length(object$loadings)],rownames)))
     chr$name.user = unlist(var.names.list)[ind.match]
     
     opar1=par("mar")
     par(mar=c(2, 2, 2, 2))
     
-    plot(c(1,figSize), c(1,figSize), type="n", axes=FALSE, xlab="", ylab="", main="")
+    plot(c(1,figSize), c(1,figSize), type="n", axes=FALSE, xlab="",
+    ylab="", main="")
     
     #save(list=ls(),file="temp.Rdata")
     # Plot ideogram
-    drawIdeogram(R=circleR, cir=db, W=segmentWidth,  show.band.labels=TRUE, show.chr.labels=TRUE, chr.labels.R= chrLabelsR, chrData=chr, size.variables = size.variables, size.labels=size.labels, color.blocks = color.blocks, line = line)
+    drawIdeogram(R=circleR, cir=db, W=segmentWidth,  show.band.labels=TRUE,
+    show.chr.labels=TRUE, chr.labels.R= chrLabelsR, chrData=chr,
+    size.variables = size.variables, size.labels=size.labels,
+    color.blocks = color.blocks, line = line)
     # Plot links
     if(nrow(links)>0)
-    drawLinks(R=linksR, cir=db,   mapping=links,   col=linkColors, drawIntraChr=showIntraLinks, color.cor = color.cor)
+    drawLinks(R=linksR, cir=db,   mapping=links,   col=linkColors,
+    drawIntraChr=showIntraLinks, color.cor = color.cor)
     
     # Plot expression values
-    cTypes = levels(Y)#unique(featExp[,1]) #Get the different disease/cancer types (lines)
+    cTypes = levels(Y)
+    #unique(featExp[,1]) #Get the different disease/cancer types (lines)
     #lineCols = rainbow(nrow(cTypes), alpha=0.5)
-    lineCols = color.Y#color.mixo(1:nlevels(Y))#color.mixo(match(levels(Y), levels(Y)))
+    lineCols = color.Y
+    #color.mixo(1:nlevels(Y))#color.mixo(match(levels(Y), levels(Y)))
     
     # Fixme: remove this loop and send the whole expr dframe to drawLinePlot
     if(line==TRUE)
@@ -221,9 +243,11 @@ legend = TRUE)
             #Get data for each segment
             expr = subset(featExp,featExp$Dataset==seg.name)
             
-            expr = dcast(expr, formula = Features ~ Y, value.var="Mean")   ## changed PAM50 to Y
+            expr = dcast(expr, formula = Features ~ Y, value.var="Mean")
+            ## changed PAM50 to Y
             expr = merge(expr, chr, by.x="Features", by.y="name")
-            expr$po = (as.numeric(expr$chromStart) + as.numeric(expr$chromEnd)) / 2.0
+            expr$po = (as.numeric(expr$chromStart) +
+            as.numeric(expr$chromEnd)) / 2.0
             expr = dplyr::rename(expr, seg.name = chrom, seg.po = po)
             
             # Reorder columns
@@ -233,26 +257,32 @@ legend = TRUE)
             
             # Plot data on each sub segment
             subChr = subset(db, db$seg.name == chr.names[i] )
-            drawLinePlot(R=linePlotR, cir=subChr,   W=linePlotWidth, lineWidth=1, mapping=expr, col=lineCols, scale=FALSE)
+            drawLinePlot(R=linePlotR, cir=subChr,   W=linePlotWidth,
+            lineWidth=1, mapping=expr, col=lineCols, scale=FALSE)
         }
     }
     opar=par("xpd")
-    par(xpd=TRUE) # to authorise the legend to be written outside the margin, otherwise it's too small
+    par(xpd=TRUE) # to authorise the legend to be written outside the margin,
+    #       otherwise it's too small
     # Plot legend
     if(legend == TRUE)
     {
         # First legeng bottom left corner
-        legend(x=5, y = (circleR/4), title="Correlations", c("Positive Correlation", "Negative Correlation"),
+        legend(x=5, y = (circleR/4), title="Correlations",
+        c("Positive Correlation", "Negative Correlation"),
         col = color.cor, pch = 19, cex=size.legend, bty = "n")
         # Second legend bottom righ corner
         if(line==TRUE)
-        legend(x=figSize-(circleR/3), y = (circleR/3), title="Expression", legend=levels(Y),  ## changed PAM50 to Y
+        legend(x=figSize-(circleR/3), y = (circleR/3), title="Expression",
+        legend=levels(Y),  ## changed PAM50 to Y
         col = lineCols, pch = 19, cex=size.legend, bty = "n",ncol=ncol.legend)
         # third legend top left corner
-        legend(x=figSize-(circleR/2), y = figSize, title="Correlation cut-off", legend=paste("r", cutoff, sep = "="),
+        legend(x=figSize-(circleR/2), y = figSize, title="Correlation cut-off",
+        legend=paste("r", cutoff, sep = "="),
         col = "black", cex=size.legend, bty = "n")
 
-        legend(x=-circleR/4, y = figSize, legend=paste("Comp",paste(comp,collapse="-")),
+        legend(x=-circleR/4, y = figSize, legend=paste("Comp",
+        paste(comp,collapse="-")),
         col = "black", cex=size.legend, bty = "n")
     }
     par(xpd=opar,mar=opar1)# put the previous defaut parameter for xpd
@@ -305,7 +335,8 @@ line)
                 band.po = ((w1+w2)/2)# - ((w2-w1)/3) #position around the circle
                 # print(c(band.po, w1, w2, (w2-w1)/3))
                 band.po.in = R-(W/3.0) #position on the band (middle)
-                draw.text.rt(xc, yc,band.po.in  , band.po , band.text , cex = size.variables, segmentWidth = W, side="in" )
+                draw.text.rt(xc, yc,band.po.in  , band.po , band.text ,
+                cex = size.variables, segmentWidth = W, side="in" )
             }
         } #End for row
         if (show.chr.labels){
@@ -313,10 +344,12 @@ line)
             chr.t = gsub("chr", "", chr.s)
             if(line == TRUE)
             {
-                draw.text.rt(xc, yc, chr.labels.R, w.m, chr.t, cex=size.labels, segmentWidth = W, parallel=TRUE)
+                draw.text.rt(xc, yc, chr.labels.R, w.m, chr.t, cex=size.labels,
+                segmentWidth = W, parallel=TRUE)
             } else {
                 #put the labels closer to the circle
-                draw.text.rt(xc, xc, chr.labels.R, w.m, chr.t, cex=size.labels, segmentWidth = 75, parallel=TRUE)
+                draw.text.rt(xc, xc, chr.labels.R, w.m, chr.t, cex=size.labels,
+                segmentWidth = 75, parallel=TRUE)
             }
         }
     } #End for
@@ -324,7 +357,8 @@ line)
 
 drawLinks = function(R, xc=400, yc=400, cir, W,
 mapping=mapping,
-lineWidth=1, col=rainbow(10, alpha=0.8)[7],  drawIntraChr=FALSE, color.cor = color.cor)
+lineWidth=1, col=rainbow(10, alpha=0.8)[7],  drawIntraChr=FALSE,
+color.cor = color.cor)
 {
     # Draw the links (computed correlation) between features
     chr.po    = cir 
@@ -473,7 +507,8 @@ background.lines=FALSE,axis.width=1)
                 w.to = scale.v(as.numeric(dat[k,2]), v1, v2, v3, v4) 
                 
                 if (w.from > 0){
-                    draw.line3(xc, yc, w.from, w.to, v.old, v, col=col, lwd=lineWidth)
+                    draw.line3(xc, yc, w.from, w.to, v.old, v, col=col,
+                    lwd=lineWidth)
                 }
                 
                 dat.i.old = dat.i 
@@ -494,7 +529,8 @@ genChr =function (expr, bandWidth = 1.0, color.blocks)
     #
     # Args:
     #   expr : dataframe containing the features expression
-    # example: colnames(concatFeatExp) "PAM50"    "Features" "Mean"     "SD"       "Dataset"
+    # example: colnames(concatFeatExp) "PAM50"    "Features" "Mean"     "SD"
+    # "Dataset"
     #   bandWidth: thickness of each band
     #
     # Return:
@@ -530,7 +566,8 @@ genChr =function (expr, bandWidth = 1.0, color.blocks)
         pStart = chrLengths[dType,'Count'] * bandWidth 
         pStop = chrLengths[dType,'Count'] * bandWidth + bandWidth  
         chrLengths[dType,'Count'] = chrLengths[dType,'Count'] + 1 
-        fName = as.character(as.matrix(expr[i,'Features']))     # added as.character() by amrit
+        fName = as.character(as.matrix(expr[i,'Features']))
+        # added as.character() by amrit
         # Assign colors
         if (chrLengths[dType,'Count'] %% 2 == 0){
             chrCol = chrColScheme[dType,]$clear 
@@ -550,7 +587,7 @@ genChr =function (expr, bandWidth = 1.0, color.blocks)
 genLinks = function(chr, corMat, threshold)
 {
     
-    # to satisfy R CMD check that doesn't recognise x, y and group as variable (in aes)
+    # to satisfy R CMD check that doesn't recognise x, y and group (in aes)
     Var1=Var2=chrom=NULL
 
 
@@ -571,17 +608,20 @@ genLinks = function(chr, corMat, threshold)
     linkList = subset(linkList, abs(linkList$value) >= threshold) 
     
     #First merge
-    linkList = dplyr::rename(linkList, feat1=Var1, feat2=Var2)   # CHANGED BY AMRIT
+    linkList = dplyr::rename(linkList, feat1=Var1, feat2=Var2)
+    # CHANGED BY AMRIT
     linkList = merge(linkList, chr, by.x="feat1", by.y="name") 
     # Set the position in the middle of the band
-    linkList$po1 = (as.numeric(linkList$chromStart) + as.numeric(linkList$chromEnd)) / 2.0 
+    linkList$po1 = (as.numeric(linkList$chromStart)
+    + as.numeric(linkList$chromEnd)) / 2.0
     linkList = dplyr::rename(linkList, chr1=chrom)   # CHANGED BY AMRIT
     keeps = c("feat1","feat2","value","chr1","po1") 
     linkList = linkList[keeps] 
     
     #Second merge
     linkList = merge(linkList, chr, by.x="feat2", by.y="name") 
-    linkList$po2 = (as.numeric(linkList$chromStart) + as.numeric(linkList$chromEnd)) / 2.0 
+    linkList$po2 = (as.numeric(linkList$chromStart)
+    + as.numeric(linkList$chromEnd)) / 2.0
     linkList = dplyr::rename(linkList, chr2=chrom)   # CHANGED BY AMRIT
     keeps = c("chr1","po1","feat1","chr2","po2","feat2","value") 
     linkList = linkList[keeps] 
@@ -736,7 +776,8 @@ draw.text.w = function(xc, yc, r, w, n, col="black", cex=1){
 }
 
 ###
-draw.text.rt = function(xc, yc, r, w, n, col="black", cex=1, side="out", segmentWidth=20, parallel=FALSE){
+draw.text.rt = function(xc, yc, r, w, n, col="black", cex=1, side="out",
+segmentWidth=20, parallel=FALSE){
     w     = w%%360 
     the.o = w 
     
@@ -957,12 +998,14 @@ angle.end=angle.end){
         len   = seg.sum[i] 
         w1    = cir.angle.r*l.old + gap.angle 
         w2    = cir.angle.r*len   + gap.angle 
-        out.s     = rbind(out.s, c(seg.n, w1+seg.angle.from, w2+seg.angle.from, l.old, len, seg.min[i], seg.l[i])) 
+        out.s     = rbind(out.s, c(seg.n, w1+seg.angle.from, w2+seg.angle.from,
+        l.old, len, seg.min[i], seg.l[i]))
         gap.angle = gap.angle + gap.angle.size 
         l.old     = len 
     }
     
-    colnames(out.s) = c("seg.name","angle.start", "angle.end", "seg.sum.start", "seg.sum.end","seg.start", "seg.end") 
+    colnames(out.s) = c("seg.name","angle.start", "angle.end", "seg.sum.start",
+    "seg.sum.end","seg.start", "seg.end")
     return(out.s) 
 }
 
@@ -997,6 +1040,6 @@ add.alpha = function(col, alpha=1){
     function(x) 
     rgb(x[1], x[2], x[3], alpha=alpha))  
 }
-###---------------------------------------------------------------------------------------
+###-------------------------------------------------------------------------
 
 

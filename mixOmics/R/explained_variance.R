@@ -1,7 +1,7 @@
-#############################################################################################################
+################################################################################
 # Authors:
-#   Florian Rohart, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
-#   Kim-Anh Le Cao, The University of Queensland, The University of Queensland Diamantina Institute, Translational Research Institute, Brisbane, QLD
+#   Florian Rohart,
+#   Kim-Anh Le Cao,
 #
 # created: 15-04-2015
 # last modified: 04-10-2017
@@ -21,11 +21,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-#############################################################################################################
+###############################################################################
 
-# ========================================================================================================
+# =============================================================================
 # Calculate the explained variance of one dataset based on its variates
-# ========================================================================================================
+# =============================================================================
 
 
 explained_variance = function(data, variates, ncomp)
@@ -37,7 +37,8 @@ explained_variance = function(data, variates, ncomp)
     
     if (anyNA(data))
     {
-        warning("NA values put to zero, results will differ from PCA methods used with NIPALS")
+        warning("NA values put to zero, results will differ from PCA methods
+        used with NIPALS")
         isna = is.na(data)
         data[isna] = 0
     }
