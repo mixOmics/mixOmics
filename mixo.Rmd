@@ -1,5 +1,5 @@
 ---
-title: "mixOmics 6.5.0"
+title: "mixOmics 6.4.0"
 author: "by Florian Rohart- `r format(Sys.time(), '%d %B %Y')`"
 output:
   rmdformats::readthedown:
