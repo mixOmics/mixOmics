@@ -84,12 +84,12 @@ all.outputs = TRUE)
         #defl.matrix = result$defl.matrix
         )
      
-    class(out) = c("pls")
+    class(out) = c("mixo_pls")
     # output if multilevel analysis
     if (!is.null(multilevel))
     {
         out$multilevel = multilevel
-        class(out) = c("mlpls",class(out))
+        class(out) = c("mixo_mlpls",class(out))
     }
     
     return(invisible(out))

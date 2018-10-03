@@ -71,6 +71,7 @@ c(paste0("new ind",1:length(test))), pos = 3)
 data(nutrimouse)
 # need to unmap Y for an unsupervised analysis, where Y is included as a data block in data
 Y.mat = unmap(nutrimouse$diet)
+rownames(Y.mat) = rownames(nutrimouse$gene)
 data = list(gene = nutrimouse$gene, lipid = nutrimouse$lipid, Y = Y.mat)
 # with this design, all blocks are connected
 design = matrix(c(0,1,1,1,0,1,1,1,0), ncol = 3, nrow = 3,

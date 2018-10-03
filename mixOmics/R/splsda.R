@@ -133,12 +133,12 @@ all.outputs = TRUE)
         mat.c = result$mat.c#,
         )
     
-    class(out) = c("splsda","spls","DA")
+    class(out) = c("mixo_splsda","mixo_spls","DA")
     # output if multilevel analysis
     if (!is.null(multilevel))
     {
         out$multilevel = multilevel
-        class(out) = c("mlsplsda",class(out))
+        class(out) = c("mixo_mlsplsda",class(out))
     }
 
     return(invisible(out))

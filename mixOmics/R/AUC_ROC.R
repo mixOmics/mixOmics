@@ -31,7 +31,7 @@ UseMethod("auroc")
 
 # PLSDA object
 # ----------------------
-auroc.plsda = auroc.splsda = function(
+auroc.mixo_plsda = auroc.mixo_splsda = function(
 object,
 newdata = object$input.X,
 outcome.test = as.factor(object$Y),
@@ -49,7 +49,7 @@ roc.comp = 1,
     data$outcome=factor(outcome.test)
     
     # note here: the dist does not matter as we used the predicted scores only
-    res.predict = predict.spls(object, newdata = newdata,
+    res.predict = predict.mixo_spls(object, newdata = newdata,
     dist = "max.dist", multilevel = multilevel)$predict
     
     for (i in 1:object$ncomp)
@@ -113,7 +113,7 @@ roc.study = "global",
     data$outcome=factor(outcome.test)
     
     # note here: the dist does not matter as we used the predicted scores only
-    res.predict = predict.spls(object, newdata = newdata, dist = "max.dist",
+    res.predict = predict.mixo_spls(object, newdata = newdata, dist = "max.dist",
     multilevel = multilevel, study.test = study.test)$predict
     
     for (i in 1:object$ncomp)
@@ -199,7 +199,7 @@ roc.comp = 1,
     study.test=factor(study.test)
     
     # note here: the dist does not matter as we used the predicted scores only
-    res.predict  =  predict.spls(object, newdata = newdata,
+    res.predict  =  predict.mixo_spls(object, newdata = newdata,
     study.test=study.test,dist = "max.dist", multilevel = multilevel)$predict
     block.all = names(res.predict)
     block.temp = names(res.predict[roc.block])

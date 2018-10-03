@@ -30,7 +30,7 @@
 #--------------------------------------------------------#
 
 #--------------------- PLS and sPLS ---------------------#
-summary.pls <- summary.spls <-
+summary.mixo_pls <- summary.mixo_spls <-
 function(object, 
          what = c("all", "communalities", "redundancy", "VIP"), 
          digits = 4, 

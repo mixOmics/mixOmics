@@ -89,12 +89,12 @@ all.outputs = TRUE)
         )
     
    
-    class(out) = c("spls")
+    class(out) = c("mixo_spls")
     # output if multilevel analysis
     if (!is.null(multilevel))
     {
         out$multilevel = multilevel
-        class(out) = c("mlspls",class(out))
+        class(out) = c("mixo_mlspls",class(out))
     }
 
     return(invisible(out))

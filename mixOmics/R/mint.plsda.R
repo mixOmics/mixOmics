@@ -108,7 +108,7 @@ all.outputs = TRUE)
         explained_variance = result$explained_variance
         )
     
-    class(out) = c("mint.plsda","mint.pls","pls","DA")
+    class(out) = c("mint.plsda","mint.pls","mixo_pls","DA")
     return(invisible(out))
 
 

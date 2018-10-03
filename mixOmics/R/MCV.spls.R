@@ -414,11 +414,11 @@ parallel
             
             # add the "splsda" or "spls" class
             if(any(class.object == "DA")){
-                class(result) = c("splsda","spls","DA")
+                class(result) = c("mixo_splsda","mixo_spls","DA")
                 result$ind.mat = result$A$Y
                 result$Y = factor(Y.train)
             } else{
-                class(result) = c("spls")
+                class(result) = c("mixo_spls")
                 result$Y = result$A$Y
             }
             result$A = NULL
@@ -449,7 +449,7 @@ parallel
                 result$loadings = lapply(result.temp$loadings, function(x){if(ncol(x)!=ncomp) {x[,colnames(x)%in%names.to.pick, drop=FALSE]}else{x}})
                 
                 # added: record selected features
-                if (any(class.object == "splsda") & length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
+                if (any(class.object == "mixo_splsda") & length(test.keepX) ==  1) # only done if splsda and if only one test.keepX as not used if more so far
                 # note: if plsda, 'features' includes everything: to optimise computational time, we don't evaluate for plsda object
                 features.j = selectVar(result, comp = ncomp)$name
 
@@ -457,7 +457,7 @@ parallel
                 # the scaled newdata and the missing values
                 #save(list=ls(),file="temp.Rdata")
 
-                test.predict.sw <- predict.spls(result, newdata.scale = X.test, dist = dist, misdata.all=misdata[1], is.na.X = is.na.A.train, is.na.newdata = is.na.A.test)
+                test.predict.sw <- predict.mixo_spls(result, newdata.scale = X.test, dist = dist, misdata.all=misdata[1], is.na.X = is.na.A.train, is.na.newdata = is.na.A.test)
                 prediction.comp.j[, , i] =  test.predict.sw$predict[, , ncomp]
                 
                 if(any(class.object == "DA")){

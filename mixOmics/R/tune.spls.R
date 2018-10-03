@@ -244,7 +244,7 @@ cpus
         prediction.all = list()
         
 
-        class.object="spls"
+        class.object="mixo_spls"
         if(!missing(cpus))
         clusterExport(cl, c("X","Y","is.na.A","misdata","scale","near.zero.var","class.object","test.keepX", "test.keepY"),envir=environment())
 

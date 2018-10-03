@@ -1,5 +1,5 @@
 ---
-title: "mixOmics 6.3.2"
+title: "mixOmics 7.0.0"
 author: "by Florian Rohart- `r format(Sys.time(), '%d %B %Y')`"
 output:
   rmdformats::readthedown:
@@ -112,4 +112,7 @@ if(length(ind.error)>0)
 sessionInfo()
 ```
 
-%Note: this pdf is a light version of all the tests. If you want more, you need to change additional.test=TRUE
+```{r, echo=TRUE, eval=TRUE}
+if(!additional.test)
+  cat("Note: this pdf is a light version of all the tests. If you want more, you need to change additional.test=TRUE\n")
+```

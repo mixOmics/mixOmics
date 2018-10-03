@@ -70,7 +70,7 @@ plot_parameters,
 alpha,
 background = NULL)
 {
-    object.pls = c("pls", "spls", "mlspls", "rcc")
+    object.pls = c("mixo_pls", "mixo_spls", "mixo_mlspls", "rcc")
     object.pca = c("ipca", "sipca", "pca", "spca", "prcomp")
     object.blocks = c("sgcca", "rgcca")
     object.mint = c("mint.pls", "mint.spls", "mint.plsda", "mint.splsda")
@@ -913,7 +913,7 @@ background = NULL)
             }
             
             if(any(class.object %in% c("ipca", "sipca", "pca", "spca", "prcomp",
-            "splsda", "plsda", "mlsplsda")))
+            "mixo_splsda", "mixo_plsda", "mixo_mlsplsda")))
             {
                 other = TRUE
                 if (ellipse)
@@ -1103,7 +1103,7 @@ background = NULL)
             mtext3d(Y.label, "y-+", line = 1.5)
             mtext3d(Z.label, "z+-", line = 1)
             if (! any(class.object%in% c("ipca", "sipca", "pca", "spca",
-            "prcomp", "splsda", "plsda", "mlsplsda")))
+            "prcomp", "mixo_splsda", "mixo_plsda", "mixo_mlsplsda")))
             title3d(main = levels(df$Block)[k])
         }
         #-- output --#

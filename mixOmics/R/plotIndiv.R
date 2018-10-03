@@ -286,7 +286,7 @@ internal_getVariatesAndLabels = function(object, comp, blocks.init, blocks, rep.
 {
     
     class.object = class(object)
-    object.pls = c("pls", "spls", "mlspls", "rcc")
+    object.pls = c("mixo_pls", "mixo_spls", "mixo_mlspls", "rcc")
     object.blocks = c("sgcca", "rgcca")
     object.mint = c("mint.pls", "mint.spls", "mint.plsda", "mint.splsda")
     

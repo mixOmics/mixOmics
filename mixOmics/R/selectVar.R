@@ -50,7 +50,7 @@ get.name.and.value=function(x,comp)
 
 
 # ------------------ for all object  --------------------
-selectVar.spls  = selectVar.pls  =
+selectVar.mixo_spls  = selectVar.mixo_pls  =
 selectVar.sgcca = selectVar.rgcca = 
 selectVar.pca =
 function(object, comp =1, block=NULL, ...)
@@ -110,7 +110,7 @@ function(object, comp =1, block=NULL, ...)
         if (any(class(object)%in%c("block.plsda","block.splsda")))# the position of Y is in indY
         {
             out=out[-object$indY] #remove Y
-        }else if (any(class(object)%in%c("mint.plsda","mint.splsda","plsda","splsda"))) {
+        }else if (any(class(object)%in%c("mint.plsda","mint.splsda","mixo_plsda","mixo_splsda"))) {
             # Y is always in second position
             out=out[[1]]
         }else if (any(class(object)%in%c("pca"))) { #keep the result as a list

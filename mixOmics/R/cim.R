@@ -280,11 +280,12 @@ name.save = NULL)
     
     
     
-    object.pca=c("pca","spca","ipca","sipca","mlsplsda","splsda","plsda")
+    object.pca=c("pca","spca","ipca","sipca","mixo_mlsplsda","mixo_splsda",
+    "mixo_plsda")
     object.rcc=c("rcc")
-    object.pls=c("pls","spls","mlspls")
-    object.list=c("pca","spca","ipca","sipca","mlsplsda","splsda","plsda",
-    "rcc","pls","spls","mlspls")
+    object.pls=c("mixo_pls","mixo_spls","mixo_mlspls")
+    object.list=c("pca","spca","ipca","sipca","mixo_mlsplsda","mixo_splsda",
+    "mixo_plsda", "rcc","mixo_pls","mixo_spls","mixo_mlspls")
     
     if (any(class.object == "block.splsda"))
     stop("Please call the 'cimDiablo' function on your 'block.splsda' object",
@@ -334,7 +335,7 @@ name.save = NULL)
             if (length(num.variable.selected.Y) == 1)
             #only one variable in Y to plot, will raise trouble so we
             # switch from (s)pls to (s)plsda
-            class.object = "splsda"
+            class.object = "mixo_splsda"
         }
         
         if( ! any(class.object  %in%  object.pca))
@@ -517,7 +518,8 @@ name.save = NULL)
             
             #-- clustering ---------------------------------------------------#
             #-----------------------------------------------------------------#
-            if(any(class.object %in%  c("splsda","plsda",'mlsplsda')))
+            if(any(class.object %in%  c("mixo_splsda","mixo_plsda",
+            'mixo_mlsplsda')))
             {
                 #-- row.names
                 if (is.logical(row.names))
@@ -531,7 +533,7 @@ name.save = NULL)
                     if (isTRUE(col.names))
                     col.names = mat$names$colnames$X
                 }
-                if(any(class.object %in%  c("splsda",'mlsplsda')))
+                if(any(class.object %in%  c("mixo_splsda",'mixo_mlsplsda')))
                 keep.X = apply(abs(mat$loadings$X[,comp, drop = FALSE]), 1,
                     sum) > 0
                 else
@@ -890,7 +892,7 @@ name.save = NULL)
         }
         else if(any(class.object %in%  object.pls))
         {
-            if(any(class.object %in% c("spls","mlspls")))
+            if(any(class.object %in% c("mixo_spls","mixo_mlspls")))
             {
                 keep.X = apply(abs(mat$loadings$X[,comp, drop = FALSE]), 1,
                 sum) > 0
@@ -1322,7 +1324,7 @@ name.save = NULL)
     {if(is.null(legend$x)) legend$x = "topright"
         if(is.null(legend$bty)) legend$bty = "n"
         if (is.null(legend$cex)) legend$cex = 0.8
-        if(any(class.object %in%  c("splsda","plsda")))
+        if(any(class.object %in%  c("mixo_splsda","mixo_plsda")))
         {
             if (is.null(legend$legend)) legend$legend = mat$names$colnames$Y
             
@@ -1334,7 +1336,7 @@ name.save = NULL)
             }
             
         }
-        else if(any(class.object %in%  c("mlsplsda")))
+        else if(any(class.object %in%  c("mixo_mlsplsda")))
         {
             if (is.null(legend$legend) && is.null(legend$col)) {
                 if (ncol(mat$multilevel) >= 2) {
@@ -1351,7 +1353,7 @@ name.save = NULL)
                 }
             }
         }
-        else if(any(class.object %in%  c("mlspls")))
+        else if(any(class.object %in%  c("mixo_mlspls")))
         {
             if (mapping != "XY") {
                 if (is.null(legend$legend) && is.null(legend$col)) {
