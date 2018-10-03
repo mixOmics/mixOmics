@@ -1,6 +1,8 @@
-.DS_Store
-.Rproj.user
+*.DS_Store
+*.Rproj.user
 mixOmics.Rcheck/
 MyR/
-.tar.gz
-.Rhistory
+*.tar.gz
+*.Rhistory
+*.Rdata
+*.html
