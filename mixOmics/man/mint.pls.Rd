@@ -84,8 +84,25 @@ Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2014). Algorithms for 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}}, \code{\link{mint.spls}}, \code{\link{mint.plsda}}, \code{\link{mint.splsda}} and http://www.mixOmics.org/mixMINT for more details.}
 
 \examples{
-# we will soon provide more examples on our website (data too large to be included in the package)
+data(stemcells)
+
+# for the purpose of this example, we artificially
+# create a continuous response Y by taking gene 1.
+
+res = mint.pls(X = stemcells$gene[,-1], Y = stemcells$gene[,1], ncomp = 3,
+study = stemcells$study)
+
+plotIndiv(res)
+
+#plot study-specific outputs for all studies
+plotIndiv(res, study = "all.partial")
+
+\dontrun{
+#plot study-specific outputs for study "2"
+plotIndiv(res, study = "2", col = 1:3, legend = TRUE)
 }
+}
+
 
 \keyword{regression}
 \keyword{multivariate}

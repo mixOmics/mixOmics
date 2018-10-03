@@ -96,7 +96,6 @@ Rohart F, Mason EA, Matigian N, Mosbergen R, Korn O, Chen T, Butcher S, Patel J,
 \seealso{\code{\link{splsda}}, \code{\link{predict.splsda}} and http://www.mixOmics.org for more details.}
 
 \examples{
-\dontrun{
 data(liver.toxicity)
 X <- liver.toxicity$gene
 Y <- liver.toxicity$clinic
@@ -109,12 +108,6 @@ tune$choice.keepX
 
 # plot the results
 plot(tune)
-}
-
-
-
-
-
 
 
 }

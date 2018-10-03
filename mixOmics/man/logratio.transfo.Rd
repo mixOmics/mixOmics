@@ -47,3 +47,9 @@ compositional data with outliers. Environmetrics, 20(6):621-632, 2009.
 
 \seealso{\code{\link{pca}}, \code{\link{pls}}, \code{\link{spls}}, \code{\link{plsda}}, \code{\link{splsda}}.}
 
+\examples{
+data(diverse.16S)
+CLR = logratio.transfo(X = diverse.16S$data.TSS, logratio = 'CLR')
+# no offset needed here as we have put it prior to the TSS, see www.mixOmics.org/mixMC
+
+}

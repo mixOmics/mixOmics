@@ -101,8 +101,25 @@ Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2014). Algorithms for 
 
 
 \examples{
-# we will soon provide more examples on our website (data too large to be included in the package)
+data(stemcells)
+
+# for the purpose of this example, we artificially
+# create a continuous response Y by taking gene 1.
+
+res = mint.spls(X = stemcells$gene[,-1], Y = stemcells$gene[,1], ncomp = 3,
+keepX = c(10, 5, 15), study = stemcells$study)
+
+plotIndiv(res)
+
+#plot study-specific outputs for all studies
+plotIndiv(res, study = "all.partial")
+
+\dontrun{
+#plot study-specific outputs for study "2"
+plotIndiv(res, study = "2", col = 1:3, legend = TRUE)
 }
+}
+
 
 \keyword{regression}
 \keyword{multivariate}
