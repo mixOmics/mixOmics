@@ -91,10 +91,32 @@ Eslami, A., Qannari, E. M., Kohler, A., and Bougeard, S. (2014). Algorithms for 
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}}, \code{\link{mint.block.spls}}, \code{\link{mint.block.plsda}}, \code{\link{mint.block.splsda}} and http://www.mixOmics.org/mixMINT for more details.}
 
 \examples{
-# we will soon provide more examples on our website (data too large to be included
-#in the package and still in active development)
-}
+data(breast.TCGA)
 
+# for the purpose of this example, we create data that fit in the context of
+# this function.
+# We consider the training set as study1 and the test set as another
+# independent study2.
+
+study = c(rep("study1",150), rep("study2",70))
+
+# to put the data in the MINT format, we rbind the two studies
+mrna = rbind(breast.TCGA$data.train$mrna, breast.TCGA$data.test$mrna)
+mirna = rbind(breast.TCGA$data.train$mirna, breast.TCGA$data.test$mirna)
+
+# For the purpose of this example, we create a continuous response by
+# taking the first mrna variable, and removing it from the data
+Y = mrna[,1]
+mrna = mrna[,-1]
+
+data = list(mrna = mrna, mirna = mirna)
+
+# we can now apply the function
+res = mint.block.plsda(data, Y, study=study, ncomp=2)
+
+res
+
+}
 
 \keyword{regression}
 \keyword{multivariate}
