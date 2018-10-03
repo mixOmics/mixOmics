@@ -488,7 +488,7 @@ plotLoadings(MyResult.spca)
 
 If we look at component two, we can see a mix of positive and negative weights (also see in the `plotVar`), those correspond to variables that oppose the low and high doses (see from the `plotIndiv):
 
-```{r, echo=FALSE,results='hide', fig.show=FALSE}
+```{r, echo=TRUE,results='hide', fig.show=FALSE}
 selectVar(MyResult.spca, comp=2)$value
 plotLoadings(MyResult.spca, comp = 2)
 ```
@@ -626,7 +626,7 @@ dim(X); length(Y)
 
 For a quick start we arbitrarily set the number of variables to select to 50 on each of the 3 components of PLS-DA (see section \@ref(tuning:sPLSDA) for tuning these values).
 
-```{r, echo=FALSE,results='hide', fig.show = 'hide'}
+```{r, echo=TRUE,results='hide', fig.show = 'hide'}
 MyResult.splsda <- splsda(X, Y, keepX = c(50,50)) # 1 Run the method
 plotIndiv(MyResult.splsda)                          # 2 Plot the samples
 plotVar(MyResult.splsda)                            # 3 Plot the variables
@@ -701,7 +701,7 @@ plotIndiv(MyResult.splsda, comp = 1:2, group = srbct$class,
 #### ROC
 As PLS-DA acts as a classifier, we can plot a ROC Curve to complement the sPLS-DA classification performance results detailed in \@ref(tuning:sPLSDA). The AUC is calculated from training cross-validation sets and averaged. Note however that ROC and AUC criteria may not be particularly insightful, or may not be in full agreement with the PLSDA performance, as the prediction threshold in PLS-DA is based on specified distance as described in [@mixomics].
 
-```{r, echo=FALSE,results='hide', fig.keep='all'}
+```{r, echo=TRUE,results='hide', fig.keep='all'}
 auc.plsda <- auroc(MyResult.splsda)
 ```
 
@@ -1328,7 +1328,7 @@ An AUC plot per block is plotted using the function `auroc` see [@mixomics]for t
 
 Here we evaluate the AUC for the model that includes 2 components in the miRNA data set.
 
-```{r, echo=FALSE,results='hide',fig.keep='all'}
+```{r, echo=TRUE,results='hide',fig.keep='all'}
 Myauc.diablo <- auroc(MyResult.diablo, roc.block = "miRNA", roc.comp = 2)
 ```
 
