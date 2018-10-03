@@ -1,8 +1,8 @@
 \name{selectVar}
 \encoding{UTF-8}
 \alias{selectVar}
-\alias{selectVar.pls}
-\alias{selectVar.spls}
+\alias{selectVar.mixo_pls}
+\alias{selectVar.mixo_spls}
 \alias{selectVar.pca}
 \alias{selectVar.sgcca}
 \alias{selectVar.rgcca}
@@ -16,15 +16,15 @@ This function outputs the selected variables on each component for the sparse ve
 }
 
 \usage{
-\method{selectVar}{pls}(object, comp =1, block=NULL,\ldots)
+\method{selectVar}{mixo_pls}(object, comp =1, block=NULL,\ldots)
 \method{selectVar}{pca}(object, comp =1, block=NULL,\ldots)
-\method{selectVar}{spls}(object, comp =1, block=NULL,\ldots)
+\method{selectVar}{mixo_spls}(object, comp =1, block=NULL,\ldots)
 \method{selectVar}{sgcca}(object, comp =1, block=NULL, \ldots)
 \method{selectVar}{rgcca}(object, comp =1, block=NULL, \ldots)
 }
 
 \arguments{
-\item{object}{object of class inheriting from \code{"pls"}, \code{"spls"}, \code{"plsda"},\code{"splsda"}, \code{"pca"}, \code{"spca"}, \code{"sipca"}.}
+\item{object}{object of class inherited from \code{"pls"}, \code{"spls"}, \code{"plsda"},\code{"splsda"}, \code{"pca"}, \code{"spca"}, \code{"sipca"}.}
 \item{comp}{integer value indicating the component of interest.}
 \item{block}{for an object of class \code{"sgcca"}, the block data sets can be specified as an input vector, for example \code{c(1,2)} for the first two blocks. Default to NULL (all block data sets)}
 \item{\ldots}{other arguments.}

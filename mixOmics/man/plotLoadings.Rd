@@ -1,8 +1,8 @@
 \name{plotLoadings}
 \encoding{UTF-8}
 \alias{plotLoadings}
-\alias{plotLoadings.pls}
-\alias{plotLoadings.spls}
+\alias{plotLoadings.mixo_pls}
+\alias{plotLoadings.mixo_spls}
 \alias{plotLoadings.rcc}
 \alias{plotLoadings.pca}
 \alias{plotLoadings.sgcca}
@@ -10,8 +10,8 @@
 \alias{plotLoadings.block.pls}
 \alias{plotLoadings.block.spls}
 
-\alias{plotLoadings.plsda}
-\alias{plotLoadings.splsda}
+\alias{plotLoadings.mixo_plsda}
+\alias{plotLoadings.mixo_splsda}
 \alias{plotLoadings.sgccda}
 \alias{plotLoadings.block.plsda}
 \alias{plotLoadings.block.splsda}
@@ -28,7 +28,7 @@
 This function provides a horizontal bar plot to visualise loading vectors. For discriminant analysis, it provides visualisation of highest or lowest mean/median value of the variables with color code corresponding to the outcome of interest.}
 
 \usage{
-\S3method{plotLoadings}{pls}(object, block, comp = 1, col = NULL, ndisplay = NULL,
+\S3method{plotLoadings}{mixo_pls}(object, block, comp = 1, col = NULL, ndisplay = NULL,
 size.name = 0.7, name.var = NULL, name.var.complete = FALSE, title = NULL, subtitle,
 size.title = rel(2), size.subtitle = rel(1.5), layout = NULL, border = NA,
 xlim = NULL, ... )
@@ -38,7 +38,7 @@ size.name = 0.7, name.var = NULL, name.var.complete = FALSE, title = NULL, subti
 size.title = rel(1.8), size.subtitle = rel(1.4), layout = NULL, border = NA,
 xlim = NULL, ... )
 
-\method{plotLoadings}{plsda}(object, contrib, method = "mean", block, comp = 1,
+\method{plotLoadings}{mixo_plsda}(object, contrib, method = "mean", block, comp = 1,
 plot = TRUE, show.ties = TRUE, col.ties="white", ndisplay = NULL, size.name = 0.7,
 size.legend = 0.8, name.var=NULL, name.var.complete=FALSE, title = NULL,
 subtitle, size.title = rel(1.8), size.subtitle = rel(1.4),

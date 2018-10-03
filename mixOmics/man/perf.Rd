@@ -1,10 +1,10 @@
 \name{perf}
 \encoding{UTF-8}
 \alias{perf}
-\alias{perf.pls}
-\alias{perf.spls}
-\alias{perf.plsda}
-\alias{perf.splsda}
+\alias{perf.mixo_pls}
+\alias{perf.mixo_spls}
+\alias{perf.mixo_plsda}
+\alias{perf.mixo_splsda}
 \alias{perf.mint.splsda}
 \alias{perf.sgccda}
 
@@ -17,18 +17,18 @@ PLS-DA, sparse PLS-DA, MINT (mint.splsda) and DIABLO (block.splsda) models using
 
 \usage{
 
-\method{perf}{pls}(object,validation = c("Mfold", "loo"),
+\method{perf}{mixo_pls}(object,validation = c("Mfold", "loo"),
 folds = 10, progressBar = TRUE, \ldots)
 
-\method{perf}{spls}(object,validation = c("Mfold", "loo"),
+\method{perf}{mixo_spls}(object,validation = c("Mfold", "loo"),
 folds = 10, progressBar = TRUE, \ldots)
 
-\method{perf}{plsda}(object,
+\method{perf}{mixo_plsda}(object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
 validation = c("Mfold", "loo"),
 folds = 10, nrepeat =1, auc = FALSE, progressBar = TRUE, cpus, \ldots)
 
-\method{perf}{splsda}(object,
+\method{perf}{mixo_splsda}(object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
 validation = c("Mfold", "loo"),
 folds = 10, nrepeat =1, auc = FALSE, progressBar = TRUE, cpus, \ldots)
@@ -45,7 +45,7 @@ folds = 10, nrepeat =1, cpus, \ldots)
 }
 
 \arguments{
-\item{object}{object of class inheriting from \code{"pls"}, \code{"plsda"},
+\item{object}{object of class inherited from \code{"pls"}, \code{"plsda"},
 \code{"spls"}, \code{"splsda"} or  \code{"mint.splsda"}. The function will retrieve some key parameters stored in that object.}
 \item{dist}{only applies to an object inheriting from \code{"plsda"}, \code{"splsda"} or \code{"mint.splsda"} to evaluate the classification performance of the model. Should be a subset of \code{"max.dist"}, \code{"centroids.dist"}, \code{"mahalanobis.dist"}. Default is \code{"all"}. See \code{\link{predict}}.}
 \item{validation}{character.  What kind of (internal) validation to use, matching one of \code{"Mfold"} or

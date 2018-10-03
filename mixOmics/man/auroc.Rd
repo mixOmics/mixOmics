@@ -1,8 +1,8 @@
 \name{auroc}
 \encoding{UTF-8}
 \alias{auroc}
-\alias{auroc.plsda}
-\alias{auroc.splsda}
+\alias{auroc.mixo_plsda}
+\alias{auroc.mixo_splsda}
 \alias{auroc.mint.plsda}
 \alias{auroc.mint.splsda}
 \alias{auroc.sgccda}
@@ -15,10 +15,10 @@ Calculates the AUC and plots ROC for supervised objects from s/plsda, mint.s/pls
 }
 
 \usage{
-\method{auroc}{plsda}(object, newdata = object$input.X, outcome.test = as.factor(object$Y),
+\method{auroc}{mixo_plsda}(object, newdata = object$input.X, outcome.test = as.factor(object$Y),
 multilevel = NULL, plot = TRUE, roc.comp = 1, ...)
 
-\method{auroc}{splsda}(object, newdata = object$input.X, outcome.test = as.factor(object$Y),
+\method{auroc}{mixo_splsda}(object, newdata = object$input.X, outcome.test = as.factor(object$Y),
 multilevel = NULL, plot = TRUE, roc.comp = 1, ...)
 
 \method{auroc}{mint.plsda}(object, newdata = object$X, outcome.test = as.factor(object$Y),
@@ -35,7 +35,8 @@ multilevel = NULL,plot = TRUE, roc.block = 1, roc.comp = 1, ...)
 }
 
 \arguments{
-\item{object}{Object from one of the following supervised analysis class: "plsda", "splsda", "mint.plsda", "mint.splsda", "block.splsda" or "wrapper.sgccda"}
+\item{object}{Object of class inherited from one of the following supervised
+analysis function: "plsda", "splsda", "mint.plsda", "mint.splsda", "block.splsda" or "wrapper.sgccda"}
 \item{newdata}{numeric matrix of predictors, by default set to the training data set (see details).}
 \item{outcome.test}{Either a factor or a class vector for the discrete outcome, by default set to the outcome vector from the training set (see details). }
 \item{study.test}{For MINT objects, grouping factor indicating which samples of \code{newdata} are from the same study. Overlap with \code{object$study} are allowed.}

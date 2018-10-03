@@ -2,8 +2,8 @@
 \encoding{UTF-8}
 \alias{summary}
 \alias{summary.rcc}
-\alias{summary.pls}
-\alias{summary.spls}
+\alias{summary.mixo_pls}
+\alias{summary.mixo_spls}
 
 \title{Summary Methods for CCA and PLS objects}
 
@@ -16,15 +16,15 @@ Produce \code{summary} methods for class \code{"rcc"},
 \method{summary}{rcc}(object, what = c("all", "communalities", "redundancy"),
 cutoff = NULL, digits = 4, \ldots)
 
-\method{summary}{pls}(object, what = c("all", "communalities", "redundancy",
+\method{summary}{mixo_pls}(object, what = c("all", "communalities", "redundancy",
 "VIP"), digits = 4, keep.var = FALSE, \ldots)
 
-\method{summary}{spls}(object, what = c("all", "communalities", "redundancy",
+\method{summary}{mixo_spls}(object, what = c("all", "communalities", "redundancy",
 "VIP"), digits = 4, keep.var = FALSE, \ldots)
 }
 
 \arguments{
-\item{object}{object of class inheriting from \code{"rcc"}, \code{"pls"} or \code{"spls"}.}
+\item{object}{object of class inherited from \code{"rcc"}, \code{"pls"} or \code{"spls"}.}
 \item{cutoff}{real between 0 and 1. Variables with all correlations components below this cutoff
 in absolute value are not showed (see Details).}
 \item{digits}{integer, the number of significant digits to use when printing.
