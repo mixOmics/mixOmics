@@ -2,8 +2,8 @@
 \encoding{UTF-8}
 \alias{print}
 \alias{print.rcc}
-\alias{print.pls}
-\alias{print.spls}
+\alias{print.mixo_pls}
+\alias{print.mixo_spls}
 \alias{print.summary}
 \alias{print.pca}
 \alias{print.spca}
@@ -20,9 +20,9 @@ Produce \code{print} methods for class \code{"rcc"},
 \usage{
 \method{print}{rcc}(x, \ldots)
 
-\method{print}{pls}(x, \ldots)
+\method{print}{mixo_pls}(x, \ldots)
 
-\method{print}{spls}(x, \ldots)
+\method{print}{mixo_spls}(x, \ldots)
 
 \method{print}{pca}(x, \ldots)
 
@@ -36,7 +36,7 @@ Produce \code{print} methods for class \code{"rcc"},
 }
 
 \arguments{
-\item{x}{object of class inheriting from \code{"rcc"}, \code{"pls"},
+\item{x}{object of class inherited from \code{"rcc"}, \code{"pls"},
 \code{"spls"}, \code{"pca"}, \code{"spca"}, \code{"rgcca"}, \code{"sgcca"}or \code{"summary"}.}
 \item{\ldots}{not used currently.}
 }

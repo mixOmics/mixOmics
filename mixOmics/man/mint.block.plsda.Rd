@@ -109,8 +109,22 @@ Rohart F, Gautier B, Singh A, Lê Cao K-A. mixOmics: an R package for 'omics fea
 \code{\link{plotIndiv}}, \code{\link{plotVar}}, \code{\link{predict}}, \code{\link{perf}}, \code{\link{mint.block.spls}}, \code{\link{mint.block.plsda}}, \code{\link{mint.block.splsda}} and http://www.mixOmics.org/mixMINT for more details.}
 
 \examples{
-# we will soon provide more examples on our website (data too large to be included in the package
-# and still in active development)
+data(breast.TCGA)
+
+# for the purpose of this example, we consider the training set as study1 and
+# the test set as another independent study2.
+study = c(rep("study1",150), rep("study2",70))
+
+mrna = rbind(breast.TCGA$data.train$mrna, breast.TCGA$data.test$mrna)
+mirna = rbind(breast.TCGA$data.train$mirna, breast.TCGA$data.test$mirna)
+data = list(mrna = mrna, mirna = mirna)
+
+Y = c(breast.TCGA$data.train$subtype, breast.TCGA$data.test$subtype)
+
+res = mint.block.plsda(data,Y,study=study, ncomp=2)
+
+res
+
 }
 
 \keyword{regression}

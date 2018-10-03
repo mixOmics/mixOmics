@@ -57,7 +57,7 @@ xlim = NULL,
     if(any(study == "global"))
     {
         # if study == "global" then we plot the results on the concatenated data, thus direct call to plotLoadings.plsda
-        plotLoadings.pls(object = object, block = "X", comp = comp, ndisplay = ndisplay,
+        plotLoadings.mixo_pls(object = object, block = "X", comp = comp, ndisplay = ndisplay,
         size.name = size.name,
         name.var = name.var,
         name.var.complete = name.var.complete,

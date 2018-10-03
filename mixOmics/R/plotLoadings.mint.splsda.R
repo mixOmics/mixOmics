@@ -66,7 +66,7 @@ xlim = NULL,
     
     if(any(study == "global"))
     {
-        plotLoadings.plsda(object = object, contrib = contrib, method = method, block = "X", comp = comp, ndisplay = ndisplay,
+        plotLoadings.mixo_plsda(object = object, contrib = contrib, method = method, block = "X", comp = comp, ndisplay = ndisplay,
         size.name = size.name,
         size.legend = size.legend,
         name.var = name.var,

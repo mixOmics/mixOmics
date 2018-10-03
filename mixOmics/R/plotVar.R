@@ -58,7 +58,7 @@ label.axes.box = "both"  )
 {
     
     class.object = class(object)
-    object.pls=c("pls","spls","mlspls","mlsplsda","rcc")
+    object.pls=c("mixo_pls","mixo_spls","mixo_mlspls","mixo_mlsplsda","rcc")
     object.pca=c("ipca","sipca","pca","spca")
     object.blocks=c("sgcca","rgcca")
     
@@ -133,7 +133,7 @@ label.axes.box = "both"  )
             stop(paste("The number of components for one selected block '", paste(blocks, collapse = " - "),"' is 1. The number of components must be superior or equal to 2."), call. = FALSE)
         }
         ncomp = object$ncomp[blocks]
-    } else if (any(class.object %in% c("rcc", "pls", "spls", "mlspls")) & all(class.object !="DA")) {
+    } else if (any(class.object %in% c("rcc", "mixo_pls", "mixo_spls", "mixo_mlspls")) & all(class.object !="DA")) {
         blocks = c("X", "Y")
     } else {
         blocks = "X"
@@ -211,16 +211,16 @@ label.axes.box = "both"  )
                 cord.X[[2]] = cor(object$Y, object$variates$X[, c(comp1, comp2, comp3)] + object$variates$Y[, c(comp1, comp2, comp3)], use = "pairwise")
                 sample.X = lapply(cord.X, function(x){1 : nrow(x)})
                 
-            } else if (any(class.object %in% "plsda")) {
+            } else if (any(class.object %in% "mixo_plsda")) {
                 cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2, comp3)], use = "pairwise")
                 sample.X = lapply(cord.X, function(x){1 : nrow(x)})
                 
-            } else if (any(class.object %in%  "pls")) {
+            } else if (any(class.object %in%  "mixo_pls")) {
                 cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2, comp3)], use = "pairwise")
                 cord.X[[2]] = cor(object$Y, if(object$mode ==  "canonical"){object$variates$Y[, c(comp1, comp2, comp3)]} else {object$variates$X[, c(comp1, comp2, comp3)]}, use = "pairwise")
                 sample.X = lapply(cord.X, function(x){1 : nrow(x)})
                 
-            } else if (any(class.object %in%  c("splsda", "mlsplsda"))) {
+            } else if (any(class.object %in%  c("mixo_splsda", "mixo_mlsplsda"))) {
                 cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(unique(c(comp1, comp2, comp3, comp.select)), function(x){selectVar(object, comp = x)$name})))], # variables selected at least once on unique(comp1, comp2, comp3 and comp.select
                 object$variates$X[, c(comp1, comp2, comp3, comp.select)], use = "pairwise")
                 ind.var.sel[[1]] = sample.X[[1]] = 1 : length(colnames(object$X))
@@ -230,7 +230,7 @@ label.axes.box = "both"  )
                 }
                 ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[1]]))
                 
-            } else if (any(class.object %in%  c("spls", "mlspls"))) {
+            } else if (any(class.object %in%  c("mixo_spls", "mixo_mlspls"))) {
                 cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(c(comp1, comp2, comp3), function(x){selectVar(object, comp = x)$X$name})))],
                 object$variates$X[, c(comp1, comp2, comp3)], use = "pairwise")
                 cord.X[[2]] = cor(object$Y[, colnames(object$Y) %in% unique(unlist(lapply(c(comp1, comp2, comp3), function(x){selectVar(object, comp = x)$Y$name})))],
@@ -278,16 +278,16 @@ label.axes.box = "both"  )
                 cord.X[[2]] = cor(object$Y, object$variates$X[, c(comp1, comp2)] + object$variates$Y[, c(comp1, comp2)], use = "pairwise")
                 sample.X = lapply(cord.X, function(x){1 : nrow(x)})
                 
-            } else if (any(class.object %in% "plsda")) {
+            } else if (any(class.object %in% "mixo_plsda")) {
                 cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2)], use = "pairwise")
                 sample.X = lapply(cord.X, function(x){1 : nrow(x)})
                 
-            } else if (any(class.object %in%  "pls")) {
+            } else if (any(class.object %in%  "mixo_pls")) {
                 cord.X[[1]] = cor(object$X, object$variates$X[, c(comp1, comp2)], use = "pairwise")
                 cord.X[[2]] = cor(object$Y, if(object$mode ==  "canonical"){object$variates$Y[, c(comp1, comp2)]} else {object$variates$X[, c(comp1, comp2)]}, use = "pairwise")
                 sample.X = lapply(cord.X, function(x){1 : nrow(x)})
                 
-            } else if (any(class.object %in%  c("splsda", "mlsplsda"))) {
+            } else if (any(class.object %in%  c("mixo_splsda", "mixo_mlsplsda"))) {
                 cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(comp.select, function(x){selectVar(object, comp = x)$name}))), drop = FALSE],
                 object$variates$X[, unique(c(comp1, comp2))], use = "pairwise")
                 ind.var.sel[[1]] = sample.X[[1]] = 1 : length(colnames(object$X))
@@ -296,7 +296,7 @@ label.axes.box = "both"  )
                 #}
                 ind.var.sel[[1]] = which(colnames(object$X) %in% rownames(cord.X[[1]]))
                 
-            } else if (any(class.object %in%  c("spls", "mlspls"))) {
+            } else if (any(class.object %in%  c("mixo_spls", "mixo_mlspls"))) {
                 cord.X[[1]] = cor(object$X[, colnames(object$X) %in% unique(unlist(lapply(comp.select, function(x){selectVar(object, comp = x)$X$name}))), drop = FALSE],
                 object$variates$X[, c(comp1, comp2)], use = "pairwise")
                 cord.X[[2]] = cor(object$Y[, colnames(object$Y) %in% unique(unlist(lapply(comp.select, function(x){selectVar(object, comp = x)$Y$name}))), drop = FALSE],

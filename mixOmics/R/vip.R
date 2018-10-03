@@ -30,10 +30,10 @@
 vip =
 function(object)
 {
-    if (any(class(object) %in% c("plsda","splsda")))
+    if (any(class(object) %in% c("mixo_plsda","mixo_splsda")))
     {
         object$Y = object$ind.mat
-    } else if (any(class(object) %in% c("pls","spls"))) {
+    } else if (any(class(object) %in% c("mixo_pls","mixo_spls"))) {
         #nothing
     } else {
         stop( " 'vip' is only implemented for the following objects: pls, plsda, spls, splsda", call.=FALSE)

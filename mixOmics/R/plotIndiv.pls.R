@@ -31,8 +31,8 @@
 #-- Includes plotIndiv for PLS, sPLS, PLS-DA, SPLS-DA,  --#
 #----------------------------------------------------------------------------------------------------------#
 
-plotIndiv.pls = 
-plotIndiv.spls = 
+plotIndiv.mixo_pls =
+plotIndiv.mixo_spls = 
 #plotIndiv.plsda =      # because pls too
 #plotIndiv.mlpls =      # because pls too
 #plotIndiv.mlplsda =    # because pls too

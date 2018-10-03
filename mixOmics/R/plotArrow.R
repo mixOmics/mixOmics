@@ -51,7 +51,7 @@ position.names = 'centroid'
 {
     
     class.object = class(object)
-    object.pls=c("pls", "plsda", "spls", "splsda", "rcc")
+    object.pls=c("mixo_pls", "mixo_plsda", "mixo_spls", "smixo_plsda", "rcc")
     object.blocks=c("sgcca", "sgccda", "rgcca")
     
     if (! any(class.object %in% c(object.pls,object.blocks)))

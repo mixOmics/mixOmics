@@ -180,7 +180,6 @@ plotIndiv(splsda.breast, ind.names = TRUE, centroid = TRUE, star = TRUE)
 # with different pch and cex
 plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c("o","+","X"), legend=T)
 plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c("o","+","X"), pch.levels=c("aha","why?","maybe"),legend=T)
-plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = c("aha","why?","maybe"), pch.levels=c("aha","why?","maybe"),legend=T)
 
 plotIndiv(splsda.breast, ind.names = FALSE, cex = c(1, 5), pch = "F",legend=T)
 

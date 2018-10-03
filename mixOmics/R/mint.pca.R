@@ -25,7 +25,7 @@
 
 
 # ========================================================================================================
-# mint.pls: perform a vertical PLS on a combination of experiments, input as a matrix in X
+# mint.pca: perform a vertical PCA on a combination of experiments, input as a matrix in X
 # this function is a particular setting of internal_mint.block,
 # the formatting of the input is checked in internal_wrapper.mint, which then call 'internal_mint.block'
 # ========================================================================================================

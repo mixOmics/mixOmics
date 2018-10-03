@@ -145,7 +145,7 @@ scale)
             # only done if only one test.keepX as not used if more so far
             features = c(features, selectVar(object.res, comp = ncomp)$name)
             
-            test.predict.sw <- predict.spls(object.res, newdata = X.test,
+            test.predict.sw <- predict.mixo_spls(object.res, newdata = X.test,
             method = dist, study.test = study.test.CV)
             # Y.train can be missing factors, so the prediction
             # 'test.predict.sw' might be missing factors compared to the

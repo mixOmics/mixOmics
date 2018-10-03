@@ -33,7 +33,7 @@
 
 
 #------------------ print method for pls ------------------#
-print.pls <-
+print.mixo_pls <-
 function(x, ...)
 {
     
@@ -96,7 +96,7 @@ function(x, ...)
 }
 
 #------------------ print method for plsda ------------------#
-print.plsda <-
+print.mixo_plsda <-
 function(x, ...)
 {
     
@@ -162,7 +162,7 @@ function(x, ...)
 }
 
 #----------------- print method for spls ------------------#
-print.spls <-
+print.mixo_spls <-
 function(x, ...)
 {
     
@@ -235,7 +235,7 @@ function(x, ...)
 
 
 #----------------- print method for splsda ------------------#
-print.splsda <-
+print.mixo_splsda <-
 function(x, ...)
 {
     

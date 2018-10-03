@@ -108,7 +108,7 @@ all.outputs = TRUE)
         scale = result$scale,
         explained_variance = result$explained_variance)
 
-    class(out) = c("mint.splsda","splsda","spls","DA")
+    class(out) = c("mint.splsda","mixo_splsda","mixo_spls","DA")
     return(invisible(out))
     
 }

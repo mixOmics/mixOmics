@@ -1,8 +1,8 @@
 \name{plotIndiv}
 \encoding{UTF-8}
 \alias{plotIndiv}
-\alias{plotIndiv.pls}
-\alias{plotIndiv.spls}
+\alias{plotIndiv.mixo_pls}
+\alias{plotIndiv.mixo_spls}
 \alias{plotIndiv.rcc}
 \alias{plotIndiv.pca}
 \alias{plotIndiv.sipca}
@@ -19,7 +19,7 @@ representation in (sparse)(I)PCA, (regularized)CCA, (sparse)PLS(DA) and (sparse)
 }
 
 \usage{
-\method{plotIndiv}{pls}(object, comp = NULL, rep.space = NULL, ind.names = TRUE, group, col.per.group,
+\method{plotIndiv}{mixo_pls}(object, comp = NULL, rep.space = NULL, ind.names = TRUE, group, col.per.group,
 style = "ggplot2", ellipse = FALSE, ellipse.level = 0.95, centroid = FALSE, star = FALSE,
 title = NULL, subtitle, legend = FALSE,
 X.label = NULL, Y.label = NULL, Z.label = NULL, abline = FALSE,
@@ -57,10 +57,10 @@ point.lwd = 1, ... )
 }
 
 \arguments{
-\item{object}{object of class inheriting from any \pkg{mixOmics}:  \code{PLS, sPLS, PLS-DA, SPLS-DA, rCC, PCA, sPCA, IPCA, sIPCA, rGCCA, sGCCA, sGCCDA}}
+\item{object}{object of class inherited from any \pkg{mixOmics}:  \code{PLS, sPLS, PLS-DA, SPLS-DA, rCC, PCA, sPCA, IPCA, sIPCA, rGCCA, sGCCA, sGCCDA}}
 \item{comp}{integer vector of length two (or three to 3d). The components that will be used on the horizontal
 and the vertical axis respectively to project the individuals.}
-\item{rep.space}{For objects of class \code{"rcc"}, \code{"pls"}, \code{"spls"}, character string, (partially) matching one of \code{"X-variate"}, \code{"Y-variate"} ,or \code{"XY-variate"}, determining the subspace to project the individuals. Defaults to \code{"X-variate"} \code{"pca"} object and for \code{"plsda"} objects. For objects of class \code{"pls"} and \code{"rcc"},defaults, the tree subspaces  represent the individuals. For objects of class \code{"rgcca"} and \code{"sgcca"}, numerical value indicating the block data set form which to represent the individuals.}
+\item{rep.space}{For objects inherited from \code{"rcc"}, \code{"pls"}, \code{"spls"}, character string, (partially) matching one of \code{"X-variate"}, \code{"Y-variate"} ,or \code{"XY-variate"}, determining the subspace to project the individuals. Defaults to \code{"X-variate"} \code{"pca"} object and for \code{"plsda"} objects. For objects of class \code{"pls"} and \code{"rcc"},defaults, the tree subspaces  represent the individuals. For objects of class \code{"rgcca"} and \code{"sgcca"}, numerical value indicating the block data set form which to represent the individuals.}
 
 \item{blocks}{integer value of name of a block to be plotted using the GCCA module. See examples.}
 \item{study}{Indicates which study-specific outputs to plot. A character vector containing some levels of \code{object$study}, "all.partial" to plot all studies or "global" is expected. Default to "global".}

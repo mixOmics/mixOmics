@@ -46,7 +46,7 @@ background.predict = function(object, comp.predicted = 1, dist = "max.dist",
     xlim = NULL, ylim = NULL, resolution = 100)
 {
     
-    if(!any(class(object)%in%c("plsda","splsda")))
+    if(!any(class(object)%in%c("mixo_plsda","mixo_splsda")))
     stop("'background.predict' can only be calculated for 'plsda'
         and 'splsda' objects")
 

@@ -15,8 +15,6 @@ progressBar = FALSE
 
 # splsda
 # ----
-#library(mixOmicsDD)
-progressBar = TRUE
 library(mixOmics)
 data(breast.tumors)
 X <- breast.tumors$gene.exp

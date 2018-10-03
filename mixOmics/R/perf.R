@@ -41,7 +41,7 @@ perf = function(object, ...) UseMethod("perf")
 # perf for spls and pls object
 #---------------------------------------------------
 
-perf.spls  = perf.pls = function(object,
+perf.mixo_spls  = perf.mixo_pls = function(object,
 validation = c("Mfold", "loo"),
 folds = 10,
 progressBar = TRUE,
@@ -97,7 +97,7 @@ progressBar = TRUE,
     
     
     #-- tells which variables are selected in X and in Y --#
-    if (any(class(object) == "spls"))
+    if (any(class(object) == "mixo_spls"))
     {
         keepX = object$keepX
         keepY = object$keepY
@@ -209,7 +209,7 @@ progressBar = TRUE,
                 keepX.temp[which(keepX.temp>sum(nzv))] = sum(nzv)
                 
                 spls.res = mixOmics::spls(X.train[,nzv], Y.train, ncomp = ncomp, mode = mode, max.iter = max.iter, tol = tol, keepX = keepX.temp, keepY = keepY, near.zero.var = FALSE, scale = scale)
-                Y.hat = predict.spls(spls.res, X.test[,nzv, drop = FALSE])$predict
+                Y.hat = predict.mixo_spls(spls.res, X.test[,nzv, drop = FALSE])$predict
                 if(sum(is.na(Y.hat))>0) break
                 for (k in 1:ncomp)
                 {
@@ -217,7 +217,7 @@ progressBar = TRUE,
                     MSEP.mat[omit, , k] = (Y.test - Y.hat[, , k])^2
                     
                     # added: record selected features in each set
-                    if (any(class(object) == "spls"))
+                    if (is(object,"mixo_spls"))
                     {
                         featuresX[[k]] = c(unlist(featuresX[[k]]), selectVar(spls.res, comp = k)$X$name)
                         featuresY[[k]] = c(unlist(featuresY[[k]]), selectVar(spls.res, comp = k)$Y$name)
@@ -311,7 +311,7 @@ progressBar = TRUE,
     result$RSS.indiv = RSS.indiv
     
     #---- extract stability of features -----#
-    if (any(class(object) == "spls"))
+    if (is(object, "mixo_spls"))
     {
         list.features.X = list()
         list.features.Y = list()
@@ -334,10 +334,10 @@ progressBar = TRUE,
     }
     
     #--- class
-    if (any(class(object) == "spls"))
+    if (is(object,"mixo_spls"))
     {
         method = "spls.mthd"
-    } else if (any(class(object) == "pls")) {
+    } else if (is(object, "mixo_pls")) {
         method = "pls.mthd"
     } else {
         warning("Something that should not happen happened. Please contact us.")
@@ -352,7 +352,7 @@ progressBar = TRUE,
 # ---------------------------------------------------
 # perf for plsda and splsda object
 # ---------------------------------------------------
-perf.splsda = perf.plsda = function(object,
+perf.mixo_splsda = perf.mixo_plsda = function(object,
 dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"),
 validation = c("Mfold", "loo"),
 folds = 10,
@@ -380,7 +380,7 @@ cpus,
     
     #-- tells which variables are selected in X and in Y --#
 
-    if (any(class(object) == "splsda"))
+    if (is(object, "mixo_splsda"))
     {
         keepX = object$keepX
     } else {
@@ -571,7 +571,7 @@ cpus,
         misdata = misdata, is.na.A = is.na.A)#, ind.NA = ind.NA, ind.NA.col = ind.NA.col)
 
         # ---- extract stability of features ----- # NEW
-        if (any(class(object) == "splsda"))
+        if (any(class(object) == "mixo_splsda"))
         list.features[[comp]] = result$features$stable
         
         for (ijk in dist)
@@ -640,7 +640,7 @@ cpus,
         result$auc.all =auc.all
     }
 
-    if (any(class(object) == "splsda"))
+    if (is(object, "mixo_splsda"))
     {
         names(list.features) = paste('comp', 1:ncomp)
         result$features$stable = list.features
@@ -653,10 +653,10 @@ cpus,
     if (near.zero.var == TRUE)
     result$nzvX = nzv$Position
     
-    if (any(class(object) == "splsda"))
+    if (is(object, "mixo_splsda"))
     {
         method = "splsda.mthd"
-    } else if (any(class(object) == "plsda")) {
+    } else if (is(object, "mixo_plsda")) {
         method = "plsda.mthd"
     } else {
         warning("Something that should not happen happened. Please contact us.")

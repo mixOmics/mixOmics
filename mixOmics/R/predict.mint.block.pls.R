@@ -51,7 +51,7 @@
 
 
 predict.block.pls <-predict.block.spls <- predict.mint.splsda <-
-predict.pls <-predict.spls <-
+predict.mixo_pls <-predict.mixo_spls <-
 function(object, newdata,study.test,dist = c("all", "max.dist", "centroids.dist", "mahalanobis.dist"), multilevel = NULL, ...)
 {
     time=FALSE

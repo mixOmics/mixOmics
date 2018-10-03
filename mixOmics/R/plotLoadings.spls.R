@@ -29,9 +29,9 @@
 #----------------------------------------------------------------------------------------------------------#
 
 
-plotLoadings.pls =
+plotLoadings.mixo_pls =
 #plotLoadings.mlpls =      # because pls too
-plotLoadings.spls =
+plotLoadings.mixo_spls =
 #plotLoadings.mlspls =     # because spls too
 plotLoadings.rcc =
 plotLoadings.sgcca =

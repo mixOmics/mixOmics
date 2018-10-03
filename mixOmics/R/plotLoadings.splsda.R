@@ -31,9 +31,9 @@
 #----------------------------------------------------------------------------------------------------------#
 
 
-plotLoadings.plsda =
+plotLoadings.mixo_plsda =
 #plotLoadings.mlplsda =    # because plsda too
-plotLoadings.splsda =
+plotLoadings.mixo_splsda =
 #plotLoadings.mlsplsda =   # because splsda too
 plotLoadings.sgccda =
 
@@ -81,7 +81,7 @@ xlim = NULL,
     {
         if(plot)
         {
-            plotLoadings.pls(object = object, block = block, comp = comp, ndisplay = ndisplay,
+            plotLoadings.mixo_pls(object = object, block = block, comp = comp, ndisplay = ndisplay,
             size.name = size.name,
             name.var = name.var,
             name.var.complete = name.var.complete,

@@ -122,7 +122,7 @@ name.save = NULL)
     }
     
     class.object = class(mat)
-    object.pls=c("pls","spls","mlspls")
+    object.pls=c("mixo_pls","mixo_spls","mixo_mlspls")
     object.rcc="rcc"
     object.blocks=c("sgcca","rgcca")
     
@@ -235,7 +235,7 @@ name.save = NULL)
             mat = cord.X %*% t(cord.Y)
         } else if(any(class.object %in% object.pls)) {
             #-- variable selection --#
-            if (all(class(mat) %in% "pls"))
+            if (all(class(mat) %in% "mixo_pls"))
             {
                 keep.X = rep(TRUE,p)
                 keep.Y = rep(TRUE,q)
